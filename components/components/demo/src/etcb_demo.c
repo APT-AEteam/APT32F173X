@@ -141,13 +141,13 @@ void etcb_adc_config13(void)
 	tAdcConfig.bySampHold = 0x06;								//ADC 采样时间： time = 16 + 6 = 22(ADC clk周期)
 	tAdcConfig.byConvMode = ADC_CONV_ONESHOT;					//ADC 转换模式： 单次转换；
 	tAdcConfig.byVrefSrc = ADCVERF_VDD_VSS;						//ADC 参考电压： 系统VDD
-	tAdcConfig.wInter = ADC_INTSRC_EOC;                         //打开EOC中断
+	tAdcConfig.wInt = ADC_INTSRC_EOC;                         //打开EOC中断
 
 	tAdcConfig.ptSeqCfg = (csi_adc_seq_t *)SeqCfg3;		        //ADC 采样序列： 具体参考结构体变量 SeqCfg3
 	
 	csi_adc_init(ADC0, &tAdcConfig);							 //初始化ADC参数配置	
 	csi_adc_set_seqx(ADC0, tAdcConfig.ptSeqCfg, byAdcChnlNum);	 //配置ADC采样序列
-	csi_adc_set_sync(ADC0, ADC_SYNCEN0, ADC_TRG_CONTINU, 50);     //选择ADC_SYNCEN0同步事件  
+	csi_adc_set_sync(ADC0, ADC_TRG_SYNCEN0, ADC_TRG_CONTINU, 50);     //选择ADC_SYNCEN0同步事件  
 	csi_adc_start(ADC0);										 //启动ADC	
 }
 

@@ -309,16 +309,16 @@ int gptb_demo12(void)
 	csi_gptb_pwmchannel_config_t  channel;
 	channel.byActionZro    =   LO;
 	channel.byActionPrd    =   NA;
-	channel.byActionCau    =   HI;
-	channel.byActionCad    =   LO;
-	channel.byActionCbu    =   NA;
-	channel.byActionCbd    =   NA;
+	channel.byActionC1u    =   HI;
+	channel.byActionC1d    =   LO;
+	channel.byActionC2u    =   NA;
+	channel.byActionC2d    =   NA;
 	channel.byActionT1u    =   LO;
 	channel.byActionT1d    =   LO;
 	channel.byActionT2u    =   NA;
 	channel.byActionT2d    =   NA;
-	channel.byChoiceCasel  =   GPTB_CMPA;
-	channel.byChoiceCbsel  =   GPTB_CMPA;
+	channel.byChoiceC1sel  =   GPTB_CMPA;
+	channel.byChoiceC2sel  =   GPTB_CMPA;
 
 	csi_gptb_channel_config(GPTB0, &channel,  GPTB_CHANNEL_A);//channel
 	csi_gptb_channel_config(GPTB0, &channel,  GPTB_CHANNEL_B);

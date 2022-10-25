@@ -79,7 +79,7 @@ int adc_samp_oneshot_demo(void)
 	tAdcConfig.bySampHold = 0x06;						//ADC 采样时间： time = 16 + 6 = 22(ADC clk周期)
 	tAdcConfig.byConvMode = ADC_CONV_ONESHOT;			//ADC 转换模式： 单次转换；
 	tAdcConfig.byVrefSrc = ADCVERF_VDD_VSS;				//ADC 参考电压： 系统VDD
-	tAdcConfig.wInter = ADC_INTSRC_NONE;				//ADC 中断配置： 无中断
+	tAdcConfig.wInt = ADC_INTSRC_NONE;				//ADC 中断配置： 无中断
 	tAdcConfig.ptSeqCfg = (csi_adc_seq_t *)tSeqCfg;		//ADC 采样序列： 具体参考结构体变量 tSeqCfg
 	
 	csi_adc_init(ADC0, &tAdcConfig);							//初始化ADC参数配置	
@@ -148,7 +148,7 @@ int adc_samp_continuous_demo(void)
 	tAdcConfig.bySampHold = 0x06;						//ADC 采样时间： time = 16 + 6 = 22(ADC clk周期)
 	tAdcConfig.byConvMode = ADC_CONV_CONTINU;			//ADC 转换模式： 连续转换
 	tAdcConfig.byVrefSrc = ADCVERF_VDD_VSS;				//ADC 参考电压： 系统VDD
-	tAdcConfig.wInter = ADC_INTSRC_NONE;				//ADC 中断配置： 无中断
+	tAdcConfig.wInt = ADC_INTSRC_NONE;				//ADC 中断配置： 无中断
 	tAdcConfig.ptSeqCfg = (csi_adc_seq_t *)tSeqCfg;		//ADC 采样序列： 具体参考结构体变量 tSeqCfg
 	
 	csi_adc_init(ADC0, &tAdcConfig);							//初始化ADC参数配置	
@@ -327,15 +327,15 @@ int adc_samp_oneshot_int_demo(void)
 	tAdcConfig.bySampHold = 0x06;								//ADC 采样时间： time = 16 + 6 = 22(ADC clk周期)
 	tAdcConfig.byConvMode =ADC_CONV_WAIT;                       //ADC 转换模式： 单次转换；ADC_CONV_CONTINU
 	tAdcConfig.byVrefSrc = ADCVERF_VDD_VSS;						//ADC 参考电压： 系统VDD
-	tAdcConfig.wInter = ADC_INTSRC_SEQ0|ADC_INTSRC_SEQ3|ADC_INTSRC_SEQ6|ADC_INTSRC_SEQ9;		//ADC 中断配置：SEQ_END(0~2)中断使能，默认(推荐使用)SEQ_END中断
+	tAdcConfig.wInt = ADC_INTSRC_SEQ0|ADC_INTSRC_SEQ3|ADC_INTSRC_SEQ6|ADC_INTSRC_SEQ9;		//ADC 中断配置：SEQ_END(0~2)中断使能，默认(推荐使用)SEQ_END中断
 	tAdcConfig.ptSeqCfg = (csi_adc_seq_t *)tSeqCfg;				//ADC 采样序列： 具体参考结构体变量 tSeqCfg
 	
 	csi_adc_init(ADC0, &tAdcConfig);							//初始化ADC参数配置	
 	csi_adc_set_seqx(ADC0, tAdcConfig.ptSeqCfg, byChnlNum);		//配置ADC采样序列
 	csi_adc_set_buffer((uint16_t *)g_hwAdcBuf, 1);				//传递ADC采样buffer，ADC采样值存放于此buffer中
 	
-	csi_adc_set_sync(ADC0,ADC_SYNCEN0, ADC_TRG_CONTINU, 0);
-	csi_adc_set_sync(ADC0,ADC_SYNCEN1, ADC_TRG_CONTINU, 0);
+	csi_adc_set_sync(ADC0,ADC_TRG_SYNCEN0, ADC_TRG_CONTINU, 0);
+	csi_adc_set_sync(ADC0,ADC_TRG_SYNCEN1, ADC_TRG_CONTINU, 0);
 	csi_adc_start(ADC0);										//启动ADC
 //------------------------------------------------------------------------------------------------------------------------			
 		                                                        //读ADC采样序列，整个采样序列所有通道读到采样buffer 
@@ -374,7 +374,7 @@ int adc_samp_continuous_int_demo(void)
 	tAdcConfig.bySampHold = 0x06;								//ADC 采样时间： time = 16 + 6 = 22(ADC clk周期)
 	tAdcConfig.byConvMode = ADC_CONV_CONTINU;					//ADC 转换模式： 连续转换；
 	tAdcConfig.byVrefSrc = ADCVERF_VDD_VSS;						//ADC 参考电压： 系统VDD
-	tAdcConfig.wInter = ADC_INTSRC_SEQ0 | ADC_INTSRC_SEQ1 |
+	tAdcConfig.wInt = ADC_INTSRC_SEQ0 | ADC_INTSRC_SEQ1 |
 				ADC_INTSRC_SEQ2;								//ADC 中断配置：SEQ_END(0~2)中断使能，默认(推荐使用)SEQ_END中断
 	tAdcConfig.ptSeqCfg = (csi_adc_seq_t *)tSeqCfg;				//ADC 采样序列： 具体参考结构体变量 tSeqCfg
 	

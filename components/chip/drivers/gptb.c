@@ -214,16 +214,16 @@ csi_error_t csi_gptb_channel_config(csp_gptb_t *ptGptbBase, csi_gptb_pwmchannel_
 	
 	w_AQCRx_Val=  tPwmCfg -> byActionZro 
 	              | ( tPwmCfg -> byActionPrd  << GPTB_ACT_PRD_POS  )
-				  | ( tPwmCfg -> byActionCau  << GPTB_ACT_CAU_POS  )
-				  | ( tPwmCfg -> byActionCad  << GPTB_ACT_CAD_POS  )
-				  | ( tPwmCfg -> byActionCbu  << GPTB_ACT_CBU_POS  )
-				  | ( tPwmCfg -> byActionCbd  << GPTB_ACT_CBD_POS  )
+				  | ( tPwmCfg -> byActionC1u  << GPTB_ACT_C1U_POS  )
+				  | ( tPwmCfg -> byActionC1d  << GPTB_ACT_C1D_POS  )
+				  | ( tPwmCfg -> byActionC2u  << GPTB_ACT_C2U_POS  )
+				  | ( tPwmCfg -> byActionC2d  << GPTB_ACT_C2D_POS  )
 				  | ( tPwmCfg -> byActionT1u  << GPTB_ACT_T1U_POS  )
 				  | ( tPwmCfg -> byActionT1d  << GPTB_ACT_T1D_POS  )
 				  | ( tPwmCfg -> byActionT2u  << GPTB_ACT_T2U_POS  )
 				  | ( tPwmCfg -> byActionT2d  << GPTB_ACT_T2D_POS  )
-				  | ( tPwmCfg -> byChoiceCasel  << GPTB_CASEL_POS  )
-				  | ( tPwmCfg -> byChoiceCbsel  << GPTB_CBSEL_POS  );
+				  | ( tPwmCfg -> byChoiceC1sel  << GPTB_C1SEL_POS  )
+				  | ( tPwmCfg -> byChoiceC2sel  << GPTB_C2SEL_POS  );
 				  
 	switch (channel)
 	{	

@@ -60,8 +60,6 @@
 /******************************************************************************
 * CR : ADC12 Control Register
 ******************************************************************************/
-#define ADC12_BUFSEL_POS	17
-#define ADC12_BUFSEL_MSK	(0x03ul << ADC12_BUFSEL_POS)
 #define ADC12_BUFEN_POS		16
 #define ADC12_BUFEN_MSK		(0x01ul << ADC12_BUFEN_POS)
 
@@ -101,6 +99,13 @@ typedef enum{
 	VREF_FVR4096_VREFN	= (0x0bul),
 	VREF_INTVREF_VREFN	= (0x0cul)
 }adc_vref_e;
+
+#define ADC12_BUFSEL_POS	17
+#define ADC12_BUFSEL_MSK	(0x03ul << ADC12_BUFSEL_POS)
+typedef enum{
+	ADC12_BUFSEL_1V0 	= (2),
+	ADC12_BUFSEL_TEMP	= (3),
+}adc_bufsel_e;
 
 #define ADC12_BIT_POS 	(31) 
 #define ADC12_BIT_MSK 	(0x01ul << ADC12_BIT_POS) 
@@ -487,6 +492,10 @@ static inline void csp_adc_set_vref(csp_adc_t *ptAdcBase, adc_vref_e eVrefSel)
 static inline void csp_adc_bufout_enable(csp_adc_t *ptAdcBase, bool bEnable)
 {
 	ptAdcBase -> CR = (ptAdcBase->CR & ~ADC12_BUFEN_MSK)| (bEnable << ADC12_BUFEN_POS);
+}
+static inline void csp_adc_bufsel_set(csp_adc_t *ptAdcBase, adc_bufsel_e eBufSel)
+{
+	ptAdcBase -> CR = (ptAdcBase->CR & ~ADC12_BUFSEL_MSK)| (eBufSel << ADC12_BUFSEL_POS);
 }
 static inline void csp_adc_set_fvrout_lvl(csp_adc_t *ptAdcBase, adc_fvrsel_e eLvl)
 {

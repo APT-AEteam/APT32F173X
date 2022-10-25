@@ -75,16 +75,16 @@ struct csi_gptb_pwmchannel_config {
 	
     uint8_t		byActionZro;          //
 	uint8_t     byActionPrd;          //
-	uint8_t     byActionCau;          //
-    uint8_t     byActionCad;          //
-	uint8_t     byActionCbu;          //
-	uint8_t     byActionCbd;          //
+	uint8_t     byActionC1u;          //
+    uint8_t     byActionC1d;          //
+	uint8_t     byActionC2u;          //
+	uint8_t     byActionC2d;          //
 	uint8_t     byActionT1u;          //
 	uint8_t     byActionT1d;          //
 	uint8_t     byActionT2u;          //
 	uint8_t     byActionT2d;          //	
-    uint8_t     byChoiceCasel;
-	uint8_t     byChoiceCbsel;
+    uint8_t     byChoiceC1sel;
+	uint8_t     byChoiceC2sel;
 };
 
 typedef struct csi_gptb_deadzone_config   csi_gptb_deadzone_config_t;

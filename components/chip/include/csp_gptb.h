@@ -38,8 +38,8 @@ typedef struct
     __IOM uint32_t CMPLDR;          //0x003c    Compare Data Load Control Register                                         
     __IOM uint32_t CNT;             //0x0040    Counter Register                                          
     __IOM uint32_t AQLDR;           //0x0044	Action Qualifier Load Control Register                                             
-    __IOM uint32_t AQCRA;           //0x0048    Action Qualifier Control Register A                                         
-    __IOM uint32_t AQCRB;           //0x004c    Action Qualifier Control Register B                                         
+    __IOM uint32_t AQCR1;           //0x0048    Action Qualifier Control Register 1                                         
+    __IOM uint32_t AQCR2;           //0x004c    Action Qualifier Control Register 2                                         
     __IOM uint32_t RESERVED2[3];
     __IOM uint32_t AQOSF;           //0x005c    Action Qualifier One Shot Force Register                                         
     __IOM uint32_t AQCSF;           //0x0060    Action Qualifier Continuous Force Register                                         
@@ -78,19 +78,14 @@ typedef struct
     __IOM uint32_t REGLK2;          //0x00e4                                             
     __IOM uint32_t REGPROT;         //0x00e8   
     __IM uint32_t	RESERVED6[467-3];
-	__IM uint32_t 	CMPAACT;	//0x082C	cmpa active reg for capture mode
-    __IM uint32_t 	CMPBACT;	//0x0830	cmpb active reg for capture mode
+	__IM uint32_t 	CMPAA;	        //0x082C	cmpa active reg for capture mode
+    __IM uint32_t 	CMPBA;	        //0x0830	cmpb active reg for capture mode
 } csp_gptb_t;
 
 typedef enum 
 {	GPTB_CHa	= 0,
 	GPTB_CHb,
 }csp_gptb_chtype_e;
-
-typedef enum {
-	DB_AR_BF = 0,
-	DB_BR_BF
-}csp_gptb_dedb_e;
 
 
 ///CEDR
@@ -165,7 +160,8 @@ typedef enum{
 
 
 
-
+#define GPTB_PHSEN_POS		(7)
+#define GPTB_PHSEN_MSK		(0x1 << GPTB_PHSEN_POS)
 #define GPTB_INIT_AS_PHSEN	(0x0 << 7)
 #define GPTB_INIT_DFLT		(0x1 << 7)
 
@@ -173,8 +169,13 @@ typedef enum{
 #define GPTB_CAPLD_POS	(8)
 #define GPTB_CAPLD_MSK	(0x1 << GPTB_CAPLD_POS)
 
-#define GPTB_BURST      (1ul << 9)
-#define GPTB_FLT_INIT   (1ul << 10)
+
+#define GPTB_BURST_POS      (9)
+#define GPTB_BURST_MSK      (1ul << GPTB_BURST_POS)
+
+#define GPTB_FLT_INIT       (1ul << 10)
+#define GPTB_FLT_INIT_POS      (10)
+#define GPTB_FLT_INIT_MSK      (1ul << GPTB_FLT_INIT_POS)
 
 #define GPTB_CGSRC_POS	(11)
 #define GPTB_CGSRC_MSK	(0x3 << GPTB_CGSRC_POS)
@@ -375,13 +376,13 @@ typedef enum{
 #define GPTB_SHDWBFULL 	(0x1 <<21)
 
 ///AQLDR
-#define GPTB_AQCRA_SHDWEN_POS	(0)
-#define GPTB_AQCRA_SHDWEN_MSK	(0x1)
-#define GPTB_AQCRB_SHDWEN_POS	(1)
-#define GPTB_AQCRB_SHDWEN_MSK	(0x1 << GPTB_AQCRB_SHDW_POS)
+#define GPTB_AQCR1_SHDWEN_POS	(0)
+#define GPTB_AQCR1_SHDWEN_MSK	(0x1)
+#define GPTB_AQCR2_SHDWEN_POS	(1)
+#define GPTB_AQCR2_SHDWEN_MSK	(0x1 << GPTB_AQCR2_SHDWEN_POS)
 typedef enum{
-	GPTB_LD_SHDW = 0,
-	GPTB_LD_IMM
+	GPTB_LD_IMM = 0,
+	GPTB_LD_SHDW 
 }csp_gptb_ld_e;
 #define GPTB_LDAMD_POS		(2)
 #define GPTB_LDAMD_MSK		(0x7 << GPTB_LDAMD_POS)
@@ -394,14 +395,14 @@ typedef enum{
 #define GPTB_ACT_ZRO_MSK	(0x3 << GPTB_ACT_ZRO_POS)
 #define GPTB_ACT_PRD_POS	(2)
 #define GPTB_ACT_PRD_MSK	(0x3 << GPTB_ACT_PRD_POS)
-#define GPTB_ACT_CAU_POS	(4)
-#define GPTB_ACT_CAU_MSK	(0x3 << GPTB_ACT_CAU_POS)
-#define GPTB_ACT_CAD_POS	(6)
-#define GPTB_ACT_CAD_MSK	(0x3 << GPTB_ACT_CAD_POS)
-#define GPTB_ACT_CBU_POS	(8)
-#define GPTB_ACT_CBU_MSK	(0x3 << GPTB_ACT_CBU_POS)
-#define GPTB_ACT_CBD_POS	(10)
-#define GPTB_ACT_CBD_MSK	(0x3 << GPTB_ACT_CBD_POS)
+#define GPTB_ACT_C1U_POS	(4)
+#define GPTB_ACT_C1U_MSK	(0x3 << GPTB_ACT_C1U_POS)
+#define GPTB_ACT_C1D_POS	(6)
+#define GPTB_ACT_C1D_MSK	(0x3 << GPTB_ACT_C1D_POS)
+#define GPTB_ACT_C2U_POS	(8)
+#define GPTB_ACT_C2U_MSK	(0x3 << GPTB_ACT_C2U_POS)
+#define GPTB_ACT_C2D_POS	(10)
+#define GPTB_ACT_C2D_MSK	(0x3 << GPTB_ACT_C2D_POS)
 #define GPTB_ACT_T1U_POS	(12)
 #define GPTB_ACT_T1U_MSK	(0x3 << GPTB_ACT_T1U_POS)
 #define GPTB_ACT_T1D_POS	(14)
@@ -411,10 +412,10 @@ typedef enum{
 #define GPTB_ACT_T2D_POS	(18)
 #define GPTB_ACT_T2D_MSK	(0x3 << GPTB_ACT_T2D_POS)
 
-#define GPTB_CASEL_POS	(20)
-#define GPTB_CASEL_MSK	(0x3<<GPTB_CASEL_POS)
-#define GPTB_CBSEL_POS	(22)
-#define GPTB_CBSEL_MSK	(0x3<<GPTB_CBSEL_POS)
+#define GPTB_C1SEL_POS	(20)
+#define GPTB_C1SEL_MSK	(0x3<<GPTB_C1SEL_POS)
+#define GPTB_C2SEL_POS	(22)
+#define GPTB_C2SEL_MSK	(0x3<<GPTB_C2SEL_POS)
 typedef enum {
 	GPTB_CMPA= 0,
 	GPTB_CMPB,
@@ -498,33 +499,38 @@ typedef enum{
 #define DB_CHC_POL_POS	(18)
 #define DB_CHC_POL_MSK	(0x3 << DB_CHC_POL_POS)
 
-
+typedef enum {
+	B_NA = 0,
+	B_LO,
+	B_HI,
+	B_TG	
+}csp_gptb_action_e;
 
 #define GPTB_DBCR_CHA_OUTSEL_POS           0                                              /*!< GPTB DBCR: CHA_OUTSEL Position */
 #define GPTB_DBCR_CHA_OUTSEL_MSK           (0x3UL << GPTB_DBCR_CHA_OUTSEL_POS)            /*!< GPTB DBCR: CHA_OUTSEL Mask */
 typedef enum {
-	DBOUT_DIS = 0,
-	DBOUT_BF,
-	DBOUT_AR,
-	DBOUT_AR_BF
+	B_DBOUT_DIS = 0,
+	B_DBOUT_BF,
+	B_DBOUT_AR,
+	B_DBOUT_AR_BF
 }csp_gptb_db_outsel_e;
 
 #define GPTB_DBCR_CHA_POLARITY_POS         2                                              /*!< GPTB DBCR: CHA_POLARITY Position */
 #define GPTB_DBCR_CHA_POLARITY_MSK         (0x3UL << GPTB_DBCR_CHA_POLARITY_POS)          /*!< GPTB DBCR: CHA_POLARITY Mask */
 typedef enum {
-	DB_POL_DIS = 0,
-	DB_POL_A,
-	DB_POL_B,
-	DB_POL_AB
+	B_DB_POL_DIS = 0,
+	B_DB_POL_A,
+	B_DB_POL_B,
+	B_DB_POL_AB
 }csp_gptb_db_pol_e;
 
 #define GPTB_DBCR_CHA_INSEL_POS            4                                              /*!< GPTB DBCR: CHA_INSEL Position */
 #define GPTB_DBCR_CHA_INSEL_MSK            (0x3UL << GPTB_DBCR_CHA_INSEL_POS)             /*!< GPTB DBCR: CHA_INSEL Mask */
 typedef enum {
-	DBCHAIN_AR_AF = 0,
-	DBCHAIN_BR_AF,
-	DBCHAIN_AR_BF,
-	DBCHAIN_BR_BF
+	B_DBCHAIN_AR_AF = 0,
+	B_DBCHAIN_BR_AF,
+	B_DBCHAIN_AR_BF,
+	B_DBCHAIN_BR_BF
 }csp_gptb_dbcha_insel_e;
 #define DB_CHA_INSEL_POS	(4)
 #define DB_CHA_INSEL_MSK	(0x3 << DB_CHA_INSEL_POS)
@@ -532,10 +538,10 @@ typedef enum {
 #define GPTB_DBCR_CHA_OUTSWAP_POS          6                                              /*!< GPTB DBCR: CHA_OUTSWAP Position */
 #define GPTB_DBCR_CHA_OUTSWAP_MSK          (0x3UL << GPTB_DBCR_CHA_OUTSWAP_POS)           /*!< GPTB DBCR: CHA_OUTSWAP Mask */                                           /*!< GPTB DBCR: CHA_OUTSWAP Position */
 typedef enum {
-	DBCHAOUT_OUTA_A_OUTB_B = 0,
-	DBCHAOUT_OUTA_B_OUTB_B,
-	DBCHAOUT_OUTA_A_OUTB_A,
-	DBCHAOUT_OUTA_B_OUTB_A
+	B_DBCHAOUT_OUTA_A_OUTB_B = 0,
+	B_DBCHAOUT_OUTA_B_OUTB_B,
+	B_DBCHAOUT_OUTA_A_OUTB_A,
+	B_DBCHAOUT_OUTA_B_OUTB_A
 }csp_gptb_dbcha_outswap_e;
 
 #define DB_CHA_OUTSWAP_POS	(6)
@@ -554,8 +560,8 @@ typedef enum {
 #define GPTB_DCKSEL_POS               24                                             /*!< GPTB DBCR: DCKSEL Position */
 #define GPTB_DCKSEL_MSK               (0x1UL << GPTB_DCKSEL_POS)                /*!< GPTB DBCR: DCKSEL Mask */
 typedef enum {
-	DB_TCLK = 0,
-	DB_DPSC
+	GPTB_DB_TCLK = 0,
+	GPTB_DB_DPSC
 }csp_gptb_dbclksrc_e;
 
 #define GPTB_CHA_DEDB_POS	(25)
@@ -564,19 +570,6 @@ typedef enum {
 #define GPTB_DBCR_CHA_EDEB_POS             25                                             /*!< GPTB DBCR: CHA_EDEB Position */
 #define GPTB_DBCR_CHA_EDEB_MSK             (0x1UL << GPTB_DBCR_CHA_EDEB_POS)              /*!< GPTB DBCR: CHA_EDEB Mask */
 
-
-typedef enum {
-	NA = 0,
-	LO,
-	HI,
-	TG	
-}csp_gptb_action_e;
-typedef enum{
-	EP_DIS = 0,
-	EP_SLCK,
-	EP_HLCK,
-	EP_DISABLE
-}csp_gptb_ep_lckmd_e;
 
 //DPSCR
 #define GPTB_DPSCR_DPSC_POS                0                                              /*!< GPTB DPSCR: DPSC Position */
@@ -609,23 +602,19 @@ typedef enum{
 #define GPTB_SEL_POS_EP(n)	((n) << 2)
 #define GPTB_SEL_MSK_EP(n)	(0xf << GPTB_SEL_POS_EP(n))
 typedef enum{
-	EP0 = 0,
-	EP1,
-	EP2,
-	EP3,
-//	EP4,
-//	EP5,
-//	EP6,
-//	EP7,
+	B_EP0 = 0,
+	B_EP1,
+	B_EP2,
+	B_EP3,
 }csp_gptb_ep_e;
 typedef enum {
-	EBI0 = 1,
-	EBI1,
-	EBI2,
-	EBI3,
-	EBI4,
-	ORL0 = 0xe,
-	ORL1,
+	B_EBI0 = 1,
+	B_EBI1,
+	B_EBI2,
+	B_EBI3,
+	B_EBI4,
+	B_ORL0 = 0xe,
+	B_ORL1,
 }csp_gptb_ebi_e;
 
 #define ORLx_EP0  1
@@ -636,14 +625,6 @@ typedef enum {
 #define	ORLx_EP5  1<<5
 #define	ORLx_EP6  1<<6
 #define ORLx_EP7  1<<7
-
-typedef enum {
-	EM_OUT_HZ,
-	EM_OUT_H,
-	EM_OUT_L,
-	EM_OUT_NONE
-}csp_gptb_emout_e;
-
 
 
 //EMSRC2
@@ -706,10 +687,6 @@ typedef enum {
 #define GPTB_EMPOL_EPI0_POL_POS            0                                              /*!< GPTB EMPOL: EPI0_POL Position */
 #define GPTB_EMPOL_EPI0_POL_MSK            (0x1UL << GPTB_EMPOL_EPI0_POL_POS)             /*!< GPTB EMPOL: EPI0_POL Mask */
 
-typedef enum {
-	EBI_POL_H = 0,
-	EBI_POL_L
-}csp_gptb_ebipol_e;
 
 //EMECR
 #define GPTB_EMECR_MEM_FAULT_POS           30                                             /*!< GPTB EMECR: MEM_FAULT Position */
@@ -740,32 +717,40 @@ typedef enum {
 
 
 typedef enum {
-	EM_INT_EP0 = 0x1,
-	EM_INT_EP1 = 0x1 << 1,
-	EM_INT_EP2 = 0x1 << 2,
-	EM_INT_EP3 = 0x1 << 3,
-//	EM_INT_EP4 = 0x1 << 4,
-//	EM_INT_EP5 = 0x1 << 5,
-//	EM_INT_EP6 = 0x1 << 6,
-//	EM_INT_EP7 = 0x1 << 7,
-	EM_INT_CPUF= 0x1 << 8,
-	EM_INT_MEMF= 0x1 << 9,
-	EM_INT_EOMF= 0x1 << 10
+	B_EM_INT_EP0 = 0x1,
+	B_EM_INT_EP1 = 0x1 << 1,
+	B_EM_INT_EP2 = 0x1 << 2,
+	B_EM_INT_EP3 = 0x1 << 3,
+	B_EM_INT_CPUF= 0x1 << 8,
+	B_EM_INT_MEMF= 0x1 << 9,
+	B_EM_INT_EOMF= 0x1 << 10
 }csp_gptb_emint_e;
 
 
 typedef enum{
-	EPFLT0_DIS = 0,
-	EPFLT0_2P,
-	EPFLT0_3P,
-	EPFLT0_4P
+	B_EPFLT0_DIS = 0,
+	B_EPFLT0_2P,
+	B_EPFLT0_3P,
+	B_EPFLT0_4P
 }csp_gptb_epflt0_e;
 typedef enum{
-	EPFLT1_1P = 0,
-	EPFLT1_2P,
-	EPFLT1_3P,
-	EPFLT1_4P
+	B_EPFLT1_1P = 0,
+	B_EPFLT1_2P,
+	B_EPFLT1_3P,
+	B_EPFLT1_4P
 }csp_gptb_epflt1_e;
+
+typedef enum{
+	B_EP_DIS = 0,
+	B_EP_SLCK,
+	B_EP_HLCK,
+	B_EP_DISABLE
+}csp_gptb_ep_lckmd_e;
+
+typedef enum{
+             B_IMMEDIATE=0,
+			 B_SHADOW
+}csp_gptb_Osrshdw_e;
 
 
 
@@ -776,6 +761,14 @@ typedef enum{
 #define GPTB_EMOSR_EM_COBX_MSK             (0x3UL << GPTB_EMOSR_EM_COBX_POS)              /*!< GPTB EMOSR: EM_COBX Mask */
 #define GPTB_EMOSR_EM_COAX_POS             0                                              /*!< GPTB EMOSR: EM_COAX Position */
 #define GPTB_EMOSR_EM_COAX_MSK             (0x3UL << GPTB_EMOSR_EM_COAX_POS)              /*!< GPTB EMOSR: EM_COAX Mask */
+
+typedef enum {
+	B_EM_OUT_HZ,
+	B_EM_OUT_H,
+	B_EM_OUT_L,
+	B_EM_OUT_NONE
+}csp_gptb_emout_e;
+
 //EMSLSR
 #define GPTB_EMSLSR_EP7_POS                7                                              /*!< GPTB EMSLSR: EP7 Position */
 #define GPTB_EMSLSR_EP7_MSK                (0x1UL << GPTB_EMSLSR_EP7_POS)                 /*!< GPTB EMSLSR: EP7 Mask */
@@ -1295,6 +1288,24 @@ static inline void csp_gptb_set_stopwrap(csp_gptb_t *ptGptbBase, uint8_t byTime)
 	ptGptbBase -> CR = (ptGptbBase -> CR & ~(GPTB_STOPWRAP_MSK)) | (byTime << GPTB_STOPWRAP_POS);
 }
 
+static inline void csp_gptb_set_burst(csp_gptb_t *ptGptbBase,csp_gptb_cgsrc_e eCgsrc, bool bEnable)
+{
+	ptGptbBase -> CR = (ptGptbBase -> CR & ~(GPTB_BURST_MSK)) | (bEnable << GPTB_BURST_POS);
+	if(bEnable == ENABLE)
+	{
+		ptGptbBase -> CR =(ptGptbBase -> CR & ~(GPTB_CGSRC_MSK))|(eCgsrc<<GPTB_CGSRC_POS);
+	}
+}
+
+static inline void csp_gptb_flt_init(csp_gptb_t *ptGptbBase, csp_gptb_cnflt_e eCgflt,bool bEnable)
+{
+	ptGptbBase -> CR = (ptGptbBase -> CR & ~(GPTB_FLT_INIT_MSK)) | (bEnable << GPTB_FLT_INIT_POS);
+	if(bEnable == ENABLE)
+	{
+		ptGptbBase -> CR=(ptGptbBase -> CR & ~(GPTB_CGFLT_MSK))|(eCgflt<<GPTB_CGFLT_POS);
+	}
+}
+
 static inline void csp_gptb_set_prdr(csp_gptb_t *ptGptbBase, uint16_t bwVal)
 {
 	ptGptbBase -> PRDR = bwVal;
@@ -1325,13 +1336,18 @@ static inline void csp_gptb_prdld_mod(csp_gptb_t *ptGptbBase, csp_gptb_ldprdr_e 
 	ptGptbBase -> CR = (ptGptbBase->CR & ~(GPTB_PRDLD_MSK)) | (Val << GPTB_PRDLD_POS);
 }
 
+static inline void csp_gptb_phsen_enable(csp_gptb_t *ptGptbBase, bool bEnable)
+{
+	ptGptbBase -> CR = (ptGptbBase->CR & ~(GPTB_PHSEN_MSK)) | (bEnable << GPTB_PHSEN_POS);
+}
+
 static inline void csp_gptb_set_aqcra(csp_gptb_t *ptGptbBase, uint32_t bwVal)
 {
-	ptGptbBase -> AQCRA = bwVal;
+	ptGptbBase -> AQCR1 = bwVal;
 }
 static inline void csp_gptb_set_aqcrb(csp_gptb_t *ptGptbBase, uint32_t bwVal)
 {
-	ptGptbBase -> AQCRB = bwVal;
+	ptGptbBase -> AQCR2 = bwVal;
 }
 static inline uint32_t csp_gptb_get_dbldr(csp_gptb_t *ptGptbBase)
 {
@@ -1382,10 +1398,10 @@ static inline uint16_t csp_gptb_get_cmpa(csp_gptb_t *ptGptbBase)
 {
 	return (ptGptbBase -> CMPA);
 }
-//static inline uint16_t csp_gptb_get_cmpa_act(csp_gptb_t *ptGptbBase)
-//{
-//	return (ptGptbBase -> CMPAACT);
-//}
+static inline uint16_t csp_gptb_get_cmpaa(csp_gptb_t *ptGptbBase)
+{
+	return (ptGptbBase -> CMPAA);
+}
 static inline void csp_gptb_set_cmpb(csp_gptb_t *ptGptbBase, uint16_t bwVal)
 {
 	ptGptbBase -> CMPB = bwVal;
@@ -1394,10 +1410,10 @@ static inline uint16_t csp_gptb_get_cmpb(csp_gptb_t *ptGptbBase)
 {
 	return (ptGptbBase -> CMPB);
 }
-//static inline uint16_t csp_gptb_get_cmpb_act(csp_gptb_t *ptGptbBase)
-//{
-//	return (ptGptbBase -> CMPBACT);
-//}
+static inline uint16_t csp_gptb_get_cmpba(csp_gptb_t *ptGptbBase)
+{
+	return (ptGptbBase -> CMPBA);
+}
 static inline void csp_gptb_set_prd(csp_gptb_t *ptGptbBase, uint16_t bwVal)
 {
 	ptGptbBase -> PRDR = bwVal;

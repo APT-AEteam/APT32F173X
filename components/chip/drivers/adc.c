@@ -156,9 +156,9 @@ csi_error_t csi_adc_init(csp_adc_t *ptAdcBase, csi_adc_config_t *ptAdcCfg)
 	csp_adc_set_vref(ptAdcBase,ptAdcCfg->byVrefSrc);		//adc vref
 	
 	//adc interrupt
-	if(ptAdcCfg->wInter)
+	if(ptAdcCfg->wInt)
 	{
-		csp_adc_int_enable(ptAdcBase, ptAdcCfg->wInter, ENABLE);	//enable adc interrupt
+		csp_adc_int_enable(ptAdcBase, ptAdcCfg->wInt, ENABLE);	//enable adc interrupt
 		csi_irq_enable((uint32_t *)ptAdcBase);						//enable adc irq	
 	}
 	
@@ -471,11 +471,11 @@ void csi_adc_clr_status(csp_adc_t *ptAdcBase)
 csi_error_t csi_adc_set_sync(csp_adc_t *ptAdcBase, csi_adc_trgin_e eTrgIn, csi_adc_trgmode_e eTrgMode, uint8_t byDelay)
 {
 	//set sync delay
-    if(eTrgIn < ADC_SYNCEN3)		
+    if(eTrgIn < ADC_TRG_SYNCEN3)		
 	{
 		ptAdcBase->TDL0 = (ptAdcBase->TDL0 & ~(0xFFul << (eTrgIn * 8))) | byDelay;
 	}
-	else if(eTrgIn <= ADC_SYNCEN5)
+	else if(eTrgIn <= ADC_TRG_SYNCEN5)
 	{
 		ptAdcBase->TDL1 = (ptAdcBase->TDL1 & ~(0xFFul << ((eTrgIn - 3)  * 8))) | byDelay;
 	}
@@ -506,15 +506,15 @@ void csi_adc_rearm_sync(csp_adc_t *ptAdcBase, csi_adc_trgin_e eTrgIn)
  *  \param[in] adc_trgsrc: adc evtrg source(0~23) 
  *  \return error code \ref csi_error_t
  */
-csi_error_t csi_adc_set_evtrg(csp_adc_t *ptAdcBase, uint8_t byTrgOut, csi_adc_trgsrc_e eTrgSrc)
+csi_error_t csi_adc_set_evtrg(csp_adc_t *ptAdcBase, csi_adc_trgout_e eTrgOut, csi_adc_trgsrc_e eTrgSrc)
 {
-	switch(byTrgOut)
+	switch(eTrgOut)
 	{
-		case ADC_TRG_OUT0:		//event trigger out0
+		case ADC_TRGOUT0:		//event trigger out0
 			ptAdcBase->EVTRG = (ptAdcBase->EVTRG & (~ADC12_TRGSRC0_MSK)) | (eTrgSrc << ADC12_TRGSRC0_POS);
 			ptAdcBase->EVTRG |= ADC12_TRG0OE;
 			break;
-		case ADC_TRG_OUT1:		//event trigger out1
+		case ADC_TRGOUT1:		//event trigger out1
 			ptAdcBase->EVTRG = (ptAdcBase->EVTRG & (~ADC12_TRGSRC1_MSK)) | (eTrgSrc << ADC12_TRGSRC1_POS);
 			ptAdcBase->EVTRG |= ADC12_TRG1OE;
 			break;
@@ -546,16 +546,24 @@ void csi_adc_int_enable(csp_adc_t *ptAdcBase, csi_adc_intsrc_e eIntSrc, bool bEn
  */
 void csi_adc_fvrout_enable(csp_adc_t *ptAdcBase, csi_adc_fvrsel_e eLvl, bool bEnable)
 {
+	csi_clk_enable((uint32_t *)(ptAdcBase));     //sys adc clk
+	csp_adc_clk_en(ptAdcBase);                   //adc clk enable
+	csp_adc_en(ptAdcBase);                       //enable adc  mode
 	csp_adc_set_fvrout_lvl(ptAdcBase, eLvl);
 	csp_adc_fvrout_enable(ptAdcBase, bEnable);
 }
-  /** \brief buffer output(1V) config
+/** \brief buffer output(1V0/TEMP) config
  * 
  *  \param[in] ptAdcBase: pointer of ADC reg structure.
- *  \param[in] bEnable: ENABLE/DISABLE
+ *  \param[in] eBufSel: interior input select, 1V0/TEMP
+ *  \param[in] bEnable: output ENABLE/DISABLE
  *  \return none
  */
- void csi_adc_bufout_enable(csp_adc_t *ptAdcBase, bool bEnable)
- {
+void csi_adc_bufout_enable(csp_adc_t *ptAdcBase, csi_adc_bufsel_e eBufSel, bool bEnable)
+{
+	csi_clk_enable((uint32_t *)(ptAdcBase));     //sys adc clk
+	csp_adc_clk_en(ptAdcBase);                   //adc clk enable
+	csp_adc_en(ptAdcBase);                       //enable adc mode
+	csp_adc_bufsel_set(ptAdcBase, eBufSel);
 	csp_adc_bufout_enable(ptAdcBase, bEnable);
- }
+}

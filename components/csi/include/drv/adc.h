@@ -133,6 +133,15 @@ typedef enum{
 }csi_adc_ch_e;
 
 /**
+ * \enum	csi_adc_bufsel_e
+ * \brief   adc interior input select
+ */
+typedef enum{
+	ADCIN_INTERIOR_1V0	= 2,		//interior 1V0
+	ADCIN_INTERIOR_TEMP				//interior temp
+}csi_adc_bufsel_e;
+
+/**
  * \enum	csi_adc_cmp_dir_e
  * \brief   adc cmp dir
  */
@@ -161,12 +170,12 @@ typedef enum {
  * \brief   adc sync trigger in
  */
 typedef enum{
-	ADC_SYNCEN0			= 0,
-	ADC_SYNCEN1,		
-	ADC_SYNCEN2,	
-	ADC_SYNCEN3,	
-	ADC_SYNCEN4,		
-	ADC_SYNCEN5  	
+	ADC_TRG_SYNCEN0			= 0,
+	ADC_TRG_SYNCEN1,		
+	ADC_TRG_SYNCEN2,	
+	ADC_TRG_SYNCEN3,	
+	ADC_TRG_SYNCEN4,		
+	ADC_TRG_SYNCEN5  	
 }csi_adc_trgin_e;
 
 /**
@@ -174,8 +183,8 @@ typedef enum{
  * \brief   adc sync trigger mode
  */
 typedef enum{
-	ADC_TRG_CONTINU		= 0,		//continuous trigger mode
-	ADC_TRG_ONETIME					//one time trigger mode				
+	ADC_TRG_CONTINU		= 0,	//continuous trG mode
+	ADC_TRG_ONCE				//once trg mode				
 }csi_adc_trgmode_e;
 
 /**
@@ -214,8 +223,8 @@ typedef enum{
  * \brief   adc event trigger out port
  */
 typedef enum{
-	ADC_TRG_OUT0		= 0,	//trigger out0
-	ADC_TRG_OUT1				//trigger out1			
+	ADC_TRGOUT0		= 0,	//trigger out0
+	ADC_TRGOUT1				//trigger out1			
 }csi_adc_trgout_e;
 
 /**
@@ -223,7 +232,7 @@ typedef enum{
  * \brief   adc interrupt source
  */
 typedef enum{
-	ADC_INTSRC_NONE		= (0x00uL << 0),			//no interrupt
+	ADC_INTSRC_NONE		= (0x00uL << 0),		//no interrupt
 	ADC_INTSRC_EOC		= (0x01uL << 0),
 	ADC_INTSRC_READY	= (0x01uL << 1),
 	ADC_INTSRC_OVR		= (0x01uL << 2),
@@ -232,13 +241,13 @@ typedef enum{
 	ADC_INTSRC_CMP1H	= (0x01uL << 6),
 	ADC_INTSRC_CMP1L	= (0x01uL << 7),
 	
-	ADC_INTSRC_SEQ0		= (0x01uL << 16),			//SEQX0-15     
+	ADC_INTSRC_SEQ0		= (0x01uL << 16),		//SEQX0-15     
 	ADC_INTSRC_SEQ1  	= (0x01uL << 17),     
 	ADC_INTSRC_SEQ2  	= (0x01uL << 18),     
 	ADC_INTSRC_SEQ3  	= (0x01uL << 19),     
 	ADC_INTSRC_SEQ4  	= (0x01uL << 20),     
 	ADC_INTSRC_SEQ5  	= (0x01uL << 21),     
-	ADC_INTSRC_SEQ6 	 = (0x01uL << 22),     
+	ADC_INTSRC_SEQ6 	= (0x01uL << 22),     
 	ADC_INTSRC_SEQ7  	= (0x01uL << 23),     
 	ADC_INTSRC_SEQ8  	= (0x01uL << 24),     
 	ADC_INTSRC_SEQ9  	= (0x01uL << 25),     
@@ -265,7 +274,7 @@ typedef struct {
 	uint8_t				bySampHold;		//adc sample hold period, sample time = (bySmpHold + 16) clk period
 	uint8_t				byConvMode;		//adc conversion  mode, continuous/one shot
 	uint8_t				byVrefSrc;		//adc reference voltage
-	uint32_t			wInter;			//adc interrupt select
+	uint32_t			wInt;			//adc interrupt select
 	csi_adc_seq_t		*ptSeqCfg;		//pointer of send buf sequence config 
 } csi_adc_config_t;
 
@@ -401,7 +410,7 @@ csi_error_t csi_adc_set_sync(csp_adc_t *ptAdcBase, csi_adc_trgin_e eTrgIn, csi_a
   \param[in]   eTrgSrc 		adc evtrg source(0~23) 
   \return 	   error code \ref csi_error_t
  */
-csi_error_t csi_adc_set_evtrg(csp_adc_t *ptAdcBase, uint8_t byTrgOut, csi_adc_trgsrc_e eTrgSrc);
+csi_error_t csi_adc_set_evtrg(csp_adc_t *ptAdcBase, csi_adc_trgout_e eTrgOut, csi_adc_trgsrc_e eTrgSrc);
 
 /** 
   \brief 	   clear adc converison status
@@ -456,12 +465,13 @@ csi_error_t csi_adc_set_cmp1(csp_adc_t *ptAdcBase, uint8_t byCmpChnl, uint32_t w
 void csi_adc_fvrout_enable(csp_adc_t *ptAdcBase, csi_adc_fvrsel_e eLvl, bool bEnable);
  
 /** 
-  \brief 	   buffer output(1V) config
+  \brief 	   buffer output(1V0/TEMP) config
   \param[in]   ptAdcBase	pointer of ADC reg structure.
-  \param[in]   bEnable		ENABLE/DISABLE
+  \param[in]   eBufSel		interior input select, 1V0/TEMP
+  \param[in]   bEnable		output ENABLE/DISABLE
   \return 	   none
  */
-void csi_adc_bufout_enable(csp_adc_t *ptAdcBase, bool bEnable);
+void csi_adc_bufout_enable(csp_adc_t *ptAdcBase, csi_adc_bufsel_e eBufSel, bool bEnable);
  
  
 #ifdef __cplusplus
