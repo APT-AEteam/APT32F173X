@@ -1,0 +1,34 @@
+name: __Chip_E906FDP
+version: v1.0.0
+description: ""
+tag: ""
+keywords: ~
+author:
+  name: ""
+license: ""
+homepage: ~
+type: chip
+depends: ~
+hw_info:
+  cpu_id: ""
+  cpu_name: e906fdp
+  vendor_name: ""
+  chip_name: ""
+  board_name: ""
+  ld_script: script/gcc_chip.ld
+  flash_program: ""
+build_config:
+  include:
+    - include
+  internal_include: ~
+  cflag: ~
+  cxxflag: ~
+  asmflag: ""
+  define: ~
+  libs: ~
+  libpath: ~
+source_file:
+  - src/e906fdp.c
+  - src/startup.S
+def_config: ~
+install: ~
