@@ -23,184 +23,206 @@
 /* externs function--------------------------------------------------------*/
 /* externs variablesr------------------------------------------------------*/
 /* Private variablesr------------------------------------------------------*/
-/** \brief cmp reg clk enable
+
+/** \brief CMP interrupt handle function
  * 
- *  \param[in] ptCmpBase: pointer of CMP reg structure.
- *  \param[in] bEnable: enable/disable cmp clk
+ *  \param[in] none
  *  \return none
  */ 
-void csi_cmp_clk_enable(csp_cmp_t *ptCmpBase,bool bEnable)
+__attribute__((weak)) void cmp_irqhandler(csp_cmp_t *ptCmpBase)
 {
-	ptCmpBase->CEDR = (ptCmpBase->CEDR & ~CMP_CLK_MSK) | (bEnable << CMP_CLK_POS);	
+    // ISR content ...
+	if(csi_cmp_get_misr(ptCmpBase) & CMP_EDGEDET0_INT)
+	{
+		csi_cmp_int_clear(ptCmpBase,CMP_INTSRC_EDGEDET);
+	}
+	else if(csi_cmp_get_misr(ptCmpBase) & CMP_RAWDET0_INT)
+	{
+		csi_cmp_int_clear(ptCmpBase,CMP_INSRCT_RAWDET);	
+	}
+}
+/** \brief Enable cmp power manage
+ * 
+ *  \param[in] ptCmpBase: pointer of cmp register structure
+ *  \param[in] eIntSrc: cmp interrupt source
+ *  \param[in] bEnable: cmp irq enable or disable
+ *  \return none
+ */
+void csi_cmp_int_enable(csp_cmp_t *ptCmpBase, csi_cmp_intsrc_e eIntSrc,bool bEnable)
+{
+	csp_cmp_int_enable(ptCmpBase, eIntSrc,bEnable);
+	if (bEnable) 
+	{
+		csi_irq_enable((uint32_t *)ptCmpBase);
+	}
+	else 
+	{
+		if (csp_cmp_get_imcr(ptCmpBase)) 
+		{
+			csi_irq_disable((uint32_t *)ptCmpBase);
+		}
+	}
 }
 
-/** \brief cmp reg reset software
+/** \brief init cmp
  * 
- *  \param[in] ptCmpBase: pointer of CMP reg structure.
+ *  \param[in] ptCmpBase: pointer of cmp register structure
+ *  \param[in] ptCmpCfg: pointer of cmp parameter config structure
+ *  \return error code \ref csi_error_t
+ */
+csi_error_t csi_cmp_init(csp_cmp_t *ptCmpBase,csi_cmp_config_t *ptCmpCfg)
+{
+	csi_error_t tRet = CSI_OK;
+	csi_clk_enable((uint32_t *)ptCmpBase);
+	csp_cmp_clk_enable(ptCmpBase, ENABLE);
+	csp_cmp_inpcr(ptCmpBase ,ptCmpCfg->byNsel,ptCmpCfg->byPsel);
+	if(ptCmpCfg->byNsel == CMP_N_SEL_1VBUF)
+	{
+		csp_cmp_inpcr_1vbuf_enable(ptCmpBase,ENABLE);
+	}
+	csp_cmp_hystpol(ptCmpBase , ptCmpCfg->byPhystpol,ptCmpCfg->byPhystsel);
+	csp_cmp_polarity(ptCmpBase , ptCmpCfg->byPolarity);
+	csp_cmp_out(ptCmpBase , ptCmpCfg->byCpoSel);
+	csi_cmp_int_enable(ptCmpBase, ptCmpCfg->wInt,ENABLE);
+	return tRet;
+}
+
+/** \brief start cmp
+ * 
+ *  \param[in] ptCmpBase: pointer of cmp register structure
+ *  \return none
+ */
+void csi_cmp_start(csp_cmp_t *ptCmpBase)
+{
+	csp_cmp_enable(ptCmpBase);
+}
+
+/** \brief stop cmp
+ * 
+ *  \param[in] ptBtBase: pointer of cmp register structure
  *  \return none
  */ 
-void csi_cmp_software_reset(csp_cmp_t *ptCmpBase)
+void csi_cmp_stop(csp_cmp_t *ptCmpBase)
 {
-	ptCmpBase->CEDR = CMP_SOFTRESET;
-
+    csp_cmp_disable(ptCmpBase);
 }
 
-/** \brief cmp out read
+/** \brief cmp dflt1 config
  * 
- *  \param[in] ptCmpBase: pointer of CMP reg structure.
- *  \return out value
- */ 
-uint8_t csi_cmp_out_read(csp_cmp_t *ptCmpBase)
-{
-	uint32_t wValue;
-	wValue=ptCmpBase->CR&0xf000000;
-	wValue=wValue>>24;
-	return (uint8_t)wValue;
-}
-
-/** \brief cmp enable
- * 
- *  \param[in] ptCmpBase: pointer of CMP reg structure.
- *  \return none
+ *  \param[in] ptCmpBase: pointer of cmp register structure
+ *  \param[in] bEnable: dflt1 enable or disable
+ *  \param[in] ptCmpDfltCfg: pointer of cmp dlft config structure
+ *  \return error code \ref csi_error_t
  */
-void csi_cmp_enable(csp_cmp_t *ptCmpBase)
+csi_error_t csi_cmp_dflt1_config(csp_cmp_t *ptCmpBase,bool bEnable,csi_cmp_dflt1_config_t *ptCmpDfltCfg)
 {
-	ptCmpBase->CR|=0x01;;
+	csi_error_t tRet = CSI_OK;
+	if(bEnable == ENABLE)
+	{
+		csp_cmp_dflt1_enable(ptCmpBase ,ENABLE);
+		csp_cmp_dfcr1(ptCmpBase,ptCmpDfltCfg->byDepth1,ptCmpDfltCfg->byDivn1,ptCmpDfltCfg->byDivm1);
+	}
+	else
+	{
+		csp_cmp_dflt1_enable(ptCmpBase ,DISABLE);		
+	}
+	return tRet;
 }
 
-/** \brief cmp disable
+/** \brief cmp dflt2 config
  * 
- *  \param[in] ptCmpBase: pointer of CMP reg structure.
- *  \return none
+ *  \param[in] ptCmpBase: pointer of cmp register structure
+ *  \param[in] bEnable: dflt2 enable or disable
+ *  \param[in] ptCmpDfltCfg: pointer of cmp dlft config structure
+ *  \return error code \ref csi_error_t
  */
-void csi_cmp_disable(csp_cmp_t *ptCmpBase)
+csi_error_t csi_cmp_dflt2_config(csp_cmp_t *ptCmpBase,bool bEnable,csi_cmp_dflt2_config_t *ptCmpDfltCfg)
 {
-	ptCmpBase->CR&=0xfffffffe;	
+	csi_error_t tRet = CSI_OK;
+	if(bEnable == ENABLE)
+	{	
+		csp_cmp_dflt2_enable(ptCmpBase ,ENABLE);
+		csp_cmp_dfcr2(ptCmpBase,ptCmpDfltCfg->byDepth2,ptCmpDfltCfg->byDivn2,ptCmpDfltCfg->byDivm2);
+	}
+	else
+	{
+		csp_cmp_dflt2_enable(ptCmpBase ,DISABLE);
+	}
+	return tRet;
 }
 
-/** \brief cmp cr reg config
+/** \brief cmp wflt config
  * 
- *  \param[in] ptCmpBase: pointer of CMP reg structure.
- *  \param[in] ePhystsel: phystsel
- *  \param[in] eNhystsel: nhystsel
- *  \param[in] ePolarity: Polarity
- *  \param[in] eEveSel:   Eve Sel
- *  \param[in] eDflt1en:  Dflt1 enable
- *  \param[in] eDflt2en:  Dflt2 enable
- *  \param[in] eCpos:     cmp out sel
- *  \return none
+ *  \param[in] ptCmpBase: pointer of cmp register structure
+ *  \param[in] ptCmpWfcrCfg: pointer of cmp wflt config structure
+ *  \return error code \ref csi_error_t
  */
-void csi_cmp_cr_config(csp_cmp_t *ptCmpBase , cmp_cr_phystsel_e ePhystsel , cmp_cr_nhystsel_e eNhystsel ,cmp_cr_polarity_e ePolarity , 
-						cmp_cr_eve_sel_e eEveSel , cmp_cr_dflt1en_e eDflt1en, cmp_cr_dflt2en_e eDflt2en , cmp_cr_cpos_e eCpos)
+csi_error_t csi_cmp_wfcr_config(csp_cmp_t *ptCmpBase,csi_cmp_wfcr_config_t *ptCmpWfcrCfg)
 {
-	ptCmpBase->CR&=0xff600031;
+	csi_error_t tRet = CSI_OK;
+
+	csp_cmp_wf_set(ptCmpBase,ENABLE,ptCmpWfcrCfg->byWfalign,ptCmpWfcrCfg->byWoset);
+	csp_cmp_wfcr(ptCmpBase , ptCmpWfcrCfg->hwWcnt,ptCmpWfcrCfg->byClkDiv,ptCmpWfcrCfg->byDcnt);
 	
-	ptCmpBase->CR|=ePhystsel|eNhystsel|ePolarity|eEveSel|eDflt1en|eDflt2en|eCpos;
+	return tRet;
 }
 
-void csi_cmp_speed(csp_cmp_t *ptCmpBase)
-{
-	ptCmpBase->CR|= 0x300000;
-}
-
-/** \brief cmp cr reg of wfcr set
+/** \brief cmp evtrg output config
  * 
- *  \param[in] ptCmpBase: pointer of CMP reg structure.
- *  \param[in] eWlten:  wfcr enable 
- *  \param[in] eWfalign: wfcr align 
- *  \param[in] eWfoset: wfcr oset
+ *  \param[in] ptCmpBase: pointer of cmp register structure
+ *  \param[in] eEveSel: evtrg eve sel(0~3) 
+ *  \param[in] bEnable: cmp evtrg enable or disable
  *  \return none
  */
-void csi_cmp_cr_wf_set(csp_cmp_t *ptCmpBase ,cmp_wflten_e eWlten, cmp_wfalign_e eWfalign , cmp_wfoset_e eWfoset)
+void csi_cmp_set_evtrg(csp_cmp_t *ptCmpBase,csi_eve_sel_e eEveSel, bool bEnable)
 {
-	ptCmpBase->CR&=0xffff0fff;
-	ptCmpBase->CR|=eWlten|eWfalign|eWfoset;
+	csp_cmp_evtrg(ptCmpBase , bEnable,eEveSel);
 }
 
-/** \brief cmp dfcr1 reg config
+/** \brief cmp out status
  * 
- *  \param[in] ptCmpBase: pointer of CMP reg structure.
- *  \param[in] eDepth: depth
- *  \param[in] byDivn: divn
- *  \param[in] byDivm: divm
- *  \return none
+ *  \param[in] ptCmpBase: pointer of cmp register structure
+ *  \param[in] byOutCh: cmp out ch sel(cmp0~cmp3)
+ *  \return out status(0~1)
  */
-void csi_cmp_dfcr1_config(csp_cmp_t *ptCmpBase , cmp_dfcr_depth_e eDepth, uint8_t byDivn,uint8_t byDivm)
+uint8_t csi_cmp_get_out(csp_cmp_t *ptCmpBase,uint8_t byOutCh)
 {
-	ptCmpBase->DFCR1&=0xffff0000;
-	ptCmpBase->DFCR1|=eDepth|(byDivn<<3)|(byDivm<<8);
+	if(byOutCh == CMP0_OUT)
+		return csp_cmp_get_out0(ptCmpBase);
+	else if(byOutCh == CMP1_OUT)
+		return csp_cmp_get_out1(ptCmpBase);
+	else if(byOutCh == CMP2_OUT)
+		return csp_cmp_get_out2(ptCmpBase);
+	else 
+		return csp_cmp_get_out3(ptCmpBase);
 }
 
-/** \brief cmp dfcr2 reg config
+/** \brief clear cmp int
  * 
- *  \param[in] ptCmpBase: pointer of CMP reg structure.
- *  \param[in] eDepth: depth
- *  \param[in] byDivn: divn
- *  \param[in] byDivm: divm
+ *  \param[in] ptCmpBase: pointer of cmp register structure
+ *  \param[in] eIntMode: EDGEDET_MODE or RAWDET_MODE
  *  \return none
  */
-void csi_cmp_dfcr2_config(csp_cmp_t *ptCmpBase , cmp_dfcr_depth_e eDepth, uint8_t byDivn,uint8_t byDivm)
+void csi_cmp_int_clear(csp_cmp_t *ptCmpBase,csi_cmp_intsrc_e eIntMode)
 {
-	ptCmpBase->DFCR2&=0xffff0000;
-	ptCmpBase->DFCR2|=eDepth|(byDivn<<3)|(byDivm<<8);
+	csp_cmp_int_clear(ptCmpBase,eIntMode);
 }
 
-/** \brief cmp wfcr reg config
+/** \brief get cmp status
  * 
- *  \param[in] ptCmpBase: pointer of CMP reg structure.
- *  \param[in] dwWcnt: wcnt
- *  \param[in] byClkDiv: clk div
- *  \param[in] byDcnt: delay cnt
- *  \return none
+ *  \param[in] ptCmpBase: pointer of cmp register structure
+ *  \return cmp int status
  */
-void csi_cmp_wfcr_config(csp_cmp_t *ptCmpBase,uint16_t dwWcnt,uint8_t byClkDiv,uint8_t byDcnt)
+uint32_t csi_cmp_get_misr(csp_cmp_t *ptCmpBase)
 {
-	ptCmpBase->WFCR&=0x0;
-	ptCmpBase->WFCR|=dwWcnt|(byClkDiv<<10)|(byDcnt<<16);
+	return csp_cmp_get_misr(ptCmpBase);
 }
 
-/** \brief cmp inpcr reg set
- * 
- *  \param[in] ptCmpBase: pointer of CMP reg structure.
- *  \param[in] byNsel: n- sel
- *  \param[in] byPsel: p+ sel
- *  \return none
+/** \brief Enable cmp power manage
+ *  \param[in] ptCmpBase: pointer of cmp register structure
+ *  \param[in] bEnable: cmp lpwken enable or disable
  */
-void csi_cmp_inpcr_config(csp_cmp_t *ptCmpBase,uint8_t byNsel,uint8_t byPsel)
+void csi_cmp_lpwken_enable(csp_cmp_t *ptCmpBase, bool bEnable)
 {
-	ptCmpBase->INPCR&=0x0;
-	ptCmpBase->INPCR|=byNsel|(byPsel<<8)|0x10000;
-}
-
-/** \brief cmp int enable
- * 
- *  \param[in] ptCmpBase: pointer of CMP reg structure.
- *  \param[in] bEnable: enable/disable cmp int
- *  \return none
- */
-void csi_cmp_int_enable(csp_cmp_t *ptCmpBase,bool bEnable)
-{
-	ptCmpBase->IMCR|= (ptCmpBase->IMCR & ~CMP_INT_MSK) | bEnable;
-}
-
-/** \brief cmp int clear
- * 
- *  \param[in] ptCmpBase: pointer of CMP reg structure.
- *  \return none
- */
-void csi_cmp_int_clear(csp_cmp_t *ptCmpBase)
-{
-	ptCmpBase->ICR|= 0x01;
-}
-
-/** \brief cmp evtrg enable
- * 
- *  \param[in] ptCmpBase: pointer of CMP reg structure.
- *  \param[in] bEnable: enable/disable etcb out
- *  \return none
- */
-void csi_cmp_set_evtrg(csp_cmp_t *ptCmpBase, bool bEnable)
-{
-	ptCmpBase->CR = (ptCmpBase->CR & ~CMP_ETCB_MSK) | (bEnable << CMP_ETCB_POS);	
-	
+	csp_cmp_lpwken_enable(ptCmpBase,bEnable);
 }

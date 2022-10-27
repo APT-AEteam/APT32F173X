@@ -16,6 +16,90 @@
 #include <drv/irq.h>
 
 uint32_t gGptaPrd;
+uint32_t wGpta_Cmp_Buff[4] = {0};
+
+/** \brief gpta interrupt handle weak function
+ *   		- 
+ *     		- 
+ * 			- 
+ *  \param[in] none
+ *  \return    none
+ */
+__attribute__((weak)) void gpta0_initen_irqhandler(csp_gpta_t *ptGptaBase)
+{
+
+	if(((csp_gpta_get_misr(ptGptaBase) & GPTA_INT_PEND))==GPTA_INT_PEND)
+	{	
+	    csp_gpta_clr_int(ptGptaBase, GPTA_INT_PEND);
+	}
+	if(((csp_gpta_get_misr(ptGptaBase) & GPTA_INT_TRGEV0))==GPTA_INT_TRGEV0)
+	{		
+	    csp_gpta_clr_int(ptGptaBase, GPTA_INT_TRGEV0);
+	}
+	if(((csp_gpta_get_misr(ptGptaBase) & GPTA_INT_TRGEV1))==GPTA_INT_TRGEV1)
+	{		
+	    csp_gpta_clr_int(ptGptaBase, GPTA_INT_TRGEV1);
+	   	
+	}
+    if(((csp_gpta_get_misr(ptGptaBase) & GPTA_INT_CAPLD0))==GPTA_INT_CAPLD0)
+	{		
+	 wGpta_Cmp_Buff[0]=csp_gpta_get_cmpa(ptGptaBase);
+	 csp_gpta_clr_int(ptGptaBase, GPTA_INT_CAPLD0);			
+	}
+	if(((csp_gpta_get_misr(ptGptaBase) & GPTA_INT_CAPLD1))==GPTA_INT_CAPLD1)
+	{		
+     	wGpta_Cmp_Buff[0]=csp_gpta_get_cmpa(ptGptaBase);
+		wGpta_Cmp_Buff[1]=csp_gpta_get_cmpb(ptGptaBase);
+		csp_gpta_clr_int(ptGptaBase, GPTA_INT_CAPLD1);			
+	}
+    if(((csp_gpta_get_misr(ptGptaBase) & GPTA_INT_CAPLD2))==GPTA_INT_CAPLD2)
+	{		
+     	wGpta_Cmp_Buff[0]=csp_gpta_get_cmpa(ptGptaBase);
+		wGpta_Cmp_Buff[1]=csp_gpta_get_cmpb(ptGptaBase);
+		wGpta_Cmp_Buff[2]=csp_gpta_get_cmpaa(ptGptaBase);
+		csp_gpta_clr_int(ptGptaBase, GPTA_INT_CAPLD2);			
+	}
+	if(((csp_gpta_get_misr(ptGptaBase) & GPTA_INT_CAPLD3))==GPTA_INT_CAPLD3)
+	{		
+     	wGpta_Cmp_Buff[0]=csp_gpta_get_cmpa(ptGptaBase);
+		wGpta_Cmp_Buff[1]=csp_gpta_get_cmpb(ptGptaBase);
+		wGpta_Cmp_Buff[2]=csp_gpta_get_cmpaa(ptGptaBase);
+		wGpta_Cmp_Buff[3]=csp_gpta_get_cmpba(ptGptaBase);
+		csp_gpta_clr_int(ptGptaBase, GPTA_INT_CAPLD3);			
+	}	
+	
+    if(((csp_gpta_get_misr(ptGptaBase) & GPTA_INT_CBU))==GPTA_INT_CBU)
+	{	
+#if 0		
+		gTick++;if(gTick>=5){	
+								   //load1();	
+	                               gTick=0;
+								   csi_gpta_channel_cmpload_config(GPTA0, GPTA_CMPLD_IMM, GPTA_LDCMP_ZRO ,GPTA_CAMPA);
+	                               csi_gpta_channel_cmpload_config(GPTA0, GPTA_CMPLD_IMM, GPTA_LDCMP_ZRO ,GPTA_CAMPB);
+								   csi_gpta_change_ch_duty(GPTA0,GPTA_CAMPA, 25);
+	                               csi_gpta_change_ch_duty(GPTA0,GPTA_CAMPB, 25);
+		                         }
+#endif
+	    csp_gpta_clr_int(ptGptaBase, GPTA_INT_CBU);
+	   	
+	}
+
+}
+__attribute__((weak)) void gpta1_initen_irqhandler(csp_gpta_t *ptGptaBase)
+{
+	
+}
+
+__attribute__((weak)) void gpta2_initen_irqhandler(csp_gpta_t *ptGptaBase)
+{
+	
+}
+
+__attribute__((weak)) void gpta3_initen_irqhandler(csp_gpta_t *ptGptaBase)
+{
+	
+}
+
 
  /**
  \brief  Basic configuration
@@ -55,19 +139,13 @@ csi_error_t csi_gpta_config_init(csp_gpta_t *ptGptaBase, csi_gpta_config_t *ptGp
 		wCrVal=(wCrVal & ~(GPTA_STOPWRAP_MSK))|((ptGptaPwmCfg->byCaptureStopWrap&0x03)<<GPTA_STOPWRAP_POS);
 		wCrVal=(wCrVal & ~(GPTA_CMPA_RST_MSK))|((ptGptaPwmCfg->byCaptureLdaret&0x01)  <<GPTA_CMPA_RST_POS);
 		wCrVal=(wCrVal & ~(GPTA_CMPB_RST_MSK))|((ptGptaPwmCfg->byCaptureLdbret&0x01)  <<GPTA_CMPB_RST_POS);
-		wCrVal=(wCrVal & ~(GPTA_CMPC_RST_MSK))|((ptGptaPwmCfg->byCaptureLdcret&0x01)  <<GPTA_CMPC_RST_POS);
-		wCrVal=(wCrVal & ~(GPTA_CMPD_RST_MSK))|((ptGptaPwmCfg->byCaptureLddret&0x01)  <<GPTA_CMPD_RST_POS);
+	//	wCrVal=(wCrVal & ~(GPTA_CMPAA_RST_MSK))|((ptGptaPwmCfg->byCaptureLdcret&0x01)  <<GPTA_CMPAA_RST_POS);
+	//	wCrVal=(wCrVal & ~(GPTA_CMPBA_RST_MSK))|((ptGptaPwmCfg->byCaptureLddret&0x01)  <<GPTA_CMPBA_RST_POS);
 		
 		if(ptGptaPwmCfg->byCaptureCapLden)wCrVal|=GPTA_CAPLD_EN;
 		if(ptGptaPwmCfg->byCaptureRearm)  wCrVal|=GPTA_CAPREARM;
 		
 		wPrdrLoad=0xFFFF;
-	}
-	
-	if(ptGptaPwmCfg->byBurst)
-	{
-		wCrVal=(wCrVal & ~(GPTA_CGSRC_MSK))|((ptGptaPwmCfg->byCgsrc&0x03)<<GPTA_CGSRC_POS);
-		wCrVal=(wCrVal & ~(GPTA_CGFLT_MSK))|((ptGptaPwmCfg->byCgflt&0x07)<<GPTA_CGFLT_POS);
 	}
 	
     csp_gpta_clken(ptGptaBase);                                             // clkEN
@@ -83,9 +161,9 @@ csi_error_t csi_gpta_config_init(csp_gpta_t *ptGptaBase, csi_gpta_config_t *ptGp
 //	csp_gpta_set_cmpd(ptGptaBase, (uint16_t)wCmpLoad);
 	}
 	
-	if(ptGptaPwmCfg->byInter)
+	if(ptGptaPwmCfg->wInt)
 	{
-		csp_gpta_int_enable(ptGptaBase, ptGptaPwmCfg->byInter, true);		//enable interrupt
+		csp_gpta_int_enable(ptGptaBase, ptGptaPwmCfg->wInt, true);		//enable interrupt
 		csi_irq_enable((uint32_t *)ptGptaBase);							//enable  irq
 	}
 	
@@ -123,8 +201,8 @@ csi_error_t csi_gpta_capture_init(csp_gpta_t *ptGptaBase, csi_gpta_captureconfig
 	wCrVal=(wCrVal & ~(GPTA_STOPWRAP_MSK))|((ptGptaPwmCfg->byCaptureStopWrap&0x03)<<GPTA_STOPWRAP_POS);
 	wCrVal=(wCrVal & ~(GPTA_CMPA_RST_MSK))|((ptGptaPwmCfg->byCaptureLdaret&0x01)  <<GPTA_CMPA_RST_POS);
 	wCrVal=(wCrVal & ~(GPTA_CMPB_RST_MSK))|((ptGptaPwmCfg->byCaptureLdbret&0x01)  <<GPTA_CMPB_RST_POS);
-	wCrVal=(wCrVal & ~(GPTA_CMPC_RST_MSK))|((ptGptaPwmCfg->byCaptureLdcret&0x01)  <<GPTA_CMPC_RST_POS);
-	wCrVal=(wCrVal & ~(GPTA_CMPD_RST_MSK))|((ptGptaPwmCfg->byCaptureLddret&0x01)  <<GPTA_CMPD_RST_POS);
+	wCrVal=(wCrVal & ~(GPTA_CMPAA_RST_MSK))|((ptGptaPwmCfg->byCaptureLdaaret&0x01)  <<GPTA_CMPAA_RST_POS);
+	wCrVal=(wCrVal & ~(GPTA_CMPBA_RST_MSK))|((ptGptaPwmCfg->byCaptureLdbaret&0x01)  <<GPTA_CMPBA_RST_POS);
 	
 	wCrVal|=GPTA_CAPLD_EN;
 	wCrVal|=GPTA_CAPREARM;
@@ -135,9 +213,9 @@ csi_error_t csi_gpta_capture_init(csp_gpta_t *ptGptaBase, csi_gpta_captureconfig
 	csp_gpta_set_pscr(ptGptaBase, (uint16_t)wClkDiv - 1);					// clk div
 	csp_gpta_set_prdr(ptGptaBase, (uint16_t)wPrdrLoad);				        // prdr load value
 	
-	if(ptGptaPwmCfg->byInter)
+	if(ptGptaPwmCfg->wInt)
 	{
-		csp_gpta_int_enable(ptGptaBase, ptGptaPwmCfg->byInter, true);		//enable interrupt
+		csp_gpta_int_enable(ptGptaBase, ptGptaPwmCfg->wInt, true);		//enable interrupt
 		csi_irq_enable((uint32_t *)ptGptaBase);							//enable  irq
 	}
 	
@@ -190,9 +268,9 @@ csi_error_t  csi_gpta_wave_init(csp_gpta_t *ptGptaBase, csi_gpta_pwmconfig_t *pt
 //	csp_gpta_set_cmpd(ptGptaBase, (uint16_t)wCmpLoad);
 	}
 	
-	if(ptGptaPwmCfg->byInter)
+	if(ptGptaPwmCfg->wInt)
 	{
-		csp_gpta_int_enable(ptGptaBase, ptGptaPwmCfg->byInter, true);		//enable interrupt
+		csp_gpta_int_enable(ptGptaBase, ptGptaPwmCfg->wInt, true);		//enable interrupt
 		csi_irq_enable((uint32_t *)ptGptaBase);							    //enable  irq
 	}
 	
@@ -210,28 +288,28 @@ csi_error_t  csi_gpta_wave_init(csp_gpta_t *ptGptaBase, csi_gpta_pwmconfig_t *pt
  \param  channel        Channel label
  \return CSI_OK /CSI_ERROR
 */
-csi_error_t csi_gpta_channel_config(csp_gpta_t *ptGptaBase, csi_gpta_pwmchannel_config_t *tPwmCfg, csi_gpta_channel_e channel)
+csi_error_t csi_gpta_channel_config(csp_gpta_t *ptGptaBase, csi_gpta_pwmchannel_config_t *tPwmCfg, csi_gpta_channel_e eChannel)
 {
     uint32_t w_AQCRx_Val;
 	
 	w_AQCRx_Val=  tPwmCfg -> byActionZro 
 	              | ( tPwmCfg -> byActionPrd  << GPTA_ACT_PRD_POS  )
-				  | ( tPwmCfg -> byActionCau  << GPTA_ACT_CAU_POS  )
-				  | ( tPwmCfg -> byActionCad  << GPTA_ACT_CAD_POS  )
-				  | ( tPwmCfg -> byActionCbu  << GPTA_ACT_CBU_POS  )
-				  | ( tPwmCfg -> byActionCbd  << GPTA_ACT_CBD_POS  )
+				  | ( tPwmCfg -> byActionC1u  << GPTA_ACT_C1U_POS  )
+				  | ( tPwmCfg -> byActionC1d  << GPTA_ACT_C1D_POS  )
+				  | ( tPwmCfg -> byActionC2u  << GPTA_ACT_C2U_POS  )
+				  | ( tPwmCfg -> byActionC2d  << GPTA_ACT_C2D_POS  )
 				  | ( tPwmCfg -> byActionT1u  << GPTA_ACT_T1U_POS  )
 				  | ( tPwmCfg -> byActionT1d  << GPTA_ACT_T1D_POS  )
 				  | ( tPwmCfg -> byActionT2u  << GPTA_ACT_T2U_POS  )
 				  | ( tPwmCfg -> byActionT2d  << GPTA_ACT_T2D_POS  )
-				  | ( tPwmCfg -> byChoiceCasel  << GPTA_CASEL_POS  )
-				  | ( tPwmCfg -> byChoiceCbsel  << GPTA_CBSEL_POS  );
+				  | ( tPwmCfg -> byChoiceC1sel  << GPTA_C1SEL_POS  )
+				  | ( tPwmCfg -> byChoiceC2sel  << GPTA_C2SEL_POS  );
 				  
-	switch (channel)
+	switch (eChannel)
 	{	
-		case (GPTA_CHANNEL_A):csp_gpta_set_aqcra(ptGptaBase,w_AQCRx_Val);
+		case (GPTA_CHANNEL_1):csp_gpta_set_aqcr1(ptGptaBase,w_AQCRx_Val);
 			break;
-		case (GPTA_CHANNEL_B):csp_gpta_set_aqcrb(ptGptaBase,w_AQCRx_Val);
+		case (GPTA_CHANNEL_2):csp_gpta_set_aqcr2(ptGptaBase,w_AQCRx_Val);
 			break;
 //		case (GPTA_CHANNEL_C):csp_gpta_set_aqcrc(ptGptaBase,w_AQCRx_Val);
 //            break;
@@ -396,11 +474,11 @@ csi_error_t csi_gpta_evtrg_enable(csp_gpta_t *ptGptaBase, csi_gpta_trgout_e byCh
 csi_error_t csi_gpta_Onetimesoftware_output(csp_gpta_t *ptGptaBase, uint16_t byCh, csp_gpta_action_e bEnable)
 {	
 	switch (byCh){
-	case GPTA_OSTSFA: ptGptaBase ->AQOSF |= GPTA_OSTSFA;
-	                  ptGptaBase ->AQOSF = (ptGptaBase ->AQOSF &~(GPTA_ACTA_MSK))|((bEnable&0x03)<<GPTA_ACTA_POS);
+	case GPTA_OSTSF1: ptGptaBase ->AQOSF |= GPTA_OSTSF1;
+	                  ptGptaBase ->AQOSF = (ptGptaBase ->AQOSF &~(GPTA_ACT1_MSK))|((bEnable&0x03)<<GPTA_ACT1_POS);
 	     break;
-	case GPTA_OSTSFB: ptGptaBase ->AQOSF |= GPTA_OSTSFB;
-	                  ptGptaBase ->AQOSF = (ptGptaBase ->AQOSF &~(GPTA_ACTB_MSK))|((bEnable&0x03)<<GPTA_ACTB_POS);
+	case GPTA_OSTSF2: ptGptaBase ->AQOSF |= GPTA_OSTSF2;
+	                  ptGptaBase ->AQOSF = (ptGptaBase ->AQOSF &~(GPTA_ACT2_MSK))|((bEnable&0x03)<<GPTA_ACT2_POS);
 	     break;	
 	default: return CSI_ERROR;
 	     break;
@@ -426,9 +504,9 @@ csi_error_t csi_gpta_continuous_software_waveform(csp_gpta_t *ptGptaBase, csi_gp
 {
 	
 	switch (byCh){
-	case GPTA_CHANNEL_A:  ptGptaBase ->AQCSF = (ptGptaBase ->AQCSF &~(0x03))|(bEnable&0x03);            
+	case GPTA_CHANNEL_1:  ptGptaBase ->AQCSF = (ptGptaBase ->AQCSF &~(0x03))|(bEnable&0x03);            
 	     break;
-	case GPTA_CHANNEL_B:  ptGptaBase ->AQCSF = (ptGptaBase ->AQCSF &~(0x0c))|(bEnable&0x03)<<2;
+	case GPTA_CHANNEL_2:  ptGptaBase ->AQCSF = (ptGptaBase ->AQCSF &~(0x0c))|(bEnable&0x03)<<2;
 	     break;	
 //    case GPTA_CHANNEL_C:  ptGptaBase ->AQCSF = (ptGptaBase ->AQCSF &~(0x30))|(bEnable&0x03)<<4;
 //	     break;
@@ -534,7 +612,7 @@ csi_error_t csi_gpta_set_evtrg(csp_gpta_t *ptGptaBase, csi_gpta_trgout_e byTrgOu
 {
 	switch (byTrgOut)
 	{
-		case GPTA_TRG_OUT0:
+		case GPTA_TRGOUT0:
 		        if(eTrgSrc == GPTA_TRG01_DIS)								
 				{
 					csp_gpta_trg_xoe_enable(ptGptaBase, byTrgOut, DISABLE);	//disable evtrg source out
@@ -543,7 +621,7 @@ csi_error_t csi_gpta_set_evtrg(csp_gpta_t *ptGptaBase, csi_gpta_trgout_e byTrgOu
 				csp_gpta_set_trgsrc01(ptGptaBase, byTrgOut, eTrgSrc);
 			break;
 		
-		case GPTA_TRG_OUT1: 
+		case GPTA_TRGOUT1: 
 				if(eTrgSrc == GPTA_TRG01_DIS)								
 				{
 					csp_gpta_trg_xoe_enable(ptGptaBase, byTrgOut, DISABLE);	//disable evtrg source out

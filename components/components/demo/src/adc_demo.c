@@ -271,23 +271,23 @@ int adc_samp_oneshot_int_demo(void)
 	tPwmCfg.wFreq 			 = 2000;							 //pwm ouput frequency	
 //	tPwmCfg.byInter 		 = GPTA_INT_CAU;                     //interrupt
 	csi_gpta_wave_init(GPTA0, &tPwmCfg);
-	csi_gpta_set_evtrg(GPTA0, GPTA_TRG_OUT0, GPTA_TRG01_ZRO);     //TRGSEL0
-	csi_gpta_set_evtrg(GPTA0, GPTA_TRG_OUT1,GPTA_TRG01_CMPA_R);   //TRGSEL1
+	csi_gpta_set_evtrg(GPTA0, GPTA_TRGOUT0, GPTA_TRG01_ZRO);     //TRGSEL0
+	csi_gpta_set_evtrg(GPTA0, GPTA_TRGOUT1,GPTA_TRG01_CMPA_R);   //TRGSEL1
 	csi_gpta_pwmchannel_config_t  tEptchannelCfg;
 	tEptchannelCfg.byActionZro    =   LO;
 	tEptchannelCfg.byActionPrd    =   NA;
-	tEptchannelCfg.byActionCau    =   HI;
-	tEptchannelCfg.byActionCad    =   LO;
-	tEptchannelCfg.byActionCbu    =   NA;
-	tEptchannelCfg.byActionCbd    =   NA;
+	tEptchannelCfg.byActionC1u    =   HI;
+	tEptchannelCfg.byActionC1d    =   LO;
+	tEptchannelCfg.byActionC2u    =   NA;
+	tEptchannelCfg.byActionC2d    =   NA;
 	tEptchannelCfg.byActionT1u    =   LO;
 	tEptchannelCfg.byActionT1d    =   LO;
 	tEptchannelCfg.byActionT2u    =   NA;
 	tEptchannelCfg.byActionT2d    =   NA;
-	tEptchannelCfg.byChoiceCasel  =   GPTA_CMPA;
-	tEptchannelCfg.byChoiceCbsel  =   GPTA_CMPA;	
-	csi_gpta_channel_config(GPTA0, &tEptchannelCfg,  GPTA_CHANNEL_A);//channel
-	csi_gpta_channel_config(GPTA0, &tEptchannelCfg,  GPTA_CHANNEL_B);		
+	tEptchannelCfg.byChoiceC1sel  =   GPTA_CMPA;
+	tEptchannelCfg.byChoiceC2sel  =   GPTA_CMPA;	
+	csi_gpta_channel_config(GPTA0, &tEptchannelCfg,  GPTA_CHANNEL_1);//channel
+	csi_gpta_channel_config(GPTA0, &tEptchannelCfg,  GPTA_CHANNEL_2);		
 	csi_gpta_start(GPTA0);//start  timer
 //------------------------------------------------------------------------------------------------------------------------	
 

@@ -31,18 +31,18 @@
    __IOM uint32_t	PHSR;     	//0x0028	Phase control reg
    __IOM uint32_t	CMPA;  		//0x002C	Compare Value A
    __IOM uint32_t	CMPB;   	//0x0030	Compare Value B
-   __IOM uint32_t	CMPC;     	//0x0034	Compare Value C 
-   __IOM uint32_t	CMPD;  		//0x0038	Compare Value D
+   __IOM uint32_t	RSVD1[2];
+  // __IOM uint32_t	CMPC;     	//0x0034	Compare Value C 
+  // __IOM uint32_t	CMPD;  		//0x0038	Compare Value D
    __IOM uint32_t	CMPLDR;	    //0x003C	Cmp reg load control
    __IOM uint32_t	CNT;      	//0x0040	Counter reg
    __IOM uint32_t	AQLDR; 		//0x0044	AQ reg load control
-   __IOM uint32_t	AQCRA;      //0x0048	Action qualify of ch-A
-   __IOM uint32_t	AQCRB;    	//0x004C	Action qualify of ch-B
-
-   __IM uint32_t	RSVD1[3];
+   __IOM uint32_t	AQCR1;      //0x0048	Action qualify of ch-1
+   __IOM uint32_t	AQCR2;    	//0x004C	Action qualify of ch-2
+   __IM uint32_t	RSVD2[3];
    __IOM uint32_t	AQOSF; 		//0x005C	AQ output one-shot software forcing
    __IOM uint32_t	AQCSF;      //0x0060	AQ output conti-software forcing
-   __IM uint32_t	RSVD2[21];
+   __IM uint32_t	RSVD3[21];
    __IOM uint32_t   TRGFTCR;    //0x00B8    Trigger Filter control reg
    __IOM uint32_t   TRGFTWR;    //0x00BC    Trigger filter window
    __IOM uint32_t   EVTRG;      //0x00C0    Event trigger setting
@@ -55,7 +55,9 @@
    __OM uint32_t   	ICR;        //0x00DC    Interrupt clear
    __IM uint32_t	RSVD4[2];
    __OM uint32_t 	REGPROT;	//0x00E8	Protection Register
-
+   __IM uint32_t	RESERVED6[467-3];  
+   __IM uint32_t 	CMPAA;	        //0x082C	cmpa active reg for capture mode
+   __IM uint32_t 	CMPBA;	        //0x0830	cmpb active reg for capture mode
 } csp_gpta_t;
 
 
@@ -143,13 +145,20 @@ typedef enum{
 
 #define GPTA_PHSEN_POS		(7)
 #define GPTA_PHSEN_MSK		(0x1 << GPTA_PHSEN_POS)
+#define GPTA_INIT_AS_PHSEN	(0x0 << 7)
+#define GPTA_INIT_DFLT		(0x1 << 7)
 
 #define GPTA_CAPLD_EN   (1ul << 8)
 #define GPTA_CAPLD_POS	(8)
 #define GPTA_CAPLD_MSK	(0x1 << GPTA_CAPLD_POS)
 
-#define GPTA_BURST      (1ul << 9)
-#define GPTA_FLT_INIT   (1ul << 10)
+#define GPTA_BURST_POS      (9)
+#define GPTA_BURST_MSK      (1ul << GPTA_BURST_POS)
+
+#define GPTA_FLT_INIT       (1ul << 10)
+#define GPTA_FLT_INIT_POS      (10)
+#define GPTA_FLT_INIT_MSK      (1ul << GPTA_FLT_INIT_POS)
+
 
 #define GPTA_CGSRC_POS	(11)
 #define GPTA_CGSRC_MSK	(0x3 << GPTA_CGSRC_POS)
@@ -202,10 +211,10 @@ typedef enum{
 #define GPTA_CMPA_RST_MSK	(0x1 << GPTA_CMPA_RST_POS) 	
 #define GPTA_CMPB_RST_POS	(24)
 #define GPTA_CMPB_RST_MSK	(0x1 << GPTA_CMPB_RST_POS) 	
-#define GPTA_CMPC_RST_POS	(25)
-#define GPTA_CMPC_RST_MSK	(0x1 << GPTA_CMPC_RST_POS) 	
-#define GPTA_CMPD_RST_POS	(26)
-#define GPTA_CMPD_RST_MSK	(0x1 << GPTA_CMPD_RST_POS) 
+#define GPTA_CMPAA_RST_POS	(25)
+#define GPTA_CMPAA_RST_MSK	(0x1 << GPTA_CMPAA_RST_POS) 	
+#define GPTA_CMPBA_RST_POS	(26)
+#define GPTA_CMPBA_RST_MSK	(0x1 << GPTA_CMPBA_RST_POS) 
 
 #define GPTA_CMP_LDRST_POS(n) (23 + (n))
 #define GPTA_CMP_LDRST_MSK(n) (0x1 << GPTA_CMP_LDRST_POS(n))
@@ -332,6 +341,11 @@ typedef enum{
 #define GPTA_CMP_LD_POS(n)	(n)
 #define GPTA_CMP_LD_MSK(n)  (0x1 << GPTA_CMP_LD_POS(n))
 
+#define GPTA_CMPA_LD_POS	(0)
+#define GPTA_CMPA_LD_MSK    (0x1 << GPTA_CMPA_LD_POS)
+#define GPTA_CMPB_LD_POS	(1)
+#define GPTA_CMPB_LD_MSK    (0x1 << GPTA_CMPB_LD_POS)
+
 typedef enum {
 	GPTA_CMPLD_SHDW = 0,
 	GPTA_CMPLD_IMM
@@ -340,30 +354,37 @@ typedef enum {
 #define GPTA_CMP_LDTIME_POS(n)	(4+ ((n)*3))
 #define GPTA_CMP_LDTIME_MSK(n)	(0x7 << GPTA_CMP_LDTIME_POS(n))
 
+#define GPTA_CMPA_LDTIME_POS	(4)
+#define GPTA_CMPA_LDTIME_MSK	(0x7 << GPTA_CMPA_LDTIME_POS)
+#define GPTA_CMPB_LDTIME_POS	(7)
+#define GPTA_CMPB_LDTIME_MSK	(0x7 << GPTA_CMPB_LDTIME_POS)
+
 typedef enum{
 	GPTA_LDCMP_NEVER = 0,
 	GPTA_LDCMP_ZRO,
 	GPTA_LDCMP_PRD,
 	GPTA_LDCMP_LD_SYNC = 4,
 	
-}csp_gpta_ldtcmp_e;
+}csp_gpta_ldamd_e;
 
 #define GPTA_SHDWAFULL 	(0x1 <<20)
 #define GPTA_SHDWBFULL 	(0x1 <<21)
 
 ///AQLDR
-#define GPTA_AQCRA_SHDWEN_POS	(0)
-#define GPTA_AQCRA_SHDWEN_MSK	(0x1)
-#define GPTA_AQCRB_SHDWEN_POS	(1)
-#define GPTA_AQCRB_SHDWEN_MSK	(0x1 << GPTA_AQCRB_SHDW_POS)
+#define GPTA_AQCR1_SHDWEN_POS	(0)
+#define GPTA_AQCR1_SHDWEN_MSK	(0x1)
+#define GPTA_AQCR2_SHDWEN_POS	(1)
+#define GPTA_AQCR2_SHDWEN_MSK	(0x1 << GPTA_AQCR2_SHDWEN_POS)
+#define GPTA_LDAMD_POS		(2)
+#define GPTA_LDAMD_MSK		(0x7 << GPTA_LDAMD_POS)
+#define GPTA_LDBMD_POS		(5)
+#define GPTA_LDBMD_MSK		(0x7 << GPTA_LDBMD_POS)
 typedef enum{
 	GPTA_LD_SHDW = 0,
 	GPTA_LD_IMM
+
+	
 }csp_gpta_ld_e;
-#define GPTA_LDAMD_POS		(2)
-#define GPTA_LDAMD_MSK		(0x7 << GPTA_LDAMD_POS)
-#define GPTA_LDBMD_POS		(3)
-#define GPTA_LDBMD_MSK		(0x7 << GPTA_LDBMD_POS)
 
 
 ///AQCRA/B
@@ -371,14 +392,14 @@ typedef enum{
 #define GPTA_ACT_ZRO_MSK	(0x3 << GPTA_ACT_ZRO_POS)
 #define GPTA_ACT_PRD_POS	(2)
 #define GPTA_ACT_PRD_MSK	(0x3 << GPTA_ACT_PRD_POS)
-#define GPTA_ACT_CAU_POS	(4)
-#define GPTA_ACT_CAU_MSK	(0x3 << GPTA_ACT_CAU_POS)
-#define GPTA_ACT_CAD_POS	(6)
-#define GPTA_ACT_CAD_MSK	(0x3 << GPTA_ACT_CAD_POS)
-#define GPTA_ACT_CBU_POS	(8)
-#define GPTA_ACT_CBU_MSK	(0x3 << GPTA_ACT_CBU_POS)
-#define GPTA_ACT_CBD_POS	(10)
-#define GPTA_ACT_CBD_MSK	(0x3 << GPTA_ACT_CBD_POS)
+#define GPTA_ACT_C1U_POS	(4)
+#define GPTA_ACT_C1U_MSK	(0x3 << GPTA_ACT_C1U_POS)
+#define GPTA_ACT_C1D_POS	(6)
+#define GPTA_ACT_C1D_MSK	(0x3 << GPTA_ACT_C1D_POS)
+#define GPTA_ACT_C2U_POS	(8)
+#define GPTA_ACT_C2U_MSK	(0x3 << GPTA_ACT_C2U_POS)
+#define GPTA_ACT_C2D_POS	(10)
+#define GPTA_ACT_C2D_MSK	(0x3 << GPTA_ACT_C2D_POS)
 #define GPTA_ACT_T1U_POS	(12)
 #define GPTA_ACT_T1U_MSK	(0x3 << GPTA_ACT_T1U_POS)
 #define GPTA_ACT_T1D_POS	(14)
@@ -393,10 +414,10 @@ typedef enum {
 	GPTA_HI,
 	GPTA_TG	
 }csp_gpta_action_e;
-#define GPTA_CASEL_POS	(20)
-#define GPTA_CASEL_MSK	(0x3<<GPTA_CASEL_POS)
-#define GPTA_CBSEL_POS	(22)
-#define GPTA_CBSEL_MSK	(0x3<<GPTA_CBSEL_POS)
+#define GPTA_C1SEL_POS	(20)
+#define GPTA_C1SEL_MSK	(0x3<<GPTA_C1SEL_POS)
+#define GPTA_C2SEL_POS	(22)
+#define GPTA_C2SEL_MSK	(0x3<<GPTA_C2SEL_POS)
 typedef enum {
 	GPTA_CMPA= 0,
 	GPTA_CMPB,
@@ -404,15 +425,15 @@ typedef enum {
 
 
 ///AQOSF
-#define GPTA_OSTSFA_POS (0)
-#define GPTA_OSTSFB_POS (4)
+#define GPTA_OSTSF1_POS (0)
+#define GPTA_OSTSF2_POS (4)
 
-#define GPTA_OSTSFA		(1)
-#define GPTA_ACTA_POS	(1)
-#define GPTA_ACTA_MSK	(0x3 << GPTA_ACTA_POS)
-#define GPTA_OSTSFB		(0x1 << 4)
-#define GPTA_ACTB_POS	(5)
-#define GPTA_ACTB_MSK	(0x3 << GPTA_ACTB_POS)
+#define GPTA_OSTSF1		(1)
+#define GPTA_ACT1_POS	(1)
+#define GPTA_ACT1_MSK	(0x3 << GPTA_ACT1_POS)
+#define GPTA_OSTSF2		(0x1 << 4)
+#define GPTA_ACT2_POS	(5)
+#define GPTA_ACT2_MSK	(0x3 << GPTA_ACT2_POS)
 #define GPTA_AQCSF_LDTIME_POS (16)
 #define GPTA_AQCSF_LDTIME_MSK (0x3 << GPTA_AQCSF_LDTIME_POS)
 
@@ -430,10 +451,10 @@ typedef enum{
 }csp_gpta_ldosf_e;
 
 //AQCSF
-#define GPTA_CSFA_POS	(0)
-#define GPTA_CSFA_MSK	(0x3)
-#define GPTA_CSFB_POS	(2)
-#define GPTA_CSFB_MSK	(0x3 << GPTA_CSFB_POS)
+#define GPTA_CSF1_POS	(0)
+#define GPTA_CSF1_MSK	(0x3)
+#define GPTA_CSF2_POS	(2)
+#define GPTA_CSF2_MSK	(0x3 << GPTA_CSF2_POS)
 	
 
 typedef enum{
@@ -595,7 +616,25 @@ static inline void csp_gpta_set_stopwrap(csp_gpta_t *ptGptaBase, uint8_t byTime)
 	ptGptaBase -> CR = (ptGptaBase -> CR & ~(GPTA_STOPWRAP_MSK)) | (byTime << GPTA_STOPWRAP_POS);
 }
 
-static inline void csp_gpta_set_prdr(csp_gpta_t *ptGptaBase, uint16_t bwVal)
+static inline void csp_gpta_set_burst(csp_gpta_t *ptGptaBase,csp_gpta_cgsrc_e eCgsrc, bool bEnable)
+{
+	ptGptaBase -> CR = (ptGptaBase -> CR & ~(GPTA_BURST_MSK)) | (bEnable << GPTA_BURST_POS);
+	if(bEnable == ENABLE)
+	{
+		ptGptaBase -> CR =(ptGptaBase -> CR & ~(GPTA_CGSRC_MSK))|(eCgsrc<<GPTA_CGSRC_POS);
+	}
+}
+
+static inline void csp_gpta_flt_init(csp_gpta_t *ptGptaBase, csp_gpta_cnflt_e eCgflt,bool bEnable)
+{
+	ptGptaBase -> CR = (ptGptaBase -> CR & ~(GPTA_FLT_INIT_MSK)) | (bEnable << GPTA_FLT_INIT_POS);
+	if(bEnable == ENABLE)
+	{
+		ptGptaBase -> CR=(ptGptaBase -> CR & ~(GPTA_CGFLT_MSK))|(eCgflt<<GPTA_CGFLT_POS);
+	}
+}
+
+static inline void csp_gpta_set_prdr(csp_gpta_t *ptGptaBase, uint32_t bwVal)
 {
 	ptGptaBase -> PRDR = bwVal;
 }
@@ -620,6 +659,11 @@ static inline void csp_gpta_capld_enable(csp_gpta_t *ptGptaBase, bool bEnable)
 	ptGptaBase -> CR = (ptGptaBase->CR & ~(GPTA_CAPLD_MSK)) | (bEnable << GPTA_CAPLD_POS);
 }
 
+static inline void csp_gpta_phsen_enable(csp_gpta_t *ptGptaBase, bool bEnable)
+{
+	ptGptaBase -> CR = (ptGptaBase->CR & ~(GPTA_PHSEN_MSK)) | (bEnable << GPTA_PHSEN_POS);
+}
+
 static inline void csp_gpta_set_auto_rearm(csp_gpta_t *ptGptaBase,  csp_gpta_arearm_e eHWMode)
 {   
 	ptGptaBase -> REGPROT = GPTA_REGPROT;
@@ -635,6 +679,10 @@ static inline uint16_t csp_gpta_get_cmpa(csp_gpta_t *ptGptaBase)
 {
 	return (ptGptaBase -> CMPA);
 }
+static inline uint16_t csp_gpta_get_cmpaa(csp_gpta_t *ptGptaBase)
+{
+	return (ptGptaBase -> CMPAA);
+}
 static inline void csp_gpta_set_cmpb(csp_gpta_t *ptGptaBase, uint16_t bwVal)
 {
 	ptGptaBase -> CMPB = bwVal;
@@ -642,6 +690,10 @@ static inline void csp_gpta_set_cmpb(csp_gpta_t *ptGptaBase, uint16_t bwVal)
 static inline uint16_t csp_gpta_get_cmpb(csp_gpta_t *ptGptaBase)
 {
 	return (ptGptaBase -> CMPB);
+}
+static inline uint16_t csp_gpta_get_cmpba(csp_gpta_t *ptGptaBase)
+{
+	return (ptGptaBase -> CMPBA);
 }
 static inline void csp_gpta_set_prd(csp_gpta_t *ptGptaBase, uint16_t bwVal)
 {
@@ -660,13 +712,13 @@ static inline uint16_t csp_gpta_get_phsr(csp_gpta_t *ptGptaBase)
 	return (ptGptaBase -> PHSR);
 }
 
-static inline void csp_gpta_set_aqcra(csp_gpta_t *ptGptaBase, uint32_t bwVal)
+static inline void csp_gpta_set_aqcr1(csp_gpta_t *ptGptaBase, uint32_t bwVal)
 {
-	ptGptaBase -> AQCRA = bwVal;
+	ptGptaBase -> AQCR1 = bwVal;
 }
-static inline void csp_gpta_set_aqcrb(csp_gpta_t *ptGptaBase, uint32_t bwVal)
+static inline void csp_gpta_set_aqcr2(csp_gpta_t *ptGptaBase, uint32_t bwVal)
 {
-	ptGptaBase -> AQCRB = bwVal;
+	ptGptaBase -> AQCR2 = bwVal;
 }
 
 static inline void csp_gpta_set_gldcr(csp_gpta_t *ptGptaBase, uint32_t byCh)
@@ -685,7 +737,7 @@ static inline void csp_gpta_start(csp_gpta_t *ptGptaBase)
 
 static inline void csp_gpta_stop(csp_gpta_t *ptGptaBase)
 {
-	ptGptaBase->RSSR &= ~GPTA_START ;
+	ptGptaBase->RSSR &= ~EPT_START ;
 }
 
 static inline uint16_t csp_gpta_get_prdr(csp_gpta_t *ptGptaBase)
@@ -747,6 +799,11 @@ static inline void csp_gpta_set_trgprd(csp_gpta_t *ptGptaBase, uint8_t byCh, uin
 static inline void csp_gpta_trg_cntxinit(csp_gpta_t *ptGptaBase, uint8_t byCh, uint8_t byVal)
 {
 	ptGptaBase -> EVCNTINIT = (ptGptaBase -> EVCNTINIT & ~GPTA_CNT_INIT_MSK_EV(byCh)) | GPTA_CNT_INIT(byVal,byCh);
+}
+
+static inline void csp_gpta_swf_trg(csp_gpta_t *ptGptaBase, uint8_t byCh)
+{
+	ptGptaBase -> EVSWF |= 0x1 << byCh; 
 }
 
 static inline void csp_gpta_int_enable(csp_gpta_t *ptGptaBase, csp_gpta_int_e byInt, bool bEnable)

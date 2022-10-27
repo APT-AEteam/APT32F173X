@@ -35,13 +35,10 @@ struct csi_gpta_config {
 	uint8_t     byCaptureStopWrap;
 	uint8_t     byCaptureLdaret;
 	uint8_t     byCaptureLdbret;
-	uint8_t     byCaptureLdcret;
-	uint8_t     byCaptureLddret;
-	uint8_t     byBurst;
-    uint8_t     byCgsrc;
-	uint8_t     byCgflt;
+//	uint8_t     byCaptureLdaaret;
+//	uint8_t     byCaptureLdbaret;
 	uint32_t	wFreq;				 //TIMER PWM OUTPUT frequency 
-	uint32_t    byInter;
+	uint32_t    wInt;
 };
 
 
@@ -54,7 +51,8 @@ struct csi_gpta_pwmconfig {
 	uint8_t     byPscld;
 	uint8_t		byDutyCycle;		 //TIMER PWM OUTPUT duty cycle	
 	uint32_t	wFreq;				 //TIMER PWM OUTPUT frequency 
-	uint32_t    byInter;
+	uint32_t    wInt;
+	uint8_t     byCks;
 };
 typedef struct csi_gpta_captureconfig  csi_gpta_captureconfig_t;
 struct csi_gpta_captureconfig {
@@ -70,9 +68,9 @@ struct csi_gpta_captureconfig {
 	uint8_t     byCaptureStopWrap;
 	uint8_t     byCaptureLdaret;
 	uint8_t     byCaptureLdbret;
-	uint8_t     byCaptureLdcret;
-	uint8_t     byCaptureLddret;
-	uint32_t    byInter;
+	uint8_t     byCaptureLdaaret;
+	uint8_t     byCaptureLdbaret;
+	uint32_t    wInt;
 };
 
 typedef struct csi_gpta_pwmchannel_config      csi_gpta_pwmchannel_config_t;
@@ -80,16 +78,16 @@ struct csi_gpta_pwmchannel_config {
 	
     uint8_t		byActionZro;          //
 	uint8_t     byActionPrd;          //
-	uint8_t     byActionCau;          //
-    uint8_t     byActionCad;          //
-	uint8_t     byActionCbu;          //
-	uint8_t     byActionCbd;          //
+	uint8_t     byActionC1u;          //
+    uint8_t     byActionC1d;          //
+	uint8_t     byActionC2u;          //
+	uint8_t     byActionC2d;          //
 	uint8_t     byActionT1u;          //
 	uint8_t     byActionT1d;          //
 	uint8_t     byActionT2u;          //
 	uint8_t     byActionT2d;          //	
-    uint8_t     byChoiceCasel;
-	uint8_t     byChoiceCbsel;
+    uint8_t     byChoiceC1sel;
+	uint8_t     byChoiceC2sel;
 };
 typedef struct csi_gpta_Global_load_control_config    csi_gpta_Global_load_control_config_t;
 struct csi_gpta_Global_load_control_config{
@@ -98,6 +96,7 @@ struct csi_gpta_Global_load_control_config{
 	bool bOstmd;
 	uint8_t bGldprd;	
     uint8_t byGldmd;
+	uint8_t byGldcnt;
 };
 
 /// \struct csi_gpta_filter_config_t
@@ -141,12 +140,12 @@ typedef enum{
  * \brief    GPTA sync trigger input 
  */
 typedef enum{
-	GPTA_TRGIN_SYNCEN0	= 0,	//start	up or reset count			
-	GPTA_TRGIN_SYNCEN1,			//reg updata				
-	GPTA_TRGIN_SYNCEN2,			//capture				
-	GPTA_TRGIN_SYNCEN3,			//count inc or dec			
-	GPTA_TRGIN_SYNCEN4,			//change output status(pwm)			
-	GPTA_TRGIN_SYNCEN5			//change output status(pwm)						
+	GPTA_TRG_SYNCEN0	= 0,	//start	up or reset count			
+	GPTA_TRG_SYNCEN1,			//reg updata				
+	GPTA_TRG_SYNCEN2,			//capture				
+	GPTA_TRG_SYNCEN3,			//count inc or dec			
+	GPTA_TRG_SYNCEN4,			//change output status(pwm)			
+	GPTA_TRG_SYNCEN5			//change output status(pwm)						
 }csi_gpta_trgin_e;
 
 
@@ -181,10 +180,10 @@ typedef enum{
  * \brief   ept event trigger out port
  */
 typedef enum{
-	GPTA_TRG_OUT0		= 0,	//trigger out0
-	GPTA_TRG_OUT1,				//trigger out1	
-//	GPTA_TRG_OUT2,				//trigger out2
-//	GPTA_TRG_OUT3				//trigger out3		
+	GPTA_TRGOUT0		= 0,	//trigger out0
+	GPTA_TRGOUT1,				//trigger out1	
+//	GPTA_TRGOUT2,				//trigger out2
+//	GPTA_TRGOUT3				//trigger out3		
 }csi_gpta_trgout_e;
 
 typedef enum{
@@ -199,9 +198,15 @@ typedef enum
     GPTA_WAVE 	= 1		
 }csi_gpta_wave_e;
 typedef enum{
-    GPTA_CHANNEL_A=1,
-	GPTA_CHANNEL_B
+    GPTA_CHANNEL_1=1,
+	GPTA_CHANNEL_2
 }csi_gpta_channel_e;
+typedef enum{
+    GPTA_CAMPA=1,
+	GPTA_CAMPB,
+//	GPTA_CAMPC,
+//	GPTA_CAMPD
+}csi_gpta_camp_e;
 
 typedef enum {
 	GPTA_CH_A = 0,
@@ -236,20 +241,21 @@ typedef enum{
 }csi_gpta_capmd_e;
 
 typedef enum{
-	GPTAINT_TRGEV0 = 0x1,
-	GPTAINT_TRGEV1 = 0x2,
-	GPTAINT_TRGEV2 = 0x4,
-	GPTAINT_TRGEV3 = 0x8,
-	GPTAINT_CAPLD0 = 0x1 << 4,
-	GPTAINT_CAPLD1 = 0x1 << 5,
-	GPTAINT_CAPLD2 = 0x1 << 6,
-	GPTAINT_CAPLD3 = 0x1 << 7,
-	GPTAINT_CAU = 0x1 << 8,
-	GPTAINT_CAD = 0x1 << 9,
-	GPTAINT_CBU = 0x1 << 10,
-	GPTAINT_CBD = 0x1 << 11,	
-	GPTAINT_PEND = 0x1 << 16	
-}csi_gpta_int_e;
+	GPTA_INTSRC_NONE   = 0x0,
+	GPTA_INTSRC_TRGEV0 = 0x1,
+	GPTA_INTSRC_TRGEV1 = 0x2,
+	GPTA_INTSRC_TRGEV2 = 0x4,
+	GPTA_INTSRC_TRGEV3 = 0x8,
+	GPTA_INTSRC_CAPLD0 = 0x1 << 4,
+	GPTA_INTSRC_CAPLD1 = 0x1 << 5,
+	GPTA_INTSRC_CAPLD2 = 0x1 << 6,
+	GPTA_INTSRC_CAPLD3 = 0x1 << 7,
+	GPTA_INTSRC_CAU = 0x1 << 8,
+	GPTA_INTSRC_CAD = 0x1 << 9,
+	GPTA_INTSRC_CBU = 0x1 << 10,
+	GPTA_INTSRC_CBD = 0x1 << 11,	
+	GPTA_INTSRC_PEND = 0x1 << 16	
+}csi_gpta_intsrc_e;
 
 /**
   \brief       Initialize GPTA Interface. Initializes the resources needed for the GPTA interface

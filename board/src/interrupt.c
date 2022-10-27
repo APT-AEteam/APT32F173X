@@ -33,15 +33,19 @@ extern void uart_irqhandler(csp_uart_t *ptUartBase,uint8_t byIdx);
 extern void usart_irqhandler(csp_usart_t *ptUsartBase,uint8_t byIdx);
 extern void can_irqhandler(csp_can_t *ptCanBase);
 extern void dma_irqhandler(csp_dma_t *ptDmaBase);						//DMA
-extern void gpta0_irqhandler(csp_gpta_t *ptGptaBase);
+extern void gpta0_initen_irqhandler(csp_gpta_t *ptGptaBase);
+extern void gpta1_initen_irqhandler(csp_gpta_t *ptGptaBase);
+extern void gpta2_initen_irqhandler(csp_gpta_t *ptGptaBase);
+extern void gpta3_initen_irqhandler(csp_gpta_t *ptGptaBase);
 extern void gpio_irqhandler(uint8_t byExiNum);
 extern void ifc_irqhandler(void);
 extern void bt_irqhandler(csp_bt_t *ptBtBase);
-extern void wwdt_irqhandler(csp_wwdt_t *ptWwdtBase);
+extern void wwdt_irqhandler(void);
 extern void cmp_irqhandler(csp_cmp_t *ptCmpBase);
 extern void adc_irqhandler(csp_adc_t *ptAdcBase);
 extern void syscon_irqhandler(csp_syscon_t *ptSysconBase);
 extern void led_irqhandler(csp_led_t *ptLedBase);
+extern void i2c_irqhandler(csp_i2c_t *ptIicBase);
 
 
 /* private function--------------------------------------------------------*/
@@ -62,343 +66,366 @@ void coret_int_handler(void)
 void syscon_int_handler(void) 
 {
     // ISR content ...
-	if(SYSCON ->MISR & IWDT_INT)
+
+	if(csp_syscon_get_int_st(SYSCON) & LVD_INT)
 	{
 		nop;
+		csp_syscon_int_clr(SYSCON, LVD_INT);
+	}
+	
+	if(csp_syscon_get_int_st(SYSCON) & IWDT_INT)
+	{
+		nop;
+		//csi_pin_toggle(PA05);
 		csp_syscon_int_clr(SYSCON, IWDT_INT);
+		//csi_iwdt_feed();
 	}
-	if(SYSCON ->MISR & (0x1<<8))
-	{
-		nop;
-		csp_syscon_int_clr(SYSCON, 0x1<<8);
-	}
-	nop;	
 }
 
 void ifc_int_handler(void)
 {
+#if	IFC_INT_HANDLE_EN
 	// ISR content ...
+	ifc_irqhandler();
+#endif
 	
 }
 void adc0_int_handler(void) 
 {	
-    // ISR content ...
+#if	ADC0_INT_HANDLE_EN
+	// ISR content ...
 	adc_irqhandler(ADC0);
+#endif	
 }
 
 void adc1_int_handler(void) 
 {
+#if	ADC1_INT_HANDLE_EN
 	// ISR content ...
 	adc_irqhandler(ADC1);
+#endif	
 }
 
  void dma0_int_handler(void)
 {
+#if DMA0_INT_HANDLE_EN	
 	// ISR content ...
 	dma_irqhandler(DMA0);
 	//csp_qspi_set_int(QSPI, QSPI_TXE_INT,false);
+#endif
 }
 
 void dma1_int_handler(void) 
-{	
+{
+#if DMA1_INT_HANDLE_EN	
 	// ISR content ...
-	dma_irqhandler(DMA1);	
+	dma_irqhandler(DMA1);
+#endif	
+}
+
+void wwdt_int_handler(void)
+{
+#if WWDT_INT_HANDLE_EN
+	 // ISR content ...
+	wwdt_irqhandler();
+	
+#endif
 }
 
 void gpta0_int_handler(void)
 {
+#if GPTA0_INT_HANDLE_EN	
 	 // ISR content ...
+	gpta0_initen_irqhandler(GPTA0);
+#endif
 }
 
 void gpta1_int_handler(void) 
 {
-    // ISR content ...	
+#if GPTA1_INT_HANDLE_EN	
+	 // ISR content ...
+#endif	
 }
 
 
 void gpta2_int_handler(void)
 {
-	 // ISR content ...	 
+#if GPTA2_INT_HANDLE_EN	
+	 // ISR content ...
+#endif
 }
 
 void gpta3_int_handler(void) 
 {
-    // ISR content ...	
+#if GPTA3_INT_HANDLE_EN	
+	 // ISR content ...
+#endif
 }
 
 void gptb0_int_handler(void) 
 {
+#if GPTB0_INT_HANDLE_EN		
     // ISR content ...	
+#endif
 }
 
 void gptb1_int_handler(void) 
 {
+#if GPTB1_INT_HANDLE_EN		
     // ISR content ...	
+#endif	
 }
 
 void gptb2_int_handler(void) 
 {
+#if GPTB2_INT_HANDLE_EN		
     // ISR content ...	
+#endif	
 }
 
 void gptb3_int_handler(void) 
 {
-    // ISR content ...
+#if GPTB3_INT_HANDLE_EN		
+    // ISR content ...	
+#endif
 }
 
 void gptb4_int_handler(void) 
 {
+#if GPTB4_INT_HANDLE_EN		
     // ISR content ...	
+#endif	
 }
 
 void gptb5_int_handler(void) 
 {
+#if GPTB5_INT_HANDLE_EN		
     // ISR content ...	
+#endif
 }
 
 void dac0_int_handler(void) 
 {
+#if DAC0_INT_HANDLE_EN		
     // ISR content ...
+#endif
 }
 
 
 void usart0_int_handler(void) 
 {
+#if	USART0_INT_HANDLE_EN	
 	usart_irqhandler(USART0, 0);
-    // ISR content ...
-//	volatile uint32_t wIsr= csp_usart_get_isr(USART0);
-//	volatile uint16_t hwRecv = 0;
-//	
-//	if(wIsr & US_RXRDY_INT)							//usart rx			
-//	{
-//		nop;
-//		csp_usart_clr_isr(USART0,US_RXRDY_INT);		//clear interrupt status
-//		hwRecv = csp_usart_get_data(USART0);
-//		csp_usart_put_char(USART0, 0x01);
-//	}
-//	
-//	if(wIsr & US_TXRDY_INT)							//usart tx			
-//	{
-//		nop;
-//		csp_usart_clr_isr(USART0,US_TXRDY_INT);		//clear interrupt status
-//	
-//	}
-//	
-//	if(wIsr & US_TXRIS_INT)							//usart txfifo 		
-//	{
-//		nop;
-//		csp_usart_clr_isr(USART0,US_TXRIS_INT);		//clear interrupt status
-//	}
-//	
-//	if(wIsr & US_RXRIS_INT)							//usart rxfifo 		
-//	{
-//		nop;
-//		csp_usart_clr_isr(USART0,US_RXRIS_INT);		//clear interrupt status
-//		hwRecv = csp_usart_get_data(USART0);
-//		csp_usart_put_char(USART0, 0x02);
-//	}
-//	
-//	if(wIsr & US_RORRIS_INT)						//usart rxfifo over 		
-//	{
-//		nop;
-//		csp_usart_clr_isr(USART0,US_RORRIS_INT);		//clear interrupt status
-//		csp_usart_put_char(USART0, 0x03);
-//	}
-//	
-//	
-//	if(wIsr & US_TIMEOUT_INT)						//usart rx timeover			
-//	{
-//		nop;
-//		csp_usart_cr_cmd(USART0, US_STTTO);			//enable receive timeover
-//		csp_usart_clr_isr(USART0,US_TIMEOUT_INT);	//clear interrupt status
-//		csp_usart_put_char(USART0, 0x04);
-//	}
-//	
-//	if(wIsr & US_RXBRK_INT)						//usart break 
-//	{
-//		nop;
-//		csp_usart_clr_isr(USART0,US_RXBRK_INT);		//clear interrupt status
-//		csp_usart_put_char(USART0, 0x05);
-//	}
-//	
-//	if(wIsr & US_PARE_INT)							//usart parity
-//	{
-//		nop;
-//		csp_usart_clr_isr(USART0,US_PARE_INT);		//clear interrupt status
-//		csp_usart_put_char(USART0, 0x06);
-//	}
-//
-//	
-//	if(wIsr & US_OVRE_INT)							//usart rx over
-//	{
-//		nop;						
-//		csp_usart_clr_isr(USART0,US_OVRE_INT);		//clear interrupt status
-//		csp_usart_put_char(USART0, 0x07);
-//	}
-//	
-//	if(wIsr & US_IDLE_INT)							//usart rx over
-//	{
-//		nop;						
-//		csp_usart_clr_isr(USART0,US_IDLE_INT);		//clear interrupt status
-//		csp_usart_put_char(USART0, 0x08);
-//	}
-//	
-	
+#endif	
 }
 
 void usart1_int_handler(void) 
 {
+#if	USART0_INT_HANDLE_EN	
     // ISR content ...
 	usart_irqhandler(USART1, 1);
+#endif
 }
 
 void uart0_int_handler(void) 
 {
+#if	UART0_INT_HANDLE_EN
     // ISR content ...
-	uart_irqhandler(UART0,0);
+	uart_irqhandler(UART0, 0);
+
+#endif
 }
 
 void uart1_int_handler(void) 
 {
-	uart_irqhandler(UART1,1);
-}
+#if	UART1_INT_HANDLE_EN
+    // ISR content ...
+	uart_irqhandler(UART1, 1);
 
+#endif
+}
 void uart2_int_handler(void) 
 {
+#if	UART2_INT_HANDLE_EN
     // ISR content ...
-	uart_irqhandler(UART2,2);
+	uart_irqhandler(UART2, 2);
+
+#endif
 }
 
 void qspi_int_handler(void) 
 {
+#if	QSPI_INT_HANDLE_EN
     // ISR content ...
 	//qspi_irqhandler(QSPI);
+#endif
 }
 
 void sio0_int_handler(void) 
 {
+#if	SIO0_INT_HANDLE_EN
     // ISR content ...
+#endif
 }
 
 void sio1_int_handler(void) 
 {
+#if	SIO1_INT_HANDLE_EN
     // ISR content ...
+#endif
 }
 
 void i2c_int_handler(void) 
 {
+#if	I2C_INT_HANDLE_EN
     // ISR content ...
+	i2c_irqhandler(I2C0);
+	
+#endif
 }
 
 void spi0_int_handler(void) 
 {
+#if	SPI0_INT_HANDLE_EN
    // ISR content ...
    spi_irqhandler(SPI0);
+#endif   
 }
 
 void spi1_int_handler(void) 
 {
+#if	SPI1_INT_HANDLE_EN
    // ISR content ...
    spi_irqhandler(SPI1);
+#endif
 }
 
 void exi0_int_handler(void) 
 {
+#if	EXI0_INT_HANDLE_EN
     // ISR content ...
 	gpio_irqhandler(0);
+#endif
 }
 void exi1_int_handler(void) 
 {
+#if	EXI1_INT_HANDLE_EN
     // ISR content ...
 	gpio_irqhandler(1);
+#endif
 }
 void exi2_3_int_handler(void) 
 {
+#if	EXI2_3_INT_HANDLE_EN
     // ISR content ...
-   gpio_irqhandler(2);
+	gpio_irqhandler(2);
+#endif
 }
 void exi4_9_int_handler(void) 
 {
+#if	EXI4_9_INT_HANDLE_EN
     // ISR content ...
 	gpio_irqhandler(3);
+#endif
 }
 void exi10_15_int_handler(void) 
 {
+#if	EXI10_15_INT_HANDLE_EN
     // ISR content ...
 	gpio_irqhandler(4);
+#endif
 }
 
 void can_int_handler(void) 
 {
+#if	CAN_INT_HANDLE_EN
     // ISR content ...
 	can_irqhandler(CAN0);
+#endif
 }
 
 void cnta_int_handler(void)
 {
+#if	CNTA_INT_HANDLE_EN
 	// ISR content ...
 	cnta_irqhandler(CA0);
+#endif
 }
 
 void lpt_int_handler(void)
 {
-	// ISR content ...
+#if	LPT_INT_HANDLE_EN
+    // ISR content ...
 	lpt_irqhandler(LPT);
-}
-
-void wwdt_int_handler(void)
-{
-	// ISR content ...
+#endif
 }
 
 void rtc_int_handler(void)
 {
+#if	RTC_INT_HANDLE_EN
 	// ISR content ...
+#endif
 }
 
 void cmp0_int_handler(void) 
 {
+#if	CMP0_INT_HANDLE_EN
     // ISR content ...
+#endif
 }
 
 void cmp1_int_handler(void) 
 {
+#if	CMP1_INT_HANDLE_EN
     // ISR content ...
+#endif
 }
 
 void cmp2_int_handler(void) 
 {
+#if	CMP2_INT_HANDLE_EN
     // ISR content ...
+#endif
 }
 
 void led_int_handler(void) 
 {
+#if	LED_INT_HANDLE_EN
     // ISR content ...
 	led_irqhandler(LED);
+#endif
 }
 
 void bt0_int_handler(void) 
 {
+#if	BT0_INT_HANDLE_EN
     // ISR content ...
 	bt_irqhandler(BT0);
+#endif
 }
 
 void bt1_int_handler(void) 
 {
+#if	BT1_INT_HANDLE_EN
     // ISR content ...
 	bt_irqhandler(BT1);
+#endif
 }
 
 void bt2_int_handler(void) 
 {
+#if	BT2_INT_HANDLE_EN
     // ISR content ...
 	bt_irqhandler(BT2);	
+#endif
 }
 
 void bt3_int_handler(void) 
 {
+#if	BT3_INT_HANDLE_EN
     // ISR content ...
-	bt_irqhandler(BT3);	
+	bt_irqhandler(BT3);
+#endif	
 }
 /*************************************************************/
 /*************************************************************/

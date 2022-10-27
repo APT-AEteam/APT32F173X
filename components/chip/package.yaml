@@ -90,14 +90,14 @@ build_config:
   include:
     - include
     - drivers/sys
-  internal_include: ~
+  internal_include: 
   cflag: -Og  -g3  -ffunction-sections -Wno-unused-function
   cxxflag: -Og  -g3  -ffunction-sections -Wno-unused-function
   asmflag: ""
   define:
     - NO_MORE_DEFINE
-  libs: ~
-  libpath: ~
+  libs: 
+  libpath: 
 # source_file:                             # <可选项> 指定参与编译的源代码文件，支持通配符，采用相对路径
 #   - src/*.c                              # 例：组件 src 目录下所有的扩展名为 c 的源代码文件
 source_file:
@@ -120,15 +120,16 @@ install:
       - include/*.h
 author:
   name: ""
-depends: ~
-defconfig: ~
+depends: 
+defconfig: 
 link_config:
-  path: ~
-  library: ~
-hidden: ~
-homepage: ~
-soc_config: ~
-def_config: ~
+  path: 
+  library: 
+hidden: 
+homepage: 
+soc_config: 
+def_config: 
+depends_forward: 
 ## 第七部分：导出部分
 # export:
 #   - dest: "<SOLUTION_PATH>/generated/data" # 安装的目的路径 dest是相当路径
