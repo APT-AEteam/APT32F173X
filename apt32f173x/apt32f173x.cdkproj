@@ -13,9 +13,6 @@
   <VendorInfo>
     <VendorName>new_soc_project_c_solution_e906fdp</VendorName>
   </VendorInfo>
-  <MonitorProgress>
-    <DebugLaunch>40</DebugLaunch>
-  </MonitorProgress>
   <BuildConfigs>
     <BuildConfig Name="BuildSet">
       <Target>
@@ -151,11 +148,11 @@
       <Debug>
         <LoadApplicationAtStartup>yes</LoadApplicationAtStartup>
         <Connector>ICE</Connector>
-        <StopAt>no</StopAt>
+        <StopAt>yes</StopAt>
         <StopAtText>main</StopAtText>
         <InitFile>$(ProjectPath)/script/gdb.init</InitFile>
         <AfterLoadFile/>
-        <AutoRun>no</AutoRun>
+        <AutoRun>yes</AutoRun>
         <ResetType>Soft Reset</ResetType>
         <SoftResetVal>2</SoftResetVal>
         <ResetAfterLoad>no</ResetAfterLoad>
@@ -223,13 +220,14 @@
       </Flash>
     </BuildConfig>
   </BuildConfigs>
+  <MonitorProgress>
+    <DebugLaunch>40</DebugLaunch>
+  </MonitorProgress>
   <DebugSessions>
     <watchExpressions/>
-    <memoryExpressions>0x0;0x0;;</memoryExpressions>
+    <memoryExpressions>;;;</memoryExpressions>
     <statistics>;;32;;MHZ;</statistics>
-    <peripheralTabs>
-      <Tab disFormat="Hex">HWDIV</Tab>
-    </peripheralTabs>
+    <peripheralTabs/>
     <WatchDisplayFormat>1</WatchDisplayFormat>
     <LocalDisplayFormat>1</LocalDisplayFormat>
     <debugLayout/>

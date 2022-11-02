@@ -10,7 +10,7 @@ ProjectPath            :=./
 IntermediateDirectory  :=Obj
 OutDir                 :=$(IntermediateDirectory)
 User                   :=yuanym
-Date                   :=27/10/2022
+Date                   :=02/11/2022
 CDKPath                :=D:/C-Sky/CDK
 ToolchainPath          :=D:/C-Sky/CDKRepo/Toolchain/XTGccElfNewlib/V2.2.4/R/
 LinkerName             :=riscv64-unknown-elf-gcc
@@ -65,8 +65,8 @@ CC       :=riscv64-unknown-elf-gcc
 AS       :=riscv64-unknown-elf-gcc
 OBJDUMP  :=riscv64-unknown-elf-objdump
 OBJCOPY  :=riscv64-unknown-elf-objcopy
-CXXFLAGS := $(PreprocessorSwitch)USE_APT32F173X_DEMO $(PreprocessorSwitch)USE_APT32F173X_CHIP $(PreprocessorSwitch)USE_APT32F173X_EVB $(PreprocessorSwitch)USE_APT_CONSOLE $(PreprocessorSwitch)USE_APT_CSI $(PreprocessorSwitch)USE_SDK_173X  -Og  -g3  -ffunction-sections -Wno-unused-function -Og  -g  -Wall  -ffunction-sections -nostdlib -Wpointer-arith -Wl,-EL -fdata-sections -fdata-sections -g $(PreprocessorSwitch)CONFIG_ARCH_INTERRUPTSTACK=1024 $(PreprocessorSwitch)CONFIG_DEBUG_MODE=1 $(PreprocessorSwitch)CONFIG_KERNEL_NONE=1 $(PreprocessorSwitch)CONFIG_SUPPORT_TSPEND=1 $(PreprocessorSwitch)CONFIG_XIP=1   -mabi=ilp32d -mtune=e906 -march=rv32imafdcpzpsfoperand_xtheade   -Og  -g3  -ffunction-sections 
-CFLAGS   := $(PreprocessorSwitch)USE_APT32F173X_DEMO $(PreprocessorSwitch)USE_APT32F173X_CHIP $(PreprocessorSwitch)USE_APT32F173X_EVB $(PreprocessorSwitch)USE_APT_CONSOLE $(PreprocessorSwitch)USE_APT_CSI $(PreprocessorSwitch)USE_SDK_173X  -Og  -g3  -ffunction-sections -Wno-unused-function -Og  -g  -Wall  -ffunction-sections -nostdlib -Wpointer-arith -Wl,-EL -fdata-sections -fdata-sections -g $(PreprocessorSwitch)CONFIG_ARCH_INTERRUPTSTACK=1024 $(PreprocessorSwitch)CONFIG_DEBUG_MODE=1 $(PreprocessorSwitch)CONFIG_KERNEL_NONE=1 $(PreprocessorSwitch)CONFIG_SUPPORT_TSPEND=1 $(PreprocessorSwitch)CONFIG_XIP=1   -mabi=ilp32d -mtune=e906 -march=rv32imafdcpzpsfoperand_xtheade   -Og  -g3  -ffunction-sections 
+CXXFLAGS := $(PreprocessorSwitch)USE_APT32F173X_DEMO $(PreprocessorSwitch)USE_APT32F173X_CHIP $(PreprocessorSwitch)USE_APT32F173X_EVB $(PreprocessorSwitch)USE_APT_CONSOLE $(PreprocessorSwitch)USE_APT_CSI $(PreprocessorSwitch)USE_SDK_173X  -Og  -g3  -ffunction-sections -Wno-unused-function -Og  -g  -Wall  -ffunction-sections -nostdlib -Wpointer-arith -Wl,-EL -fdata-sections -fdata-sections -g $(PreprocessorSwitch)CONFIG_ARCH_INTERRUPTSTACK=1024 $(PreprocessorSwitch)CONFIG_DEBUG_MODE=1 $(PreprocessorSwitch)CONFIG_KERNEL_NONE=1 $(PreprocessorSwitch)CONFIG_SUPPORT_TSPEND=1 $(PreprocessorSwitch)CONFIG_XIP=1   -mabi=ilp32d -mtune=e906 -march=rv32imafdcpzpsfoperand_xtheade   -Og  -g3 
+CFLAGS   := $(PreprocessorSwitch)USE_APT32F173X_DEMO $(PreprocessorSwitch)USE_APT32F173X_CHIP $(PreprocessorSwitch)USE_APT32F173X_EVB $(PreprocessorSwitch)USE_APT_CONSOLE $(PreprocessorSwitch)USE_APT_CSI $(PreprocessorSwitch)USE_SDK_173X  -Og  -g3  -ffunction-sections -Wno-unused-function -Og  -g  -Wall  -ffunction-sections -nostdlib -Wpointer-arith -Wl,-EL -fdata-sections -fdata-sections -g $(PreprocessorSwitch)CONFIG_ARCH_INTERRUPTSTACK=1024 $(PreprocessorSwitch)CONFIG_DEBUG_MODE=1 $(PreprocessorSwitch)CONFIG_KERNEL_NONE=1 $(PreprocessorSwitch)CONFIG_SUPPORT_TSPEND=1 $(PreprocessorSwitch)CONFIG_XIP=1   -mabi=ilp32d -mtune=e906 -march=rv32imafdcpzpsfoperand_xtheade   -Og  -g3 
 ASFLAGS  := $(PreprocessorSwitch)USE_APT32F173X_DEMO $(PreprocessorSwitch)USE_APT32F173X_CHIP $(PreprocessorSwitch)USE_APT32F173X_EVB $(PreprocessorSwitch)USE_APT_CONSOLE $(PreprocessorSwitch)USE_APT_CSI $(PreprocessorSwitch)USE_SDK_173X   -Wa,--gdwarf2 $(PreprocessorSwitch)CONFIG_ARCH_INTERRUPTSTACK=1024 $(PreprocessorSwitch)CONFIG_DEBUG_MODE=1 $(PreprocessorSwitch)CONFIG_KERNEL_NONE=1 $(PreprocessorSwitch)CONFIG_SUPPORT_TSPEND=1 $(PreprocessorSwitch)CONFIG_XIP=1   -mabi=ilp32d -mtune=e906 -march=rv32imafdcpzpsfoperand_xtheade   -Wa,--gdwarf2 
 
 

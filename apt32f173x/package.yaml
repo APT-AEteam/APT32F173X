@@ -29,8 +29,8 @@ build_config:
     - include
     - ./
   internal_include: 
-  cflag: -Og  -g3  -ffunction-sections
-  cxxflag: -Og  -g3  -ffunction-sections
+  cflag: -Og  -g3
+  cxxflag: -Og  -g3
   asmflag: -Wa,--gdwarf2
   define: 
   libs: 
