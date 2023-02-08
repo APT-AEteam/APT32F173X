@@ -190,12 +190,14 @@ typedef enum{
 	DMA_CH0EN_SR	= (0x01ul << 0),
 	DMA_CH1EN_SR	= (0x01ul << 1),
 	DMA_CH2EN_SR	= (0x01ul << 2),
-	DMA_CH3EN_SR	= (0x01ul << 3)
+	DMA_CH3EN_SR	= (0x01ul << 3),
+	DMA_CH4EN_SR	= (0x01ul << 4),
+	DMA_CH5EN_SR	= (0x01ul << 5),
 }dma_cesr_e;
 
-/******************************************************************************
-* ISR: Interrupt Status Register
-******************************************************************************/
+///******************************************************************************
+//* ISR: Interrupt Status Register
+//******************************************************************************/
 typedef enum{
 	DMA_CH0_LTCIT_SR	= (0x01ul << 0),
 	DMA_CH1_LTCIT_SR	= (0x01ul << 1),
@@ -208,10 +210,8 @@ typedef enum{
 	DMA_CH2_TCIT_SR		= (0x01ul << 18),
 	DMA_CH3_TCIT_SR		= (0x01ul << 19),
 	DMA_CH4_TCIT_SR		= (0x01ul << 20),
-	DMA_CH5_TCIT_SR		= (0x01ul << 21)
+	DMA_CH5_TCIT_SR		= (0x01ul << 21),
 }dma_isr_e;
-
-
 /******************************************************************************
 * ICR: Interrupt Clear Register
 ******************************************************************************/
@@ -219,35 +219,11 @@ typedef enum{
 	DMA_CH0_IT		= (0x01ul << 0),
 	DMA_CH1_IT		= (0x01ul << 1),
 	DMA_CH2_IT		= (0x01ul << 2),
-	DMA_CH3_IT		= (0x01ul << 3)
+	DMA_CH3_IT		= (0x01ul << 3),
+	DMA_CH4_IT		= (0x01ul << 4),
+	DMA_CH5_IT		= (0x01ul << 5),
 }dma_icr_e;
 
-/*****************************************************************************
- ************************** DMA Channel PARA Struct **************************
- *****************************************************************************/
-
-//typedef struct
-//{
-//	dma_linc_e		eSrcLinc;
-//	dma_linc_e		eSrcHinc;
-//	dma_linc_e		eDetLinc;
-//	dma_linc_e		eDetHinc;
-//	dma_dsize_e		eDsizeWidth;
-//	dma_reload_e	eReloadEn;
-//	dma_smode_e		eTranMode;	
-//	dma_tsize_e		eTsizeMult;
-//} csp_dma_ch_config_t;
-
-/******************************************************************************
-********************** DMA External Functions Declaration *********************
-******************************************************************************/
-//extern void csp_dma_set_ch_int(csp_dma_t *ptDmaBase, uint8_t byChnl, dma_int_e eDmaInt, bool bEnable) ;
-//extern void csp_dma_set_ch_tc(csp_dma_t *ptDmaBase, uint8_t byChnl, uint16_t hwLtc, uint16_t hwHtc) ;
-//extern void csp_dma_set_ch_saddr(csp_dma_t *ptDmaBase, uint8_t byChnl, uint32_t wSrcAddr, dma_linc_e eLinc, dma_hinc_e eHinc); 
-//extern void csp_dma_set_ch_daddr(csp_dma_t *ptDmaBase, uint8_t byChnl, uint32_t wDetAddr, dma_linc_e eLinc, dma_hinc_e eHinc); 
-//extern void csp_dma_set_ch(csp_dma_t *ptDmaBase, uint8_t byChnl, dma_dsize_e eDsize, dma_reload_e eReload, dma_smode_e eSmode, dma_tsize_e eTsize);
-//extern void csp_dma_ch_config(csp_dma_t *ptDmaBase, uint8_t byChnl, csp_dma_ch_config_t *ptConfig);
-//extern void csp_dma_ch_start(csp_dma_t *ptDmaBase, dma_req_e eReq, uint8_t byChnl, void *pSrcAddr, void *pDstAddr, uint16_t hwTranLen);
 /******************************************************************************
 ********************** DMA inline Functions Declaration ***********************
 ******************************************************************************/

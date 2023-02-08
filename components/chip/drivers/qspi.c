@@ -537,7 +537,7 @@ void csi_qspi_send_dma(csp_qspi_t *ptQspiBase, const void *pData, uint16_t hwSiz
 	//csp_qspi_set_txdma_level(ptQspiBase, QSPI_DMA_TX_LEVEL15);//类似发送未满
 	//csp_qspi_set_txdma_enable(ptQspiBase, QSPI_TDMAE_EN);
 	csi_irq_enable((uint32_t *)QSPI);
-	csi_dma_ch_start(ptDmaBase, byDmaCh, (void *)pData, (void *)&(ptQspiBase->DRx[0]), hwSize);
+	csi_dma_ch_start(ptDmaBase, byDmaCh, (void *)pData, (void *)&(ptQspiBase->DRx[0]), hwSize,1);
 }
 
 /** \brief receive data of qspi by DMA
@@ -553,7 +553,7 @@ void csi_qspi_recv_dma(csp_qspi_t *ptQspiBase, void *pbyRecv, uint16_t hwSize,cs
 {
 	csp_qspi_set_rxdma_level(ptQspiBase, QSPI_DMA_RX_LEVEL1);//类似接收非空
 	csp_qspi_set_rxdma_enable(ptQspiBase, QSPI_RDMAE_EN);
-	csi_dma_ch_start(ptDmaBase, byDmaCh, (void *)&(ptQspiBase->DRx[0]),(void *)pbyRecv, hwSize);
+	csi_dma_ch_start(ptDmaBase, byDmaCh, (void *)&(ptQspiBase->DRx[0]),(void *)pbyRecv, hwSize,1);
 }
 
 /** \brief qspi interrupt handle weak function
