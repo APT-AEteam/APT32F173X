@@ -17,7 +17,7 @@
 #include <stdio.h>
 #include <drv/etb.h>
 #include <drv/common.h>
-#include <csp_uart.h>
+#include <csp.h>
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -64,7 +64,7 @@ typedef enum{
  */
 typedef enum{
 	DMA_TRANS_ONCE		= 0,
-	DMA_TRANS_CONTINUOUS				
+	DMA_TRANS_CONTINU				
 }csi_dma_smode_e;
 
 /**
@@ -73,7 +73,8 @@ typedef enum{
  */
 typedef enum{
 	DMA_TSIZE_ONE_DSIZE	= 0,
-	DMA_TSIZE_FOUR_DSIZE
+	DMA_TSIZE_FOUR_DSIZE,
+	
 }csi_dma_tsize_e;
 
 /**
@@ -90,12 +91,12 @@ typedef enum{
  * \brief    ETB channel id(number 0~31)
  */
 typedef enum {
-    DMA_CH0			= 0,		//etb channel 0 id number
-	DMA_CH1,						//etb channel 1 id number
-	DMA_CH2,						//etb channel 2 id number
-	DMA_CH3,						//etb channel 3 id number
-	DMA_CH4,
-	DMA_CH5
+    DMA_CH0				= 0,	//dma channel 0 
+	DMA_CH1,					//dma channel 1 
+	DMA_CH2,					//dma channel 2 
+	DMA_CH3,					//dma channel 3 
+	DMA_CH4,					//dma channel 4 
+	DMA_CH5,					//dma channel 5 
 } csi_dma_ch_e;
 
 /**
@@ -103,18 +104,18 @@ typedef enum {
  * \brief    DMA interrupt message
  */
 typedef enum {
-    DMA_CH0_LTCIT_MSG	= (0x01ul << 0),	//etb channel 0 LTCIT messsage
-	DMA_CH1_LTCIT_MSG	= (0x01ul << 1),	//etb channel 1 LTCIT messsage
-	DMA_CH2_LTCIT_MSG	= (0x01ul << 2),	//etb channel 2 LTCIT messsage
-	DMA_CH3_LTCIT_MSG	= (0x01ul << 3),	//etb channel 3 LTCIT messsage
-	DMA_CH4_LTCIT_MSG	= (0x01ul << 4),	//etb channel 4 LTCIT messsage
-	DMA_CH5_LTCIT_MSG	= (0x01ul << 5),	//etb channel 5 LTCIT messsage
-	DMA_CH0_TCIT_MSG	= (0x01ul << 6),	//etb channel 0 TCIT messsage
-	DMA_CH1_TCIT_MSG	= (0x01ul << 7),	//etb channel 1 TCIT messsage
-	DMA_CH2_TCIT_MSG	= (0x01ul << 8),	//etb channel 2 TCIT messsage
-	DMA_CH3_TCIT_MSG	= (0x01ul << 9),	//etb channel 3 TCIT messsage
-	DMA_CH4_TCIT_MSG	= (0x01ul << 10),	//etb channel 4 TCIT messsage
-	DMA_CH5_TCIT_MSG	= (0x01ul << 11),	//etb channel 5 TCIT messsage
+    DMA_CH0_LTCIT_MSG	= (0x01ul << 0),	//dma channel 0 LTCIT messsage
+	DMA_CH1_LTCIT_MSG	= (0x01ul << 1),	//dma channel 1 LTCIT messsage
+	DMA_CH2_LTCIT_MSG	= (0x01ul << 2),	//dma channel 2 LTCIT messsage
+	DMA_CH3_LTCIT_MSG	= (0x01ul << 3),	//dma channel 3 LTCIT messsage
+	DMA_CH4_LTCIT_MSG	= (0x01ul << 4),	//dma channel 4 LTCIT messsage
+	DMA_CH5_LTCIT_MSG	= (0x01ul << 5),	//dma channel 5 LTCIT messsage
+	DMA_CH0_TCIT_MSG	= (0x01ul << 16),	//dma channel 0 TCIT messsage
+	DMA_CH1_TCIT_MSG	= (0x01ul << 17),	//dma channel 1 TCIT messsage
+	DMA_CH2_TCIT_MSG	= (0x01ul << 18),	//dma channel 2 TCIT messsage
+	DMA_CH3_TCIT_MSG	= (0x01ul << 19),	//dma channel 3 TCIT messsage
+	DMA_CH4_TCIT_MSG	= (0x01ul << 20),	//dma channel 4 TCIT messsage
+	DMA_CH5_TCIT_MSG	= (0x01ul << 21),	//dma channel 5 TCIT messsage
 } csi_dma_int_msg_e;
 
 /**
@@ -144,7 +145,6 @@ typedef struct
 	uint32_t	wInt;			//interrupt  
 } csi_dma_ch_config_t;
 
-
 /** 
   \brief 	   Init dma channel parameter config structure
   \param[in]   ptDmaBase	pointer of dma reg structure.
@@ -154,17 +154,27 @@ typedef struct
  */ 
 csi_error_t csi_dma_ch_init(csp_dma_t *ptDmaBase, csi_dma_ch_e eDmaCh, csi_dma_ch_config_t *ptChCfg);
 
-/**
-  \brief       Start a dma channel
-  \param[in]   ptDmaBase	pointer of dma reg structure.
-  \param[in]   eDmaCh		channel num of dma(6 channel: 0->5)
-  \param[in]   pSrcAddr     transfer source address
-  \param[in]   pDstAddr     transfer destination address
-  \param[in]   wLen       transfer length (unit: bytes), if set data_width is 16, the length should be the multiple of 2, and
-                            if set data_width is 32, the length should be the multiple of 4
-  \return      error code \ref csi_error_t
-*/
-csi_error_t csi_dma_ch_start(csp_dma_t *ptDmaBase, csi_dma_ch_e eDmaCh, void *pSrcAddr, void *pDstAddr, uint32_t wLen);
+/** \brief dma channel transfer start
+ * 
+ *  \param[in] ptDmaBase: pointer of dma reg structure.
+ *  \param[in] eDmaCh: channel num of dma(6channel: 0->5)
+ *  \param[in] pSrcAddr: src addr of transfer 
+ *  \param[in] pDstAddr: dst addr of transfer 
+ *  \param[in] hwHTranNum: high transfer num, hwHTranNum <= 0xfff; transfer number = hwHTranNum * hwLTranNum(TSIZE = ONCE)
+ *  \param[in] hwLTranNum: low transfer num,  hwLTranNum <= 0xfff; transfer number = hwHTranNum * hwLTranNum(TSIZE = ONCE)
+ * 			   transfer length (unit: bytes), if set data_width is 16, the length should be the multiple of 2, and
+			   if set data_width is 32, the length should be the multiple of 4
+ *  \return error code \ref csi_error_t
+ */
+csi_error_t csi_dma_ch_start(csp_dma_t *ptDmaBase, csi_dma_ch_e eDmaCh, void *pSrcAddr, void *pDstAddr, uint16_t hwHTranNum, uint16_t hwLTranNum);
+
+/** \brief dma channel transfer restart
+ * 
+ *  \param[in] ptDmaBase: pointer of dma reg structure.
+ *  \param[in] eDmaCh: channel num of dma(6channel: 0->5)
+ *  \return error code \ref csi_error_t
+ */
+csi_error_t csi_dma_ch_restart(csp_dma_t *ptDmaBase, csi_dma_ch_e eDmaCh);
 
 /** 
   \brief 	   enable/disable dma interrupt 
@@ -191,6 +201,7 @@ void csi_dma_ch_stop(csp_dma_t *ptDmaBase, csi_dma_ch_e eDmaCh);
 */
 void csi_dma_soft_rst(csp_dma_t *ptDmaBase);
 
+
 /** 
   \brief 	   get dma idx 
   \param[in]   ptDmaBase	pointer of uart register structure
@@ -200,8 +211,7 @@ uint8_t csi_get_dma_idx(csp_dma_t *ptDmaBase);
 
 /** 
   \brief 	   get dma interrupt message and (D0 not)clear message
-  \param[in]   ptDmaBase	pointer of uart register structure
-  \param[in]   eDmaCh		dma channel id number, channel 0 -> 5
+  \param[in]   eDmaCh		dma channel number, channel 0->5
   \param[in]   bClrEn		bClrEn: clear dma interrupt message enable; ENABLE: clear , DISABLE: Do not clear
   \return 	   bool type true/false
  */ 

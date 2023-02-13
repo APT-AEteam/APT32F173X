@@ -1,13 +1,14 @@
-/***********************************************************************//** 
- * \file  usart.c
- * \brief  head file of  csi usart
- * \copyright Copyright (C) 2015-2021 @ APTCHIP
- * <table>
- * <tr><th> Date  <th>Version	<th>Author  <th>Description
- * <tr><td> 2021-8-03 <td>V0.0	<td>ZJY   	<td>initial
- * </table>
- * *********************************************************************
-*/
+/*
+ * Copyright (C) 2017-2020 Alibaba Group Holding Limited
+ */
+
+/******************************************************************************
+ * @file     usart.h
+ * @brief    header file for usart driver
+ * @version  V1.0
+ * @date     08. Apr 2020
+ * @model    usart
+ ******************************************************************************/
 
 #ifndef _DRV_USART_H_
 #define _DRV_USART_H_
@@ -74,8 +75,8 @@ typedef enum {
  */
 typedef enum {
     USART_STOP_BITS_1	= 0,    //1 Stop bit (default)
-	USART_STOP_BITS_1_5,        //1.5 Stop bits for async mode, reserved for sync mode
-    USART_STOP_BITS_2,          //2 Stop bits
+	//USART_STOP_BITS_1_5,        //1.5 Stop bits for async mode, reserved for sync mode
+    USART_STOP_BITS_2  = 2 ,          //2 Stop bits
     
 } csi_usart_stop_bits_e;
 
@@ -153,7 +154,8 @@ typedef enum{
 	//receive
 	USART_RX_MODE_POLL		=	0,			//polling mode, no interrupt
 	USART_RX_MODE_INT_FIX	=	1,			//rx use interrupt mode(RXFIFO), receive assign(fixed) length data		
-	USART_RX_MODE_INT_DYN	=	2			//rx use interrupt mode(RXFIFO), receive a bunch of data(dynamic length data)
+	USART_RX_MODE_INT_DYN	=	2,			//rx use interrupt mode(RXFIFO), receive a bunch of data(dynamic length data)
+	USART_RX_MODE_INT		= 3				//rx use interrupt mode
 }csi_usart_work_e;
 
 /// \struct csi_usart_config_t
@@ -161,6 +163,7 @@ typedef enum{
 typedef struct {
 	uint32_t            wBaudRate;			//baud rate	
 	uint32_t            wInt;				//interrupt
+	uint16_t			hwRecvTo;			//receive timeout
 	uint8_t				byParity;           //parity type 
 	uint8_t				byDatabit;			//data bits
 	uint8_t				byStopbit;			//stop bits
@@ -169,6 +172,7 @@ typedef struct {
 	uint8_t				byTxMode;			//send mode: polling/interrupt
 	uint8_t				byRxMode;			//recv mode: polling/interrupt0/interrupt1
 	bool				bClkOutEn;			//enable usartclk out
+	bool				bRecvToEn;			//enable receive timeout
 } csi_usart_config_t;
 
 
@@ -271,19 +275,19 @@ csi_error_t csi_usart_dma_tx_init(csp_usart_t *ptUsartBase, csi_dma_ch_e eDmaCh,
   \brief 	   send data to usart transmitter, this function is dma mode
   \param[in]   ptUsartBase	pointer of usart register structure
   \param[in]   pData		pointer to buffer with data to send to usart transmitter.
-  \param[in]   wSize		number of data to send (byte).
+  \param[in]   wSize		number of data to send (byte), hwSize <= 0xfff.
   \return      error code \ref csi_error_t
  */
-void csi_usart_send_dma(csp_usart_t *ptUsartBase, const void *pData, uint8_t byDmaCh, uint16_t hwSize);
+csi_error_t csi_usart_send_dma(csp_usart_t *ptUsartBase, const void *pData, uint8_t byDmaCh, uint16_t hwSize);
 
 /** 
   \brief 	   receive data to usart transmitter, this function is dma mode
   \param[in]   ptUsartBase	pointer of usart register structure
   \param[in]   pData		pointer to buffer with data to send to usart transmitter.
-  \param[in]   wSize		number of data to send (byte).
+  \param[in]   wSize		number of data to send (byte), hwSize <= 0xfff.
   \return      error code \ref csi_error_t
  */
-void csi_usart_recv_dma(csp_usart_t *ptUsartBase, void *pData, uint8_t byDmaCh, uint16_t hwSize);
+csi_error_t csi_usart_recv_dma(csp_usart_t *ptUsartBase, void *pData, uint8_t byDmaCh, uint16_t hwSize);
 
 /**
   \brief       Query data from USART receiver FIFO, this function is blocking.

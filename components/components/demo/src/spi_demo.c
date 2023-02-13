@@ -785,7 +785,7 @@ void spi_dma_send(void)
 	tDmaConfig.byDetHinc 	= DMA_ADDR_CONSTANT;		//高位传输目标地址固定不变
 	tDmaConfig.byDataWidth 	= DMA_DSIZE_8_BITS;			//传输数据宽度8bit
 	tDmaConfig.byReload 	= DMA_RELOAD_DISABLE;		//禁止自动重载
-	tDmaConfig.byTransMode 	= DMA_TRANS_CONTINUOUS;		//DMA服务模式(传输模式)，连续服务
+	tDmaConfig.byTransMode 	= DMA_TRANS_CONTINU;		//DMA服务模式(传输模式)，连续服务
 	tDmaConfig.byTsizeMode  = DMA_TSIZE_ONE_DSIZE;		//传输数据大小，一个 DSIZE , 即DSIZE定义大小
 	tDmaConfig.byReqMode	= DMA_REQ_SOFTWARE;			//DMA请求模式，软件请求（软件触发）
 	tDmaConfig.wInt 		= DMA_INTSRC_NONE;			//不使用中断
@@ -813,7 +813,7 @@ void spi_dma_send(void)
 	
 	
 	csi_spi_nss_low(PA4);
-	csi_dma_ch_start(DMA0, byChnl, (void *)bySrcBuf, (void *)&(SPI0->DR), 18);
+	csi_dma_ch_start(DMA0, byChnl, (void *)bySrcBuf, (void *)&(SPI0->DR), 18,1);
 	//while(DMA0->MTRX & 0x02);
 	//while(DMA0->SRX & 0xfff);
 	//while( !(SPI0->SR & SPI_TFE) );
@@ -825,7 +825,7 @@ void spi_dma_send(void)
 	while(1)
 	{
 		csi_spi_nss_low(PA4);
-		csi_dma_ch_start(DMA0, byChnl, (void *)bySrcBuf, (void *)&(SPI0->DR), 18);
+		csi_dma_ch_start(DMA0, byChnl, (void *)bySrcBuf, (void *)&(SPI0->DR), 18,1);
 		while( (SPI0->SR & SPI_BSY) );
 		csi_spi_nss_high(PA4);
 		nop;
@@ -853,7 +853,7 @@ void spi_dma_send_receive(void)
 	tDmaConfig.byDetHinc 	= DMA_ADDR_CONSTANT;		//高位传输目标地址固定不变
 	tDmaConfig.byDataWidth 	= DMA_DSIZE_8_BITS;			//传输数据宽度8bit
 	tDmaConfig.byReload 	= DMA_RELOAD_DISABLE;		//禁止自动重载
-	tDmaConfig.byTransMode 	= DMA_TRANS_CONTINUOUS;		    //DMA服务模式(传输模式)，连续服务
+	tDmaConfig.byTransMode 	= DMA_TRANS_CONTINU;		    //DMA服务模式(传输模式)，连续服务
 	tDmaConfig.byTsizeMode  = DMA_TSIZE_ONE_DSIZE;		//传输数据大小，一个 DSIZE , 即DSIZE定义大小
 	tDmaConfig.byReqMode	= DMA_REQ_SOFTWARE;			//DMA请求模式，软件请求（软件触发）
 	tDmaConfig.wInt 		= DMA_INTSRC_NONE;			//不使用中断
@@ -865,7 +865,7 @@ void spi_dma_send_receive(void)
 	tDmaConfig1.byDetHinc 	= DMA_ADDR_CONSTANT;		//高位传输目标地址固定不变
 	tDmaConfig1.byDataWidth = DMA_DSIZE_8_BITS;			//传输数据宽度8bit
 	tDmaConfig1.byReload 	= DMA_RELOAD_DISABLE;		//禁止自动重载
-	tDmaConfig1.byTransMode = DMA_TRANS_CONTINUOUS;		//DMA服务模式(传输模式)，连续服务
+	tDmaConfig1.byTransMode = DMA_TRANS_CONTINU;		//DMA服务模式(传输模式)，连续服务
 	tDmaConfig1.byTsizeMode  = DMA_TSIZE_ONE_DSIZE;		//传输数据大小，一个 DSIZE , 即DSIZE定义大小
 	tDmaConfig1.byReqMode	= DMA_REQ_SOFTWARE;			//DMA请求模式，软件请求（软件触发）
 	tDmaConfig1.wInt 		= DMA_INTSRC_NONE;			//不使用中断
@@ -896,8 +896,8 @@ void spi_dma_send_receive(void)
 	
 	
 	csi_spi_nss_low(PA4);
-	csi_dma_ch_start(DMA0, byChnl, (void *)bySrcBuf, (void *)&(SPI0->DR), 17);//send
-	csi_dma_ch_start(DMA0, byChnl1, (void *)&(SPI0->DR), (void *)byDesBuf,17);//receive
+	csi_dma_ch_start(DMA0, byChnl, (void *)bySrcBuf, (void *)&(SPI0->DR), 17,1);//send
+	csi_dma_ch_start(DMA0, byChnl1, (void *)&(SPI0->DR), (void *)byDesBuf,17,1);//receive
 	while( (SPI0->SR & SPI_BSY) );
 	csi_spi_nss_high(PA4);
 	

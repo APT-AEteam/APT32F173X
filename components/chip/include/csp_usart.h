@@ -120,10 +120,6 @@ typedef enum{
 	US_STPBRK		= (0x01ul << 10),
 	US_STTTO		= (0x01ul << 11),
 	US_SENDA		= (0x01ul << 12),
-	US_FIFO_EN		= (0x01ul << 13),
-	US_RXFIFO_1_8	= (0x01ul << 14),
-	US_RXFIFO_1_4	= (0x02ul << 14),
-	US_RXFIFO_1_2	= (0x04ul << 14),
 	
 	//LIN
 	LIN_STHEADER	= (0x01ul << 16),		//Lin Start Header
@@ -244,20 +240,20 @@ typedef enum{
 	US_DSB_MSB
 }usart_dsb_e;
 
-//#define US_FIFO_EN_POS		(28)		//FIFO Enable
-//#define US_FIFO_EN_MSK		(0x01ul << US_FIFO_EN_POS)
-//typedef enum{
-//	US_FIFO_DIS		= 0,
-//	US_FIFO_EN
-//}usart_fifoen_e;
-//
-//#define US_RXIFSEL_POS		(29)			//Receiver FIFO level     
-//#define US_RXIFSEL_MSK		(0x07ul << US_RXIFSEL_POS)
-//typedef enum{
-//	US_RXFIFO_1_8		= 0x01ul,
-//	US_RXFIFO_1_4		= 0x02ul,
-//	US_RXFIFO_1_2		= 0x04ul
-//}usart_rxfifo_e;
+#define US_FIFO_EN_POS		(28)		//FIFO Enable
+#define US_FIFO_EN_MSK		(0x01ul << US_FIFO_EN_POS)
+typedef enum{
+	US_FIFO_DIS		= 0,
+	US_FIFO_EN
+}usart_fifoen_e;
+
+#define US_RXIFSEL_POS		(29)			//Receiver FIFO level     
+#define US_RXIFSEL_MSK		(0x07ul << US_RXIFSEL_POS)
+typedef enum{
+	US_RXFIFO_1_8		= 0x01ul,
+	US_RXFIFO_1_4		= 0x02ul,
+	US_RXFIFO_1_2		= 0x04ul
+}usart_rxfifo_e;
 
 /******************************************************************************
 * IMSCR, RISR, MISR, ICR SR: USART Interrupt Registers and Status Registers 
@@ -492,10 +488,10 @@ static inline void csp_usart_set_parity(csp_usart_t *ptUsartBase, usart_par_e eP
 {
 	ptUsartBase->MR = (ptUsartBase->MR & ~US_PAR_MSK ) | (eParity << US_PAR_POS);
 }
-//static inline void csp_usart_set_fifo(csp_usart_t *ptUsartBase, usart_fifoen_e eFifoEn, usart_rxfifo_e eFifoSel)
-//{
-//	ptUsartBase->MR = (ptUsartBase->MR & ~(US_FIFO_EN_MSK | US_RXIFSEL_MSK)) | (eFifoEn << US_FIFO_EN_POS) | (eFifoSel << US_RXIFSEL_POS);
-//}
+static inline void csp_usart_set_fifo(csp_usart_t *ptUsartBase, usart_fifoen_e eFifoEn, usart_rxfifo_e eFifoSel)
+{
+	ptUsartBase->MR = (ptUsartBase->MR & ~(US_FIFO_EN_MSK | US_RXIFSEL_MSK)) | (eFifoEn << US_FIFO_EN_POS) | (eFifoSel << US_RXIFSEL_POS);
+}
 static inline void csp_usart_set_format(csp_usart_t *ptUsartBase, usart_chrl_e eBits, usart_par_e eParity, usart_bstop_e eStop)
 {
 	if(eBits == US_BIT9)
@@ -518,7 +514,8 @@ static inline void csp_usart_set_smart_card(csp_usart_t *ptUsartBase, usart_smar
 }
 static inline void csp_usart_set_brdiv(csp_usart_t *ptUsartBase,uint32_t wBaud, uint32_t wUsFreq)
 {
-	ptUsartBase->BRGR = US_BAUD_CD(wUsFreq/wBaud) | US_BAUD_FRAC(((wUsFreq << 4)/115200) - ((wUsFreq/wBaud) << 4));
+	//ptUsartBase->BRGR = US_BAUD_CD(wUsFreq/wBaud) | US_BAUD_FRAC(((wUsFreq << 4)/115200) - ((wUsFreq/wBaud) << 4));
+	ptUsartBase->BRGR = wUsFreq/wBaud;
 }
 
 static inline void csp_usart_set_rtor(csp_usart_t *ptUsartBase, uint16_t hwTimer)
