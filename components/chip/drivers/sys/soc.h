@@ -985,7 +985,7 @@ typedef enum{
 #define APB_SYS_BASE  	    (APB_PERI_BASE + 0x11000)
 #define APB_ETCB_BASE    	(APB_PERI_BASE + 0x12000)
 #define APB_ADC0_BASE    	(APB_PERI_BASE + 0x30000)
-#define APB_ADC1_BASE    	(APB_PERI_BASE + 0x30000)
+#define APB_ADC1_BASE    	(APB_PERI_BASE + 0x31000)
 #define APB_CNTA_BASE     	(APB_PERI_BASE + 0x50000)
 
 #define APB_BT0_BASE       	(APB_PERI_BASE + 0x51000)
