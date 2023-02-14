@@ -8,11 +8,20 @@
     </File>
   </VirtualDirectory>
   <MergedToYaml>yes</MergedToYaml>
-  <PackPathes>$(ProjectPath)/../../APT32F173X</PackPathes>
   <Dependencies Name="BuildSet"/>
   <VendorInfo>
     <VendorName>new_soc_project_c_solution_e906fdp</VendorName>
   </VendorInfo>
+  <MonitorProgress>
+    <DebugLaunch>87</DebugLaunch>
+  </MonitorProgress>
+  <ToolsConfig>
+    <Compiler>
+      <Name>XTGccElfNewlib</Name>
+      <Version>latest</Version>
+    </Compiler>
+  </ToolsConfig>
+  <PackPathes>$(ProjectPath)/../board|$(ProjectPath)/../components|</PackPathes>
   <BuildConfigs>
     <BuildConfig Name="BuildSet">
       <Target>
@@ -151,6 +160,7 @@
         <StopAt>yes</StopAt>
         <StopAtText>main</StopAtText>
         <InitFile>$(ProjectPath)/script/gdb.init</InitFile>
+        <PreInit/>
         <AfterLoadFile/>
         <AutoRun>yes</AutoRun>
         <ResetType>Soft Reset</ResetType>
@@ -174,7 +184,7 @@
           <ResetType>Soft Reset</ResetType>
           <SoftResetVal>2</SoftResetVal>
           <RTOSType>Bare Metal</RTOSType>
-          <DownloadToFlash>no</DownloadToFlash>
+          <DownloadToFlash>yes</DownloadToFlash>
           <ResetAfterConnect>yes</ResetAfterConnect>
           <GDBName/>
           <GDBServerType>Local</GDBServerType>
@@ -184,6 +194,7 @@
           <RemoteICEEnablePCSampling>yes</RemoteICEEnablePCSampling>
           <RemoteICESamplingPort>1026</RemoteICESamplingPort>
           <Version>latest</Version>
+          <SupportRemoteICEAsyncDebug>no</SupportRemoteICEAsyncDebug>
         </ConfigICE>
         <ConfigSIM>
           <SIMTarget/>
@@ -207,25 +218,23 @@
       </Debug>
       <Flash>
         <InitFile>$(ProjectPath)/script/flash.init</InitFile>
+        <PreInit/>
         <Erase>Erase Sectors</Erase>
         <Algorithms Path=""/>
-        <Program>no</Program>
-        <Verify>no</Verify>
-        <ResetAndRun>no</ResetAndRun>
+        <Program>yes</Program>
+        <Verify>yes</Verify>
+        <ResetAndRun>yes</ResetAndRun>
         <ResetType>Soft Reset</ResetType>
-        <SoftResetVal/>
+        <SoftResetVal>2</SoftResetVal>
         <External>no</External>
         <Command/>
         <Arguments/>
       </Flash>
     </BuildConfig>
   </BuildConfigs>
-  <MonitorProgress>
-    <DebugLaunch>40</DebugLaunch>
-  </MonitorProgress>
   <DebugSessions>
     <watchExpressions/>
-    <memoryExpressions>;;;</memoryExpressions>
+    <memoryExpressions>0x00;;;</memoryExpressions>
     <statistics>;;32;;MHZ;</statistics>
     <peripheralTabs/>
     <WatchDisplayFormat>1</WatchDisplayFormat>

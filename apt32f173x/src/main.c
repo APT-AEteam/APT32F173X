@@ -41,7 +41,7 @@ int main()
 	
 	while(1)
 	{
-	//	mdelay(100);						//delay 100ms
+		mdelay(100);						//delay 100ms
 		csi_pin_toggle(PA6);				//PA06 toggle
 	}
 	

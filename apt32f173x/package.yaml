@@ -1,6 +1,6 @@
 hw_info:
   cpu_id: ""
-  cpu_name: e906fdp
+  cpu_name: e906fp
   vendor_name: ""
   chip_name: ""
   board_name: ""
@@ -29,8 +29,8 @@ build_config:
     - include
     - ./
   internal_include: 
-  cflag: -Og  -g3
-  cxxflag: -Og  -g3
+  cflag: -Og  -g
+  cxxflag: -Og  -g
   asmflag: -Wa,--gdwarf2
   define: 
   libs: 
