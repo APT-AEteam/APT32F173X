@@ -14,6 +14,7 @@
   </VendorInfo>
   <MonitorProgress>
     <DebugLaunch>87</DebugLaunch>
+    <FlashOperate>43</FlashOperate>
   </MonitorProgress>
   <ToolsConfig>
     <Compiler>
@@ -22,6 +23,18 @@
     </Compiler>
   </ToolsConfig>
   <PackPathes>$(ProjectPath)/../board|$(ProjectPath)/../components|</PackPathes>
+  <DebugSessions>
+    <watchExpressions>SYSCON:1</watchExpressions>
+    <memoryExpressions>0x00;;;</memoryExpressions>
+    <statistics>;;32;;MHZ;</statistics>
+    <peripheralTabs>
+      <Tab disFormat="Hex">SYSCON</Tab>
+    </peripheralTabs>
+    <WatchDisplayFormat>1</WatchDisplayFormat>
+    <LocalDisplayFormat>1</LocalDisplayFormat>
+    <debugLayout/>
+    <memoryTabColSizeExpressions>100:8;100:8;100:8;100:8;</memoryTabColSizeExpressions>
+  </DebugSessions>
   <BuildConfigs>
     <BuildConfig Name="BuildSet">
       <Target>
@@ -84,7 +97,7 @@
             <Init>yes</Init>
           </RAM5>
         </RAMBank>
-        <CPU>e906fdp</CPU>
+        <CPU>e906fp</CPU>
         <UseMiniLib>yes</UseMiniLib>
         <Endian>little</Endian>
         <UseHardFloat>no</UseHardFloat>
@@ -95,8 +108,8 @@
       <Output>
         <OutputName>$(ProjectName)</OutputName>
         <Type>Executable</Type>
-        <CreateHexFile>no</CreateHexFile>
-        <CreateBinFile>no</CreateBinFile>
+        <CreateHexFile>yes</CreateHexFile>
+        <CreateBinFile>yes</CreateBinFile>
         <Preprocessor>no</Preprocessor>
         <Disassmeble>yes</Disassmeble>
         <CallGraph>no</CallGraph>
@@ -189,7 +202,7 @@
           <GDBName/>
           <GDBServerType>Local</GDBServerType>
           <OtherFlags/>
-          <ICEEnablePCSampling>yes</ICEEnablePCSampling>
+          <ICEEnablePCSampling>no</ICEEnablePCSampling>
           <ICESamplingFreq>1000</ICESamplingFreq>
           <RemoteICEEnablePCSampling>yes</RemoteICEEnablePCSampling>
           <RemoteICESamplingPort>1026</RemoteICESamplingPort>
@@ -232,14 +245,4 @@
       </Flash>
     </BuildConfig>
   </BuildConfigs>
-  <DebugSessions>
-    <watchExpressions/>
-    <memoryExpressions>0x00;;;</memoryExpressions>
-    <statistics>;;32;;MHZ;</statistics>
-    <peripheralTabs/>
-    <WatchDisplayFormat>1</WatchDisplayFormat>
-    <LocalDisplayFormat>1</LocalDisplayFormat>
-    <debugLayout/>
-    <memoryTabColSizeExpressions>100:8;100:8;100:8;100:8;</memoryTabColSizeExpressions>
-  </DebugSessions>
 </Project>
