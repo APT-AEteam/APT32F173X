@@ -49,7 +49,7 @@ static csi_error_t soc_sleep(csi_pm_mode_e mode)
 	switch (mode)
 	{
 		case (PM_MODE_SLEEP):
-			__WFI();
+			__DOZE();
 			break;
 		case (PM_MODE_DEEPSLEEP):
 			__STOP();
