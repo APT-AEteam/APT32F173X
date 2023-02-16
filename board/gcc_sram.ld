@@ -25,7 +25,7 @@
 MEMORY
 {
 	ROM(RWX)  : ORIGIN = 0x00000000,  LENGTH = 128K
-	RAM(RWX)  : ORIGIN = 0x20000000,  LENGTH = 16K
+	RAM(RWX)  : ORIGIN = 0x20000000,  LENGTH = 32K
 	RAM1(RWX) : ORIGIN = 0x20004000,  LENGTH = 16K
 }
 
@@ -35,8 +35,8 @@ __heap_size  = 0x00;							/* heap for dynamically allocated memory */
 /*__stack_top = ORIGIN(RAM) + LENGTH(RAM);*/
 /*__stack_start = __stack_top - STACK_SIZE - __heap_size; */ 
 
-REGION_ALIAS("REGION_TEXT",    ROM);			/* Assign alias names to memory regions */
-REGION_ALIAS("REGION_RODATA",  ROM);
+REGION_ALIAS("REGION_TEXT",    RAM);			/* Assign alias names to memory regions */
+REGION_ALIAS("REGION_RODATA",  RAM);
 REGION_ALIAS("REGION_DATA",    RAM);
 REGION_ALIAS("REGION_BSS",     RAM);
 REGION_ALIAS("REGION_FUNC",   RAM1);
