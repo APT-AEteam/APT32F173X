@@ -66,7 +66,6 @@ extern csp_i2c_t  		*I2C0;
 extern csp_can_t 		*CAN0; 
 extern csp_cnta_t  		*CA0;
 extern csp_gpta_t 		*GPTA0,*GPTA1,*GPTA2,*GPTA3;
-//extern csp_ept_t 		*EPT0;
 extern csp_lpt_t 		*LPT;
 extern csp_wwdt_t 		*WWDT;
 extern csp_led_t 		*LED;
