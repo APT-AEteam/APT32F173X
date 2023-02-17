@@ -18,6 +18,7 @@
 ///						for LVD module
 ///*************************************************************************
 
+
 typedef enum{
 	LVD_21 = 0,
 	LVD_24,
@@ -111,40 +112,23 @@ uint32_t csi_get_lvrlevel(void);
 ///						for Reset Source check
 ///*************************************************************************
 
-//typedef enum{
-//	PO_RST_POS			= 0,
-//	LV_RST_POS,
-//	EXT_RST_POS,
-//	SHD_WKUP_RST_POS	= 3,
-//	IWDT_RST_POS,
-//	ESCM_RST_POS,
-//	EMCM_RST_POS		= 6,
-//	CPU_RST_POS,
-//	SW_RST_POS,
-//	CPUFAULT_RST_POS,
-//	SRAM_RST_POS 		= 11,
-//	EFL_RST_POS,
-//	WWDT_RST_POS,
-//	SNOOZE_WKUP_RST_POS,
-//	NO_RST
-//}csi_rsr_e;
-
 typedef enum{
 	RST_SRC_POR			= (0x01ul << 0),
 	RST_SRC_LVD			= (0x01ul << 1),
 	RST_SRC_EXT			= (0x01ul << 2),
-	RST_SRC_SHD_WKUP	= (0x01ul << 3),
 	RST_SRC_IWDT		= (0x01ul << 4),
-	RST_SRC_ESCM		= (0x01ul << 5),
 	RST_SRC_EMCM		= (0x01ul << 6),
 	RST_SRC_CPU			= (0x01ul << 7),
 	RST_SRC_SW			= (0x01ul << 8),
 	RST_SRC_CPUFAULT	= (0x01ul << 9),
+	RST_SRC_PLLUNLOCK	= (0x01ul << 10),
 	RST_SRC_RAMERR 		= (0x01ul << 11),
 	RST_SRC_EFLERR		= (0x01ul << 12),
 	RST_SRC_WWDT		= (0x01ul << 13),
-	RST_SRC_SNOOZE_WKUP = (0x01ul << 14)
+	RST_SRC_CPU1RST		= (0x01ul << 14),
+	RST_SRC_SW1RST		= (0x01ul << 15)
 }csi_rsr_src_e;
+
 
 typedef enum{
 	USER_REG0			= 0,

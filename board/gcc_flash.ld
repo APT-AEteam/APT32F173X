@@ -30,7 +30,7 @@ MEMORY
 __heap_size  = 0x00;							/* heap for dynamically allocated memory */	
 __stack_size = STACK_SIZE;
 __stack_top = ORIGIN(RAM) + LENGTH(RAM);
-/*__stack_start = __stack_top - STACK_SIZE - __heap_size; */
+__stack_start = __stack_top - STACK_SIZE - __heap_size; 
 
 /*PROVIDE (__ram_end  = 0x0000C000); */			/* define symbol for external reference*/
 /*PROVIDE (__heap_end = __ram_end);  */
@@ -47,7 +47,7 @@ SECTIONS {
     {
 		. = ALIGN(0x4) ;						/* Align the start of the section */
         *startup.o (.text)						/* The file linked to the start position is startup.o */
-		*startup.o(*.vectors*)
+		KEEP(*startup.o(*.vectors*))
         *(.text)
 		*(.text.*)
     } > REGION_TEXT
@@ -57,6 +57,8 @@ SECTIONS {
 		. = ALIGN(0x4) ;
         *(.rodata) 
         *(.rodata.*)
+		*(.srodata) 
+        *(.srodata.*)
 		. = ALIGN(0x4) ; 
         _end_rodata = . ;
     } > REGION_RODATA
@@ -67,9 +69,11 @@ SECTIONS {
 		_start_data = .;						/* Provide the name for the start of this section */
 		KEEP(*csp.o(.data.*))				/* keep keyword to prevent it from being optimized */
 		KEEP(*csp.o(.data))     
-		KEEP(*startup.o(*.vectors*)) 
+	/*	KEEP(*startup.o(*.vectors*)) */
     	*( .data );
 		*( .data.* );
+		*( .sdata );
+		*( .sdata.* );
 		. = ALIGN(0x4) ;						/* Align the start of the section */
     	_end_data = .; 							/* Provide the name for the end of this section */
     } > REGION_DATA AT > REGION_RODATA			
