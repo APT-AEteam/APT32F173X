@@ -61,13 +61,13 @@ int usart_send_dma_demo(void)
 	
 	csi_etb_init();										//使能ETB模块
 
-	csi_usart_dma_tx_init(USART1, DMA_CH0, ETB_CH10);	//发送DMA初始化，选择DMA通道和ETB触发通道，DMA_CH: 0~3; ETB_CH: 8~11
+	csi_usart_dma_tx_init(USART1,DMA0, DMA_CH0, ETB_CH10);	//发送DMA初始化，选择DMA通道和ETB触发通道，DMA_CH: 0~3; ETB_CH: 8~11
 	
 	while(1)
 	{
 		byRecv = csi_usart_getc(USART1);
 		if(byRecv == 0x06)
-			csi_usart_send_dma(USART1,(void *)bySdData, DMA_CH0, 31);	//采用DMA方式发送
+			csi_usart_send_dma(USART1,DMA0, (void *)bySdData, DMA_CH0, 31);	//采用DMA方式发送
 		mdelay(10);
 		if(csi_dma_get_msg(DMA0,DMA_CH0, ENABLE))			//获取发送完成消息，并清除消息
 		{
