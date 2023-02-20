@@ -24,6 +24,7 @@ typedef enum {
     SRC_IMOSC = 0,
     SRC_EMOSC,
     SRC_HFOSC,
+	SRC_PLL,
 	SRC_ISOSC = 4
 } cclk_src_e;
 

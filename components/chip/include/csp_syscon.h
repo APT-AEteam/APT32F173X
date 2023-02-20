@@ -39,18 +39,18 @@ typedef volatile struct {                   			/*!< SYSCON Structure            
 	volatile unsigned int PCDR1;                        /*!< 0x038: System Controller Peripheral Clock Disable Register */
 	volatile unsigned int PCSR1;                        /*!< 0x03C: System Controller Peripheral Clock Status Register */
 	volatile unsigned int OSTR;                         /*!< 0x040: System Controller External OSC Stable Time Control Register */
-	volatile unsigned int _RSVD1;                       /*!< 0x044: System Controller PLL Stable Time Control Register */
-	volatile unsigned int _RSVD2;                       /*!< 0x048: System Controller PLL PMS Value Control Register */
+	volatile unsigned int PLLCR;                        /*!< 0x044: System Controller PLL Stable Time Control Register */
+	volatile unsigned int _RSVD1;                       /*!< 0x048: System Controller PLL PMS Value Control Register */
 	volatile unsigned int LVDCR;                        /*!< 0x04C: System Controller LVD Control Register */
 	volatile unsigned int CLCR;                         /*!< 0x050: System Controller IMOSC Fine Adjustment Register*/
 	volatile unsigned int PWRCR;                        /*!< 0x054: System Controller Power Control Register */
 	volatile unsigned int PWRKEY;                       /*!< 0x058: System Controller Power Control Register */
-	volatile unsigned int _RSVD3;                       /*!< 0x05C: */
-	volatile unsigned int _RSVD4;                       /*!< 0x060: */
+	volatile unsigned int _RSVD2;                       /*!< 0x05C: */
+	volatile unsigned int _RSVD3;                       /*!< 0x060: */
 	volatile unsigned int OPT1;                         /*!< 0x064: System Controller OSC Trim Control Register */
 	volatile unsigned int OPT0;                         /*!< 0x068: System Controller Protection Control Register */
 	volatile unsigned int WKCR;                         /*!< 0x06C: System Controller Clock Quality Check Control Register */
-	volatile unsigned int _RSVD5;                       /*!< 0x070: System Controller Clock Quality Check Control Register */
+	volatile unsigned int _RSVD4;                       /*!< 0x070: System Controller Clock Quality Check Control Register */
 	volatile unsigned int IMER;                         /*!< 0x074: System Controller Interrupt Enable Register */
 	volatile unsigned int IMDR;                         /*!< 0x078: System Controller Interrupt Disable Register */
 	volatile unsigned int IMCR;                         /*!< 0x07C: System Controller Interrupt Mask Register */
@@ -72,12 +72,12 @@ typedef volatile struct {                   			/*!< SYSCON Structure            
 	volatile unsigned int IWDEDR;                       /*!< 0x0BC: System Controller Independent Watchdog Enable/disable Register*/
 	volatile unsigned int IOMAP0;                       /*!< 0x0C0: Customer Information Content mirror of 1st byte*/
 	volatile unsigned int IOMAP1;                       /*!< 0x0C4: Customer Information Content mirror of 1st byte*/
-	volatile unsigned int CINF0;                    	/*!< 0x0C8: Customer Information Content mirror of 1st byte*/
-	volatile unsigned int CINF1;                        /*!< 0x0CC: Customer Information Content mirror of 1st byte*/
+	volatile unsigned int _RSVD5;                    	/*!< 0x0C8: Customer Information Content mirror of 1st byte*/
+	volatile unsigned int _RSVD6;                        /*!< 0x0CC: Customer Information Content mirror of 1st byte*/
 	volatile unsigned int FINF0;                        /*!< 0x0D0: Customer Information Content mirror of 1st byte*/
 	volatile unsigned int FINF1;                        /*!< 0x0D4: Customer Information Content mirror of 1st byte*/
 	volatile unsigned int FINF2;                        /*!< 0x0D8: Customer Information Content mirror of 1st byte*/
-	volatile unsigned int _RSVD6;                       /*!< 0x0DC: Customer Information Content mirror of 1st byte*/
+	volatile unsigned int _RSVD7;                       /*!< 0x0DC: Customer Information Content mirror of 1st byte*/
 	volatile unsigned int ERRINF;                       /*!< 0x0E0:*/
 	volatile unsigned int UID0 ;                        /*!< 0x0E4: Customer Information Content mirror of 1st byte*/
 	volatile unsigned int UID1 ;                        /*!< 0x0E8: Customer Information Content mirror of 1st byte*/
@@ -90,11 +90,15 @@ typedef volatile struct {                   			/*!< SYSCON Structure            
 	volatile unsigned int UREG1;                       	/*!< 0x104: User defined reg1                              */
 	volatile unsigned int UREG2;                       	/*!< 0x108: User defined reg0                              */
 	volatile unsigned int UREG3;                       	/*!< 0x10C: User defined reg0                              */
-	volatile unsigned int _RSVD7[2];
+	volatile unsigned int RTCPTR;						/*!< 0x110: RTC config protect reg                            */
+	volatile unsigned int _RSVD8;					    /*!< 0x114:*/
 	volatile unsigned int CQCR;                        	/*!< 0x118: Clock Quality check control reg                */
 	volatile unsigned int CQSR;						   	/*!< 0x11C: Clock Qualifty check control reg  			   */
-	volatile unsigned int _RSVD8[2];
+	volatile unsigned int _RSVD9[2];
 	volatile unsigned int DBGCR;						/*!< 0x128: Debug Control Register			   */
+	volatile unsigned int BRPKEY;						/*!< 0x12c: SRBREG, ERBREG  protect reg			   */	
+	volatile unsigned int SRBREG;						/*!< 0x130: SRBREG Register			   */	
+	volatile unsigned int ERBREG;						/*!< 0x134: ERBREG Register			   */	
 } csp_syscon_t; 
 
 
@@ -114,6 +118,7 @@ typedef enum{
 #define ESOSC 		(0x01ul << 2)
 #define EMOSC 		(0x01ul << 3)
 #define HFOSC 		(0x01ul << 4)
+#define PLL 		(0x01ul << 5)
 #define SYSCLK		(0x01ul << 8)
 #define SYSTICK 	(0x01ul << 11)
 
@@ -159,6 +164,7 @@ typedef enum{
 #define SC_IMOSC 	0
 #define SC_EMOSC 	1
 #define SC_HFOSC 	2
+#define SC_PLL	    3
 #define SC_ISOSC 	4
 #define SC_ESOSC 	5
 
@@ -253,6 +259,36 @@ typedef enum {
 #define PWRKEY_PWRKEY	  (0xa67a << 16)
 #define PWRKEY_VOSLCK	  (0x6cc7)
 
+//PLLCR
+#define PLL_CLK_SEL_MSK 	(0x3ul << PLL_CLK_SEL_POS)
+#define PLL_CLK_SEL_POS 	(0)
+
+typedef enum{
+	PLL_CLK_SEL_NONE0 = 0,
+	PLL_CLK_SEL_NONE1,
+	PLL_CLK_SEL_HFOSC,
+	PLL_CLK_SEL_EMOSC
+}pll_clk_sel_e;
+
+#define PLL_DIVM_MSK 	(0xful << PLL_DIVM_POS)
+#define PLL_DIVM_POS 	(2)
+
+
+#define PLL_NUL_MSK 	(0x7ful << PLL_NUM_POS)
+#define PLL_NUM_POS 	(8)
+
+#define PLL_CKPEN_MSK 	(0x1ul << PLL_CKPEN_POS)
+#define PLL_CKPEN_POS 	(16)
+
+#define PLL_CKP_DIV_MSK 	(0x3ful << PLL_CKP_DIV_POS)
+#define PLL_CKP_DIV_POS 	(17)
+
+#define PLL_CKQEN_MSK 	(0x1ul << PLL_CKQEN_POS)
+#define PLL_CKQEN_POS 	(24)
+
+#define PLL_CKREN_MSK 	(0x1ul << PLL_CKREN_POS)
+#define PLL_CKREN_POS 	(28)
+
 ///OPT1: clo/osc freq/Flash LP mode/EXI filter/EM clock monitoring config
 #define IMO_MSK (0x3ul)
 #define HFO_MSK (0x3ul<<4)
@@ -296,6 +332,42 @@ typedef enum{
 	EXIFILT_DIV_3,
 	EXIFILT_DIV_4
 }exifilt_div_e;
+
+#define EMCKM_DUR_POS		(21)
+#define EMCKM_DUR_MSK 		(0x07ul << EMCKM_DUR_POS)
+typedef enum{
+	EMCKM_DUR_18 = 0,
+	EMCKM_DUR_14,
+	EMCKM_DUR_10,
+	EMCKM_DUR_8,
+	EMCKM_DUR_6,
+	EMCKM_DUR_5,
+	EMCKM_DUR_4,
+	EMCKM_DUR_3
+}emckm_dur_e;
+
+#define SRAM1FUNCCTRL_POS 		(24)
+#define SRAM1FUNCCTRL_MSK 		(0x01ul << SRAM1FUNCCTRL_POS)
+typedef enum {
+	SRAM1_DSARM = 0,
+	SRAM1_ISRAM
+}sram1_func_e;
+
+#define SRAMBLKCTRL_POS 		(26)
+#define SRAMBLKCTRL_MSK 		(0x01ul << SRAMBLKCTRL_POS)
+typedef enum {
+	SRAM_24KRAM0_8KRAM1 = 0,
+	SRAM_16KRAM0_16KRAM1
+}sram_blk_e;
+
+typedef enum
+{
+	NMI_LVD_INT    	=	(0x01ul << 27), 
+	NMI_MEMERY_ERR  =	(0x01ul << 28),     
+	NMI_EXI0_INT    =	(0x01ul << 29),  
+	NMI_ECLK_ERR    =	(0x01ul << 30)
+}nmi_sel_e;
+
 
 /// OPT0: read user option infor (IWDT/EXIRST...)
 #define IWDT_DFT_S	(0x1)
@@ -524,6 +596,41 @@ static inline void csp_set_clksrc(csp_syscon_t *ptSysconBase, uint32_t wClkSrc)
 	while((ptSysconBase->CKST & SYSCLK) == 0);
 }
 
+static inline void csp_pll_clk_sel(csp_syscon_t *ptSysconBase, pll_clk_sel_e eClkSel)
+{
+	ptSysconBase->PLLCR = (ptSysconBase->PLLCR & (~PLL_CLK_SEL_MSK)) | eClkSel << PLL_CLK_SEL_POS;
+}
+
+static inline void csp_pll_set_div_m(csp_syscon_t *ptSysconBase, uint8_t byDivM)
+{
+	ptSysconBase->PLLCR = (ptSysconBase->PLLCR & (~PLL_DIVM_MSK)) | byDivM << PLL_DIVM_POS;
+}
+
+static inline void csp_pll_set_nul(csp_syscon_t *ptSysconBase, uint8_t byNul)
+{
+	ptSysconBase->PLLCR = (ptSysconBase->PLLCR & (~PLL_NUL_MSK)) | byNul << PLL_NUM_POS;
+}
+
+static inline void csp_pll_set_ckp_div(csp_syscon_t *ptSysconBase, uint8_t byCkp_Div)
+{
+	ptSysconBase->PLLCR = (ptSysconBase->PLLCR & (~PLL_CKP_DIV_MSK)) | byCkp_Div << PLL_CKP_DIV_POS;
+}
+
+static inline void csp_pll_ckp_enable(csp_syscon_t *ptSysconBase, bool bEnable)
+{
+	ptSysconBase->PLLCR = (ptSysconBase->PLLCR & ~PLL_CKPEN_MSK)| (bEnable << PLL_CKPEN_POS);
+}
+
+static inline void csp_pll_ckq_enable(csp_syscon_t *ptSysconBase, bool bEnable)
+{
+	ptSysconBase->PLLCR = (ptSysconBase->PLLCR & ~PLL_CKQEN_MSK)| (bEnable << PLL_CKQEN_POS);
+}
+
+static inline void csp_pll_ckr_enable(csp_syscon_t *ptSysconBase, bool bEnable)
+{
+	ptSysconBase->PLLCR = (ptSysconBase->PLLCR & ~PLL_CKREN_MSK)| (bEnable << PLL_CKREN_POS);
+}
+
 static inline void csp_set_hfosc_fre(csp_syscon_t *ptSysconBase, uint32_t wFreq)
 {
 	ptSysconBase->OPT1 = (ptSysconBase->OPT1 & (~HFO_MSK)) | wFreq << 4;
@@ -624,6 +731,15 @@ static inline void csp_eflash_lpmd_enable(csp_syscon_t *ptSysconBase, bool bEnab
 	ptSysconBase->OPT1 = (ptSysconBase->OPT1 & ~FLASH_LPMODE_MSK)| (bEnable << FLASH_LPMODE_POS);
 }
 
+static inline void csp_sram1_func_ctrl(csp_syscon_t *ptSysconBase, sram1_func_e eSram1Func)
+{
+	ptSysconBase->OPT1 = (ptSysconBase->OPT1 & ~SRAM1FUNCCTRL_MSK)| (eSram1Func << SRAM1FUNCCTRL_POS);
+}
+
+static inline void csp_sram_blk_ctrl(csp_syscon_t *ptSysconBase, sram_blk_e eSramBlk)
+{
+	ptSysconBase->OPT1 = (ptSysconBase->OPT1 & ~SRAMBLKCTRL_MSK)| (eSramBlk << SRAMBLKCTRL_POS);
+}
 
 static inline void csp_set_em_gain(csp_syscon_t *ptSysconBase, uint8_t byGn)
 {
