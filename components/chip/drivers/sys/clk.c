@@ -358,3 +358,35 @@ csi_error_t csi_isosc_disable(void)
 //	else
 //		return CSI_OK;
 }
+
+/** \brief pll enable
+ * 
+ *  enable internal sub pll in SYSCON
+ * 
+ *  \param none
+ *  \return csi_error_t
+ */
+csi_error_t csi_pll_enable(void)
+{
+	SYSCON->GCER = PLL;
+	while(!(csp_get_ckst(SYSCON)& PLL));
+	return CSI_OK;
+}
+
+/** \brief pll disable
+ * 
+ *  disable internal sub pll in SYSCON
+ * 
+ *  \param none
+ *  \return csi_error_t.
+ */
+csi_error_t csi_pll_disable(void)
+{
+	if((SYSCON->SCLKCR & SYSCLK_SRC_MSK) == SC_PLL)
+		return CSP_FAIL;
+	else 
+	{
+		SYSCON->GCDR = PLL;
+		return CSP_SUCCESS;
+	}	
+}

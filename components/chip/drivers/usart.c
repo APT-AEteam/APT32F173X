@@ -510,11 +510,12 @@ csi_error_t csi_usart_dma_rx_init(csp_usart_t *ptUsartBase, csi_dma_ch_e eDmaCh,
 /** \brief usart dma send mode init
  * 
  *  \param[in] ptUsartBase: pointer of usart register structure
+ *  \param[in] ptDmaBase: pointer of dma register structure
  *  \param[in] eDmaCh: channel id number of dma, eDmaCh: DMA_CH0_ID ` DMA_CH4_ID
  *  \param[in] eEtbCh: channel id number of etb, eEtbCh >= ETB_CH8_ID
  *  \return  error code \ref csi_error_t
  */
-csi_error_t csi_usart_dma_tx_init(csp_usart_t *ptUsartBase, csi_dma_ch_e eDmaCh, csi_etb_ch_e eEtbCh)
+csi_error_t csi_usart_dma_tx_init(csp_usart_t *ptUsartBase,csp_dma_t *ptDmaBase, csi_dma_ch_e eDmaCh, csi_etb_ch_e eEtbCh)
 {
 	csi_error_t ret = CSI_OK;
 	csi_dma_ch_config_t tDmaConfig;				
@@ -541,7 +542,7 @@ csi_error_t csi_usart_dma_tx_init(csp_usart_t *ptUsartBase, csi_dma_ch_e eDmaCh,
 	ret = csi_etb_ch_config(eEtbCh, &tEtbConfig);		//初始化ETB，DMA ETB CHANNEL > ETB_CH19_ID
 	if(ret < 0)
 		return CSI_ERROR;
-	ret = csi_dma_ch_init(DMA0, eDmaCh, &tDmaConfig);	//初始化DMA
+	ret = csi_dma_ch_init(ptDmaBase, eDmaCh, &tDmaConfig);	//初始化DMA
 	
 	return ret;
 }
@@ -549,17 +550,18 @@ csi_error_t csi_usart_dma_tx_init(csp_usart_t *ptUsartBase, csi_dma_ch_e eDmaCh,
 /** \brief send data from usart, this function is dma transfer
  * 
  *  \param[in] ptUartBase: pointer of usart register structure
+ *  \param[in] ptDmaBase: pointer of dma register structure
  *  \param[in] pData: pointer to buffer with data to send to usart transmitter.
  *  \param[in] hwSize: number of data to send (byte), hwSize <= 0xfff.
  *  \return  error code \ref csi_error_t
  */
-csi_error_t csi_usart_send_dma(csp_usart_t *ptUsartBase, const void *pData, uint8_t byDmaCh, uint16_t hwSize)
+csi_error_t csi_usart_send_dma(csp_usart_t *ptUsartBase, csp_dma_t *ptDmaBase, const void *pData, uint8_t byDmaCh, uint16_t hwSize)
 {
 	if(hwSize > 0xfff)
 		return CSI_ERROR;
 		
 	csp_usart_set_txdma(ptUsartBase, US_TDMA_EN, US_TDMA_FIF0_TRG);
-	csi_dma_ch_start(DMA0, byDmaCh, (void *)pData, (void *)&(ptUsartBase->THR), hwSize, 1);
+	csi_dma_ch_start(ptDmaBase, byDmaCh, (void *)pData, (void *)&(ptUsartBase->THR), hwSize, 1);
 	
 	return CSI_OK;
 }

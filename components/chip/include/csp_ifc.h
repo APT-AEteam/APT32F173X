@@ -81,6 +81,10 @@ typedef enum{
 #define  PF_WAIT1 (0x1ul) 
 #define  PF_WAIT2 (0x2ul) 
 #define  PF_WAIT3 (0x3ul) 
+#define  PF_WAIT4 (0x4ul) 
+#define  PF_WAIT5 (0x5ul) 
+#define  PF_WAIT6 (0x6ul) 
+#define  PF_WAIT7 (0x7ul) 
 #define  DFLASH_PMODE_POS 8
 #define  DFLASH_PMODE_MSK (0x1 <<DFLASH_PMODE_POS)
 #define  DFLASH_PMODE (0x1 <<DFLASH_PMODE_POS)
@@ -162,6 +166,17 @@ static inline void csp_ifc_dflash_paramode_enable(csp_ifc_t *ptIfcBase, bool bEn
 {
 	ptIfcBase->MR = (ptIfcBase->MR &(~DFLASH_PMODE_MSK)) | (bEnable << DFLASH_PMODE_POS);
 }
+
+static inline void csp_ifc_dflash_speed(csp_ifc_t *ptIfcBase, uint8_t bySpeed)
+{
+	ptIfcBase->MR = (ptIfcBase->MR &(~PF_SPEED_MSK)) | (bySpeed << PF_SPEED_POS);
+}
+
+static inline void csp_ifc_dflash_wait(csp_ifc_t *ptIfcBase, uint8_t byWait)
+{
+	ptIfcBase->MR = (ptIfcBase->MR &(~PF_WAIT_MSK)) | byWait;
+}
+
 
 static inline uint32_t csp_ifc_get_dflash_paramode(csp_ifc_t *ptIfcBase)
 {

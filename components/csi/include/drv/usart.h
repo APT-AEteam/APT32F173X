@@ -262,23 +262,25 @@ csi_error_t csi_usart_send_async(csp_usart_t *ptUsartBase, const void *pData, ui
  */
 csi_error_t csi_usart_dma_rx_init(csp_usart_t *ptUsartBase, csi_dma_ch_e eDmaCh, csi_etb_ch_e eEtbCh);
 
-/** 
-  \brief 	   usart dma send mode init
-  \param[in]   ptUsartBase	pointer of usart register structure
-  \param[in]   eDmaCh		channel id number of dma, eDmaCh: DMA_CH0_ID ` DMA_CH5_ID
-  \param[in]   eEtbCh		channel id number of etb, eEtbCh >= ETB_CH20_ID
-  \return  	   error code \ref csi_error_t
+/** \brief usart dma send mode init
+ * 
+ *  \param[in] ptUsartBase: pointer of usart register structure
+ *  \param[in] ptDmaBase: pointer of dma register structure
+ *  \param[in] eDmaCh: channel id number of dma, eDmaCh: DMA_CH0_ID ` DMA_CH4_ID
+ *  \param[in] eEtbCh: channel id number of etb, eEtbCh >= ETB_CH8_ID
+ *  \return  error code \ref csi_error_t
  */
-csi_error_t csi_usart_dma_tx_init(csp_usart_t *ptUsartBase, csi_dma_ch_e eDmaCh, csi_etb_ch_e eEtbCh);
+csi_error_t csi_usart_dma_tx_init(csp_usart_t *ptUsartBase,csp_dma_t *ptDmaBase, csi_dma_ch_e eDmaCh, csi_etb_ch_e eEtbCh);
 
-/** 
-  \brief 	   send data to usart transmitter, this function is dma mode
-  \param[in]   ptUsartBase	pointer of usart register structure
-  \param[in]   pData		pointer to buffer with data to send to usart transmitter.
-  \param[in]   wSize		number of data to send (byte), hwSize <= 0xfff.
-  \return      error code \ref csi_error_t
+/** \brief send data from usart, this function is dma transfer
+ * 
+ *  \param[in] ptUartBase: pointer of usart register structure
+ *  \param[in] ptDmaBase: pointer of dma register structure
+ *  \param[in] pData: pointer to buffer with data to send to usart transmitter.
+ *  \param[in] hwSize: number of data to send (byte), hwSize <= 0xfff.
+ *  \return  error code \ref csi_error_t
  */
-csi_error_t csi_usart_send_dma(csp_usart_t *ptUsartBase, const void *pData, uint8_t byDmaCh, uint16_t hwSize);
+csi_error_t csi_usart_send_dma(csp_usart_t *ptUsartBase, csp_dma_t *ptDmaBase, const void *pData, uint8_t byDmaCh, uint16_t hwSize);
 
 /** 
   \brief 	   receive data to usart transmitter, this function is dma mode

@@ -107,6 +107,24 @@ csi_error_t csi_isosc_enable(void);
  */
 csi_error_t csi_isosc_disable(void);
 
+/** \brief pll enable
+ * 
+ *  enable internal sub pll in SYSCON
+ * 
+ *  \param none
+ *  \return csi_error_t
+ */
+csi_error_t csi_pll_enable(void);
+
+/** \brief pll disable
+ * 
+ *  disable internal sub pll in SYSCON
+ * 
+ *  \param none
+ *  \return csi_error_t.
+ */
+csi_error_t csi_pll_disable(void);
+
 #ifdef __cplusplus
 }
 #endif

@@ -103,6 +103,22 @@ csi_error_t csi_sysclk_config(void)
 			}
 			ret = csi_hfosc_enable(byFreqIdx);
 			break;
+		case (SRC_PLL):	
+			csi_hfosc_enable(1);           // HFOSC_24M_VALUE
+			IFC->MR |= HIGH_SPEED | PF_WAIT7;
+		
+			//SYSCON->PLLCR = 0x02|(0x3<<2)|(35<<8)|(1<<16)|(1<<17)|(1<<24)|(1<<28);
+			
+			csp_pll_clk_sel(SYSCON, PLL_CLK_SEL_HFOSC);
+			csp_pll_set_div_m(SYSCON, 3);
+			csp_pll_set_nul(SYSCON, 35);
+			csp_pll_set_ckp_div(SYSCON, 1);
+			csp_pll_ckp_enable(SYSCON, ENABLE);
+			csp_pll_ckq_enable(SYSCON, ENABLE);
+			csp_pll_ckr_enable(SYSCON, ENABLE);
+			
+			csi_pll_enable();
+			break;
 		default: 
 			break;
 	}
