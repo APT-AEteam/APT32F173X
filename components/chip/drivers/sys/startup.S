@@ -85,7 +85,7 @@ __Vectors:
     .long   Default_IRQHandler
     .long   Default_IRQHandler			//63
 #else									//Handling interrupts separately 
-    .long   Default_Handler				
+    .long   Reset_Handler				
     .long   Default_Handler
     .long   Default_Handler
     .long   tspend_handler
@@ -221,4 +221,7 @@ g_base_irqstack:
     .space CONFIG_ARCH_INTERRUPTSTACK
 g_top_irqstack:
 
-	
+.section .por, "ax"					
+.align 2
+	la 		t2, Reset_Handler
+	jalr	t2	
