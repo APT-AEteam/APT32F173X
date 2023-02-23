@@ -22,6 +22,7 @@ csp_dma_t		*DMA0 		= (csp_dma_t 	*)(APB_DMA0_BASE);
 csp_dma_t		*DMA1 		= (csp_dma_t 	*)(APB_DMA1_BASE); 
 csp_adc_t 		*ADC0    	= (csp_adc_t 	*)(APB_ADC0_BASE);
 csp_adc_t 		*ADC1    	= (csp_adc_t 	*)(APB_ADC1_BASE);
+csp_fvr_t 		*FVR    	= (csp_fvr_t 	*)(APB_FVR_BASE);
 csp_gpio_t 		*GPIOA		= (csp_gpio_t	*)(APB_GPIOA_BASE);
 csp_gpio_t 		*GPIOB		= (csp_gpio_t 	*)(APB_GPIOB_BASE);
 csp_gpio_t 		*GPIOC		= (csp_gpio_t 	*)(APB_GPIOC_BASE);

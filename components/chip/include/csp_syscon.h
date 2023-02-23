@@ -31,7 +31,7 @@ typedef volatile struct {                   			/*!< SYSCON Structure            
 	volatile unsigned int EFLCHK;                       /*!< 0x018*/
 	volatile unsigned int SCLKCR;                       /*!< 0x01C: System Controller System Clock Selection & Division Register */
 	volatile unsigned int PCLKCR;                       /*!< 0x020: System Controller Peripheral Clock Selection & Division Register */
-	volatile unsigned int _RSVD0;                       /*!< 0x024*/
+	volatile unsigned int EXICFG;                       /*!< 0x024*/
 	volatile unsigned int PCER0;                        /*!< 0x028: System Controller Peripheral Clock Enable Register */
 	volatile unsigned int PCDR0;                        /*!< 0x02C: System Controller Peripheral Clock Disable Register */
 	volatile unsigned int PCSR0;                        /*!< 0x030: System Controller Peripheral Clock Status Register */
@@ -40,17 +40,17 @@ typedef volatile struct {                   			/*!< SYSCON Structure            
 	volatile unsigned int PCSR1;                        /*!< 0x03C: System Controller Peripheral Clock Status Register */
 	volatile unsigned int OSTR;                         /*!< 0x040: System Controller External OSC Stable Time Control Register */
 	volatile unsigned int PLLCR;                        /*!< 0x044: System Controller PLL Stable Time Control Register */
-	volatile unsigned int _RSVD1;                       /*!< 0x048: System Controller PLL PMS Value Control Register */
+	volatile unsigned int _RSVD0;                       /*!< 0x048: System Controller PLL PMS Value Control Register */
 	volatile unsigned int LVDCR;                        /*!< 0x04C: System Controller LVD Control Register */
 	volatile unsigned int CLCR;                         /*!< 0x050: System Controller IMOSC Fine Adjustment Register*/
 	volatile unsigned int PWRCR;                        /*!< 0x054: System Controller Power Control Register */
 	volatile unsigned int PWRKEY;                       /*!< 0x058: System Controller Power Control Register */
-	volatile unsigned int _RSVD2;                       /*!< 0x05C: */
-	volatile unsigned int _RSVD3;                       /*!< 0x060: */
+	volatile unsigned int _RSVD1;                       /*!< 0x05C: */
+	volatile unsigned int _RSVD2;                       /*!< 0x060: */
 	volatile unsigned int OPT1;                         /*!< 0x064: System Controller OSC Trim Control Register */
 	volatile unsigned int OPT0;                         /*!< 0x068: System Controller Protection Control Register */
 	volatile unsigned int WKCR;                         /*!< 0x06C: System Controller Clock Quality Check Control Register */
-	volatile unsigned int _RSVD4;                       /*!< 0x070: System Controller Clock Quality Check Control Register */
+	volatile unsigned int _RSVD3;                       /*!< 0x070: System Controller Clock Quality Check Control Register */
 	volatile unsigned int IMER;                         /*!< 0x074: System Controller Interrupt Enable Register */
 	volatile unsigned int IMDR;                         /*!< 0x078: System Controller Interrupt Disable Register */
 	volatile unsigned int IMCR;                         /*!< 0x07C: System Controller Interrupt Mask Register */
@@ -72,12 +72,12 @@ typedef volatile struct {                   			/*!< SYSCON Structure            
 	volatile unsigned int IWDEDR;                       /*!< 0x0BC: System Controller Independent Watchdog Enable/disable Register*/
 	volatile unsigned int IOMAP0;                       /*!< 0x0C0: Customer Information Content mirror of 1st byte*/
 	volatile unsigned int IOMAP1;                       /*!< 0x0C4: Customer Information Content mirror of 1st byte*/
-	volatile unsigned int _RSVD5;                    	/*!< 0x0C8: Customer Information Content mirror of 1st byte*/
-	volatile unsigned int _RSVD6;                        /*!< 0x0CC: Customer Information Content mirror of 1st byte*/
+	volatile unsigned int _RSVD4;                    	/*!< 0x0C8: Customer Information Content mirror of 1st byte*/
+	volatile unsigned int _RSVD5;                        /*!< 0x0CC: Customer Information Content mirror of 1st byte*/
 	volatile unsigned int FINF0;                        /*!< 0x0D0: Customer Information Content mirror of 1st byte*/
 	volatile unsigned int FINF1;                        /*!< 0x0D4: Customer Information Content mirror of 1st byte*/
 	volatile unsigned int FINF2;                        /*!< 0x0D8: Customer Information Content mirror of 1st byte*/
-	volatile unsigned int _RSVD7;                       /*!< 0x0DC: Customer Information Content mirror of 1st byte*/
+	volatile unsigned int _RSVD6;                       /*!< 0x0DC: Customer Information Content mirror of 1st byte*/
 	volatile unsigned int ERRINF;                       /*!< 0x0E0:*/
 	volatile unsigned int UID0 ;                        /*!< 0x0E4: Customer Information Content mirror of 1st byte*/
 	volatile unsigned int UID1 ;                        /*!< 0x0E8: Customer Information Content mirror of 1st byte*/
@@ -91,10 +91,10 @@ typedef volatile struct {                   			/*!< SYSCON Structure            
 	volatile unsigned int UREG2;                       	/*!< 0x108: User defined reg0                              */
 	volatile unsigned int UREG3;                       	/*!< 0x10C: User defined reg0                              */
 	volatile unsigned int RTCPTR;						/*!< 0x110: RTC config protect reg                            */
-	volatile unsigned int _RSVD8;					    /*!< 0x114:*/
+	volatile unsigned int _RSVD7;					    /*!< 0x114:*/
 	volatile unsigned int CQCR;                        	/*!< 0x118: Clock Quality check control reg                */
 	volatile unsigned int CQSR;						   	/*!< 0x11C: Clock Qualifty check control reg  			   */
-	volatile unsigned int _RSVD9[2];
+	volatile unsigned int _RSVD8[2];
 	volatile unsigned int DBGCR;						/*!< 0x128: Debug Control Register			   */
 	volatile unsigned int BRPKEY;						/*!< 0x12c: SRBREG, ERBREG  protect reg			   */	
 	volatile unsigned int SRBREG;						/*!< 0x130: SRBREG Register			   */	

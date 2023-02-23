@@ -25,7 +25,7 @@
     </Peripheral>
     <Peripheral Name="IFC">
       <Register Name="IFC_IDR" Authority="RW" Address="0x40010000" Width="32" Description="闪存控制器ID寄存器">
-        <Bit Name="IDCODE" Authority="RW" Bits="23-0" Description="ID代码 (IFC版本号)" />
+        <Bit Name="IDCODE" Authority="RW" Bits="16-0" Description="ID代码 (IFC版本号)" />
       </Register>
       <Register Name="IFC_CEDR" Authority="RW" Address="0x40010004" Width="32" Description="时钟使能/禁止寄存器">
         <Bit Name="CLKEN" Authority="RW" Bits="0" Description="时钟使能/禁止寄存器&#xD;&#xA;&#xD;&#xA;0: 禁止闪存控制器的时钟&#xD;&#xA;1: 使能闪存控制器的时钟&#xD;&#xA;&#xD;&#xA;软件复位 (IFC_SRR)不会影响CLKEN的状态" />
@@ -34,7 +34,7 @@
         <Bit Name="SWRST" Authority="RW" Bits="0" Description="软件复位&#xD;&#xA;&#xD;&#xA;0: 无效&#xD;&#xA;1: 执行软件复位操作&#xD;&#xA;&#xD;&#xA;除CEDR外的所有寄存器都会恢复初始值" />
       </Register>
       <Register Name="IFC_CMR" Authority="RW" Address="0x4001000c" Width="32" Description="指令寄存器">
-        <Bit Name="PROT" Authority="RW" Bits="20-16" Description="保护功能选择寄存器&#xD;&#xA;[20] : ENCRYPT&#xD;&#xA;[19] : SWDP&#xD;&#xA;[18] : RDP&#xD;&#xA;[17] : HDP_FULL&#xD;&#xA;[16] : HDP_4K&#xD;&#xA;&#xD;&#xA;在CMD的写User Option命令中，使用PROT位来选择保护功能的使能，将相应位置1表示使能该项保护功能。" />
+        <Bit Name="PROT" Authority="RW" Bits="23-16" Description="保护功能选择寄存器&#xD;&#xA;[23] : IFP&#xD;&#xA;[22] : HDP_32K&#xD;&#xA;[21] : HDP_16K&#xD;&#xA;[20] : ENCRYPT&#xD;&#xA;[19] : SWDP&#xD;&#xA;[18] : RDP&#xD;&#xA;[17] : HDP_FULL&#xD;&#xA;[16] : HDP_4K&#xD;&#xA;&#xD;&#xA;在CMD的写User Option命令中，使用PROT位来选择保护功能的使能，将相应位置1表示使能该项保护功能。" />
         <Bit Name="HMODE" Authority="RW" Bits="9-8" Description="操作模式寄存器&#xD;&#xA;00: 普通模式&#xD;&#xA;01: 用户特权模式&#xD;&#xA;10: 保留&#xD;&#xA;11: 保留&#xD;&#xA;在普通模式下，只有页擦除和写操作有效。其它指令都必须在用户特权模式下执行。" />
         <Bit Name="CMD" Authority="RW" Bits="3-0" Description="写/擦除指令寄存器&#xD;&#xA;&#xD;&#xA;CMD[3:0]	指令&#xD;&#xA;0x1	写操作&#xD;&#xA;0x2	页擦除 (Page Erase)&#xD;&#xA;0x3	保留，禁止使用&#xD;&#xA;0x4	片擦除 (Chip Erase)&#xD;&#xA;0x5	自定义选项擦除&#xD;&#xA;0x6	预编程设定&#xD;&#xA;0x7	页缓存清除&#xD;&#xA;0x8 – 0xC	保留，禁止使用&#xD;&#xA;0xD	禁用调试口重映射 (SWD Remap)&#xD;&#xA;0xE	使能调试口重映射 (SWD Remap)&#xD;&#xA;0xF	写User Option操作&#xD;&#xA;&#xD;&#xA;注意：&#xD;&#xA;1. 当执行ISP操作时，禁止读取闪存内容&#xD;&#xA;2. 当操作完成后，IFC_CMR寄存器会自动清零&#xD;&#xA;3. 如果IFC_KR的秘钥值不对，那么指令不会被执行" />
       </Register>
@@ -44,7 +44,7 @@
       <Register Name="IFC_MR" Authority="RW" Address="0x40010014" Width="32" Description="工作模式寄存器">
         <Bit Name="SPEED" Authority="RW" Bits="16" Description="FLASH IP速度模式选择&#xD;&#xA;&#xD;&#xA;0: 低速模式&#xD;&#xA;1: 高速模式" />
         <Bit Name="PMODE" Authority="RW" Bits="8" Description="并行模式选择（只有DFLASH支持并行模式）&#xD;&#xA;0：等待&#xD;&#xA;1：并行模式（DFLASH擦写的同时，可以进行PFLASH读取）" />
-        <Bit Name="WAIT" Authority="RW" Bits="2-0" Description="闪存读等待周期&#xD;&#xA;&#xD;&#xA;0: 闪存读取中等待0个周期&#xD;&#xA;n: 闪存读取中等待n个周期" />
+        <Bit Name="WAIT" Authority="RW" Bits="3-0" Description="闪存读等待周期&#xD;&#xA;&#xD;&#xA;0: 闪存读取中等待0个周期&#xD;&#xA;n: 闪存读取中等待n个周期" />
       </Register>
       <Register Name="IFC_FM_ADDR" Authority="RW" Address="0x40010018" Width="32" Description="ISP地址寄存器">
         <Bit Name="FM_ADDR" Authority="RW" Bits="31-0" Description="ISP地址寄存器&#xD;&#xA;&#xD;&#xA;写操作和页擦除操作中的目标闪存地址&#xD;&#xA;&#xD;&#xA;注意：&#xD;&#xA;1. 操作完成后，这个寄存器会自动清零。&#xD;&#xA;2. 除了写操作和页擦除操作，其它指令执行时都不需要设置该寄存器" />
@@ -88,9 +88,6 @@
         <Bit Name="PGM_END" Authority="RW" Bits="1" Description="编程指令执行完成中断的原始状态&#xD;&#xA;&#xD;&#xA;0: 无效&#xD;&#xA;1: 清除中断" />
         <Bit Name="ERS_END" Authority="RW" Bits="0" Description="擦除指令执行完成中断的原始状态&#xD;&#xA;&#xD;&#xA;0: 无效&#xD;&#xA;1: 清除中断" />
       </Register>
-      <Register Name="IFC_USR_ACC" Authority="RW" Address="0x400101fc" Width="32" Description="UserOption访问秘钥寄存器" />
-      <Register Name="IFC_USR_OPT00" Authority="RW" Address="0x40010200" Width="32" Description="UserOption OPT00寄存器" />
-      <Register Name="IFC_USR_OPT01" Authority="RW" Address="0x40010204" Width="32" Description="UserOption OPT01寄存器" />
     </Peripheral>
     <Peripheral Name="SYSCON">
       <Register Name="SYSCON_IDCCR" Authority="RW" Address="0x40011000" Width="32" Description="ID和控制器模块时钟控制寄存器">
@@ -171,6 +168,16 @@
       <Register Name="SYSCON_PCLKCR" Authority="RW" Address="0x40011020" Width="32" Description="外设时钟控制寄存器">
         <Bit Name="PCLK_KEY" Authority="RW" Bits="31-16" Description="" />
         <Bit Name="PCLK_DIV" Authority="RW" Bits="11-8" Description="PCLK的时钟分频设置，PCLK分频基于HCLK的频率。&#xD;&#xA;0000B：不分频。&#xD;&#xA;0001B：2分频。&#xD;&#xA;001xB：4分频。&#xD;&#xA;01xxB：8分频。&#xD;&#xA;1xxxB：16分频。" />
+      </Register>
+      <Register Name="SYSCON_EXICFG" Authority="RW" Address="0x40011024" Width="32" Description="外设时钟控制寄存器">
+        <Bit Name="EXIFLT7" Authority="RW" Bits="31-28" Description="" />
+        <Bit Name="EXIFLT6" Authority="RW" Bits="27-24" Description="" />
+        <Bit Name="EXIFLT5" Authority="RW" Bits="23-20" Description="" />
+        <Bit Name="EXIFLT4" Authority="RW" Bits="19-16" Description="" />
+        <Bit Name="EXIFLT3" Authority="RW" Bits="15-12" Description="" />
+        <Bit Name="EXIFLT2" Authority="RW" Bits="11-8" Description="" />
+        <Bit Name="EXIFLT1" Authority="RW" Bits="7-4" Description="" />
+        <Bit Name="EXIFLT0" Authority="RW" Bits="3-0" Description="外部中断滤波器参数选择&#xD;&#xA;EXIFLT0对应EXI0；EXIFLT1对应EXI1；以此类推&#xD;&#xA;0000：无滤波&#xD;&#xA;0001:  3*THFSOC&#xD;&#xA;0010:  6*THFSOC&#xD;&#xA;0011:  9*THFSOC&#xD;&#xA;0100:  12*THFSOC&#xD;&#xA;0101:  18*THFSOC&#xD;&#xA;0110:  24*THFSOC&#xD;&#xA;0111:  36*THFSOC&#xD;&#xA;1000:  48*THFSOC&#xD;&#xA;1001:  60*THFSOC&#xD;&#xA;1010:  72*THFSOC&#xD;&#xA;1011:  84*THFSOC&#xD;&#xA;1100:  96*THFSOC&#xD;&#xA;1101:  120*THFSOC&#xD;&#xA;1110:  168*THFSOC&#xD;&#xA;1111:  216*THFSOC" />
       </Register>
       <Register Name="SYSCON_PCER0" Authority="RW" Address="0x40011028" Width="32" Description="外设时钟使能寄存器0">
         <Bit Name="I2C" Authority="RW" Bits="22" Description="" />
@@ -253,7 +260,7 @@
         <Bit Name="CKPDIV" Authority="RW" Bits="22-17" Description="CKP 端口的VCO分频输出设置&#xD;&#xA;MSB控制位决定采用TYPEA或者TYPEB分频机制中的一种。&#xD;&#xA;0h：TYPEA 分频。&#xD;&#xA;1h：TYPEB 分频。&#xD;&#xA;&#xD;&#xA;TYPEA 配置：Fckp = Fvco / (CKPDIV[4:0] + 1)&#xD;&#xA;&#xD;&#xA;TYPEB 配置：&#xD;&#xA;0h：和 TYPEA 相同的配置公式。&#xD;&#xA;1h：div2&#xD;&#xA;2h：div6&#xD;&#xA;3h：div8" />
         <Bit Name="CKPEN" Authority="RW" Bits="16" Description="PLL CKP 端口输出使能控制。&#xD;&#xA;0h：禁止CKP的时钟输出。&#xD;&#xA;1h：打开CKP的时钟输出。" />
         <Bit Name="UNLCKRST" Authority="RW" Bits="15" Description="PLL 失锁复位控制位。&#xD;&#xA;0h：在PLL失锁时，禁止产生系统复位。&#xD;&#xA;1h：在PLL失锁时，产生系统复位。" />
-        <Bit Name="MUL" Authority="RW" Bits="14-8" Description="VCO倍频设置。Fvco在150MHz~300MHz&#xD;&#xA;Fvco = Fin x M" />
+        <Bit Name="NUL" Authority="RW" Bits="14-8" Description="VCO倍频设置。Fvco在150MHz~300MHz&#xD;&#xA;Fvco = Fin x N(NUL)" />
         <Bit Name="DIVM" Authority="RW" Bits="5-2" Description="PLL输入时钟的预分频控制。VCO的最大输入频率范围：4MHz ~ 8MHz&#xD;&#xA;Fin = Fcksrc / (M + 1)" />
         <Bit Name="CKSEL" Authority="RW" Bits="1-0" Description="PLL时钟输入源选择控制位&#xD;&#xA;0h：Disabled&#xD;&#xA;1h：Disabled&#xD;&#xA;2h：HFOSC 选择作为时钟源&#xD;&#xA;3h：EMOSC 选择作为时钟源" />
       </Register>
@@ -262,7 +269,7 @@
         <Bit Name="LVD_KEY" Authority="RW" Bits="31-16" Description="" />
         <Bit Name="LVDFLAG" Authority="RO" Bits="15" Description="LVD的当前状态查询&#xD;&#xA;0h：VDD 的当前电压高于 INTLVL 设置的检测阈值。&#xD;&#xA;1h：VDD 的当前电压低于 INTLVL 设置的检测阈值。" />
         <Bit Name="RSTLVL" Authority="RW" Bits="14-12" Description="低电压复位触发的电压选择。&#xD;&#xA;0h：1.9V&#xD;&#xA;1h：2.2V&#xD;&#xA;2h：2.5V&#xD;&#xA;3h：2.8V&#xD;&#xA;4h：3.1V&#xD;&#xA;5h：3.4V&#xD;&#xA;6h：3.7V&#xD;&#xA;7h：4.0V" />
-        <Bit Name="INTLVL" Authority="RW" Bits="10-8" Description="低电压检测中断触发电压选择。&#xD;&#xA;0h：2.4V&#xD;&#xA;1h：2.1V&#xD;&#xA;2h：2.7V&#xD;&#xA;3h：3.0V&#xD;&#xA;4h：3.3V&#xD;&#xA;5h：3.6V&#xD;&#xA;6h：3.9V&#xD;&#xA;注：比较电压为VDD电压和选择的电压进行比较。" />
+        <Bit Name="INTLVL" Authority="RW" Bits="10-8" Description="低电压检测中断触发电压选择。&#xD;&#xA;0h：2.1V&#xD;&#xA;1h：2.4V&#xD;&#xA;2h：2.7V&#xD;&#xA;3h：3.0V&#xD;&#xA;4h：3.3V&#xD;&#xA;5h：3.6V&#xD;&#xA;6h：3.9V&#xD;&#xA;注：比较电压为VDD电压和选择的电压进行比较。" />
         <Bit Name="INTPOL" Authority="RW" Bits="7-6" Description="低电压检测中断触发的极性选择。&#xD;&#xA;0h：无效。&#xD;&#xA;1h：当电压下降到低于LVDLVL(falling)设置时，触发中断。&#xD;&#xA;2h：当电压升高到超过LVDLVL(rising)设置时，触发中断。&#xD;&#xA;3h：当电压下降到低于或者升高到超过LVDLVL(both)时，触发中断。" />
         <Bit Name="LVDEN" Authority="RW" Bits="3-0" Description="使能/禁止LVD模块控制位。使能LVD模块后，当VDD电压低于RSTLVL设置值时，系统将产生低电压异常的复位。&#xD;&#xA;0Ah：禁止LVD模块。&#xD;&#xA;其他：使能LVD模块。" />
       </Register>
@@ -287,7 +294,7 @@
       <Register Name="SYSCON_OPT1" Authority="RW" Address="0x40011064" Width="32" Description="系统配置寄存器1 (TRIM value for OSC) [1]">
         <Bit Name="NMI_SEL" Authority="RW" Bits="30-27" Description="NMI触发源选择控制位。通过相应控制位独立选择触发源的使能。&#xD;&#xA;0h：禁止该触发源触发NMI&#xD;&#xA;1h：使能该触发源触发NMI&#xD;&#xA;&#xD;&#xA;bit0：LVD中断事件&#xD;&#xA;bit1：内存错误时间（SRAM或者FLASH校验异常）&#xD;&#xA;bit2：EXI0中断事件&#xD;&#xA;bit3：外部时钟异常事件" />
         <Bit Name="SRAMBLKCTRL" Authority="RW" Bits="26" Description="SRAM 分区控制。SRAM0始终为DSRAM，SRAM1的功能受OPT1[24]位控制&#xD;&#xA;0h： SRAM0 24K。 地址范围0x20000000~0x20005FFF&#xD;&#xA;        SRAM1 8K。 地址范围0x20006000~0x20007FFF&#xD;&#xA;1h:   SRAM0 16K。 地址范围0x20000000~0x20003FFF&#xD;&#xA;        SRAM1 16K。 地址范围0x20004000~0x20007FFF" />
-        <Bit Name="SRAM1FUNCCTRL" Authority="RO" Bits="24" Description="SRAM1指令存取功能控制&#xD;&#xA;0h：SRAM1作为DSRAM用（作为普通SRAM使用）&#xD;&#xA;1h：SRAM1作为ISRAM用，不可写（作为指令空间使用）" />
+        <Bit Name="SRAM1FUNCCTRL" Authority="RW" Bits="24" Description="SRAM1指令存取功能控制&#xD;&#xA;0h：SRAM1作为DSRAM用（作为普通SRAM使用）&#xD;&#xA;1h：SRAM1作为ISRAM用，不可写（作为指令空间使用）" />
         <Bit Name="EMCKM_DUR" Authority="RW" Bits="23-21" Description="EMCKM的检测时间间隔设置，检测周期基于当前IMOSC的频率设置。&#xD;&#xA;0h：18个周期&#xD;&#xA;1h：14个周期&#xD;&#xA;2h：10个周期&#xD;&#xA;3h：8个周期&#xD;&#xA;4h：6个周期&#xD;&#xA;5h：5个周期&#xD;&#xA;6h：4个周期&#xD;&#xA;7h：3个周期" />
         <Bit Name="EXIFLTCKS" Authority="RW" Bits="18-17" Description="EXI通道的数字滤波器检测频率设置。设置滤波器采用时钟的分频系数。&#xD;&#xA;0h：不分频&#xD;&#xA;1h：2分频&#xD;&#xA;2h：3分频&#xD;&#xA;3h：4分频" />
         <Bit Name="EXIFLTEN" Authority="RW" Bits="16" Description="EXI通道的数字滤波器使能控制。数字滤波的采用时钟为ISCLK，当ISCLK没有使能时，该控制位无效。&#xD;&#xA;0h：禁止数字滤波&#xD;&#xA;1h：使能数字滤波" />
@@ -1233,10 +1240,10 @@
     </Peripheral>
     <Peripheral Name="FVR">
       <Register Name="FVR_CR" Authority="RW" Address="0x40032000" Width="32" Description="固定电压源控制寄存器">
-        <Bit Name="BUFKEY" Authority="RW" Bits="31-24" Description="" />
-        <Bit Name="BUFIN" Authority="RW" Bits="23" Description="" />
-        <Bit Name="BUFLVL" Authority="RW" Bits="21-20" Description="" />
-        <Bit Name="BUFEN" Authority="RW" Bits="16" Description="" />
+        <Bit Name="BUFKEY" Authority="RW" Bits="31-24" Description="BUF模块KEY控制。&#xD;&#xA;其他值： 无效&#xD;&#xA;0x5a  ： 解锁BUF模块的KEY控制" />
+        <Bit Name="BUFIN" Authority="RW" Bits="23" Description="PAD输入到BUF的使能控制 (需使能BUFKEY)。&#xD;&#xA;0： 禁止PAD (PD0.4)输入到BUF&#xD;&#xA;1： 使能PAD (PD0.4)输入到BUF" />
+        <Bit Name="BUFLVL" Authority="RW" Bits="21-20" Description="BUF输入电平选择。&#xD;&#xA;0: 模拟输入(PD04)&#xD;&#xA;1：1.0V&#xD;&#xA;3：TS" />
+        <Bit Name="BUFEN" Authority="RW" Bits="16" Description="BUF模块的使能控制。&#xD;&#xA;0： 禁止BUF模块&#xD;&#xA;1： 使能BUF模块" />
         <Bit Name="OPACM" Authority="RW" Bits="12" Description="OPA模块的使能控制。&#xD;&#xA;0： 1/2 VDD&#xD;&#xA;1： 1/2 FVR " />
         <Bit Name="CMPREF" Authority="RW" Bits="8" Description="" />
         <Bit Name="FVRLVL" Authority="" Bits="5-4" Description="固定电压源电平选择。&#xD;&#xA;0：&#xD;&#xA;1：2V&#xD;&#xA;2：3V&#xD;&#xA;3：4 V" />
@@ -1281,7 +1288,7 @@
         <Bit Name="REARM1" Authority="RW" Bits="13" Description="在一次性同步触发模式下，软件重置当前通道状态控制位。&#xD;&#xA;当读取时，返回当前通道状态&#xD;&#xA;0h：允许触发&#xD;&#xA;1h：已经检测到触发，不允许后续触发&#xD;&#xA;当写入时，&#xD;&#xA;0h：无效&#xD;&#xA;1h：清除当前通道状态，并允许新的触发" />
         <Bit Name="REARM0" Authority="RW" Bits="12" Description="在一次性同步触发模式下，软件重置当前通道状态控制位。&#xD;&#xA;当读取时，返回当前通道状态&#xD;&#xA;0h：允许触发&#xD;&#xA;1h：已经检测到触发，不允许后续触发&#xD;&#xA;当写入时，&#xD;&#xA;0h：无效&#xD;&#xA;1h：清除当前通道状态，并允许新的触发" />
         <Bit Name="OSTMD1" Authority="RW" Bits="11" Description="一次性同步触发模式选择。&#xD;&#xA;0h：连续触发模式&#xD;&#xA;1h：一次性触发模式&#xD;&#xA;当该输入通道被设置为一次性触发模式后，在一次触发事件被检测到后，该通道将不允许后续的触发事件通过，直到被软件重置（REARM）后才允许新的触发事件通过。" />
-        <Bit Name="OSTMD0" Authority="RW" Bits="10" Description="一次性同步触发模式选择。&#xD;&#xA;0h：连续触发模式&#xD;&#xA;1h：一次性触发模式&#xD;&#xA;当该输入通道被设置为一次性触发模式后，在一次触发事件被检测到后，该通道将不允许后续的触发事件通过，直到被软件重置（REARM）后才允许新的触发事件通过。" />
+        <Bit Name="SYNCEN2" Authority="RW" Bits="10" Description="SYNCEN1	0	RW	外部同步触发输入使能控制。&#xD;&#xA;0h：禁止外部触发&#xD;&#xA;1h：使能外部触发" />
         <Bit Name="SYNCEN1" Authority="RW" Bits="9" Description="外部同步触发输入使能控制。&#xD;&#xA;0h：禁止外部触发&#xD;&#xA;1h：使能外部触发" />
         <Bit Name="SYNCEN0" Authority="RW" Bits="8" Description="外部同步触发输入使能控制。&#xD;&#xA;0h：禁止外部触发&#xD;&#xA;1h：使能外部触发" />
         <Bit Name="STARTST" Authority="RW" Bits="7" Description="BT开始计数时，BT_OUT状态设置。&#xD;&#xA;0：低电平&#xD;&#xA;1：高电平" />
@@ -1350,7 +1357,7 @@
         <Bit Name="REARM1" Authority="RW" Bits="13" Description="在一次性同步触发模式下，软件重置当前通道状态控制位。&#xD;&#xA;当读取时，返回当前通道状态&#xD;&#xA;0h：允许触发&#xD;&#xA;1h：已经检测到触发，不允许后续触发&#xD;&#xA;当写入时，&#xD;&#xA;0h：无效&#xD;&#xA;1h：清除当前通道状态，并允许新的触发" />
         <Bit Name="REARM0" Authority="RW" Bits="12" Description="在一次性同步触发模式下，软件重置当前通道状态控制位。&#xD;&#xA;当读取时，返回当前通道状态&#xD;&#xA;0h：允许触发&#xD;&#xA;1h：已经检测到触发，不允许后续触发&#xD;&#xA;当写入时，&#xD;&#xA;0h：无效&#xD;&#xA;1h：清除当前通道状态，并允许新的触发" />
         <Bit Name="OSTMD1" Authority="RW" Bits="11" Description="一次性同步触发模式选择。&#xD;&#xA;0h：连续触发模式&#xD;&#xA;1h：一次性触发模式&#xD;&#xA;当该输入通道被设置为一次性触发模式后，在一次触发事件被检测到后，该通道将不允许后续的触发事件通过，直到被软件重置（REARM）后才允许新的触发事件通过。" />
-        <Bit Name="OSTMD0" Authority="RW" Bits="10" Description="一次性同步触发模式选择。&#xD;&#xA;0h：连续触发模式&#xD;&#xA;1h：一次性触发模式&#xD;&#xA;当该输入通道被设置为一次性触发模式后，在一次触发事件被检测到后，该通道将不允许后续的触发事件通过，直到被软件重置（REARM）后才允许新的触发事件通过。" />
+        <Bit Name="SYNCEN2" Authority="RW" Bits="10" Description="SYNCEN1	0	RW	外部同步触发输入使能控制。&#xD;&#xA;0h：禁止外部触发&#xD;&#xA;1h：使能外部触发" />
         <Bit Name="SYNCEN1" Authority="RW" Bits="9" Description="外部同步触发输入使能控制。&#xD;&#xA;0h：禁止外部触发&#xD;&#xA;1h：使能外部触发" />
         <Bit Name="SYNCEN0" Authority="RW" Bits="8" Description="外部同步触发输入使能控制。&#xD;&#xA;0h：禁止外部触发&#xD;&#xA;1h：使能外部触发" />
         <Bit Name="STARTST" Authority="RW" Bits="7" Description="BT开始计数时，BT_OUT状态设置。&#xD;&#xA;0：低电平&#xD;&#xA;1：高电平" />
@@ -1419,7 +1426,7 @@
         <Bit Name="REARM1" Authority="RW" Bits="13" Description="在一次性同步触发模式下，软件重置当前通道状态控制位。&#xD;&#xA;当读取时，返回当前通道状态&#xD;&#xA;0h：允许触发&#xD;&#xA;1h：已经检测到触发，不允许后续触发&#xD;&#xA;当写入时，&#xD;&#xA;0h：无效&#xD;&#xA;1h：清除当前通道状态，并允许新的触发" />
         <Bit Name="REARM0" Authority="RW" Bits="12" Description="在一次性同步触发模式下，软件重置当前通道状态控制位。&#xD;&#xA;当读取时，返回当前通道状态&#xD;&#xA;0h：允许触发&#xD;&#xA;1h：已经检测到触发，不允许后续触发&#xD;&#xA;当写入时，&#xD;&#xA;0h：无效&#xD;&#xA;1h：清除当前通道状态，并允许新的触发" />
         <Bit Name="OSTMD1" Authority="RW" Bits="11" Description="一次性同步触发模式选择。&#xD;&#xA;0h：连续触发模式&#xD;&#xA;1h：一次性触发模式&#xD;&#xA;当该输入通道被设置为一次性触发模式后，在一次触发事件被检测到后，该通道将不允许后续的触发事件通过，直到被软件重置（REARM）后才允许新的触发事件通过。" />
-        <Bit Name="OSTMD0" Authority="RW" Bits="10" Description="一次性同步触发模式选择。&#xD;&#xA;0h：连续触发模式&#xD;&#xA;1h：一次性触发模式&#xD;&#xA;当该输入通道被设置为一次性触发模式后，在一次触发事件被检测到后，该通道将不允许后续的触发事件通过，直到被软件重置（REARM）后才允许新的触发事件通过。" />
+        <Bit Name="SYNCEN2" Authority="RW" Bits="10" Description="SYNCEN1	0	RW	外部同步触发输入使能控制。&#xD;&#xA;0h：禁止外部触发&#xD;&#xA;1h：使能外部触发" />
         <Bit Name="SYNCEN1" Authority="RW" Bits="9" Description="外部同步触发输入使能控制。&#xD;&#xA;0h：禁止外部触发&#xD;&#xA;1h：使能外部触发" />
         <Bit Name="SYNCEN0" Authority="RW" Bits="8" Description="外部同步触发输入使能控制。&#xD;&#xA;0h：禁止外部触发&#xD;&#xA;1h：使能外部触发" />
         <Bit Name="STARTST" Authority="RW" Bits="7" Description="BT开始计数时，BT_OUT状态设置。&#xD;&#xA;0：低电平&#xD;&#xA;1：高电平" />
@@ -1488,7 +1495,7 @@
         <Bit Name="REARM1" Authority="RW" Bits="13" Description="在一次性同步触发模式下，软件重置当前通道状态控制位。&#xD;&#xA;当读取时，返回当前通道状态&#xD;&#xA;0h：允许触发&#xD;&#xA;1h：已经检测到触发，不允许后续触发&#xD;&#xA;当写入时，&#xD;&#xA;0h：无效&#xD;&#xA;1h：清除当前通道状态，并允许新的触发" />
         <Bit Name="REARM0" Authority="RW" Bits="12" Description="在一次性同步触发模式下，软件重置当前通道状态控制位。&#xD;&#xA;当读取时，返回当前通道状态&#xD;&#xA;0h：允许触发&#xD;&#xA;1h：已经检测到触发，不允许后续触发&#xD;&#xA;当写入时，&#xD;&#xA;0h：无效&#xD;&#xA;1h：清除当前通道状态，并允许新的触发" />
         <Bit Name="OSTMD1" Authority="RW" Bits="11" Description="一次性同步触发模式选择。&#xD;&#xA;0h：连续触发模式&#xD;&#xA;1h：一次性触发模式&#xD;&#xA;当该输入通道被设置为一次性触发模式后，在一次触发事件被检测到后，该通道将不允许后续的触发事件通过，直到被软件重置（REARM）后才允许新的触发事件通过。" />
-        <Bit Name="OSTMD0" Authority="RW" Bits="10" Description="一次性同步触发模式选择。&#xD;&#xA;0h：连续触发模式&#xD;&#xA;1h：一次性触发模式&#xD;&#xA;当该输入通道被设置为一次性触发模式后，在一次触发事件被检测到后，该通道将不允许后续的触发事件通过，直到被软件重置（REARM）后才允许新的触发事件通过。" />
+        <Bit Name="SYNCEN2" Authority="RW" Bits="10" Description="SYNCEN1	0	RW	外部同步触发输入使能控制。&#xD;&#xA;0h：禁止外部触发&#xD;&#xA;1h：使能外部触发" />
         <Bit Name="SYNCEN1" Authority="RW" Bits="9" Description="外部同步触发输入使能控制。&#xD;&#xA;0h：禁止外部触发&#xD;&#xA;1h：使能外部触发" />
         <Bit Name="SYNCEN0" Authority="RW" Bits="8" Description="外部同步触发输入使能控制。&#xD;&#xA;0h：禁止外部触发&#xD;&#xA;1h：使能外部触发" />
         <Bit Name="STARTST" Authority="RW" Bits="7" Description="BT开始计数时，BT_OUT状态设置。&#xD;&#xA;0：低电平&#xD;&#xA;1：高电平" />
@@ -2672,11 +2679,11 @@
         <Bit Name="PRDR" Authority="RW" Bits="0" Description="PRDR寄存器Shadow到Active寄存器载入控制。&#xD;&#xA;0：即使GLDEN=1，仍旧使用独立的载入配置&#xD;&#xA;1：当GLDEN=1时，使用全局载入配置" />
       </Register>
       <Register Name="GLDCR2" Authority="RW" Address="0x4005901c" Width="32" Description="Global Load Control Register2">
+        <Bit Name="PRDR" Authority="RW" Bits="15-0" Description="时基控制周期寄存器。&#xD;&#xA;此控制位决定了PWM输出波形的周期值。通过设置GPT_CR[PRDLD]可以选择Shadow到Active载入的触发条件。" />
+      </Register>
+      <Register Name="PRDR" Authority="RW" Address="0x40059024" Width="32" Description="Period Register">
         <Bit Name="GFRCLD" Authority="RW" Bits="1" Description="软件产生一次GLD触发。&#xD;&#xA;0：写入‘0’无效，读取时总是返回‘0’&#xD;&#xA;1：软件产生一次GLD触发事件" />
         <Bit Name="OSREARM" Authority="RW" Bits="0" Description="重置ONE SHOT模式&#xD;&#xA;0：写入‘0’无效，读取时总是返回‘0’&#xD;&#xA;1：重置ONE SHOT模式。ONE SHOT模式下，一次触发后，需要重置模式才允许再次触发" />
-      </Register>
-      <Register Name="PRDR" Authority="RW" Address="0x4005901c" Width="32" Description="Global Load Control Register2">
-        <Bit Name="PRDR" Authority="RW" Bits="15-0" Description="时基控制周期寄存器。&#xD;&#xA;此控制位决定了PWM输出波形的周期值。通过设置GPT_CR[PRDLD]可以选择Shadow到Active载入的触发条件。" />
       </Register>
       <Register Name="PHSR" Authority="RW" Address="0x40059028" Width="32" Description="Phase Control Register">
         <Bit Name="PHSDIR" Authority="RW" Bits="31" Description="相位方向控制位。&#xD;&#xA;此控制位只在计数模式为递增递减模式下有效。此控制位配置在同步事件发生时，计数器值从PHSR载入后，计数器的计数方向。新的配置方向与同步前计数器的计数方向无关。在递增模式或递减模式下，此控制位无效。&#xD;&#xA;0h：同步后递减&#xD;&#xA;1h：同步后递增" />
@@ -3114,11 +3121,11 @@
         <Bit Name="PRDR" Authority="RW" Bits="0" Description="PRDR寄存器Shadow到Active寄存器载入控制。&#xD;&#xA;0：即使GLDEN=1，仍旧使用独立的载入配置&#xD;&#xA;1：当GLDEN=1时，使用全局载入配置" />
       </Register>
       <Register Name="GLDCR2" Authority="RW" Address="0x4005a01c" Width="32" Description="Global Load Control Register2">
+        <Bit Name="PRDR" Authority="RW" Bits="15-0" Description="时基控制周期寄存器。&#xD;&#xA;此控制位决定了PWM输出波形的周期值。通过设置GPT_CR[PRDLD]可以选择Shadow到Active载入的触发条件。" />
+      </Register>
+      <Register Name="PRDR" Authority="RW" Address="0x4005a024" Width="32" Description="Period Register">
         <Bit Name="GFRCLD" Authority="RW" Bits="1" Description="软件产生一次GLD触发。&#xD;&#xA;0：写入‘0’无效，读取时总是返回‘0’&#xD;&#xA;1：软件产生一次GLD触发事件" />
         <Bit Name="OSREARM" Authority="RW" Bits="0" Description="重置ONE SHOT模式&#xD;&#xA;0：写入‘0’无效，读取时总是返回‘0’&#xD;&#xA;1：重置ONE SHOT模式。ONE SHOT模式下，一次触发后，需要重置模式才允许再次触发" />
-      </Register>
-      <Register Name="PRDR" Authority="RW" Address="0x4005a01c" Width="32" Description="Global Load Control Register2">
-        <Bit Name="PRDR" Authority="RW" Bits="15-0" Description="时基控制周期寄存器。&#xD;&#xA;此控制位决定了PWM输出波形的周期值。通过设置GPT_CR[PRDLD]可以选择Shadow到Active载入的触发条件。" />
       </Register>
       <Register Name="PHSR" Authority="RW" Address="0x4005a028" Width="32" Description="Phase Control Register">
         <Bit Name="PHSDIR" Authority="RW" Bits="31" Description="相位方向控制位。&#xD;&#xA;此控制位只在计数模式为递增递减模式下有效。此控制位配置在同步事件发生时，计数器值从PHSR载入后，计数器的计数方向。新的配置方向与同步前计数器的计数方向无关。在递增模式或递减模式下，此控制位无效。&#xD;&#xA;0h：同步后递减&#xD;&#xA;1h：同步后递增" />
@@ -3556,11 +3563,11 @@
         <Bit Name="PRDR" Authority="RW" Bits="0" Description="PRDR寄存器Shadow到Active寄存器载入控制。&#xD;&#xA;0：即使GLDEN=1，仍旧使用独立的载入配置&#xD;&#xA;1：当GLDEN=1时，使用全局载入配置" />
       </Register>
       <Register Name="GLDCR2" Authority="RW" Address="0x4005b01c" Width="32" Description="Global Load Control Register2">
+        <Bit Name="PRDR" Authority="RW" Bits="15-0" Description="时基控制周期寄存器。&#xD;&#xA;此控制位决定了PWM输出波形的周期值。通过设置GPT_CR[PRDLD]可以选择Shadow到Active载入的触发条件。" />
+      </Register>
+      <Register Name="PRDR" Authority="RW" Address="0x4005b024" Width="32" Description="Period Register">
         <Bit Name="GFRCLD" Authority="RW" Bits="1" Description="软件产生一次GLD触发。&#xD;&#xA;0：写入‘0’无效，读取时总是返回‘0’&#xD;&#xA;1：软件产生一次GLD触发事件" />
         <Bit Name="OSREARM" Authority="RW" Bits="0" Description="重置ONE SHOT模式&#xD;&#xA;0：写入‘0’无效，读取时总是返回‘0’&#xD;&#xA;1：重置ONE SHOT模式。ONE SHOT模式下，一次触发后，需要重置模式才允许再次触发" />
-      </Register>
-      <Register Name="PRDR" Authority="RW" Address="0x4005b01c" Width="32" Description="Global Load Control Register2">
-        <Bit Name="PRDR" Authority="RW" Bits="15-0" Description="时基控制周期寄存器。&#xD;&#xA;此控制位决定了PWM输出波形的周期值。通过设置GPT_CR[PRDLD]可以选择Shadow到Active载入的触发条件。" />
       </Register>
       <Register Name="PHSR" Authority="RW" Address="0x4005b028" Width="32" Description="Phase Control Register">
         <Bit Name="PHSDIR" Authority="RW" Bits="31" Description="相位方向控制位。&#xD;&#xA;此控制位只在计数模式为递增递减模式下有效。此控制位配置在同步事件发生时，计数器值从PHSR载入后，计数器的计数方向。新的配置方向与同步前计数器的计数方向无关。在递增模式或递减模式下，此控制位无效。&#xD;&#xA;0h：同步后递减&#xD;&#xA;1h：同步后递增" />
@@ -3998,11 +4005,11 @@
         <Bit Name="PRDR" Authority="RW" Bits="0" Description="PRDR寄存器Shadow到Active寄存器载入控制。&#xD;&#xA;0：即使GLDEN=1，仍旧使用独立的载入配置&#xD;&#xA;1：当GLDEN=1时，使用全局载入配置" />
       </Register>
       <Register Name="GLDCR2" Authority="RW" Address="0x4005c01c" Width="32" Description="Global Load Control Register2">
+        <Bit Name="PRDR" Authority="RW" Bits="15-0" Description="时基控制周期寄存器。&#xD;&#xA;此控制位决定了PWM输出波形的周期值。通过设置GPT_CR[PRDLD]可以选择Shadow到Active载入的触发条件。" />
+      </Register>
+      <Register Name="PRDR" Authority="RW" Address="0x4005c024" Width="32" Description="Period Register">
         <Bit Name="GFRCLD" Authority="RW" Bits="1" Description="软件产生一次GLD触发。&#xD;&#xA;0：写入‘0’无效，读取时总是返回‘0’&#xD;&#xA;1：软件产生一次GLD触发事件" />
         <Bit Name="OSREARM" Authority="RW" Bits="0" Description="重置ONE SHOT模式&#xD;&#xA;0：写入‘0’无效，读取时总是返回‘0’&#xD;&#xA;1：重置ONE SHOT模式。ONE SHOT模式下，一次触发后，需要重置模式才允许再次触发" />
-      </Register>
-      <Register Name="PRDR" Authority="RW" Address="0x4005c01c" Width="32" Description="Global Load Control Register2">
-        <Bit Name="PRDR" Authority="RW" Bits="15-0" Description="时基控制周期寄存器。&#xD;&#xA;此控制位决定了PWM输出波形的周期值。通过设置GPT_CR[PRDLD]可以选择Shadow到Active载入的触发条件。" />
       </Register>
       <Register Name="PHSR" Authority="RW" Address="0x4005c028" Width="32" Description="Phase Control Register">
         <Bit Name="PHSDIR" Authority="RW" Bits="31" Description="相位方向控制位。&#xD;&#xA;此控制位只在计数模式为递增递减模式下有效。此控制位配置在同步事件发生时，计数器值从PHSR载入后，计数器的计数方向。新的配置方向与同步前计数器的计数方向无关。在递增模式或递减模式下，此控制位无效。&#xD;&#xA;0h：同步后递减&#xD;&#xA;1h：同步后递增" />
@@ -4440,11 +4447,11 @@
         <Bit Name="PRDR" Authority="RW" Bits="0" Description="PRDR寄存器Shadow到Active寄存器载入控制。&#xD;&#xA;0：即使GLDEN=1，仍旧使用独立的载入配置&#xD;&#xA;1：当GLDEN=1时，使用全局载入配置" />
       </Register>
       <Register Name="GLDCR2" Authority="RW" Address="0x4005d01c" Width="32" Description="Global Load Control Register2">
+        <Bit Name="PRDR" Authority="RW" Bits="15-0" Description="时基控制周期寄存器。&#xD;&#xA;此控制位决定了PWM输出波形的周期值。通过设置GPT_CR[PRDLD]可以选择Shadow到Active载入的触发条件。" />
+      </Register>
+      <Register Name="PRDR" Authority="RW" Address="0x4005d024" Width="32" Description="Period Register">
         <Bit Name="GFRCLD" Authority="RW" Bits="1" Description="软件产生一次GLD触发。&#xD;&#xA;0：写入‘0’无效，读取时总是返回‘0’&#xD;&#xA;1：软件产生一次GLD触发事件" />
         <Bit Name="OSREARM" Authority="RW" Bits="0" Description="重置ONE SHOT模式&#xD;&#xA;0：写入‘0’无效，读取时总是返回‘0’&#xD;&#xA;1：重置ONE SHOT模式。ONE SHOT模式下，一次触发后，需要重置模式才允许再次触发" />
-      </Register>
-      <Register Name="PRDR" Authority="RW" Address="0x4005d01c" Width="32" Description="Global Load Control Register2">
-        <Bit Name="PRDR" Authority="RW" Bits="15-0" Description="时基控制周期寄存器。&#xD;&#xA;此控制位决定了PWM输出波形的周期值。通过设置GPT_CR[PRDLD]可以选择Shadow到Active载入的触发条件。" />
       </Register>
       <Register Name="PHSR" Authority="RW" Address="0x4005d028" Width="32" Description="Phase Control Register">
         <Bit Name="PHSDIR" Authority="RW" Bits="31" Description="相位方向控制位。&#xD;&#xA;此控制位只在计数模式为递增递减模式下有效。此控制位配置在同步事件发生时，计数器值从PHSR载入后，计数器的计数方向。新的配置方向与同步前计数器的计数方向无关。在递增模式或递减模式下，此控制位无效。&#xD;&#xA;0h：同步后递减&#xD;&#xA;1h：同步后递增" />
@@ -4882,11 +4889,11 @@
         <Bit Name="PRDR" Authority="RW" Bits="0" Description="PRDR寄存器Shadow到Active寄存器载入控制。&#xD;&#xA;0：即使GLDEN=1，仍旧使用独立的载入配置&#xD;&#xA;1：当GLDEN=1时，使用全局载入配置" />
       </Register>
       <Register Name="GLDCR2" Authority="RW" Address="0x4005e01c" Width="32" Description="Global Load Control Register2">
+        <Bit Name="PRDR" Authority="RW" Bits="15-0" Description="时基控制周期寄存器。&#xD;&#xA;此控制位决定了PWM输出波形的周期值。通过设置GPT_CR[PRDLD]可以选择Shadow到Active载入的触发条件。" />
+      </Register>
+      <Register Name="PRDR" Authority="RW" Address="0x4005e024" Width="32" Description="Period Register">
         <Bit Name="GFRCLD" Authority="RW" Bits="1" Description="软件产生一次GLD触发。&#xD;&#xA;0：写入‘0’无效，读取时总是返回‘0’&#xD;&#xA;1：软件产生一次GLD触发事件" />
         <Bit Name="OSREARM" Authority="RW" Bits="0" Description="重置ONE SHOT模式&#xD;&#xA;0：写入‘0’无效，读取时总是返回‘0’&#xD;&#xA;1：重置ONE SHOT模式。ONE SHOT模式下，一次触发后，需要重置模式才允许再次触发" />
-      </Register>
-      <Register Name="PRDR" Authority="RW" Address="0x4005e01c" Width="32" Description="Global Load Control Register2">
-        <Bit Name="PRDR" Authority="RW" Bits="15-0" Description="时基控制周期寄存器。&#xD;&#xA;此控制位决定了PWM输出波形的周期值。通过设置GPT_CR[PRDLD]可以选择Shadow到Active载入的触发条件。" />
       </Register>
       <Register Name="PHSR" Authority="RW" Address="0x4005e028" Width="32" Description="Phase Control Register">
         <Bit Name="PHSDIR" Authority="RW" Bits="31" Description="相位方向控制位。&#xD;&#xA;此控制位只在计数模式为递增递减模式下有效。此控制位配置在同步事件发生时，计数器值从PHSR载入后，计数器的计数方向。新的配置方向与同步前计数器的计数方向无关。在递增模式或递减模式下，此控制位无效。&#xD;&#xA;0h：同步后递减&#xD;&#xA;1h：同步后递增" />
@@ -6866,37 +6873,41 @@
     </Peripheral>
     <Peripheral Name="OPA0">
       <Register Name="OPAx_CR" Authority="RW" Address="0x400e0000" Width="32" Description="运算放大器0/1控制寄存器">
-        <Bit Name="BUFEN" Authority="RW" Bits="9" Description="BUF模式 (只在内部增益模式下有效)&#xD;&#xA;0：非BUF模式 &#xD;&#xA;1：内部增益使用BUF模式 (增益x1)" />
-        <Bit Name="INEN" Authority="RW" Bits="8" Description="INN输入端控制，内部增益模式(PGAEN=1)中，使能INN管脚外部输入&#xD;&#xA;0：不连接外部端口&#xD;&#xA;1：连接到外部输入端口OPAxN&#xD;&#xA;注：外部增益模式下，INN始终连接在OPAxN上" />
-        <Bit Name="PGAC" Authority="RW" Bits="4-2" Description="内部增益控制设置。&#xD;&#xA;0：X 4&#xD;&#xA;1：X 5&#xD;&#xA;2：X 6&#xD;&#xA;3：X 7&#xD;&#xA;4：X 24&#xD;&#xA;5：X 30&#xD;&#xA;6：X 35&#xD;&#xA;7：X 40" />
-        <Bit Name="PGAEN" Authority="RW" Bits="1" Description="内部增益控制使能。（1）&#xD;&#xA;0：禁止内部增益控制&#xD;&#xA;1：使能内部增益控制" />
+        <Bit Name="OUTEN" Authority="RW" Bits="20" Description="运放输出使能&#xD;&#xA;0: 运放不输出至IO端口&#xD;&#xA;1: 运放输出至IO端口" />
+        <Bit Name="DIFEN" Authority="RW" Bits="18" Description="差分输入模式使能&#xD;&#xA;0: 单端输入模式&#xD;&#xA;1: 差分输入模式" />
+        <Bit Name="INEN" Authority="RW" Bits="17" Description="负向输入使能,仅内部增益单端输入模式下使用&#xD;&#xA;0: 禁止&#xD;&#xA;1: 使能" />
+        <Bit Name="EXEN" Authority="RW" Bits="16" Description="外部增益模式使能&#xD;&#xA;0: 内部增益模式（单端输入或差分输入模式）&#xD;&#xA;1: 外部增益模式" />
+        <Bit Name="PGAC" Authority="RW" Bits="4-2" Description="内部增益控制设置。&#xD;&#xA;单端输入模式下&#xD;&#xA;0：X 2&#xD;&#xA;1：X 4&#xD;&#xA;2：X 8&#xD;&#xA;3：X 16&#xD;&#xA;4：X 21&#xD;&#xA;5：X 32&#xD;&#xA;6：X 42&#xD;&#xA;7：X 64&#xD;&#xA;差分输入模式下&#xD;&#xA;0：X 1&#xD;&#xA;1：X 2  &#xD;&#xA;2：X 3&#xD;&#xA;3：X 5&#xD;&#xA;4：X 7&#xD;&#xA;5：X 9&#xD;&#xA;6：X 11&#xD;&#xA;7：X 19" />
         <Bit Name="OPAEN" Authority="RW" Bits="0" Description="OPA模块的使能控制。&#xD;&#xA;0： 禁止OPA模块&#xD;&#xA;1： 使能OPA模块" />
       </Register>
     </Peripheral>
     <Peripheral Name="OPA1">
       <Register Name="OPAx_CR" Authority="RW" Address="0x400e1000" Width="32" Description="运算放大器0/1控制寄存器">
-        <Bit Name="BUFEN" Authority="RW" Bits="9" Description="BUF模式 (只在内部增益模式下有效)&#xD;&#xA;0：非BUF模式 &#xD;&#xA;1：内部增益使用BUF模式 (增益x1)" />
-        <Bit Name="INEN" Authority="RW" Bits="8" Description="INN输入端控制，内部增益模式(PGAEN=1)中，使能INN管脚外部输入&#xD;&#xA;0：不连接外部端口&#xD;&#xA;1：连接到外部输入端口OPAxN&#xD;&#xA;注：外部增益模式下，INN始终连接在OPAxN上" />
-        <Bit Name="PGAC" Authority="RW" Bits="4-2" Description="内部增益控制设置。&#xD;&#xA;0：X 4&#xD;&#xA;1：X 5&#xD;&#xA;2：X 6&#xD;&#xA;3：X 7&#xD;&#xA;4：X 24&#xD;&#xA;5：X 30&#xD;&#xA;6：X 35&#xD;&#xA;7：X 40" />
-        <Bit Name="PGAEN" Authority="RW" Bits="1" Description="内部增益控制使能。（1）&#xD;&#xA;0：禁止内部增益控制&#xD;&#xA;1：使能内部增益控制" />
+        <Bit Name="OUTEN" Authority="RW" Bits="20" Description="运放输出使能&#xD;&#xA;0: 运放不输出至IO端口&#xD;&#xA;1: 运放输出至IO端口" />
+        <Bit Name="DIFEN" Authority="RW" Bits="18" Description="差分输入模式使能&#xD;&#xA;0: 单端输入模式&#xD;&#xA;1: 差分输入模式" />
+        <Bit Name="INEN" Authority="RW" Bits="17" Description="负向输入使能,仅内部增益单端输入模式下使用&#xD;&#xA;0: 禁止&#xD;&#xA;1: 使能" />
+        <Bit Name="EXEN" Authority="RW" Bits="16" Description="外部增益模式使能&#xD;&#xA;0: 内部增益模式（单端输入或差分输入模式）&#xD;&#xA;1: 外部增益模式" />
+        <Bit Name="PGAC" Authority="RW" Bits="4-2" Description="内部增益控制设置。&#xD;&#xA;单端输入模式下&#xD;&#xA;0：X 2&#xD;&#xA;1：X 4&#xD;&#xA;2：X 8&#xD;&#xA;3：X 16&#xD;&#xA;4：X 21&#xD;&#xA;5：X 32&#xD;&#xA;6：X 42&#xD;&#xA;7：X 64&#xD;&#xA;差分输入模式下&#xD;&#xA;0：X 1&#xD;&#xA;1：X 2  &#xD;&#xA;2：X 3&#xD;&#xA;3：X 5&#xD;&#xA;4：X 7&#xD;&#xA;5：X 9&#xD;&#xA;6：X 11&#xD;&#xA;7：X 19" />
         <Bit Name="OPAEN" Authority="RW" Bits="0" Description="OPA模块的使能控制。&#xD;&#xA;0： 禁止OPA模块&#xD;&#xA;1： 使能OPA模块" />
       </Register>
     </Peripheral>
     <Peripheral Name="OPA2">
       <Register Name="OPAx_CR" Authority="RW" Address="0x400e2000" Width="32" Description="运算放大器0/1控制寄存器">
-        <Bit Name="BUFEN" Authority="RW" Bits="9" Description="BUF模式 (只在内部增益模式下有效)&#xD;&#xA;0：非BUF模式 &#xD;&#xA;1：内部增益使用BUF模式 (增益x1)" />
-        <Bit Name="INEN" Authority="RW" Bits="8" Description="INN输入端控制，内部增益模式(PGAEN=1)中，使能INN管脚外部输入&#xD;&#xA;0：不连接外部端口&#xD;&#xA;1：连接到外部输入端口OPAxN&#xD;&#xA;注：外部增益模式下，INN始终连接在OPAxN上" />
-        <Bit Name="PGAC" Authority="RW" Bits="4-2" Description="内部增益控制设置。&#xD;&#xA;0：X 4&#xD;&#xA;1：X 5&#xD;&#xA;2：X 6&#xD;&#xA;3：X 7&#xD;&#xA;4：X 24&#xD;&#xA;5：X 30&#xD;&#xA;6：X 35&#xD;&#xA;7：X 40" />
-        <Bit Name="PGAEN" Authority="RW" Bits="1" Description="内部增益控制使能。（1）&#xD;&#xA;0：禁止内部增益控制&#xD;&#xA;1：使能内部增益控制" />
+        <Bit Name="OUTEN" Authority="RW" Bits="20" Description="运放输出使能&#xD;&#xA;0: 运放不输出至IO端口&#xD;&#xA;1: 运放输出至IO端口" />
+        <Bit Name="DIFEN" Authority="RW" Bits="18" Description="差分输入模式使能&#xD;&#xA;0: 单端输入模式&#xD;&#xA;1: 差分输入模式" />
+        <Bit Name="INEN" Authority="RW" Bits="17" Description="负向输入使能,仅内部增益单端输入模式下使用&#xD;&#xA;0: 禁止&#xD;&#xA;1: 使能" />
+        <Bit Name="EXEN" Authority="RW" Bits="16" Description="外部增益模式使能&#xD;&#xA;0: 内部增益模式（单端输入或差分输入模式）&#xD;&#xA;1: 外部增益模式" />
+        <Bit Name="PGAC" Authority="RW" Bits="4-2" Description="内部增益控制设置。&#xD;&#xA;单端输入模式下&#xD;&#xA;0：X 2&#xD;&#xA;1：X 4&#xD;&#xA;2：X 8&#xD;&#xA;3：X 16&#xD;&#xA;4：X 21&#xD;&#xA;5：X 32&#xD;&#xA;6：X 42&#xD;&#xA;7：X 64&#xD;&#xA;差分输入模式下&#xD;&#xA;0：X 1&#xD;&#xA;1：X 2  &#xD;&#xA;2：X 3&#xD;&#xA;3：X 5&#xD;&#xA;4：X 7&#xD;&#xA;5：X 9&#xD;&#xA;6：X 11&#xD;&#xA;7：X 19" />
         <Bit Name="OPAEN" Authority="RW" Bits="0" Description="OPA模块的使能控制。&#xD;&#xA;0： 禁止OPA模块&#xD;&#xA;1： 使能OPA模块" />
       </Register>
     </Peripheral>
     <Peripheral Name="OPA3">
       <Register Name="OPAx_CR" Authority="RW" Address="0x400e3000" Width="32" Description="运算放大器0/1控制寄存器">
-        <Bit Name="BUFEN" Authority="RW" Bits="9" Description="BUF模式 (只在内部增益模式下有效)&#xD;&#xA;0：非BUF模式 &#xD;&#xA;1：内部增益使用BUF模式 (增益x1)" />
-        <Bit Name="INEN" Authority="RW" Bits="8" Description="INN输入端控制，内部增益模式(PGAEN=1)中，使能INN管脚外部输入&#xD;&#xA;0：不连接外部端口&#xD;&#xA;1：连接到外部输入端口OPAxN&#xD;&#xA;注：外部增益模式下，INN始终连接在OPAxN上" />
-        <Bit Name="PGAC" Authority="RW" Bits="4-2" Description="内部增益控制设置。&#xD;&#xA;0：X 4&#xD;&#xA;1：X 5&#xD;&#xA;2：X 6&#xD;&#xA;3：X 7&#xD;&#xA;4：X 24&#xD;&#xA;5：X 30&#xD;&#xA;6：X 35&#xD;&#xA;7：X 40" />
-        <Bit Name="PGAEN" Authority="RW" Bits="1" Description="内部增益控制使能。（1）&#xD;&#xA;0：禁止内部增益控制&#xD;&#xA;1：使能内部增益控制" />
+        <Bit Name="OUTEN" Authority="RW" Bits="20" Description="运放输出使能&#xD;&#xA;0: 运放不输出至IO端口&#xD;&#xA;1: 运放输出至IO端口" />
+        <Bit Name="DIFEN" Authority="RW" Bits="18" Description="差分输入模式使能&#xD;&#xA;0: 单端输入模式&#xD;&#xA;1: 差分输入模式" />
+        <Bit Name="INEN" Authority="RW" Bits="17" Description="负向输入使能,仅内部增益单端输入模式下使用&#xD;&#xA;0: 禁止&#xD;&#xA;1: 使能" />
+        <Bit Name="EXEN" Authority="RW" Bits="16" Description="外部增益模式使能&#xD;&#xA;0: 内部增益模式（单端输入或差分输入模式）&#xD;&#xA;1: 外部增益模式" />
+        <Bit Name="PGAC" Authority="RW" Bits="4-2" Description="内部增益控制设置。&#xD;&#xA;单端输入模式下&#xD;&#xA;0：X 2&#xD;&#xA;1：X 4&#xD;&#xA;2：X 8&#xD;&#xA;3：X 16&#xD;&#xA;4：X 21&#xD;&#xA;5：X 32&#xD;&#xA;6：X 42&#xD;&#xA;7：X 64&#xD;&#xA;差分输入模式下&#xD;&#xA;0：X 1&#xD;&#xA;1：X 2  &#xD;&#xA;2：X 3&#xD;&#xA;3：X 5&#xD;&#xA;4：X 7&#xD;&#xA;5：X 9&#xD;&#xA;6：X 11&#xD;&#xA;7：X 19" />
         <Bit Name="OPAEN" Authority="RW" Bits="0" Description="OPA模块的使能控制。&#xD;&#xA;0： 禁止OPA模块&#xD;&#xA;1： 使能OPA模块" />
       </Register>
     </Peripheral>
@@ -7862,177 +7873,263 @@
       </Register>
     </Peripheral>
     <Peripheral Name="DMA0">
-      <Register Name="DMA_ISR0" Authority="RW" Address="0x40300000" Width="32" Description="通道0初始寄存器">
+      <Register Name="DMA_ISR0" Authority="RW" Address="0x40300000" Width="32" Description="通道x初始寄存器">
         <Bit Name="SADDR" Authority="RW" Bits="31-0" Description="DMA初始源地址.&#xD;&#xA;该位为传输源的基地址（开始地址）" />
       </Register>
-      <Register Name="DMA_ISCR0" Authority="RW" Address="0x40300004" Width="32" Description="通道0初始源控制寄存器">
+      <Register Name="DMA_ISCR0" Authority="RW" Address="0x40300004" Width="32" Description="通道x初始源控制寄存器">
         <Bit Name="HINC" Authority="RW" Bits="1" Description="高传输计数的源地址自增控制位&#xD;&#xA;0b：自增&#xD;&#xA;1b：不自增&#xD;&#xA;如果该位为0，每次传输完成后根据连续（burst）或单次（single）模式的高传输计数，源地址自增数据长度。&#xD;&#xA;如果该位为1，每次传输完成源地址保持不变。" />
         <Bit Name="LINC" Authority="RW" Bits="0" Description="低传输计数的源地址自增控制位&#xD;&#xA;0b：自增&#xD;&#xA;1b：不自增&#xD;&#xA;如果该位为0，每次传输完成后根据连续（burst）或单次（single）模式的低传输计数，源地址自增数据长度。&#xD;&#xA;如果该位为1，每次传输完成源地址保持不变。" />
       </Register>
-      <Register Name="DMA_IDR0" Authority="RW" Address="0x40300008" Width="32" Description="通道0初始目标寄存器">
+      <Register Name="DMA_IDR0" Authority="RW" Address="0x40300008" Width="32" Description="通道x初始目标寄存器">
         <Bit Name="DADDR" Authority="RW" Bits="31-0" Description="目标地址.&#xD;&#xA;该位为传输目标的基地址（开始地址）" />
       </Register>
-      <Register Name="DMA_IDCR0" Authority="RW" Address="0x4030000c" Width="32" Description="通道0初始目标控制寄存器">
+      <Register Name="DMA_IDCR0" Authority="RW" Address="0x4030000c" Width="32" Description="通道x初始目标控制寄存器">
         <Bit Name="HINC" Authority="RW" Bits="1" Description="高传输计数的目标地址自增控制位&#xD;&#xA;0b：自增&#xD;&#xA;1b：不自增&#xD;&#xA;如果该位为0，每次传输完成后根据连续（burst）或单次（single）模式的高传输计数，目标地址自增数据长度。&#xD;&#xA;如果该位为1，每次传输完成目标地址保持不变。" />
         <Bit Name="LINC" Authority="RW" Bits="0" Description="低传输计数的目标地址自增控制位&#xD;&#xA;0b：自增&#xD;&#xA;1b：不自增&#xD;&#xA;如果该位为0，每次传输完成后根据连续（burst）或单次（single）模式的低传输计数，目标地址自增数据长度。&#xD;&#xA;如果该位为1，每次传输完成目标地址保持不变。" />
       </Register>
-      <Register Name="DMA_CR0" Authority="RW" Address="0x40300010" Width="32" Description="通道0控制寄存器">
+      <Register Name="DMA_CR0" Authority="RW" Address="0x40300010" Width="32" Description="通道x控制寄存器">
         <Bit Name="TCIT" Authority="RW" Bits="30" Description="传输计数中断使能/禁止控制位&#xD;&#xA;0b: 禁止传输计数向下计数到0时的中断，此时用户需查询状态寄存器的传输计数位来判断传输情况。&#xD;&#xA;1b: 使能传输计数向下计数到0（CURR_LTC[11:0] 和CURR_HTC[11:0]都为0）时的中断。" />
         <Bit Name="LTCIT" Authority="RW" Bits="29" Description="低传输计数中断使能/禁止控制位&#xD;&#xA;0b: 禁止低传输计数向下计数到0时的中断，此时用户需查询状态寄存器的传输计数位来判断传输情况。&#xD;&#xA;1b: 使能低传输计数向下计数到0（CURR_LTC[11:0]为0）时的中断。" />
         <Bit Name="TSIZE" Authority="RW" Bits="28" Description="传输大小&#xD;&#xA;选择原子传输（每次DMA获取总线后，并在其释放总线前的传输）&#xD;&#xA;0b: 单次传输，传输的大小为DSIZE定义的大小。&#xD;&#xA;1b: 连续传输，传输的大小为DSIZE定义的大小乘以4" />
-        <Bit Name="SMODE" Authority="RW" Bits="27" Description="服务模式选择位&#xD;&#xA;选择DMA操作模式为单次服务或全服务模式&#xD;&#xA;0b: 单次服务模式，但每个原子传输（单次或连续）完成后停止DMA服务并等待新的DMA请求。&#xD;&#xA;1b：连续服务模式，一次DMA请求后将重复原子传输直到传输计数为0&#xD;&#xA;注：即使是全服务模式，DMA在每次原子传输后将释放总线，并再次发起总线请求以防止阻塞其他总线主机。" />
-        <Bit Name="RELOAD" Authority="RW" Bits="26" Description="自动重载使能/禁止控制位&#xD;&#xA;0b: 当前传输计数为0（所有传输请求已完成）时启动自动重载。自动重载可用于重复的DMA操作（使用相同地址和传输数目）。&#xD;&#xA;1b: 但传输计数为0时关闭DMA通道。建议设置通道开/关位（CHEN）为0以防止意外启动新的DMA传输" />
+        <Bit Name="SMODE" Authority="RW" Bits="27" Description="服务模式选择位&#xD;&#xA;选择DMA操作模式为单次服务或全服务模式&#xD;&#xA;0b: 单次服务模式，但每个原子传输（单次或连续）完成后停止DMA服务并等待新的DMA请求。&#xD;&#xA;1b：连续服务模式，一次DMA请求后将重复原子传输直到低位传输计数LTC[11:0]为0&#xD;&#xA;注：即使是全服务模式，DMA在每次原子传输后将释放总线，并再次发起总线请求以防止阻塞其他总线主机。" />
+        <Bit Name="RELOAD" Authority="RW" Bits="26" Description="自动重载使能/禁止控制位&#xD;&#xA;0b: 当前传输计数为0（所有传输请求已完成）时启动自动重载。自动重载可用于重复的DMA操作（使用相同地址和传输数目）。&#xD;&#xA;1b: 当传输计数为0时关闭DMA通道。建议设置通道开/关位（CHEN）为0以防止意外启动新的DMA传输" />
         <Bit Name="DSIZE" Authority="RW" Bits="25-24" Description="传输数据大小选择位&#xD;&#xA;00b = 字节（Byte）&#xD;&#xA;01b = 半字（Half word）&#xD;&#xA;10b = 字  （Word）&#xD;&#xA;11b = 无效" />
         <Bit Name="HTC" Authority="RW" Bits="23-12" Description="高传输计数&#xD;&#xA;初始化高传输个数&#xD;&#xA;注：传输操作的个数由HTC[11:0]  LTC[11:0]所决定，当CURR_HTC[11:0] 和 CURR_LTC[11:0]都为0时传输结束。" />
         <Bit Name="LTC" Authority="RW" Bits="11-0" Description="低传输计数&#xD;&#xA;初始化低传输个数。" />
       </Register>
-      <Register Name="DMA_SR0" Authority="RW" Address="0x40300014" Width="32" Description="通道0状态寄存器">
+      <Register Name="DMA_SR0" Authority="RW" Address="0x40300014" Width="32" Description="通道x状态寄存器">
         <Bit Name="LTCST" Authority="RO" Bits="31" Description="低传输计数状态位&#xD;&#xA;0b: DAM控制器处于空闲状态。&#xD;&#xA;1b: DAM控制器处于忙状态&#xD;&#xA;当触发事件到来并启动DMA操作，LTCST位被置“1”（BUSY）" />
         <Bit Name="CURR_ HTC" Authority="RO" Bits="23-12" Description="当前高传输计数值&#xD;&#xA;设置DMA_CR想寄存器的HTC[11:0]位时，初始化传输计数值为HTC[11:0]，当一次原子传输完成后若LTC[11:0]为0，则该传输计数值减一。&#xD;&#xA;传输操作的计数值由HTC[11:0] x LTC[11:0]决定，当CUR_HTC[11:0] 和CUR_LTC[11:0] 计数值都为0时将停止传输并将DMA_MTR的STOP为置“1”" />
         <Bit Name="CURR_LTC" Authority="RO" Bits="11-0" Description="当前低传输计数值&#xD;&#xA;设置DMA_CR寄存器的LTC[11:0]位时，初始化传输计数值为LTC[11:0]，每完成一次原子传输，传输计数值减一。&#xD;&#xA;当CURR_HTC[11:0]不为“0”且CURR_LTC[11:0]为“1”时，在一次传输完成后，CURR_HTC[11:0]将减一，CURR_LTC[11:0]将初始化成DMA_CR寄存器的LTC[11:0]的值。" />
       </Register>
-      <Register Name="DMA_CSR0" Authority="RW" Address="0x40300018" Width="32" Description="通道0当前源寄存器">
+      <Register Name="DMA_CSR0" Authority="RW" Address="0x40300018" Width="32" Description="通道x当前源寄存器">
         <Bit Name="CURR_SADDR" Authority="RO" Bits="31-0" Description="当前源地址&#xD;&#xA;当前传输的源地址。" />
       </Register>
-      <Register Name="DMA_CDR0" Authority="RW" Address="0x4030001c" Width="32" Description="通道0当前目标寄存器">
+      <Register Name="DMA_CDR0" Authority="RW" Address="0x4030001c" Width="32" Description="通道x当前目标寄存器">
         <Bit Name="CURR_DADDR" Authority="RO" Bits="31-0" Description="当前目标地址&#xD;&#xA;当前传输的目标地址" />
       </Register>
-      <Register Name="DMA_MTR0" Authority="RW" Address="0x40300020" Width="32" Description="通道0掩码触发寄存器">
+      <Register Name="DMA_MTR0" Authority="RW" Address="0x40300020" Width="32" Description="通道x掩码触发寄存器">
         <Bit Name="STOP" Authority="RW" Bits="2" Description="DMA 操作停止位&#xD;&#xA;0b：无效&#xD;&#xA;1b:  如果有当前原子传输，则DMA在当前原子传输完成后立即停止。若当前没有原子传输，则DMA立即停止。&#xD;&#xA;注：由于当前可能存在原子传输，所以“停止”操作可能需要一些时钟周期，当查到CHEN位为“0”时，该“停止”操作才是真正完成。" />
         <Bit Name="CHEN" Authority="RW" Bits="1" Description="DMA 通道开/关位&#xD;&#xA;0b: 关闭DMA通道（对该通道的DMA请求将被忽略）&#xD;&#xA;1b: 开启DMA通道，对该通道的DMA请求将被处理。&#xD;&#xA;对该位置“1”开始DMA操作，当DMA_MTRx寄存器的STOP位被置“1”该位会被自动清零（“0”）；当DMA_MTRx寄存器的STOP位为“0”且DMA_CRx[26]位为“0”（禁止自动重载），当CURR_LTC[11:0]和CURR_HTC[11:0]都为“0”时，该位会被自动清零（“0”）。&#xD;&#xA;注：在DMA操作时，不建议手动修改该寄存器位（i.e., 建议只通过DMA_CRx[26]或STOP位进行操作）。" />
         <Bit Name="SWTRIG" Authority="RW" Bits="0" Description="DMA 软件触发&#xD;&#xA;以软件请求的方式触发DMA通道，对该位置“1”以开始DMA操作，当DMA操作开始后，该位自动清零。&#xD;&#xA;0b：无效&#xD;&#xA;1b: 请求DMA操作 " />
       </Register>
-      <Register Name="DMA_RSR0" Authority="RW" Address="0x40300024" Width="32" Description="通道0请求选择寄存器">
-        <Bit Name="REQ" Authority="RW" Bits="0" Description="请求类型选择位&#xD;&#xA;0: 软件请求模式，DMA将被DMA_MTRx寄存器的SWTRIG位触发。&#xD;&#xA;1：硬件请求模式，DMA将被HWSRC[3:0]对应的请求所错发" />
+      <Register Name="DMA_RSR0" Authority="RW" Address="0x40300024" Width="32" Description="通道x请求选择寄存器">
+        <Bit Name="REQ" Authority="RW" Bits="0" Description="请求类型选择位&#xD;&#xA;0: 软件请求模式，DMA将被DMA_MTRx寄存器的SWTRIG位触发。&#xD;&#xA;1：硬件请求模式，DMA将被HWSRC[3:0]对应的请求所触发" />
       </Register>
-      <Register Name="DMA_ISR1" Authority="RW" Address="0x40300080" Width="32" Description="通道1初始寄存器">
+      <Register Name="DMA_ISR1" Authority="RW" Address="0x40300080" Width="32" Description="通道x初始寄存器">
         <Bit Name="SADDR" Authority="RW" Bits="31-0" Description="DMA初始源地址.&#xD;&#xA;该位为传输源的基地址（开始地址）" />
       </Register>
-      <Register Name="DMA_ISCR1" Authority="RW" Address="0x40300084" Width="32" Description="通道1初始源控制寄存器">
+      <Register Name="DMA_ISCR1" Authority="RW" Address="0x40300084" Width="32" Description="通道x初始源控制寄存器">
         <Bit Name="HINC" Authority="RW" Bits="1" Description="高传输计数的源地址自增控制位&#xD;&#xA;0b：自增&#xD;&#xA;1b：不自增&#xD;&#xA;如果该位为0，每次传输完成后根据连续（burst）或单次（single）模式的高传输计数，源地址自增数据长度。&#xD;&#xA;如果该位为1，每次传输完成源地址保持不变。" />
         <Bit Name="LINC" Authority="RW" Bits="0" Description="低传输计数的源地址自增控制位&#xD;&#xA;0b：自增&#xD;&#xA;1b：不自增&#xD;&#xA;如果该位为0，每次传输完成后根据连续（burst）或单次（single）模式的低传输计数，源地址自增数据长度。&#xD;&#xA;如果该位为1，每次传输完成源地址保持不变。" />
       </Register>
-      <Register Name="DMA_IDR1" Authority="RW" Address="0x40300088" Width="32" Description="通道1初始目标寄存器">
+      <Register Name="DMA_IDR1" Authority="RW" Address="0x40300088" Width="32" Description="通道x初始目标寄存器">
         <Bit Name="DADDR" Authority="RW" Bits="31-0" Description="目标地址.&#xD;&#xA;该位为传输目标的基地址（开始地址）" />
       </Register>
-      <Register Name="DMA_IDCR1" Authority="RW" Address="0x4030008c" Width="32" Description="通道1初始目标控制寄存器">
+      <Register Name="DMA_IDCR1" Authority="RW" Address="0x4030008c" Width="32" Description="通道x初始目标控制寄存器">
         <Bit Name="HINC" Authority="RW" Bits="1" Description="高传输计数的目标地址自增控制位&#xD;&#xA;0b：自增&#xD;&#xA;1b：不自增&#xD;&#xA;如果该位为0，每次传输完成后根据连续（burst）或单次（single）模式的高传输计数，目标地址自增数据长度。&#xD;&#xA;如果该位为1，每次传输完成目标地址保持不变。" />
         <Bit Name="LINC" Authority="RW" Bits="0" Description="低传输计数的目标地址自增控制位&#xD;&#xA;0b：自增&#xD;&#xA;1b：不自增&#xD;&#xA;如果该位为0，每次传输完成后根据连续（burst）或单次（single）模式的低传输计数，目标地址自增数据长度。&#xD;&#xA;如果该位为1，每次传输完成目标地址保持不变。" />
       </Register>
-      <Register Name="DMA_CR1" Authority="RW" Address="0x40300090" Width="32" Description="通道1控制寄存器">
+      <Register Name="DMA_CR1" Authority="RW" Address="0x40300090" Width="32" Description="通道x控制寄存器">
         <Bit Name="TCIT" Authority="RW" Bits="30" Description="传输计数中断使能/禁止控制位&#xD;&#xA;0b: 禁止传输计数向下计数到0时的中断，此时用户需查询状态寄存器的传输计数位来判断传输情况。&#xD;&#xA;1b: 使能传输计数向下计数到0（CURR_LTC[11:0] 和CURR_HTC[11:0]都为0）时的中断。" />
         <Bit Name="LTCIT" Authority="RW" Bits="29" Description="低传输计数中断使能/禁止控制位&#xD;&#xA;0b: 禁止低传输计数向下计数到0时的中断，此时用户需查询状态寄存器的传输计数位来判断传输情况。&#xD;&#xA;1b: 使能低传输计数向下计数到0（CURR_LTC[11:0]为0）时的中断。" />
         <Bit Name="TSIZE" Authority="RW" Bits="28" Description="传输大小&#xD;&#xA;选择原子传输（每次DMA获取总线后，并在其释放总线前的传输）&#xD;&#xA;0b: 单次传输，传输的大小为DSIZE定义的大小。&#xD;&#xA;1b: 连续传输，传输的大小为DSIZE定义的大小乘以4" />
-        <Bit Name="SMODE" Authority="RW" Bits="27" Description="服务模式选择位&#xD;&#xA;选择DMA操作模式为单次服务或全服务模式&#xD;&#xA;0b: 单次服务模式，但每个原子传输（单次或连续）完成后停止DMA服务并等待新的DMA请求。&#xD;&#xA;1b：连续服务模式，一次DMA请求后将重复原子传输直到传输计数为0&#xD;&#xA;注：即使是全服务模式，DMA在每次原子传输后将释放总线，并再次发起总线请求以防止阻塞其他总线主机。" />
-        <Bit Name="RELOAD" Authority="RW" Bits="26" Description="自动重载使能/禁止控制位&#xD;&#xA;0b: 当前传输计数为0（所有传输请求已完成）时启动自动重载。自动重载可用于重复的DMA操作（使用相同地址和传输数目）。&#xD;&#xA;1b: 但传输计数为0时关闭DMA通道。建议设置通道开/关位（CHEN）为0以防止意外启动新的DMA传输" />
+        <Bit Name="SMODE" Authority="RW" Bits="27" Description="服务模式选择位&#xD;&#xA;选择DMA操作模式为单次服务或全服务模式&#xD;&#xA;0b: 单次服务模式，但每个原子传输（单次或连续）完成后停止DMA服务并等待新的DMA请求。&#xD;&#xA;1b：连续服务模式，一次DMA请求后将重复原子传输直到低位传输计数LTC[11:0]为0&#xD;&#xA;注：即使是全服务模式，DMA在每次原子传输后将释放总线，并再次发起总线请求以防止阻塞其他总线主机。" />
+        <Bit Name="RELOAD" Authority="RW" Bits="26" Description="自动重载使能/禁止控制位&#xD;&#xA;0b: 当前传输计数为0（所有传输请求已完成）时启动自动重载。自动重载可用于重复的DMA操作（使用相同地址和传输数目）。&#xD;&#xA;1b: 当传输计数为0时关闭DMA通道。建议设置通道开/关位（CHEN）为0以防止意外启动新的DMA传输" />
         <Bit Name="DSIZE" Authority="RW" Bits="25-24" Description="传输数据大小选择位&#xD;&#xA;00b = 字节（Byte）&#xD;&#xA;01b = 半字（Half word）&#xD;&#xA;10b = 字  （Word）&#xD;&#xA;11b = 无效" />
         <Bit Name="HTC" Authority="RW" Bits="23-12" Description="高传输计数&#xD;&#xA;初始化高传输个数&#xD;&#xA;注：传输操作的个数由HTC[11:0]  LTC[11:0]所决定，当CURR_HTC[11:0] 和 CURR_LTC[11:0]都为0时传输结束。" />
         <Bit Name="LTC" Authority="RW" Bits="11-0" Description="低传输计数&#xD;&#xA;初始化低传输个数。" />
       </Register>
-      <Register Name="DMA_SR1" Authority="RW" Address="0x40300094" Width="32" Description="通道1状态寄存器">
+      <Register Name="DMA_SR1" Authority="RW" Address="0x40300094" Width="32" Description="通道x状态寄存器">
         <Bit Name="LTCST" Authority="RO" Bits="31" Description="低传输计数状态位&#xD;&#xA;0b: DAM控制器处于空闲状态。&#xD;&#xA;1b: DAM控制器处于忙状态&#xD;&#xA;当触发事件到来并启动DMA操作，LTCST位被置“1”（BUSY）" />
         <Bit Name="CURR_ HTC" Authority="RO" Bits="23-12" Description="当前高传输计数值&#xD;&#xA;设置DMA_CR想寄存器的HTC[11:0]位时，初始化传输计数值为HTC[11:0]，当一次原子传输完成后若LTC[11:0]为0，则该传输计数值减一。&#xD;&#xA;传输操作的计数值由HTC[11:0] x LTC[11:0]决定，当CUR_HTC[11:0] 和CUR_LTC[11:0] 计数值都为0时将停止传输并将DMA_MTR的STOP为置“1”" />
         <Bit Name="CURR_LTC" Authority="RO" Bits="11-0" Description="当前低传输计数值&#xD;&#xA;设置DMA_CR寄存器的LTC[11:0]位时，初始化传输计数值为LTC[11:0]，每完成一次原子传输，传输计数值减一。&#xD;&#xA;当CURR_HTC[11:0]不为“0”且CURR_LTC[11:0]为“1”时，在一次传输完成后，CURR_HTC[11:0]将减一，CURR_LTC[11:0]将初始化成DMA_CR寄存器的LTC[11:0]的值。" />
       </Register>
-      <Register Name="DMA_CSR1" Authority="RW" Address="0x40300098" Width="32" Description="通道1当前源寄存器">
+      <Register Name="DMA_CSR1" Authority="RW" Address="0x40300098" Width="32" Description="通道x当前源寄存器">
         <Bit Name="CURR_SADDR" Authority="RO" Bits="31-0" Description="当前源地址&#xD;&#xA;当前传输的源地址。" />
       </Register>
-      <Register Name="DMA_CDR1" Authority="RW" Address="0x4030009c" Width="32" Description="通道1当前目标寄存器">
+      <Register Name="DMA_CDR1" Authority="RW" Address="0x4030009c" Width="32" Description="通道x当前目标寄存器">
         <Bit Name="CURR_DADDR" Authority="RO" Bits="31-0" Description="当前目标地址&#xD;&#xA;当前传输的目标地址" />
       </Register>
-      <Register Name="DMA_MTR1" Authority="RW" Address="0x403000a0" Width="32" Description="通道1掩码触发寄存器">
+      <Register Name="DMA_MTR1" Authority="RW" Address="0x403000a0" Width="32" Description="通道x掩码触发寄存器">
         <Bit Name="STOP" Authority="RW" Bits="2" Description="DMA 操作停止位&#xD;&#xA;0b：无效&#xD;&#xA;1b:  如果有当前原子传输，则DMA在当前原子传输完成后立即停止。若当前没有原子传输，则DMA立即停止。&#xD;&#xA;注：由于当前可能存在原子传输，所以“停止”操作可能需要一些时钟周期，当查到CHEN位为“0”时，该“停止”操作才是真正完成。" />
         <Bit Name="CHEN" Authority="RW" Bits="1" Description="DMA 通道开/关位&#xD;&#xA;0b: 关闭DMA通道（对该通道的DMA请求将被忽略）&#xD;&#xA;1b: 开启DMA通道，对该通道的DMA请求将被处理。&#xD;&#xA;对该位置“1”开始DMA操作，当DMA_MTRx寄存器的STOP位被置“1”该位会被自动清零（“0”）；当DMA_MTRx寄存器的STOP位为“0”且DMA_CRx[26]位为“0”（禁止自动重载），当CURR_LTC[11:0]和CURR_HTC[11:0]都为“0”时，该位会被自动清零（“0”）。&#xD;&#xA;注：在DMA操作时，不建议手动修改该寄存器位（i.e., 建议只通过DMA_CRx[26]或STOP位进行操作）。" />
         <Bit Name="SWTRIG" Authority="RW" Bits="0" Description="DMA 软件触发&#xD;&#xA;以软件请求的方式触发DMA通道，对该位置“1”以开始DMA操作，当DMA操作开始后，该位自动清零。&#xD;&#xA;0b：无效&#xD;&#xA;1b: 请求DMA操作 " />
       </Register>
-      <Register Name="DMA_RSR1" Authority="RW" Address="0x403000a4" Width="32" Description="通道1请求选择寄存器">
-        <Bit Name="REQ" Authority="RW" Bits="0" Description="请求类型选择位&#xD;&#xA;0: 软件请求模式，DMA将被DMA_MTRx寄存器的SWTRIG位触发。&#xD;&#xA;1：硬件请求模式，DMA将被HWSRC[3:0]对应的请求所错发" />
+      <Register Name="DMA_RSR1" Authority="RW" Address="0x403000a4" Width="32" Description="通道x请求选择寄存器">
+        <Bit Name="REQ" Authority="RW" Bits="0" Description="请求类型选择位&#xD;&#xA;0: 软件请求模式，DMA将被DMA_MTRx寄存器的SWTRIG位触发。&#xD;&#xA;1：硬件请求模式，DMA将被HWSRC[3:0]对应的请求所触发" />
       </Register>
-      <Register Name="DMA_ISR2" Authority="RW" Address="0x40300100" Width="32" Description="通道2初始寄存器">
+      <Register Name="DMA_ISR2" Authority="RW" Address="0x40300100" Width="32" Description="通道x初始寄存器">
         <Bit Name="SADDR" Authority="RW" Bits="31-0" Description="DMA初始源地址.&#xD;&#xA;该位为传输源的基地址（开始地址）" />
       </Register>
-      <Register Name="DMA_ISCR2" Authority="RW" Address="0x40300104" Width="32" Description="通道2初始源控制寄存器">
+      <Register Name="DMA_ISCR2" Authority="RW" Address="0x40300104" Width="32" Description="通道x初始源控制寄存器">
         <Bit Name="HINC" Authority="RW" Bits="1" Description="高传输计数的源地址自增控制位&#xD;&#xA;0b：自增&#xD;&#xA;1b：不自增&#xD;&#xA;如果该位为0，每次传输完成后根据连续（burst）或单次（single）模式的高传输计数，源地址自增数据长度。&#xD;&#xA;如果该位为1，每次传输完成源地址保持不变。" />
         <Bit Name="LINC" Authority="RW" Bits="0" Description="低传输计数的源地址自增控制位&#xD;&#xA;0b：自增&#xD;&#xA;1b：不自增&#xD;&#xA;如果该位为0，每次传输完成后根据连续（burst）或单次（single）模式的低传输计数，源地址自增数据长度。&#xD;&#xA;如果该位为1，每次传输完成源地址保持不变。" />
       </Register>
-      <Register Name="DMA_IDR2" Authority="RW" Address="0x40300108" Width="32" Description="通道2初始目标寄存器">
+      <Register Name="DMA_IDR2" Authority="RW" Address="0x40300108" Width="32" Description="通道x初始目标寄存器">
         <Bit Name="DADDR" Authority="RW" Bits="31-0" Description="目标地址.&#xD;&#xA;该位为传输目标的基地址（开始地址）" />
       </Register>
-      <Register Name="DMA_IDCR2" Authority="RW" Address="0x4030010c" Width="32" Description="通道2初始目标控制寄存器">
+      <Register Name="DMA_IDCR2" Authority="RW" Address="0x4030010c" Width="32" Description="通道x初始目标控制寄存器">
         <Bit Name="HINC" Authority="RW" Bits="1" Description="高传输计数的目标地址自增控制位&#xD;&#xA;0b：自增&#xD;&#xA;1b：不自增&#xD;&#xA;如果该位为0，每次传输完成后根据连续（burst）或单次（single）模式的高传输计数，目标地址自增数据长度。&#xD;&#xA;如果该位为1，每次传输完成目标地址保持不变。" />
         <Bit Name="LINC" Authority="RW" Bits="0" Description="低传输计数的目标地址自增控制位&#xD;&#xA;0b：自增&#xD;&#xA;1b：不自增&#xD;&#xA;如果该位为0，每次传输完成后根据连续（burst）或单次（single）模式的低传输计数，目标地址自增数据长度。&#xD;&#xA;如果该位为1，每次传输完成目标地址保持不变。" />
       </Register>
-      <Register Name="DMA_CR2" Authority="RW" Address="0x40300110" Width="32" Description="通道2控制寄存器">
+      <Register Name="DMA_CR2" Authority="RW" Address="0x40300110" Width="32" Description="通道x控制寄存器">
         <Bit Name="TCIT" Authority="RW" Bits="30" Description="传输计数中断使能/禁止控制位&#xD;&#xA;0b: 禁止传输计数向下计数到0时的中断，此时用户需查询状态寄存器的传输计数位来判断传输情况。&#xD;&#xA;1b: 使能传输计数向下计数到0（CURR_LTC[11:0] 和CURR_HTC[11:0]都为0）时的中断。" />
         <Bit Name="LTCIT" Authority="RW" Bits="29" Description="低传输计数中断使能/禁止控制位&#xD;&#xA;0b: 禁止低传输计数向下计数到0时的中断，此时用户需查询状态寄存器的传输计数位来判断传输情况。&#xD;&#xA;1b: 使能低传输计数向下计数到0（CURR_LTC[11:0]为0）时的中断。" />
         <Bit Name="TSIZE" Authority="RW" Bits="28" Description="传输大小&#xD;&#xA;选择原子传输（每次DMA获取总线后，并在其释放总线前的传输）&#xD;&#xA;0b: 单次传输，传输的大小为DSIZE定义的大小。&#xD;&#xA;1b: 连续传输，传输的大小为DSIZE定义的大小乘以4" />
-        <Bit Name="SMODE" Authority="RW" Bits="27" Description="服务模式选择位&#xD;&#xA;选择DMA操作模式为单次服务或全服务模式&#xD;&#xA;0b: 单次服务模式，但每个原子传输（单次或连续）完成后停止DMA服务并等待新的DMA请求。&#xD;&#xA;1b：连续服务模式，一次DMA请求后将重复原子传输直到传输计数为0&#xD;&#xA;注：即使是全服务模式，DMA在每次原子传输后将释放总线，并再次发起总线请求以防止阻塞其他总线主机。" />
-        <Bit Name="RELOAD" Authority="RW" Bits="26" Description="自动重载使能/禁止控制位&#xD;&#xA;0b: 当前传输计数为0（所有传输请求已完成）时启动自动重载。自动重载可用于重复的DMA操作（使用相同地址和传输数目）。&#xD;&#xA;1b: 但传输计数为0时关闭DMA通道。建议设置通道开/关位（CHEN）为0以防止意外启动新的DMA传输" />
+        <Bit Name="SMODE" Authority="RW" Bits="27" Description="服务模式选择位&#xD;&#xA;选择DMA操作模式为单次服务或全服务模式&#xD;&#xA;0b: 单次服务模式，但每个原子传输（单次或连续）完成后停止DMA服务并等待新的DMA请求。&#xD;&#xA;1b：连续服务模式，一次DMA请求后将重复原子传输直到低位传输计数LTC[11:0]为0&#xD;&#xA;注：即使是全服务模式，DMA在每次原子传输后将释放总线，并再次发起总线请求以防止阻塞其他总线主机。" />
+        <Bit Name="RELOAD" Authority="RW" Bits="26" Description="自动重载使能/禁止控制位&#xD;&#xA;0b: 当前传输计数为0（所有传输请求已完成）时启动自动重载。自动重载可用于重复的DMA操作（使用相同地址和传输数目）。&#xD;&#xA;1b: 当传输计数为0时关闭DMA通道。建议设置通道开/关位（CHEN）为0以防止意外启动新的DMA传输" />
         <Bit Name="DSIZE" Authority="RW" Bits="25-24" Description="传输数据大小选择位&#xD;&#xA;00b = 字节（Byte）&#xD;&#xA;01b = 半字（Half word）&#xD;&#xA;10b = 字  （Word）&#xD;&#xA;11b = 无效" />
         <Bit Name="HTC" Authority="RW" Bits="23-12" Description="高传输计数&#xD;&#xA;初始化高传输个数&#xD;&#xA;注：传输操作的个数由HTC[11:0]  LTC[11:0]所决定，当CURR_HTC[11:0] 和 CURR_LTC[11:0]都为0时传输结束。" />
         <Bit Name="LTC" Authority="RW" Bits="11-0" Description="低传输计数&#xD;&#xA;初始化低传输个数。" />
       </Register>
-      <Register Name="DMA_SR2" Authority="RW" Address="0x40300114" Width="32" Description="通道2状态寄存器">
+      <Register Name="DMA_SR2" Authority="RW" Address="0x40300114" Width="32" Description="通道x状态寄存器">
         <Bit Name="LTCST" Authority="RO" Bits="31" Description="低传输计数状态位&#xD;&#xA;0b: DAM控制器处于空闲状态。&#xD;&#xA;1b: DAM控制器处于忙状态&#xD;&#xA;当触发事件到来并启动DMA操作，LTCST位被置“1”（BUSY）" />
         <Bit Name="CURR_ HTC" Authority="RO" Bits="23-12" Description="当前高传输计数值&#xD;&#xA;设置DMA_CR想寄存器的HTC[11:0]位时，初始化传输计数值为HTC[11:0]，当一次原子传输完成后若LTC[11:0]为0，则该传输计数值减一。&#xD;&#xA;传输操作的计数值由HTC[11:0] x LTC[11:0]决定，当CUR_HTC[11:0] 和CUR_LTC[11:0] 计数值都为0时将停止传输并将DMA_MTR的STOP为置“1”" />
         <Bit Name="CURR_LTC" Authority="RO" Bits="11-0" Description="当前低传输计数值&#xD;&#xA;设置DMA_CR寄存器的LTC[11:0]位时，初始化传输计数值为LTC[11:0]，每完成一次原子传输，传输计数值减一。&#xD;&#xA;当CURR_HTC[11:0]不为“0”且CURR_LTC[11:0]为“1”时，在一次传输完成后，CURR_HTC[11:0]将减一，CURR_LTC[11:0]将初始化成DMA_CR寄存器的LTC[11:0]的值。" />
       </Register>
-      <Register Name="DMA_CSR2" Authority="RW" Address="0x40300118" Width="32" Description="通道2当前源寄存器">
+      <Register Name="DMA_CSR2" Authority="RW" Address="0x40300118" Width="32" Description="通道x当前源寄存器">
         <Bit Name="CURR_SADDR" Authority="RO" Bits="31-0" Description="当前源地址&#xD;&#xA;当前传输的源地址。" />
       </Register>
-      <Register Name="DMA_CDR2" Authority="RW" Address="0x4030011c" Width="32" Description="通道2当前目标寄存器">
+      <Register Name="DMA_CDR2" Authority="RW" Address="0x4030011c" Width="32" Description="通道x当前目标寄存器">
         <Bit Name="CURR_DADDR" Authority="RO" Bits="31-0" Description="当前目标地址&#xD;&#xA;当前传输的目标地址" />
       </Register>
-      <Register Name="DMA_MTR2" Authority="RW" Address="0x40300120" Width="32" Description="通道2掩码触发寄存器">
+      <Register Name="DMA_MTR2" Authority="RW" Address="0x40300120" Width="32" Description="通道x掩码触发寄存器">
         <Bit Name="STOP" Authority="RW" Bits="2" Description="DMA 操作停止位&#xD;&#xA;0b：无效&#xD;&#xA;1b:  如果有当前原子传输，则DMA在当前原子传输完成后立即停止。若当前没有原子传输，则DMA立即停止。&#xD;&#xA;注：由于当前可能存在原子传输，所以“停止”操作可能需要一些时钟周期，当查到CHEN位为“0”时，该“停止”操作才是真正完成。" />
         <Bit Name="CHEN" Authority="RW" Bits="1" Description="DMA 通道开/关位&#xD;&#xA;0b: 关闭DMA通道（对该通道的DMA请求将被忽略）&#xD;&#xA;1b: 开启DMA通道，对该通道的DMA请求将被处理。&#xD;&#xA;对该位置“1”开始DMA操作，当DMA_MTRx寄存器的STOP位被置“1”该位会被自动清零（“0”）；当DMA_MTRx寄存器的STOP位为“0”且DMA_CRx[26]位为“0”（禁止自动重载），当CURR_LTC[11:0]和CURR_HTC[11:0]都为“0”时，该位会被自动清零（“0”）。&#xD;&#xA;注：在DMA操作时，不建议手动修改该寄存器位（i.e., 建议只通过DMA_CRx[26]或STOP位进行操作）。" />
         <Bit Name="SWTRIG" Authority="RW" Bits="0" Description="DMA 软件触发&#xD;&#xA;以软件请求的方式触发DMA通道，对该位置“1”以开始DMA操作，当DMA操作开始后，该位自动清零。&#xD;&#xA;0b：无效&#xD;&#xA;1b: 请求DMA操作 " />
       </Register>
-      <Register Name="DMA_RSR2" Authority="RW" Address="0x40300124" Width="32" Description="通道2请求选择寄存器">
-        <Bit Name="REQ" Authority="RW" Bits="0" Description="请求类型选择位&#xD;&#xA;0: 软件请求模式，DMA将被DMA_MTRx寄存器的SWTRIG位触发。&#xD;&#xA;1：硬件请求模式，DMA将被HWSRC[3:0]对应的请求所错发" />
+      <Register Name="DMA_RSR2" Authority="RW" Address="0x40300124" Width="32" Description="通道x请求选择寄存器">
+        <Bit Name="REQ" Authority="RW" Bits="0" Description="请求类型选择位&#xD;&#xA;0: 软件请求模式，DMA将被DMA_MTRx寄存器的SWTRIG位触发。&#xD;&#xA;1：硬件请求模式，DMA将被HWSRC[3:0]对应的请求所触发" />
       </Register>
-      <Register Name="DMA_ISR3" Authority="RW" Address="0x40300180" Width="32" Description="通道3初始寄存器">
+      <Register Name="DMA_ISR3" Authority="RW" Address="0x40300180" Width="32" Description="通道x初始寄存器">
         <Bit Name="SADDR" Authority="RW" Bits="31-0" Description="DMA初始源地址.&#xD;&#xA;该位为传输源的基地址（开始地址）" />
       </Register>
-      <Register Name="DMA_ISCR3" Authority="RW" Address="0x40300184" Width="32" Description="通道0初始源控制寄存器">
+      <Register Name="DMA_ISCR3" Authority="RW" Address="0x40300184" Width="32" Description="通道x初始源控制寄存器">
         <Bit Name="HINC" Authority="RW" Bits="1" Description="高传输计数的源地址自增控制位&#xD;&#xA;0b：自增&#xD;&#xA;1b：不自增&#xD;&#xA;如果该位为0，每次传输完成后根据连续（burst）或单次（single）模式的高传输计数，源地址自增数据长度。&#xD;&#xA;如果该位为1，每次传输完成源地址保持不变。" />
         <Bit Name="LINC" Authority="RW" Bits="0" Description="低传输计数的源地址自增控制位&#xD;&#xA;0b：自增&#xD;&#xA;1b：不自增&#xD;&#xA;如果该位为0，每次传输完成后根据连续（burst）或单次（single）模式的低传输计数，源地址自增数据长度。&#xD;&#xA;如果该位为1，每次传输完成源地址保持不变。" />
       </Register>
-      <Register Name="DMA_IDR3" Authority="RW" Address="0x40300188" Width="32" Description="通道3初始目标寄存器">
+      <Register Name="DMA_IDR3" Authority="RW" Address="0x40300188" Width="32" Description="通道x初始目标寄存器">
         <Bit Name="DADDR" Authority="RW" Bits="31-0" Description="目标地址.&#xD;&#xA;该位为传输目标的基地址（开始地址）" />
       </Register>
-      <Register Name="DMA_IDCR3" Authority="RW" Address="0x4030018c" Width="32" Description="通道3初始目标控制寄存器">
+      <Register Name="DMA_IDCR3" Authority="RW" Address="0x4030018c" Width="32" Description="通道x初始目标控制寄存器">
         <Bit Name="HINC" Authority="RW" Bits="1" Description="高传输计数的目标地址自增控制位&#xD;&#xA;0b：自增&#xD;&#xA;1b：不自增&#xD;&#xA;如果该位为0，每次传输完成后根据连续（burst）或单次（single）模式的高传输计数，目标地址自增数据长度。&#xD;&#xA;如果该位为1，每次传输完成目标地址保持不变。" />
         <Bit Name="LINC" Authority="RW" Bits="0" Description="低传输计数的目标地址自增控制位&#xD;&#xA;0b：自增&#xD;&#xA;1b：不自增&#xD;&#xA;如果该位为0，每次传输完成后根据连续（burst）或单次（single）模式的低传输计数，目标地址自增数据长度。&#xD;&#xA;如果该位为1，每次传输完成目标地址保持不变。" />
       </Register>
-      <Register Name="DMA_CR3" Authority="RW" Address="0x40300190" Width="32" Description="通道3控制寄存器">
+      <Register Name="DMA_CR3" Authority="RW" Address="0x40300190" Width="32" Description="通道x控制寄存器">
         <Bit Name="TCIT" Authority="RW" Bits="30" Description="传输计数中断使能/禁止控制位&#xD;&#xA;0b: 禁止传输计数向下计数到0时的中断，此时用户需查询状态寄存器的传输计数位来判断传输情况。&#xD;&#xA;1b: 使能传输计数向下计数到0（CURR_LTC[11:0] 和CURR_HTC[11:0]都为0）时的中断。" />
         <Bit Name="LTCIT" Authority="RW" Bits="29" Description="低传输计数中断使能/禁止控制位&#xD;&#xA;0b: 禁止低传输计数向下计数到0时的中断，此时用户需查询状态寄存器的传输计数位来判断传输情况。&#xD;&#xA;1b: 使能低传输计数向下计数到0（CURR_LTC[11:0]为0）时的中断。" />
         <Bit Name="TSIZE" Authority="RW" Bits="28" Description="传输大小&#xD;&#xA;选择原子传输（每次DMA获取总线后，并在其释放总线前的传输）&#xD;&#xA;0b: 单次传输，传输的大小为DSIZE定义的大小。&#xD;&#xA;1b: 连续传输，传输的大小为DSIZE定义的大小乘以4" />
-        <Bit Name="SMODE" Authority="RW" Bits="27" Description="服务模式选择位&#xD;&#xA;选择DMA操作模式为单次服务或全服务模式&#xD;&#xA;0b: 单次服务模式，但每个原子传输（单次或连续）完成后停止DMA服务并等待新的DMA请求。&#xD;&#xA;1b：连续服务模式，一次DMA请求后将重复原子传输直到传输计数为0&#xD;&#xA;注：即使是全服务模式，DMA在每次原子传输后将释放总线，并再次发起总线请求以防止阻塞其他总线主机。" />
-        <Bit Name="RELOAD" Authority="RW" Bits="26" Description="自动重载使能/禁止控制位&#xD;&#xA;0b: 当前传输计数为0（所有传输请求已完成）时启动自动重载。自动重载可用于重复的DMA操作（使用相同地址和传输数目）。&#xD;&#xA;1b: 但传输计数为0时关闭DMA通道。建议设置通道开/关位（CHEN）为0以防止意外启动新的DMA传输" />
+        <Bit Name="SMODE" Authority="RW" Bits="27" Description="服务模式选择位&#xD;&#xA;选择DMA操作模式为单次服务或全服务模式&#xD;&#xA;0b: 单次服务模式，但每个原子传输（单次或连续）完成后停止DMA服务并等待新的DMA请求。&#xD;&#xA;1b：连续服务模式，一次DMA请求后将重复原子传输直到低位传输计数LTC[11:0]为0&#xD;&#xA;注：即使是全服务模式，DMA在每次原子传输后将释放总线，并再次发起总线请求以防止阻塞其他总线主机。" />
+        <Bit Name="RELOAD" Authority="RW" Bits="26" Description="自动重载使能/禁止控制位&#xD;&#xA;0b: 当前传输计数为0（所有传输请求已完成）时启动自动重载。自动重载可用于重复的DMA操作（使用相同地址和传输数目）。&#xD;&#xA;1b: 当传输计数为0时关闭DMA通道。建议设置通道开/关位（CHEN）为0以防止意外启动新的DMA传输" />
         <Bit Name="DSIZE" Authority="RW" Bits="25-24" Description="传输数据大小选择位&#xD;&#xA;00b = 字节（Byte）&#xD;&#xA;01b = 半字（Half word）&#xD;&#xA;10b = 字  （Word）&#xD;&#xA;11b = 无效" />
         <Bit Name="HTC" Authority="RW" Bits="23-12" Description="高传输计数&#xD;&#xA;初始化高传输个数&#xD;&#xA;注：传输操作的个数由HTC[11:0]  LTC[11:0]所决定，当CURR_HTC[11:0] 和 CURR_LTC[11:0]都为0时传输结束。" />
         <Bit Name="LTC" Authority="RW" Bits="11-0" Description="低传输计数&#xD;&#xA;初始化低传输个数。" />
       </Register>
-      <Register Name="DMA_SR3" Authority="RW" Address="0x40300194" Width="32" Description="通道3状态寄存器">
+      <Register Name="DMA_SR3" Authority="RW" Address="0x40300194" Width="32" Description="通道x状态寄存器">
         <Bit Name="LTCST" Authority="RO" Bits="31" Description="低传输计数状态位&#xD;&#xA;0b: DAM控制器处于空闲状态。&#xD;&#xA;1b: DAM控制器处于忙状态&#xD;&#xA;当触发事件到来并启动DMA操作，LTCST位被置“1”（BUSY）" />
         <Bit Name="CURR_ HTC" Authority="RO" Bits="23-12" Description="当前高传输计数值&#xD;&#xA;设置DMA_CR想寄存器的HTC[11:0]位时，初始化传输计数值为HTC[11:0]，当一次原子传输完成后若LTC[11:0]为0，则该传输计数值减一。&#xD;&#xA;传输操作的计数值由HTC[11:0] x LTC[11:0]决定，当CUR_HTC[11:0] 和CUR_LTC[11:0] 计数值都为0时将停止传输并将DMA_MTR的STOP为置“1”" />
         <Bit Name="CURR_LTC" Authority="RO" Bits="11-0" Description="当前低传输计数值&#xD;&#xA;设置DMA_CR寄存器的LTC[11:0]位时，初始化传输计数值为LTC[11:0]，每完成一次原子传输，传输计数值减一。&#xD;&#xA;当CURR_HTC[11:0]不为“0”且CURR_LTC[11:0]为“1”时，在一次传输完成后，CURR_HTC[11:0]将减一，CURR_LTC[11:0]将初始化成DMA_CR寄存器的LTC[11:0]的值。" />
       </Register>
-      <Register Name="DMA_CSR3" Authority="RW" Address="0x40300198" Width="32" Description="通道3当前源寄存器">
+      <Register Name="DMA_CSR3" Authority="RW" Address="0x40300198" Width="32" Description="通道x当前源寄存器">
         <Bit Name="CURR_SADDR" Authority="RO" Bits="31-0" Description="当前源地址&#xD;&#xA;当前传输的源地址。" />
       </Register>
-      <Register Name="DMA_CDR3" Authority="RW" Address="0x4030019c" Width="32" Description="通道3当前目标寄存器">
+      <Register Name="DMA_CDR3" Authority="RW" Address="0x4030019c" Width="32" Description="通道x当前目标寄存器">
         <Bit Name="CURR_DADDR" Authority="RO" Bits="31-0" Description="当前目标地址&#xD;&#xA;当前传输的目标地址" />
       </Register>
-      <Register Name="DMA_MTR3" Authority="RW" Address="0x403001a0" Width="32" Description="通道3掩码触发寄存器">
+      <Register Name="DMA_MTR3" Authority="RW" Address="0x403001a0" Width="32" Description="通道x掩码触发寄存器">
         <Bit Name="STOP" Authority="RW" Bits="2" Description="DMA 操作停止位&#xD;&#xA;0b：无效&#xD;&#xA;1b:  如果有当前原子传输，则DMA在当前原子传输完成后立即停止。若当前没有原子传输，则DMA立即停止。&#xD;&#xA;注：由于当前可能存在原子传输，所以“停止”操作可能需要一些时钟周期，当查到CHEN位为“0”时，该“停止”操作才是真正完成。" />
         <Bit Name="CHEN" Authority="RW" Bits="1" Description="DMA 通道开/关位&#xD;&#xA;0b: 关闭DMA通道（对该通道的DMA请求将被忽略）&#xD;&#xA;1b: 开启DMA通道，对该通道的DMA请求将被处理。&#xD;&#xA;对该位置“1”开始DMA操作，当DMA_MTRx寄存器的STOP位被置“1”该位会被自动清零（“0”）；当DMA_MTRx寄存器的STOP位为“0”且DMA_CRx[26]位为“0”（禁止自动重载），当CURR_LTC[11:0]和CURR_HTC[11:0]都为“0”时，该位会被自动清零（“0”）。&#xD;&#xA;注：在DMA操作时，不建议手动修改该寄存器位（i.e., 建议只通过DMA_CRx[26]或STOP位进行操作）。" />
         <Bit Name="SWTRIG" Authority="RW" Bits="0" Description="DMA 软件触发&#xD;&#xA;以软件请求的方式触发DMA通道，对该位置“1”以开始DMA操作，当DMA操作开始后，该位自动清零。&#xD;&#xA;0b：无效&#xD;&#xA;1b: 请求DMA操作 " />
       </Register>
-      <Register Name="DMA_RSR3" Authority="RW" Address="0x403001a4" Width="32" Description="通道3请求选择寄存器">
-        <Bit Name="REQ" Authority="RW" Bits="0" Description="请求类型选择位&#xD;&#xA;0: 软件请求模式，DMA将被DMA_MTRx寄存器的SWTRIG位触发。&#xD;&#xA;1：硬件请求模式，DMA将被HWSRC[3:0]对应的请求所错发" />
+      <Register Name="DMA_RSR3" Authority="RW" Address="0x403001a4" Width="32" Description="通道x请求选择寄存器">
+        <Bit Name="REQ" Authority="RW" Bits="0" Description="请求类型选择位&#xD;&#xA;0: 软件请求模式，DMA将被DMA_MTRx寄存器的SWTRIG位触发。&#xD;&#xA;1：硬件请求模式，DMA将被HWSRC[3:0]对应的请求所触发" />
+      </Register>
+      <Register Name="DMA_ISR4" Authority="RW" Address="0x40300200" Width="32" Description="通道x初始寄存器">
+        <Bit Name="SADDR" Authority="RW" Bits="31-0" Description="DMA初始源地址.&#xD;&#xA;该位为传输源的基地址（开始地址）" />
+      </Register>
+      <Register Name="DMA_ISCR4" Authority="RW" Address="0x40300204" Width="32" Description="通道x初始源控制寄存器">
+        <Bit Name="HINC" Authority="RW" Bits="1" Description="高传输计数的源地址自增控制位&#xD;&#xA;0b：自增&#xD;&#xA;1b：不自增&#xD;&#xA;如果该位为0，每次传输完成后根据连续（burst）或单次（single）模式的高传输计数，源地址自增数据长度。&#xD;&#xA;如果该位为1，每次传输完成源地址保持不变。" />
+        <Bit Name="LINC" Authority="RW" Bits="0" Description="低传输计数的源地址自增控制位&#xD;&#xA;0b：自增&#xD;&#xA;1b：不自增&#xD;&#xA;如果该位为0，每次传输完成后根据连续（burst）或单次（single）模式的低传输计数，源地址自增数据长度。&#xD;&#xA;如果该位为1，每次传输完成源地址保持不变。" />
+      </Register>
+      <Register Name="DMA_IDR4" Authority="RW" Address="0x40300208" Width="32" Description="通道x初始目标寄存器">
+        <Bit Name="DADDR" Authority="RW" Bits="31-0" Description="目标地址.&#xD;&#xA;该位为传输目标的基地址（开始地址）" />
+      </Register>
+      <Register Name="DMA_IDCR4" Authority="RW" Address="0x4030020c" Width="32" Description="通道x初始目标控制寄存器">
+        <Bit Name="HINC" Authority="RW" Bits="1" Description="高传输计数的目标地址自增控制位&#xD;&#xA;0b：自增&#xD;&#xA;1b：不自增&#xD;&#xA;如果该位为0，每次传输完成后根据连续（burst）或单次（single）模式的高传输计数，目标地址自增数据长度。&#xD;&#xA;如果该位为1，每次传输完成目标地址保持不变。" />
+        <Bit Name="LINC" Authority="RW" Bits="0" Description="低传输计数的目标地址自增控制位&#xD;&#xA;0b：自增&#xD;&#xA;1b：不自增&#xD;&#xA;如果该位为0，每次传输完成后根据连续（burst）或单次（single）模式的低传输计数，目标地址自增数据长度。&#xD;&#xA;如果该位为1，每次传输完成目标地址保持不变。" />
+      </Register>
+      <Register Name="DMA_CR4" Authority="RW" Address="0x40300210" Width="32" Description="通道x控制寄存器">
+        <Bit Name="TCIT" Authority="RW" Bits="30" Description="传输计数中断使能/禁止控制位&#xD;&#xA;0b: 禁止传输计数向下计数到0时的中断，此时用户需查询状态寄存器的传输计数位来判断传输情况。&#xD;&#xA;1b: 使能传输计数向下计数到0（CURR_LTC[11:0] 和CURR_HTC[11:0]都为0）时的中断。" />
+        <Bit Name="LTCIT" Authority="RW" Bits="29" Description="低传输计数中断使能/禁止控制位&#xD;&#xA;0b: 禁止低传输计数向下计数到0时的中断，此时用户需查询状态寄存器的传输计数位来判断传输情况。&#xD;&#xA;1b: 使能低传输计数向下计数到0（CURR_LTC[11:0]为0）时的中断。" />
+        <Bit Name="TSIZE" Authority="RW" Bits="28" Description="传输大小&#xD;&#xA;选择原子传输（每次DMA获取总线后，并在其释放总线前的传输）&#xD;&#xA;0b: 单次传输，传输的大小为DSIZE定义的大小。&#xD;&#xA;1b: 连续传输，传输的大小为DSIZE定义的大小乘以4" />
+        <Bit Name="SMODE" Authority="RW" Bits="27" Description="服务模式选择位&#xD;&#xA;选择DMA操作模式为单次服务或全服务模式&#xD;&#xA;0b: 单次服务模式，但每个原子传输（单次或连续）完成后停止DMA服务并等待新的DMA请求。&#xD;&#xA;1b：连续服务模式，一次DMA请求后将重复原子传输直到低位传输计数LTC[11:0]为0&#xD;&#xA;注：即使是全服务模式，DMA在每次原子传输后将释放总线，并再次发起总线请求以防止阻塞其他总线主机。" />
+        <Bit Name="RELOAD" Authority="RW" Bits="26" Description="自动重载使能/禁止控制位&#xD;&#xA;0b: 当前传输计数为0（所有传输请求已完成）时启动自动重载。自动重载可用于重复的DMA操作（使用相同地址和传输数目）。&#xD;&#xA;1b: 当传输计数为0时关闭DMA通道。建议设置通道开/关位（CHEN）为0以防止意外启动新的DMA传输" />
+        <Bit Name="DSIZE" Authority="RW" Bits="25-24" Description="传输数据大小选择位&#xD;&#xA;00b = 字节（Byte）&#xD;&#xA;01b = 半字（Half word）&#xD;&#xA;10b = 字  （Word）&#xD;&#xA;11b = 无效" />
+        <Bit Name="HTC" Authority="RW" Bits="23-12" Description="高传输计数&#xD;&#xA;初始化高传输个数&#xD;&#xA;注：传输操作的个数由HTC[11:0]  LTC[11:0]所决定，当CURR_HTC[11:0] 和 CURR_LTC[11:0]都为0时传输结束。" />
+        <Bit Name="LTC" Authority="RW" Bits="11-0" Description="低传输计数&#xD;&#xA;初始化低传输个数。" />
+      </Register>
+      <Register Name="DMA_SR4" Authority="RW" Address="0x40300214" Width="32" Description="通道x状态寄存器">
+        <Bit Name="LTCST" Authority="RO" Bits="31" Description="低传输计数状态位&#xD;&#xA;0b: DAM控制器处于空闲状态。&#xD;&#xA;1b: DAM控制器处于忙状态&#xD;&#xA;当触发事件到来并启动DMA操作，LTCST位被置“1”（BUSY）" />
+        <Bit Name="CURR_ HTC" Authority="RO" Bits="23-12" Description="当前高传输计数值&#xD;&#xA;设置DMA_CR想寄存器的HTC[11:0]位时，初始化传输计数值为HTC[11:0]，当一次原子传输完成后若LTC[11:0]为0，则该传输计数值减一。&#xD;&#xA;传输操作的计数值由HTC[11:0] x LTC[11:0]决定，当CUR_HTC[11:0] 和CUR_LTC[11:0] 计数值都为0时将停止传输并将DMA_MTR的STOP为置“1”" />
+        <Bit Name="CURR_LTC" Authority="RO" Bits="11-0" Description="当前低传输计数值&#xD;&#xA;设置DMA_CR寄存器的LTC[11:0]位时，初始化传输计数值为LTC[11:0]，每完成一次原子传输，传输计数值减一。&#xD;&#xA;当CURR_HTC[11:0]不为“0”且CURR_LTC[11:0]为“1”时，在一次传输完成后，CURR_HTC[11:0]将减一，CURR_LTC[11:0]将初始化成DMA_CR寄存器的LTC[11:0]的值。" />
+      </Register>
+      <Register Name="DMA_CSR4" Authority="RW" Address="0x40300218" Width="32" Description="通道x当前源寄存器">
+        <Bit Name="CURR_SADDR" Authority="RO" Bits="31-0" Description="当前源地址&#xD;&#xA;当前传输的源地址。" />
+      </Register>
+      <Register Name="DMA_CDR4" Authority="RW" Address="0x4030021c" Width="32" Description="通道x当前目标寄存器">
+        <Bit Name="CURR_DADDR" Authority="RO" Bits="31-0" Description="当前目标地址&#xD;&#xA;当前传输的目标地址" />
+      </Register>
+      <Register Name="DMA_MTR4" Authority="RW" Address="0x40300220" Width="32" Description="通道x掩码触发寄存器">
+        <Bit Name="STOP" Authority="RW" Bits="2" Description="DMA 操作停止位&#xD;&#xA;0b：无效&#xD;&#xA;1b:  如果有当前原子传输，则DMA在当前原子传输完成后立即停止。若当前没有原子传输，则DMA立即停止。&#xD;&#xA;注：由于当前可能存在原子传输，所以“停止”操作可能需要一些时钟周期，当查到CHEN位为“0”时，该“停止”操作才是真正完成。" />
+        <Bit Name="CHEN" Authority="RW" Bits="1" Description="DMA 通道开/关位&#xD;&#xA;0b: 关闭DMA通道（对该通道的DMA请求将被忽略）&#xD;&#xA;1b: 开启DMA通道，对该通道的DMA请求将被处理。&#xD;&#xA;对该位置“1”开始DMA操作，当DMA_MTRx寄存器的STOP位被置“1”该位会被自动清零（“0”）；当DMA_MTRx寄存器的STOP位为“0”且DMA_CRx[26]位为“0”（禁止自动重载），当CURR_LTC[11:0]和CURR_HTC[11:0]都为“0”时，该位会被自动清零（“0”）。&#xD;&#xA;注：在DMA操作时，不建议手动修改该寄存器位（i.e., 建议只通过DMA_CRx[26]或STOP位进行操作）。" />
+        <Bit Name="SWTRIG" Authority="RW" Bits="0" Description="DMA 软件触发&#xD;&#xA;以软件请求的方式触发DMA通道，对该位置“1”以开始DMA操作，当DMA操作开始后，该位自动清零。&#xD;&#xA;0b：无效&#xD;&#xA;1b: 请求DMA操作 " />
+      </Register>
+      <Register Name="DMA_RSR4" Authority="RW" Address="0x40300224" Width="32" Description="通道x请求选择寄存器">
+        <Bit Name="REQ" Authority="RW" Bits="0" Description="请求类型选择位&#xD;&#xA;0: 软件请求模式，DMA将被DMA_MTRx寄存器的SWTRIG位触发。&#xD;&#xA;1：硬件请求模式，DMA将被HWSRC[3:0]对应的请求所触发" />
+      </Register>
+      <Register Name="DMA_ISR5" Authority="RW" Address="0x40300280" Width="32" Description="通道x初始寄存器">
+        <Bit Name="SADDR" Authority="RW" Bits="31-0" Description="DMA初始源地址.&#xD;&#xA;该位为传输源的基地址（开始地址）" />
+      </Register>
+      <Register Name="DMA_ISCR5" Authority="RW" Address="0x40300284" Width="32" Description="通道x初始源控制寄存器">
+        <Bit Name="HINC" Authority="RW" Bits="1" Description="高传输计数的源地址自增控制位&#xD;&#xA;0b：自增&#xD;&#xA;1b：不自增&#xD;&#xA;如果该位为0，每次传输完成后根据连续（burst）或单次（single）模式的高传输计数，源地址自增数据长度。&#xD;&#xA;如果该位为1，每次传输完成源地址保持不变。" />
+        <Bit Name="LINC" Authority="RW" Bits="0" Description="低传输计数的源地址自增控制位&#xD;&#xA;0b：自增&#xD;&#xA;1b：不自增&#xD;&#xA;如果该位为0，每次传输完成后根据连续（burst）或单次（single）模式的低传输计数，源地址自增数据长度。&#xD;&#xA;如果该位为1，每次传输完成源地址保持不变。" />
+      </Register>
+      <Register Name="DMA_IDR5" Authority="RW" Address="0x40300288" Width="32" Description="通道x初始目标寄存器">
+        <Bit Name="DADDR" Authority="RW" Bits="31-0" Description="目标地址.&#xD;&#xA;该位为传输目标的基地址（开始地址）" />
+      </Register>
+      <Register Name="DMA_IDCR5" Authority="RW" Address="0x4030028c" Width="32" Description="通道x初始目标控制寄存器">
+        <Bit Name="HINC" Authority="RW" Bits="1" Description="高传输计数的目标地址自增控制位&#xD;&#xA;0b：自增&#xD;&#xA;1b：不自增&#xD;&#xA;如果该位为0，每次传输完成后根据连续（burst）或单次（single）模式的高传输计数，目标地址自增数据长度。&#xD;&#xA;如果该位为1，每次传输完成目标地址保持不变。" />
+        <Bit Name="LINC" Authority="RW" Bits="0" Description="低传输计数的目标地址自增控制位&#xD;&#xA;0b：自增&#xD;&#xA;1b：不自增&#xD;&#xA;如果该位为0，每次传输完成后根据连续（burst）或单次（single）模式的低传输计数，目标地址自增数据长度。&#xD;&#xA;如果该位为1，每次传输完成目标地址保持不变。" />
+      </Register>
+      <Register Name="DMA_CR5" Authority="RW" Address="0x40300290" Width="32" Description="通道x控制寄存器">
+        <Bit Name="TCIT" Authority="RW" Bits="30" Description="传输计数中断使能/禁止控制位&#xD;&#xA;0b: 禁止传输计数向下计数到0时的中断，此时用户需查询状态寄存器的传输计数位来判断传输情况。&#xD;&#xA;1b: 使能传输计数向下计数到0（CURR_LTC[11:0] 和CURR_HTC[11:0]都为0）时的中断。" />
+        <Bit Name="LTCIT" Authority="RW" Bits="29" Description="低传输计数中断使能/禁止控制位&#xD;&#xA;0b: 禁止低传输计数向下计数到0时的中断，此时用户需查询状态寄存器的传输计数位来判断传输情况。&#xD;&#xA;1b: 使能低传输计数向下计数到0（CURR_LTC[11:0]为0）时的中断。" />
+        <Bit Name="TSIZE" Authority="RW" Bits="28" Description="传输大小&#xD;&#xA;选择原子传输（每次DMA获取总线后，并在其释放总线前的传输）&#xD;&#xA;0b: 单次传输，传输的大小为DSIZE定义的大小。&#xD;&#xA;1b: 连续传输，传输的大小为DSIZE定义的大小乘以4" />
+        <Bit Name="SMODE" Authority="RW" Bits="27" Description="服务模式选择位&#xD;&#xA;选择DMA操作模式为单次服务或全服务模式&#xD;&#xA;0b: 单次服务模式，但每个原子传输（单次或连续）完成后停止DMA服务并等待新的DMA请求。&#xD;&#xA;1b：连续服务模式，一次DMA请求后将重复原子传输直到低位传输计数LTC[11:0]为0&#xD;&#xA;注：即使是全服务模式，DMA在每次原子传输后将释放总线，并再次发起总线请求以防止阻塞其他总线主机。" />
+        <Bit Name="RELOAD" Authority="RW" Bits="26" Description="自动重载使能/禁止控制位&#xD;&#xA;0b: 当前传输计数为0（所有传输请求已完成）时启动自动重载。自动重载可用于重复的DMA操作（使用相同地址和传输数目）。&#xD;&#xA;1b: 当传输计数为0时关闭DMA通道。建议设置通道开/关位（CHEN）为0以防止意外启动新的DMA传输" />
+        <Bit Name="DSIZE" Authority="RW" Bits="25-24" Description="传输数据大小选择位&#xD;&#xA;00b = 字节（Byte）&#xD;&#xA;01b = 半字（Half word）&#xD;&#xA;10b = 字  （Word）&#xD;&#xA;11b = 无效" />
+        <Bit Name="HTC" Authority="RW" Bits="23-12" Description="高传输计数&#xD;&#xA;初始化高传输个数&#xD;&#xA;注：传输操作的个数由HTC[11:0]  LTC[11:0]所决定，当CURR_HTC[11:0] 和 CURR_LTC[11:0]都为0时传输结束。" />
+        <Bit Name="LTC" Authority="RW" Bits="11-0" Description="低传输计数&#xD;&#xA;初始化低传输个数。" />
+      </Register>
+      <Register Name="DMA_SR5" Authority="RW" Address="0x40300294" Width="32" Description="通道x状态寄存器">
+        <Bit Name="LTCST" Authority="RO" Bits="31" Description="低传输计数状态位&#xD;&#xA;0b: DAM控制器处于空闲状态。&#xD;&#xA;1b: DAM控制器处于忙状态&#xD;&#xA;当触发事件到来并启动DMA操作，LTCST位被置“1”（BUSY）" />
+        <Bit Name="CURR_ HTC" Authority="RO" Bits="23-12" Description="当前高传输计数值&#xD;&#xA;设置DMA_CR想寄存器的HTC[11:0]位时，初始化传输计数值为HTC[11:0]，当一次原子传输完成后若LTC[11:0]为0，则该传输计数值减一。&#xD;&#xA;传输操作的计数值由HTC[11:0] x LTC[11:0]决定，当CUR_HTC[11:0] 和CUR_LTC[11:0] 计数值都为0时将停止传输并将DMA_MTR的STOP为置“1”" />
+        <Bit Name="CURR_LTC" Authority="RO" Bits="11-0" Description="当前低传输计数值&#xD;&#xA;设置DMA_CR寄存器的LTC[11:0]位时，初始化传输计数值为LTC[11:0]，每完成一次原子传输，传输计数值减一。&#xD;&#xA;当CURR_HTC[11:0]不为“0”且CURR_LTC[11:0]为“1”时，在一次传输完成后，CURR_HTC[11:0]将减一，CURR_LTC[11:0]将初始化成DMA_CR寄存器的LTC[11:0]的值。" />
+      </Register>
+      <Register Name="DMA_CSR5" Authority="RW" Address="0x40300298" Width="32" Description="通道x当前源寄存器">
+        <Bit Name="CURR_SADDR" Authority="RO" Bits="31-0" Description="当前源地址&#xD;&#xA;当前传输的源地址。" />
+      </Register>
+      <Register Name="DMA_CDR5" Authority="RW" Address="0x4030029c" Width="32" Description="通道x当前目标寄存器">
+        <Bit Name="CURR_DADDR" Authority="RO" Bits="31-0" Description="当前目标地址&#xD;&#xA;当前传输的目标地址" />
+      </Register>
+      <Register Name="DMA_MTR5" Authority="RW" Address="0x403002a0" Width="32" Description="通道x掩码触发寄存器">
+        <Bit Name="STOP" Authority="RW" Bits="2" Description="DMA 操作停止位&#xD;&#xA;0b：无效&#xD;&#xA;1b:  如果有当前原子传输，则DMA在当前原子传输完成后立即停止。若当前没有原子传输，则DMA立即停止。&#xD;&#xA;注：由于当前可能存在原子传输，所以“停止”操作可能需要一些时钟周期，当查到CHEN位为“0”时，该“停止”操作才是真正完成。" />
+        <Bit Name="CHEN" Authority="RW" Bits="1" Description="DMA 通道开/关位&#xD;&#xA;0b: 关闭DMA通道（对该通道的DMA请求将被忽略）&#xD;&#xA;1b: 开启DMA通道，对该通道的DMA请求将被处理。&#xD;&#xA;对该位置“1”开始DMA操作，当DMA_MTRx寄存器的STOP位被置“1”该位会被自动清零（“0”）；当DMA_MTRx寄存器的STOP位为“0”且DMA_CRx[26]位为“0”（禁止自动重载），当CURR_LTC[11:0]和CURR_HTC[11:0]都为“0”时，该位会被自动清零（“0”）。&#xD;&#xA;注：在DMA操作时，不建议手动修改该寄存器位（i.e., 建议只通过DMA_CRx[26]或STOP位进行操作）。" />
+        <Bit Name="SWTRIG" Authority="RW" Bits="0" Description="DMA 软件触发&#xD;&#xA;以软件请求的方式触发DMA通道，对该位置“1”以开始DMA操作，当DMA操作开始后，该位自动清零。&#xD;&#xA;0b：无效&#xD;&#xA;1b: 请求DMA操作 " />
+      </Register>
+      <Register Name="DMA_RSR5" Authority="RW" Address="0x403002a4" Width="32" Description="通道x请求选择寄存器">
+        <Bit Name="REQ" Authority="RW" Bits="0" Description="请求类型选择位&#xD;&#xA;0: 软件请求模式，DMA将被DMA_MTRx寄存器的SWTRIG位触发。&#xD;&#xA;1：硬件请求模式，DMA将被HWSRC[3:0]对应的请求所触发" />
       </Register>
       <Register Name="DMA_IDR" Authority="RW" Address="0x40300500" Width="32" Description="ID寄存器">
         <Bit Name="IDCODE" Authority="RO" Bits="31-0" Description="ID代码" />
@@ -8041,22 +8138,30 @@
         <Bit Name="SWRST" Authority="RW" Bits="0" Description="软件复位&#xD;&#xA;0 = 无效&#xD;&#xA;1 = 全局软件复位 " />
       </Register>
       <Register Name="DMA_CESR" Authority="RW" Address="0x40300508" Width="32" Description="通道状态寄存器">
+        <Bit Name="CH5EN" Authority="RO" Bits="5" Description="通道5使能状态位&#xD;&#xA;0 = 通道5未使能.&#xD;&#xA;1 = 通道5已使能." />
+        <Bit Name="CH4EN" Authority="RO" Bits="4" Description="通道4使能状态位&#xD;&#xA;0 = 通道4未使能.&#xD;&#xA;1 = 通道4已使能." />
         <Bit Name="CH3EN" Authority="RO" Bits="3" Description="通道3使能状态位&#xD;&#xA;0 = 通道3未使能.&#xD;&#xA;1 = 通道3已使能." />
         <Bit Name="CH2EN" Authority="RO" Bits="2" Description="通道2使能状态位&#xD;&#xA;0 = 通道2未使能.&#xD;&#xA;1 = 通道2已使能." />
         <Bit Name="CH1EN" Authority="RO" Bits="1" Description="通道1使能状态位&#xD;&#xA;0 = 通道1未使能.&#xD;&#xA;1 = 通道1已使能." />
         <Bit Name="CH0EN" Authority="RO" Bits="0" Description="通道0使能状态位&#xD;&#xA;0 = 通道0未使能.&#xD;&#xA;1 = 通道0已使能." />
       </Register>
       <Register Name="DMA_ISR" Authority="RW" Address="0x4030050c" Width="32" Description="中断状态寄存器">
-        <Bit Name="CH3_TCIT" Authority="RO" Bits="19" Description="通道3传输计数中断状态位&#xD;&#xA;0: 传输计数完成中断未发生。&#xD;&#xA;1：当CRx寄存器的LTCINT位为“1”时，当所有传输完成（CURR_LTC[11:0]和CURR_HTC[11:0]都等于0）时，该位将被置“1”。" />
-        <Bit Name="CH2_TCIT" Authority="RO" Bits="18" Description="通道2传输计数中断状态位&#xD;&#xA;0: 传输计数完成中断未发生。&#xD;&#xA;1：当CRx寄存器的LTCINT位为“1”时，当所有传输完成（CURR_LTC[11:0]和CURR_HTC[11:0]都等于0）时，该位将被置“1”。" />
-        <Bit Name="CH1_TCIT" Authority="RO" Bits="17" Description="通道1传输计数中断状态位&#xD;&#xA;0: 传输计数完成中断未发生。&#xD;&#xA;1：当CRx寄存器的LTCINT位为“1”时，当所有传输完成（CURR_LTC[11:0]和CURR_HTC[11:0]都等于0）时，该位将被置“1”。" />
-        <Bit Name="CH0_TCIT" Authority="RO" Bits="16" Description="通道0传输计数中断状态位&#xD;&#xA;0: 传输计数完成中断未发生。&#xD;&#xA;1：当CRx寄存器的LTCINT位为“1”时，当所有传输完成（CURR_LTC[11:0]和CURR_HTC[11:0]都等于0）时，该位将被置“1”。" />
-        <Bit Name="CH3_LTCIT" Authority="RO" Bits="3" Description="通道3低传输计数完成中断状态位&#xD;&#xA;0: 低传输计数完成中断未发生。&#xD;&#xA;1：当CRx寄存器的LTCINT位为“1”时，当所有低传输完成（CURR_LTC[11:0]等于0）时，该位将被置“1”。" />
-        <Bit Name="CH2_LTCIT" Authority="RO" Bits="2" Description="通道2低传输计数完成中断状态位&#xD;&#xA;0: 低传输计数完成中断未发生。&#xD;&#xA;1：当CRx寄存器的LTCINT位为“1”时，当所有低传输完成（CURR_LTC[11:0]等于0）时，该位将被置“1”。" />
-        <Bit Name="CH1_LTCIT" Authority="RO" Bits="1" Description="通道1低传输计数完成中断状态位&#xD;&#xA;0: 低传输计数完成中断未发生。&#xD;&#xA;1：当CRx寄存器的LTCINT位为“1”时，当所有低传输完成（CURR_LTC[11:0]等于0）时，该位将被置“1”。" />
-        <Bit Name="CH0_LTCIT" Authority="RO" Bits="0" Description="通道0低传输计数完成中断状态位&#xD;&#xA;0: 低传输计数完成中断未发生。&#xD;&#xA;1：当CRx寄存器的LTCINT位为“1”时，当所有低传输完成（CURR_LTC[11:0]等于0）时，该位将被置“1”。" />
+        <Bit Name="CH5_TCIT" Authority="RO" Bits="21" Description="通道5传输计数中断状态位&#xD;&#xA;0: 传输计数完成中断未发生。&#xD;&#xA;1：当CRx寄存器的TCIT位为“1”时，当所有传输完成（CURR_LTC[11:0]和CURR_HTC[11:0]都等于0）时，该位将被置“1”。" />
+        <Bit Name="CH4_TCIT" Authority="RO" Bits="20" Description="通道4传输计数中断状态位&#xD;&#xA;0: 传输计数完成中断未发生。&#xD;&#xA;1：当CRx寄存器的TCIT位为“1”时，当所有传输完成（CURR_LTC[11:0]和CURR_HTC[11:0]都等于0）时，该位将被置“1”。" />
+        <Bit Name="CH3_TCIT" Authority="RO" Bits="19" Description="通道3传输计数中断状态位&#xD;&#xA;0: 传输计数完成中断未发生。&#xD;&#xA;1：当CRx寄存器的TCIT位为“1”时，当所有传输完成（CURR_LTC[11:0]和CURR_HTC[11:0]都等于0）时，该位将被置“1”。" />
+        <Bit Name="CH2_TCIT" Authority="RO" Bits="18" Description="通道2传输计数中断状态位&#xD;&#xA;0: 传输计数完成中断未发生。&#xD;&#xA;1：当CRx寄存器的TCIT位为“1”时，当所有传输完成（CURR_LTC[11:0]和CURR_HTC[11:0]都等于0）时，该位将被置“1”。" />
+        <Bit Name="CH1_TCIT" Authority="RO" Bits="17" Description="通道1传输计数中断状态位&#xD;&#xA;0: 传输计数完成中断未发生。&#xD;&#xA;1：当CRx寄存器的TCIT位为“1”时，当所有传输完成（CURR_LTC[11:0]和CURR_HTC[11:0]都等于0）时，该位将被置“1”。" />
+        <Bit Name="CH0_TCIT" Authority="RO" Bits="16" Description="通道0传输计数中断状态位&#xD;&#xA;0: 传输计数完成中断未发生。&#xD;&#xA;1：当CRx寄存器的TCIT位为“1”时，当所有传输完成（CURR_LTC[11:0]和CURR_HTC[11:0]都等于0）时，该位将被置“1”。" />
+        <Bit Name="CH5_LTCIT" Authority="RO" Bits="5" Description="通道5低传输计数完成中断状态位&#xD;&#xA;0: 低传输计数完成中断未发生。&#xD;&#xA;1：当CRx寄存器的LTCIT位为“1”时，当所有低传输完成（CURR_LTC[11:0]等于0）时，该位将被置“1”。" />
+        <Bit Name="CH4_LTCIT" Authority="RO" Bits="4" Description="通道4低传输计数完成中断状态位&#xD;&#xA;0: 低传输计数完成中断未发生。&#xD;&#xA;1：当CRx寄存器的LTCIT位为“1”时，当所有低传输完成（CURR_LTC[11:0]等于0）时，该位将被置“1”。" />
+        <Bit Name="CH3_LTCIT" Authority="RO" Bits="3" Description="通道3低传输计数完成中断状态位&#xD;&#xA;0: 低传输计数完成中断未发生。&#xD;&#xA;1：当CRx寄存器的LTCIT位为“1”时，当所有低传输完成（CURR_LTC[11:0]等于0）时，该位将被置“1”。" />
+        <Bit Name="CH2_LTCIT" Authority="RO" Bits="2" Description="通道2低传输计数完成中断状态位&#xD;&#xA;0: 低传输计数完成中断未发生。&#xD;&#xA;1：当CRx寄存器的LTCIT位为“1”时，当所有低传输完成（CURR_LTC[11:0]等于0）时，该位将被置“1”。" />
+        <Bit Name="CH1_LTCIT" Authority="RO" Bits="1" Description="通道1低传输计数完成中断状态位&#xD;&#xA;0: 低传输计数完成中断未发生。&#xD;&#xA;1：当CRx寄存器的LTCIT位为“1”时，当所有低传输完成（CURR_LTC[11:0]等于0）时，该位将被置“1”。" />
+        <Bit Name="CH0_LTCIT" Authority="RO" Bits="0" Description="通道0低传输计数完成中断状态位&#xD;&#xA;0: 低传输计数完成中断未发生。&#xD;&#xA;1：当CRx寄存器的LTCIT位为“1”时，当所有低传输完成（CURR_LTC[11:0]等于0）时，该位将被置“1”。" />
       </Register>
       <Register Name="DMA_ICR" Authority="RW" Address="0x40300510" Width="32" Description="中断清除寄存器">
+        <Bit Name="CH5_IT" Authority="RW" Bits="5" Description="通道5中断清除位&#xD;&#xA;0 = 无效No effect&#xD;&#xA;1 = 清除通道 x 中断 (CHx_TCIT 和CHx_LTCIT)" />
+        <Bit Name="CH4_IT" Authority="RW" Bits="4" Description="通道4中断清除位&#xD;&#xA;0 = 无效No effect&#xD;&#xA;1 = 清除通道 x 中断 (CHx_TCIT 和CHx_LTCIT)" />
         <Bit Name="CH3_IT" Authority="RW" Bits="3" Description="通道3中断清除位&#xD;&#xA;0 = 无效No effect&#xD;&#xA;1 = 清除通道 x 中断 (CHx_TCIT 和CHx_LTCIT)" />
         <Bit Name="CH2_IT" Authority="RW" Bits="2" Description="通道2中断清除位&#xD;&#xA;0 = 无效No effect&#xD;&#xA;1 = 清除通道 x 中断 (CHx_TCIT 和CHx_LTCIT)" />
         <Bit Name="CH1_IT" Authority="RW" Bits="1" Description="通道1中断清除位&#xD;&#xA;0 = 无效No effect&#xD;&#xA;1 = 清除通道 x 中断 (CHx_TCIT 和CHx_LTCIT)" />
@@ -8064,177 +8169,263 @@
       </Register>
     </Peripheral>
     <Peripheral Name="DMA1">
-      <Register Name="DMA_ISR0" Authority="RW" Address="0x40310000" Width="32" Description="通道0初始寄存器">
+      <Register Name="DMA_ISR0" Authority="RW" Address="0x40310000" Width="32" Description="通道x初始寄存器">
         <Bit Name="SADDR" Authority="RW" Bits="31-0" Description="DMA初始源地址.&#xD;&#xA;该位为传输源的基地址（开始地址）" />
       </Register>
-      <Register Name="DMA_ISCR0" Authority="RW" Address="0x40310004" Width="32" Description="通道0初始源控制寄存器">
+      <Register Name="DMA_ISCR0" Authority="RW" Address="0x40310004" Width="32" Description="通道x初始源控制寄存器">
         <Bit Name="HINC" Authority="RW" Bits="1" Description="高传输计数的源地址自增控制位&#xD;&#xA;0b：自增&#xD;&#xA;1b：不自增&#xD;&#xA;如果该位为0，每次传输完成后根据连续（burst）或单次（single）模式的高传输计数，源地址自增数据长度。&#xD;&#xA;如果该位为1，每次传输完成源地址保持不变。" />
         <Bit Name="LINC" Authority="RW" Bits="0" Description="低传输计数的源地址自增控制位&#xD;&#xA;0b：自增&#xD;&#xA;1b：不自增&#xD;&#xA;如果该位为0，每次传输完成后根据连续（burst）或单次（single）模式的低传输计数，源地址自增数据长度。&#xD;&#xA;如果该位为1，每次传输完成源地址保持不变。" />
       </Register>
-      <Register Name="DMA_IDR0" Authority="RW" Address="0x40310008" Width="32" Description="通道0初始目标寄存器">
+      <Register Name="DMA_IDR0" Authority="RW" Address="0x40310008" Width="32" Description="通道x初始目标寄存器">
         <Bit Name="DADDR" Authority="RW" Bits="31-0" Description="目标地址.&#xD;&#xA;该位为传输目标的基地址（开始地址）" />
       </Register>
-      <Register Name="DMA_IDCR0" Authority="RW" Address="0x4031000c" Width="32" Description="通道0初始目标控制寄存器">
+      <Register Name="DMA_IDCR0" Authority="RW" Address="0x4031000c" Width="32" Description="通道x初始目标控制寄存器">
         <Bit Name="HINC" Authority="RW" Bits="1" Description="高传输计数的目标地址自增控制位&#xD;&#xA;0b：自增&#xD;&#xA;1b：不自增&#xD;&#xA;如果该位为0，每次传输完成后根据连续（burst）或单次（single）模式的高传输计数，目标地址自增数据长度。&#xD;&#xA;如果该位为1，每次传输完成目标地址保持不变。" />
         <Bit Name="LINC" Authority="RW" Bits="0" Description="低传输计数的目标地址自增控制位&#xD;&#xA;0b：自增&#xD;&#xA;1b：不自增&#xD;&#xA;如果该位为0，每次传输完成后根据连续（burst）或单次（single）模式的低传输计数，目标地址自增数据长度。&#xD;&#xA;如果该位为1，每次传输完成目标地址保持不变。" />
       </Register>
-      <Register Name="DMA_CR0" Authority="RW" Address="0x40310010" Width="32" Description="通道0控制寄存器">
+      <Register Name="DMA_CR0" Authority="RW" Address="0x40310010" Width="32" Description="通道x控制寄存器">
         <Bit Name="TCIT" Authority="RW" Bits="30" Description="传输计数中断使能/禁止控制位&#xD;&#xA;0b: 禁止传输计数向下计数到0时的中断，此时用户需查询状态寄存器的传输计数位来判断传输情况。&#xD;&#xA;1b: 使能传输计数向下计数到0（CURR_LTC[11:0] 和CURR_HTC[11:0]都为0）时的中断。" />
         <Bit Name="LTCIT" Authority="RW" Bits="29" Description="低传输计数中断使能/禁止控制位&#xD;&#xA;0b: 禁止低传输计数向下计数到0时的中断，此时用户需查询状态寄存器的传输计数位来判断传输情况。&#xD;&#xA;1b: 使能低传输计数向下计数到0（CURR_LTC[11:0]为0）时的中断。" />
         <Bit Name="TSIZE" Authority="RW" Bits="28" Description="传输大小&#xD;&#xA;选择原子传输（每次DMA获取总线后，并在其释放总线前的传输）&#xD;&#xA;0b: 单次传输，传输的大小为DSIZE定义的大小。&#xD;&#xA;1b: 连续传输，传输的大小为DSIZE定义的大小乘以4" />
-        <Bit Name="SMODE" Authority="RW" Bits="27" Description="服务模式选择位&#xD;&#xA;选择DMA操作模式为单次服务或全服务模式&#xD;&#xA;0b: 单次服务模式，但每个原子传输（单次或连续）完成后停止DMA服务并等待新的DMA请求。&#xD;&#xA;1b：连续服务模式，一次DMA请求后将重复原子传输直到传输计数为0&#xD;&#xA;注：即使是全服务模式，DMA在每次原子传输后将释放总线，并再次发起总线请求以防止阻塞其他总线主机。" />
-        <Bit Name="RELOAD" Authority="RW" Bits="26" Description="自动重载使能/禁止控制位&#xD;&#xA;0b: 当前传输计数为0（所有传输请求已完成）时启动自动重载。自动重载可用于重复的DMA操作（使用相同地址和传输数目）。&#xD;&#xA;1b: 但传输计数为0时关闭DMA通道。建议设置通道开/关位（CHEN）为0以防止意外启动新的DMA传输" />
+        <Bit Name="SMODE" Authority="RW" Bits="27" Description="服务模式选择位&#xD;&#xA;选择DMA操作模式为单次服务或全服务模式&#xD;&#xA;0b: 单次服务模式，但每个原子传输（单次或连续）完成后停止DMA服务并等待新的DMA请求。&#xD;&#xA;1b：连续服务模式，一次DMA请求后将重复原子传输直到低位传输计数LTC[11:0]为0&#xD;&#xA;注：即使是全服务模式，DMA在每次原子传输后将释放总线，并再次发起总线请求以防止阻塞其他总线主机。" />
+        <Bit Name="RELOAD" Authority="RW" Bits="26" Description="自动重载使能/禁止控制位&#xD;&#xA;0b: 当前传输计数为0（所有传输请求已完成）时启动自动重载。自动重载可用于重复的DMA操作（使用相同地址和传输数目）。&#xD;&#xA;1b: 当传输计数为0时关闭DMA通道。建议设置通道开/关位（CHEN）为0以防止意外启动新的DMA传输" />
         <Bit Name="DSIZE" Authority="RW" Bits="25-24" Description="传输数据大小选择位&#xD;&#xA;00b = 字节（Byte）&#xD;&#xA;01b = 半字（Half word）&#xD;&#xA;10b = 字  （Word）&#xD;&#xA;11b = 无效" />
         <Bit Name="HTC" Authority="RW" Bits="23-12" Description="高传输计数&#xD;&#xA;初始化高传输个数&#xD;&#xA;注：传输操作的个数由HTC[11:0]  LTC[11:0]所决定，当CURR_HTC[11:0] 和 CURR_LTC[11:0]都为0时传输结束。" />
         <Bit Name="LTC" Authority="RW" Bits="11-0" Description="低传输计数&#xD;&#xA;初始化低传输个数。" />
       </Register>
-      <Register Name="DMA_SR0" Authority="RW" Address="0x40310014" Width="32" Description="通道0状态寄存器">
+      <Register Name="DMA_SR0" Authority="RW" Address="0x40310014" Width="32" Description="通道x状态寄存器">
         <Bit Name="LTCST" Authority="RO" Bits="31" Description="低传输计数状态位&#xD;&#xA;0b: DAM控制器处于空闲状态。&#xD;&#xA;1b: DAM控制器处于忙状态&#xD;&#xA;当触发事件到来并启动DMA操作，LTCST位被置“1”（BUSY）" />
         <Bit Name="CURR_ HTC" Authority="RO" Bits="23-12" Description="当前高传输计数值&#xD;&#xA;设置DMA_CR想寄存器的HTC[11:0]位时，初始化传输计数值为HTC[11:0]，当一次原子传输完成后若LTC[11:0]为0，则该传输计数值减一。&#xD;&#xA;传输操作的计数值由HTC[11:0] x LTC[11:0]决定，当CUR_HTC[11:0] 和CUR_LTC[11:0] 计数值都为0时将停止传输并将DMA_MTR的STOP为置“1”" />
         <Bit Name="CURR_LTC" Authority="RO" Bits="11-0" Description="当前低传输计数值&#xD;&#xA;设置DMA_CR寄存器的LTC[11:0]位时，初始化传输计数值为LTC[11:0]，每完成一次原子传输，传输计数值减一。&#xD;&#xA;当CURR_HTC[11:0]不为“0”且CURR_LTC[11:0]为“1”时，在一次传输完成后，CURR_HTC[11:0]将减一，CURR_LTC[11:0]将初始化成DMA_CR寄存器的LTC[11:0]的值。" />
       </Register>
-      <Register Name="DMA_CSR0" Authority="RW" Address="0x40310018" Width="32" Description="通道0当前源寄存器">
+      <Register Name="DMA_CSR0" Authority="RW" Address="0x40310018" Width="32" Description="通道x当前源寄存器">
         <Bit Name="CURR_SADDR" Authority="RO" Bits="31-0" Description="当前源地址&#xD;&#xA;当前传输的源地址。" />
       </Register>
-      <Register Name="DMA_CDR0" Authority="RW" Address="0x4031001c" Width="32" Description="通道0当前目标寄存器">
+      <Register Name="DMA_CDR0" Authority="RW" Address="0x4031001c" Width="32" Description="通道x当前目标寄存器">
         <Bit Name="CURR_DADDR" Authority="RO" Bits="31-0" Description="当前目标地址&#xD;&#xA;当前传输的目标地址" />
       </Register>
-      <Register Name="DMA_MTR0" Authority="RW" Address="0x40310020" Width="32" Description="通道0掩码触发寄存器">
+      <Register Name="DMA_MTR0" Authority="RW" Address="0x40310020" Width="32" Description="通道x掩码触发寄存器">
         <Bit Name="STOP" Authority="RW" Bits="2" Description="DMA 操作停止位&#xD;&#xA;0b：无效&#xD;&#xA;1b:  如果有当前原子传输，则DMA在当前原子传输完成后立即停止。若当前没有原子传输，则DMA立即停止。&#xD;&#xA;注：由于当前可能存在原子传输，所以“停止”操作可能需要一些时钟周期，当查到CHEN位为“0”时，该“停止”操作才是真正完成。" />
         <Bit Name="CHEN" Authority="RW" Bits="1" Description="DMA 通道开/关位&#xD;&#xA;0b: 关闭DMA通道（对该通道的DMA请求将被忽略）&#xD;&#xA;1b: 开启DMA通道，对该通道的DMA请求将被处理。&#xD;&#xA;对该位置“1”开始DMA操作，当DMA_MTRx寄存器的STOP位被置“1”该位会被自动清零（“0”）；当DMA_MTRx寄存器的STOP位为“0”且DMA_CRx[26]位为“0”（禁止自动重载），当CURR_LTC[11:0]和CURR_HTC[11:0]都为“0”时，该位会被自动清零（“0”）。&#xD;&#xA;注：在DMA操作时，不建议手动修改该寄存器位（i.e., 建议只通过DMA_CRx[26]或STOP位进行操作）。" />
         <Bit Name="SWTRIG" Authority="RW" Bits="0" Description="DMA 软件触发&#xD;&#xA;以软件请求的方式触发DMA通道，对该位置“1”以开始DMA操作，当DMA操作开始后，该位自动清零。&#xD;&#xA;0b：无效&#xD;&#xA;1b: 请求DMA操作 " />
       </Register>
-      <Register Name="DMA_RSR0" Authority="RW" Address="0x40310024" Width="32" Description="通道0请求选择寄存器">
-        <Bit Name="REQ" Authority="RW" Bits="0" Description="请求类型选择位&#xD;&#xA;0: 软件请求模式，DMA将被DMA_MTRx寄存器的SWTRIG位触发。&#xD;&#xA;1：硬件请求模式，DMA将被HWSRC[3:0]对应的请求所错发" />
+      <Register Name="DMA_RSR0" Authority="RW" Address="0x40310024" Width="32" Description="通道x请求选择寄存器">
+        <Bit Name="REQ" Authority="RW" Bits="0" Description="请求类型选择位&#xD;&#xA;0: 软件请求模式，DMA将被DMA_MTRx寄存器的SWTRIG位触发。&#xD;&#xA;1：硬件请求模式，DMA将被HWSRC[3:0]对应的请求所触发" />
       </Register>
-      <Register Name="DMA_ISR1" Authority="RW" Address="0x40310080" Width="32" Description="通道1初始寄存器">
+      <Register Name="DMA_ISR1" Authority="RW" Address="0x40310080" Width="32" Description="通道x初始寄存器">
         <Bit Name="SADDR" Authority="RW" Bits="31-0" Description="DMA初始源地址.&#xD;&#xA;该位为传输源的基地址（开始地址）" />
       </Register>
-      <Register Name="DMA_ISCR1" Authority="RW" Address="0x40310084" Width="32" Description="通道1初始源控制寄存器">
+      <Register Name="DMA_ISCR1" Authority="RW" Address="0x40310084" Width="32" Description="通道x初始源控制寄存器">
         <Bit Name="HINC" Authority="RW" Bits="1" Description="高传输计数的源地址自增控制位&#xD;&#xA;0b：自增&#xD;&#xA;1b：不自增&#xD;&#xA;如果该位为0，每次传输完成后根据连续（burst）或单次（single）模式的高传输计数，源地址自增数据长度。&#xD;&#xA;如果该位为1，每次传输完成源地址保持不变。" />
         <Bit Name="LINC" Authority="RW" Bits="0" Description="低传输计数的源地址自增控制位&#xD;&#xA;0b：自增&#xD;&#xA;1b：不自增&#xD;&#xA;如果该位为0，每次传输完成后根据连续（burst）或单次（single）模式的低传输计数，源地址自增数据长度。&#xD;&#xA;如果该位为1，每次传输完成源地址保持不变。" />
       </Register>
-      <Register Name="DMA_IDR1" Authority="RW" Address="0x40310088" Width="32" Description="通道1初始目标寄存器">
+      <Register Name="DMA_IDR1" Authority="RW" Address="0x40310088" Width="32" Description="通道x初始目标寄存器">
         <Bit Name="DADDR" Authority="RW" Bits="31-0" Description="目标地址.&#xD;&#xA;该位为传输目标的基地址（开始地址）" />
       </Register>
-      <Register Name="DMA_IDCR1" Authority="RW" Address="0x4031008c" Width="32" Description="通道1初始目标控制寄存器">
+      <Register Name="DMA_IDCR1" Authority="RW" Address="0x4031008c" Width="32" Description="通道x初始目标控制寄存器">
         <Bit Name="HINC" Authority="RW" Bits="1" Description="高传输计数的目标地址自增控制位&#xD;&#xA;0b：自增&#xD;&#xA;1b：不自增&#xD;&#xA;如果该位为0，每次传输完成后根据连续（burst）或单次（single）模式的高传输计数，目标地址自增数据长度。&#xD;&#xA;如果该位为1，每次传输完成目标地址保持不变。" />
         <Bit Name="LINC" Authority="RW" Bits="0" Description="低传输计数的目标地址自增控制位&#xD;&#xA;0b：自增&#xD;&#xA;1b：不自增&#xD;&#xA;如果该位为0，每次传输完成后根据连续（burst）或单次（single）模式的低传输计数，目标地址自增数据长度。&#xD;&#xA;如果该位为1，每次传输完成目标地址保持不变。" />
       </Register>
-      <Register Name="DMA_CR1" Authority="RW" Address="0x40310090" Width="32" Description="通道1控制寄存器">
+      <Register Name="DMA_CR1" Authority="RW" Address="0x40310090" Width="32" Description="通道x控制寄存器">
         <Bit Name="TCIT" Authority="RW" Bits="30" Description="传输计数中断使能/禁止控制位&#xD;&#xA;0b: 禁止传输计数向下计数到0时的中断，此时用户需查询状态寄存器的传输计数位来判断传输情况。&#xD;&#xA;1b: 使能传输计数向下计数到0（CURR_LTC[11:0] 和CURR_HTC[11:0]都为0）时的中断。" />
         <Bit Name="LTCIT" Authority="RW" Bits="29" Description="低传输计数中断使能/禁止控制位&#xD;&#xA;0b: 禁止低传输计数向下计数到0时的中断，此时用户需查询状态寄存器的传输计数位来判断传输情况。&#xD;&#xA;1b: 使能低传输计数向下计数到0（CURR_LTC[11:0]为0）时的中断。" />
         <Bit Name="TSIZE" Authority="RW" Bits="28" Description="传输大小&#xD;&#xA;选择原子传输（每次DMA获取总线后，并在其释放总线前的传输）&#xD;&#xA;0b: 单次传输，传输的大小为DSIZE定义的大小。&#xD;&#xA;1b: 连续传输，传输的大小为DSIZE定义的大小乘以4" />
-        <Bit Name="SMODE" Authority="RW" Bits="27" Description="服务模式选择位&#xD;&#xA;选择DMA操作模式为单次服务或全服务模式&#xD;&#xA;0b: 单次服务模式，但每个原子传输（单次或连续）完成后停止DMA服务并等待新的DMA请求。&#xD;&#xA;1b：连续服务模式，一次DMA请求后将重复原子传输直到传输计数为0&#xD;&#xA;注：即使是全服务模式，DMA在每次原子传输后将释放总线，并再次发起总线请求以防止阻塞其他总线主机。" />
-        <Bit Name="RELOAD" Authority="RW" Bits="26" Description="自动重载使能/禁止控制位&#xD;&#xA;0b: 当前传输计数为0（所有传输请求已完成）时启动自动重载。自动重载可用于重复的DMA操作（使用相同地址和传输数目）。&#xD;&#xA;1b: 但传输计数为0时关闭DMA通道。建议设置通道开/关位（CHEN）为0以防止意外启动新的DMA传输" />
+        <Bit Name="SMODE" Authority="RW" Bits="27" Description="服务模式选择位&#xD;&#xA;选择DMA操作模式为单次服务或全服务模式&#xD;&#xA;0b: 单次服务模式，但每个原子传输（单次或连续）完成后停止DMA服务并等待新的DMA请求。&#xD;&#xA;1b：连续服务模式，一次DMA请求后将重复原子传输直到低位传输计数LTC[11:0]为0&#xD;&#xA;注：即使是全服务模式，DMA在每次原子传输后将释放总线，并再次发起总线请求以防止阻塞其他总线主机。" />
+        <Bit Name="RELOAD" Authority="RW" Bits="26" Description="自动重载使能/禁止控制位&#xD;&#xA;0b: 当前传输计数为0（所有传输请求已完成）时启动自动重载。自动重载可用于重复的DMA操作（使用相同地址和传输数目）。&#xD;&#xA;1b: 当传输计数为0时关闭DMA通道。建议设置通道开/关位（CHEN）为0以防止意外启动新的DMA传输" />
         <Bit Name="DSIZE" Authority="RW" Bits="25-24" Description="传输数据大小选择位&#xD;&#xA;00b = 字节（Byte）&#xD;&#xA;01b = 半字（Half word）&#xD;&#xA;10b = 字  （Word）&#xD;&#xA;11b = 无效" />
         <Bit Name="HTC" Authority="RW" Bits="23-12" Description="高传输计数&#xD;&#xA;初始化高传输个数&#xD;&#xA;注：传输操作的个数由HTC[11:0]  LTC[11:0]所决定，当CURR_HTC[11:0] 和 CURR_LTC[11:0]都为0时传输结束。" />
         <Bit Name="LTC" Authority="RW" Bits="11-0" Description="低传输计数&#xD;&#xA;初始化低传输个数。" />
       </Register>
-      <Register Name="DMA_SR1" Authority="RW" Address="0x40310094" Width="32" Description="通道1状态寄存器">
+      <Register Name="DMA_SR1" Authority="RW" Address="0x40310094" Width="32" Description="通道x状态寄存器">
         <Bit Name="LTCST" Authority="RO" Bits="31" Description="低传输计数状态位&#xD;&#xA;0b: DAM控制器处于空闲状态。&#xD;&#xA;1b: DAM控制器处于忙状态&#xD;&#xA;当触发事件到来并启动DMA操作，LTCST位被置“1”（BUSY）" />
         <Bit Name="CURR_ HTC" Authority="RO" Bits="23-12" Description="当前高传输计数值&#xD;&#xA;设置DMA_CR想寄存器的HTC[11:0]位时，初始化传输计数值为HTC[11:0]，当一次原子传输完成后若LTC[11:0]为0，则该传输计数值减一。&#xD;&#xA;传输操作的计数值由HTC[11:0] x LTC[11:0]决定，当CUR_HTC[11:0] 和CUR_LTC[11:0] 计数值都为0时将停止传输并将DMA_MTR的STOP为置“1”" />
         <Bit Name="CURR_LTC" Authority="RO" Bits="11-0" Description="当前低传输计数值&#xD;&#xA;设置DMA_CR寄存器的LTC[11:0]位时，初始化传输计数值为LTC[11:0]，每完成一次原子传输，传输计数值减一。&#xD;&#xA;当CURR_HTC[11:0]不为“0”且CURR_LTC[11:0]为“1”时，在一次传输完成后，CURR_HTC[11:0]将减一，CURR_LTC[11:0]将初始化成DMA_CR寄存器的LTC[11:0]的值。" />
       </Register>
-      <Register Name="DMA_CSR1" Authority="RW" Address="0x40310098" Width="32" Description="通道1当前源寄存器">
+      <Register Name="DMA_CSR1" Authority="RW" Address="0x40310098" Width="32" Description="通道x当前源寄存器">
         <Bit Name="CURR_SADDR" Authority="RO" Bits="31-0" Description="当前源地址&#xD;&#xA;当前传输的源地址。" />
       </Register>
-      <Register Name="DMA_CDR1" Authority="RW" Address="0x4031009c" Width="32" Description="通道1当前目标寄存器">
+      <Register Name="DMA_CDR1" Authority="RW" Address="0x4031009c" Width="32" Description="通道x当前目标寄存器">
         <Bit Name="CURR_DADDR" Authority="RO" Bits="31-0" Description="当前目标地址&#xD;&#xA;当前传输的目标地址" />
       </Register>
-      <Register Name="DMA_MTR1" Authority="RW" Address="0x403100a0" Width="32" Description="通道1掩码触发寄存器">
+      <Register Name="DMA_MTR1" Authority="RW" Address="0x403100a0" Width="32" Description="通道x掩码触发寄存器">
         <Bit Name="STOP" Authority="RW" Bits="2" Description="DMA 操作停止位&#xD;&#xA;0b：无效&#xD;&#xA;1b:  如果有当前原子传输，则DMA在当前原子传输完成后立即停止。若当前没有原子传输，则DMA立即停止。&#xD;&#xA;注：由于当前可能存在原子传输，所以“停止”操作可能需要一些时钟周期，当查到CHEN位为“0”时，该“停止”操作才是真正完成。" />
         <Bit Name="CHEN" Authority="RW" Bits="1" Description="DMA 通道开/关位&#xD;&#xA;0b: 关闭DMA通道（对该通道的DMA请求将被忽略）&#xD;&#xA;1b: 开启DMA通道，对该通道的DMA请求将被处理。&#xD;&#xA;对该位置“1”开始DMA操作，当DMA_MTRx寄存器的STOP位被置“1”该位会被自动清零（“0”）；当DMA_MTRx寄存器的STOP位为“0”且DMA_CRx[26]位为“0”（禁止自动重载），当CURR_LTC[11:0]和CURR_HTC[11:0]都为“0”时，该位会被自动清零（“0”）。&#xD;&#xA;注：在DMA操作时，不建议手动修改该寄存器位（i.e., 建议只通过DMA_CRx[26]或STOP位进行操作）。" />
         <Bit Name="SWTRIG" Authority="RW" Bits="0" Description="DMA 软件触发&#xD;&#xA;以软件请求的方式触发DMA通道，对该位置“1”以开始DMA操作，当DMA操作开始后，该位自动清零。&#xD;&#xA;0b：无效&#xD;&#xA;1b: 请求DMA操作 " />
       </Register>
-      <Register Name="DMA_RSR1" Authority="RW" Address="0x403100a4" Width="32" Description="通道1请求选择寄存器">
-        <Bit Name="REQ" Authority="RW" Bits="0" Description="请求类型选择位&#xD;&#xA;0: 软件请求模式，DMA将被DMA_MTRx寄存器的SWTRIG位触发。&#xD;&#xA;1：硬件请求模式，DMA将被HWSRC[3:0]对应的请求所错发" />
+      <Register Name="DMA_RSR1" Authority="RW" Address="0x403100a4" Width="32" Description="通道x请求选择寄存器">
+        <Bit Name="REQ" Authority="RW" Bits="0" Description="请求类型选择位&#xD;&#xA;0: 软件请求模式，DMA将被DMA_MTRx寄存器的SWTRIG位触发。&#xD;&#xA;1：硬件请求模式，DMA将被HWSRC[3:0]对应的请求所触发" />
       </Register>
-      <Register Name="DMA_ISR2" Authority="RW" Address="0x40310100" Width="32" Description="通道2初始寄存器">
+      <Register Name="DMA_ISR2" Authority="RW" Address="0x40310100" Width="32" Description="通道x初始寄存器">
         <Bit Name="SADDR" Authority="RW" Bits="31-0" Description="DMA初始源地址.&#xD;&#xA;该位为传输源的基地址（开始地址）" />
       </Register>
-      <Register Name="DMA_ISCR2" Authority="RW" Address="0x40310104" Width="32" Description="通道2初始源控制寄存器">
+      <Register Name="DMA_ISCR2" Authority="RW" Address="0x40310104" Width="32" Description="通道x初始源控制寄存器">
         <Bit Name="HINC" Authority="RW" Bits="1" Description="高传输计数的源地址自增控制位&#xD;&#xA;0b：自增&#xD;&#xA;1b：不自增&#xD;&#xA;如果该位为0，每次传输完成后根据连续（burst）或单次（single）模式的高传输计数，源地址自增数据长度。&#xD;&#xA;如果该位为1，每次传输完成源地址保持不变。" />
         <Bit Name="LINC" Authority="RW" Bits="0" Description="低传输计数的源地址自增控制位&#xD;&#xA;0b：自增&#xD;&#xA;1b：不自增&#xD;&#xA;如果该位为0，每次传输完成后根据连续（burst）或单次（single）模式的低传输计数，源地址自增数据长度。&#xD;&#xA;如果该位为1，每次传输完成源地址保持不变。" />
       </Register>
-      <Register Name="DMA_IDR2" Authority="RW" Address="0x40310108" Width="32" Description="通道2初始目标寄存器">
+      <Register Name="DMA_IDR2" Authority="RW" Address="0x40310108" Width="32" Description="通道x初始目标寄存器">
         <Bit Name="DADDR" Authority="RW" Bits="31-0" Description="目标地址.&#xD;&#xA;该位为传输目标的基地址（开始地址）" />
       </Register>
-      <Register Name="DMA_IDCR2" Authority="RW" Address="0x4031010c" Width="32" Description="通道2初始目标控制寄存器">
+      <Register Name="DMA_IDCR2" Authority="RW" Address="0x4031010c" Width="32" Description="通道x初始目标控制寄存器">
         <Bit Name="HINC" Authority="RW" Bits="1" Description="高传输计数的目标地址自增控制位&#xD;&#xA;0b：自增&#xD;&#xA;1b：不自增&#xD;&#xA;如果该位为0，每次传输完成后根据连续（burst）或单次（single）模式的高传输计数，目标地址自增数据长度。&#xD;&#xA;如果该位为1，每次传输完成目标地址保持不变。" />
         <Bit Name="LINC" Authority="RW" Bits="0" Description="低传输计数的目标地址自增控制位&#xD;&#xA;0b：自增&#xD;&#xA;1b：不自增&#xD;&#xA;如果该位为0，每次传输完成后根据连续（burst）或单次（single）模式的低传输计数，目标地址自增数据长度。&#xD;&#xA;如果该位为1，每次传输完成目标地址保持不变。" />
       </Register>
-      <Register Name="DMA_CR2" Authority="RW" Address="0x40310110" Width="32" Description="通道2控制寄存器">
+      <Register Name="DMA_CR2" Authority="RW" Address="0x40310110" Width="32" Description="通道x控制寄存器">
         <Bit Name="TCIT" Authority="RW" Bits="30" Description="传输计数中断使能/禁止控制位&#xD;&#xA;0b: 禁止传输计数向下计数到0时的中断，此时用户需查询状态寄存器的传输计数位来判断传输情况。&#xD;&#xA;1b: 使能传输计数向下计数到0（CURR_LTC[11:0] 和CURR_HTC[11:0]都为0）时的中断。" />
         <Bit Name="LTCIT" Authority="RW" Bits="29" Description="低传输计数中断使能/禁止控制位&#xD;&#xA;0b: 禁止低传输计数向下计数到0时的中断，此时用户需查询状态寄存器的传输计数位来判断传输情况。&#xD;&#xA;1b: 使能低传输计数向下计数到0（CURR_LTC[11:0]为0）时的中断。" />
         <Bit Name="TSIZE" Authority="RW" Bits="28" Description="传输大小&#xD;&#xA;选择原子传输（每次DMA获取总线后，并在其释放总线前的传输）&#xD;&#xA;0b: 单次传输，传输的大小为DSIZE定义的大小。&#xD;&#xA;1b: 连续传输，传输的大小为DSIZE定义的大小乘以4" />
-        <Bit Name="SMODE" Authority="RW" Bits="27" Description="服务模式选择位&#xD;&#xA;选择DMA操作模式为单次服务或全服务模式&#xD;&#xA;0b: 单次服务模式，但每个原子传输（单次或连续）完成后停止DMA服务并等待新的DMA请求。&#xD;&#xA;1b：连续服务模式，一次DMA请求后将重复原子传输直到传输计数为0&#xD;&#xA;注：即使是全服务模式，DMA在每次原子传输后将释放总线，并再次发起总线请求以防止阻塞其他总线主机。" />
-        <Bit Name="RELOAD" Authority="RW" Bits="26" Description="自动重载使能/禁止控制位&#xD;&#xA;0b: 当前传输计数为0（所有传输请求已完成）时启动自动重载。自动重载可用于重复的DMA操作（使用相同地址和传输数目）。&#xD;&#xA;1b: 但传输计数为0时关闭DMA通道。建议设置通道开/关位（CHEN）为0以防止意外启动新的DMA传输" />
+        <Bit Name="SMODE" Authority="RW" Bits="27" Description="服务模式选择位&#xD;&#xA;选择DMA操作模式为单次服务或全服务模式&#xD;&#xA;0b: 单次服务模式，但每个原子传输（单次或连续）完成后停止DMA服务并等待新的DMA请求。&#xD;&#xA;1b：连续服务模式，一次DMA请求后将重复原子传输直到低位传输计数LTC[11:0]为0&#xD;&#xA;注：即使是全服务模式，DMA在每次原子传输后将释放总线，并再次发起总线请求以防止阻塞其他总线主机。" />
+        <Bit Name="RELOAD" Authority="RW" Bits="26" Description="自动重载使能/禁止控制位&#xD;&#xA;0b: 当前传输计数为0（所有传输请求已完成）时启动自动重载。自动重载可用于重复的DMA操作（使用相同地址和传输数目）。&#xD;&#xA;1b: 当传输计数为0时关闭DMA通道。建议设置通道开/关位（CHEN）为0以防止意外启动新的DMA传输" />
         <Bit Name="DSIZE" Authority="RW" Bits="25-24" Description="传输数据大小选择位&#xD;&#xA;00b = 字节（Byte）&#xD;&#xA;01b = 半字（Half word）&#xD;&#xA;10b = 字  （Word）&#xD;&#xA;11b = 无效" />
         <Bit Name="HTC" Authority="RW" Bits="23-12" Description="高传输计数&#xD;&#xA;初始化高传输个数&#xD;&#xA;注：传输操作的个数由HTC[11:0]  LTC[11:0]所决定，当CURR_HTC[11:0] 和 CURR_LTC[11:0]都为0时传输结束。" />
         <Bit Name="LTC" Authority="RW" Bits="11-0" Description="低传输计数&#xD;&#xA;初始化低传输个数。" />
       </Register>
-      <Register Name="DMA_SR2" Authority="RW" Address="0x40310114" Width="32" Description="通道2状态寄存器">
+      <Register Name="DMA_SR2" Authority="RW" Address="0x40310114" Width="32" Description="通道x状态寄存器">
         <Bit Name="LTCST" Authority="RO" Bits="31" Description="低传输计数状态位&#xD;&#xA;0b: DAM控制器处于空闲状态。&#xD;&#xA;1b: DAM控制器处于忙状态&#xD;&#xA;当触发事件到来并启动DMA操作，LTCST位被置“1”（BUSY）" />
         <Bit Name="CURR_ HTC" Authority="RO" Bits="23-12" Description="当前高传输计数值&#xD;&#xA;设置DMA_CR想寄存器的HTC[11:0]位时，初始化传输计数值为HTC[11:0]，当一次原子传输完成后若LTC[11:0]为0，则该传输计数值减一。&#xD;&#xA;传输操作的计数值由HTC[11:0] x LTC[11:0]决定，当CUR_HTC[11:0] 和CUR_LTC[11:0] 计数值都为0时将停止传输并将DMA_MTR的STOP为置“1”" />
         <Bit Name="CURR_LTC" Authority="RO" Bits="11-0" Description="当前低传输计数值&#xD;&#xA;设置DMA_CR寄存器的LTC[11:0]位时，初始化传输计数值为LTC[11:0]，每完成一次原子传输，传输计数值减一。&#xD;&#xA;当CURR_HTC[11:0]不为“0”且CURR_LTC[11:0]为“1”时，在一次传输完成后，CURR_HTC[11:0]将减一，CURR_LTC[11:0]将初始化成DMA_CR寄存器的LTC[11:0]的值。" />
       </Register>
-      <Register Name="DMA_CSR2" Authority="RW" Address="0x40310118" Width="32" Description="通道2当前源寄存器">
+      <Register Name="DMA_CSR2" Authority="RW" Address="0x40310118" Width="32" Description="通道x当前源寄存器">
         <Bit Name="CURR_SADDR" Authority="RO" Bits="31-0" Description="当前源地址&#xD;&#xA;当前传输的源地址。" />
       </Register>
-      <Register Name="DMA_CDR2" Authority="RW" Address="0x4031011c" Width="32" Description="通道2当前目标寄存器">
+      <Register Name="DMA_CDR2" Authority="RW" Address="0x4031011c" Width="32" Description="通道x当前目标寄存器">
         <Bit Name="CURR_DADDR" Authority="RO" Bits="31-0" Description="当前目标地址&#xD;&#xA;当前传输的目标地址" />
       </Register>
-      <Register Name="DMA_MTR2" Authority="RW" Address="0x40310120" Width="32" Description="通道2掩码触发寄存器">
+      <Register Name="DMA_MTR2" Authority="RW" Address="0x40310120" Width="32" Description="通道x掩码触发寄存器">
         <Bit Name="STOP" Authority="RW" Bits="2" Description="DMA 操作停止位&#xD;&#xA;0b：无效&#xD;&#xA;1b:  如果有当前原子传输，则DMA在当前原子传输完成后立即停止。若当前没有原子传输，则DMA立即停止。&#xD;&#xA;注：由于当前可能存在原子传输，所以“停止”操作可能需要一些时钟周期，当查到CHEN位为“0”时，该“停止”操作才是真正完成。" />
         <Bit Name="CHEN" Authority="RW" Bits="1" Description="DMA 通道开/关位&#xD;&#xA;0b: 关闭DMA通道（对该通道的DMA请求将被忽略）&#xD;&#xA;1b: 开启DMA通道，对该通道的DMA请求将被处理。&#xD;&#xA;对该位置“1”开始DMA操作，当DMA_MTRx寄存器的STOP位被置“1”该位会被自动清零（“0”）；当DMA_MTRx寄存器的STOP位为“0”且DMA_CRx[26]位为“0”（禁止自动重载），当CURR_LTC[11:0]和CURR_HTC[11:0]都为“0”时，该位会被自动清零（“0”）。&#xD;&#xA;注：在DMA操作时，不建议手动修改该寄存器位（i.e., 建议只通过DMA_CRx[26]或STOP位进行操作）。" />
         <Bit Name="SWTRIG" Authority="RW" Bits="0" Description="DMA 软件触发&#xD;&#xA;以软件请求的方式触发DMA通道，对该位置“1”以开始DMA操作，当DMA操作开始后，该位自动清零。&#xD;&#xA;0b：无效&#xD;&#xA;1b: 请求DMA操作 " />
       </Register>
-      <Register Name="DMA_RSR2" Authority="RW" Address="0x40310124" Width="32" Description="通道2请求选择寄存器">
-        <Bit Name="REQ" Authority="RW" Bits="0" Description="请求类型选择位&#xD;&#xA;0: 软件请求模式，DMA将被DMA_MTRx寄存器的SWTRIG位触发。&#xD;&#xA;1：硬件请求模式，DMA将被HWSRC[3:0]对应的请求所错发" />
+      <Register Name="DMA_RSR2" Authority="RW" Address="0x40310124" Width="32" Description="通道x请求选择寄存器">
+        <Bit Name="REQ" Authority="RW" Bits="0" Description="请求类型选择位&#xD;&#xA;0: 软件请求模式，DMA将被DMA_MTRx寄存器的SWTRIG位触发。&#xD;&#xA;1：硬件请求模式，DMA将被HWSRC[3:0]对应的请求所触发" />
       </Register>
-      <Register Name="DMA_ISR3" Authority="RW" Address="0x40310180" Width="32" Description="通道3初始寄存器">
+      <Register Name="DMA_ISR3" Authority="RW" Address="0x40310180" Width="32" Description="通道x初始寄存器">
         <Bit Name="SADDR" Authority="RW" Bits="31-0" Description="DMA初始源地址.&#xD;&#xA;该位为传输源的基地址（开始地址）" />
       </Register>
-      <Register Name="DMA_ISCR3" Authority="RW" Address="0x40310184" Width="32" Description="通道0初始源控制寄存器">
+      <Register Name="DMA_ISCR3" Authority="RW" Address="0x40310184" Width="32" Description="通道x初始源控制寄存器">
         <Bit Name="HINC" Authority="RW" Bits="1" Description="高传输计数的源地址自增控制位&#xD;&#xA;0b：自增&#xD;&#xA;1b：不自增&#xD;&#xA;如果该位为0，每次传输完成后根据连续（burst）或单次（single）模式的高传输计数，源地址自增数据长度。&#xD;&#xA;如果该位为1，每次传输完成源地址保持不变。" />
         <Bit Name="LINC" Authority="RW" Bits="0" Description="低传输计数的源地址自增控制位&#xD;&#xA;0b：自增&#xD;&#xA;1b：不自增&#xD;&#xA;如果该位为0，每次传输完成后根据连续（burst）或单次（single）模式的低传输计数，源地址自增数据长度。&#xD;&#xA;如果该位为1，每次传输完成源地址保持不变。" />
       </Register>
-      <Register Name="DMA_IDR3" Authority="RW" Address="0x40310188" Width="32" Description="通道3初始目标寄存器">
+      <Register Name="DMA_IDR3" Authority="RW" Address="0x40310188" Width="32" Description="通道x初始目标寄存器">
         <Bit Name="DADDR" Authority="RW" Bits="31-0" Description="目标地址.&#xD;&#xA;该位为传输目标的基地址（开始地址）" />
       </Register>
-      <Register Name="DMA_IDCR3" Authority="RW" Address="0x4031018c" Width="32" Description="通道3初始目标控制寄存器">
+      <Register Name="DMA_IDCR3" Authority="RW" Address="0x4031018c" Width="32" Description="通道x初始目标控制寄存器">
         <Bit Name="HINC" Authority="RW" Bits="1" Description="高传输计数的目标地址自增控制位&#xD;&#xA;0b：自增&#xD;&#xA;1b：不自增&#xD;&#xA;如果该位为0，每次传输完成后根据连续（burst）或单次（single）模式的高传输计数，目标地址自增数据长度。&#xD;&#xA;如果该位为1，每次传输完成目标地址保持不变。" />
         <Bit Name="LINC" Authority="RW" Bits="0" Description="低传输计数的目标地址自增控制位&#xD;&#xA;0b：自增&#xD;&#xA;1b：不自增&#xD;&#xA;如果该位为0，每次传输完成后根据连续（burst）或单次（single）模式的低传输计数，目标地址自增数据长度。&#xD;&#xA;如果该位为1，每次传输完成目标地址保持不变。" />
       </Register>
-      <Register Name="DMA_CR3" Authority="RW" Address="0x40310190" Width="32" Description="通道3控制寄存器">
+      <Register Name="DMA_CR3" Authority="RW" Address="0x40310190" Width="32" Description="通道x控制寄存器">
         <Bit Name="TCIT" Authority="RW" Bits="30" Description="传输计数中断使能/禁止控制位&#xD;&#xA;0b: 禁止传输计数向下计数到0时的中断，此时用户需查询状态寄存器的传输计数位来判断传输情况。&#xD;&#xA;1b: 使能传输计数向下计数到0（CURR_LTC[11:0] 和CURR_HTC[11:0]都为0）时的中断。" />
         <Bit Name="LTCIT" Authority="RW" Bits="29" Description="低传输计数中断使能/禁止控制位&#xD;&#xA;0b: 禁止低传输计数向下计数到0时的中断，此时用户需查询状态寄存器的传输计数位来判断传输情况。&#xD;&#xA;1b: 使能低传输计数向下计数到0（CURR_LTC[11:0]为0）时的中断。" />
         <Bit Name="TSIZE" Authority="RW" Bits="28" Description="传输大小&#xD;&#xA;选择原子传输（每次DMA获取总线后，并在其释放总线前的传输）&#xD;&#xA;0b: 单次传输，传输的大小为DSIZE定义的大小。&#xD;&#xA;1b: 连续传输，传输的大小为DSIZE定义的大小乘以4" />
-        <Bit Name="SMODE" Authority="RW" Bits="27" Description="服务模式选择位&#xD;&#xA;选择DMA操作模式为单次服务或全服务模式&#xD;&#xA;0b: 单次服务模式，但每个原子传输（单次或连续）完成后停止DMA服务并等待新的DMA请求。&#xD;&#xA;1b：连续服务模式，一次DMA请求后将重复原子传输直到传输计数为0&#xD;&#xA;注：即使是全服务模式，DMA在每次原子传输后将释放总线，并再次发起总线请求以防止阻塞其他总线主机。" />
-        <Bit Name="RELOAD" Authority="RW" Bits="26" Description="自动重载使能/禁止控制位&#xD;&#xA;0b: 当前传输计数为0（所有传输请求已完成）时启动自动重载。自动重载可用于重复的DMA操作（使用相同地址和传输数目）。&#xD;&#xA;1b: 但传输计数为0时关闭DMA通道。建议设置通道开/关位（CHEN）为0以防止意外启动新的DMA传输" />
+        <Bit Name="SMODE" Authority="RW" Bits="27" Description="服务模式选择位&#xD;&#xA;选择DMA操作模式为单次服务或全服务模式&#xD;&#xA;0b: 单次服务模式，但每个原子传输（单次或连续）完成后停止DMA服务并等待新的DMA请求。&#xD;&#xA;1b：连续服务模式，一次DMA请求后将重复原子传输直到低位传输计数LTC[11:0]为0&#xD;&#xA;注：即使是全服务模式，DMA在每次原子传输后将释放总线，并再次发起总线请求以防止阻塞其他总线主机。" />
+        <Bit Name="RELOAD" Authority="RW" Bits="26" Description="自动重载使能/禁止控制位&#xD;&#xA;0b: 当前传输计数为0（所有传输请求已完成）时启动自动重载。自动重载可用于重复的DMA操作（使用相同地址和传输数目）。&#xD;&#xA;1b: 当传输计数为0时关闭DMA通道。建议设置通道开/关位（CHEN）为0以防止意外启动新的DMA传输" />
         <Bit Name="DSIZE" Authority="RW" Bits="25-24" Description="传输数据大小选择位&#xD;&#xA;00b = 字节（Byte）&#xD;&#xA;01b = 半字（Half word）&#xD;&#xA;10b = 字  （Word）&#xD;&#xA;11b = 无效" />
         <Bit Name="HTC" Authority="RW" Bits="23-12" Description="高传输计数&#xD;&#xA;初始化高传输个数&#xD;&#xA;注：传输操作的个数由HTC[11:0]  LTC[11:0]所决定，当CURR_HTC[11:0] 和 CURR_LTC[11:0]都为0时传输结束。" />
         <Bit Name="LTC" Authority="RW" Bits="11-0" Description="低传输计数&#xD;&#xA;初始化低传输个数。" />
       </Register>
-      <Register Name="DMA_SR3" Authority="RW" Address="0x40310194" Width="32" Description="通道3状态寄存器">
+      <Register Name="DMA_SR3" Authority="RW" Address="0x40310194" Width="32" Description="通道x状态寄存器">
         <Bit Name="LTCST" Authority="RO" Bits="31" Description="低传输计数状态位&#xD;&#xA;0b: DAM控制器处于空闲状态。&#xD;&#xA;1b: DAM控制器处于忙状态&#xD;&#xA;当触发事件到来并启动DMA操作，LTCST位被置“1”（BUSY）" />
         <Bit Name="CURR_ HTC" Authority="RO" Bits="23-12" Description="当前高传输计数值&#xD;&#xA;设置DMA_CR想寄存器的HTC[11:0]位时，初始化传输计数值为HTC[11:0]，当一次原子传输完成后若LTC[11:0]为0，则该传输计数值减一。&#xD;&#xA;传输操作的计数值由HTC[11:0] x LTC[11:0]决定，当CUR_HTC[11:0] 和CUR_LTC[11:0] 计数值都为0时将停止传输并将DMA_MTR的STOP为置“1”" />
         <Bit Name="CURR_LTC" Authority="RO" Bits="11-0" Description="当前低传输计数值&#xD;&#xA;设置DMA_CR寄存器的LTC[11:0]位时，初始化传输计数值为LTC[11:0]，每完成一次原子传输，传输计数值减一。&#xD;&#xA;当CURR_HTC[11:0]不为“0”且CURR_LTC[11:0]为“1”时，在一次传输完成后，CURR_HTC[11:0]将减一，CURR_LTC[11:0]将初始化成DMA_CR寄存器的LTC[11:0]的值。" />
       </Register>
-      <Register Name="DMA_CSR3" Authority="RW" Address="0x40310198" Width="32" Description="通道3当前源寄存器">
+      <Register Name="DMA_CSR3" Authority="RW" Address="0x40310198" Width="32" Description="通道x当前源寄存器">
         <Bit Name="CURR_SADDR" Authority="RO" Bits="31-0" Description="当前源地址&#xD;&#xA;当前传输的源地址。" />
       </Register>
-      <Register Name="DMA_CDR3" Authority="RW" Address="0x4031019c" Width="32" Description="通道3当前目标寄存器">
+      <Register Name="DMA_CDR3" Authority="RW" Address="0x4031019c" Width="32" Description="通道x当前目标寄存器">
         <Bit Name="CURR_DADDR" Authority="RO" Bits="31-0" Description="当前目标地址&#xD;&#xA;当前传输的目标地址" />
       </Register>
-      <Register Name="DMA_MTR3" Authority="RW" Address="0x403101a0" Width="32" Description="通道3掩码触发寄存器">
+      <Register Name="DMA_MTR3" Authority="RW" Address="0x403101a0" Width="32" Description="通道x掩码触发寄存器">
         <Bit Name="STOP" Authority="RW" Bits="2" Description="DMA 操作停止位&#xD;&#xA;0b：无效&#xD;&#xA;1b:  如果有当前原子传输，则DMA在当前原子传输完成后立即停止。若当前没有原子传输，则DMA立即停止。&#xD;&#xA;注：由于当前可能存在原子传输，所以“停止”操作可能需要一些时钟周期，当查到CHEN位为“0”时，该“停止”操作才是真正完成。" />
         <Bit Name="CHEN" Authority="RW" Bits="1" Description="DMA 通道开/关位&#xD;&#xA;0b: 关闭DMA通道（对该通道的DMA请求将被忽略）&#xD;&#xA;1b: 开启DMA通道，对该通道的DMA请求将被处理。&#xD;&#xA;对该位置“1”开始DMA操作，当DMA_MTRx寄存器的STOP位被置“1”该位会被自动清零（“0”）；当DMA_MTRx寄存器的STOP位为“0”且DMA_CRx[26]位为“0”（禁止自动重载），当CURR_LTC[11:0]和CURR_HTC[11:0]都为“0”时，该位会被自动清零（“0”）。&#xD;&#xA;注：在DMA操作时，不建议手动修改该寄存器位（i.e., 建议只通过DMA_CRx[26]或STOP位进行操作）。" />
         <Bit Name="SWTRIG" Authority="RW" Bits="0" Description="DMA 软件触发&#xD;&#xA;以软件请求的方式触发DMA通道，对该位置“1”以开始DMA操作，当DMA操作开始后，该位自动清零。&#xD;&#xA;0b：无效&#xD;&#xA;1b: 请求DMA操作 " />
       </Register>
-      <Register Name="DMA_RSR3" Authority="RW" Address="0x403101a4" Width="32" Description="通道3请求选择寄存器">
-        <Bit Name="REQ" Authority="RW" Bits="0" Description="请求类型选择位&#xD;&#xA;0: 软件请求模式，DMA将被DMA_MTRx寄存器的SWTRIG位触发。&#xD;&#xA;1：硬件请求模式，DMA将被HWSRC[3:0]对应的请求所错发" />
+      <Register Name="DMA_RSR3" Authority="RW" Address="0x403101a4" Width="32" Description="通道x请求选择寄存器">
+        <Bit Name="REQ" Authority="RW" Bits="0" Description="请求类型选择位&#xD;&#xA;0: 软件请求模式，DMA将被DMA_MTRx寄存器的SWTRIG位触发。&#xD;&#xA;1：硬件请求模式，DMA将被HWSRC[3:0]对应的请求所触发" />
+      </Register>
+      <Register Name="DMA_ISR4" Authority="RW" Address="0x40310200" Width="32" Description="通道x初始寄存器">
+        <Bit Name="SADDR" Authority="RW" Bits="31-0" Description="DMA初始源地址.&#xD;&#xA;该位为传输源的基地址（开始地址）" />
+      </Register>
+      <Register Name="DMA_ISCR4" Authority="RW" Address="0x40310204" Width="32" Description="通道x初始源控制寄存器">
+        <Bit Name="HINC" Authority="RW" Bits="1" Description="高传输计数的源地址自增控制位&#xD;&#xA;0b：自增&#xD;&#xA;1b：不自增&#xD;&#xA;如果该位为0，每次传输完成后根据连续（burst）或单次（single）模式的高传输计数，源地址自增数据长度。&#xD;&#xA;如果该位为1，每次传输完成源地址保持不变。" />
+        <Bit Name="LINC" Authority="RW" Bits="0" Description="低传输计数的源地址自增控制位&#xD;&#xA;0b：自增&#xD;&#xA;1b：不自增&#xD;&#xA;如果该位为0，每次传输完成后根据连续（burst）或单次（single）模式的低传输计数，源地址自增数据长度。&#xD;&#xA;如果该位为1，每次传输完成源地址保持不变。" />
+      </Register>
+      <Register Name="DMA_IDR4" Authority="RW" Address="0x40310208" Width="32" Description="通道x初始目标寄存器">
+        <Bit Name="DADDR" Authority="RW" Bits="31-0" Description="目标地址.&#xD;&#xA;该位为传输目标的基地址（开始地址）" />
+      </Register>
+      <Register Name="DMA_IDCR4" Authority="RW" Address="0x4031020c" Width="32" Description="通道x初始目标控制寄存器">
+        <Bit Name="HINC" Authority="RW" Bits="1" Description="高传输计数的目标地址自增控制位&#xD;&#xA;0b：自增&#xD;&#xA;1b：不自增&#xD;&#xA;如果该位为0，每次传输完成后根据连续（burst）或单次（single）模式的高传输计数，目标地址自增数据长度。&#xD;&#xA;如果该位为1，每次传输完成目标地址保持不变。" />
+        <Bit Name="LINC" Authority="RW" Bits="0" Description="低传输计数的目标地址自增控制位&#xD;&#xA;0b：自增&#xD;&#xA;1b：不自增&#xD;&#xA;如果该位为0，每次传输完成后根据连续（burst）或单次（single）模式的低传输计数，目标地址自增数据长度。&#xD;&#xA;如果该位为1，每次传输完成目标地址保持不变。" />
+      </Register>
+      <Register Name="DMA_CR4" Authority="RW" Address="0x40310210" Width="32" Description="通道x控制寄存器">
+        <Bit Name="TCIT" Authority="RW" Bits="30" Description="传输计数中断使能/禁止控制位&#xD;&#xA;0b: 禁止传输计数向下计数到0时的中断，此时用户需查询状态寄存器的传输计数位来判断传输情况。&#xD;&#xA;1b: 使能传输计数向下计数到0（CURR_LTC[11:0] 和CURR_HTC[11:0]都为0）时的中断。" />
+        <Bit Name="LTCIT" Authority="RW" Bits="29" Description="低传输计数中断使能/禁止控制位&#xD;&#xA;0b: 禁止低传输计数向下计数到0时的中断，此时用户需查询状态寄存器的传输计数位来判断传输情况。&#xD;&#xA;1b: 使能低传输计数向下计数到0（CURR_LTC[11:0]为0）时的中断。" />
+        <Bit Name="TSIZE" Authority="RW" Bits="28" Description="传输大小&#xD;&#xA;选择原子传输（每次DMA获取总线后，并在其释放总线前的传输）&#xD;&#xA;0b: 单次传输，传输的大小为DSIZE定义的大小。&#xD;&#xA;1b: 连续传输，传输的大小为DSIZE定义的大小乘以4" />
+        <Bit Name="SMODE" Authority="RW" Bits="27" Description="服务模式选择位&#xD;&#xA;选择DMA操作模式为单次服务或全服务模式&#xD;&#xA;0b: 单次服务模式，但每个原子传输（单次或连续）完成后停止DMA服务并等待新的DMA请求。&#xD;&#xA;1b：连续服务模式，一次DMA请求后将重复原子传输直到低位传输计数LTC[11:0]为0&#xD;&#xA;注：即使是全服务模式，DMA在每次原子传输后将释放总线，并再次发起总线请求以防止阻塞其他总线主机。" />
+        <Bit Name="RELOAD" Authority="RW" Bits="26" Description="自动重载使能/禁止控制位&#xD;&#xA;0b: 当前传输计数为0（所有传输请求已完成）时启动自动重载。自动重载可用于重复的DMA操作（使用相同地址和传输数目）。&#xD;&#xA;1b: 当传输计数为0时关闭DMA通道。建议设置通道开/关位（CHEN）为0以防止意外启动新的DMA传输" />
+        <Bit Name="DSIZE" Authority="RW" Bits="25-24" Description="传输数据大小选择位&#xD;&#xA;00b = 字节（Byte）&#xD;&#xA;01b = 半字（Half word）&#xD;&#xA;10b = 字  （Word）&#xD;&#xA;11b = 无效" />
+        <Bit Name="HTC" Authority="RW" Bits="23-12" Description="高传输计数&#xD;&#xA;初始化高传输个数&#xD;&#xA;注：传输操作的个数由HTC[11:0]  LTC[11:0]所决定，当CURR_HTC[11:0] 和 CURR_LTC[11:0]都为0时传输结束。" />
+        <Bit Name="LTC" Authority="RW" Bits="11-0" Description="低传输计数&#xD;&#xA;初始化低传输个数。" />
+      </Register>
+      <Register Name="DMA_SR4" Authority="RW" Address="0x40310214" Width="32" Description="通道x状态寄存器">
+        <Bit Name="LTCST" Authority="RO" Bits="31" Description="低传输计数状态位&#xD;&#xA;0b: DAM控制器处于空闲状态。&#xD;&#xA;1b: DAM控制器处于忙状态&#xD;&#xA;当触发事件到来并启动DMA操作，LTCST位被置“1”（BUSY）" />
+        <Bit Name="CURR_ HTC" Authority="RO" Bits="23-12" Description="当前高传输计数值&#xD;&#xA;设置DMA_CR想寄存器的HTC[11:0]位时，初始化传输计数值为HTC[11:0]，当一次原子传输完成后若LTC[11:0]为0，则该传输计数值减一。&#xD;&#xA;传输操作的计数值由HTC[11:0] x LTC[11:0]决定，当CUR_HTC[11:0] 和CUR_LTC[11:0] 计数值都为0时将停止传输并将DMA_MTR的STOP为置“1”" />
+        <Bit Name="CURR_LTC" Authority="RO" Bits="11-0" Description="当前低传输计数值&#xD;&#xA;设置DMA_CR寄存器的LTC[11:0]位时，初始化传输计数值为LTC[11:0]，每完成一次原子传输，传输计数值减一。&#xD;&#xA;当CURR_HTC[11:0]不为“0”且CURR_LTC[11:0]为“1”时，在一次传输完成后，CURR_HTC[11:0]将减一，CURR_LTC[11:0]将初始化成DMA_CR寄存器的LTC[11:0]的值。" />
+      </Register>
+      <Register Name="DMA_CSR4" Authority="RW" Address="0x40310218" Width="32" Description="通道x当前源寄存器">
+        <Bit Name="CURR_SADDR" Authority="RO" Bits="31-0" Description="当前源地址&#xD;&#xA;当前传输的源地址。" />
+      </Register>
+      <Register Name="DMA_CDR4" Authority="RW" Address="0x4031021c" Width="32" Description="通道x当前目标寄存器">
+        <Bit Name="CURR_DADDR" Authority="RO" Bits="31-0" Description="当前目标地址&#xD;&#xA;当前传输的目标地址" />
+      </Register>
+      <Register Name="DMA_MTR4" Authority="RW" Address="0x40310220" Width="32" Description="通道x掩码触发寄存器">
+        <Bit Name="STOP" Authority="RW" Bits="2" Description="DMA 操作停止位&#xD;&#xA;0b：无效&#xD;&#xA;1b:  如果有当前原子传输，则DMA在当前原子传输完成后立即停止。若当前没有原子传输，则DMA立即停止。&#xD;&#xA;注：由于当前可能存在原子传输，所以“停止”操作可能需要一些时钟周期，当查到CHEN位为“0”时，该“停止”操作才是真正完成。" />
+        <Bit Name="CHEN" Authority="RW" Bits="1" Description="DMA 通道开/关位&#xD;&#xA;0b: 关闭DMA通道（对该通道的DMA请求将被忽略）&#xD;&#xA;1b: 开启DMA通道，对该通道的DMA请求将被处理。&#xD;&#xA;对该位置“1”开始DMA操作，当DMA_MTRx寄存器的STOP位被置“1”该位会被自动清零（“0”）；当DMA_MTRx寄存器的STOP位为“0”且DMA_CRx[26]位为“0”（禁止自动重载），当CURR_LTC[11:0]和CURR_HTC[11:0]都为“0”时，该位会被自动清零（“0”）。&#xD;&#xA;注：在DMA操作时，不建议手动修改该寄存器位（i.e., 建议只通过DMA_CRx[26]或STOP位进行操作）。" />
+        <Bit Name="SWTRIG" Authority="RW" Bits="0" Description="DMA 软件触发&#xD;&#xA;以软件请求的方式触发DMA通道，对该位置“1”以开始DMA操作，当DMA操作开始后，该位自动清零。&#xD;&#xA;0b：无效&#xD;&#xA;1b: 请求DMA操作 " />
+      </Register>
+      <Register Name="DMA_RSR4" Authority="RW" Address="0x40310224" Width="32" Description="通道x请求选择寄存器">
+        <Bit Name="REQ" Authority="RW" Bits="0" Description="请求类型选择位&#xD;&#xA;0: 软件请求模式，DMA将被DMA_MTRx寄存器的SWTRIG位触发。&#xD;&#xA;1：硬件请求模式，DMA将被HWSRC[3:0]对应的请求所触发" />
+      </Register>
+      <Register Name="DMA_ISR5" Authority="RW" Address="0x40310280" Width="32" Description="通道x初始寄存器">
+        <Bit Name="SADDR" Authority="RW" Bits="31-0" Description="DMA初始源地址.&#xD;&#xA;该位为传输源的基地址（开始地址）" />
+      </Register>
+      <Register Name="DMA_ISCR5" Authority="RW" Address="0x40310284" Width="32" Description="通道x初始源控制寄存器">
+        <Bit Name="HINC" Authority="RW" Bits="1" Description="高传输计数的源地址自增控制位&#xD;&#xA;0b：自增&#xD;&#xA;1b：不自增&#xD;&#xA;如果该位为0，每次传输完成后根据连续（burst）或单次（single）模式的高传输计数，源地址自增数据长度。&#xD;&#xA;如果该位为1，每次传输完成源地址保持不变。" />
+        <Bit Name="LINC" Authority="RW" Bits="0" Description="低传输计数的源地址自增控制位&#xD;&#xA;0b：自增&#xD;&#xA;1b：不自增&#xD;&#xA;如果该位为0，每次传输完成后根据连续（burst）或单次（single）模式的低传输计数，源地址自增数据长度。&#xD;&#xA;如果该位为1，每次传输完成源地址保持不变。" />
+      </Register>
+      <Register Name="DMA_IDR5" Authority="RW" Address="0x40310288" Width="32" Description="通道x初始目标寄存器">
+        <Bit Name="DADDR" Authority="RW" Bits="31-0" Description="目标地址.&#xD;&#xA;该位为传输目标的基地址（开始地址）" />
+      </Register>
+      <Register Name="DMA_IDCR5" Authority="RW" Address="0x4031028c" Width="32" Description="通道x初始目标控制寄存器">
+        <Bit Name="HINC" Authority="RW" Bits="1" Description="高传输计数的目标地址自增控制位&#xD;&#xA;0b：自增&#xD;&#xA;1b：不自增&#xD;&#xA;如果该位为0，每次传输完成后根据连续（burst）或单次（single）模式的高传输计数，目标地址自增数据长度。&#xD;&#xA;如果该位为1，每次传输完成目标地址保持不变。" />
+        <Bit Name="LINC" Authority="RW" Bits="0" Description="低传输计数的目标地址自增控制位&#xD;&#xA;0b：自增&#xD;&#xA;1b：不自增&#xD;&#xA;如果该位为0，每次传输完成后根据连续（burst）或单次（single）模式的低传输计数，目标地址自增数据长度。&#xD;&#xA;如果该位为1，每次传输完成目标地址保持不变。" />
+      </Register>
+      <Register Name="DMA_CR5" Authority="RW" Address="0x40310290" Width="32" Description="通道x控制寄存器">
+        <Bit Name="TCIT" Authority="RW" Bits="30" Description="传输计数中断使能/禁止控制位&#xD;&#xA;0b: 禁止传输计数向下计数到0时的中断，此时用户需查询状态寄存器的传输计数位来判断传输情况。&#xD;&#xA;1b: 使能传输计数向下计数到0（CURR_LTC[11:0] 和CURR_HTC[11:0]都为0）时的中断。" />
+        <Bit Name="LTCIT" Authority="RW" Bits="29" Description="低传输计数中断使能/禁止控制位&#xD;&#xA;0b: 禁止低传输计数向下计数到0时的中断，此时用户需查询状态寄存器的传输计数位来判断传输情况。&#xD;&#xA;1b: 使能低传输计数向下计数到0（CURR_LTC[11:0]为0）时的中断。" />
+        <Bit Name="TSIZE" Authority="RW" Bits="28" Description="传输大小&#xD;&#xA;选择原子传输（每次DMA获取总线后，并在其释放总线前的传输）&#xD;&#xA;0b: 单次传输，传输的大小为DSIZE定义的大小。&#xD;&#xA;1b: 连续传输，传输的大小为DSIZE定义的大小乘以4" />
+        <Bit Name="SMODE" Authority="RW" Bits="27" Description="服务模式选择位&#xD;&#xA;选择DMA操作模式为单次服务或全服务模式&#xD;&#xA;0b: 单次服务模式，但每个原子传输（单次或连续）完成后停止DMA服务并等待新的DMA请求。&#xD;&#xA;1b：连续服务模式，一次DMA请求后将重复原子传输直到低位传输计数LTC[11:0]为0&#xD;&#xA;注：即使是全服务模式，DMA在每次原子传输后将释放总线，并再次发起总线请求以防止阻塞其他总线主机。" />
+        <Bit Name="RELOAD" Authority="RW" Bits="26" Description="自动重载使能/禁止控制位&#xD;&#xA;0b: 当前传输计数为0（所有传输请求已完成）时启动自动重载。自动重载可用于重复的DMA操作（使用相同地址和传输数目）。&#xD;&#xA;1b: 当传输计数为0时关闭DMA通道。建议设置通道开/关位（CHEN）为0以防止意外启动新的DMA传输" />
+        <Bit Name="DSIZE" Authority="RW" Bits="25-24" Description="传输数据大小选择位&#xD;&#xA;00b = 字节（Byte）&#xD;&#xA;01b = 半字（Half word）&#xD;&#xA;10b = 字  （Word）&#xD;&#xA;11b = 无效" />
+        <Bit Name="HTC" Authority="RW" Bits="23-12" Description="高传输计数&#xD;&#xA;初始化高传输个数&#xD;&#xA;注：传输操作的个数由HTC[11:0]  LTC[11:0]所决定，当CURR_HTC[11:0] 和 CURR_LTC[11:0]都为0时传输结束。" />
+        <Bit Name="LTC" Authority="RW" Bits="11-0" Description="低传输计数&#xD;&#xA;初始化低传输个数。" />
+      </Register>
+      <Register Name="DMA_SR5" Authority="RW" Address="0x40310294" Width="32" Description="通道x状态寄存器">
+        <Bit Name="LTCST" Authority="RO" Bits="31" Description="低传输计数状态位&#xD;&#xA;0b: DAM控制器处于空闲状态。&#xD;&#xA;1b: DAM控制器处于忙状态&#xD;&#xA;当触发事件到来并启动DMA操作，LTCST位被置“1”（BUSY）" />
+        <Bit Name="CURR_ HTC" Authority="RO" Bits="23-12" Description="当前高传输计数值&#xD;&#xA;设置DMA_CR想寄存器的HTC[11:0]位时，初始化传输计数值为HTC[11:0]，当一次原子传输完成后若LTC[11:0]为0，则该传输计数值减一。&#xD;&#xA;传输操作的计数值由HTC[11:0] x LTC[11:0]决定，当CUR_HTC[11:0] 和CUR_LTC[11:0] 计数值都为0时将停止传输并将DMA_MTR的STOP为置“1”" />
+        <Bit Name="CURR_LTC" Authority="RO" Bits="11-0" Description="当前低传输计数值&#xD;&#xA;设置DMA_CR寄存器的LTC[11:0]位时，初始化传输计数值为LTC[11:0]，每完成一次原子传输，传输计数值减一。&#xD;&#xA;当CURR_HTC[11:0]不为“0”且CURR_LTC[11:0]为“1”时，在一次传输完成后，CURR_HTC[11:0]将减一，CURR_LTC[11:0]将初始化成DMA_CR寄存器的LTC[11:0]的值。" />
+      </Register>
+      <Register Name="DMA_CSR5" Authority="RW" Address="0x40310298" Width="32" Description="通道x当前源寄存器">
+        <Bit Name="CURR_SADDR" Authority="RO" Bits="31-0" Description="当前源地址&#xD;&#xA;当前传输的源地址。" />
+      </Register>
+      <Register Name="DMA_CDR5" Authority="RW" Address="0x4031029c" Width="32" Description="通道x当前目标寄存器">
+        <Bit Name="CURR_DADDR" Authority="RO" Bits="31-0" Description="当前目标地址&#xD;&#xA;当前传输的目标地址" />
+      </Register>
+      <Register Name="DMA_MTR5" Authority="RW" Address="0x403102a0" Width="32" Description="通道x掩码触发寄存器">
+        <Bit Name="STOP" Authority="RW" Bits="2" Description="DMA 操作停止位&#xD;&#xA;0b：无效&#xD;&#xA;1b:  如果有当前原子传输，则DMA在当前原子传输完成后立即停止。若当前没有原子传输，则DMA立即停止。&#xD;&#xA;注：由于当前可能存在原子传输，所以“停止”操作可能需要一些时钟周期，当查到CHEN位为“0”时，该“停止”操作才是真正完成。" />
+        <Bit Name="CHEN" Authority="RW" Bits="1" Description="DMA 通道开/关位&#xD;&#xA;0b: 关闭DMA通道（对该通道的DMA请求将被忽略）&#xD;&#xA;1b: 开启DMA通道，对该通道的DMA请求将被处理。&#xD;&#xA;对该位置“1”开始DMA操作，当DMA_MTRx寄存器的STOP位被置“1”该位会被自动清零（“0”）；当DMA_MTRx寄存器的STOP位为“0”且DMA_CRx[26]位为“0”（禁止自动重载），当CURR_LTC[11:0]和CURR_HTC[11:0]都为“0”时，该位会被自动清零（“0”）。&#xD;&#xA;注：在DMA操作时，不建议手动修改该寄存器位（i.e., 建议只通过DMA_CRx[26]或STOP位进行操作）。" />
+        <Bit Name="SWTRIG" Authority="RW" Bits="0" Description="DMA 软件触发&#xD;&#xA;以软件请求的方式触发DMA通道，对该位置“1”以开始DMA操作，当DMA操作开始后，该位自动清零。&#xD;&#xA;0b：无效&#xD;&#xA;1b: 请求DMA操作 " />
+      </Register>
+      <Register Name="DMA_RSR5" Authority="RW" Address="0x403102a4" Width="32" Description="通道x请求选择寄存器">
+        <Bit Name="REQ" Authority="RW" Bits="0" Description="请求类型选择位&#xD;&#xA;0: 软件请求模式，DMA将被DMA_MTRx寄存器的SWTRIG位触发。&#xD;&#xA;1：硬件请求模式，DMA将被HWSRC[3:0]对应的请求所触发" />
       </Register>
       <Register Name="DMA_IDR" Authority="RW" Address="0x40310500" Width="32" Description="ID寄存器">
         <Bit Name="IDCODE" Authority="RO" Bits="31-0" Description="ID代码" />
@@ -8243,22 +8434,30 @@
         <Bit Name="SWRST" Authority="RW" Bits="0" Description="软件复位&#xD;&#xA;0 = 无效&#xD;&#xA;1 = 全局软件复位 " />
       </Register>
       <Register Name="DMA_CESR" Authority="RW" Address="0x40310508" Width="32" Description="通道状态寄存器">
+        <Bit Name="CH5EN" Authority="RO" Bits="5" Description="通道5使能状态位&#xD;&#xA;0 = 通道5未使能.&#xD;&#xA;1 = 通道5已使能." />
+        <Bit Name="CH4EN" Authority="RO" Bits="4" Description="通道4使能状态位&#xD;&#xA;0 = 通道4未使能.&#xD;&#xA;1 = 通道4已使能." />
         <Bit Name="CH3EN" Authority="RO" Bits="3" Description="通道3使能状态位&#xD;&#xA;0 = 通道3未使能.&#xD;&#xA;1 = 通道3已使能." />
         <Bit Name="CH2EN" Authority="RO" Bits="2" Description="通道2使能状态位&#xD;&#xA;0 = 通道2未使能.&#xD;&#xA;1 = 通道2已使能." />
         <Bit Name="CH1EN" Authority="RO" Bits="1" Description="通道1使能状态位&#xD;&#xA;0 = 通道1未使能.&#xD;&#xA;1 = 通道1已使能." />
         <Bit Name="CH0EN" Authority="RO" Bits="0" Description="通道0使能状态位&#xD;&#xA;0 = 通道0未使能.&#xD;&#xA;1 = 通道0已使能." />
       </Register>
       <Register Name="DMA_ISR" Authority="RW" Address="0x4031050c" Width="32" Description="中断状态寄存器">
-        <Bit Name="CH3_TCIT" Authority="RO" Bits="19" Description="通道3传输计数中断状态位&#xD;&#xA;0: 传输计数完成中断未发生。&#xD;&#xA;1：当CRx寄存器的LTCINT位为“1”时，当所有传输完成（CURR_LTC[11:0]和CURR_HTC[11:0]都等于0）时，该位将被置“1”。" />
-        <Bit Name="CH2_TCIT" Authority="RO" Bits="18" Description="通道2传输计数中断状态位&#xD;&#xA;0: 传输计数完成中断未发生。&#xD;&#xA;1：当CRx寄存器的LTCINT位为“1”时，当所有传输完成（CURR_LTC[11:0]和CURR_HTC[11:0]都等于0）时，该位将被置“1”。" />
-        <Bit Name="CH1_TCIT" Authority="RO" Bits="17" Description="通道1传输计数中断状态位&#xD;&#xA;0: 传输计数完成中断未发生。&#xD;&#xA;1：当CRx寄存器的LTCINT位为“1”时，当所有传输完成（CURR_LTC[11:0]和CURR_HTC[11:0]都等于0）时，该位将被置“1”。" />
-        <Bit Name="CH0_TCIT" Authority="RO" Bits="16" Description="通道0传输计数中断状态位&#xD;&#xA;0: 传输计数完成中断未发生。&#xD;&#xA;1：当CRx寄存器的LTCINT位为“1”时，当所有传输完成（CURR_LTC[11:0]和CURR_HTC[11:0]都等于0）时，该位将被置“1”。" />
-        <Bit Name="CH3_LTCIT" Authority="RO" Bits="3" Description="通道3低传输计数完成中断状态位&#xD;&#xA;0: 低传输计数完成中断未发生。&#xD;&#xA;1：当CRx寄存器的LTCINT位为“1”时，当所有低传输完成（CURR_LTC[11:0]等于0）时，该位将被置“1”。" />
-        <Bit Name="CH2_LTCIT" Authority="RO" Bits="2" Description="通道2低传输计数完成中断状态位&#xD;&#xA;0: 低传输计数完成中断未发生。&#xD;&#xA;1：当CRx寄存器的LTCINT位为“1”时，当所有低传输完成（CURR_LTC[11:0]等于0）时，该位将被置“1”。" />
-        <Bit Name="CH1_LTCIT" Authority="RO" Bits="1" Description="通道1低传输计数完成中断状态位&#xD;&#xA;0: 低传输计数完成中断未发生。&#xD;&#xA;1：当CRx寄存器的LTCINT位为“1”时，当所有低传输完成（CURR_LTC[11:0]等于0）时，该位将被置“1”。" />
-        <Bit Name="CH0_LTCIT" Authority="RO" Bits="0" Description="通道0低传输计数完成中断状态位&#xD;&#xA;0: 低传输计数完成中断未发生。&#xD;&#xA;1：当CRx寄存器的LTCINT位为“1”时，当所有低传输完成（CURR_LTC[11:0]等于0）时，该位将被置“1”。" />
+        <Bit Name="CH5_TCIT" Authority="RO" Bits="21" Description="通道5传输计数中断状态位&#xD;&#xA;0: 传输计数完成中断未发生。&#xD;&#xA;1：当CRx寄存器的TCIT位为“1”时，当所有传输完成（CURR_LTC[11:0]和CURR_HTC[11:0]都等于0）时，该位将被置“1”。" />
+        <Bit Name="CH4_TCIT" Authority="RO" Bits="20" Description="通道4传输计数中断状态位&#xD;&#xA;0: 传输计数完成中断未发生。&#xD;&#xA;1：当CRx寄存器的TCIT位为“1”时，当所有传输完成（CURR_LTC[11:0]和CURR_HTC[11:0]都等于0）时，该位将被置“1”。" />
+        <Bit Name="CH3_TCIT" Authority="RO" Bits="19" Description="通道3传输计数中断状态位&#xD;&#xA;0: 传输计数完成中断未发生。&#xD;&#xA;1：当CRx寄存器的TCIT位为“1”时，当所有传输完成（CURR_LTC[11:0]和CURR_HTC[11:0]都等于0）时，该位将被置“1”。" />
+        <Bit Name="CH2_TCIT" Authority="RO" Bits="18" Description="通道2传输计数中断状态位&#xD;&#xA;0: 传输计数完成中断未发生。&#xD;&#xA;1：当CRx寄存器的TCIT位为“1”时，当所有传输完成（CURR_LTC[11:0]和CURR_HTC[11:0]都等于0）时，该位将被置“1”。" />
+        <Bit Name="CH1_TCIT" Authority="RO" Bits="17" Description="通道1传输计数中断状态位&#xD;&#xA;0: 传输计数完成中断未发生。&#xD;&#xA;1：当CRx寄存器的TCIT位为“1”时，当所有传输完成（CURR_LTC[11:0]和CURR_HTC[11:0]都等于0）时，该位将被置“1”。" />
+        <Bit Name="CH0_TCIT" Authority="RO" Bits="16" Description="通道0传输计数中断状态位&#xD;&#xA;0: 传输计数完成中断未发生。&#xD;&#xA;1：当CRx寄存器的TCIT位为“1”时，当所有传输完成（CURR_LTC[11:0]和CURR_HTC[11:0]都等于0）时，该位将被置“1”。" />
+        <Bit Name="CH5_LTCIT" Authority="RO" Bits="5" Description="通道5低传输计数完成中断状态位&#xD;&#xA;0: 低传输计数完成中断未发生。&#xD;&#xA;1：当CRx寄存器的LTCIT位为“1”时，当所有低传输完成（CURR_LTC[11:0]等于0）时，该位将被置“1”。" />
+        <Bit Name="CH4_LTCIT" Authority="RO" Bits="4" Description="通道4低传输计数完成中断状态位&#xD;&#xA;0: 低传输计数完成中断未发生。&#xD;&#xA;1：当CRx寄存器的LTCIT位为“1”时，当所有低传输完成（CURR_LTC[11:0]等于0）时，该位将被置“1”。" />
+        <Bit Name="CH3_LTCIT" Authority="RO" Bits="3" Description="通道3低传输计数完成中断状态位&#xD;&#xA;0: 低传输计数完成中断未发生。&#xD;&#xA;1：当CRx寄存器的LTCIT位为“1”时，当所有低传输完成（CURR_LTC[11:0]等于0）时，该位将被置“1”。" />
+        <Bit Name="CH2_LTCIT" Authority="RO" Bits="2" Description="通道2低传输计数完成中断状态位&#xD;&#xA;0: 低传输计数完成中断未发生。&#xD;&#xA;1：当CRx寄存器的LTCIT位为“1”时，当所有低传输完成（CURR_LTC[11:0]等于0）时，该位将被置“1”。" />
+        <Bit Name="CH1_LTCIT" Authority="RO" Bits="1" Description="通道1低传输计数完成中断状态位&#xD;&#xA;0: 低传输计数完成中断未发生。&#xD;&#xA;1：当CRx寄存器的LTCIT位为“1”时，当所有低传输完成（CURR_LTC[11:0]等于0）时，该位将被置“1”。" />
+        <Bit Name="CH0_LTCIT" Authority="RO" Bits="0" Description="通道0低传输计数完成中断状态位&#xD;&#xA;0: 低传输计数完成中断未发生。&#xD;&#xA;1：当CRx寄存器的LTCIT位为“1”时，当所有低传输完成（CURR_LTC[11:0]等于0）时，该位将被置“1”。" />
       </Register>
       <Register Name="DMA_ICR" Authority="RW" Address="0x40310510" Width="32" Description="中断清除寄存器">
+        <Bit Name="CH5_IT" Authority="RW" Bits="5" Description="通道5中断清除位&#xD;&#xA;0 = 无效No effect&#xD;&#xA;1 = 清除通道 x 中断 (CHx_TCIT 和CHx_LTCIT)" />
+        <Bit Name="CH4_IT" Authority="RW" Bits="4" Description="通道4中断清除位&#xD;&#xA;0 = 无效No effect&#xD;&#xA;1 = 清除通道 x 中断 (CHx_TCIT 和CHx_LTCIT)" />
         <Bit Name="CH3_IT" Authority="RW" Bits="3" Description="通道3中断清除位&#xD;&#xA;0 = 无效No effect&#xD;&#xA;1 = 清除通道 x 中断 (CHx_TCIT 和CHx_LTCIT)" />
         <Bit Name="CH2_IT" Authority="RW" Bits="2" Description="通道2中断清除位&#xD;&#xA;0 = 无效No effect&#xD;&#xA;1 = 清除通道 x 中断 (CHx_TCIT 和CHx_LTCIT)" />
         <Bit Name="CH1_IT" Authority="RW" Bits="1" Description="通道1中断清除位&#xD;&#xA;0 = 无效No effect&#xD;&#xA;1 = 清除通道 x 中断 (CHx_TCIT 和CHx_LTCIT)" />
@@ -9360,9 +9559,10 @@
         <Bit Name="GRP16" Authority="RW" Bits="3-0" Description="选择外部中断组16&#xD;&#xA;0h：GPIOA0.0 被选中&#xD;&#xA;1h：GPIOA0.1 被选中&#xD;&#xA;2h：GPIOA0.2 被选中&#xD;&#xA;3h：GPIOA0.3 被选中&#xD;&#xA;4h：GPIOA0.4 被选中&#xD;&#xA;5h：GPIOA0.5 被选中&#xD;&#xA;6h：GPIOA0.6 被选中&#xD;&#xA;7h：GPIOA0.7 被选中&#xD;&#xA;其他：GPIOA0.0 被选中" />
       </Register>
       <Register Name="GPIO_CLKEN" Authority="RW" Address="0x6000f00c" Width="32" Description="GPIO组时钟使能控制寄存器">
-        <Bit Name="CLK_B0" Authority="RW" Bits="2" Description="" />
-        <Bit Name="CLK_A1" Authority="RW" Bits="1" Description="" />
-        <Bit Name="CLK_A0" Authority="RW" Bits="0" Description="" />
+        <Bit Name="CLK_D" Authority="RO" Bits="6" Description="" />
+        <Bit Name="CLK_C" Authority="RW" Bits="4" Description="" />
+        <Bit Name="CLK_B" Authority="RW" Bits="2" Description="" />
+        <Bit Name="CLK_A" Authority="RW" Bits="0" Description="" />
       </Register>
     </Peripheral>
     <Peripheral Name="CORET">

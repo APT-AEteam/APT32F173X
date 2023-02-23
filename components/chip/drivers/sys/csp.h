@@ -51,6 +51,7 @@ extern csp_syscon_t 	*SYSCON;
 extern csp_etb_t   		*ETCB;
 extern csp_dma_t   		*DMA0, *DMA1;
 extern csp_adc_t 		*ADC0,*ADC1;
+extern csp_fvr_t 		*FVR;
 extern csp_gpio_t 		*GPIOA, *GPIOB, *GPIOC, *GPIOD;
 extern csp_igrp_t		*GPIOGRP;
 extern csp_usart_t 		*USART0, *USART1;
