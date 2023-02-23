@@ -180,15 +180,21 @@
         <Bit Name="EXIFLT0" Authority="RW" Bits="3-0" Description="外部中断滤波器参数选择&#xD;&#xA;EXIFLT0对应EXI0；EXIFLT1对应EXI1；以此类推&#xD;&#xA;0000：无滤波&#xD;&#xA;0001:  3*THFSOC&#xD;&#xA;0010:  6*THFSOC&#xD;&#xA;0011:  9*THFSOC&#xD;&#xA;0100:  12*THFSOC&#xD;&#xA;0101:  18*THFSOC&#xD;&#xA;0110:  24*THFSOC&#xD;&#xA;0111:  36*THFSOC&#xD;&#xA;1000:  48*THFSOC&#xD;&#xA;1001:  60*THFSOC&#xD;&#xA;1010:  72*THFSOC&#xD;&#xA;1011:  84*THFSOC&#xD;&#xA;1100:  96*THFSOC&#xD;&#xA;1101:  120*THFSOC&#xD;&#xA;1110:  168*THFSOC&#xD;&#xA;1111:  216*THFSOC" />
       </Register>
       <Register Name="SYSCON_PCER0" Authority="RW" Address="0x40011028" Width="32" Description="外设时钟使能寄存器0">
+        <Bit Name="CAN" Authority="RW" Bits="24" Description="" />
         <Bit Name="I2C" Authority="RW" Bits="22" Description="" />
-        <Bit Name="SIO" Authority="RW" Bits="20" Description="" />
-        <Bit Name="SPI" Authority="RW" Bits="16" Description="" />
+        <Bit Name="SIO1" Authority="RW" Bits="21" Description="" />
+        <Bit Name="SIO0" Authority="RW" Bits="20" Description="" />
+        <Bit Name="SPI1" Authority="RW" Bits="17" Description="" />
+        <Bit Name="SPI0" Authority="RW" Bits="16" Description="" />
+        <Bit Name="USART1" Authority="RW" Bits="14" Description="" />
+        <Bit Name="USART0" Authority="RW" Bits="13" Description="" />
         <Bit Name="UART2" Authority="RW" Bits="10" Description="" />
         <Bit Name="UART1" Authority="RW" Bits="9" Description="" />
         <Bit Name="UART0" Authority="RW" Bits="8" Description="" />
         <Bit Name="ETCB" Authority="RW" Bits="7" Description="" />
-        <Bit Name="TOUCH" Authority="RW" Bits="6" Description="" />
-        <Bit Name="ADC" Authority="RW" Bits="4" Description="" />
+        <Bit Name="ADC1" Authority="RW" Bits="5" Description="" />
+        <Bit Name="ADC0" Authority="RW" Bits="4" Description="" />
+        <Bit Name="FVR" Authority="RW" Bits="3" Description="" />
         <Bit Name="IFC" Authority="RW" Bits="0" Description="" />
       </Register>
       <Register Name="SYSCON_PCDR0" Authority="RW" Address="0x4001102c" Width="32" Description="外设时钟禁止寄存器0">
@@ -216,14 +222,32 @@
         <Bit Name="IFC" Authority="RO" Bits="0" Description="" />
       </Register>
       <Register Name="SYSCON_PCER1" Authority="RW" Address="0x40011034" Width="32" Description="外设时钟使能寄存器1">
-        <Bit Name="EPT" Authority="RW" Bits="17" Description="" />
-        <Bit Name="GPTA" Authority="RW" Bits="13" Description="" />
-        <Bit Name="BT1" Authority="RW" Bits="12" Description="" />
-        <Bit Name="BT0" Authority="RW" Bits="11" Description="" />
-        <Bit Name="CNTA" Authority="RW" Bits="10" Description="" />
-        <Bit Name="LPT" Authority="RW" Bits="9" Description="" />
-        <Bit Name="RTC" Authority="RW" Bits="8" Description="" />
-        <Bit Name="WWDT" Authority="RW" Bits="7" Description="" />
+        <Bit Name="BT3" Authority="RW" Bits="31" Description="" />
+        <Bit Name="BT2" Authority="RW" Bits="30" Description="" />
+        <Bit Name="OPA3" Authority="RW" Bits="26" Description="" />
+        <Bit Name="OPA2" Authority="RW" Bits="25" Description="" />
+        <Bit Name="OPA1" Authority="RW" Bits="24" Description="" />
+        <Bit Name="OPA0" Authority="RW" Bits="23" Description="" />
+        <Bit Name="CMP2" Authority="RW" Bits="20" Description="" />
+        <Bit Name="CMP1" Authority="RW" Bits="19" Description="" />
+        <Bit Name="CMP0" Authority="RW" Bits="18" Description="" />
+        <Bit Name="LED" Authority="RW" Bits="17" Description="" />
+        <Bit Name="BT1" Authority="RW" Bits="16" Description="" />
+        <Bit Name="BT0" Authority="RW" Bits="15" Description="" />
+        <Bit Name="RTC" Authority="RW" Bits="14" Description="" />
+        <Bit Name="CNTA" Authority="RW" Bits="13" Description="" />
+        <Bit Name="LPT" Authority="RW" Bits="12" Description="" />
+        <Bit Name="WDT" Authority="RW" Bits="11" Description="" />
+        <Bit Name="GPTB5" Authority="RW" Bits="10" Description="" />
+        <Bit Name="GPTB4" Authority="RW" Bits="9" Description="" />
+        <Bit Name="GPTB3" Authority="RW" Bits="8" Description="" />
+        <Bit Name="GPTB2" Authority="RW" Bits="7" Description="" />
+        <Bit Name="GPTB1" Authority="RW" Bits="6" Description="" />
+        <Bit Name="GPTB0" Authority="RW" Bits="5" Description="" />
+        <Bit Name="GPTA3" Authority="RW" Bits="4" Description="" />
+        <Bit Name="GPTA2" Authority="RW" Bits="3" Description="" />
+        <Bit Name="GPTA1" Authority="RW" Bits="2" Description="" />
+        <Bit Name="GPTA0" Authority="RW" Bits="1" Description="" />
       </Register>
       <Register Name="SYSCON_PCDR1" Authority="RW" Address="0x40011038" Width="32" Description="外设时钟禁止寄存器1">
         <Bit Name="EPT" Authority="RW" Bits="17" Description="" />
@@ -2939,13 +2963,14 @@
         <Bit Name="CNT0INIT" Authority="RW" Bits="3-0" Description="TRGEV0CNT计数器的初始化值设置。&#xD;&#xA;当EVTRG[CNT0INITEN]控制位有效时，CNT0INIT的值将在触发条件满足时(LOAD事件)，或EVTRG[CNT0INITFRC]软件置位时，被载入到TRGEV0CNT寄存器中。" />
       </Register>
       <Register Name="EVSWF" Authority="RW" Address="0x400590cc" Width="32" Description="Event Counter Software Trigger Register">
-        <Bit Name="EV3SWF" Authority="RW" Bits="3" Description="软件产生一次EV3的触发&#xD;&#xA;0h：写入‘0’无效&#xD;&#xA;1h：软件产生一次触发" />
-        <Bit Name="EV2SWF" Authority="RW" Bits="2" Description="软件产生一次EV2的触发&#xD;&#xA;0h：写入‘0’无效&#xD;&#xA;1h：软件产生一次触发" />
         <Bit Name="EV1SWF" Authority="RW" Bits="1" Description="软件产生一次EV1的触发&#xD;&#xA;0h：写入‘0’无效&#xD;&#xA;1h：软件产生一次触发" />
         <Bit Name="EV0SWF" Authority="RW" Bits="0" Description="软件产生一次EV0的触发&#xD;&#xA;0h：写入‘0’无效&#xD;&#xA;1h：软件产生一次触发" />
       </Register>
       <Register Name="RISR" Authority="RW" Address="0x400590d0" Width="32" Description="Raw Interrupt Status Register">
+        <Bit Name="ZRMA" Authority="RO" Bits="18" Description="Zero detect event" />
+        <Bit Name="PRMA" Authority="RO" Bits="17" Description="Period match event" />
         <Bit Name="PEND" Authority="RO" Bits="16" Description="周期结束中断请求原始标志状态" />
+        <Bit Name="" Authority="RO" Bits="15-12" Description="" />
         <Bit Name="CBD" Authority="RO" Bits="11" Description="递减阶段CNT = CMPB中断请求原始标志状态" />
         <Bit Name="CBU" Authority="RO" Bits="10" Description="递增阶段CNT = CMPB中断请求原始标志状态" />
         <Bit Name="CAD" Authority="RO" Bits="9" Description="递减阶段CNT = CMPA中断请求原始标志状态" />
@@ -2954,12 +2979,12 @@
         <Bit Name="CAP_LD2" Authority="RO" Bits="6" Description="Capture Load to CMPA Active中断请求原始标志状态" />
         <Bit Name="CAP_LD1" Authority="RO" Bits="5" Description="Capture Load to CMPB Shadow中断请求原始标志状态" />
         <Bit Name="CAP_LD0" Authority="RO" Bits="4" Description="Capture Load to CMPA Shadow中断请求原始标志状态" />
-        <Bit Name="TRGEV3" Authority="RO" Bits="3" Description="TRGEV3中断请求原始标志状态" />
-        <Bit Name="TRGEV2" Authority="RO" Bits="2" Description="TRGEV2中断请求原始标志状态" />
         <Bit Name="TRGEV1" Authority="RO" Bits="1" Description="TRGEV1中断请求原始标志状态" />
         <Bit Name="TRGEV0" Authority="RO" Bits="0" Description="TRGEV0中断请求原始标志状态" />
       </Register>
       <Register Name="MISR" Authority="RW" Address="0x400590d4" Width="32" Description="Masked Interrupt Status Register">
+        <Bit Name="ZRMA" Authority="RO" Bits="18" Description="Zero detect event中断请求标志状态" />
+        <Bit Name="PRMA" Authority="RO" Bits="17" Description="Period match event中断请求标志状态" />
         <Bit Name="PEND" Authority="RO" Bits="16" Description="周期结束中断请求标志状态" />
         <Bit Name="CBD" Authority="RO" Bits="11" Description="递减阶段CNT = CMPB中断请求标志状态" />
         <Bit Name="CBU" Authority="RO" Bits="10" Description="递增阶段CNT = CMPB中断请求标志状态" />
@@ -2969,12 +2994,12 @@
         <Bit Name="CAP_LD2" Authority="RO" Bits="6" Description="Capture Load to CMPC中断请求标志状态" />
         <Bit Name="CAP_LD1" Authority="RO" Bits="5" Description="Capture Load to CMPB中断请求标志状态" />
         <Bit Name="CAP_LD0" Authority="RO" Bits="4" Description="Capture Load to CMPA中断请求标志状态" />
-        <Bit Name="TRGEV3" Authority="RO" Bits="3" Description="TRGEV3中断请求标志状态" />
-        <Bit Name="TRGEV2" Authority="RO" Bits="2" Description="TRGEV2中断请求标志状态" />
         <Bit Name="TRGEV1" Authority="RO" Bits="1" Description="TRGEV1中断请求标志状态" />
         <Bit Name="TRGEV0" Authority="RO" Bits="0" Description="TRGEV0中断请求标志状态" />
       </Register>
       <Register Name="IMCR" Authority="RW" Address="0x400590d8" Width="32" Description="Interrupt Masking Control Register">
+        <Bit Name="ZRMA" Authority="RW" Bits="18" Description="Zero detect event使能控制位" />
+        <Bit Name="PRMA" Authority="RW" Bits="17" Description="Period match event使能控制位" />
         <Bit Name="PEND" Authority="RW" Bits="16" Description="周期结束中断中断使能控制位。" />
         <Bit Name="CDD" Authority="RW" Bits="15" Description="递减阶段CNT = CMPD中断使能控制位。" />
         <Bit Name="CDU" Authority="RW" Bits="14" Description="递增阶段CNT = CMPD中断使能控制位。" />
@@ -2988,12 +3013,12 @@
         <Bit Name="CAP_LD2" Authority="RW" Bits="6" Description="Capture Load to CMPC中断使能控制位。" />
         <Bit Name="CAP_LD1" Authority="RW" Bits="5" Description="Capture Load to CMPB中断使能控制位。" />
         <Bit Name="CAP_LD0" Authority="RW" Bits="4" Description="Capture Load to CMPA中断使能控制位。" />
-        <Bit Name="TRGEV3" Authority="RW" Bits="3" Description="TRGEV3中断使能控制位。" />
-        <Bit Name="TRGEV2" Authority="RW" Bits="2" Description="TRGEV2中断使能控制位。" />
         <Bit Name="TRGEV1" Authority="RW" Bits="1" Description="TRGEV1中断使能控制位。" />
         <Bit Name="TRGEV0" Authority="RW" Bits="0" Description="TRGEV0中断使能控制位。" />
       </Register>
       <Register Name="ICR" Authority="RW" Address="0x400590dc" Width="32" Description="Interrupt Clear Register">
+        <Bit Name="ZRMA" Authority="RO" Bits="18" Description="" />
+        <Bit Name="PRMA" Authority="RO" Bits="17" Description="" />
         <Bit Name="PEND" Authority="RO" Bits="16" Description="周期结束中断中断使能控制位。" />
         <Bit Name="CBD" Authority="RO" Bits="11" Description="递减阶段CNT = CMPB中断请求原始标志状态" />
         <Bit Name="CBU" Authority="RO" Bits="10" Description="递增阶段CNT = CMPB中断请求原始标志状态" />
@@ -3381,13 +3406,14 @@
         <Bit Name="CNT0INIT" Authority="RW" Bits="3-0" Description="TRGEV0CNT计数器的初始化值设置。&#xD;&#xA;当EVTRG[CNT0INITEN]控制位有效时，CNT0INIT的值将在触发条件满足时(LOAD事件)，或EVTRG[CNT0INITFRC]软件置位时，被载入到TRGEV0CNT寄存器中。" />
       </Register>
       <Register Name="EVSWF" Authority="RW" Address="0x4005a0cc" Width="32" Description="Event Counter Software Trigger Register">
-        <Bit Name="EV3SWF" Authority="RW" Bits="3" Description="软件产生一次EV3的触发&#xD;&#xA;0h：写入‘0’无效&#xD;&#xA;1h：软件产生一次触发" />
-        <Bit Name="EV2SWF" Authority="RW" Bits="2" Description="软件产生一次EV2的触发&#xD;&#xA;0h：写入‘0’无效&#xD;&#xA;1h：软件产生一次触发" />
         <Bit Name="EV1SWF" Authority="RW" Bits="1" Description="软件产生一次EV1的触发&#xD;&#xA;0h：写入‘0’无效&#xD;&#xA;1h：软件产生一次触发" />
         <Bit Name="EV0SWF" Authority="RW" Bits="0" Description="软件产生一次EV0的触发&#xD;&#xA;0h：写入‘0’无效&#xD;&#xA;1h：软件产生一次触发" />
       </Register>
       <Register Name="RISR" Authority="RW" Address="0x4005a0d0" Width="32" Description="Raw Interrupt Status Register">
+        <Bit Name="ZRMA" Authority="RO" Bits="18" Description="Zero detect event" />
+        <Bit Name="PRMA" Authority="RO" Bits="17" Description="Period match event" />
         <Bit Name="PEND" Authority="RO" Bits="16" Description="周期结束中断请求原始标志状态" />
+        <Bit Name="" Authority="RO" Bits="15-12" Description="" />
         <Bit Name="CBD" Authority="RO" Bits="11" Description="递减阶段CNT = CMPB中断请求原始标志状态" />
         <Bit Name="CBU" Authority="RO" Bits="10" Description="递增阶段CNT = CMPB中断请求原始标志状态" />
         <Bit Name="CAD" Authority="RO" Bits="9" Description="递减阶段CNT = CMPA中断请求原始标志状态" />
@@ -3396,12 +3422,12 @@
         <Bit Name="CAP_LD2" Authority="RO" Bits="6" Description="Capture Load to CMPA Active中断请求原始标志状态" />
         <Bit Name="CAP_LD1" Authority="RO" Bits="5" Description="Capture Load to CMPB Shadow中断请求原始标志状态" />
         <Bit Name="CAP_LD0" Authority="RO" Bits="4" Description="Capture Load to CMPA Shadow中断请求原始标志状态" />
-        <Bit Name="TRGEV3" Authority="RO" Bits="3" Description="TRGEV3中断请求原始标志状态" />
-        <Bit Name="TRGEV2" Authority="RO" Bits="2" Description="TRGEV2中断请求原始标志状态" />
         <Bit Name="TRGEV1" Authority="RO" Bits="1" Description="TRGEV1中断请求原始标志状态" />
         <Bit Name="TRGEV0" Authority="RO" Bits="0" Description="TRGEV0中断请求原始标志状态" />
       </Register>
       <Register Name="MISR" Authority="RW" Address="0x4005a0d4" Width="32" Description="Masked Interrupt Status Register">
+        <Bit Name="ZRMA" Authority="RO" Bits="18" Description="Zero detect event中断请求标志状态" />
+        <Bit Name="PRMA" Authority="RO" Bits="17" Description="Period match event中断请求标志状态" />
         <Bit Name="PEND" Authority="RO" Bits="16" Description="周期结束中断请求标志状态" />
         <Bit Name="CBD" Authority="RO" Bits="11" Description="递减阶段CNT = CMPB中断请求标志状态" />
         <Bit Name="CBU" Authority="RO" Bits="10" Description="递增阶段CNT = CMPB中断请求标志状态" />
@@ -3411,12 +3437,12 @@
         <Bit Name="CAP_LD2" Authority="RO" Bits="6" Description="Capture Load to CMPC中断请求标志状态" />
         <Bit Name="CAP_LD1" Authority="RO" Bits="5" Description="Capture Load to CMPB中断请求标志状态" />
         <Bit Name="CAP_LD0" Authority="RO" Bits="4" Description="Capture Load to CMPA中断请求标志状态" />
-        <Bit Name="TRGEV3" Authority="RO" Bits="3" Description="TRGEV3中断请求标志状态" />
-        <Bit Name="TRGEV2" Authority="RO" Bits="2" Description="TRGEV2中断请求标志状态" />
         <Bit Name="TRGEV1" Authority="RO" Bits="1" Description="TRGEV1中断请求标志状态" />
         <Bit Name="TRGEV0" Authority="RO" Bits="0" Description="TRGEV0中断请求标志状态" />
       </Register>
       <Register Name="IMCR" Authority="RW" Address="0x4005a0d8" Width="32" Description="Interrupt Masking Control Register">
+        <Bit Name="ZRMA" Authority="RW" Bits="18" Description="Zero detect event使能控制位" />
+        <Bit Name="PRMA" Authority="RW" Bits="17" Description="Period match event使能控制位" />
         <Bit Name="PEND" Authority="RW" Bits="16" Description="周期结束中断中断使能控制位。" />
         <Bit Name="CDD" Authority="RW" Bits="15" Description="递减阶段CNT = CMPD中断使能控制位。" />
         <Bit Name="CDU" Authority="RW" Bits="14" Description="递增阶段CNT = CMPD中断使能控制位。" />
@@ -3430,12 +3456,12 @@
         <Bit Name="CAP_LD2" Authority="RW" Bits="6" Description="Capture Load to CMPC中断使能控制位。" />
         <Bit Name="CAP_LD1" Authority="RW" Bits="5" Description="Capture Load to CMPB中断使能控制位。" />
         <Bit Name="CAP_LD0" Authority="RW" Bits="4" Description="Capture Load to CMPA中断使能控制位。" />
-        <Bit Name="TRGEV3" Authority="RW" Bits="3" Description="TRGEV3中断使能控制位。" />
-        <Bit Name="TRGEV2" Authority="RW" Bits="2" Description="TRGEV2中断使能控制位。" />
         <Bit Name="TRGEV1" Authority="RW" Bits="1" Description="TRGEV1中断使能控制位。" />
         <Bit Name="TRGEV0" Authority="RW" Bits="0" Description="TRGEV0中断使能控制位。" />
       </Register>
       <Register Name="ICR" Authority="RW" Address="0x4005a0dc" Width="32" Description="Interrupt Clear Register">
+        <Bit Name="ZRMA" Authority="RO" Bits="18" Description="" />
+        <Bit Name="PRMA" Authority="RO" Bits="17" Description="" />
         <Bit Name="PEND" Authority="RO" Bits="16" Description="周期结束中断中断使能控制位。" />
         <Bit Name="CBD" Authority="RO" Bits="11" Description="递减阶段CNT = CMPB中断请求原始标志状态" />
         <Bit Name="CBU" Authority="RO" Bits="10" Description="递增阶段CNT = CMPB中断请求原始标志状态" />
@@ -3823,13 +3849,14 @@
         <Bit Name="CNT0INIT" Authority="RW" Bits="3-0" Description="TRGEV0CNT计数器的初始化值设置。&#xD;&#xA;当EVTRG[CNT0INITEN]控制位有效时，CNT0INIT的值将在触发条件满足时(LOAD事件)，或EVTRG[CNT0INITFRC]软件置位时，被载入到TRGEV0CNT寄存器中。" />
       </Register>
       <Register Name="EVSWF" Authority="RW" Address="0x4005b0cc" Width="32" Description="Event Counter Software Trigger Register">
-        <Bit Name="EV3SWF" Authority="RW" Bits="3" Description="软件产生一次EV3的触发&#xD;&#xA;0h：写入‘0’无效&#xD;&#xA;1h：软件产生一次触发" />
-        <Bit Name="EV2SWF" Authority="RW" Bits="2" Description="软件产生一次EV2的触发&#xD;&#xA;0h：写入‘0’无效&#xD;&#xA;1h：软件产生一次触发" />
         <Bit Name="EV1SWF" Authority="RW" Bits="1" Description="软件产生一次EV1的触发&#xD;&#xA;0h：写入‘0’无效&#xD;&#xA;1h：软件产生一次触发" />
         <Bit Name="EV0SWF" Authority="RW" Bits="0" Description="软件产生一次EV0的触发&#xD;&#xA;0h：写入‘0’无效&#xD;&#xA;1h：软件产生一次触发" />
       </Register>
       <Register Name="RISR" Authority="RW" Address="0x4005b0d0" Width="32" Description="Raw Interrupt Status Register">
+        <Bit Name="ZRMA" Authority="RO" Bits="18" Description="Zero detect event" />
+        <Bit Name="PRMA" Authority="RO" Bits="17" Description="Period match event" />
         <Bit Name="PEND" Authority="RO" Bits="16" Description="周期结束中断请求原始标志状态" />
+        <Bit Name="" Authority="RO" Bits="15-12" Description="" />
         <Bit Name="CBD" Authority="RO" Bits="11" Description="递减阶段CNT = CMPB中断请求原始标志状态" />
         <Bit Name="CBU" Authority="RO" Bits="10" Description="递增阶段CNT = CMPB中断请求原始标志状态" />
         <Bit Name="CAD" Authority="RO" Bits="9" Description="递减阶段CNT = CMPA中断请求原始标志状态" />
@@ -3838,12 +3865,12 @@
         <Bit Name="CAP_LD2" Authority="RO" Bits="6" Description="Capture Load to CMPA Active中断请求原始标志状态" />
         <Bit Name="CAP_LD1" Authority="RO" Bits="5" Description="Capture Load to CMPB Shadow中断请求原始标志状态" />
         <Bit Name="CAP_LD0" Authority="RO" Bits="4" Description="Capture Load to CMPA Shadow中断请求原始标志状态" />
-        <Bit Name="TRGEV3" Authority="RO" Bits="3" Description="TRGEV3中断请求原始标志状态" />
-        <Bit Name="TRGEV2" Authority="RO" Bits="2" Description="TRGEV2中断请求原始标志状态" />
         <Bit Name="TRGEV1" Authority="RO" Bits="1" Description="TRGEV1中断请求原始标志状态" />
         <Bit Name="TRGEV0" Authority="RO" Bits="0" Description="TRGEV0中断请求原始标志状态" />
       </Register>
       <Register Name="MISR" Authority="RW" Address="0x4005b0d4" Width="32" Description="Masked Interrupt Status Register">
+        <Bit Name="ZRMA" Authority="RO" Bits="18" Description="Zero detect event中断请求标志状态" />
+        <Bit Name="PRMA" Authority="RO" Bits="17" Description="Period match event中断请求标志状态" />
         <Bit Name="PEND" Authority="RO" Bits="16" Description="周期结束中断请求标志状态" />
         <Bit Name="CBD" Authority="RO" Bits="11" Description="递减阶段CNT = CMPB中断请求标志状态" />
         <Bit Name="CBU" Authority="RO" Bits="10" Description="递增阶段CNT = CMPB中断请求标志状态" />
@@ -3853,12 +3880,12 @@
         <Bit Name="CAP_LD2" Authority="RO" Bits="6" Description="Capture Load to CMPC中断请求标志状态" />
         <Bit Name="CAP_LD1" Authority="RO" Bits="5" Description="Capture Load to CMPB中断请求标志状态" />
         <Bit Name="CAP_LD0" Authority="RO" Bits="4" Description="Capture Load to CMPA中断请求标志状态" />
-        <Bit Name="TRGEV3" Authority="RO" Bits="3" Description="TRGEV3中断请求标志状态" />
-        <Bit Name="TRGEV2" Authority="RO" Bits="2" Description="TRGEV2中断请求标志状态" />
         <Bit Name="TRGEV1" Authority="RO" Bits="1" Description="TRGEV1中断请求标志状态" />
         <Bit Name="TRGEV0" Authority="RO" Bits="0" Description="TRGEV0中断请求标志状态" />
       </Register>
       <Register Name="IMCR" Authority="RW" Address="0x4005b0d8" Width="32" Description="Interrupt Masking Control Register">
+        <Bit Name="ZRMA" Authority="RW" Bits="18" Description="Zero detect event使能控制位" />
+        <Bit Name="PRMA" Authority="RW" Bits="17" Description="Period match event使能控制位" />
         <Bit Name="PEND" Authority="RW" Bits="16" Description="周期结束中断中断使能控制位。" />
         <Bit Name="CDD" Authority="RW" Bits="15" Description="递减阶段CNT = CMPD中断使能控制位。" />
         <Bit Name="CDU" Authority="RW" Bits="14" Description="递增阶段CNT = CMPD中断使能控制位。" />
@@ -3872,12 +3899,12 @@
         <Bit Name="CAP_LD2" Authority="RW" Bits="6" Description="Capture Load to CMPC中断使能控制位。" />
         <Bit Name="CAP_LD1" Authority="RW" Bits="5" Description="Capture Load to CMPB中断使能控制位。" />
         <Bit Name="CAP_LD0" Authority="RW" Bits="4" Description="Capture Load to CMPA中断使能控制位。" />
-        <Bit Name="TRGEV3" Authority="RW" Bits="3" Description="TRGEV3中断使能控制位。" />
-        <Bit Name="TRGEV2" Authority="RW" Bits="2" Description="TRGEV2中断使能控制位。" />
         <Bit Name="TRGEV1" Authority="RW" Bits="1" Description="TRGEV1中断使能控制位。" />
         <Bit Name="TRGEV0" Authority="RW" Bits="0" Description="TRGEV0中断使能控制位。" />
       </Register>
       <Register Name="ICR" Authority="RW" Address="0x4005b0dc" Width="32" Description="Interrupt Clear Register">
+        <Bit Name="ZRMA" Authority="RO" Bits="18" Description="" />
+        <Bit Name="PRMA" Authority="RO" Bits="17" Description="" />
         <Bit Name="PEND" Authority="RO" Bits="16" Description="周期结束中断中断使能控制位。" />
         <Bit Name="CBD" Authority="RO" Bits="11" Description="递减阶段CNT = CMPB中断请求原始标志状态" />
         <Bit Name="CBU" Authority="RO" Bits="10" Description="递增阶段CNT = CMPB中断请求原始标志状态" />
@@ -4265,13 +4292,14 @@
         <Bit Name="CNT0INIT" Authority="RW" Bits="3-0" Description="TRGEV0CNT计数器的初始化值设置。&#xD;&#xA;当EVTRG[CNT0INITEN]控制位有效时，CNT0INIT的值将在触发条件满足时(LOAD事件)，或EVTRG[CNT0INITFRC]软件置位时，被载入到TRGEV0CNT寄存器中。" />
       </Register>
       <Register Name="EVSWF" Authority="RW" Address="0x4005c0cc" Width="32" Description="Event Counter Software Trigger Register">
-        <Bit Name="EV3SWF" Authority="RW" Bits="3" Description="软件产生一次EV3的触发&#xD;&#xA;0h：写入‘0’无效&#xD;&#xA;1h：软件产生一次触发" />
-        <Bit Name="EV2SWF" Authority="RW" Bits="2" Description="软件产生一次EV2的触发&#xD;&#xA;0h：写入‘0’无效&#xD;&#xA;1h：软件产生一次触发" />
         <Bit Name="EV1SWF" Authority="RW" Bits="1" Description="软件产生一次EV1的触发&#xD;&#xA;0h：写入‘0’无效&#xD;&#xA;1h：软件产生一次触发" />
         <Bit Name="EV0SWF" Authority="RW" Bits="0" Description="软件产生一次EV0的触发&#xD;&#xA;0h：写入‘0’无效&#xD;&#xA;1h：软件产生一次触发" />
       </Register>
       <Register Name="RISR" Authority="RW" Address="0x4005c0d0" Width="32" Description="Raw Interrupt Status Register">
+        <Bit Name="ZRMA" Authority="RO" Bits="18" Description="Zero detect event" />
+        <Bit Name="PRMA" Authority="RO" Bits="17" Description="Period match event" />
         <Bit Name="PEND" Authority="RO" Bits="16" Description="周期结束中断请求原始标志状态" />
+        <Bit Name="" Authority="RO" Bits="15-12" Description="" />
         <Bit Name="CBD" Authority="RO" Bits="11" Description="递减阶段CNT = CMPB中断请求原始标志状态" />
         <Bit Name="CBU" Authority="RO" Bits="10" Description="递增阶段CNT = CMPB中断请求原始标志状态" />
         <Bit Name="CAD" Authority="RO" Bits="9" Description="递减阶段CNT = CMPA中断请求原始标志状态" />
@@ -4280,12 +4308,12 @@
         <Bit Name="CAP_LD2" Authority="RO" Bits="6" Description="Capture Load to CMPA Active中断请求原始标志状态" />
         <Bit Name="CAP_LD1" Authority="RO" Bits="5" Description="Capture Load to CMPB Shadow中断请求原始标志状态" />
         <Bit Name="CAP_LD0" Authority="RO" Bits="4" Description="Capture Load to CMPA Shadow中断请求原始标志状态" />
-        <Bit Name="TRGEV3" Authority="RO" Bits="3" Description="TRGEV3中断请求原始标志状态" />
-        <Bit Name="TRGEV2" Authority="RO" Bits="2" Description="TRGEV2中断请求原始标志状态" />
         <Bit Name="TRGEV1" Authority="RO" Bits="1" Description="TRGEV1中断请求原始标志状态" />
         <Bit Name="TRGEV0" Authority="RO" Bits="0" Description="TRGEV0中断请求原始标志状态" />
       </Register>
       <Register Name="MISR" Authority="RW" Address="0x4005c0d4" Width="32" Description="Masked Interrupt Status Register">
+        <Bit Name="ZRMA" Authority="RO" Bits="18" Description="Zero detect event中断请求标志状态" />
+        <Bit Name="PRMA" Authority="RO" Bits="17" Description="Period match event中断请求标志状态" />
         <Bit Name="PEND" Authority="RO" Bits="16" Description="周期结束中断请求标志状态" />
         <Bit Name="CBD" Authority="RO" Bits="11" Description="递减阶段CNT = CMPB中断请求标志状态" />
         <Bit Name="CBU" Authority="RO" Bits="10" Description="递增阶段CNT = CMPB中断请求标志状态" />
@@ -4295,12 +4323,12 @@
         <Bit Name="CAP_LD2" Authority="RO" Bits="6" Description="Capture Load to CMPC中断请求标志状态" />
         <Bit Name="CAP_LD1" Authority="RO" Bits="5" Description="Capture Load to CMPB中断请求标志状态" />
         <Bit Name="CAP_LD0" Authority="RO" Bits="4" Description="Capture Load to CMPA中断请求标志状态" />
-        <Bit Name="TRGEV3" Authority="RO" Bits="3" Description="TRGEV3中断请求标志状态" />
-        <Bit Name="TRGEV2" Authority="RO" Bits="2" Description="TRGEV2中断请求标志状态" />
         <Bit Name="TRGEV1" Authority="RO" Bits="1" Description="TRGEV1中断请求标志状态" />
         <Bit Name="TRGEV0" Authority="RO" Bits="0" Description="TRGEV0中断请求标志状态" />
       </Register>
       <Register Name="IMCR" Authority="RW" Address="0x4005c0d8" Width="32" Description="Interrupt Masking Control Register">
+        <Bit Name="ZRMA" Authority="RW" Bits="18" Description="Zero detect event使能控制位" />
+        <Bit Name="PRMA" Authority="RW" Bits="17" Description="Period match event使能控制位" />
         <Bit Name="PEND" Authority="RW" Bits="16" Description="周期结束中断中断使能控制位。" />
         <Bit Name="CDD" Authority="RW" Bits="15" Description="递减阶段CNT = CMPD中断使能控制位。" />
         <Bit Name="CDU" Authority="RW" Bits="14" Description="递增阶段CNT = CMPD中断使能控制位。" />
@@ -4314,12 +4342,12 @@
         <Bit Name="CAP_LD2" Authority="RW" Bits="6" Description="Capture Load to CMPC中断使能控制位。" />
         <Bit Name="CAP_LD1" Authority="RW" Bits="5" Description="Capture Load to CMPB中断使能控制位。" />
         <Bit Name="CAP_LD0" Authority="RW" Bits="4" Description="Capture Load to CMPA中断使能控制位。" />
-        <Bit Name="TRGEV3" Authority="RW" Bits="3" Description="TRGEV3中断使能控制位。" />
-        <Bit Name="TRGEV2" Authority="RW" Bits="2" Description="TRGEV2中断使能控制位。" />
         <Bit Name="TRGEV1" Authority="RW" Bits="1" Description="TRGEV1中断使能控制位。" />
         <Bit Name="TRGEV0" Authority="RW" Bits="0" Description="TRGEV0中断使能控制位。" />
       </Register>
       <Register Name="ICR" Authority="RW" Address="0x4005c0dc" Width="32" Description="Interrupt Clear Register">
+        <Bit Name="ZRMA" Authority="RO" Bits="18" Description="" />
+        <Bit Name="PRMA" Authority="RO" Bits="17" Description="" />
         <Bit Name="PEND" Authority="RO" Bits="16" Description="周期结束中断中断使能控制位。" />
         <Bit Name="CBD" Authority="RO" Bits="11" Description="递减阶段CNT = CMPB中断请求原始标志状态" />
         <Bit Name="CBU" Authority="RO" Bits="10" Description="递增阶段CNT = CMPB中断请求原始标志状态" />
@@ -4707,13 +4735,14 @@
         <Bit Name="CNT0INIT" Authority="RW" Bits="3-0" Description="TRGEV0CNT计数器的初始化值设置。&#xD;&#xA;当EVTRG[CNT0INITEN]控制位有效时，CNT0INIT的值将在触发条件满足时(LOAD事件)，或EVTRG[CNT0INITFRC]软件置位时，被载入到TRGEV0CNT寄存器中。" />
       </Register>
       <Register Name="EVSWF" Authority="RW" Address="0x4005d0cc" Width="32" Description="Event Counter Software Trigger Register">
-        <Bit Name="EV3SWF" Authority="RW" Bits="3" Description="软件产生一次EV3的触发&#xD;&#xA;0h：写入‘0’无效&#xD;&#xA;1h：软件产生一次触发" />
-        <Bit Name="EV2SWF" Authority="RW" Bits="2" Description="软件产生一次EV2的触发&#xD;&#xA;0h：写入‘0’无效&#xD;&#xA;1h：软件产生一次触发" />
         <Bit Name="EV1SWF" Authority="RW" Bits="1" Description="软件产生一次EV1的触发&#xD;&#xA;0h：写入‘0’无效&#xD;&#xA;1h：软件产生一次触发" />
         <Bit Name="EV0SWF" Authority="RW" Bits="0" Description="软件产生一次EV0的触发&#xD;&#xA;0h：写入‘0’无效&#xD;&#xA;1h：软件产生一次触发" />
       </Register>
       <Register Name="RISR" Authority="RW" Address="0x4005d0d0" Width="32" Description="Raw Interrupt Status Register">
+        <Bit Name="ZRMA" Authority="RO" Bits="18" Description="Zero detect event" />
+        <Bit Name="PRMA" Authority="RO" Bits="17" Description="Period match event" />
         <Bit Name="PEND" Authority="RO" Bits="16" Description="周期结束中断请求原始标志状态" />
+        <Bit Name="" Authority="RO" Bits="15-12" Description="" />
         <Bit Name="CBD" Authority="RO" Bits="11" Description="递减阶段CNT = CMPB中断请求原始标志状态" />
         <Bit Name="CBU" Authority="RO" Bits="10" Description="递增阶段CNT = CMPB中断请求原始标志状态" />
         <Bit Name="CAD" Authority="RO" Bits="9" Description="递减阶段CNT = CMPA中断请求原始标志状态" />
@@ -4722,12 +4751,12 @@
         <Bit Name="CAP_LD2" Authority="RO" Bits="6" Description="Capture Load to CMPA Active中断请求原始标志状态" />
         <Bit Name="CAP_LD1" Authority="RO" Bits="5" Description="Capture Load to CMPB Shadow中断请求原始标志状态" />
         <Bit Name="CAP_LD0" Authority="RO" Bits="4" Description="Capture Load to CMPA Shadow中断请求原始标志状态" />
-        <Bit Name="TRGEV3" Authority="RO" Bits="3" Description="TRGEV3中断请求原始标志状态" />
-        <Bit Name="TRGEV2" Authority="RO" Bits="2" Description="TRGEV2中断请求原始标志状态" />
         <Bit Name="TRGEV1" Authority="RO" Bits="1" Description="TRGEV1中断请求原始标志状态" />
         <Bit Name="TRGEV0" Authority="RO" Bits="0" Description="TRGEV0中断请求原始标志状态" />
       </Register>
       <Register Name="MISR" Authority="RW" Address="0x4005d0d4" Width="32" Description="Masked Interrupt Status Register">
+        <Bit Name="ZRMA" Authority="RO" Bits="18" Description="Zero detect event中断请求标志状态" />
+        <Bit Name="PRMA" Authority="RO" Bits="17" Description="Period match event中断请求标志状态" />
         <Bit Name="PEND" Authority="RO" Bits="16" Description="周期结束中断请求标志状态" />
         <Bit Name="CBD" Authority="RO" Bits="11" Description="递减阶段CNT = CMPB中断请求标志状态" />
         <Bit Name="CBU" Authority="RO" Bits="10" Description="递增阶段CNT = CMPB中断请求标志状态" />
@@ -4737,12 +4766,12 @@
         <Bit Name="CAP_LD2" Authority="RO" Bits="6" Description="Capture Load to CMPC中断请求标志状态" />
         <Bit Name="CAP_LD1" Authority="RO" Bits="5" Description="Capture Load to CMPB中断请求标志状态" />
         <Bit Name="CAP_LD0" Authority="RO" Bits="4" Description="Capture Load to CMPA中断请求标志状态" />
-        <Bit Name="TRGEV3" Authority="RO" Bits="3" Description="TRGEV3中断请求标志状态" />
-        <Bit Name="TRGEV2" Authority="RO" Bits="2" Description="TRGEV2中断请求标志状态" />
         <Bit Name="TRGEV1" Authority="RO" Bits="1" Description="TRGEV1中断请求标志状态" />
         <Bit Name="TRGEV0" Authority="RO" Bits="0" Description="TRGEV0中断请求标志状态" />
       </Register>
       <Register Name="IMCR" Authority="RW" Address="0x4005d0d8" Width="32" Description="Interrupt Masking Control Register">
+        <Bit Name="ZRMA" Authority="RW" Bits="18" Description="Zero detect event使能控制位" />
+        <Bit Name="PRMA" Authority="RW" Bits="17" Description="Period match event使能控制位" />
         <Bit Name="PEND" Authority="RW" Bits="16" Description="周期结束中断中断使能控制位。" />
         <Bit Name="CDD" Authority="RW" Bits="15" Description="递减阶段CNT = CMPD中断使能控制位。" />
         <Bit Name="CDU" Authority="RW" Bits="14" Description="递增阶段CNT = CMPD中断使能控制位。" />
@@ -4756,12 +4785,12 @@
         <Bit Name="CAP_LD2" Authority="RW" Bits="6" Description="Capture Load to CMPC中断使能控制位。" />
         <Bit Name="CAP_LD1" Authority="RW" Bits="5" Description="Capture Load to CMPB中断使能控制位。" />
         <Bit Name="CAP_LD0" Authority="RW" Bits="4" Description="Capture Load to CMPA中断使能控制位。" />
-        <Bit Name="TRGEV3" Authority="RW" Bits="3" Description="TRGEV3中断使能控制位。" />
-        <Bit Name="TRGEV2" Authority="RW" Bits="2" Description="TRGEV2中断使能控制位。" />
         <Bit Name="TRGEV1" Authority="RW" Bits="1" Description="TRGEV1中断使能控制位。" />
         <Bit Name="TRGEV0" Authority="RW" Bits="0" Description="TRGEV0中断使能控制位。" />
       </Register>
       <Register Name="ICR" Authority="RW" Address="0x4005d0dc" Width="32" Description="Interrupt Clear Register">
+        <Bit Name="ZRMA" Authority="RO" Bits="18" Description="" />
+        <Bit Name="PRMA" Authority="RO" Bits="17" Description="" />
         <Bit Name="PEND" Authority="RO" Bits="16" Description="周期结束中断中断使能控制位。" />
         <Bit Name="CBD" Authority="RO" Bits="11" Description="递减阶段CNT = CMPB中断请求原始标志状态" />
         <Bit Name="CBU" Authority="RO" Bits="10" Description="递增阶段CNT = CMPB中断请求原始标志状态" />
@@ -5149,13 +5178,14 @@
         <Bit Name="CNT0INIT" Authority="RW" Bits="3-0" Description="TRGEV0CNT计数器的初始化值设置。&#xD;&#xA;当EVTRG[CNT0INITEN]控制位有效时，CNT0INIT的值将在触发条件满足时(LOAD事件)，或EVTRG[CNT0INITFRC]软件置位时，被载入到TRGEV0CNT寄存器中。" />
       </Register>
       <Register Name="EVSWF" Authority="RW" Address="0x4005e0cc" Width="32" Description="Event Counter Software Trigger Register">
-        <Bit Name="EV3SWF" Authority="RW" Bits="3" Description="软件产生一次EV3的触发&#xD;&#xA;0h：写入‘0’无效&#xD;&#xA;1h：软件产生一次触发" />
-        <Bit Name="EV2SWF" Authority="RW" Bits="2" Description="软件产生一次EV2的触发&#xD;&#xA;0h：写入‘0’无效&#xD;&#xA;1h：软件产生一次触发" />
         <Bit Name="EV1SWF" Authority="RW" Bits="1" Description="软件产生一次EV1的触发&#xD;&#xA;0h：写入‘0’无效&#xD;&#xA;1h：软件产生一次触发" />
         <Bit Name="EV0SWF" Authority="RW" Bits="0" Description="软件产生一次EV0的触发&#xD;&#xA;0h：写入‘0’无效&#xD;&#xA;1h：软件产生一次触发" />
       </Register>
       <Register Name="RISR" Authority="RW" Address="0x4005e0d0" Width="32" Description="Raw Interrupt Status Register">
+        <Bit Name="ZRMA" Authority="RO" Bits="18" Description="Zero detect event" />
+        <Bit Name="PRMA" Authority="RO" Bits="17" Description="Period match event" />
         <Bit Name="PEND" Authority="RO" Bits="16" Description="周期结束中断请求原始标志状态" />
+        <Bit Name="" Authority="RO" Bits="15-12" Description="" />
         <Bit Name="CBD" Authority="RO" Bits="11" Description="递减阶段CNT = CMPB中断请求原始标志状态" />
         <Bit Name="CBU" Authority="RO" Bits="10" Description="递增阶段CNT = CMPB中断请求原始标志状态" />
         <Bit Name="CAD" Authority="RO" Bits="9" Description="递减阶段CNT = CMPA中断请求原始标志状态" />
@@ -5164,12 +5194,12 @@
         <Bit Name="CAP_LD2" Authority="RO" Bits="6" Description="Capture Load to CMPA Active中断请求原始标志状态" />
         <Bit Name="CAP_LD1" Authority="RO" Bits="5" Description="Capture Load to CMPB Shadow中断请求原始标志状态" />
         <Bit Name="CAP_LD0" Authority="RO" Bits="4" Description="Capture Load to CMPA Shadow中断请求原始标志状态" />
-        <Bit Name="TRGEV3" Authority="RO" Bits="3" Description="TRGEV3中断请求原始标志状态" />
-        <Bit Name="TRGEV2" Authority="RO" Bits="2" Description="TRGEV2中断请求原始标志状态" />
         <Bit Name="TRGEV1" Authority="RO" Bits="1" Description="TRGEV1中断请求原始标志状态" />
         <Bit Name="TRGEV0" Authority="RO" Bits="0" Description="TRGEV0中断请求原始标志状态" />
       </Register>
       <Register Name="MISR" Authority="RW" Address="0x4005e0d4" Width="32" Description="Masked Interrupt Status Register">
+        <Bit Name="ZRMA" Authority="RO" Bits="18" Description="Zero detect event中断请求标志状态" />
+        <Bit Name="PRMA" Authority="RO" Bits="17" Description="Period match event中断请求标志状态" />
         <Bit Name="PEND" Authority="RO" Bits="16" Description="周期结束中断请求标志状态" />
         <Bit Name="CBD" Authority="RO" Bits="11" Description="递减阶段CNT = CMPB中断请求标志状态" />
         <Bit Name="CBU" Authority="RO" Bits="10" Description="递增阶段CNT = CMPB中断请求标志状态" />
@@ -5179,12 +5209,12 @@
         <Bit Name="CAP_LD2" Authority="RO" Bits="6" Description="Capture Load to CMPC中断请求标志状态" />
         <Bit Name="CAP_LD1" Authority="RO" Bits="5" Description="Capture Load to CMPB中断请求标志状态" />
         <Bit Name="CAP_LD0" Authority="RO" Bits="4" Description="Capture Load to CMPA中断请求标志状态" />
-        <Bit Name="TRGEV3" Authority="RO" Bits="3" Description="TRGEV3中断请求标志状态" />
-        <Bit Name="TRGEV2" Authority="RO" Bits="2" Description="TRGEV2中断请求标志状态" />
         <Bit Name="TRGEV1" Authority="RO" Bits="1" Description="TRGEV1中断请求标志状态" />
         <Bit Name="TRGEV0" Authority="RO" Bits="0" Description="TRGEV0中断请求标志状态" />
       </Register>
       <Register Name="IMCR" Authority="RW" Address="0x4005e0d8" Width="32" Description="Interrupt Masking Control Register">
+        <Bit Name="ZRMA" Authority="RW" Bits="18" Description="Zero detect event使能控制位" />
+        <Bit Name="PRMA" Authority="RW" Bits="17" Description="Period match event使能控制位" />
         <Bit Name="PEND" Authority="RW" Bits="16" Description="周期结束中断中断使能控制位。" />
         <Bit Name="CDD" Authority="RW" Bits="15" Description="递减阶段CNT = CMPD中断使能控制位。" />
         <Bit Name="CDU" Authority="RW" Bits="14" Description="递增阶段CNT = CMPD中断使能控制位。" />
@@ -5198,12 +5228,12 @@
         <Bit Name="CAP_LD2" Authority="RW" Bits="6" Description="Capture Load to CMPC中断使能控制位。" />
         <Bit Name="CAP_LD1" Authority="RW" Bits="5" Description="Capture Load to CMPB中断使能控制位。" />
         <Bit Name="CAP_LD0" Authority="RW" Bits="4" Description="Capture Load to CMPA中断使能控制位。" />
-        <Bit Name="TRGEV3" Authority="RW" Bits="3" Description="TRGEV3中断使能控制位。" />
-        <Bit Name="TRGEV2" Authority="RW" Bits="2" Description="TRGEV2中断使能控制位。" />
         <Bit Name="TRGEV1" Authority="RW" Bits="1" Description="TRGEV1中断使能控制位。" />
         <Bit Name="TRGEV0" Authority="RW" Bits="0" Description="TRGEV0中断使能控制位。" />
       </Register>
       <Register Name="ICR" Authority="RW" Address="0x4005e0dc" Width="32" Description="Interrupt Clear Register">
+        <Bit Name="ZRMA" Authority="RO" Bits="18" Description="" />
+        <Bit Name="PRMA" Authority="RO" Bits="17" Description="" />
         <Bit Name="PEND" Authority="RO" Bits="16" Description="周期结束中断中断使能控制位。" />
         <Bit Name="CBD" Authority="RO" Bits="11" Description="递减阶段CNT = CMPB中断请求原始标志状态" />
         <Bit Name="CBU" Authority="RO" Bits="10" Description="递增阶段CNT = CMPB中断请求原始标志状态" />

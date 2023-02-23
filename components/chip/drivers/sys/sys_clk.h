@@ -99,10 +99,12 @@ extern csi_clk_config_t tClkConfig;
 /// \enum clk_module_t
 /// \brief all the peri clock enable bits in SYSCON level
 /// \todo  clk_module_t or clk_module_e
+
 typedef enum {
     IFC_SYS_CLK		= 0U,
-    ADC_SYS_CLK		= 4U,
-    TKEY_SYS_CLK	= 6U,
+	FVR_SYS_CLK		= 3U,
+    ADC0_SYS_CLK	= 4U,
+    ADC1_SYS_CLK	= 5U,
     ETCB_SYS_CLK	= 7U,
     UART0_SYS_CLK	= 8U,
 	UART1_SYS_CLK	= 9U,
@@ -114,15 +116,39 @@ typedef enum {
     SIO0_SYS_CLK	= 20U,
 	SIO1_SYS_CLK	= 21U,
     I2C_SYS_CLK		= 22U,
+    CAN_SYS_CLK		= 24U,
 	
-    WWDT_SYS_CLK	= 39U,
-    RTC_SYS_CLK		= 40U,
-    LPT_SYS_CLK		= 41U,
-	CNTA_SYS_CLK	= 42U,
-	BT0_SYS_CLK		= 43U,
-	BT1_SYS_CLK		= 44U,
-	GPT_SYS_CLK		= 45U,
-	EPT_SYS_CLK		= 49U
+	GPTA0_SYS_CLK	= 33U,
+	GPTA1_SYS_CLK	= 34U,
+	GPTA2_SYS_CLK	= 35U,
+	GPTA3_SYS_CLK	= 36U,
+
+	GPTB0_SYS_CLK	= 37U,
+	GPTB1_SYS_CLK	= 38U,
+	GPTB2_SYS_CLK	= 39U,
+	GPTB3_SYS_CLK	= 40U,
+	GPTB4_SYS_CLK	= 41U,
+	GPTB5_SYS_CLK	= 42U,	
+    WWDT_SYS_CLK	= 43U,
+    LPT_SYS_CLK		= 44U,
+	CNTA_SYS_CLK	= 45U,
+    RTC_SYS_CLK		= 46U,
+	BT0_SYS_CLK		= 47U,
+	BT1_SYS_CLK		= 48U,
+	LED_SYS_CLK		= 49U,
+	
+	CMP0_SYS_CLK	= 50U,	
+	CMP1_SYS_CLK	= 51U,		
+	CMP2_SYS_CLK	= 52U,		
+	
+	OPA0_SYS_CLK	= 55U,	
+	OPA1_SYS_CLK	= 56U,	
+	OPA2_SYS_CLK	= 57U,	
+	OPA3_SYS_CLK	= 58U,	
+
+	BT2_SYS_CLK		= 62U,
+	BT3_SYS_CLK		= 63U,
+
 } clk_module_t;
 
 
