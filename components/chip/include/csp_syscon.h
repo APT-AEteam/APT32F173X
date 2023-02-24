@@ -417,6 +417,7 @@ typedef enum{
 	ESOSC_ST_INT 	= (0x1<<2),
 	EMOSC_ST_INT 	= (0x1<<3),
 	HFOSC_ST_INT 	= (0x1<<4),
+	PLL_ST_INT 	    = (0x1<<5),
 	SYSTICK_ST_INT 	= (0x1<<7),
 	IWDT_INT 		= (0x1<<8),
 	WK_INT 			= (0x1<<9),
@@ -425,6 +426,7 @@ typedef enum{
 	HWD_ERR_INT 	= (0x1<<12),
 	EFL_ERR_INT 	= (0x1<<13),
 	OPL_ERR_INT 	= (0x1<<14),
+	PLL_ERR_INT 	= (0x1<<15),
 	ESFAIL_INT 		= (0x1<<16),
 	CQCDNE_INT 		= (0x1<<17),
 	EMFAIL_INT 		= (0x1<<18),
@@ -432,10 +434,6 @@ typedef enum{
 	EV1TRG_INT 		= (0x1<<20),
 	EV2TRG_INT 		= (0x1<<21),
 	EV3TRG_INT 		= (0x1<<22),
-	WKALV0_INT 		= (0x1<<24),
-	WKALV1_INT 		= (0x1<<25),
-	WKALV2_INT 		= (0x1<<26),
-	WKALV3_INT 		= (0x1<<27),
 	CMD_ERR_INT		= (0x1<<29),
 }syscon_int_e;
 
