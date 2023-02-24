@@ -25,7 +25,8 @@ typedef enum {
     SRC_EMOSC,
     SRC_HFOSC,
 	SRC_PLL,
-	SRC_ISOSC = 4
+	SRC_ISOSC,
+	SRC_ESOSC	
 } cclk_src_e;
 
 typedef enum{

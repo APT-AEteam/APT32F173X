@@ -193,8 +193,8 @@ void csi_clk_disable(uint32_t *pIpBase)
 csi_error_t csi_emosc_enable(uint32_t wFreq)
 {
 	
-	if ((csi_pin_get_mux(XIN_PIN) != (pin_func_e)XIN_PIN_FUNC) || (csi_pin_get_mux(XOUT_PIN) != (pin_func_e)XOUT_PIN_FUNC))
-		return CSI_ERROR;
+	//if ((csi_pin_get_mux(XIN_PIN) != (pin_func_e)XIN_PIN_FUNC) || (csi_pin_get_mux(XOUT_PIN) != (pin_func_e)XOUT_PIN_FUNC))
+	//	return CSI_ERROR;
 	
 	if (wFreq > 20000000)
 		csp_set_em_gain(SYSCON, 0x1f);
@@ -228,6 +228,46 @@ csi_error_t csi_emosc_disable(void)
 //		return CSI_ERROR;
 //	else
 //		return CSI_OK;
+}
+
+/** \brief esosc enable
+ * 
+ *  enable external sub oscillator in SYSCON
+ * 
+ *  \param[in] none
+ *  \return csi_error_t
+ */
+csi_error_t csi_esosc_enable(uint32_t wFreq)
+{
+	
+	//if ((csi_pin_get_mux(SXIN_PIN) != SXIN_PIN_FUNC) || (csi_pin_get_mux(SXOUT_PIN) != SXOUT_PIN_FUNC))
+	//	return CSI_ERROR;
+	
+	csp_set_es_gain(SYSCON, 0x7);
+	
+
+	SYSCON->GCER = ESOSC;
+	//wait for EMOSC to stable
+	while(!(csp_get_ckst(SYSCON)& ESOSC));
+	return CSI_OK;
+}
+
+/** \brief esosc disable
+ * 
+ *  disable external sub oscillator in SYSCON
+ * 
+ *  \param[in] none
+ *  \return csi_error_t.
+ */
+csi_error_t csi_esosc_disable(void)
+{
+	if ((SYSCON->SCLKCR & SYSCLK_SRC_MSK) == SC_ESOSC)
+		return CSI_ERROR;
+	else
+	{
+		SYSCON->GCDR = ESOSC;
+		return CSI_OK;
+	}
 }
 
 /** \brief imosc enable

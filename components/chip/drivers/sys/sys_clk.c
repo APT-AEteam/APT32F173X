@@ -38,7 +38,9 @@ static uint32_t get_hclk(void)
  *  \return csi_error_t.
  */ 
 csi_error_t csi_sysclk_config(void)
-{	csi_error_t ret = CSI_OK;
+{
+	
+	csi_error_t ret = CSI_OK;
 	uint8_t byFreqIdx = 0;
 	uint32_t wFreq;
 	uint32_t wHFreq;
@@ -52,9 +54,12 @@ csi_error_t csi_sysclk_config(void)
 	IFC->CEDR = IFC_CLKEN;
 	IFC->MR = IFC->MR & (~(HIGH_SPEED|PF_WAIT3));
 	if (wHFreq > 24000000)
-		IFC->MR |= HIGH_SPEED | PF_WAIT2;
+		IFC->MR = ((IFC->MR & (~PF_SPEED_MSK)) & (~PF_WAIT_MSK)) |HIGH_SPEED | PF_WAIT2;
     else if (wHFreq >= 16000000) 
-		IFC->MR |= HIGH_SPEED | PF_WAIT1;	
+		IFC->MR = ((IFC->MR & (~PF_SPEED_MSK)) & (~PF_WAIT_MSK)) |HIGH_SPEED | PF_WAIT1;	
+	else {
+		IFC->MR = ((IFC->MR & (~PF_SPEED_MSK)) & (~PF_WAIT_MSK)) |LOW_SPEED | PF_WAIT0;
+	}	
 	
 	switch (eSrc)
 	{
@@ -81,8 +86,8 @@ csi_error_t csi_sysclk_config(void)
 				byFlashLp = 1;
 			break;
 		case (SRC_EMOSC):	
-			//csi_pin_set_mux(PA03, PA03_OSC_XI);
-			//csi_pin_set_mux(PA04, PA04_OSC_XO);
+			csi_pin_set_mux(PD0, PD0_XIN);
+			csi_pin_set_mux(PD1, PD1_XOUT);
 			if (wFreq == EMOSC_32K_VALUE)
 				csp_set_em_lfmd(SYSCON, 1);
 			ret = csi_emosc_enable(wFreq);
@@ -118,6 +123,12 @@ csi_error_t csi_sysclk_config(void)
 			csp_pll_ckr_enable(SYSCON, ENABLE);
 			
 			csi_pll_enable();
+			break;
+		case(SRC_ESOSC):
+ 			csi_pin_set_mux(PC14, PC14_SXIN);
+			csi_pin_set_mux(PC15, PC15_SXOUT);   // Config pins before use ESOSC 
+			csi_esosc_enable(wFreq);
+			byFlashLp = 1;
 			break;
 		default: 
 			break;

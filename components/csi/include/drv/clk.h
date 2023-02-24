@@ -47,6 +47,23 @@ csi_error_t csi_emosc_enable(uint32_t wFreq);
  */
 csi_error_t csi_emosc_disable(void);
 
+/** \brief esosc enable
+ * 
+ *  enable external sub oscillator in SYSCON
+ * 
+ *  \param[in] none
+ *  \return csi_error_t
+ */
+csi_error_t csi_esosc_enable(uint32_t wFreq);
+
+/** \brief esosc disable
+ * 
+ *  disable external sub oscillator in SYSCON
+ * 
+ *  \param[in] none
+ *  \return csi_error_t.
+ */
+csi_error_t csi_esosc_disable(void);
 /** \brief imosc enable
  * 
  *  enable internal main oscillator in SYSCON

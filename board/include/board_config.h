@@ -30,15 +30,15 @@ extern "C" {
 /* example pin manager */
 
 #define CONSOLE_IDX                     1
-#define CONSOLE_TXD                     PC14
-#define CONSOLE_RXD                     PC13
-#define CONSOLE_TXD_FUNC                PC14_UART1_TX
-#define CONSOLE_RXD_FUNC                PC13_UART1_RX
+#define CONSOLE_TXD                     PA2
+#define CONSOLE_RXD                     PA3
+#define CONSOLE_TXD_FUNC                PA2_UART1_TX
+#define CONSOLE_RXD_FUNC                PA3_UART1_RX
 
-#define XIN_PIN							PA3
-#define XOUT_PIN						PA4
-#define XIN_PIN_FUNC					PA3
-#define XOUT_PIN_FUNC					PA4
+#define XIN_PIN							PD0
+#define XOUT_PIN						PD1
+#define XIN_PIN_FUNC					PD0
+#define XOUT_PIN_FUNC					PD1
 
 
 #define EXI_PIN                      	PA9
