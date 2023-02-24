@@ -68,13 +68,13 @@ int pin_input_demo(void)
 	
 	uint32_t wStatus;
 	
-	csi_pin_set_mux(PA8,PA8_INPUT);			//PA08 配置为输入
+	csi_pin_set_mux(PA8,PA8_INPUT);				//PA08 配置为输入
 	csi_pin_pull_mode(PA8,GPIO_PULLNONE);		//无上下拉
 	mdelay(100);
 	wStatus = csi_pin_read(PA8);				//PA08 输入状态读取(0/1 = 高/低)
 	while(wStatus != 0);
 	
-	csi_pin_pull_mode(PA8,GPIO_PULLUP);		//上拉
+	csi_pin_pull_mode(PA8,GPIO_PULLUP);			//上拉
 	mdelay(100);
 	wStatus = csi_pin_read(PA8);
 	while(wStatus != (0x01 << 0x08));
@@ -95,12 +95,14 @@ int pin_input_demo(void)
 int pin_irq_demo(void)
 {
 	int iRet = 0;
-	csi_imosc_enable(2);
-	//csi_exi_flt_enable(EXI_FLT_CKDIV4, ENABLE);					//EXI 去抖滤波
-	csi_pin_set_mux(PB1, PB1_INPUT);							//PB01 配置为输入
-	csi_pin_pull_mode(PB1, GPIO_PULLUP);						//PB01 上拉
-	csi_pin_irq_mode(PB1, EXI_GRP18, GPIO_IRQ_FALLING_EDGE);	//PB01 下降沿产生中断
-	csi_pin_irq_enable(PB1, EXI_GRP18, ENABLE);				//PB01 中断使能，选择中断组5	
+	//csi_imosc_enable(2);
+	//csi_exi_flt_enable(EXI_FLT_CKDIV4, ENABLE);				//EXI 去抖滤波
+	
+	csi_pin_set_mux(PA9, PC5_INPUT);							//PA9 配置为输入
+	csi_pin_pull_mode(PA9, GPIO_PULLUP);						//PA9 上拉
+	csi_pin_irq_enable(PA9, ENABLE);							//PA9 中断使能	
+	csi_pin_irq_mode(PA9, EXI_GRP16, GPIO_IRQ_FALLING_EDGE);	//PA9 下降沿产生中断,选择中断组16
+	csi_pin_vic_irq_enable(EXI_GRP16, ENABLE);					//PA9 VIC中断使能，选择中断组16
 	
 	return iRet;
 }

@@ -44,7 +44,7 @@ int gpio_port_ouput_demo(void)
 	csi_gpio_port_dir(GPIOA, wPinMask, GPIO_DIR_OUTPUT);			//GPIOA0 端口配置为输出
 	csi_gpio_port_set_high(GPIOA, wPinMask);						//输出高
 	mdelay(100);
-	csi_gpio_port_set_low(GPIOA, wPinMask);						//输出低
+	csi_gpio_port_set_low(GPIOA, wPinMask);							//输出低
 	mdelay(100);
 	csi_gpio_port_set_high(GPIOA, wPinMask);						//输出高
 	mdelay(100);
@@ -115,6 +115,7 @@ int gpio_port_irq_demo(void)
 	csi_gpio_port_pull_mode(GPIOA, wPinMask, GPIO_PULLUP);			//上拉
 	csi_gpio_port_irq_mode(GPIOA,wPinMask,GPIO_IRQ_FALLING_EDGE);	//下降沿
 	csi_gpio_port_irq_enable(GPIOA,wPinMask,ENABLE);				//使能GPIOA0端口对应外部中断
+	csi_gpio_port_vic_irq_enable(wPinMask, ENABLE);					//GPIOA0端口对应VIC中断使能
 	
 	return iRet;
 }

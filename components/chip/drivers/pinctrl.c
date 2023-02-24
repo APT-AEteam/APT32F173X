@@ -58,21 +58,27 @@ static unsigned int *apt_get_pin_name_addr(pin_name_e ePinName)
  *  \param[in] eExiGrp:	EXI_IGRP0 ~ EXI_IGRP19
  *  \return none
  */ 
-void apt_gpio_intgroup_set(csp_gpio_t *ptGpioBase, uint8_t byPinNum, gpio_igrp_e eExiGrp)
+int apt_gpio_intgroup_set(csp_gpio_t *ptGpioBase, uint8_t byPinNum, gpio_igrp_e eExiGrp)
 {
 	uint32_t byMaskShift,byMask;
-	gpio_group_e eIoGroup = GRP_GPIOA0;
+	gpio_group_e eIoGroup = GRP_GPIOA;
 	
 	switch((uint32_t)ptGpioBase)
 	{
 		case APB_GPIOA_BASE:
-			eIoGroup = GRP_GPIOA0;
+			eIoGroup = GRP_GPIOA;
 			break;
 		case APB_GPIOB_BASE:
-			eIoGroup = GRP_GPIOB0;
+			eIoGroup = GRP_GPIOB;
+			break;
+		case APB_GPIOC_BASE:
+			eIoGroup = GRP_GPIOC;
+			break;
+		case APB_GPIOD_BASE:
+			eIoGroup = GRP_GPIOD;
 			break;
 		default:
-			break;
+			return CSI_ERROR;
 	}
 	
 	if(eExiGrp < EXI_IGRP16)
@@ -89,29 +95,43 @@ void apt_gpio_intgroup_set(csp_gpio_t *ptGpioBase, uint8_t byPinNum, gpio_igrp_e
 			byMask = ~(0x0Ful << byMaskShift);
 			GPIOGRP->IGRPH = ((GPIOGRP->IGRPH) & byMask) | (eIoGroup << byMaskShift);
 		}
-	}
-	else if(eExiGrp <= EXI_IGRP19)
-	{
-		
-		if(GRP_GPIOA0 == eIoGroup)
-		{
-			if(eExiGrp < EXI_IGRP18)
-			{
-				byMaskShift = (eExiGrp - EXI_IGRP16) << 2;
-				byMask = ~(0x0Ful << byMaskShift);
-				GPIOGRP->IGREX = ((GPIOGRP->IGREX) & byMask) | (byPinNum << byMaskShift);
-			}
-		}
 		else
+			return CSI_ERROR;
+	}
+	else 
+	{
+		switch(eExiGrp)
 		{
-			if(eExiGrp > EXI_IGRP17)
-			{
-				byMaskShift = (eExiGrp - EXI_IGRP16) << 2;
-				byMask = ~(0x0Ful << byMaskShift);
-				GPIOGRP->IGREX = ((GPIOGRP->IGREX) & byMask) | (byPinNum << byMaskShift);
-			}
+			case EXI_IGRP16:
+				if(GRP_GPIOA != eIoGroup)
+					return CSI_ERROR;
+					
+				break;
+			case EXI_IGRP17:
+				if(GRP_GPIOB != eIoGroup)
+					return CSI_ERROR;
+					
+				break;
+			case EXI_IGRP18:
+				if(GRP_GPIOC != eIoGroup)
+					return CSI_ERROR;
+					
+				break;
+			case EXI_IGRP19:
+				if(GRP_GPIOD != eIoGroup)
+					return CSI_ERROR;
+					
+				break;
+			default:
+				return CSI_ERROR;
 		}
-	}	
+		
+		byMaskShift = (eExiGrp - EXI_IGRP16) << 2;
+		byMask = ~(0x0Ful << byMaskShift);
+		GPIOGRP->IGREX = ((GPIOGRP->IGREX) & byMask) | (byPinNum << byMaskShift);
+	}
+	
+	return CSI_OK;
 }
 /** \brief set gpio exi interrupt trigger 
  * 
@@ -156,21 +176,6 @@ void csi_pin_set_mux(pin_name_e ePinName, pin_func_e ePinFunc)
 {
 	csp_gpio_t *ptGpioBase = NULL;
 	unsigned int *pwPinMess = NULL;
-	
-	//IO REMAP
-//	if(ePinFunc == IOMAP)			
-//	{
-//		csp_syscon_t *ptSysBase = (csp_syscon_t *)APB_SYS_BASE;
-//		if(ePinName < PA8)
-//			ptSysBase->IOMAP0 = (ptSysBase->IOMAP0 & ~(0x0F << 4*ePinName)) | (ePinName << 4*ePinName);
-//		else 
-//		{
-//			if(ePinName < PB2)
-//				ptSysBase->IOMAP1 = (ptSysBase->IOMAP1 & ~(0x0F << 4*(ePinName - 6))) |  ((ePinName - 6) << 4*(ePinName - 6));
-//			else 
-//				ptSysBase->IOMAP1 = (ptSysBase->IOMAP1 & ~(0x0F << 4*(ePinName - 18))) |  ((ePinName - 18) << 4*(ePinName - 18));
-//		}
-//	}
 
 	pwPinMess = apt_get_pin_name_addr(ePinName);
 	ptGpioBase = (csp_gpio_t *)pwPinMess[0];			//pin addr
@@ -388,34 +393,46 @@ csi_error_t csi_pin_irq_mode(pin_name_e ePinName, csi_exi_grp_e eExiGrp, csi_gpi
 	ptGpioBase = (csp_gpio_t *)pwPinMess[0];			//pin addr
 	ePinName = (pin_name_e)pwPinMess[1];				//pin			
 		
-	csp_gpio_irq_en(ptGpioBase, ePinName);							//enable gpio interrupt 
-	apt_gpio_intgroup_set(ptGpioBase,ePinName,eExiGrp);					//interrupt group
+	
+	ret = apt_gpio_intgroup_set(ptGpioBase,ePinName,eExiGrp);		//interrupt group
+	if(ret < 0)
+		return CSI_ERROR;
 	
 	if(eTrgEdge >  GPIO_IRQ_BOTH_EDGE)
-		ret = CSI_ERROR;
+		return CSI_ERROR;
 	else
-		apt_exi_trg_edge_set(SYSCON,eExiGrp, eTrgEdge);					//interrupt edge
+		apt_exi_trg_edge_set(SYSCON,eExiGrp, eTrgEdge);				//interrupt edge
+		
+	csp_exi_port_int_enable(SYSCON,(0x01ul << eExiGrp), ENABLE);	//EXI INT enable
+	csp_exi_port_clr_isr(SYSCON,(0x01ul << eExiGrp));	
 	
 	return ret;
 }
 /** \brief pin irq enable
  * 
- *  \param[in] ePinName: pin mask,0x0001~0xffff
- *  \param[in] bEnable: true or false
+ *  \param[in] ePinName: pin name
+ *  \param[in] bEnable: ENABLE OR DISABLE
  *  \return error code \ref csi_error_t
  */ 
-csi_error_t csi_pin_irq_enable(pin_name_e ePinName, csi_exi_grp_e eExiGrp, bool bEnable)
+void csi_pin_irq_enable(pin_name_e ePinName, bool bEnable)
 {
 	csp_gpio_t *ptGpioBase = NULL;
-	uint32_t byIrqNum = EXI0_IRQ_NUM;
 	unsigned int *pwPinMess = apt_get_pin_name_addr(ePinName);
 	
-	ptGpioBase = (csp_gpio_t *)pwPinMess[0];			//pin addr
-	ePinName = (pin_name_e)pwPinMess[1];				//pin	
+	ptGpioBase = (csp_gpio_t *)pwPinMess[0];						//pin addr
+	ePinName = (pin_name_e)pwPinMess[1];							//pin	
 		
-	csp_gpio_set_port_irq(ptGpioBase, (0x01ul << ePinName), bEnable);	//GPIO INT enable Control reg(setting IEER)
-	csp_exi_set_port_irq(SYSCON,(0x01ul << ePinName), bEnable);			//EXI INT enable
-	csp_exi_clr_port_irq(SYSCON,(0x01ul << ePinName));					//clear interrput status before enable irq 
+	csp_gpio_int_enable(ptGpioBase, ePinName, bEnable);
+}
+/** \brief pin vic irq enable
+ * 
+ *  \param[in] eExiGrp: exi group(exi line); EXI_GRP0 ~EXI_GRP19
+ *  \param[in] bEnable: ENABLE OR DISABLE
+ *  \return error code \ref csi_error_t
+ */ 
+csi_error_t csi_pin_vic_irq_enable(csi_exi_grp_e eExiGrp, bool bEnable)
+{
+	uint32_t byIrqNum = EXI0_IRQ_NUM;
 	
 	switch(eExiGrp)
 	{

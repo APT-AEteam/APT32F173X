@@ -129,14 +129,16 @@ typedef enum
 	//EXI17	= 17,
 	//EXI18	= 18,
 	//EXI19	= 19
-}gpio_exi_e;
+}gpio_int_e;
 /******************************************************************************
 * IGRPL: IGRPH: IGRPH: Group Config Register
 ******************************************************************************/
 typedef enum
 {
-    GRP_GPIOA0 	= 0,
-    GRP_GPIOB0 	= 2,
+    GRP_GPIOA 	= 0,
+    GRP_GPIOB 	= 2,
+	GRP_GPIOC 	= 4,
+	GRP_GPIOD 	= 6,
 }gpio_group_e;
 
 
@@ -227,47 +229,37 @@ static inline void csp_gpio_pullnone(csp_gpio_t *ptGpioBase,uint8_t byPinNum)
 /*************************************************************************
  * @brief  gpio exi set 
 ****************************************************************************/
-static inline void csp_gpio_irq_dis(csp_gpio_t *ptGpioBase, gpio_exi_e eExiIo)
+static inline void csp_gpio_int_enable(csp_gpio_t *ptGpioBase, gpio_int_e eIoInt, bool bEnable)
 {
-	ptGpioBase->IEDR  =  (1 << eExiIo);
+	if(bEnable)
+		ptGpioBase->IEER  =  (1 << eIoInt);
+	else
+		ptGpioBase->IEDR  =  (1 << eIoInt);
 }
-static inline void csp_gpio_irq_en(csp_gpio_t *ptGpioBase, gpio_exi_e eExiIo)
-{
-	ptGpioBase->IEER  =  (1 << eExiIo);
-}
-
-static inline void csp_exi_int_en(csp_syscon_t *ptSysconBase, uint32_t wIdx)
-{
-	ptSysconBase->EXIER =  (0x01ul << wIdx);
-}
-
-static inline void csp_exi_int_dis(csp_syscon_t *ptSysconBase, uint32_t wIdx)
-{
-	ptSysconBase->EXIDR = (0x01ul << wIdx);
-}
-
-static inline void csp_exi_clr_pending(csp_syscon_t *ptSysconBase, uint32_t wIdx)
-{
-	ptSysconBase->EXICR = (0x01ul << wIdx);
-}
-static inline void csp_exi_clr_port_irq(csp_syscon_t *ptSysconBase, uint32_t wValue)
-{
-    ptSysconBase->EXICR = wValue;
-}
-static inline uint32_t csp_exi_get_port_irq(csp_syscon_t *ptSysconBase)
-{
-    return ptSysconBase->EXICR;
-}
-
-static inline void csp_gpio_set_port_irq(csp_gpio_t *ptGpioBase, uint32_t wValue, bool bEnable)
+static inline void csp_gpio_port_int_enable(csp_gpio_t *ptGpioBase, uint32_t wValue, bool bEnable)
 {
 	if(bEnable)	
 		ptGpioBase->IEER = wValue;
 	else 
 		ptGpioBase->IEDR = wValue;
-		
 }
-static inline void csp_exi_set_port_irq(csp_syscon_t *ptSysconBase,uint32_t wValue,bool bEnable)
+//
+static inline void csp_exi_port_clr_isr(csp_syscon_t *ptSysconBase, uint32_t wValue)
+{
+    ptSysconBase->EXICR = wValue;
+}
+static inline uint32_t csp_exi_port_get_isr(csp_syscon_t *ptSysconBase)
+{
+    return ptSysconBase->EXICR;
+}
+static inline void csp_exi_int_enable(csp_syscon_t *ptSysconBase, gpio_igrp_e eExiGrp, bool bEnable)
+{
+	if(bEnable)
+		ptSysconBase->EXIER =  (0x01ul << eExiGrp);
+	else
+		ptSysconBase->EXIDR = (0x01ul << eExiGrp);
+}
+static inline void csp_exi_port_int_enable(csp_syscon_t *ptSysconBase,uint32_t wValue, bool bEnable)
 {
    	if(bEnable)
 	{

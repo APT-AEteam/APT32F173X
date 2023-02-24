@@ -220,6 +220,15 @@ csi_error_t csi_gpio_port_output_mode(csp_gpio_t *ptGpioBase, uint32_t wPinMask,
  */ 
 csi_error_t csi_gpio_port_input_mode(csp_gpio_t *ptGpioBase, uint32_t wPinMask, csi_gpio_input_mode_e eMode);
 
+/** 
+  \brief config gpio input drive
+  \param[in] ptGpioBase: pointer of gpio register structure
+  \param[in] wPinMask: pin mask,0x0001~0xffff
+  \param[in] eDrive: pin input drive; GPIO_DRIVE_LV0/GPIO_DRIVE_LV1
+  \return error code \ref csi_error_t
+ */ 
+csi_error_t csi_gpio_port_drive(csp_gpio_t *ptGpioBase, uint32_t wPinMask, csi_gpio_drive_e eDrive);
+
 /**
   \brief       Config gpio irq params
   \param[in]   ptGpioBase	pointer of gpio register structure
@@ -237,6 +246,14 @@ csi_error_t csi_gpio_port_irq_mode(csp_gpio_t *ptGpioBase, uint32_t wPinMask, cs
   \return      none
 */
 void csi_gpio_port_irq_enable(csp_gpio_t *ptGpioBase, uint32_t wPinMask, bool bEnable);
+
+/** 
+  \brief 	   gpio port vic irq enable
+  \param[in]   wPinMask: pin mask,0x0001~0xffff
+  \param[in]   bEnable: true or false
+  \return 	   none
+ */ 
+void csi_gpio_port_vic_irq_enable(uint32_t wPinMask, bool bEnable);
 
 //csi_error_t csi_gpio_debonce(csi_gpio_t *gpio, uint32_t pin_mask, bool enable);
 /**
