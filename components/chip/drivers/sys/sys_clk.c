@@ -269,6 +269,12 @@ uint32_t csi_get_sclk_freq(void)
 					break;
 			}
 			break;
+		case (SRC_PLL): 	
+			tClkConfig.wSclk = PLL_105M_VALUE;
+			break;
+		case (SRC_ESOSC): 	
+			tClkConfig.wSclk = ESOSC_VALUE;
+			break;
 		default:
 			return CSI_ERROR;
 			break;
