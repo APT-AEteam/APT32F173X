@@ -103,6 +103,31 @@ typedef enum {
 } csi_gpio_irq_mode_e;
 
 /**
+ * \enum     csi_gpio_irq_mode_e
+ * \brief    GPIO irq triger type
+ */
+typedef enum {
+	
+    IOMAP0_I2C_SCL	=0U,	//IOMAP GROUP0
+	IOMAP0_I2C_SDA,
+	IOMAP0_USART0_TX,
+	IOMAP0_NONE,
+	IOMAP0_SPI_NSS,
+	IOMAP0_SPI_SCK,
+	IOMAP0_SPI_MISO,
+	IOMAP0_SPI_MOSI,
+	
+	IOMAP1_USART0_TX,		//IOMAP GROUP1
+	IOMAP1_NONE,
+	IOMAP1_USART0_SCK,
+	IOMAP1_UART0_TX,
+	IOMAP1_NONE1,
+	IOMAP1_GPTA0_CHA,
+	IOMAP1_GPTA1_CHA,
+	IOMAP1_CMP0_OUT,
+} csi_gpio_iomap_e;
+
+/**
  * \enum     csi_exi_grp_e
  * \brief    GPIO exi group
  */
@@ -183,6 +208,29 @@ typedef enum {
 	STATUS_EXI19	= (0x01ul << 19)
 }csi_exi_status_e;
 
+
+/**
+ * \enum     csi_exi_flttm_e
+ * \brief    GPIO exi flt time
+ */
+typedef enum{
+	EXI_FLT_NONE = 0,
+	EXI_FLT_3TM,
+	EXI_FLT_6TM,
+	EXI_FLT_9TM,
+	EXI_FLT_12TM,
+	EXI_FLT_18TM,
+	EXI_FLT_24TM,
+	EXI_FLT_36TM,
+	EXI_FLT_48TM,
+	EXI_FLT_60TM,
+	EXI_FLT_72TM,
+	EXI_FLT_84TM,
+	EXI_FLT_96TM,
+	EXI_FLT_120TM,
+	EXI_FLT_168TM,
+	EXI_FLT_216TM
+}csi_exi_flttm_e;
 
 /**
   \brief       Config pin direction

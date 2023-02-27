@@ -165,7 +165,80 @@ void apt_exi_trg_edge_set(csp_syscon_t *ptSysconBase,gpio_igrp_e eExiGrp, exi_tr
 			break;
 	}
 }
-
+/** \brief set gpio iomap function
+ * 
+ *  \param[in] ePinName: gpio pin name
+ *  \param[in] eIoMap: gpio pin remap function
+ *  \param[in] byGrp: iomap group0/group1, 0/1
+ *  \return none
+ */  
+static void apt_iomap_handle(pin_name_e ePinName, csi_gpio_iomap_e eIoMap, uint8_t byGrp)
+{
+	uint8_t i,j;
+	volatile uint8_t wFlag = 0x00;
+	uint32_t *pwIoMap = NULL;
+	
+	if(byGrp == 0)
+		pwIoMap = (uint32_t *)&SYSCON->IOMAP0;
+	else
+	{
+		pwIoMap = (uint32_t *)&SYSCON->IOMAP1;
+		eIoMap = eIoMap - 8;
+	}
+	
+	for(i = 0; i < ePinName; i++)
+	{
+		if((((*pwIoMap) >> 4*i) & 0x0f) == eIoMap)
+		{
+			for(j = 0; j < ePinName; j++)
+			{
+				switch(((*pwIoMap) >> 4*j) & 0x0f) 
+				{
+					case IOMAP0_I2C_SCL:
+						wFlag |= (0x01 << IOMAP0_I2C_SCL);
+						break;
+					case IOMAP0_I2C_SDA:
+						wFlag |= (0x01 << IOMAP0_I2C_SDA);
+						break;
+					case IOMAP0_USART0_TX:
+						wFlag |= (0x01 << IOMAP0_USART0_TX);
+						break;
+					case IOMAP0_NONE:
+						wFlag |= (0x01 << IOMAP0_NONE);
+						break;
+					case IOMAP0_SPI_NSS:
+						wFlag |= (0x01 << IOMAP0_SPI_NSS);
+						break;
+					case IOMAP0_SPI_SCK:
+						wFlag |= (0x01 << IOMAP0_SPI_SCK);
+						break;
+					case IOMAP0_SPI_MISO:
+						wFlag |= (0x01 << IOMAP0_SPI_MISO);
+						break;
+					case IOMAP0_SPI_MOSI:
+						wFlag |= (0x01 << IOMAP0_SPI_MOSI);
+						break;
+				}
+			}
+			
+			for(j = 0; j < 8; j++)
+			{
+				if(((wFlag & 0x01) == 0) && (j != eIoMap))
+				{
+					break;
+				}
+				wFlag = (wFlag >> 1);
+			}
+			
+			//*pwIoMap = ((*pwIoMap) & ~(0x0F << 4*i)) | (j << 4*i);			//no select
+			
+			if(byGrp == 0)
+				*pwIoMap = ((*pwIoMap) & ~(0x0F << 4*i)) | (0x03 << 4*i);		//disable
+			else
+				*pwIoMap = ((*pwIoMap) & ~(0x0F << 4*i)) | (0x01 << 4*i);		//disable
+		}
+	}
+}
 /** \brief set gpio mux function
  * 
  *  \param[in] ePinName: gpio pin name
@@ -186,6 +259,92 @@ void csi_pin_set_mux(pin_name_e ePinName, pin_func_e ePinFunc)
 	else
 		ptGpioBase->CONHR =(ptGpioBase->CONHR & ~(0xF << 4*(ePinName-8))) | (ePinFunc << 4*(ePinName-8));	
 	
+}
+/** \brief set gpio iomap function
+ * 
+ *  \param[in] ePinName: gpio pin name
+ *  \param[in] eIoMap: gpio pin remap function
+ *  \return error code \ref csi_error_t
+ */  
+csi_error_t csi_pin_set_iomap(pin_name_e ePinName, csi_gpio_iomap_e eIoMap)
+{
+	csp_gpio_t *ptGpioBase = NULL;
+	unsigned int *ptPinInfo = NULL;
+	
+	//IO REMAP
+	if(((ePinName < PA8) && (ePinName > PA3)) || (ePinName == PB0) || (ePinName == PB1) || (ePinName == PD0) || (ePinName == PD4))		//iomap group1
+	{
+		if((eIoMap < IOMAP1_USART0_TX) || (eIoMap > IOMAP1_CMP0_OUT))
+			return CSI_ERROR;	
+			
+		if(ePinName < PA8)					//PA4~PA7										
+		{
+			apt_iomap_handle((ePinName-2), eIoMap, 1);
+			SYSCON->IOMAP1 = (SYSCON->IOMAP1 & ~(0x0F << 4 * (ePinName-2))) | ((eIoMap-8) << (4 * (ePinName-2)));	
+		}
+		else if(ePinName <  PB2)			//PB0~PB1
+		{
+			apt_iomap_handle((ePinName-10), eIoMap, 1);
+			SYSCON->IOMAP1 = (SYSCON->IOMAP1 & ~(0x0F << 4 * (ePinName-10))) | ((eIoMap-8) << (4 * (ePinName-10)));	
+		}
+		else if(ePinName == PD4)
+		{
+			apt_iomap_handle((ePinName-52), eIoMap, 1);
+			SYSCON->IOMAP1 = (SYSCON->IOMAP1 & ~(0x0F << 4 * (ePinName-52))) | ((eIoMap-8) << (4 * (ePinName-52)));	
+		}
+		else if(ePinName == PD0)
+		{
+			apt_iomap_handle((ePinName-47), eIoMap, 1);
+			SYSCON->IOMAP1 = (SYSCON->IOMAP1 & ~(0x0F << 4 * (ePinName-47))) | ((eIoMap-8) << (4 * (ePinName-47)));	
+		}
+		else
+			return CSI_ERROR;
+	}
+	else 																	//iomap group0
+	{
+		if(eIoMap > IOMAP0_SPI_MOSI)
+			return CSI_ERROR;	
+			
+		if((ePinName > PB9) && (ePinName < PB13))				//PB10~PB11		
+		{
+			apt_iomap_handle((ePinName-26), eIoMap, 0);
+			SYSCON->IOMAP0 = (SYSCON->IOMAP0 & ~(0x0F << 4 * (ePinName-26))) | (eIoMap << (4 * (ePinName-26)));
+		}
+		else if((ePinName == PB8) || (ePinName == PB9))			//PB8~PB9
+		{
+			apt_iomap_handle((ePinName-18), eIoMap, 0);
+			SYSCON->IOMAP0 = (SYSCON->IOMAP0 & ~(0x0F << 4 * (ePinName-18))) | (eIoMap << (4 * (ePinName-18)));
+		}
+		else if(ePinName == PA15)
+		{
+			apt_iomap_handle((ePinName-12), eIoMap, 0);
+			SYSCON->IOMAP0 = (SYSCON->IOMAP0 & ~(0x0F << 4 * (ePinName-12))) | (eIoMap << (4 * (ePinName-12)));
+		}
+		else if(ePinName == PB5)
+		{
+			apt_iomap_handle((ePinName-17), eIoMap, 0);
+			SYSCON->IOMAP0 = (SYSCON->IOMAP0 & ~(0x0F << 4 * (ePinName-17))) | (eIoMap << (4 * (ePinName-17)));
+		}
+		else if(ePinName == PD3)
+		{
+			apt_iomap_handle((ePinName-46), eIoMap, 0);
+			SYSCON->IOMAP0 = (SYSCON->IOMAP0 & ~(0x0F << 4 * (ePinName-46))) | (eIoMap << (4 * (ePinName-46)));
+		}
+		else
+			return CSI_ERROR;
+		
+	}
+
+	ptPinInfo = apt_get_pin_name_addr(ePinName);
+	ptGpioBase = (csp_gpio_t *)ptPinInfo[0];						//pin addr
+	ePinName = (pin_name_e)ptPinInfo[1];							//pin
+
+	if(ePinName < 8)
+		ptGpioBase->CONLR =(ptGpioBase->CONLR & ~(0xF << 4*ePinName)) | (IOMAP << 4*ePinName);
+	else
+		ptGpioBase->CONHR =(ptGpioBase->CONHR & ~(0xF << 4*(ePinName-8))) | (IOMAP << 4*(ePinName-8));	
+		
+	return CSI_OK;
 }
 /** \brief get gpio mux function
  * 
@@ -554,5 +713,27 @@ csi_error_t csi_exi_set_evtrg(uint8_t byTrgOut, csi_exi_trgsrc_e eExiTrgSrc, uin
 //	csp_syscon_set_evtrg_prd(SYSCON, byTrgOut, byTrgPrd);
 //	csp_syscon_evtrg_enable(SYSCON, byTrgOut, ENABLE);
 	
+	return CSI_OK;
+}
+/** \brief  exi filter config
+ * 
+ *  \param[in] eExiGrp: exi group0~3 and group16~19
+ *  \param[in] eFleTime: \ref csi_exi_flttm_e ,TM = Thfosc
+ *  \return error code \ref csi_error_t
+ */ 
+csi_error_t csi_exi_set_flt(csi_exi_grp_e eExiGrp, csi_exi_flttm_e eFleTime)				
+{
+	
+	if(eExiGrp < EXI_GRP4)
+	{
+		csp_exi_flt(SYSCON, eExiGrp, eFleTime);
+	}
+	else if(eExiGrp > EXI_GRP15)
+	{
+		csp_exi_flt(SYSCON, (eExiGrp - 12), eFleTime);
+	}
+	else
+		return CSI_ERROR;
+		
 	return CSI_OK;
 }

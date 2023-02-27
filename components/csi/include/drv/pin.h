@@ -61,6 +61,14 @@
 */
 void csi_pin_set_mux(pin_name_e ePinName, pin_func_e ePinFunc);
 
+/** 
+  \brief set gpio iomap function
+  \param[in] ePinName: gpio pin name
+  \param[in] eIoMap: gpio pin remap function
+  \return error code \ref csi_error_t
+ */  
+csi_error_t csi_pin_set_iomap(pin_name_e ePinName, csi_gpio_iomap_e eIoMap);
+
 /**
   \brief       Get pin function
   \param[in]   ePinName    pin name, defined in soc.h
@@ -176,7 +184,14 @@ void csi_pin_set_low(pin_name_e ePinName);
  */ 
 csi_error_t csi_exi_set_evtrg(uint8_t byTrgOut, csi_exi_trgsrc_e eExiTrgSrc, uint8_t byTrgPrd);
 
-
+/** 
+  \brief  exi filter config
+  \param[in] eExiGrp: exi group0~3 and group16~19
+  \param[in] eFleTime: \ref csi_exi_flttm_e ,TM = Thfosc
+  \return error code \ref csi_error_t
+ */ 
+csi_error_t csi_exi_set_flt(csi_exi_grp_e eExiGrp, csi_exi_flttm_e eFleTime);
+	
 
 //__ALWAYS_STATIC_INLINE uint32_t csi_pin_get_gpio_devidx(pin_name_e pin_name)
 //{
