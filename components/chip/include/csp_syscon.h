@@ -176,6 +176,27 @@ typedef enum{
 #define PCLK_DIV_MSK (0xf<<8)
 #define PCLK_KEY (0xC33Cul<<16)
 
+/// EXI FLT
+#define	EXI_FLT_POS(n)	(4*n)
+#define	EXI_FLT_MSK(n)	(0x0ful << EXI_FLT_POS(n))
+typedef enum{
+	EXIFLT_NONE = 0,
+	EXIFLT_3THF,
+	EXIFLT_6THF,
+	EXIFLT_9THF,
+	EXIFLT_12THF,
+	EXIFLT_18THF,
+	EXIFLT_24THF,
+	EXIFLT_36THF,
+	EXIFLT_48THF,
+	EXIFLT_60THF,
+	EXIFLT_72THF,
+	EXIFLT_84THF,
+	EXIFLT_96THF,
+	EXIFLT_120THF,
+	EXIFLT_168THF,
+	EXIFLT_216THF
+}exi_flt_e;
 
 /// OSTR: EXTernal OSC stable time
 #define EM_LF   		(0x01ul << 10)
@@ -964,6 +985,11 @@ static inline void csp_set_ureg(csp_syscon_t *ptSysconBase, uint8_t byNum, uint3
 static inline void csp_set_swrst(csp_syscon_t *ptSysconBase, sw_rst_e eSwRst)
 {
 	ptSysconBase->IDCCR |= (SYSCON_IDKEY | (eSwRst << SYSCON_SWRST_POS));
+}
+
+static inline void csp_exi_flt(csp_syscon_t *ptSysconBase, uint8_t byFltNum, exi_flt_e eFlt)
+{
+	ptSysconBase->EXICFG = (ptSysconBase->EXICFG & ~EXI_FLT_MSK(byFltNum)) | (eFlt << EXI_FLT_POS(byFltNum));
 }
 
 #endif  /* _CSP_SYSCON_H*/
