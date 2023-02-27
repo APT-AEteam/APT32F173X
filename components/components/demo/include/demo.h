@@ -141,4 +141,9 @@ extern csi_error_t crc_demo();
 
 //led
 csi_error_t led_demo(void);
+
+//opa demo
+extern void opa_internal_gain_mode_test(void);
+extern void opa_external_gain_mode_test(void);
+
 #endif

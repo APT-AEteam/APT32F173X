@@ -90,7 +90,7 @@ void user_demo(void)
 ///  LPT相关的示例代码
 /// ***************************************************
 //	lpt_timer_demo();
-	lpt_pwm_demo();
+//	lpt_pwm_demo();
 
 /// ***************************************************
 ///  Counter A相关的示例代码
@@ -192,6 +192,11 @@ void user_demo(void)
 //	spi_etcb_dma_send();
 //	spi_etcb_dma_send_receive();          
 	
+/// ***************************************************
+///  OPA相关的示例代码
+/// ***************************************************
+//	opa_internal_gain_mode_test();
+	opa_external_gain_mode_test();
 
 }
 

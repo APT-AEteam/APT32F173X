@@ -40,7 +40,7 @@
 #include "csp_can.h"
 #include "csp_cmp.h"
 #include "csi_core.h"
-
+#include "csp_opa.h"
 
 typedef csp_syscon_t 	csp_iwdt_t;
 
@@ -75,6 +75,7 @@ extern csp_crc_t 		*CRC;
 extern csp_rtc_t 		*RTC;
 extern csp_iwdt_t		*IWDT;
 extern csp_gptb_t       *GPTB0, *GPTB1, *GPTB2, *GPTB3, *GPTB4, *GPTB5;
+extern csp_opa_t		*OPA0, *OPA1, *OPA2, *OPA3;
 
 #endif
 
