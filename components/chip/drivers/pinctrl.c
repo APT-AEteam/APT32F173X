@@ -203,8 +203,8 @@ static void apt_iomap_handle(pin_name_e ePinName, csi_gpio_iomap_e eIoMap, uint8
 					case IOMAP0_USART0_TX:
 						wFlag |= (0x01 << IOMAP0_USART0_TX);
 						break;
-					case IOMAP0_NONE:
-						wFlag |= (0x01 << IOMAP0_NONE);
+					case IOMAP0_USART0_RX:
+						wFlag |= (0x01 << IOMAP0_USART0_RX);
 						break;
 					case IOMAP0_SPI_NSS:
 						wFlag |= (0x01 << IOMAP0_SPI_NSS);
@@ -230,12 +230,12 @@ static void apt_iomap_handle(pin_name_e ePinName, csi_gpio_iomap_e eIoMap, uint8
 				wFlag = (wFlag >> 1);
 			}
 			
-			//*pwIoMap = ((*pwIoMap) & ~(0x0F << 4*i)) | (j << 4*i);			//no select
+			*pwIoMap = ((*pwIoMap) & ~(0x0F << 4*i)) | (j << 4*i);			//no select
 			
-			if(byGrp == 0)
-				*pwIoMap = ((*pwIoMap) & ~(0x0F << 4*i)) | (0x03 << 4*i);		//disable
-			else
-				*pwIoMap = ((*pwIoMap) & ~(0x0F << 4*i)) | (0x01 << 4*i);		//disable
+//			if(byGrp == 0)
+//				*pwIoMap = ((*pwIoMap) & ~(0x0F << 4*i)) | (0x03 << 4*i);		//disable
+//			else
+//				*pwIoMap = ((*pwIoMap) & ~(0x0F << 4*i)) | (0x01 << 4*i);		//disable
 		}
 	}
 }
@@ -270,6 +270,7 @@ csi_error_t csi_pin_set_iomap(pin_name_e ePinName, csi_gpio_iomap_e eIoMap)
 {
 	csp_gpio_t *ptGpioBase = NULL;
 	unsigned int *ptPinInfo = NULL;
+	uint8_t byIoMap = 0x0b;
 	
 	//IO REMAP
 	if(((ePinName < PA8) && (ePinName > PA3)) || (ePinName == PB0) || (ePinName == PB1) || (ePinName == PD0) || (ePinName == PD4))		//iomap group1
@@ -302,9 +303,11 @@ csi_error_t csi_pin_set_iomap(pin_name_e ePinName, csi_gpio_iomap_e eIoMap)
 	}
 	else 																	//iomap group0
 	{
+		
 		if(eIoMap > IOMAP0_SPI_MOSI)
 			return CSI_ERROR;	
-			
+		
+		byIoMap = 0x0a;
 		if((ePinName > PB9) && (ePinName < PB13))				//PB10~PB11		
 		{
 			apt_iomap_handle((ePinName-26), eIoMap, 0);
@@ -314,6 +317,7 @@ csi_error_t csi_pin_set_iomap(pin_name_e ePinName, csi_gpio_iomap_e eIoMap)
 		{
 			apt_iomap_handle((ePinName-18), eIoMap, 0);
 			SYSCON->IOMAP0 = (SYSCON->IOMAP0 & ~(0x0F << 4 * (ePinName-18))) | (eIoMap << (4 * (ePinName-18)));
+			byIoMap = 0x0b;
 		}
 		else if(ePinName == PA15)
 		{
@@ -340,9 +344,9 @@ csi_error_t csi_pin_set_iomap(pin_name_e ePinName, csi_gpio_iomap_e eIoMap)
 	ePinName = (pin_name_e)ptPinInfo[1];							//pin
 
 	if(ePinName < 8)
-		ptGpioBase->CONLR =(ptGpioBase->CONLR & ~(0xF << 4*ePinName)) | (IOMAP << 4*ePinName);
+		ptGpioBase->CONLR =(ptGpioBase->CONLR & ~(0xF << 4*ePinName)) | (byIoMap << 4*ePinName);
 	else
-		ptGpioBase->CONHR =(ptGpioBase->CONHR & ~(0xF << 4*(ePinName-8))) | (IOMAP << 4*(ePinName-8));	
+		ptGpioBase->CONHR =(ptGpioBase->CONHR & ~(0xF << 4*(ePinName-8))) | (byIoMap << 4*(ePinName-8));	
 		
 	return CSI_OK;
 }
