@@ -60,8 +60,6 @@ typedef enum {
 	PM_MODE_LPRUN		= 0,	///< LowPower Running mode
 	PM_MODE_SLEEP,				///< Sleep mode		
 	PM_MODE_DEEPSLEEP,			///< Normal DeepSleep mode					
-	PM_MODE_SNOOZE,				///< Snooze mode of DeepSleep	
-	PM_MODE_SHUTDOWN,			///< ShutDown mode of DeepSleep	
 } csi_pm_mode_e;
 
 

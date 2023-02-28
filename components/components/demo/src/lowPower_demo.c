@@ -70,178 +70,6 @@ static void wkup_lp(void)
 	csi_pin_set_low(PB2);
 }
 
-/** \brief 通过外部PA00/PB00/PA12/PB011(ALV0~3)唤醒shutdown
- * 
- *  \param  none
- *  \return none
- */
-void lp_exi_wakeup_shutdown_demo(void)
-{
-	uint16_t hwRstSrc; 
-	uint8_t byWkIntSrc; 
-	
-	csi_pm_mode_e ePmMode = PM_MODE_SHUTDOWN;
-	
-	hwRstSrc = csi_get_rst_reason();							//获取复位信息，SHUTDOWN唤醒后，CHIP会复位
-	if(hwRstSrc)
-	{
-		my_printf("System Reset Source = 0x%x \n", hwRstSrc);	//打印mcu复位信息
-		byWkIntSrc = csi_pm_get_wkint();
-		my_printf("WakeInt Source = 0x%x \n", byWkIntSrc);		//打印WkInt信息
-		csi_pm_clr_wkint(byWkIntSrc);
-		csi_clr_rst_reason(hwRstSrc);
-	}
-	
-	csi_pin_set_mux(PA0,PA0_INPUT);				//PA00 INPUT as WAEKUP source
-	csi_pin_pull_mode(PA0, GPIO_PULLDOWN);
-	
-	csi_pin_set_mux(PB2,PB2_OUTPUT);				//PB02 OUTPUT
-	
-	csi_pin_toggle(PB2);
-	delay_ums(200);
-	csi_pin_toggle(PB2);
-	delay_ums(200);
-	csi_pin_toggle(PB2);
-	delay_ums(200);
-	csi_pin_toggle(PB2);
-	delay_ums(200);
-	csi_pin_toggle(PB2);
-	delay_ums(200);
-	csi_pin_toggle(PB2);
-	delay_ums(200);
-	csi_pin_toggle(PB2);
-	delay_ums(200);
-	csi_pin_toggle(PB2);
-	delay_ums(200);
-
-
-#ifdef CONFIG_USER_PM	
-	csi_pm_attach_callback(ePmMode, prepare_lp, wkup_lp);	//需要在工程设置compiler tab下加入define CONFIG_USER_PM=1;
-#endif
-	
-	csi_pm_config_wakeup_source(WKUP_EXI0, ENABLE);			//选择唤醒源WKUP_ALV0，即PA00唤醒，高电平唤醒
-//	csi_pm_clk_enable(DP_ISOSC, ENABLE);					//SNOOZE模式下时钟开启/关闭
-//	csi_pm_clk_enable(DP_IMOSC, ENABLE);
-//	csi_pm_clk_enable(DP_ESOSC, ENABLE);
-//	csi_pm_clk_enable(DP_EMOSC, ENABLE);
-	
-	delay_ums(10);
-	
-	switch(ePmMode)											//打印睡眠模式信息
-	{
-		case PM_MODE_SLEEP:
-			my_printf("Enter Sleep Mode\n");
-			break;
-		case PM_MODE_DEEPSLEEP:
-			my_printf("Enter Deep-Sleep mode\n");
-			break;
-		case PM_MODE_SNOOZE:
-			my_printf("Enter Snooze Mode\n");
-			break;
-		case PM_MODE_SHUTDOWN:
-			my_printf("Enter ShutDown Mode\n");
-			break;
-		default:
-			break;
-	}
-	
-	while(1) 
-	{
-		csi_pin_set_high(PB2);
-		
-		csi_pm_enter_sleep(ePmMode);						//进入睡眠模式
-		delay_ums(100);
-		csi_pin_set_low(PB2);
-		delay_ums(100);
-	}
-
-}
-/** \brief 通过RTC唤醒SNOOZE模式
- * 
- *  \param  none
- *  \return none
- */
-void lp_rtc_wakeup_snooze_demo(void)
-{
-	csi_pm_mode_e ePmMode = PM_MODE_SNOOZE;		
-	uint16_t hwRstSrc = csi_get_rst_reason();
-	
-	if(hwRstSrc)									//获取并打印复位信息
-	{
-		my_printf("System Reset Source = 0x%x \n", hwRstSrc);
-		csi_clr_rst_reason(hwRstSrc);				//清除复位信息
-	}
-	
-	csi_pin_set_mux(PA5,PA5_OUTPUT);				//PA05 OUTPUT
-	
-	csi_pin_toggle(PA5);
-	mdelay(200);
-	csi_pin_toggle(PA5);
-	mdelay(200);
-	csi_pin_toggle(PA5);
-	mdelay(200);
-	csi_pin_toggle(PA5);
-	mdelay(200);
-	csi_pin_toggle(PA5);
-	mdelay(200);
-	csi_pin_toggle(PA5);
-	mdelay(200);
-	csi_pin_toggle(PA5);
-	mdelay(200);
-	csi_pin_toggle(PA5);
-	mdelay(200);
-
-#ifdef CONFIG_USER_PM	
-	csi_pm_attach_callback(ePmMode, prepare_lp, wkup_lp);	//需要在工程设置compiler tab下加入define CONFIG_USER_PM=1;
-#endif
-
-	csi_pm_config_wakeup_source(WKUP_RTC, ENABLE);			//配置唤醒源
-//	csi_pm_clk_enable(DP_ISOSC, ENABLE);					//SNOOZE模式下时钟开启/关闭
-//	csi_pm_clk_enable(DP_IMOSC, ENABLE);
-//	csi_pm_clk_enable(DP_ESOSC, ENABLE);
-//	csi_pm_clk_enable(DP_EMOSC, ENABLE);
-	
-	
-	
-	//rtc初始化配置
-	{
-		csi_rtc_config_t tRtcConfig;
-		
-		tRtcConfig.byClkSrc = RTC_CLKSRC_ISOSC;  		//选择时钟源
-		tRtcConfig.byFmt = RTC_24FMT;				  	//选择时间模式
-		csi_rtc_init(RTC, &tRtcConfig);				  	//初始化RTC
-		csi_rtc_start_as_timer(RTC, RTC_TIMER_0_5S);	//每0.5s进一次中断,即0.5s唤醒一次
-		csi_rtc_start(RTC);	
-	}
-	mdelay(10);
-	
-	switch(ePmMode)
-	{
-		case PM_MODE_SLEEP:
-			my_printf("Enter Sleep Mode\n");
-			break;
-		case PM_MODE_DEEPSLEEP:
-			my_printf("Enter Deep-Sleep mode\n");
-			break;
-		case PM_MODE_SNOOZE:
-			my_printf("Enter Snooze Mode\n");
-			break;
-		case PM_MODE_SHUTDOWN:
-			my_printf("Enter ShutDown Mode\n");
-			break;
-		default:
-			break;
-	}
-	
-	while(1) 
-	{
-		csi_pin_set_high(PA5);
-		
-		csi_pm_enter_sleep(ePmMode);
-		csi_pin_set_low(PA5);
-		mdelay(100);
-	}
-}
 
 /** \brief 通过LPT唤醒DEEPSLEEP模式
  * 
@@ -293,12 +121,6 @@ void lp_lpt_wakeup_deepsleep_demo(void)
 			break;
 		case PM_MODE_DEEPSLEEP:
 		//	my_printf("Enter Deep-Sleep mode\n");
-			break;
-		case PM_MODE_SNOOZE:
-			my_printf("Enter Snooze Mode\n");
-			break;
-		case PM_MODE_SHUTDOWN:
-			my_printf("Enter ShutDown Mode\n");
 			break;
 		default:
 			break;
@@ -412,12 +234,6 @@ void lp_wakeup_demo(void)
 			break;
 		case PM_MODE_DEEPSLEEP:
 			my_printf("Enter Deep-Sleep mode\n");
-			break;
-		case PM_MODE_SNOOZE:
-			my_printf("Enter Snooze Mode\n");
-			break;
-		case PM_MODE_SHUTDOWN:
-			my_printf("Enter ShutDown Mode\n");
 			break;
 		default:
 			break;

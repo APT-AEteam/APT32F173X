@@ -106,55 +106,12 @@ csi_error_t csi_pm_config_wakeup_source(csi_wakeup_src_e eWkupSrc, bool bEnable)
     uint32_t wIrqNum;
 	csi_error_t ret = CSI_OK;
 	csp_syscon_t *ptSysconBase  = (csp_syscon_t*)APB_SYS_BASE;
-	switch (eWkupSrc)
-		{
-			case (WKUP_IWDT):
-				wIrqNum = 1;
-				break;
-			case (WKUP_RTC):
-				wIrqNum = 12;
-				break;
-			case (WKUP_LPT):
-				wIrqNum = 26;
-				break;
-			case (WKUP_LVD):
-				wIrqNum = 1;
-				break;
-			case (WKUP_TCH):
-				wIrqNum = 25;
-				break;
-			case (WKUP_EXI0):
-				wIrqNum = 7;
-				break;
-			case (WKUP_EXI1):
-				wIrqNum = 8;
-				break;
-			case (WKUP_EXI2):
-				wIrqNum = 21;
-				break;
-			case (WKUP_EXI3):
-				wIrqNum = 22;
-				break;
-			case (WKUP_EXI4):
-				wIrqNum = 23;
-			default: 
-				return CSI_ERROR;
-		}
-//	if (eWkupSrc<5) {
-//		if (bEnable)
-//			csi_vic_set_wakeup_irq(wIrqNum);
-//		else
-//			csi_vic_clear_wakeup_irq(wIrqNum);
-//		return ret;
-//	}
 	
 	if (bEnable){
 		ptSysconBase->WKCR |= 0x1 << (eWkupSrc);
-//		csi_vic_set_wakeup_irq(wIrqNum);
 	}
 	else{
 		ptSysconBase->WKCR &= ~(0x1 << (eWkupSrc));
-//		csi_vic_clear_wakeup_irq(wIrqNum);
 	}
 	return ret;
 }
