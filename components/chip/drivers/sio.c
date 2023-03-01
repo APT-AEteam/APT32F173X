@@ -18,6 +18,7 @@
 #include <drv/irq.h>
 #include <drv/pin.h>
 #include <drv/tick.h>
+#include <drv/etb.h>
 
 /* Private macro------------------------------------------------------*/
 #define SIO_RESET_VALUE  (0x00000000)
@@ -42,8 +43,6 @@ __attribute__((weak)) void sio_irqhandler(csp_sio_t *ptSioBase)
 	{
 		case SIO_RXBUFFULL:										
 		case SIO_RXDNE:
-		
-			csp_sio_clr_isr(ptSioBase, SIO_RXDNE | SIO_RXBUFFULL);
 			if(NULL == g_tSioTran.pwData || 0 == g_tSioTran.hwSize)
 			{
 				csp_sio_get_rxbuf(ptSioBase);
@@ -52,16 +51,21 @@ __attribute__((weak)) void sio_irqhandler(csp_sio_t *ptSioBase)
 			else
 			{
 				*(g_tSioTran.pwData + g_tSioTran.hwTranLen) = csp_sio_get_rxbuf(ptSioBase);	//receive data
-				if(g_tSioTran.hwTranLen < g_tSioTran.hwSize)
-					g_tSioTran.hwTranLen ++;
-				else
+				g_tSioTran.hwTranLen ++;
+				if(g_tSioTran.hwTranLen >= g_tSioTran.hwSize)
+				{
 					g_tSioTran.byRxStat = SIO_STATE_FULL;			//receive buf full, g_tSioTran.hwTranLen = receive data len = receive buf len
+					csp_sio_woke_rst(SIO0);
+				}
 			}
+			csp_sio_clr_isr(ptSioBase, SIO_RXDNE | SIO_RXBUFFULL);
 			break;
 		case SIO_TIMEOUT:
+			nop;
 			csp_sio_clr_isr(ptSioBase, SIO_TIMEOUT);
 			break;
 		case SIO_BREAK:												//receive break interrupt ,reset receive module
+			nop;
 			csp_sio_clr_isr(ptSioBase, SIO_BREAK);
 			break;
 		case SIO_TXBUFEMPT:
@@ -118,7 +122,7 @@ csi_error_t csi_sio_tx_init(csp_sio_t *ptSioBase, csi_sio_tx_config_t *ptTxCfg)
 	{	
 		g_tSioTran.bySendMode = SIO_TX_MODE_INT;						//interrupt, unsupport
 		csi_irq_enable((uint32_t*)ptSioBase);							//enable sio irq 
-		//csp_sio_int_enable(ptSioBase,ptTxCfg->byInt, ENABLE);       //this open in function[csi_sio_send_async]
+		//csp_sio_int_enable(ptSioBase,ptTxCfg->byInt, ENABLE);       	//this open in function[csi_sio_send_async]
 	}
 	else
 		g_tSioTran.bySendMode = SIO_TX_MODE_POLL;						//polling mode
@@ -163,7 +167,7 @@ csi_error_t csi_sio_rx_init(csp_sio_t *ptSioBase, csi_sio_rx_config_t *ptRxCfg)
 			if(ptRxCfg->byRxCnt > 256)									//byRxCnt > 32 ,the mode work error
 				return CSI_ERROR;
 		}
-		csp_sio_int_enable(ptSioBase, ptRxCfg->byInt, ENABLE);		//enable sio interrupt
+		csp_sio_int_enable(ptSioBase, ptRxCfg->byInt, ENABLE);			//enable sio interrupt
 		csi_irq_enable((uint32_t*)ptSioBase);							//enable sio irq 
 	}
 	else
@@ -255,7 +259,16 @@ int32_t csi_sio_send(csp_sio_t *ptSioBase, const uint32_t *pwData, uint16_t hwSi
 			csp_sio_clr_isr(ptSioBase, SIO_TXDNE);
 			return i;
 		case SIO_TX_MODE_INT:
-			return CSI_UNSUPPORTED;										//sio send interrupt mode, unsupport
+			if(SIO_STATE_SEND == g_tSioTran.byTxStat)
+			{
+				return CSI_ERROR;
+			}
+			g_tSioTran.pwData 	 = (uint32_t *)pwData;
+			g_tSioTran.hwSize 	 = hwSize;
+			g_tSioTran.hwTranLen = 0;
+			g_tSioTran.byTxStat  = SIO_STATE_SEND;
+			csp_sio_int_enable(SIO0,SIO_INTSRC_TXBUFEMPT, ENABLE);
+			return CSI_OK;		
 		default:
 			return CSI_UNSUPPORTED;
 	}
@@ -267,50 +280,18 @@ int32_t csi_sio_send(csp_sio_t *ptSioBase, const uint32_t *pwData, uint16_t hwSi
  * \param[in] hwSize: send data size
  * \return error code \ref csi_error_t or receive data size
  */
-int32_t csi_sio_send_async(uint32_t *pwData, uint16_t hwSize)
-{
-	if(SIO_STATE_SEND == g_tSioTran.byTxStat)
-	{
-		return CSI_ERROR;
-	}
-	g_tSioTran.pwData 	 = pwData;
-	g_tSioTran.hwSize 	 = hwSize;
-	g_tSioTran.hwTranLen = 0;
-	g_tSioTran.byTxStat  = SIO_STATE_SEND;
-	csp_sio_int_enable(SIO0,SIO_INTSRC_TXBUFEMPT, ENABLE);
-	return CSI_OK;
-}
-
-//static void delay_ums(unsigned int t)
+//int32_t csi_sio_send_async(uint32_t *pwData, uint16_t hwSize)
 //{
-//	volatile unsigned int i,j ,k=0;
-//	j = 20* t;
-//	for ( i = 0; i < j; i++ )
+//	if(SIO_STATE_SEND == g_tSioTran.byTxStat)
 //	{
-//		k++;
+//		return CSI_ERROR;
 //	}
-//}
-/** \brief send data from sio, this function is polling mode(sync mode), with delay between bytes 
- * 
- * \param[in] ptSioBase: pointer of sio register structure
- * \param[in] pwData: pointer to buffer with data to send 
- * \param[in] hwSize: send data size
- * \param[in] hwDelay: delay between bytes 
- * \return error code \ref csi_error_t or receive data size
-*/
-//int32_t csi_sio_send_space(csp_sio_t *ptSioBase, const uint32_t *pwData, uint16_t hwSize, uint16_t hwDelay)
-//{
-//	uint16_t  i;
-//	
-//	for(i = 0; i < hwSize; i++)									
-//	{
-//		csp_sio_set_txbuf(ptSioBase,pwData[i]);
-//		while(!(csp_sio_get_risr(ptSioBase) & SIO_TXBUFEMPT));	
-//		delay_ums(hwDelay);
-//	}
-//	while(!(csp_sio_get_risr(ptSioBase) & SIO_TXDNE));
-//
-//	return i;
+//	g_tSioTran.pwData 	 = pwData;
+//	g_tSioTran.hwSize 	 = hwSize;
+//	g_tSioTran.hwTranLen = 0;
+//	g_tSioTran.byTxStat  = SIO_STATE_SEND;
+//	csp_sio_int_enable(SIO0,SIO_INTSRC_TXBUFEMPT, ENABLE);
+//	return CSI_OK;
 //}
 /** \brief set sio receive data buffer and length
  * 
@@ -357,6 +338,43 @@ int32_t csi_sio_receive(csp_sio_t *ptSioBase, uint32_t *pwRecv, uint16_t hwLen)
 		default:
 			return CSI_UNSUPPORTED;;
 	}
+}
+/** \brief send data from sio, this function is dma mode
+ * 
+ *  \param[in] ptSioBase: pointer of sio register structure
+ *  \param[in] ptDmaBase: pointer of dma register structure
+ *  \param[in] eDmaCh: channel number of dma, eDmaCh: DMA_CH0` DMA_CH5
+ *  \param[in] pData: pointer to buffer with data to send to uart transmitter.
+ *  \param[in] hwSize: number of data to send (byte); hwSize <= 0xfff
+ *  \return error code \ref csi_error_t
+ */
+csi_error_t csi_sio_send_dma(csp_sio_t *ptSioBase, csp_dma_t *ptDmaBase, csi_dma_ch_e eDmaCh, const void *pData, uint16_t hwSize)
+{
+	if(hwSize > 0xfff)
+		return CSI_ERROR;
+		
+	csp_sio_set_txdma(ptSioBase, SIO_TDMA_EN);
+	csi_dma_ch_start(ptDmaBase, eDmaCh, (void *)pData, (void *)&(ptSioBase->TXBUF), hwSize, 1);
+	
+	return CSI_OK;
+}
+/** \brief send data from sio, this function is dma mode
+ * 
+ *  \param[in] ptSioBase: pointer of sio register structure
+ *  \param[in] ptDmaBase: pointer of dma register structure
+ *  \param[in] eDmaCh: channel number of dma, eDmaCh: DMA_CH0` DMA_CH5
+ *  \param[in] pData: pointer to buffer with data to send to uart transmitter.
+ *  \param[in] hwSize: number of data to send (byte); hwSize <= 0xfff
+ *  \return error code \ref csi_error_t
+ */
+csi_error_t csi_sio_recv_dma(csp_sio_t *ptSioBase, csp_dma_t *ptDmaBase, csi_dma_ch_e eDmaCh, const void *pData, uint16_t hwSize)
+{
+	if(hwSize > 0xfff)
+		return CSI_ERROR;
+	csp_sio_set_rxdma(ptSioBase, SIO_RDMA_EN);
+	csi_dma_ch_start(ptDmaBase, eDmaCh, (void *)&(ptSioBase->RXBUF), (void *)pData, hwSize, 1);
+	
+	return CSI_OK;
 }
 /** \brief get sio receive/send complete message and (Do not) clear message
  * 

@@ -6,6 +6,7 @@
  * <tr><th> Date  <th>Version  <th>Author  <th>Description
  * <tr><td> 2020-10-09 <td>V0.0  <td>XB   <td>initial
  * <tr><td> 2021-1-09 <td>V0.1  <td>ZHY   <td>modify
+ * <tr><td> 2023-1-03 <td>V1.0  <td>ZJY   <td>add DMA AND SRR
  * </table>
  * *********************************************************************
 */
@@ -33,6 +34,7 @@ typedef struct
 	__IM 	uint32_t  MISR;		//0x0024	Masked Interrupt Status Register
 	__IOM 	uint32_t  IMCR;		//0x0028	Interrupt Enable Contorl Register
 	__OM 	uint32_t  ICR;		//0x002C	Interrupt Status Clear Register	
+	__OM 	uint32_t  SRR;		//0x0030	Software Reset Register
  } csp_sio_t;
  
 /*****************************************************************************
@@ -70,6 +72,28 @@ typedef enum{
 	SIO_MODE_TX			= 0,
 	SIO_MODE_RX
 }sio_mode_e;
+
+#define	SIO_TDMA_EN_POS		(10)	
+#define	SIO_TDMA_EN_MSK		(0x01ul << SIO_TDMA_EN_POS)	
+typedef enum{
+	SIO_TDMA_DIS		= 0,
+	SIO_TDMA_EN
+}sio_tdma_en_e;
+
+#define	SIO_RDMA_EN_POS		(11)		
+#define	SIO_RDMA_EN_MSK		(0x01ul << SIO_RDMA_EN_POS)	
+typedef enum{
+	SIO_RDMA_DIS		= 0,
+	SIO_RDMA_EN
+}sio_rdma_en_e;
+
+#define	SIO_WOKE_RST_POS	(12)		
+#define SIO_WOKE_RST_MSK	(0x01ul << SIO_WOKE_RST_POS)
+#define SIO_WOKE_RST		(0x01ul)
+
+#define	SIO_WOKE_RSTKEY_POS	(13)		
+#define SIO_WOKE_RSTKEY_MSK	(0x07ul << SIO_WOKE_RSTKEY_POS)
+#define SIO_WOKE_RSTKEY		(0x05ul)
 
 #define SIO_TCKPRS_POS    	(16)		//Send CLK Div
 #define SIO_TCKPRS_MSK    	(0xFFFFul << SIO_TCKPRS_POS)
@@ -319,6 +343,11 @@ typedef enum
 #define	TXBUF_14(val) 	((val & 0x3) << (28ul))
 #define	TXBUF_15(val) 	((val & 0x3) << (30ul))
 
+/******************************************************************************
+* SRR : Software Reset Register
+******************************************************************************/
+#define SIO_SWRST_POS    		(0)		//DH Sequence
+#define SIO_SWRST_MSK    		(0x01ul << SIO_SWRST_POS)
 
 /*****************************************************************************
  **************************** SIO TX PARA Struct *****************************
@@ -339,22 +368,6 @@ typedef struct
 }csp_sio_tx_t;
 
 /*****************************************************************************
- ******************** SIO extern Functions Declaration ***********************
- *****************************************************************************/
-//extern void csp_sio_def_Init(csp_sio_t *ptSioBase);
-//extern void csp_sio_set_int(csp_sio_t *ptSioBase,sio_int_e eSioInt,uint8_t byEnable);
-//extern void csp_sio_set_dh(csp_sio_t *ptSioBase, sio_lenob_e eDhBit, uint8_t byDhSq);
-//extern void csp_sio_set_dl(csp_sio_t *ptSioBase, sio_lenob_e eDlBit, uint8_t byDlSq);
-//extern void csp_sio_tx_init(csp_sio_t *ptSioBase, csp_sio_tx_t *tpSioTx);
-//extern uint32_t csp_sio_send(csp_sio_t *ptSioBase, uint32_t *byPdata, uint8_t byLen);
-
-//SIO RX
-//extern void csp_sio_set_sample_mode(csp_sio_t *ptSioBase,sio_bstsel_e eBst, sio_trgmode_e eTrgMd, sio_rmode_e eRmd);
-//extern void csp_sio_set_sample(csp_sio_t *ptSioBase, sio_extract_e eExtract ,sio_align_e eAlign, uint8_t bySplCnt, uint8_t byHihr);
-//extern void csp_sio_set_rx(csp_sio_t *ptSioBase,sio_rdir_e eRdir, uint8_t byRxCnt, uint8_t byBuflen);
-//extern void csp_sio_set_break(csp_sio_t *ptSioBase, sio_break_e eBreak, sio_breaklel_e eBkLvl,uint8_t byBkCnt);
-
-/*****************************************************************************
  ******************** SIO inline Functions Declaration ***********************
  *****************************************************************************/
 static inline void csp_sio_clk_en(csp_sio_t *ptUsartBase)
@@ -368,6 +381,21 @@ static inline void csp_sio_clk_dis(csp_sio_t *ptUsartBase)
 static inline void csp_sio_set_mode(csp_sio_t *ptSioBase, sio_mode_e eTxRx)
 {
 	ptSioBase->CR = (ptSioBase->CR & ~SIO_MODE_MSK) | (eTxRx << SIO_MODE_POS);
+}
+
+static inline void csp_sio_woke_rst(csp_sio_t *ptSioBase)
+{
+	ptSioBase->CR |= SIO_WOKE_RSTKEY_MSK | SIO_WOKE_RST_MSK;
+}
+//SIO DMA
+static inline void csp_sio_set_txdma(csp_sio_t *ptSioBase, sio_tdma_en_e eTxDmaEn) 
+{
+	ptSioBase->CR = (ptSioBase->CR & ~SIO_TDMA_EN_MSK) | (eTxDmaEn << SIO_TDMA_EN_POS);
+}
+
+static inline void csp_sio_set_rxdma(csp_sio_t *ptSioBase, sio_rdma_en_e eRxDmaEn) 
+{
+	ptSioBase->CR = (ptSioBase->CR & ~SIO_RDMA_EN_MSK) | (eRxDmaEn << SIO_RDMA_EN_POS);
 }
 
 //SIO TX 
@@ -487,14 +515,7 @@ static inline void csp_sio_clr_isr(csp_sio_t *ptSioBase, sio_int_e eSioInt)
 {
 	ptSioBase->ICR = eSioInt;
 }
-//static inline void csp_sio_vic_irq_en(void)
-//{
-//	NVIC_EnableIRQ(SIO_IRQn); 
-//}
-//static inline void csp_sio_vic_irq_dis(void)
-//{
-//	NVIC_DisableIRQ(SIO_IRQn); 
-//}
+
 static inline void csp_sio_int_enable(csp_sio_t *ptSioBase,sio_int_e eSioInt, bool bEnable)
 {
 	if(bEnable)
@@ -503,5 +524,11 @@ static inline void csp_sio_int_enable(csp_sio_t *ptSioBase,sio_int_e eSioInt, bo
 		ptSioBase->IMCR &= ~eSioInt;
 
 }
+
+static inline void csp_sio_soft_reset(csp_sio_t *ptSioBase)
+{
+	ptSioBase->SRR = SIO_SWRST_MSK;
+}
+
 
 #endif

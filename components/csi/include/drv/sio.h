@@ -15,6 +15,7 @@
 
 #include <stdint.h>
 #include <stdbool.h>
+#include <drv/dma.h>
 #include <drv/common.h>
 
 #include "csp.h"
@@ -343,17 +344,7 @@ int32_t csi_sio_send(csp_sio_t *ptSioBase, const uint32_t *pwData, uint16_t hwSi
   \param[in]   hwSize    	send data size
   \return      error code \ref csi_error_t or data size
 */
-int32_t csi_sio_send_async(uint32_t *pwData, uint16_t hwSize);
-
-/** 
-  \brief send data from sio, this function is polling mode(sync mode), with delay between bytes 
-  \param[in] ptSioBase: pointer of sio register structure
-  \param[in] pwData: pointer to buffer with data to send 
-  \param[in] hwSize: send data size
-  \param[in] hwDelay: delay between bytes 
-  \return error code \ref csi_error_t or receive data size
-*/
-//int32_t csi_sio_send_space(csp_sio_t *ptSioBase, const uint32_t *pwData, uint16_t hwSize, uint16_t hwDelay);
+//int32_t csi_sio_send_async(uint32_t *pwData, uint16_t hwSize);
 
 /** 
   \brief 	   set sio receive data buffer
@@ -373,32 +364,26 @@ csi_error_t csi_sio_set_buffer(uint32_t *pwData, uint16_t hwLen);
 int32_t csi_sio_receive(csp_sio_t *ptSioBase, uint32_t *pwRecv, uint16_t hwLen);
 
 /** 
-  \brief get the status of sio receive 
-  \param[in] none
-  \return the status of sio receive 
- */ 
-csi_sio_state_e csi_sio_get_recv_status(void);
+  \brief send data from sio, this function is dma mode
+  \param[in] ptSioBase: pointer of sio register structure
+  \param[in] ptDmaBase: pointer of dma register structure
+  \param[in] eDmaCh: channel number of dma, eDmaCh: DMA_CH0` DMA_CH5
+  \param[in] pData: pointer to buffer with data to send to uart transmitter.
+  \param[in] hwSize: number of data to send (byte); hwSize <= 0xfff
+  \return error code \ref csi_error_t
+ */
+csi_error_t csi_sio_send_dma(csp_sio_t *ptSioBase, csp_dma_t *ptDmaBase, csi_dma_ch_e eDmaCh, const void *pData, uint16_t hwSize);
 
 /** 
-  \brief clr the status of sio receive 
-  \param[in] none
-  \return none
- */ 
-void csi_sio_clr_recv_status(void);
-
-/** 
-  \brief get the status of sio receive 
-  \param[in] none
-  \return the status of sio receive 
- */ 
-//csi_sio_state_e csi_sio_get_send_status(void);
-
-/** 
-  \brief clr the status of sio receive 
-  \param[in] none
-  \return none
- */ 
-//void csi_sio_clr_send_status(void);
+  \brief send data from sio, this function is dma mode
+  \param[in] ptSioBase: pointer of sio register structure
+  \param[in] ptDmaBase: pointer of dma register structure
+  \param[in] eDmaCh: channel number of dma, eDmaCh: DMA_CH0` DMA_CH5
+  \param[in] pData: pointer to buffer with data to send to uart transmitter.
+  \param[in] hwSize: number of data to send (byte); hwSize <= 0xfff
+  \return error code \ref csi_error_t
+ */
+csi_error_t csi_sio_recv_dma(csp_sio_t *ptSioBase, csp_dma_t *ptDmaBase, csi_dma_ch_e eDmaCh, const void *pData, uint16_t hwSize);
 
 /** 
   \brief 	   get sio receive/send complete message and (Do not) clear message
