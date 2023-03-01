@@ -37,6 +37,7 @@ csp_spi_t  		*SPI0     	= (csp_spi_t 	*)(APB_SPI0_BASE);
 csp_spi_t  		*SPI1     	= (csp_spi_t 	*)(APB_SPI1_BASE);
 csp_qspi_t      *QSPI     	= (csp_qspi_t 	*)(APB_QSPI_BASE);
 csp_sio_t  		*SIO0     	= (csp_sio_t 	*)(APB_SIO0_BASE);
+csp_sio_t  		*SIO1     	= (csp_sio_t 	*)(APB_SIO1_BASE);
 csp_cmp_t  		*CMP0     	= (csp_cmp_t 	*)(APB_CMP0_BASE);
 csp_cmp_t  		*CMP1     	= (csp_cmp_t 	*)(APB_CMP1_BASE);
 csp_cmp_t  		*CMP2     	= (csp_cmp_t 	*)(APB_CMP2_BASE);

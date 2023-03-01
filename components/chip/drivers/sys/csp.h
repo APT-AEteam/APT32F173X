@@ -60,7 +60,7 @@ extern csp_uart_t 		*UART0, *UART1, *UART2;
 extern csp_spi_t  		*SPI0;
 extern csp_spi_t  		*SPI1;
 extern csp_qspi_t       *QSPI;
-extern csp_sio_t  		*SIO0;
+extern csp_sio_t  		*SIO0, *SIO1;
 extern csp_cmp_t  		*CMP0;
 extern csp_cmp_t  		*CMP1;
 extern csp_cmp_t  		*CMP2;
