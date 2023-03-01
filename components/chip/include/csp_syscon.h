@@ -325,6 +325,8 @@ typedef enum{
 	CLO_PCLK,
 	CLO_HCLK,
 	CLO_IWDTCLK,
+	CLO_PLL_PCLK,
+	CLO_PLL_QCLK,
 	CLO_SYSCLK = 0xd
 }clo_src_e;
 
@@ -635,11 +637,12 @@ static inline void csp_pll_set_ckp_div(csp_syscon_t *ptSysconBase, uint8_t byCkp
 	ptSysconBase->PLLCR = (ptSysconBase->PLLCR & (~PLL_CKP_DIV_MSK)) | byCkp_Div << PLL_CKP_DIV_POS;
 }
 
-static inline void csp_pll_ckp_enable(csp_syscon_t *ptSysconBase, bool bEnable)
+static inline void csp_pll_clk_enable(csp_syscon_t *ptSysconBase, bool bEnable)
 {
 	ptSysconBase->PLLCR = (ptSysconBase->PLLCR & ~PLL_CKPEN_MSK)| (bEnable << PLL_CKPEN_POS);
 }
 
+/*
 static inline void csp_pll_ckq_enable(csp_syscon_t *ptSysconBase, bool bEnable)
 {
 	ptSysconBase->PLLCR = (ptSysconBase->PLLCR & ~PLL_CKQEN_MSK)| (bEnable << PLL_CKQEN_POS);
@@ -649,6 +652,7 @@ static inline void csp_pll_ckr_enable(csp_syscon_t *ptSysconBase, bool bEnable)
 {
 	ptSysconBase->PLLCR = (ptSysconBase->PLLCR & ~PLL_CKREN_MSK)| (bEnable << PLL_CKREN_POS);
 }
+*/
 
 static inline void csp_set_hfosc_fre(csp_syscon_t *ptSysconBase, uint32_t wFreq)
 {

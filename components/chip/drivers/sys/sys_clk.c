@@ -49,7 +49,7 @@ csi_error_t csi_sysclk_config(void)
 	wFreq = tClkConfig.wFreq;
 	eSrc = tClkConfig.eClkSrc;
 	wHFreq = get_hclk();
-	
+	csp_set_clksrc(SYSCON, SRC_IMOSC);
 //	csp_ifc_set_speed(IFC_REG_BASE, get_hclk());
 	IFC->CEDR = IFC_CLKEN;
 	IFC->MR = IFC->MR & (~(HIGH_SPEED|PF_WAIT3));
@@ -112,16 +112,11 @@ csi_error_t csi_sysclk_config(void)
 			csi_hfosc_enable(1);           // HFOSC_24M_VALUE
 			IFC->MR |= HIGH_SPEED | PF_WAIT7;
 		
-			//SYSCON->PLLCR = 0x02|(0x3<<2)|(35<<8)|(1<<16)|(1<<17)|(1<<24)|(1<<28);
-			
 			csp_pll_clk_sel(SYSCON, PLL_CLK_SEL_HFOSC);
 			csp_pll_set_div_m(SYSCON, 3);
 			csp_pll_set_nul(SYSCON, 35);
 			csp_pll_set_ckp_div(SYSCON, 1);
-			csp_pll_ckp_enable(SYSCON, ENABLE);
-			csp_pll_ckq_enable(SYSCON, ENABLE);
-			csp_pll_ckr_enable(SYSCON, ENABLE);
-			
+			csp_pll_clk_enable(SYSCON, ENABLE);
 			csi_pll_enable();
 			break;
 		case(SRC_ESOSC):
