@@ -469,14 +469,15 @@ int32_t csi_usart_receive(csp_usart_t *ptUsartBase, void *pData, uint16_t hwSize
 	
 	return hwRecvNum;
 }
-/** \brief usart dma receive mode init
- * 
- *  \param[in] ptUartBase: pointer of usart register structure
- *  \param[in] eDmaCh: channel id number of dma, eDmaCh: DMA_CH0_ID ` DMA_CH5_ID
- *  \param[in] eEtbCh: channel id number of etb, eEtbCh >= ETB_CH20_ID
- *  \return  error code \ref csi_error_t
+/** 
+  \brief 	   usart dma receive mode init
+  \param[in]   ptUsartBase	pointer of usart register structure
+  \param[in]   ptDmaBase: pointer of dma register structure
+  \param[in]   eDmaCh		channel id number of dma, eDmaCh: DMA_CH0_ID ` DMA_CH5_ID
+  \param[in]   eEtbCh		channel id number of etb, eEtbCh >= ETB_CH20_ID
+  \return      error code \ref csi_error_t
  */
-csi_error_t csi_usart_dma_rx_init(csp_usart_t *ptUsartBase, csi_dma_ch_e eDmaCh, csi_etb_ch_e eEtbCh)
+csi_error_t csi_usart_dma_rx_init(csp_usart_t *ptUsartBase, csp_dma_t *ptDmaBase, csi_dma_ch_e eDmaCh, csi_etb_ch_e eEtbCh)
 {
 	csi_error_t ret = CSI_OK;
 	csi_dma_ch_config_t tDmaConfig;				
@@ -503,7 +504,7 @@ csi_error_t csi_usart_dma_rx_init(csp_usart_t *ptUsartBase, csi_dma_ch_e eDmaCh,
 	ret = csi_etb_ch_config(eEtbCh, &tEtbConfig);		//初始化ETB，DMA ETB CHANNEL > ETB_CH19_ID
 	if(ret < 0)
 		return CSI_ERROR;
-	ret = csi_dma_ch_init(DMA0, eDmaCh, &tDmaConfig);	//初始化DMA
+	ret = csi_dma_ch_init(ptDmaBase, eDmaCh, &tDmaConfig);	//初始化DMA
 	
 	return ret;
 }
@@ -565,19 +566,21 @@ csi_error_t csi_usart_send_dma(csp_usart_t *ptUsartBase, csp_dma_t *ptDmaBase, c
 	
 	return CSI_OK;
 }
-/** \brief receive data from usart, this function is dma transfer
- * 
- *  \param[in] ptUartBase: pointer of usart register structure
- *  \param[in] pData: pointer to buffer with data to send to usart transmitter.
- *  \param[in] hwSize: number of data to send (byte), hwSize <= 0xfff.
- *  \return  error code \ref csi_error_t
+
+/** 
+  \brief 	   receive data to usart transmitter, this function is dma mode
+  \param[in]   ptUsartBase	pointer of usart register structure
+  \param[in]   ptDmaBase: pointer of dma register structure
+  \param[in]   pData		pointer to buffer with data to send to usart transmitter.
+  \param[in]   wSize		number of data to send (byte), hwSize <= 0xfff.
+  \return      error code \ref csi_error_t
  */
-csi_error_t csi_usart_recv_dma(csp_usart_t *ptUsartBase, void *pData, uint8_t byDmaCh, uint16_t hwSize)
+csi_error_t csi_usart_recv_dma(csp_usart_t *ptUsartBase, csp_dma_t *ptDmaBase, void *pData, uint8_t byDmaCh, uint16_t hwSize)
 {
 	if(hwSize > 0xfff)
 		return CSI_ERROR;
 	csp_usart_set_rxdma(ptUsartBase, US_RDMA_EN, US_RDMA_FIFO_NSPACE);
-	csi_dma_ch_start(DMA0, byDmaCh, (void *)&(ptUsartBase->RHR), (void *)pData, hwSize, 1);
+	csi_dma_ch_start(ptDmaBase, byDmaCh, (void *)&(ptUsartBase->RHR), (void *)pData, hwSize, 1);
 	
 	return CSI_OK;
 }

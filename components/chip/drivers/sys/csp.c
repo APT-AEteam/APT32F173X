@@ -69,3 +69,9 @@ csp_opa_t  		*OPA0 	   	= (csp_opa_t    *)(APB_OPA0_BASE);
 csp_opa_t  		*OPA1 	   	= (csp_opa_t    *)(APB_OPA1_BASE);
 csp_opa_t  		*OPA2 	   	= (csp_opa_t    *)(APB_OPA2_BASE);
 csp_opa_t  		*OPA3 	   	= (csp_opa_t    *)(APB_OPA3_BASE);
+
+
+
+csp_lin_t 		*LIN0   	= (csp_lin_t *)(APB_USART0_BASE);
+csp_lin_t 		*LIN1   	= (csp_lin_t *)(APB_USART1_BASE);
+

@@ -43,6 +43,7 @@
 #include "csp_opa.h"
 
 typedef csp_syscon_t 	csp_iwdt_t;
+typedef csp_usart_t 	csp_lin_t;
 
 extern CLIC_Type  		*COREINT;
 extern CORET_Type 		*CORETIMER;
@@ -76,6 +77,9 @@ extern csp_rtc_t 		*RTC;
 extern csp_iwdt_t		*IWDT;
 extern csp_gptb_t       *GPTB0, *GPTB1, *GPTB2, *GPTB3, *GPTB4, *GPTB5;
 extern csp_opa_t		*OPA0, *OPA1, *OPA2, *OPA3;
+
+
+extern csp_lin_t 		*LIN0, *LIN1;
 
 #endif
 
