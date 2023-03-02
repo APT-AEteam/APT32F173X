@@ -46,6 +46,7 @@ extern void adc_irqhandler(csp_adc_t *ptAdcBase);
 extern void syscon_irqhandler(csp_syscon_t *ptSysconBase);
 extern void led_irqhandler(csp_led_t *ptLedBase);
 extern void i2c_irqhandler(csp_i2c_t *ptIicBase);
+extern void sio_irqhandler(csp_sio_t *ptSioBase);
 
 
 /* private function--------------------------------------------------------*/
@@ -264,6 +265,7 @@ void qspi_int_handler(void)
 void sio0_int_handler(void) 
 {
 #if	SIO0_INT_HANDLE_EN
+	sio_irqhandler(SIO0);
     // ISR content ...
 #endif
 }
@@ -271,6 +273,7 @@ void sio0_int_handler(void)
 void sio1_int_handler(void) 
 {
 #if	SIO1_INT_HANDLE_EN
+	sio_irqhandler(SIO1);
     // ISR content ...
 #endif
 }
@@ -305,6 +308,7 @@ void exi0_int_handler(void)
 #if	EXI0_INT_HANDLE_EN
     // ISR content ...
 	gpio_irqhandler(0);
+	csi_pin_toggle(PD0);
 #endif
 }
 void exi1_int_handler(void) 
