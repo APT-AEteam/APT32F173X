@@ -31,6 +31,8 @@ extern void irq_vectors_init(void);
 void system_init(void)		//__attribute__((weak))
 {
 	uint32_t i;
+
+	csi_icache_enable ();
 	__disable_excp_irq();
 	
     /* enable mstatus FS */
