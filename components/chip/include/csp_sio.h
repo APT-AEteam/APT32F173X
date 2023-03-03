@@ -92,7 +92,7 @@ typedef enum{
 #define SIO_WOKE_RST		(0x01ul)
 
 #define	SIO_WOKE_RSTKEY_POS	(13)		
-#define SIO_WOKE_RSTKEY_MSK	(0x07ul << SIO_WOKE_RSTKEY_POS)
+#define SIO_WOKE_RSTKEY_MSK	(0x05ul << SIO_WOKE_RSTKEY_POS)
 #define SIO_WOKE_RSTKEY		(0x05ul)
 
 #define SIO_TCKPRS_POS    	(16)		//Send CLK Div

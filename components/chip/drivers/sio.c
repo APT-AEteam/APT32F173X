@@ -253,6 +253,7 @@ int32_t csi_sio_send(csp_sio_t *ptSioBase, const uint32_t *pwData, uint16_t hwSi
 			for(i = 0; i < hwSize; i++)									
 			{
 				csp_sio_set_txbuf(ptSioBase,pwData[i]);
+				nop;nop;nop;nop;
 				while(!(csp_sio_get_risr(ptSioBase) & SIO_TXBUFEMPT));
 			}
 			while(!(csp_sio_get_risr(ptSioBase) & SIO_TXDNE));
