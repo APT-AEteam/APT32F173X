@@ -69,7 +69,6 @@ SECTIONS {
 		_start_data = .;						/* Provide the name for the start of this section */
 		KEEP(*csp.o(.data.*))				/* keep keyword to prevent it from being optimized */
 		KEEP(*csp.o(.data))     
-	/*	KEEP(*startup.o(*.vectors*)) */
     	*( .data );
 		*( .data.* );
 		*( .sdata );
@@ -91,7 +90,7 @@ SECTIONS {
 		. = ALIGN(0x4) ;
 		_ebss = . ;
 		_end = . ;
-		end = . ;
+		/* end = . ; */
     } > REGION_BSS AT > REGION_BSS
 	
 	._user_heap_stack (DEFINED(__stack_start) ? __stack_start : .) (NOLOAD) : 				
