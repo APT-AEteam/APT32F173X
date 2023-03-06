@@ -192,8 +192,7 @@ csi_error_t csi_gpta_capture_init(csp_gpta_t *ptGptaBase, csi_gpta_captureconfig
 			                                                             // clk div value
 	if(wClkDiv == 0){wClkDiv = 1;}
 					
-	wCrVal =ptGptaPwmCfg->byCountingMode | (ptGptaPwmCfg->byStartSrc<<GPTA_STARTSRC_POS) |
-	        ptGptaPwmCfg->byOneshotMode<<GPTA_OPMD_POS | (ptGptaPwmCfg->byWorkmod<<GPTA_MODE_POS);
+	wCrVal =ptGptaPwmCfg->byCountingMode | (ptGptaPwmCfg->byStartSrc<<GPTA_STARTSRC_POS) | (ptGptaPwmCfg->byWorkmod<<GPTA_MODE_POS);
     
 	wCrVal=(wCrVal & ~(GPTA_PSCLD_MSK))   |((ptGptaPwmCfg->byPscld&0x03)   <<GPTA_PSCLD_POS);
 	
@@ -206,6 +205,9 @@ csi_error_t csi_gpta_capture_init(csp_gpta_t *ptGptaBase, csi_gpta_captureconfig
 	
 	wCrVal|=GPTA_CAPLD_EN;
 	wCrVal|=GPTA_CAPREARM;
+	
+	wCrVal=(wCrVal & ~(GPTA_CAPMD_SEL_MSK))|((ptGptaPwmCfg->byCaptureCapmdSel&0x01)  <<GPTA_CAPMD_SEL_POS);
+
 	wPrdrLoad=0xFFFF;
 
     csp_gpta_clken(ptGptaBase);                                             // clkEN

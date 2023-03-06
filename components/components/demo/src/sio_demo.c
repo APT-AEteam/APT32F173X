@@ -151,7 +151,7 @@ int sio_led_rgb_int_demo(void)
 		{ 
 			csi_sio_send(SIO0, byDipDataEnd, 24);
 		}
-		//mdelay(10);
+		mdelay(200);
 	}
 	
 	return iRet;
