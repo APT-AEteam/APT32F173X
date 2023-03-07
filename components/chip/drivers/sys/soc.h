@@ -355,6 +355,7 @@ typedef enum {
 	PA8_GPTB0_CHAX			=  8U,
 	PA8_GPTB1_CHAX          =  9U,	
 	PA8_CP0_OUT             =  11U,
+	PA8_CPIN1P              =  12U,
 	
 
 	PA9_GPD				    =  0U,
@@ -368,6 +369,7 @@ typedef enum {
 	PA9_GPTB1_CHAX			=  8U,
 	PA9_GPTB2_CHAY          =  9U,	
 	PA9_CP1_OUT             =  11U,
+	PA9_CPIN1N              =  12U,
 	PA9_ADC_INB4            =  13U,
 	
 	

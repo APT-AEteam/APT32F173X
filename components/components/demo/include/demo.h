@@ -127,10 +127,10 @@ extern void spi_etcb_dma_send_receive(void);//etcb硬件触发dma收发spi数据
 //extern void spi_master_sync_send_async_receive_demo(void);//主机示例2
 //extern void spi_slave_async_send_async_receive_demo(void);//从机示例2
 
-//touch demo
-extern void touch_lowpower_demo(void);
-extern void touch_timer_demo(void);
-extern void touch_main_demo(void);
+//cmp demo
+extern int cmp_base_demo(void);
+extern int cmp_dfcr_demo(void);
+extern int cmp_wfcr_demo(void);
 
 //gpta demo
 extern int gpta_capture_demo();
