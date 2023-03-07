@@ -375,6 +375,7 @@ void cmp0_int_handler(void)
 {
 #if	CMP0_INT_HANDLE_EN
     // ISR content ...
+	cmp_irqhandler(CMP0);
 #endif
 }
 
@@ -382,6 +383,7 @@ void cmp1_int_handler(void)
 {
 #if	CMP1_INT_HANDLE_EN
     // ISR content ...
+	cmp_irqhandler(CMP1);
 #endif
 }
 
@@ -389,6 +391,7 @@ void cmp2_int_handler(void)
 {
 #if	CMP2_INT_HANDLE_EN
     // ISR content ...
+	cmp_irqhandler(CMP2);
 #endif
 }
 

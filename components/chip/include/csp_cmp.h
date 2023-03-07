@@ -36,14 +36,9 @@ typedef struct
 
 #define CMP_INT_MSK         (0x01)
 
-#define	CMP_INT_RAWDET_POS		(16)
-#define	CMP_INT_RAWDET_MSK	    (0x01ul << CMP_INT_RAWDET_POS	)
-
 typedef enum
 {
-	CMP_EDGEDET_INT  =  (0x01ul << 0),  
-	CMP_RAWDET_INT   =  (0x01ul << 16),  
-	
+	CMP_EDGEDET_INT  =  (0x01ul << 0),  	
 }
 cmp_int_e;
 
@@ -402,11 +397,6 @@ static inline void csp_cmp_int_clear(csp_cmp_t *ptCmpBase,cmp_int_e eCmpInt)
 static inline  void csp_cmp_edgedet_int_enable(csp_cmp_t *ptCmpBase,bool bEnable)
 {
 	ptCmpBase->IMCR = (ptCmpBase->IMCR & ~CMP_INT_MSK) | bEnable;
-}
-
-static inline  void csp_cmp_rawdet_int_enable(csp_cmp_t *ptCmpBase,bool bEnable)
-{
-	ptCmpBase->IMCR = (ptCmpBase->IMCR & ~CMP_INT_RAWDET_MSK) | (bEnable<<CMP_INT_RAWDET_POS);
 }
 
 static inline uint32_t csp_cmp_get_imcr(csp_cmp_t *ptCmpBase)

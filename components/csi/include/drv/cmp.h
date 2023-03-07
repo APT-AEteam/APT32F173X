@@ -28,14 +28,12 @@ extern "C" {
  
 #define CMP_EDGEDET0_INT         (1<<0)
 
-#define CMP_RAWDET0_INT          (1<<16)
 
 
 typedef enum
 {
 	CMP_INTSRC_NONE     =  (0x00ul << 0), 
 	CMP_INTSRC_EDGEDET  =  (0x01ul << 0),  
-	CMP_INSRCT_RAWDET   =  (0x01ul << 16),  	
 }csi_cmp_intsrc_e;
 
 typedef enum
