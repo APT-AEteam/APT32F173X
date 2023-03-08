@@ -29,6 +29,10 @@ extern int pin_irq_demo(void);
 //bt demo
 extern int bt_timer_demo(void);
 extern int bt_pwm_demo(void);
+extern int bt_sync_trg_start_demo(void);
+extern int bt_sync_trg_count_demo(void);
+extern int bt_sync_trg_stop_demo(void);
+extern int bt_trgev_demo(void);
 
 //iwdt demo
 extern int iwdt_normal_demo(void);
@@ -106,6 +110,7 @@ extern void iic_slave_demo(void);
 //cnta demo
 extern int cnta_timer_demo(void);
 extern int cnta_pwm_demo(void);
+extern int cnta_envelope_demo(void);
 
 //spi demo
 extern int spi_sync_sendbuff(void);
