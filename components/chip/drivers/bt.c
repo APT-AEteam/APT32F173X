@@ -30,43 +30,15 @@ __attribute__((weak)) void bt_irqhandler(csp_bt_t *ptBtBase)
 	if(wMisr & BT_PEND_INT)					//PEND interrupt
 	{
 		csp_bt_clr_isr(ptBtBase, BT_PEND_INT);
-		csi_pin_toggle(PA6);				//PA06 toggle
-//		csi_pin_set_low(PA6);
-//		BT_Flag ^= 1;
-//		if(BT_Flag == 1)
-//		{
-//			CA0->CADATAH = 500;
-//			CA0->CADATAL = 200;
-//		}
-//		else
-//		{
-//			CA0->CADATAH = 200;
-//			CA0->CADATAL = 500;
-//		}
-		
+		csi_pin_toggle(PA6);				//PA06 toggle	
 	}
 	
 	if(wMisr & BT_CMP_INT)					//CMP interrupt
 	{
 		csp_bt_clr_isr(ptBtBase, BT_CMP_INT);
-//		csi_pin_toggle(PA5);				//PA06 toggle
-//		CA0->CADATAH = 200;
-//		CA0->CADATAL = 500;
-		csi_pin_set_high(PA6);
-		BT_Flag ^= 1;
-		if(BT_Flag == 1)
-		{
-			CA0->CADATAH = 500;
-			CA0->CADATAL = 200;
-		}
-		else
-		{
-			CA0->CADATAH = 200;
-			CA0->CADATAL = 500;
-		}
-		
+//		csi_pin_set_high(PA6);	
 	}
-	if(wMisr & BT_EVTRG_INT)					//PEND interrupt
+	if(wMisr & BT_EVTRG_INT)				//EVTRG interrupt
 	{
 		csi_pin_set_low(PA5);
 		csp_bt_clr_isr(ptBtBase, BT_EVTRG_INT);
