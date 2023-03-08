@@ -46,6 +46,8 @@ extern void adc_irqhandler(csp_adc_t *ptAdcBase);
 extern void syscon_irqhandler(csp_syscon_t *ptSysconBase);
 extern void led_irqhandler(csp_led_t *ptLedBase);
 extern void i2c_irqhandler(csp_i2c_t *ptIicBase);
+
+extern void gptb0_irqhandler(csp_gptb_t *ptGptbBase);
 extern void sio_irqhandler(csp_sio_t *ptSioBase);
 
 
@@ -167,6 +169,7 @@ void gptb0_int_handler(void)
 {
 #if GPTB0_INT_HANDLE_EN		
     // ISR content ...	
+	gptb0_irqhandler(GPTB0);
 #endif
 }
 
