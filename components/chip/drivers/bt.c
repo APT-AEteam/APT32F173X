@@ -36,6 +36,7 @@ __attribute__((weak)) void bt_irqhandler(csp_bt_t *ptBtBase)
 	if(wMisr & BT_CMP_INT)					//CMP interrupt
 	{
 		csp_bt_clr_isr(ptBtBase, BT_CMP_INT);
+		csi_pin_set_low(PA5);
 //		csi_pin_set_high(PA6);	
 	}
 	if(wMisr & BT_EVTRG_INT)				//EVTRG interrupt
