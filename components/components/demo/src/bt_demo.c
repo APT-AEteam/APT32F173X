@@ -264,12 +264,11 @@ int bt_trgev_demo(void)
 	csi_irq_enable((uint32_t *)BT0);								//enable BT0 irq
 	
 	csi_pin_set_mux(PC11, PC11_BT1_OUT);					//PC11 作为BT1 PWM输出引脚
-	
 	//init timer pwm para config
-	tPwmCfg.byIdleLevel = BT_PWM_IDLE_HIGH;					//PWM 输出空闲电平
+	tPwmCfg.byIdleLevel = BT_PWM_IDLE_LOW;					//PWM 输出空闲电平
 	tPwmCfg.byStartLevel= BT_PWM_START_HIGH;				//PWM 输出起始电平
-	tPwmCfg.byDutyCycle = 90;								//PWM 输出占空比(0 < DutyCycle < 100)		
-	tPwmCfg.wFreq 		= 50;								//PWM 输出频率
+	tPwmCfg.byDutyCycle = 80;								//PWM 输出占空比(0 < DutyCycle < 100)		
+	tPwmCfg.wFreq 		= 1000;								//PWM 输出频率
 	//tPwmCfg.byInter 	= BT_INTSRC_PEND | BT_INTSRC_CMP;	//PWM 中断配置(PEND and CMP)
 	tPwmCfg.byInter		= BT_INTSRC_NONE;
 	csi_bt_pwm_init(BT1, &tPwmCfg);							//初始化BT1 PWM输出
@@ -292,6 +291,7 @@ int bt_trgev_demo(void)
 		if(byFlag == 0)             //启动一次
 		{
 			byFlag = 1;
+			csi_pin_set_high(PA6);  //拉高PA6，并在BT0周期中断翻转
 			csi_bt_start(BT0);      //启动BT0，当周期结束中断时产生触发信号触发BT1工作
 //			csi_bt_soft_evtrg(BT0);
 		}
