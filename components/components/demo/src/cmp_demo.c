@@ -40,7 +40,7 @@ int cmp_base_demo(void)
 	tCmpCfg.byNsel = CMP_N_SEL_CP1;                   //N- 端口选择
 	tCmpCfg.byPsel = CMP_P_SEL_CP1;	                  //P+ 端口选择
 	tCmpCfg.byPhystpol = CMP_PHYST_POL_0mv;           //比较器输入迟滞
-	tCmpCfg.byPhystsel = CMP_PHYST_POL_DIS;	          //比较器输入迟滞特性极性选择
+	tCmpCfg.byNhystpol = CMP_PHYST_POL_0mv;	          //比较器输入迟滞特性极性选择
 	tCmpCfg.byPolarity = CMP_POL_OUT_DIRECT;          //比较器输出极性选择 0:不反向
 	tCmpCfg.byCpoSel  = CMP_CPOS_OUT_IN;	          //CMP_OUT管脚上输出信号选择 0h：滤波前信号直接输出 	1h：滤波后信号输出 
 	tCmpCfg.wInt = CMP_INTSRC_EDGEDET;	      	  //中断模式
@@ -66,8 +66,8 @@ int cmp_dfcr_demo(void)
 	csi_cmp_config_t tCmpCfg;
 	tCmpCfg.byNsel = CMP_N_SEL_CP1;                    //N- 端口选择
 	tCmpCfg.byPsel = CMP_P_SEL_CP1;	                  //P+ 端口选择
-	tCmpCfg.byPhystpol = CMP_PHYST_POL_10mv;               //比较器输入迟滞 10mv
-	tCmpCfg.byPhystsel = CMP_PHYST_POL_DIS;	          //比较器输入迟滞特性极性选择
+	tCmpCfg.byPhystpol = CMP_PHYST_POL_0mv;               //比较器输入迟滞 10mv
+	tCmpCfg.byNhystpol = CMP_PHYST_POL_0mv;	          //比较器输入迟滞特性极性选择
 	tCmpCfg.byPolarity = CMP_POL_OUT_DIRECT;           //比较器输出极性选择 0:不反向
 	tCmpCfg.byCpoSel = CMP_CPOS_OUT_IN;	              //CMP_OUT管脚上输出信号选择 0h：滤波前信号直接输出 	1h：滤波后信号输出 
 	tCmpCfg.wInt = CMP_INTSRC_NONE;	      		      //中断模式
@@ -110,8 +110,8 @@ int cmp_wfcr_demo(void)
 	csi_cmp_config_t tCmpCfg;
 	tCmpCfg.byNsel = CMP_N_SEL_CP1;                    //N- 端口选择
 	tCmpCfg.byPsel = CMP_P_SEL_CP1;	                  //P+ 端口选择
-	tCmpCfg.byPhystpol = CMP_PHYST_POL_10mv;               //比较器输入迟滞 10mv
-	tCmpCfg.byPhystsel = CMP_PHYST_POL_DIS;	          //比较器输入迟滞特性极性选择
+	tCmpCfg.byPhystpol = CMP_PHYST_POL_0mv;               //比较器输入迟滞 10mv
+	tCmpCfg.byNhystpol = CMP_PHYST_POL_0mv;	          //比较器输入迟滞特性极性选择
 	tCmpCfg.byPolarity = CMP_POL_OUT_DIRECT;           //比较器输出极性选择 0:不反向
 	tCmpCfg.byCpoSel = CMP_CPOS_OUT_IN;	              //CMP_OUT管脚上输出信号选择 0h：滤波前信号直接输出 	1h：滤波后信号输出 
 	tCmpCfg.wInt = CMP_INTSRC_NONE;	      //中断模式
