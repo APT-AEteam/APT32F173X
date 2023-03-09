@@ -99,8 +99,8 @@ struct  csi_gptb_deadzone_config
 	uint8_t      byChbDedb;
 	uint8_t      byChcDedb;
 	uint16_t      hwDpsc;                 //
-	uint16_t      hwRisingEdgereGister ;  //
-	uint16_t      hwFallingEdgereGister;  //
+	uint32_t      hwRisingEdgereGister ;  //
+	uint32_t      hwFallingEdgereGister;  //
 };
 
 
@@ -118,7 +118,7 @@ struct csi_gptb_Chopper_config
 typedef enum{
 	GPTBCHAX = 0x1,
 	GPTBCHAY,
-//	GPTBCHBX,
+	GPTBCHBX,
 //	GPTBCHBY,
 //	GPTBCHCX,
 //	GPTBCHCY
@@ -141,7 +141,9 @@ struct csi_gptb_emergency_config
 	uint8_t  byFltpace1;
 	uint8_t  byOrl0;
 	uint8_t  byOrl1;
-	
+	uint8_t  byOsrshdw;
+	uint8_t  byOsrldmd;
+	uint8_t  bySlclrmd;
 };
 
 typedef struct  csi_gptb_Event_trigger_config   csi_gptb_Event_trigger_config_t;
@@ -402,8 +404,11 @@ csi_error_t csi_gptb_global_rearm(csp_gptb_t *ptGptbBase);
 csi_error_t csi_gptb_global_sw(csp_gptb_t *ptGptbBase);
 csi_error_t csi_gptb_set_extsync_chnl(csp_gptb_t *ptGptbBase, csi_gptb_trgin_e eTrgIn, csi_gptb_syncrout_e byTrgChx);
 csi_error_t csi_gptb_set_evtrg(csp_gptb_t *ptGptbBase, csi_gptb_trgout_e byTrgOut, csi_gptb_trgsrc_e eTrgSrc);
-
-
+void csi_gptb_emergency_interruption_en(csp_gptb_t *ptGptbBase, csp_gptb_emint_e eEbi);
+void csi_gptb_force_em(csp_gptb_t *ptGptbBase, csp_gptb_ep_e eEpi);
+void csi_gptb_clr_hdlck(csp_gptb_t *ptGptbBase, csp_gptb_ep_e eEbi);
+void csi_gptb_clr_sftlck(csp_gptb_t *ptGptbBase, csp_gptb_ep_e eEpi);
+csi_error_t csi_gptb_channel_aqload_config(csp_gptb_t *ptGptbBase, csp_gptb_ld_e tld, csp_gptb_ldtcmp_e tldamd ,csi_gptb_channel_e eChannel);
 #ifdef __cplusplus
 }
 #endif

@@ -256,17 +256,18 @@ csi_error_t csi_usart_send_async(csp_usart_t *ptUsartBase, const void *pData, ui
 /** 
   \brief 	   usart dma receive mode init
   \param[in]   ptUsartBase	pointer of usart register structure
+  \param[in]   ptDmaBase: pointer of dma register structure
   \param[in]   eDmaCh		channel id number of dma, eDmaCh: DMA_CH0_ID ` DMA_CH5_ID
   \param[in]   eEtbCh		channel id number of etb, eEtbCh >= ETB_CH20_ID
   \return      error code \ref csi_error_t
  */
-csi_error_t csi_usart_dma_rx_init(csp_usart_t *ptUsartBase, csi_dma_ch_e eDmaCh, csi_etb_ch_e eEtbCh);
+csi_error_t csi_usart_dma_rx_init(csp_usart_t *ptUsartBase, csp_dma_t *ptDmaBase, csi_dma_ch_e eDmaCh, csi_etb_ch_e eEtbCh);
 
 /** \brief usart dma send mode init
  * 
  *  \param[in] ptUsartBase: pointer of usart register structure
  *  \param[in] ptDmaBase: pointer of dma register structure
- *  \param[in] eDmaCh: channel id number of dma, eDmaCh: DMA_CH0_ID ` DMA_CH4_ID
+ *  \param[in] eDmaCh: channel id number of dma, eDmaCh: DMA_CH0_ID ` DMA_CH5_ID
  *  \param[in] eEtbCh: channel id number of etb, eEtbCh >= ETB_CH8_ID
  *  \return  error code \ref csi_error_t
  */
@@ -285,11 +286,12 @@ csi_error_t csi_usart_send_dma(csp_usart_t *ptUsartBase, csp_dma_t *ptDmaBase, c
 /** 
   \brief 	   receive data to usart transmitter, this function is dma mode
   \param[in]   ptUsartBase	pointer of usart register structure
+  \param[in] ptDmaBase: pointer of dma register structure
   \param[in]   pData		pointer to buffer with data to send to usart transmitter.
   \param[in]   wSize		number of data to send (byte), hwSize <= 0xfff.
   \return      error code \ref csi_error_t
  */
-csi_error_t csi_usart_recv_dma(csp_usart_t *ptUsartBase, void *pData, uint8_t byDmaCh, uint16_t hwSize);
+csi_error_t csi_usart_recv_dma(csp_usart_t *ptUsartBase, csp_dma_t *ptDmaBase, void *pData, uint8_t byDmaCh, uint16_t hwSize);
 
 /**
   \brief       Query data from USART receiver FIFO, this function is blocking.

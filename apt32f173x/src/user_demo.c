@@ -83,8 +83,7 @@ void user_demo(void)
 //	bt_sync_trg_start_demo();
 //	bt_sync_trg_count_demo();
 //	bt_sync_trg_stop_demo();
-//	bt_trg_out_demo();
-//	bt_soft_trg_out_demo();
+//	bt_trgev_demo();
 
 /// ***************************************************
 ///  LPT相关的示例代码
@@ -97,6 +96,7 @@ void user_demo(void)
 /// ***************************************************
 //	cnta_timer_demo();
 //	cnta_pwm_demo();
+//	cnta_envelope_demo();
 	
 /// ***************************************************
 ///  GPTA相关的示例代码
@@ -104,6 +104,13 @@ void user_demo(void)
 //	gpta_capture_demo();
 //	gpta_pwm_demo();
 //	gpta_demo12();
+
+/// ***************************************************
+///  CMP相关的示例代码
+/// ***************************************************
+//	cmp_base_demo();
+//	cmp_dfcr_demo();
+//	cmp_wfcr_demo();
 
 /// ***************************************************
 ///  EPT相关的示例代码

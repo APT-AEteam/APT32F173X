@@ -58,7 +58,8 @@ typedef enum{
  */
 typedef enum{
 	BT_TRGIN_SYNCEN0	= 0,		//BT sync trigger input0		
-	BT_TRGIN_SYNCEN1				//BT sync trigger input1			
+	BT_TRGIN_SYNCEN1,				//BT sync trigger input1	
+	BT_TRGIN_SYNCEN2				//BT sync trigger input2		
 }csi_bt_trgin_e;
 
 /**
@@ -69,6 +70,16 @@ typedef enum{
 	BT_TRG_CONTINU	= 0,			//BT continuous trigger mode 
 	BT_TRG_ONCE					
 }csi_bt_trgmode_e;					//BT once trigger mode 
+
+/**
+ * \enum     csi_bt_arearm_e
+ * \brief    BT sync arearm mode 
+ */
+typedef enum{
+	BT_TRG_AUTOAREARM	= 1,			//x1：计数器周期结束时，自动AREARM
+	BT_TRG_SYCAREARM	                //1x：SYNCIN[1]时，自动AREARM			
+}csi_bt_arearm_e;					    //BT  sync arearm mode 
+
 
 /**
  * \enum     csi_bt_trgsrc_e
@@ -203,7 +214,7 @@ void csi_bt_pwm_updata(csp_bt_t *ptBtBase, uint32_t wfreq, uint8_t byDutyCycle);
   \param[in]   bAutoRearm 	auto rearm, ENABLE/DISABLE(true/false)
   \return      none
 */
-void csi_bt_set_sync(csp_bt_t *ptBtBase,csi_bt_trgin_e eTrgin, csi_bt_trgmode_e eTrgMode, bool bAutoRearm);
+csi_error_t csi_bt_set_sync(csp_bt_t *ptBtBase,csi_bt_trgin_e eTrgin, csi_bt_trgmode_e eTrgMode, csi_bt_trgmode_e bAutoRearm);
 
 /** 
   \brief 	   restart bt sync evtrg 
@@ -216,12 +227,18 @@ void csi_bt_rearm_sync(csp_bt_t *ptBtBase,csi_bt_trgin_e eTrgin);
 /** 
   \brief 	   bt evtrg output config
   \param[in]   ptBtBase		pointer of bt register structure
-  \param[in]   byTrgOut		evtrg out port (only 0)
-  \param[in]   eTrgSrc 		bt evtrg source(1~3) 
+  \param[in]   eTrgSrc 		bt evtrg source(0~3) 
+  \param[in]   bTrgoe		evtrg out enable
   \return 	   error code \ref csi_error_t
  */
-csi_error_t csi_bt_set_evtrg(csp_bt_t *ptBtBase, uint8_t byTrgOut, csi_bt_trgsrc_e eTrgSrc);
+csi_error_t csi_bt_set_evtrg(csp_bt_t *ptBtBase,csi_bt_trgsrc_e eTrgSrc, bool bTrgoe);
 
+/** \brief bt software generates a trigger event
+ * 
+ *  \param[in] ptBtBase:pointer of bt register structure
+ *  \return error code \ref csi_error_t
+ */
+void csi_bt_soft_evtrg(csp_bt_t *ptBtBase);
 
 /** \brief     start bt by sync event
   \param[in]   ptBtBase		pointer of bt register structure

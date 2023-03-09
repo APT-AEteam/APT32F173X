@@ -91,7 +91,7 @@ typedef enum
 }bt_opm_e;
 
 #define BT_EXTCKM_POS	(5)
-#define BT_EXTCKM_MSK	(0x01ul << BT_OPM_POS)
+#define BT_EXTCKM_MSK	(0x01ul << BT_EXTCKM_POS)
 typedef enum
 {
 	BT_PCLKDIV		= 0,
@@ -114,16 +114,22 @@ typedef enum
     BT_START_HIGH        
 }bt_startst_e;
 
-#define BT_SYNC_POS		(8)
-#define BT_SYNC_MSK		(0x03ul << BT_SYNC_POS)
+#define BT_SYNC_POS(n)	(8 + n)
+#define BT_SYNC_MSK(n)	(0x01ul << BT_SYNC_POS(n))
+
+//#define BT_SYNC_POS		(8)
+//#define BT_SYNC_MSK		(0x03ul << BT_SYNC_POS)
 typedef enum
 {
     BT_SYNC_DIS		= 0,    
 	BT_SYNC_EN       
 }bt_sync_e;
 
-#define BT_OSTMD_POS	(10)
-#define BT_OSTMD_MSK	(0x03ul << BT_OSTMD_POS)
+#define BT_OSTMD_POS(n)	(24 + n)
+#define BT_OSTMD_MSK(n)	(0x01ul << BT_OSTMD_POS(n))
+
+//#define BT_OSTMD_POS	(10)
+//#define BT_OSTMD_MSK	(0x03ul << BT_OSTMD_POS)
 typedef enum
 {
 	BT_OSTMD_CONTINUOUS = 0,
@@ -134,8 +140,8 @@ typedef enum
 #define BT_REARM_MSK 	(0x03 << BT_REARM_POS)
 #define BT_REARM_EN		(0x01ul)
 
-#define BT_AREARM_POS	(14)
-#define BT_AREARM_MSK	(0x01ul << BT_AREARM_POS)
+#define BT_AREARM_POS(n)	(18 +  (2 * n))
+#define BT_AREARM_MSK(n)	(0x01ul << BT_AREARM_POS(n))
 typedef enum
 {
 	BT_AREARM_DIS 	= 0,
@@ -272,7 +278,10 @@ static inline void csp_bt_set_evtrg(csp_bt_t *ptBtBase, uint32_t wEvTrg)
 {
 	ptBtBase->EVTRG = wEvTrg;
 }
-
+static inline void csp_bt_evswf_en(csp_bt_t *ptBtBase)
+{
+	ptBtBase->EVSWF = 0x01;
+}
 static inline uint16_t csp_bt_get_pscr(csp_bt_t *ptBtBase)
 {
 	return (uint16_t)(ptBtBase->PSCR & BT_PSCR_MSK);
@@ -299,7 +308,7 @@ static inline uint32_t csp_bt_get_isr(csp_bt_t *ptBtBase)
 {
 	return ptBtBase->MISR;
 }
-static inline void csp_bt_int_enable(csp_bt_t *ptBtBase, bt_int_e eBtInt,bool bEnable)
+static inline void csp_bt_int_set(csp_bt_t *ptBtBase, bt_int_e eBtInt,bool bEnable)
 {
 	if(bEnable)
 		ptBtBase->IMCR |= eBtInt; 

@@ -196,24 +196,34 @@ typedef enum{
 	GPTA_MODE_OUT
 }csp_gpta_md_e;
 
-#define GPTA_CAPREARM   (1ul << 19)
-#define GPTA_CAPMD_POS  (20)
+#define GPTA_CAPMD_SEL_POS   (19)
+#define GPTA_CAPMD_SEL_MSK     (1ul << GPTA_CAPMD_SEL_POS)
+typedef enum{
+	GPTA_CMPMD_SEL_NODIFF = 0,
+	GPTA_CMPMD_SEL_DIFF
+}csp_gpta_cmpmd_sel_e;
+
+
+#define GPTA_CAPREARM   (1ul << 20)
+#define GPTA_CAPREARM_MSK     (1ul << GPTA_CAPREARM)
+
+#define GPTA_CAPMD_POS  (21)
 #define GPTA_CAPMD_MSK	(0x1 << GPTA_CAPMD_POS)
 typedef enum{
 	GPTA_CAPMD_CONT = 0,
 	GPTA_CAPMD_OT,
 }csp_gpta_capmd_e;
 
-#define GPTA_STOPWRAP_POS	(21)
+#define GPTA_STOPWRAP_POS	(22)
 #define GPTA_STOPWRAP_MSK	(0x3 << GPTA_STOPWRAP_POS)
 
-#define GPTA_CMPA_RST_POS	(23)
+#define GPTA_CMPA_RST_POS	(24)
 #define GPTA_CMPA_RST_MSK	(0x1 << GPTA_CMPA_RST_POS) 	
-#define GPTA_CMPB_RST_POS	(24)
+#define GPTA_CMPB_RST_POS	(25)
 #define GPTA_CMPB_RST_MSK	(0x1 << GPTA_CMPB_RST_POS) 	
-#define GPTA_CMPAA_RST_POS	(25)
+#define GPTA_CMPAA_RST_POS	(26)
 #define GPTA_CMPAA_RST_MSK	(0x1 << GPTA_CMPAA_RST_POS) 	
-#define GPTA_CMPBA_RST_POS	(26)
+#define GPTA_CMPBA_RST_POS	(27)
 #define GPTA_CMPBA_RST_MSK	(0x1 << GPTA_CMPBA_RST_POS) 
 
 #define GPTA_CMP_LDRST_POS(n) (23 + (n))
@@ -573,7 +583,7 @@ static inline void csp_gpta_clken(csp_gpta_t *ptGptaBase)
  
 static inline void csp_gpta_reset(csp_gpta_t *ptGptaBase)
  {
-	ptGptaBase -> CEDR |= GPTA_RESET;
+	ptGptaBase->RSSR |= GPTA_RESET;
  }
 static inline void csp_gpta_dbg_enable(csp_gpta_t *ptGptaBase, bool bEnable)
 {
@@ -765,7 +775,7 @@ static inline void csp_gpta_sync_trg1sel(csp_gpta_t *ptGptaBase, uint8_t byTrgin
 }
 
 static inline void csp_gpta_rearm_sync(csp_gpta_t *ptGptaBase, uint8_t byCh)
-{  // ptGptaBase -> REGPROT = GPTA_REGPROT;;
+{   ptGptaBase -> REGPROT = GPTA_REGPROT;;
 	ptGptaBase -> SYNCR = ptGptaBase -> SYNCR | GPTA_REARM(byCh);
 }
 

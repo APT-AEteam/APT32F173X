@@ -36,10 +36,6 @@ __attribute__((weak)) void cmp_irqhandler(csp_cmp_t *ptCmpBase)
 	{
 		csi_cmp_int_clear(ptCmpBase,CMP_INTSRC_EDGEDET);
 	}
-	else if(csi_cmp_get_misr(ptCmpBase) & CMP_RAWDET0_INT)
-	{
-		csi_cmp_int_clear(ptCmpBase,CMP_INSRCT_RAWDET);	
-	}
 }
 /** \brief Enable cmp power manage
  * 
@@ -76,11 +72,7 @@ csi_error_t csi_cmp_init(csp_cmp_t *ptCmpBase,csi_cmp_config_t *ptCmpCfg)
 	csi_clk_enable((uint32_t *)ptCmpBase);
 	csp_cmp_clk_enable(ptCmpBase, ENABLE);
 	csp_cmp_inpcr(ptCmpBase ,ptCmpCfg->byNsel,ptCmpCfg->byPsel);
-	if(ptCmpCfg->byNsel == CMP_N_SEL_1VBUF)
-	{
-		csp_cmp_inpcr_1vbuf_enable(ptCmpBase,ENABLE);
-	}
-	csp_cmp_hystpol(ptCmpBase , ptCmpCfg->byPhystpol,ptCmpCfg->byPhystsel);
+	csp_cmp_hystpol(ptCmpBase , ptCmpCfg->byPhystpol,ptCmpCfg->byNhystpol);
 	csp_cmp_polarity(ptCmpBase , ptCmpCfg->byPolarity);
 	csp_cmp_out(ptCmpBase , ptCmpCfg->byCpoSel);
 	csi_cmp_int_enable(ptCmpBase, ptCmpCfg->wInt,ENABLE);
@@ -216,13 +208,4 @@ void csi_cmp_int_clear(csp_cmp_t *ptCmpBase,csi_cmp_intsrc_e eIntMode)
 uint32_t csi_cmp_get_misr(csp_cmp_t *ptCmpBase)
 {
 	return csp_cmp_get_misr(ptCmpBase);
-}
-
-/** \brief Enable cmp power manage
- *  \param[in] ptCmpBase: pointer of cmp register structure
- *  \param[in] bEnable: cmp lpwken enable or disable
- */
-void csi_cmp_lpwken_enable(csp_cmp_t *ptCmpBase, bool bEnable)
-{
-	csp_cmp_lpwken_enable(ptCmpBase,bEnable);
 }

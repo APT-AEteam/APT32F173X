@@ -29,6 +29,10 @@ extern int pin_irq_demo(void);
 //bt demo
 extern int bt_timer_demo(void);
 extern int bt_pwm_demo(void);
+extern int bt_sync_trg_start_demo(void);
+extern int bt_sync_trg_count_demo(void);
+extern int bt_sync_trg_stop_demo(void);
+extern int bt_trgev_demo(void);
 
 //iwdt demo
 extern int iwdt_normal_demo(void);
@@ -106,6 +110,7 @@ extern void iic_slave_demo(void);
 //cnta demo
 extern int cnta_timer_demo(void);
 extern int cnta_pwm_demo(void);
+extern int cnta_envelope_demo(void);
 
 //spi demo
 extern int spi_sync_sendbuff(void);
@@ -127,10 +132,10 @@ extern void spi_etcb_dma_send_receive(void);//etcb硬件触发dma收发spi数据
 //extern void spi_master_sync_send_async_receive_demo(void);//主机示例2
 //extern void spi_slave_async_send_async_receive_demo(void);//从机示例2
 
-//touch demo
-extern void touch_lowpower_demo(void);
-extern void touch_timer_demo(void);
-extern void touch_main_demo(void);
+//cmp demo
+extern int cmp_base_demo(void);
+extern int cmp_dfcr_demo(void);
+extern int cmp_wfcr_demo(void);
 
 //gpta demo
 extern int gpta_capture_demo();

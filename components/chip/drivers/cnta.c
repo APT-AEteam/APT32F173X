@@ -43,9 +43,12 @@ csi_error_t csi_cnta_timer_init(csp_cnta_t *ptCntaBase,csi_conta_timer_config_t 
     csp_cnta_soft_rst(ptCntaBase);				//default init valu
 	csp_cnta_set_ckdiv(ptCntaBase, ptContaTimerCfg->eClkDiv,ptContaTimerCfg->eRunMode);	//cnta clk = pclk/eClkDiv
 	
-	csp_cnta_set_datal(ptCntaBase, wTempLoad);				//set data
-    //csp_cnta_set_datah(ptCntaBase, wTempLoad);				//set data
-	csp_cnta_soft_updata(ptCntaBase);	
+	csp_cnta_set_datal(ptCntaBase, wTempLoad);				//set CADATAL data
+//    csp_cnta_set_datah(ptCntaBase, wTempLoad);			    //set CADATAH data
+
+	
+	apt_cnta_int_arrt_set(CLIC_INTATTR_TRIG_UP); 
+	csp_cnta_soft_updata(ptCntaBase);	                    //updata CADATAH CADATAL value 
 	csp_cnta_set_int(ptCntaBase, ptContaTimerCfg->byInter, true);//set intrrupt
 	csi_irq_enable((uint32_t *)ptCntaBase);					//enable cnta irq
 	
@@ -140,10 +143,12 @@ csi_error_t csi_cnta_pwm_init(csp_cnta_t *ptCntaBase,csi_conta_pwm_config_t *ptC
 	csp_cnta_set_ckdiv(ptCntaBase, ptContaPwmCfg->eClkDiv, CNTA_REPEAT_MODE);		//cnta clk = pclk/eClkDiv
 	csp_cnta_set_carrier(ptCntaBase, CNTA_CARRIER_EN, PWM_CARRIER, eRemStat, eOsp);
 	csp_cnta_set_datah(ptCntaBase, wDatahLoad);
-	csp_cnta_set_datal(ptCntaBase, wDatalLoad);
+	csp_cnta_set_datal(ptCntaBase, wDatalLoad);	
+	apt_cnta_int_arrt_set(CLIC_INTATTR_TRIG_UP); 
 	csp_cnta_soft_updata(ptCntaBase);
 	csp_cnta_set_int(ptCntaBase, ptContaPwmCfg->byInter, true);
-
+	csi_irq_enable((uint32_t *)ptCntaBase);					    //enable cnta irq
+	
 	return ret;
 }
 

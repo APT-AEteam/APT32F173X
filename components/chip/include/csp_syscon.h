@@ -176,6 +176,27 @@ typedef enum{
 #define PCLK_DIV_MSK (0xf<<8)
 #define PCLK_KEY (0xC33Cul<<16)
 
+/// EXI FLT
+#define	EXI_FLT_POS(n)	(4*n)
+#define	EXI_FLT_MSK(n)	(0x0ful << EXI_FLT_POS(n))
+typedef enum{
+	EXIFLT_NONE = 0,
+	EXIFLT_3THF,
+	EXIFLT_6THF,
+	EXIFLT_9THF,
+	EXIFLT_12THF,
+	EXIFLT_18THF,
+	EXIFLT_24THF,
+	EXIFLT_36THF,
+	EXIFLT_48THF,
+	EXIFLT_60THF,
+	EXIFLT_72THF,
+	EXIFLT_84THF,
+	EXIFLT_96THF,
+	EXIFLT_120THF,
+	EXIFLT_168THF,
+	EXIFLT_216THF
+}exi_flt_e;
 
 /// OSTR: EXTernal OSC stable time
 #define EM_LF   		(0x01ul << 10)
@@ -304,6 +325,8 @@ typedef enum{
 	CLO_PCLK,
 	CLO_HCLK,
 	CLO_IWDTCLK,
+	CLO_PLL_PCLK,
+	CLO_PLL_QCLK,
 	CLO_SYSCLK = 0xd
 }clo_src_e;
 
@@ -614,11 +637,12 @@ static inline void csp_pll_set_ckp_div(csp_syscon_t *ptSysconBase, uint8_t byCkp
 	ptSysconBase->PLLCR = (ptSysconBase->PLLCR & (~PLL_CKP_DIV_MSK)) | byCkp_Div << PLL_CKP_DIV_POS;
 }
 
-static inline void csp_pll_ckp_enable(csp_syscon_t *ptSysconBase, bool bEnable)
+static inline void csp_pll_clk_enable(csp_syscon_t *ptSysconBase, bool bEnable)
 {
 	ptSysconBase->PLLCR = (ptSysconBase->PLLCR & ~PLL_CKPEN_MSK)| (bEnable << PLL_CKPEN_POS);
 }
 
+/*
 static inline void csp_pll_ckq_enable(csp_syscon_t *ptSysconBase, bool bEnable)
 {
 	ptSysconBase->PLLCR = (ptSysconBase->PLLCR & ~PLL_CKQEN_MSK)| (bEnable << PLL_CKQEN_POS);
@@ -628,6 +652,7 @@ static inline void csp_pll_ckr_enable(csp_syscon_t *ptSysconBase, bool bEnable)
 {
 	ptSysconBase->PLLCR = (ptSysconBase->PLLCR & ~PLL_CKREN_MSK)| (bEnable << PLL_CKREN_POS);
 }
+*/
 
 static inline void csp_set_hfosc_fre(csp_syscon_t *ptSysconBase, uint32_t wFreq)
 {
@@ -964,6 +989,11 @@ static inline void csp_set_ureg(csp_syscon_t *ptSysconBase, uint8_t byNum, uint3
 static inline void csp_set_swrst(csp_syscon_t *ptSysconBase, sw_rst_e eSwRst)
 {
 	ptSysconBase->IDCCR |= (SYSCON_IDKEY | (eSwRst << SYSCON_SWRST_POS));
+}
+
+static inline void csp_exi_flt(csp_syscon_t *ptSysconBase, uint8_t byFltNum, exi_flt_e eFlt)
+{
+	ptSysconBase->EXICFG = (ptSysconBase->EXICFG & ~EXI_FLT_MSK(byFltNum)) | (eFlt << EXI_FLT_POS(byFltNum));
 }
 
 #endif  /* _CSP_SYSCON_H*/

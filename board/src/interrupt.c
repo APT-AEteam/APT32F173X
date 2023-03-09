@@ -47,6 +47,9 @@ extern void syscon_irqhandler(csp_syscon_t *ptSysconBase);
 extern void led_irqhandler(csp_led_t *ptLedBase);
 extern void i2c_irqhandler(csp_i2c_t *ptIicBase);
 
+extern void gptb0_irqhandler(csp_gptb_t *ptGptbBase);
+extern void sio_irqhandler(csp_sio_t *ptSioBase);
+
 
 /* private function--------------------------------------------------------*/
 /* extern variablesr------------------------------------------------------*/
@@ -166,6 +169,7 @@ void gptb0_int_handler(void)
 {
 #if GPTB0_INT_HANDLE_EN		
     // ISR content ...	
+	gptb0_irqhandler(GPTB0);
 #endif
 }
 
@@ -264,6 +268,7 @@ void qspi_int_handler(void)
 void sio0_int_handler(void) 
 {
 #if	SIO0_INT_HANDLE_EN
+	sio_irqhandler(SIO0);
     // ISR content ...
 #endif
 }
@@ -271,6 +276,7 @@ void sio0_int_handler(void)
 void sio1_int_handler(void) 
 {
 #if	SIO1_INT_HANDLE_EN
+	sio_irqhandler(SIO1);
     // ISR content ...
 #endif
 }
@@ -305,6 +311,7 @@ void exi0_int_handler(void)
 #if	EXI0_INT_HANDLE_EN
     // ISR content ...
 	gpio_irqhandler(0);
+	csi_pin_toggle(PD0);
 #endif
 }
 void exi1_int_handler(void) 
@@ -371,6 +378,7 @@ void cmp0_int_handler(void)
 {
 #if	CMP0_INT_HANDLE_EN
     // ISR content ...
+	cmp_irqhandler(CMP0);
 #endif
 }
 
@@ -378,6 +386,7 @@ void cmp1_int_handler(void)
 {
 #if	CMP1_INT_HANDLE_EN
     // ISR content ...
+	cmp_irqhandler(CMP1);
 #endif
 }
 
@@ -385,6 +394,7 @@ void cmp2_int_handler(void)
 {
 #if	CMP2_INT_HANDLE_EN
     // ISR content ...
+	cmp_irqhandler(CMP2);
 #endif
 }
 
