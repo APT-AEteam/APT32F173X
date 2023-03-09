@@ -196,7 +196,13 @@ void user_demo(void)
 ///  OPA相关的示例代码
 /// ***************************************************
 //	opa_internal_gain_mode_test();
-	opa_external_gain_mode_test();
+//	opa_external_gain_mode_test();
+
+/// ***************************************************
+///  FVR相关的示例代码
+/// ***************************************************
+	fvr_output_demo();
+//	fvr_buf_demo();
 
 }
 
