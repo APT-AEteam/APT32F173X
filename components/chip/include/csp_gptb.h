@@ -145,9 +145,9 @@ typedef enum{
 #define GPTB_PRDLD_POS			(4)
 #define GPTB_PRDLD_MSK			(0x3ul << GPTB_PRDLD_POS)
 typedef enum {
-	GPTB_LDPRDR_ZRO = 0,
-	GPTB_LDPRDR_ZRO_SYNC,
-	GPTB_LDPRDR_SYNC,
+	GPTB_LDPRDR_PEND = 0,
+	GPTB_LDPRDR_LOAD_SYNC,
+	GPTB_LDPRDR_PEND_LOAD_SYNC,
 	GPTB_LDPRDR_IMMD
 }csp_gptb_ldprdr_e;
 
@@ -312,22 +312,27 @@ typedef enum{
 #define GPTB_GLDCNT_POS	(10)
 #define GPTB_GLDCNT_MSK	(0x7 << GPTB_GLDCNT_POS)
 
-///CLDCFG
-#define GPTB_LD_PRDR_POS (0)
+///GLDCFG
+#define GPTB_LD_PRDR_POS 	(0)
 #define GPTB_LD_PRDR_MSK	(0x1 << GPTB_LD_PRDR_POS)
-#define GPTB_LD_CMPA_POS (1)
+#define GPTB_LD_CMPA_POS 	(1)
 #define GPTB_LD_CMPA_MSK	(0x1 << GPTB_LD_CMPA_POS)
-#define GPTB_LD_CMPB_POS (2)
+#define GPTB_LD_CMPB_POS 	(2)
 #define GPTB_LD_CMPB_MSK	(0x1 << GPTB_LD_CMPB_POS)
-
-#define GPTB_LD_AQCRA_POS (8)
+#define GPTB_LD_DBDTR_POS 	(5)
+#define GPTB_LD_DBDTR_MSK	(0x1 << GPTB_LD_DBDTR_POS)
+#define GPTB_LD_DBDTF_POS 	(6)
+#define GPTB_LD_DBDTF_MSK	(0x1 << GPTB_LD_DBDTF_POS)
+#define GPTB_LD_DBCR_POS 	(7)
+#define GPTB_LD_DBCR_MSK	(0x1 << GPTB_LD_DBCR_POS)
+#define GPTB_LD_AQCRA_POS 	(8)
 #define GPTB_LD_AQCRA_MSK	(0x1 << GPTB_LD_AQCRA_POS)
-#define GPTB_LD_AQCRB_POS (9)
+#define GPTB_LD_AQCRB_POS 	(9)
 #define GPTB_LD_AQCRB_MSK	(0x1 << GPTB_LD_AQCRB_POS)
-
-#define GPTB_LD_AQCSF_POS (12)
+#define GPTB_LD_AQCSF_POS 	(12)
 #define GPTB_LD_AQCSF_MSK	(0x1 << GPTB_LD_AQCSF_POS)
-
+#define GPTB_LD_EMOSR_POS 	(13)
+#define GPTB_LD_EMOSR_MSK	(0x1 << GPTB_LD_EMOSR_POS)
 typedef enum{
 	GPTB_LD_NOTGLD = 0,
 	GPTB_LD_GLD
@@ -356,6 +361,11 @@ typedef enum{
 #define GPTB_CMP_LD_POS(n)	(n)
 #define GPTB_CMP_LD_MSK(n)  (0x1 << GPTB_CMP_LD_POS(n))
 
+#define GPTB_CMPA_LD_POS	(0)
+#define GPTB_CMPA_LD_MSK    (0x1 << GPTA_CMPA_LD_POS)
+#define GPTB_CMPB_LD_POS	(1)
+#define GPTB_CMPB_LD_MSK    (0x1 << GPTA_CMPB_LD_POS)
+
 typedef enum {
 	GPTB_CMPLD_SHDW = 0,
 	GPTB_CMPLD_IMM
@@ -363,6 +373,11 @@ typedef enum {
 
 #define GPTB_CMP_LDTIME_POS(n)	(4+ ((n)*3))
 #define GPTB_CMP_LDTIME_MSK(n)	(0x7 << GPTB_CMP_LDTIME_POS(n))
+
+#define GPTB_CMPA_LDTIME_POS	(4)
+#define GPTB_CMPA_LDTIME_MSK	(0x7 << GPTB_CMPA_LDTIME_POS)
+#define GPTB_CMPB_LDTIME_POS	(7)
+#define GPTB_CMPB_LDTIME_MSK	(0x7 << GPTB_CMPB_LDTIME_POS)
 
 typedef enum{
 	GPTB_LDCMP_NEVER= 0,
@@ -1004,10 +1019,10 @@ typedef enum{
 	GPTB_TRG01_CMPB_F,
 	
 	GPTB_TRG01_SYNC = 0xc,
-	GPTB_TRG01_PE0,
-	GPTB_TRG01_PE1,
-	GPTB_TRG01_PE2
-}csp_gptb_trgsrc0_e;
+	GPTB_TRG01_EP0,
+	GPTB_TRG01_EP1,
+	GPTB_TRG01_EP2
+}csp_gptb_trgsrc_e;
 
 
 
@@ -1508,7 +1523,7 @@ static inline void csp_gptb_trg_xoe_enable(csp_gptb_t *ptGptbBase, uint8_t byCh,
 	ptGptbBase -> EVTRG = (ptGptbBase -> EVTRG & (~GPTB_OUTEN_MSK_TRG(byCh))) | (bEnable << GPTB_OUTEN_POS_TRG(byCh));
 }
 
-static inline void csp_gptb_set_trgsel01(csp_gptb_t *ptGptbBase, uint8_t byCh, csp_gptb_trgsrc0_e eSrc)
+static inline void csp_gptb_set_trgsel01(csp_gptb_t *ptGptbBase, uint8_t byCh, csp_gptb_trgsrc_e eSrc)
 {
 	ptGptbBase -> EVTRG = (ptGptbBase -> EVTRG & (~GPTB_SEL_MSK_TRG(byCh))) | (eSrc << GPTB_SEL_POS_TRG(byCh));
 }

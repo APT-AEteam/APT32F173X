@@ -82,7 +82,6 @@ __attribute__((weak)) void gptb0_irqhandler(csp_gptb_t *ptGptbBase)
 			case GPTB_INT_CAPLD0:
 				csp_gptb_clr_int(ptGptbBase, GPTB_INT_CAPLD0);
 				wGptb_Cmp_Buff[0]=csp_gptb_get_cmpa(ptGptbBase);
-				//csi_gptb_rearm_sync(ptGptbBase,GPTB_TRGIN_SYNCEN2);
 				break;
 			
 			case GPTB_INT_CAPLD1:
@@ -354,6 +353,31 @@ csi_error_t csi_gptb_channel_config(csp_gptb_t *ptGptbBase, csi_gptb_pwmchannel_
 	return CSI_OK;
 }
 
+/** \brief Channel CMPLDR configuration
+ * 
+ *  \param[in] ptGptbBase: pointer of ept register structure
+ *  \param[in] tld: refer to csp_gptb_cmpdata_ldmd_e
+ *  \param[in] tldamd: refer to csp_gptb_ldamd_e
+ *  \param[in] eChannel: refer to csi_gptb_comp_e
+ *  \return error code \ref csi_error_t
+ */
+csi_error_t csi_gptb_channel_cmpload_config(csp_gptb_t *ptGptbBase, csp_gptb_cmpdata_ldmd_e tld, csp_gptb_ldtcmp_e tldamd ,csi_gptb_comp_e channel)
+{			  
+	switch (channel)
+	{	
+		case (GPTB_COMPA):   ptGptbBase -> CMPLDR = (ptGptbBase -> CMPLDR &~(GPTB_CMPA_LD_MSK) )    |  (tld    << GPTB_CMPA_LD_POS);
+		                     ptGptbBase -> CMPLDR = (ptGptbBase -> CMPLDR &~(GPTB_CMPA_LDTIME_MSK) )|  (tldamd <<GPTB_CMPA_LDTIME_POS);
+			break;
+		case (GPTB_COMPB):   ptGptbBase -> CMPLDR = (ptGptbBase -> CMPLDR &~(GPTB_CMPB_LD_MSK) )    |  (tld    << GPTB_CMPB_LD_POS);
+		                     ptGptbBase -> CMPLDR = (ptGptbBase -> CMPLDR &~(GPTB_CMPB_LDTIME_MSK) )|  (tldamd << GPTB_CMPB_LDTIME_POS);
+			break;
+
+		default:return CSI_ERROR;
+			break;
+	}
+	return CSI_OK;
+}
+
 /**
  \brief  DeadZoneTime configuration 
  \param  ptGptbBase    	pointer of ept register structure
@@ -557,6 +581,43 @@ csi_error_t csi_gptb_global_config(csp_gptb_t *ptGptbBase,csi_gptb_Global_load_c
 	return CSI_OK;
 }
 
+/** \brief GLDCFG loading
+ * 
+ *  \param[in] ptGPTBBase of GPTB register structure
+ *  \param[in] Glo:  csi_GPTB_Global_load_gldcfg  
+ *  \param[in] bENABLE锛欵NABLE or DISABLE
+ *  \return CSI_OK
+ */
+csi_error_t csi_gptb_gldcfg(csp_gptb_t *ptGptbBase ,csi_gptb_Global_load_gldcfg_e Glo,bool bENABLE)
+{
+   	switch (Glo)
+	{	
+		case (byPrdr): ptGptbBase  -> GLDCFG   = (ptGptbBase -> GLDCFG  & ~(GPTB_LD_PRDR_MSK))   |(bENABLE << GPTB_LD_PRDR_POS) ;
+			break;
+		case (byCmpa): ptGptbBase  -> GLDCFG   = (ptGptbBase -> GLDCFG  & ~(GPTB_LD_CMPA_MSK))   |(bENABLE << GPTB_LD_CMPA_POS) ;
+			break;
+		case (byCmpb): ptGptbBase  -> GLDCFG   = (ptGptbBase -> GLDCFG  & ~(GPTB_LD_CMPB_MSK))   |(bENABLE << GPTB_LD_CMPB_POS) ;
+		    break;
+		case (byDbdtr): ptGptbBase -> GLDCFG   = (ptGptbBase -> GLDCFG  & ~(GPTB_LD_DBDTR_MSK))  |(bENABLE << GPTB_LD_DBDTR_POS) ;
+			break;
+		case (byDbdtf): ptGptbBase -> GLDCFG   = (ptGptbBase -> GLDCFG  & ~(GPTB_LD_DBDTF_MSK))  |(bENABLE << GPTB_LD_DBDTF_POS) ;
+			break;
+		case (byDbcr): ptGptbBase  -> GLDCFG   = (ptGptbBase -> GLDCFG  & ~(GPTB_LD_DBCR_MSK))   |(bENABLE << GPTB_LD_DBCR_POS) ;
+		    break;
+		case (byAqcra):ptGptbBase  -> GLDCFG   = (ptGptbBase -> GLDCFG  & ~(GPTB_LD_AQCRA_MSK))  |(bENABLE << GPTB_LD_AQCRA_POS );
+		    break;
+		case (byAqcrb):ptGptbBase  -> GLDCFG   = (ptGptbBase -> GLDCFG  & ~(GPTB_LD_AQCRB_MSK))  |(bENABLE << GPTB_LD_AQCRB_POS );
+		    break;
+	    case (byAqcsf):ptGptbBase  -> GLDCFG   = (ptGptbBase -> GLDCFG  & ~(GPTB_LD_AQCSF_MSK))  |(bENABLE << GPTB_LD_AQCSF_POS );
+			 break;
+		case (byEmosr):ptGptbBase  -> GLDCFG   = (ptGptbBase -> GLDCFG  & ~(GPTB_LD_EMOSR_MSK))  |(bENABLE << GPTB_LD_EMOSR_POS );
+			 break;
+		default: return CSI_ERROR;
+			break;
+	}   
+	return CSI_OK;
+}
+
 /**
  \brief  Software trigger loading
  \param  ptGptbBase    	pointer of gptb register structure
@@ -599,7 +660,7 @@ void csi_gptb_swstop(csp_gptb_t *ptgptbBase)
 /**
  \brief set GPTB start mode. 
  \param ptgptbBase    pointer of gptb register structure
- \return eMode £ºGPTB_SW/GPTB_SYNC
+ \return eMode 隆锚oGPTB_SW/GPTB_SYNC
 */
 void csi_gptb_set_start_mode(csp_gptb_t *ptgptbBase, csi_gptb_stmd_e eMode)
 {
@@ -663,7 +724,7 @@ csi_error_t csi_gptb_change_ch_duty(csp_gptb_t *ptGptbBase, csi_gptb_chtype_e eC
 /**
  \brief software force lock
  \param ptEpt    pointer of gptb register structure
- \param eEbi 	 external emergency input: GPTB_EPI0~7 £¨EBI4 = LVD£©
+ \param eEbi 	 external emergency input: GPTB_EPI0~7 隆锚隆搂EBI4 = LVD隆锚?
  \return none
 */
 //void csi_gptb_force_em(csp_gptb_t *ptGptbBase, csp_gptb_ep_e byEbi)
@@ -898,7 +959,7 @@ void csi_gptb_rearm_sync(csp_gptb_t *ptGptbBase,csi_gptb_trgin_e eTrgin)
  *  \param[in] eTrgSrc: evtrg source(1~15) 
  *  \return error code \ref csi_error_t
  */
-csi_error_t csi_gptb_set_evtrg(csp_gptb_t *ptGptbBase, csi_gptb_trgout_e byTrgOut, csi_gptb_trgsrc_e eTrgSrc)
+csi_error_t csi_gptb_set_evtrg(csp_gptb_t *ptGptbBase, csi_gptb_trgout_e byTrgOut, csp_gptb_trgsrc_e eTrgSrc)
 {
 	csp_gptb_set_trgsel01(ptGptbBase, byTrgOut, eTrgSrc);			    
 	csp_gptb_trg_xoe_enable(ptGptbBase, byTrgOut, ENABLE);				//evtrg out enable
@@ -910,15 +971,15 @@ csi_error_t csi_gptb_set_evtrg(csp_gptb_t *ptGptbBase, csi_gptb_trgout_e byTrgOu
 /** \brief gptb evtrg cntxinit control
  * 
  *  \param[in] ptGptbBase: pointer of gptb register structure
- *  \param[in] byCntChx: evtrg countinit channel(0~3)
- *  \param[in] byCntVal: evtrg cnt value
- *  \param[in] byCntInitVal: evtrg cntxinit value
+ *  \param[in] byCntChx: evtrg countinit channel(0~1)
+ *  \param[in] byCntVal: evtrg cnt value(1~16)
+ *  \param[in] byCntInitVal: evtrg cntxinit value(1~16)
  *  \return error code \ref csi_error_t
  */
-csi_error_t csi_gptb_set_evcntinit(csp_gptb_t *ptGptbBase, uint8_t byCntChx, uint8_t byCntVal, uint8_t byCntInitVal)
+csi_error_t csi_gptb_set_evcntinit(csp_gptb_t *ptGptbBase, csi_gptb_cntinit_e byCntChx, uint8_t byCntVal, uint8_t byCntInitVal)
 {
 
- if(byCntChx > 1)
+ if(byCntChx > GPTB_CNT1INIT)
   return CSI_ERROR;
  
  csp_gptb_set_trgprd(ptGptbBase, byCntChx, byCntVal - 1);    //evtrg count
