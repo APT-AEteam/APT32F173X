@@ -29,7 +29,6 @@ extern "C" {
 #define CMP_EDGEDET0_INT         (1<<0)
 
 
-
 typedef enum
 {
 	CMP_INTSRC_NONE     =  (0x00ul << 0), 
@@ -39,22 +38,15 @@ typedef enum
 typedef enum
 {
 	CMP_PHYST_POL_0mv			=	0x00,
-	CMP_PHYST_POL_5mv,
 	CMP_PHYST_POL_10mv,
 	CMP_PHYST_POL_15mv,
-	CMP_PHYST_POL_20mv,
 	CMP_PHYST_POL_25mv,
-	CMP_PHYST_POL_40mv,	
-	CMP_PHYST_POL_60mv				
-}csi_phystpol_e;
+	CMP_PHYST_POL_35mv,
+	CMP_PHYST_POL_45mv,	
+	CMP_PHYST_POL_55mv,	
+	CMP_PHYST_POL_65mv				
+}csi_pnhystpol_e;
 
-typedef enum
-{
-	CMP_PHYST_POL_DIS			=	0x00,
-	CMP_PHYST_POL_P,
-	CMP_PHYST_POL_N,
-	CMP_PHYST_POL_NP
-}csi_phystpol_sel_e;
 
 typedef enum
 {
@@ -127,7 +119,16 @@ typedef enum
 	CMP_N_SEL_CP3,	
 	CMP_N_SEL_CP4,
 	CMP_N_SEL_CP5,
-	CMP_N_SEL_1VBUF      =  0x07     
+	CMP_N_SEL_CP6,
+	CMP_N_SEL_CP7,
+	CMP_N_SEL_CP8,	
+	CMP_N_SEL_CP9,
+	CMP_N_SEL_CP10,  
+	CMP_N_SEL_1_4INPUT,	
+	CMP_N_SEL_2_4INPUT,	
+	CMP_N_SEL_3_4INPUT,	
+	CMP_N_SEL_4_4INPUT,		
+	CMP_N_SEL_DAC		
 }csi_nsel_e;
 
 typedef enum
@@ -139,7 +140,16 @@ typedef enum
 	CMP_P_SEL_CP4,
 	CMP_P_SEL_CP5,
 	CMP_P_SEL_CP6,
-	CMP_P_SEL_CP7
+	CMP_P_SEL_CP7,
+	CMP_P_SEL_CP8,
+	CMP_P_SEL_CP9,
+	CMP_P_SEL_CP10,	
+	CMP_P_SEL_CP11,
+	CMP_P_SEL_CP12,
+	CMP_P_SEL_CP13,
+	CMP_P_SEL_CP14,
+	CMP_P_SEL_CP15	
+	
 }csi_psel_e;
 
 
@@ -148,7 +158,7 @@ typedef struct
 	uint8_t  byNsel;                  //N- pin
 	uint8_t  byPsel;	             //P+ pin
 	uint8_t  byPhystpol;		     
-	uint8_t  byPhystsel;		
+	uint8_t  byNhystpol;		
 	uint8_t  byPolarity;		
 	uint8_t  byCpoSel;
 	uint32_t wInt;
@@ -269,13 +279,6 @@ void csi_cmp_int_clear(csp_cmp_t *ptCmpBase,csi_cmp_intsrc_e eIntMode);
  *  \return cmp int status
  */
 uint32_t csi_cmp_get_misr(csp_cmp_t *ptCmpBase);
-
-/**
- *  \brief       Enable cmp power manage
- *  \param[in]   ptCmpBase:pointer of cmp register structure
- *  \param[in]   bEnable:cmp lpwken enable or disable
- */
-void csi_cmp_lpwken_enable(csp_cmp_t *ptCmpBase, bool bEnable);
 
 #ifdef __cplusplus
 }

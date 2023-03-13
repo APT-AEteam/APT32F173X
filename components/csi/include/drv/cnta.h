@@ -44,7 +44,7 @@ typedef enum
 {
 	POLAR_LOW	= 0,
     POLAR_HIGH,       
-	STOP_LOW,	
+	STOP_LOW    = 0,	
     STOP_HIGH   	    
 }csi_cnta_pwmlev_t;
 

@@ -29,6 +29,10 @@ extern int pin_irq_demo(void);
 //bt demo
 extern int bt_timer_demo(void);
 extern int bt_pwm_demo(void);
+extern int bt_sync_trg_start_demo(void);
+extern int bt_sync_trg_count_demo(void);
+extern int bt_sync_trg_stop_demo(void);
+extern int bt_trgev_demo(void);
 
 //iwdt demo
 extern int iwdt_normal_demo(void);
@@ -106,6 +110,7 @@ extern void iic_slave_demo(void);
 //cnta demo
 extern int cnta_timer_demo(void);
 extern int cnta_pwm_demo(void);
+extern int cnta_envelope_demo(void);
 
 //spi demo
 extern int spi_sync_sendbuff(void);
@@ -145,5 +150,9 @@ csi_error_t led_demo(void);
 //opa demo
 extern void opa_internal_gain_mode_test(void);
 extern void opa_external_gain_mode_test(void);
+
+//fvr demo
+extern void fvr_output_demo(void);
+extern void fvr_buf_demo(void);
 
 #endif
