@@ -27,6 +27,8 @@ extern "C" {
 
  
 #define CMP_EDGEDET0_INT         (1<<0)
+#define CMP_EDGEDET1_INT         (1<<1)
+#define CMP_EDGEDET2_INT         (1<<2)
 
 
 typedef enum

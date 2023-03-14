@@ -36,6 +36,14 @@ __attribute__((weak)) void cmp_irqhandler(csp_cmp_t *ptCmpBase)
 	{
 		csi_cmp_int_clear(ptCmpBase,CMP_INTSRC_EDGEDET);
 	}
+	else if(csi_cmp_get_misr(ptCmpBase) & CMP_EDGEDET1_INT)
+	{
+		csi_cmp_int_clear(ptCmpBase,CMP_INTSRC_EDGEDET);
+	}
+	else if(csi_cmp_get_misr(ptCmpBase) & CMP_EDGEDET2_INT)
+	{
+		csi_cmp_int_clear(ptCmpBase,CMP_INTSRC_EDGEDET);
+	}
 }
 /** \brief Enable cmp power manage
  * 
