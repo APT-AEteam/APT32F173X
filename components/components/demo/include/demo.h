@@ -141,6 +141,12 @@ extern int cmp_wfcr_demo(void);
 extern int gpta_capture_demo();
 extern int gpta_pwm_demo();
 
+//gptb demo
+extern int gptb_capture_demo(void);
+extern int gptb_pwm_demo(void);
+extern int gptb_pwm_dz_demo(void);
+extern int gptb_pwm_dz_em_demo(void);
+
 //crc demo
 extern csi_error_t crc_demo();
 

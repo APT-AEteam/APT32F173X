@@ -254,15 +254,11 @@ typedef enum{
 typedef enum{
     GPTB_COMPA=1,
 	GPTB_COMPB,
-//	GPTB_CAMPC,
-//	GPTB_CAMPD
 }csi_gptb_comp_e;
 
 typedef enum{
     GPTB_CHANNEL_A=1,
 	GPTB_CHANNEL_B,
-//	GPTB_CHANNEL_C,
-//	GPTB_CHANNEL_D
 }csi_gptb_channel_e;
 
 typedef enum{
@@ -352,10 +348,10 @@ typedef enum{
 }csi_gptb_cntinit_e;
 
 typedef enum {
-	EM_AQCSF_NONE=0,
-	EM_AQCSF_L,
-	EM_AQCSF_H,
-	EM_AQCSF_NONE1
+	GPTB_AQCSF_NONE=0,
+	GPTB_AQCSF_L,
+	GPTB_AQCSF_H,
+	GPTB_AQCSF_NONE1
 }csp_gptb_aqcsf_e;
 
 typedef enum {
@@ -391,7 +387,6 @@ csi_error_t csi_gptb_dbldrload_config(csp_gptb_t *ptGptbBase, csi_gptb_dbdldr_e 
 csi_error_t csi_gptb_dbcr_config(csp_gptb_t *ptGptbBase, csi_gptb_deadzone_config_t *tCfg);
 csi_error_t csi_gptb_channelmode_config(csp_gptb_t *ptGptbBase,csi_gptb_deadzone_config_t *tCfg,csi_gptb_channel_e byCh);
 csi_error_t csi_gptb_start(csp_gptb_t *ptgptbBase);
-csi_error_t csi_gptb_change_ch_duty(csp_gptb_t *ptGptbBase, csi_gptb_chtype_e eCh, uint32_t wActiveTime);
 csi_error_t csi_gptb_emergency_cfg(csp_gptb_t *ptGptbBase, csi_gptb_emergency_config_t *tCfg);
 csi_error_t csi_gptb_emergency_pinxout(csp_gptb_t *ptGptbBase,csi_gptb_osrchx_e  byCh ,csp_gptb_emout_e byCh2);
 csi_error_t csi_gptb_capture_init(csp_gptb_t *ptGptbBase, csi_gptb_captureconfig_t *ptgptbPwmCfg);
@@ -435,6 +430,40 @@ csi_error_t csi_gptb_channel_cmpload_config(csp_gptb_t *ptGptbBase, csp_gptb_cmp
  *  \return error code \ref csi_error_t
  */
 csi_error_t csi_gptb_set_evcntinit(csp_gptb_t *ptGptbBase, csi_gptb_cntinit_e byCntChx, uint8_t byCntVal, uint8_t byCntInitVal);
+
+/**
+  \brief   One time software output 
+  \param   ptGptbBase      pointer of gptb register structure 
+  \param   byCh	         GPTB_OSTSFA/GPTB_OSTSFB		
+  \param   eAction 		GPTB_LDAQCR_ZRO/GPTB_LDAQCR_PRD/GPTB_LDAQCR_ZROPRD
+*/
+csi_error_t csi_gptb_OnetimeSoftwareForce_output(csp_gptb_t *ptGptbBase, csi_gptb_channel_e byCh, csp_gptb_action_e eAction);
+
+/** \brief Continuous software waveform control
+ *  \param[in] ptGptbBase: pointer of gptb register structure
+ *  \param[in] byCh        refer to csi_gptb_channel_e
+ *  \param[in] eAction:    refer to  csp_gptb_aqosf_e
+ *  \return  none
+ */
+csi_error_t csi_gptb_ContinuousSoftwareForce_output(csp_gptb_t *ptGptbBase, csi_gptb_channel_e byCh, csp_gptb_aqcsf_e eAction);
+
+/** \brief  update gptb PRDR and CMPx reg value
+ * 
+ *  \param[in] ptGptbBase: pointer of gptb register structure
+ *  \param[in] eComp: select which COMP to set(COMPA or COMPB)
+ *  \param[in] hwPrdr: gptb PRDR reg  value
+ *  \param[in] hwCmp: gptb COMP reg value
+ *  \return none
+ */
+csi_error_t csi_gptb_prdr_cmp_update(csp_gptb_t *ptGptbBase,csi_gptb_comp_e eComp, uint16_t hwPrdr, uint16_t hwCmp);
+
+/**
+ \brief change gptb output dutycycle. 
+ \param ptGptbBase   pointer of gptb register structure
+ \param eCh          refer to csi_gptb_chtype_e
+ \param wDuty        duty of PWM:0%-100%
+*/
+csi_error_t csi_gptb_change_ch_duty(csp_gptb_t *ptGptbBase, csi_gptb_comp_e eCh, uint32_t wDuty);
 #ifdef __cplusplus
 }
 #endif
