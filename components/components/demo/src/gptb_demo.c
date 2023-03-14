@@ -265,8 +265,8 @@ int gptb_demo12(void)
 //	csi_pin_set_mux(PB7,  PB7_GPTB3_CHAY);
 //	csi_pin_set_mux(PB8,  PB8_GPTB4_CHAX);
 //	csi_pin_set_mux(PB9,  PB9_GPTB4_CHAY);
-	csi_pin_set_mux(PD7,   PD7_GPTB5_CHAX);
-	csi_pin_set_mux(PD8,   PD8_GPTB5_CHAY);
+//	csi_pin_set_mux(PD7,   PD7_GPTB5_CHAX);
+//	csi_pin_set_mux(PD8,   PD8_GPTB5_CHAY);
 	
 //	csi_pin_set_mux(PC13, PC13_GPTB1_CHAX);
 //	csi_pin_set_mux(PC14, PC14_GPTB2_CHAY);

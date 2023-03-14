@@ -938,32 +938,6 @@ typedef enum {
 	PD5_CPIN2N              =  12U,
 	PD5_ADC_INA5            =  13U,
 	
-	PD6_GPD				    =  0U,
-	PD6_INPUT				=  1U,		//input
-	PD6_OUTPUT				=  2U,		//output
-	PD6_OUTPUT_MONI		    =  3U,		//output with monitor
-	PD6_EBI3			    =  4U,
-    PD6_UART1_TX            =  6U,
-    PD6_UART0_TX	  	    =  7U,
-
-	
-	PD7_GPD				    =  0U,
-	PD7_INPUT				=  1U,		//input
-	PD7_OUTPUT				=  2U,		//output
-	PD7_OUTPUT_MONI		    =  3U,		//output with monitor
-	PD7_GPTB0_CHAY          =  8U,
-	PD7_GPTB5_CHAX          =  9U,
-
-	
-	PD8_GPD				    =  0U,
-	PD8_INPUT				=  1U,		//input
-	PD8_OUTPUT				=  2U,		//output
-	PD8_OUTPUT_MONI		    =  3U,		//output with monitor
-    PD8_GPTB1_CHAY	  	    =  7U,
-	PD8_GPTB0_CHAX          =  8U,
-	PD8_GPTB5_CHAY          =  9U,
-
-	
 	IOMAP					=  10U
 } pin_func_e;
 
