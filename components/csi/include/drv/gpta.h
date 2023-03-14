@@ -356,6 +356,22 @@ uint32_t csi_gpta_cap_prd_config(csp_gpta_t *ptGpta, csi_gpta_capmd_e eMode, uin
 */
 uint16_t csi_gpta_capture_get_cap_data(csp_gpta_t *gpta, uint8_t num);
 
+/** \brief enable/disable gpta out trigger 
+ * 
+ *  \param[in] ptGptaBase: pointer of gpta register structure
+ *  \param[in] eCh: 0/1
+ *  \param[in] bEnable: ENABLE/DISABLE
+ *  \return error code \ref csi_error_t
+ */
+csi_error_t csi_gpta_evtrg_enable(csp_gpta_t *ptGptaBase, csi_gpta_trgout_e byCh, bool bEnable);
+
+/** \brief gpta soft trg
+ *  \param[in] ptGptaBase:pointer of gpta register structure
+ *  \param[in] eCh: 0/1
+ *  \return none
+ */
+void csi_gpta_swf_trg(csp_gpta_t *ptGptaBase, csi_gpta_trgout_e byCh);
+
 void csi_gpta_debug_enable(csp_gpta_t *ptGpta, bool bEnable);
 
 csi_error_t csi_gpta_set_sync_filter(csp_gpta_t *ptGptaBase, csi_gpta_filter_config_t *ptFilter);

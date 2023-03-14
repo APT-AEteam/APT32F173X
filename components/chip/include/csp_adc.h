@@ -50,12 +50,6 @@
 	__IOM  uint32_t  DRMASK;	//0x0148 Disable Conversion Data Updata Register
  } csp_adc_t;
 
-/// \struct csp_fvr_t
-/// \brief FVR Reg Description
- typedef struct
- {
-    __IOM  uint32_t  CR;        //0x0000  Control Register  
- } csp_fvr_t;
 	
 /******************************************************************************
 * ECR, DCR, PMSR : ADC12 Power Management Registers

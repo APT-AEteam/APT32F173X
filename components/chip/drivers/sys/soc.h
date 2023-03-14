@@ -236,7 +236,7 @@ typedef enum {
     PA0_LED_S2              =  10U,
 	PA0_CPIN0P			    =  11U,
     PA0_OPA0P               =  12U,
-	PA0_ADC_INA6            =  13U,
+	PA0_ADC_INA21            =  13U,
     
 	
 	PA1_GPD				    =  0U,
@@ -252,7 +252,7 @@ typedef enum {
     PA1_LED_S3              =  10U,
     PA1_CPIN0N              =  11U,
 	PA1_OPA0N			    =  12U,
-    PA1_ADC_INA7            =  13U,
+    PA1_ADC_INA22            =  13U,
 	
 	
 	PA2_GPD				    =  0U,
@@ -268,7 +268,7 @@ typedef enum {
 	PA2_LED_S4              =  10U,
 	PA2_UART0_TX            =  11U,
 	PA2_OPA0X			    =  12U,
-    PA2_ADC_INA8            =  13U,
+    PA2_ADC_INA23           =  13U,
 	
 
 	PA3_GPD				    =  0U,
@@ -284,7 +284,7 @@ typedef enum {
 	PA3_LED_S5              =  10U,
 	PA3_UART0_RX            =  11U,
 	PA3_OPA3P               =  12U,
-	PA3_ADC_INA9            =  13U,
+	PA3_ADC_INB20           =  13U,
 	
 	
 	PA4_GPD				    =  0U,
@@ -313,7 +313,7 @@ typedef enum {
 	PA5_LED_S6              =  10U,
 	PA5_GROUP1              =  11U,
 	PA5_OPA3X               =  12U,
-	PA5_ADC_INA10           =  13U,
+	PA5_ADC_INB8            =  13U,
 	
 	
 	PA6_GPD				    =  0U,
@@ -327,7 +327,7 @@ typedef enum {
 	PA6_LED_S7              =  10U,
 	PA6_GROUP1              =  11U,
 	PA6_OPA2X               =  12U,
-	PA6_ADC_INA11           =  13U,
+	PA6_ADC_INB9            =  13U,
 	
 	PA7_GPD				    =  0U,
 	PA7_INPUT				=  1U,		//input
@@ -340,7 +340,7 @@ typedef enum {
 	PA7_GPTB0_CHAY          =  9U,
 	PA7_GROUP1              =  11U,
 	PA7_OPA2N               =  12U,
-	PA7_ADC_INA12           =  13U,
+	PA7_ADC_INB10           =  13U,
 	
 
 	
@@ -355,6 +355,7 @@ typedef enum {
 	PA8_GPTB0_CHAX			=  8U,
 	PA8_GPTB1_CHAX          =  9U,	
 	PA8_CP0_OUT             =  11U,
+	PA8_CPIN1P              =  12U,
 	
 
 	PA9_GPD				    =  0U,
@@ -368,6 +369,7 @@ typedef enum {
 	PA9_GPTB1_CHAX			=  8U,
 	PA9_GPTB2_CHAY          =  9U,	
 	PA9_CP1_OUT             =  11U,
+	PA9_CPIN1N              =  12U,
 	PA9_ADC_INB4            =  13U,
 	
 	
@@ -443,7 +445,7 @@ typedef enum {
 	PA15_EBI0			    =  8U,
 	PA15_GROUP1             =  10U,
 	PA15_CPIN7N             =  12U,
-	PA15_ADC_INB8           =  13U,
+	PA15_ADC_INA6           =  13U,
    
 	PB0_GPD				    =  0U,
 	PB0_INPUT				=  1U,		//input
@@ -457,7 +459,7 @@ typedef enum {
 	PB0_GPTB0_CHAX          =  10U,
 	PB0_GROUP1              =  11U,
 	PB0_OPA2P               =  12U,
-	PB0_ADC_INA13           =  13U,
+	PB0_ADC_INB11           =  13U,
 	
 	
 	PB1_GPD				=  0U,
@@ -472,7 +474,7 @@ typedef enum {
 	PB1_GPTB1_CHAY      =  10U,
 	PB1_GROUP1          =  11U,	
 	PB1_CPIN3P          =  12U,
-	PB1_ADC_INA14       =  13U,
+	PB1_ADC_INB12       =  13U,
 	
 	PB2_GPD				=  0U,
 	PB2_INPUT			=  1U,		//input
@@ -483,7 +485,7 @@ typedef enum {
     PB2_EBI2            =  6U,
 	PB2_CP0_OUT         =  11U,
 	PB2_CPIN3N          =  12U,
-	PB2_ADC_INA15       =  13U,
+	PB2_ADC_INB13       =  13U,
 	
 	PB3_GPD				=  0U,
 	PB3_INPUT			=  1U,		//input
@@ -497,7 +499,7 @@ typedef enum {
 	PB3_LED_C0          =  10U,
 	PB3_QSPI_CLK        =  11U,
 	PB3_OPA1P           =  12U,
-	PB3_ADC_INB9        =  13U,
+	PB3_ADC_INA11       =  13U,
 	
 	
 	PB4_GPD				    =  0U,
@@ -512,7 +514,7 @@ typedef enum {
 	PB4_LED_C1              =  10U,
 	PB4_QSPI_IO0            =  11U,
 	PB4_OPA1N               =  12U,
-	PB4_ADC_INB10           =  13U,
+	PB4_ADC_INA12           =  13U,
 	
 	
 	PB5_GPD				=  0U,
@@ -526,7 +528,7 @@ typedef enum {
 	PB5_GPTB4_CHAX		    =  8U,
 	PB5_GROUP0              =  10U,
 	PB5_OPA1X               =  12U,
-	PB5_ADC_INB11           =  13U,
+	PB5_ADC_INA13           =  13U,
 	
 	
 	PB6_GPD				    =  0U,
@@ -542,7 +544,7 @@ typedef enum {
 	PB6_LED_C2              =  10U,
 	PB6_QSPI_IO1            =  11U,
 	PB6_CPIN7P              =  12U,
-	PB6_ADC_INB12           =  13U,
+	PB6_ADC_INA14           =  13U,
 	
 	PB7_GPD				    =  0U,
 	PB7_INPUT				=  1U,		//input
@@ -588,7 +590,7 @@ typedef enum {
 	PB9_LED_C5             =  10U,
 	PB9_GROUP0             =  11U,
 	PB9_CPIN9N             =  12U,
-	PB9_ADC_INB14          =  13U,
+	PB9_ADC_INA16          =  13U,
 	
 	PB10_GPD				=  0U,
 	PB10_INPUT				=  1U,		//input
@@ -602,7 +604,7 @@ typedef enum {
 	PB10_GROUP0              =  10U,
 	PB10_CP1_OUT             =  11U,
 	PB10_CPIN4P              =  12U,
-	PB10_ADC_INA16           =  13U,
+	PB10_ADC_INB14           =  13U,
 	
     PB11_GPD				=  0U,
 	PB11_INPUT				=  1U,		//input
@@ -616,7 +618,7 @@ typedef enum {
 	PB11_GROUP0             =  10U,
 	PB11_CP2_OUT            =  11U,
 	PB11_CPIN4N             =  12U,
-	PB11_ADC_INA17          =  13U,
+	PB11_ADC_INB19          =  13U,
 	
 	PB12_GPD				=  0U,
 	PB12_INPUT				=  1U,		//input
@@ -680,7 +682,7 @@ typedef enum {
 	PC0_QSPI_nCS1		    =  8U,
 	PC0_GPTB3_CHB           =  9U,
 	PC0_CPIN11P             =  12U,
-	PC0_ADC_INA18           =  13U,
+	PC0_ADC_INA17           =  13U,
 	
 	PC1_GPD				    =  0U,
 	PC1_INPUT				=  1U,		//input
@@ -692,7 +694,7 @@ typedef enum {
 	PC1_QSPI_nCS2		    =  8U,
 	PC1_GPTB4_CHB           =  9U,
 	PC1_CPIN12P             =  12U,
-	PC1_ADC_INA19           =  13U,
+	PC1_ADC_INA18           =  13U,
 	
 	PC2_GPD				    =  0U,
 	PC2_INPUT				=  1U,		//input
@@ -703,7 +705,7 @@ typedef enum {
 	PC2_QSPI_nCS3		    =  8U,
 	PC2_GPTB5_CHB           =  9U,
 	PC2_CPIN13P             =  12U,
-	PC2_ADC_INA20           =  13U,	
+	PC2_ADC_INA19           =  13U,	
 	
 	PC3_GPD				    =  0U,
 	PC3_INPUT				=  1U,		//input
@@ -713,7 +715,7 @@ typedef enum {
     PC3_EBI2        	    =  5U,
 	PC3_QSPI_nSS		    =  8U,
 	PC3_CPIN14P             =  12U,
-	PC3_ADC_INA21           =  13U,
+	PC3_ADC_INA20           =  13U,
 
 	PC4_GPD				    =  0U,
 	PC4_INPUT				=  1U,		//input
@@ -724,7 +726,7 @@ typedef enum {
     PC4_CAN_RX              =  6U,
 	PC4_LED_S6              =  10U,
 	PC4_CPIN15P             =  12U,
-	PC4_ADC_INA22           =  13U,
+	PC4_ADC_INB21           =  13U,
 	
 	PC5_GPD				    =  0U,
 	PC5_INPUT				=  1U,		//input
@@ -734,7 +736,7 @@ typedef enum {
     PC5_UART0_TX        	=  5U,
     PC5_CAN_TX              =  6U,
 	PC5_LED_S7              =  10U,
-	PC5_ADC_INA23           =  13U,
+	PC5_ADC_INB22           =  13U,
 
 	PC6_GPD				    =  0U,
 	PC6_INPUT				=  1U,		//input
@@ -787,7 +789,7 @@ typedef enum {
 	PC10_I2C_SDA		    =  8U,
 	PC10_BT0_OUT            =  9U,
 	PC10_LED_C6             =  10U,
-	PC10_ADC_INB19          =  13U,
+	PC10_ADC_INA7          =  13U,
 	
 	PC11_GPD				=  0U,
 	PC11_INPUT				=  1U,		//input
@@ -800,7 +802,7 @@ typedef enum {
 	PC11_I2C_SCL		    =  8U,
 	PC11_BT1_OUT            =  9U,
 	PC11_LED_C7             =  10U,
-	PC11_ADC_INB20          =  13U,
+	PC11_ADC_INA8          =  13U,
 	
 	PC12_GPD				=  0U,
 	PC12_INPUT				=  1U,		//input
@@ -812,7 +814,7 @@ typedef enum {
     PC12_SPI1_MOSI	  	    =  7U,
 	PC12_BT2_OUT            =  9U,
 	PC12_LED_C8             =  10U,
-	PC12_ADC_INB21          =  13U,
+	PC12_ADC_INA9          =  13U,
 	
 	PC13_GPD				=  0U,
 	PC13_INPUT				=  1U,		//input
@@ -896,7 +898,7 @@ typedef enum {
     PD2_SPI1_NSS	  	    =  7U,
 	PD2_BT3_OUT             =  9U,
 	PD2_LED_C9              =  10U,
-	PD2_ADC_INB22           =  13U,
+	PD2_ADC_INA10           =  13U,
 	
 	PD3_GPD				    =  0U,
 	PD3_INPUT				=  1U,		//input
@@ -910,7 +912,7 @@ typedef enum {
 	PD3_SIO1                =  9U,
 	PD3_GROUP0              =  10U,
 	PD3_CPIN8P              =  12U,
-	PD3_ADC_INB13           =  13U,
+	PD3_ADC_INA15           =  13U,
 	
 	PD4_GPD				    =  0U,
 	PD4_INPUT				=  1U,		//input
@@ -935,32 +937,6 @@ typedef enum {
 	PD5_GPTB2_CHB           =  9U,
 	PD5_CPIN2N              =  12U,
 	PD5_ADC_INA5            =  13U,
-	
-	PD6_GPD				    =  0U,
-	PD6_INPUT				=  1U,		//input
-	PD6_OUTPUT				=  2U,		//output
-	PD6_OUTPUT_MONI		    =  3U,		//output with monitor
-	PD6_EBI3			    =  4U,
-    PD6_UART1_TX            =  6U,
-    PD6_UART0_TX	  	    =  7U,
-
-	
-	PD7_GPD				    =  0U,
-	PD7_INPUT				=  1U,		//input
-	PD7_OUTPUT				=  2U,		//output
-	PD7_OUTPUT_MONI		    =  3U,		//output with monitor
-	PD7_GPTB0_CHAY          =  8U,
-	PD7_GPTB5_CHAX          =  9U,
-
-	
-	PD8_GPD				    =  0U,
-	PD8_INPUT				=  1U,		//input
-	PD8_OUTPUT				=  2U,		//output
-	PD8_OUTPUT_MONI		    =  3U,		//output with monitor
-    PD8_GPTB1_CHAY	  	    =  7U,
-	PD8_GPTB0_CHAX          =  8U,
-	PD8_GPTB5_CHAY          =  9U,
-
 	
 	IOMAP					=  10U
 } pin_func_e;

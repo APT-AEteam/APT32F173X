@@ -662,3 +662,12 @@ csi_error_t csi_gpta_set_evcntinit(csp_gpta_t *ptGptaBase, uint8_t byCntChx, uin
  return CSI_OK;
 }
 
+/** \brief gpta soft trg
+ *  \param[in] ptGptaBase:pointer of gpta register structure
+ *  \param[in] eCh: 0/1
+ *  \return none
+ */
+void csi_gpta_swf_trg(csp_gpta_t *ptGptaBase, csi_gpta_trgout_e byCh)
+{
+	csp_gpta_swf_trg(ptGptaBase, byCh);
+}

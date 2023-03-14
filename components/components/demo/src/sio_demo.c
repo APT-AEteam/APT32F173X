@@ -83,7 +83,7 @@ int sio_led_rgb_demo(void)
 	tSioTxCfg.byTxCnt 		= 24;				//SIO一次发送总的数据长度(bit个数 = 24)，byTxCnt >= byTxBufLen，byTxCnt < 256(最大32bytes)
 	tSioTxCfg.byIdleLev 	= SIO_IDLE_L;		//SIO空闲时刻IO管脚输出电平
 	tSioTxCfg.byTxDir 		= SIO_TXDIR_LSB;	//LSB->MSB, txbuf 数据按照bit[1:0]...[31:30]方式移出
-	tSioTxCfg.wTxFreq 		= 500000;			//tx clk =4MHz, Ttxshift = 1/4 = 250ns；发送每bit时间是250ns
+	tSioTxCfg.wTxFreq 		= 500000;			//tx clk =500KHz, Ttxshift = 1/0.5 = 2us；发送每bit时间是2us
 	tSioTxCfg.byInt			= SIO_INTSRC_NONE;	//不使用中断
 	
 	csi_sio_tx_init(SIO0, &tSioTxCfg);
@@ -92,7 +92,7 @@ int sio_led_rgb_demo(void)
 	while(1)
 	{
 		byRecv = csi_uart_getc(UART2);
-		if(byRecv == 0x06)
+		if(byRecv)
 		{ 
 			led_rgb_display(byDipData, 8);
 		}
@@ -133,7 +133,7 @@ int sio_led_rgb_int_demo(void)
 	tSioTxCfg.byTxCnt 		= 8;					//SIO一次发送总的数据长度(bit个数 = 8)，byTxCnt >= byTxBufLen，byTxCnt < 256(最大32bytes)
 	tSioTxCfg.byIdleLev 	= SIO_IDLE_L;			//SIO空闲时刻IO管脚输出电平
 	tSioTxCfg.byTxDir 		= SIO_TXDIR_LSB;		//MSB->LSB, txbuf 数据按照bit[1:0]...[31:30]方式移出
-	tSioTxCfg.wTxFreq 		= 500000;				//tx clk =4MHz, Ttxshift = 1/4 = 250ns；发送每bit时间是250ns
+	tSioTxCfg.wTxFreq 		= 500000;				//tx clk =500KHz, Ttxshift = 1/0.5 = 2us；发送每bit时间是2us
 	tSioTxCfg.byInt			= SIO_INTSRC_TXBUFEMPT;	//使用发送BUF空中断
 	
 	csi_sio_tx_init(SIO0, &tSioTxCfg);
@@ -147,7 +147,7 @@ int sio_led_rgb_int_demo(void)
 	while(1)
 	{
 		byRecv = csi_uart_getc(UART2);
-		if(byRecv == 0x06)
+		if(byRecv)
 		{ 
 			csi_sio_send(SIO0, byDipDataEnd, 24);
 		}
@@ -179,6 +179,7 @@ int sio_led_rgb_send_dma_demo(void)
 //	csi_pin_set_mux(PD4, PD4_SIO0);	
 	
 	//dma config
+	//dma config
 	tDmaConfig.bySrcLinc 	= DMA_ADDR_CONSTANT;		//低位传输原地址固定不变
 	tDmaConfig.bySrcHinc 	= DMA_ADDR_INC;				//高位传输原地址自增
 	tDmaConfig.byDetLinc 	= DMA_ADDR_CONSTANT;		//低位传输目标地址固定不变
@@ -192,31 +193,31 @@ int sio_led_rgb_send_dma_demo(void)
 	
 	//etb config
 	tEtbConfig.byChType = ETB_ONE_TRG_ONE_DMA;			//单个源触发单个目标，DMA方式
-	tEtbConfig.bySrcIp 	= ETB_SIO0_TXSRC;				//UART TXSRC作为触发源
+	tEtbConfig.bySrcIp 	= ETB_SIO0_TXSRC;				//SIO TXSRC作为触发源
 	tEtbConfig.byDstIp 	= ETB_DMA0_CH1;					//ETB DMA通道 作为目标实际
 	tEtbConfig.byTrgMode = ETB_HARDWARE_TRG;			//通道触发模式采样硬件触发
 	
 	csi_etb_init();										//使能ETB模块
-	ret = csi_etb_ch_config(ETB_CH10, &tEtbConfig);		//初始化ETB
+	ret = csi_etb_ch_config(ETB_CH21, &tEtbConfig);		//初始化ETB
 	if(ret < CSI_OK)
 		return CSI_ERROR;
 	ret = csi_dma_ch_init(DMA0, DMA_CH1, &tDmaConfig);	//初始化DMA
 
 	//SIO TX 参数配置
-	tSioTxCfg.byD0Len 		= 1;					//D0 对象序列长度(bit个数)，这里不用D0								
-	tSioTxCfg.byD1Len 		= 1;					//D1 对象序列长度(bit个数)，这里不用D1
-	tSioTxCfg.byDLLen 		= 4;					//DL 对象序列长度(bit个数)
-	tSioTxCfg.byDHLen 		= 4;					//DH 对象序列长度(bit个数)
-	tSioTxCfg.byDLLsq 		= 0x01;					//DL 对象序列具体定义: bit= 0  -     
-													//					          | |___|					
-	tSioTxCfg.byDHHsq 		= 0x07;					//DH 对象序列具体定义: bit= 1  ___
-													//					          |   |_| 	
-	tSioTxCfg.byTxBufLen 	= 8;					//发送数据缓存长度(bit个数 = 8)，txbuf 一次发送bit数量，len <= 16
-	tSioTxCfg.byTxCnt 		= 8;					//SIO一次发送总的数据长度(bit个数 = 8)，byTxCnt >= byTxBufLen，byTxCnt < 256(最大32bytes)
-	tSioTxCfg.byIdleLev 	= SIO_IDLE_L;			//SIO空闲时刻IO管脚输出电平
-	tSioTxCfg.byTxDir 		= SIO_TXDIR_LSB;		//MSB->LSB, txbuf 数据按照bit[1:0]...[31:30]方式移出
-	tSioTxCfg.wTxFreq 		= 500000;				//tx clk =4MHz, Ttxshift = 1/4 = 250ns；发送每bit时间是250ns
-	tSioTxCfg.byInt			= SIO_INTSRC_NONE;		//不使用中断。
+	tSioTxCfg.byD0Len 		= 1;						//D0 对象序列长度(bit个数)，这里不用D0								
+	tSioTxCfg.byD1Len 		= 1;						//D1 对象序列长度(bit个数)，这里不用D1
+	tSioTxCfg.byDLLen 		= 4;						//DL 对象序列长度(bit个数)
+	tSioTxCfg.byDHLen 		= 4;						//DH 对象序列长度(bit个数)
+	tSioTxCfg.byDLLsq 		= 0x01;						//DL 对象序列具体定义: bit= 0  -     
+														//					          | |___|					
+	tSioTxCfg.byDHHsq 		= 0x07;						//DH 对象序列具体定义: bit= 1  ___
+														//					          |   |_| 	
+	tSioTxCfg.byTxBufLen 	= 8;						//发送数据缓存长度(bit个数 = 8)，txbuf 一次发送bit数量，len <= 16
+	tSioTxCfg.byTxCnt 		= 8;						//SIO一次发送总的数据长度(bit个数 = 8)，byTxCnt >= byTxBufLen，byTxCnt < 256(最大32bytes)
+	tSioTxCfg.byIdleLev 	= SIO_IDLE_L;				//SIO空闲时刻IO管脚输出电平
+	tSioTxCfg.byTxDir 		= SIO_TXDIR_LSB;			//MSB->LSB, txbuf 数据按照bit[1:0]...[31:30]方式移出
+	tSioTxCfg.wTxFreq 		= 500000;					//tx clk =500KHz, Ttxshift = 1/0.5 = 2us；发送每bit时间是2us
+	tSioTxCfg.byInt			= SIO_INTSRC_NONE;			//不使用中断。
 	
 	csi_sio_tx_init(SIO0, &tSioTxCfg);
 	
@@ -232,13 +233,13 @@ int sio_led_rgb_send_dma_demo(void)
 	
 	while(1)
 	{
-		byRecv = csi_uart_getc(UART2);
-		if(byRecv == 0x06)
+		byRecv = csi_uart_getc(UART1);
+		if(byRecv)
 		{ 
 			csi_sio_send_dma(SIO0, DMA0, DMA_CH1, hwDmaSendData, 24);	
 		}
-		delay_ums(200);
-		if(csi_dma_get_msg(DMA0,DMA_CH1, ENABLE))	//获取发送完成消息，并清除消息
+		mdelay(10);
+		if(csi_dma_get_msg(DMA0, DMA_CH1, ENABLE))		//获取发送完成消息，并清除消息
 		{
 			//添加用户代码
 			nop;
@@ -276,12 +277,12 @@ int sio_led_rgb_recv_dma_demo(void)
 	
 	//etb config
 	tEtbConfig.byChType = ETB_ONE_TRG_ONE_DMA;			//单个源触发单个目标，DMA方式
-	tEtbConfig.bySrcIp 	= ETB_SIO0_RXSRC;				//UART TXSRC作为触发源
+	tEtbConfig.bySrcIp 	= ETB_SIO0_RXSRC;				//SIO RXSRC作为触发源
 	tEtbConfig.byDstIp 	= ETB_DMA0_CH2;					//ETB DMA通道 作为目标实际
 	tEtbConfig.byTrgMode = ETB_HARDWARE_TRG;			//通道触发模式采样硬件触发
 	
 	csi_etb_init();										//使能ETB模块
-	ret = csi_etb_ch_config(ETB_CH9, &tEtbConfig);		//初始化ETB，DMA ETB CHANNEL > ETB_CH19_ID
+	ret = csi_etb_ch_config(ETB_CH20, &tEtbConfig);		//初始化ETB，DMA ETB CHANNEL > ETB_CH19_ID
 	if(ret < CSI_OK)
 		return CSI_ERROR;
 	ret = csi_dma_ch_init(DMA0, DMA_CH2, &tDmaConfig);	//初始化DMA
@@ -297,7 +298,7 @@ int sio_led_rgb_recv_dma_demo(void)
 	tSioRxCfg.byHithr		= 4;					//提取判定值, (BIT = 1)个数 > HITHR 提取H,否则提取L
 	tSioRxCfg.byRxBufLen	= 8;					//发送数据缓存长度(bit个数 = 8)，rxbuf 一次接收bit数量，len <= 32				
 	tSioRxCfg.byRxCnt		= 8;					//SIO一次接收总的数据长度(bit个数 = 24)，byRxCnt >= byRxBufLen，byRxCnt < 256(最大32bytes)				
-	tSioRxCfg.wRxFreq		= 1000000;				//rx clk =8MHz, Trxsamp = 1/8 = 125ns；每125ns 采样一次
+	tSioRxCfg.wRxFreq		= 1000000;				//rx clk =1MHz, Trxsamp = 1/1 = 1us；每1us 采样一次
 	tSioRxCfg.bySpBitLen	= 8;					//bit采样的长度，每个bit采样次数为8，总得采样时间 = 8*Trxsamp = 1us
 	tSioRxCfg.byInt			= SIO_INTSRC_NONE;		//接收采用RXBUFFULL中断，当接收到byRxBufLen个bit后，产生中断，读取到接收buf中，每次读取byRxBufLen(8)bit
 	
@@ -314,7 +315,7 @@ int sio_led_rgb_recv_dma_demo(void)
 			//添加用户代码
 			nop;
 		}							
-		delay_ums(200);
+		mdelay(10);
 		nop;
 	}
 	return ret;
@@ -346,7 +347,7 @@ int sio_led_rgb_recv_rxfull_demo(void)
 	tSioRxCfg.byHithr		= 4;					//提取判定值, (BIT = 1)个数 > HITHR 提取H,否则提取L
 	tSioRxCfg.byRxBufLen	= 8;					//发送数据缓存长度(bit个数 = 8)，rxbuf 一次接收bit数量，len <= 32				
 	tSioRxCfg.byRxCnt		= 24;					//SIO一次接收总的数据长度(bit个数 = 24)，byRxCnt >= byRxBufLen，byRxCnt < 256(最大32bytes)				
-	tSioRxCfg.wRxFreq		= 1000000;				//rx clk =8MHz, Trxsamp = 1/8 = 125ns；每125ns 采样一次
+	tSioRxCfg.wRxFreq		= 1000000;				//rx clk =1MHz, Trxsamp = 1/1 = 1us；每1us 采样一次
 	tSioRxCfg.bySpBitLen	= 8;					//bit采样的长度，每个bit采样次数为8，总得采样时间 = 8*Trxsamp = 1us
 	tSioRxCfg.byInt			= SIO_INTSRC_RXBUFFULL;	//接收采用RXBUFFULL中断，当接收到byRxBufLen个bit后，产生中断，读取到接收buf中，每次读取byRxBufLen(8)bit
 	
@@ -394,7 +395,7 @@ int sio_led_rgb_recv_rxdone_demo(void)
 	tSioRxCfg.byHithr		= 4;					//提取判定值, (BIT = 1)个数 > HITHR 提取H,否则提取L
 	tSioRxCfg.byRxBufLen	= 8;					//发送数据缓存长度(bit个数 = 8)，rxbuf 一次接收bit数量，len <= 32				
 	tSioRxCfg.byRxCnt		= 24;					//SIO一次接收总的数据长度(bit个数 = 24)，byRxCnt >= byRxBufLen，byRxCnt < 256(最大32bytes)				
-	tSioRxCfg.wRxFreq		= 1000000;				//rx clk =8MHz, Trxsamp = 1/8 = 125ns；每125ns 采样一次
+	tSioRxCfg.wRxFreq		= 1000000;				//rx clk =1MHz, Trxsamp = 1/1 = 1us；每1us 采样一次
 	tSioRxCfg.bySpBitLen	= 8;					//bit采样的长度，每个bit采样次数为8，总得采样时间 = 8*Trxsamp = 1us
 	tSioRxCfg.byInt			= SIO_INTSRC_RXDNE;		//接收采RXDNE中断，byRxCnt <= 32bit；接收byRxCnt(24)个bit，产生中断,读取数据到接收buf，每次读取byRxCnt(24)bit
 	
@@ -429,7 +430,7 @@ int sio_hdq_send_demo(void)
 	uint32_t wSendBuf[2];		
 	uint8_t byHdqData[2] = {0x68, 0x55};
 	
-	//csi_pin_set_mux(PC00, PC00_SIO);//配置为SIO模式		
+	csi_pin_set_mux(PB0, PB0_SIO0);				//配置为SIO模式		
 	
 	//SIO TX 参数配置
 	tHdqTxCfg.byD0Len 		= 5;				//D0 对象序列长度(bit个数)，5个， break: 		__							
@@ -445,7 +446,7 @@ int sio_hdq_send_demo(void)
 	tHdqTxCfg.byIdleLev 	= SIO_IDLE_H;		//SIO空闲时刻IO管脚输出电平
 	tHdqTxCfg.byTxDir 		= SIO_TXDIR_LSB;	//MSB->LSB, txbuf 数据按照bit[1:0]...[31:30]方式移出
 	tHdqTxCfg.wTxFreq 		= 25000;			//tx clk =25kHz, Ttxshift = 1/4 = 40us；发送每bit时间是40us
-	tHdqTxCfg.byInt		= SIO_INTSRC_NONE;	//不使用中断。目前只支持非中断模式
+	tHdqTxCfg.byInt		= SIO_INTSRC_NONE;		//不使用中断。目前只支持非中断模式
 	
 	csi_sio_tx_init(SIO0, &tHdqTxCfg);
 	
@@ -455,10 +456,11 @@ int sio_hdq_send_demo(void)
 	
 	while(1)
 	{
-		byRecv = csi_uart_getc(UART0);
-		if(byRecv == 0x06)
+//		byRecv = csi_uart_getc(UART1);
+//		if(byRecv)
 		{
 			csi_sio_send(SIO0, wSendBuf, 2);
+			mdelay(50);
 		}
 		nop;
 	}
@@ -478,7 +480,7 @@ int sio_hdq_recv_wrcmd_demo(void)
 	csi_sio_rx_config_t tHdqRxCfg;
 	uint32_t wHdqRxBuf[1];
 	
-//	csi_pin_set_mux(PC00, PC00_SIO);//配置为SIO模式	
+	csi_pin_set_mux(PB0, PB0_SIO0);				//配置为SIO模式	
 	
 	//SIO RX 参数配置
 	tHdqRxCfg.byDebPerLen 	= 3;					//接收滤波周期	
@@ -530,7 +532,7 @@ int sio_hdq_send_recv_demo(void)
 	
 	uint32_t wHdqRx1Buf[2] ={0,0};
 	
-//	csi_pin_set_mux(PC00, PC00_SIO);//配置为SIO模式
+	csi_pin_set_mux(PB0, PB0_SIO0);					//配置为SIO模式	
 	
 	//SIO RX 参数配置
 	tHdqRxCfg.byDebPerLen 	= 3;					//接收滤波周期	
@@ -545,7 +547,7 @@ int sio_hdq_send_recv_demo(void)
 	tHdqRxCfg.byRxCnt		= 8;					//SIO一次接收总的数据长度(bit个数 = 16)，byRxCnt >= byRxBufLen，byRxCnt < 256(最大32bytes)				
 	tHdqRxCfg.wRxFreq		= 100000;				//rx clk =100kHz, Trxsamp = 1/100kHz = 10us；每10us采样一次
 	tHdqRxCfg.bySpBitLen	= 19;					//bit采样的长度，每个bit采样次数为19，总得采样时间 = 19*Trxsamp = 190us
-	tHdqRxCfg.byInt		= SIO_INTSRC_RXDNE; 	//接收RXDNE中断，byRxCnt <= 32bit；接收byRxCnt(8)个bit，产生中断,读取数据到接收buf，每次读取byRxCnt(8)bit
+	tHdqRxCfg.byInt			= SIO_INTSRC_RXDNE; 	//接收RXDNE中断，byRxCnt <= 32bit；接收byRxCnt(8)个bit，产生中断,读取数据到接收buf，每次读取byRxCnt(8)bit
 	
 	csi_sio_rx_init(SIO0, &tHdqRxCfg);					//初始化SIO接收参数
 	csi_sio_break_rst(SIO0, SIO_BKLEV_LOW, 19, ENABLE);	//检测接收break
@@ -576,7 +578,7 @@ int sio_hdq_send_recv_demo(void)
 	{
 		byRecv = csi_uart_getc(UART0);
 		//byRecv = fgetc((FILE *) -1);
-		if(byRecv == 0x06)
+		if(byRecv)
 		{
 			csi_sio_send(SIO0, wSendBuf, 1);				//发送读命令
 			csi_sio_set_mode(SIO0,SIO_RECV);				//设置SIO为接收模式
@@ -623,7 +625,8 @@ int sio_hdq_recv_rdcmd_demo(void)
 	uint8_t byTxChar = 0x56;
 	uint32_t wTxData = 0;
 	uint32_t wRxBuf[2] = {0,0};
-	//csi_pin_set_mux(PC00, PC00_SIO);//配置为SIO模式	
+	
+	csi_pin_set_mux(PB0, PB0_SIO0);				//配置为SIO模式	
 	
 	//SIO TX 参数配置
 	tHdqTxCfg.byD0Len 		= 5;				//D0 对象序列长度(bit个数)，5个， break: 		__							
