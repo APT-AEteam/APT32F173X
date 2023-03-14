@@ -507,7 +507,7 @@ void bt3_int_handler(void)
 //	while(1){};
 //}
 
-void tspend_handler(void)
+void sw_int_handler(void)
 {
 	while(1);
 }

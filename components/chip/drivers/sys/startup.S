@@ -88,7 +88,7 @@ __Vectors:
     .long   Reset_Handler				
     .long   Default_Handler
     .long   Default_Handler
-    .long   tspend_handler
+    .long   sw_int_handler
     .long   Default_Handler
     .long   Default_Handler
     .long   Default_Handler
