@@ -38,17 +38,17 @@ const csi_can_bittime_t  tBitTime[] = {
 	
 	//CAN clk source = pclk = 6MHz
 	//Baudrate			SyncJump	PhaseSeg1	PhaseSeg2	BaudDiv
-//	{CAN_BDR_200K, 		1, 			3,			4,			2		},			//Tq num = 10, T_bit = 5us	
-//	{CAN_BDR_250K, 		1, 			4,			5,			1		},			//Tq num = 12, T_bit = 4us
-//	{CAN_BDR_500K, 		2, 			4,			5,			0		},			//Tq num = 12, T_bit = 2us
-//	{0, 				0, 			0,			0,			0		},	
+	{CAN_BDR_200K, 		1, 			3,			4,			2		},			//Tq num = 10, T_bit = 5us	
+	{CAN_BDR_250K, 		1, 			4,			5,			1		},			//Tq num = 12, T_bit = 4us
+	{CAN_BDR_500K, 		2, 			4,			5,			0		},			//Tq num = 12, T_bit = 2us
+	{0, 				0, 			0,			0,			0		},	
 	
 	//CAN clk source = pclk = 32MHz
 	//Baudrate			SyncJump	PhaseSeg1	PhaseSeg2	BaudDiv
-	{CAN_BDR_200K, 		3, 			3,			4,			15		},			//Tq num = 10, T_bit = 5us	
-	{CAN_BDR_250K, 		2, 			2,			3,			15		},			//Tq num = 12, T_bit = 4us
-	{CAN_BDR_500K, 		2, 			2,			3,			7		},			//Tq num = 8,  T_bit = 2us
-	{0, 				0, 			0,			0,			0		},		
+//	{CAN_BDR_200K, 		3, 			3,			4,			15		},			//Tq num = 10, T_bit = 5us	
+//	{CAN_BDR_250K, 		2, 			2,			3,			15		},			//Tq num = 12, T_bit = 4us
+//	{CAN_BDR_500K, 		2, 			2,			3,			7		},			//Tq num = 8,  T_bit = 2us
+//	{0, 				0, 			0,			0,			0		},		
 };
 
 /** \brief board initialize config; 
