@@ -25,7 +25,7 @@ extern void (*g_nmivector)(void);
  *  \param[in] pIpBase: pointer of devices Base address
  *  \return none.
  */
-void csi_irq_enable(uint32_t *pIpBase)
+void csi_irq_enable(void *pIpBase)
 {
 	csi_irqmap_t *ptMap = irq_map;
 
@@ -48,7 +48,7 @@ void csi_irq_enable(uint32_t *pIpBase)
  *  \param[in] pIpBase: pointer of devices Base address
  *  \return none.
  */
-void csi_irq_disable(uint32_t *pIpBase)
+void csi_irq_disable(void *pIpBase)
 {
 	csi_irqmap_t *ptMap = irq_map;
 

@@ -60,8 +60,8 @@ typedef enum
  */
 typedef enum
 {
-	CAN_ID_STD	= 0,		//CAN ID mode std
-	CAN_ID_EXT				//CAN ID mode ext
+	CAN_STD_ID	= 0,		//CAN standard ID mode
+	CAN_EXT_ID				//CAN extend ID mode
 }csi_can_id_e;
 
 /**
@@ -80,8 +80,8 @@ typedef enum
  */
 typedef enum
 {
-	CAN_DIRMSK_DIS	= 0,	//CAN message dir receive
-	CAN_DIRMSK_EN			//CAN message dir send
+	CAN_DIR_MSK_DIS	= 0,	//CAN message dir receive
+	CAN_DIR_MSK_EN			//CAN message dir send
 }csi_can_dirmsk_e;
 
 /**
@@ -90,8 +90,8 @@ typedef enum
  */
 typedef enum
 {
-	CAN_IDMSK_DIS	= 0,	//CAN message ID mask dis
-	CAN_IDMSK_EN			//CAN message ID mask en
+	CAN_STD_ID_MSK	= 0,	//CAN message standard ID mask
+	CAN_EXT_ID_MSK			//CAN message extend ID mask 
 }csi_can_idmsk_e;
 
 /**
@@ -123,8 +123,7 @@ typedef enum
  */
 typedef enum
 {
-	//CAN_CH0				= 0,		//CAN Interface 0, send reg
-	CAN_CH1				= 1,		//CAN Interface 0, send reg
+	CAN_CH1			= 1,		//CAN Channel; 1~32
 	CAN_CH2,	
 	CAN_CH3,
 	CAN_CH4,	
@@ -231,12 +230,12 @@ typedef enum
 	CAN_INTSRC_BIT0		= (0x01uL << 14),	
 	CAN_INTSRC_CRC		= (0x01uL << 15),
 	CAN_INTSRC_STA_ALL	= (0xff1e)
-}csi_can_status_intsrc_e;
+}csi_can_sta_intsrc_e;
 
 //message channel interrupt source
 #define	CAN_CH_INTSRC_NONE		(0)
-#define	CAN_CH_SINTSRC_POS(ch)	(ch-1)					
-#define	CAN_CH_SINTSRC(ch)		(0x01ul << (ch-1))
+#define	CAN_CH_INTSRC_POS(ch)	(ch-1)					
+#define	CAN_CH_INTSRC(ch)		(0x01ul << (ch-1))
 #define	CAN_CH_STATUS_POS(ch)	(ch-1)
 #define	CAN_CH_STATUS(ch)		(0x01ul << (ch-1))
 
@@ -291,6 +290,7 @@ typedef struct {
 /// \struct csi_can_config_t
 /// \brief  can parameter configuration, open to users  
 typedef struct {
+	bool				bAuReTran;			//auto retransmission
 	uint8_t				byClkSrc;           //clk source 	
 	uint16_t            hwStaInter;			//status interrupt
 	uint32_t            wChnlInter;			//source channel interrupt
@@ -372,11 +372,10 @@ void csi_can_close(csp_can_t *ptCanBase);
   \brief 	   can msg channel send enable
   \param[in]   ptCanBase	pointer of can register structure
   \param[in]   eChNum		number of message
-  \param[in]   eTxIe		TX interrupt ITPAND SET enable
   \param[in]   byDataLen	data length of message
   \return 	   none
  */
-void csi_can_chnl_send(csp_can_t *ptCanBase, csi_can_chnl_e eChNum, csi_can_mcrx_e eTxIe, uint8_t byDataLen);
+void csi_can_chnl_send(csp_can_t *ptCanBase, csi_can_chnl_e eChNum, uint8_t byDataLen);
 
 /** 
   \brief 	   initialize can tx parameter structure
@@ -395,6 +394,24 @@ void csi_can_tx_config(csp_can_t *ptCanBase, csi_can_chnl_e eChNum, csi_can_tx_c
   \return 	   none
  */ 
 void csi_can_rx_config(csp_can_t *ptCanBase, csi_can_chnl_e eChNum, csi_can_rx_config_t *ptRxCfg);
+
+/** 
+  \brief can message status interrupt enable
+  \param[in] ptCanBase: pointer of can register structure
+  \param[in] eStaIntSrc: can status interrupt source
+  \param[in] bEnable: enable/disable interrupt
+  \return none
+ */
+void csi_can_sta_int_enable(csp_can_t *ptCanBase, csi_can_sta_intsrc_e eStaIntSrc, bool bEnable);
+
+/** 
+  \brief can message channel interrupt enable
+  \param[in] ptCanBase: pointer of can register structure
+  \param[in] eChNum: number of message
+  \param[in] bEnable: enable/disable interrupt
+  \return none
+ */
+void csi_can_chnl_int_enable(csp_can_t *ptCanBase, csi_can_chnl_e eChNum, bool bEnable);
 
 /** 
   \brief  	   can transfer manage register control 
@@ -484,7 +501,7 @@ void csi_can_txrqst_enable(csp_can_t *ptCanBase, csi_can_chnl_e eChNum);
   \param[in]   bEnbale		ENABLE/DISABLE(valid/invalid)
   \return 	   none
  */ 
-void csi_can_set_msg_valid(csp_can_t *ptCanBase, csi_can_chnl_e eChNum, bool bEnbale);
+void csi_can_msg_valid_enable(csp_can_t *ptCanBase, csi_can_chnl_e eChNum, bool bEnbale);
 
 /** 
   \brief  	   can set interface corresponding register value
