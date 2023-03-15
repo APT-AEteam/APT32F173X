@@ -28,6 +28,7 @@
 #include "cnta.h"
 
 /* externs function--------------------------------------------------------*/
+extern void nmi_int_handler(void);
 extern void tick_irqhandler(void);
 extern void uart_irqhandler(csp_uart_t *ptUartBase,uint8_t byIdx);
 extern void usart_irqhandler(csp_usart_t *ptUsartBase,uint8_t byIdx);
@@ -62,6 +63,20 @@ extern void sio_irqhandler(csp_sio_t *ptSioBase);
 //EntryParameter:NONE
 //ReturnValue:NONE
 /*************************************************************/
+void nmi_int_handler(void)
+{
+	if(csp_syscon_get_int_st(SYSCON) & LVD_INT)
+	{
+		nop;
+		csp_syscon_int_clr(SYSCON, LVD_INT);
+	}
+	if(csp_exi_port_get_isr(SYSCON) & STATUS_EXI0)
+	{
+		nop;
+		gpio_irqhandler(0);
+	}
+}
+
 void coret_int_handler(void)
 {
 	// ISR content ...

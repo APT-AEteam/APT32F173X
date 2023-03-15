@@ -796,8 +796,7 @@ Default_Handler:
     sw      t5, 56(sp)
     sw      t6, 60(sp)
 
-    la      t0, g_nmivector
-    lw      t0, (t0)
+    la      t0, nmi_int_handler
     jalr    t0
 
     lw      ra, 0(sp)
