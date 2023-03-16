@@ -108,8 +108,8 @@ void user_demo(void)
 /// ***************************************************
 ///  GPTB相关的示例代码
 /// ***************************************************
-//	gpta_capture_demo();
-//	gpta_pwm_demo();
+//	gptb_capture_demo();
+//	gptb_pwm_demo();
 //	gptb_pwm_dz_demo();
 //	gptb_pwm_dz_em_demo();
 
@@ -199,13 +199,13 @@ void user_demo(void)
 /// ***************************************************
 ///  SPI相关的示例代码
 /// ***************************************************
-//	spi_master_send_demo();
-//	spi_master_send_int_demo();
-//	spi_slave_receive_int_demo();
-//	spi_master_send_receive_demo();
-//	spi_slave_send_receive_int_demo();
-//	spi_etcb_dma_send();
-//	spi_etcb_dma_send_receive();          
+//  spi_master_send_demo();
+//  spi_master_send_int_demo();
+//  spi_master_send_receive_demo(); 
+//  spi_slave_send_receive_demo();  
+//  spi_flash_read_write_demo();
+//  spi_dma_send_demo();
+//  spi_dma_send_receive_demo();          
 	
 /// ***************************************************
 ///  OPA相关的示例代码
@@ -216,7 +216,7 @@ void user_demo(void)
 /// ***************************************************
 ///  FVR相关的示例代码
 /// ***************************************************
-	fvr_output_demo();
+//	fvr_output_demo();
 //	fvr_buf_demo();
 
 }
