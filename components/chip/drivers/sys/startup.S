@@ -116,7 +116,7 @@ __Vectors:
     .long   GPTA2_IRQHandler
     .long   GPTA3_IRQHandler
     .long   GPTB0_IRQHandler		
-	.long   GPTB0_IRQHandler
+	.long   GPTB1_IRQHandler
     .long   GPTB2_IRQHandler
     .long   GPTB3_IRQHandler
     .long   GPTB4_IRQHandler		//32
