@@ -101,9 +101,12 @@ void user_demo(void)
 /// ***************************************************
 ///  GPTA相关的示例代码
 /// ***************************************************
-//	gpta_capture_demo();
+//	gpta_timer_demo();
+//	gpta_capture_sync_demo0();
+//	gpta_capture_sync_demo1();
 //	gpta_pwm_demo();
-//	gpta_demo12();
+//	gpta_pwm_waveform_demo();
+//	gpta_reglk_demo();
 
 /// ***************************************************
 ///  GPTB相关的示例代码

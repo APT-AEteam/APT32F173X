@@ -34,10 +34,7 @@ extern void uart_irqhandler(csp_uart_t *ptUartBase,uint8_t byIdx);
 extern void usart_irqhandler(csp_usart_t *ptUsartBase,uint8_t byIdx);
 extern void can_irqhandler(csp_can_t *ptCanBase);
 extern void dma_irqhandler(csp_dma_t *ptDmaBase);						//DMA
-extern void gpta0_initen_irqhandler(csp_gpta_t *ptGptaBase);
-extern void gpta1_initen_irqhandler(csp_gpta_t *ptGptaBase);
-extern void gpta2_initen_irqhandler(csp_gpta_t *ptGptaBase);
-extern void gpta3_initen_irqhandler(csp_gpta_t *ptGptaBase);
+extern void gpta_irqhandler(csp_gpta_t *ptGptaBase);
 extern void gpio_irqhandler(uint8_t byExiNum);
 extern void ifc_irqhandler(void);
 extern void bt_irqhandler(csp_bt_t *ptBtBase);
@@ -154,7 +151,7 @@ void gpta0_int_handler(void)
 {
 #if GPTA0_INT_HANDLE_EN	
 	 // ISR content ...
-	gpta0_initen_irqhandler(GPTA0);
+	gpta_irqhandler(GPTA0);
 #endif
 }
 
@@ -162,6 +159,7 @@ void gpta1_int_handler(void)
 {
 #if GPTA1_INT_HANDLE_EN	
 	 // ISR content ...
+	gpta_irqhandler(GPTA1);
 #endif	
 }
 
@@ -170,12 +168,14 @@ void gpta2_int_handler(void)
 {
 #if GPTA2_INT_HANDLE_EN	
 	 // ISR content ...
+	gpta_irqhandler(GPTA2);
 #endif
 }
 
 void gpta3_int_handler(void) 
 {
 #if GPTA3_INT_HANDLE_EN	
+	gpta_irqhandler(GPTA3);
 	 // ISR content ...
 #endif
 }
