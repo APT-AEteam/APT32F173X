@@ -178,22 +178,22 @@ typedef enum
  * \enum	csp_can_mcr_e
  * \brief   can message control
  */
-typedef enum
-{
-	CAN_OVWRITE_DIS		= 0,
-	CAN_OVWRITE_EN		= 1,
-	CAN_TXREQ_DIS		= 0,
-	CAN_TXREQ_EN		= 1,
-	CAN_RMTEN_DIS		= 0,
-	CAN_RMTEN_EN		= 1,
-	CAN_RXIE_DIS		= 0,
-	CAN_RXIE_EN			= 1,
-	CAN_TXIE_DIS		= 0,
-	CAN_TXIE_EN			= 1,
-	CAN_MASK_DIS		= 0,
-	CAN_MASK_EN			= 1,
-}
-csi_can_mcrx_e;
+//typedef enum
+//{
+//	CAN_OVWRITE_DIS		= 0,
+//	CAN_OVWRITE_EN		= 1,
+//	CAN_TXREQ_DIS		= 0,
+//	CAN_TXREQ_EN		= 1,
+//	CAN_RMTEN_DIS		= 0,
+//	CAN_RMTEN_EN		= 1,
+//	CAN_RXIE_DIS		= 0,
+//	CAN_RXIE_EN			= 1,
+//	CAN_TXIE_DIS		= 0,
+//	CAN_TXIE_EN			= 1,
+//	CAN_MASK_DIS		= 0,
+//	CAN_MASK_EN			= 1,
+//}
+//csi_can_mcrx_e;
 
 
 /**
