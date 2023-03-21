@@ -154,4 +154,6 @@ extern void fvr_buf_demo(void);
 int can_send_demo(void);
 int can_recv_demo(void);
 
+//dac demo
+extern void dac_demo(void);	
 #endif

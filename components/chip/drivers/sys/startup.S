@@ -206,8 +206,7 @@ Reset_Handler:
     jal     board_init   
 #endif
 */
-    jal     main
-
+    jal     main	
     .size   Reset_Handler, . - Reset_Handler
 
 __exit:
@@ -225,3 +224,4 @@ g_top_irqstack:
 .align 2
 	la 		t2, Reset_Handler
 	jalr	t2	
+	

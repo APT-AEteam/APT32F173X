@@ -45,7 +45,7 @@ csi_error_t csi_sysclk_config(void)
 	uint32_t wFreq;
 	uint32_t wHFreq;
 	cclk_src_e eSrc;
-	uint8_t byFlashLp = 0;
+	uint8_t byFlashLp = 0;//0->1
 	wFreq = tClkConfig.wFreq;
 	eSrc = tClkConfig.eClkSrc;
 	wHFreq = get_hclk();
@@ -113,8 +113,8 @@ csi_error_t csi_sysclk_config(void)
 			IFC->MR |= HIGH_SPEED | PF_WAIT7;
 		
 			csp_pll_clk_sel(SYSCON, PLL_CLK_SEL_HFOSC);
-			csp_pll_set_div_m(SYSCON, 3);
-			csp_pll_set_nul(SYSCON, 35);
+			csp_pll_set_div_m(SYSCON, 1);
+			csp_pll_set_nul(SYSCON, 4);
 			csp_pll_set_ckp_div(SYSCON, 1);
 			csp_pll_clk_enable(SYSCON, ENABLE);
 			csi_pll_enable();

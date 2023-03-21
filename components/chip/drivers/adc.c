@@ -544,26 +544,26 @@ void csi_adc_int_enable(csp_adc_t *ptAdcBase, csi_adc_intsrc_e eIntSrc, bool bEn
  *  \param[in] bEnable: ENABLE/DISABLE
  *  \return none
  */
-void csi_adc_fvrout_enable(csp_adc_t *ptAdcBase, csi_adc_fvrsel_e eLvl, bool bEnable)
-{
-	csi_clk_enable((uint32_t *)(ptAdcBase));     //sys adc clk
-	csp_adc_clk_en(ptAdcBase);                   //adc clk enable
-	csp_adc_en(ptAdcBase);                       //enable adc  mode
-	csp_adc_set_fvrout_lvl(ptAdcBase, eLvl);
-	csp_adc_fvrout_enable(ptAdcBase, bEnable);
-}
-/** \brief buffer output(1V0/TEMP) config
- * 
- *  \param[in] ptAdcBase: pointer of ADC reg structure.
- *  \param[in] eBufSel: interior input select, 1V0/TEMP
- *  \param[in] bEnable: output ENABLE/DISABLE
- *  \return none
- */
-void csi_adc_bufout_enable(csp_adc_t *ptAdcBase, csi_adc_bufsel_e eBufSel, bool bEnable)
-{
-	csi_clk_enable((uint32_t *)(ptAdcBase));     //sys adc clk
-	csp_adc_clk_en(ptAdcBase);                   //adc clk enable
-	csp_adc_en(ptAdcBase);                       //enable adc mode
-	csp_adc_bufsel_set(ptAdcBase, eBufSel);
-	csp_adc_bufout_enable(ptAdcBase, bEnable);
-}
+//void csi_adc_fvrout_enable(csp_adc_t *ptAdcBase, csi_adc_fvrsel_e eLvl, bool bEnable)
+//{
+//	csi_clk_enable((uint32_t *)(ptAdcBase));     //sys adc clk
+//	csp_adc_clk_en(ptAdcBase);                   //adc clk enable
+//	csp_adc_en(ptAdcBase);                       //enable adc  mode
+//	csp_adc_set_fvrout_lvl(ptAdcBase, eLvl);
+//	csp_adc_fvrout_enable(ptAdcBase, bEnable);
+//}
+///** \brief buffer output(1V0/TEMP) config
+// * 
+// *  \param[in] ptAdcBase: pointer of ADC reg structure.
+// *  \param[in] eBufSel: interior input select, 1V0/TEMP
+// *  \param[in] bEnable: output ENABLE/DISABLE
+// *  \return none
+// */
+//void csi_adc_bufout_enable(csp_adc_t *ptAdcBase, csi_adc_bufsel_e eBufSel, bool bEnable)
+//{
+//	csi_clk_enable((uint32_t *)(ptAdcBase));     //sys adc clk
+//	csp_adc_clk_en(ptAdcBase);                   //adc clk enable
+//	csp_adc_en(ptAdcBase);                       //enable adc mode
+//	csp_adc_bufsel_set(ptAdcBase, eBufSel);
+//	csp_adc_bufout_enable(ptAdcBase, bEnable);
+//}
