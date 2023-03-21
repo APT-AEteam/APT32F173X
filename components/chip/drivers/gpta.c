@@ -15,17 +15,14 @@
 #include "drv/pin.h"
 #include <drv/irq.h>
 
-uint32_t gGptaPrd;
 uint32_t wGpta_Cmp_Buff[4] = {0};
 
 /** \brief gpta interrupt handle weak function
  *   		- 
- *     		- 
- * 			- 
  *  \param[in] none
  *  \return    none
  */
-__attribute__((weak)) void gpta0_initen_irqhandler(csp_gpta_t *ptGptaBase)
+__attribute__((weak)) void gpta_irqhandler(csp_gpta_t *ptGptaBase)
 {
 
 	if(((csp_gpta_get_misr(ptGptaBase) & GPTA_INT_PEND))==GPTA_INT_PEND)
@@ -70,36 +67,10 @@ __attribute__((weak)) void gpta0_initen_irqhandler(csp_gpta_t *ptGptaBase)
 	
     if(((csp_gpta_get_misr(ptGptaBase) & GPTA_INT_CBU))==GPTA_INT_CBU)
 	{	
-#if 0		
-		gTick++;if(gTick>=5){	
-								   //load1();	
-	                               gTick=0;
-								   csi_gpta_channel_cmpload_config(GPTA0, GPTA_CMPLD_IMM, GPTA_LDCMP_ZRO ,GPTA_CAMPA);
-	                               csi_gpta_channel_cmpload_config(GPTA0, GPTA_CMPLD_IMM, GPTA_LDCMP_ZRO ,GPTA_CAMPB);
-								   csi_gpta_change_ch_duty(GPTA0,GPTA_CAMPA, 25);
-	                               csi_gpta_change_ch_duty(GPTA0,GPTA_CAMPB, 25);
-		                         }
-#endif
 	    csp_gpta_clr_int(ptGptaBase, GPTA_INT_CBU);
-	   	
 	}
 
 }
-__attribute__((weak)) void gpta1_initen_irqhandler(csp_gpta_t *ptGptaBase)
-{
-	
-}
-
-__attribute__((weak)) void gpta2_initen_irqhandler(csp_gpta_t *ptGptaBase)
-{
-	
-}
-
-__attribute__((weak)) void gpta3_initen_irqhandler(csp_gpta_t *ptGptaBase)
-{
-	
-}
-
 
  /**
  \brief  Basic configuration
@@ -167,8 +138,6 @@ csi_error_t csi_gpta_config_init(csp_gpta_t *ptGptaBase, csi_gpta_config_t *ptGp
 		csi_irq_enable((uint32_t *)ptGptaBase);							//enable  irq
 	}
 	
-	gGptaPrd=wPrdrLoad;
-	
 	return CSI_OK;
 }
 
@@ -221,8 +190,6 @@ csi_error_t csi_gpta_capture_init(csp_gpta_t *ptGptaBase, csi_gpta_captureconfig
 		csi_irq_enable((uint32_t *)ptGptaBase);							//enable  irq
 	}
 	
-	gGptaPrd=wPrdrLoad;
-	
 	return CSI_OK;
 }
 
@@ -247,10 +214,17 @@ csi_error_t  csi_gpta_wave_init(csp_gpta_t *ptGptaBase, csi_gpta_pwmconfig_t *pt
 	csp_gpta_wr_key(ptGptaBase);                                           //Unlocking
 	csp_gpta_reset(ptGptaBase);											// reset 
 	
-	wClkDiv = (csi_get_pclk_freq() / ptGptaPwmCfg->wFreq / 60000);		// clk div value
-	if(wClkDiv == 0)wClkDiv = 1;
-	
-	wPrdrLoad  = (csi_get_pclk_freq()/ptGptaPwmCfg->wFreq/wClkDiv);	    //prdr load value
+
+	if(ptGptaPwmCfg->byCountingMode==GPTA_UPDNCNT){
+		    wClkDiv = (csi_get_pclk_freq()  / ptGptaPwmCfg->wFreq /2 / 30000);		// clk div value
+			if(wClkDiv == 0)wClkDiv = 1;	
+			wPrdrLoad  = (csi_get_pclk_freq()/ptGptaPwmCfg->wFreq /2 /wClkDiv);	    //prdr load value
+		
+	}else{
+			wClkDiv = (csi_get_pclk_freq() / ptGptaPwmCfg->wFreq / 30000);		// clk div value
+			if(wClkDiv == 0)wClkDiv = 1;	
+			wPrdrLoad  = (csi_get_pclk_freq()/ptGptaPwmCfg->wFreq/wClkDiv);	    //prdr load value
+	}
 		
 	wCrVal =ptGptaPwmCfg->byCountingMode | (ptGptaPwmCfg->byStartSrc<<GPTA_STARTSRC_POS) |
 	        ptGptaPwmCfg->byOneshotMode<<GPTA_OPMD_POS | (ptGptaPwmCfg->byWorkmod<<GPTA_MODE_POS);
@@ -262,23 +236,91 @@ csi_error_t  csi_gpta_wave_init(csp_gpta_t *ptGptaBase, csi_gpta_pwmconfig_t *pt
 	csp_gpta_set_pscr(ptGptaBase, (uint16_t)wClkDiv - 1);					// clk div
 	csp_gpta_set_prdr(ptGptaBase, (uint16_t)wPrdrLoad);				    // prdr load value
 		
-	if(ptGptaPwmCfg->byDutyCycle){
-	wCmpLoad =wPrdrLoad-(wPrdrLoad * ptGptaPwmCfg->byDutyCycle /100);	// cmp load value
+	if(ptGptaPwmCfg->byDutyCycle>=100){wCmpLoad=0;}
+	else if(ptGptaPwmCfg->byDutyCycle==0){wCmpLoad=wPrdrLoad+1;}
+	else{wCmpLoad =wPrdrLoad-(wPrdrLoad * ptGptaPwmCfg->byDutyCycle /100);}		
 	csp_gpta_set_cmpa(ptGptaBase, (uint16_t)wCmpLoad);					// cmp load value
 	csp_gpta_set_cmpb(ptGptaBase, (uint16_t)wCmpLoad);
-//	csp_gpta_set_cmpc(ptGptaBase, (uint16_t)wCmpLoad);
-//	csp_gpta_set_cmpd(ptGptaBase, (uint16_t)wCmpLoad);
-	}
-	
+		
 	if(ptGptaPwmCfg->wInt)
 	{
 		csp_gpta_int_enable(ptGptaBase, ptGptaPwmCfg->wInt, true);		//enable interrupt
 		csi_irq_enable((uint32_t *)ptGptaBase);							    //enable  irq
 	}
-	
-	gGptaPrd=wPrdrLoad;
-	
+		
 	return CSI_OK;	
+}
+
+/** \brief initialize gpta data structure
+ * 
+ *  \param[in] ptGptaBase: pointer of gpta register structure
+ *  \param[in] wTimeOut: the timeout for gpta, unit: us, 20us < wTimeOut < 3S
+ *  \return error code \ref csi_error_t
+ */ 
+csi_error_t csi_gpta_timer_init(csp_gpta_t *ptGptaBase, uint32_t wTimeOut)
+{
+    uint32_t wClkDiv;
+	uint32_t wCrVal;
+	uint32_t wPrdrLoad; 
+	
+	if(wTimeOut == 0 ){return CSI_ERROR;}
+		
+	csi_clk_enable((uint32_t *)ptGptaBase);								// clk enable
+	
+	csp_gpta_clken(ptGptaBase);
+	csp_gpta_wr_key(ptGptaBase);                                           //Unlocking
+	csp_gpta_reset(ptGptaBase);											// reset 
+	
+#if 1	
+	if(csi_get_pclk_freq() < 6000000)
+	{
+		wClkDiv = csi_get_pclk_freq() / 1000 * wTimeOut / 1000 / 60000;		//gpta clk div value
+		if(wClkDiv == 0)
+			wClkDiv  = 1;
+		wPrdrLoad = csi_get_pclk_freq() / 1000 * wTimeOut / 1000 / wClkDiv;	//gpta prdr load value
+		if(wPrdrLoad > 0xffff)
+		{
+			wClkDiv += 1;
+			wPrdrLoad = csi_get_pclk_freq() / 1000 * wTimeOut / 1000 / wClkDiv ;	//gpta prdr load value
+		}		
+	}
+	else 
+	{
+		wClkDiv = csi_get_pclk_freq() / 1000000 * wTimeOut / 60000;		//gpta clk div value
+		if(wClkDiv == 0)
+			wClkDiv  = 1;
+		wPrdrLoad = csi_get_pclk_freq() / 1000000 * wTimeOut / wClkDiv;	//gpta prdr load value
+		if(wPrdrLoad > 0xffff)
+		{
+			wClkDiv += 1;
+			wPrdrLoad = csi_get_pclk_freq() / 1000000 * wTimeOut / wClkDiv ;	//gpta prdr load value
+		}			
+		
+	}
+#else	
+	wClkDiv = (long long)csi_get_pclk_freq() * wTimeOut / 1000000 / 60000;		//gpta clk div value
+	if(wClkDiv == 0)
+		wClkDiv  = 1;
+	wPrdrLoad = (long long)csi_get_pclk_freq() * wTimeOut / 1000000 / wClkDiv;	//gpta prdr load value
+	if(wPrdrLoad > 0xffff)
+	{
+		wClkDiv += 1;
+		wPrdrLoad = (long long)csi_get_pclk_freq() * wTimeOut / 1000000 / wClkDiv ;	//gpta prdr load value
+	}
+#endif
+	wCrVal =GPTA_UPCNT | (GPTA_SYNC_START<<GPTA_STARTSRC_POS) | (GPTA_WAVE<<GPTA_MODE_POS);
+	wCrVal=(wCrVal & ~(GPTA_PSCLD_MSK))   |((GPTA_LDPSCR_ZRO&0x03)   <<GPTA_PSCLD_POS);	
+
+    csp_gpta_clken(ptGptaBase);                                           // clkEN
+	csp_gpta_set_cr(ptGptaBase, wCrVal);									// set gpta work mode
+	csi_gpta_count_mode(ptGptaBase, GPTA_OP_CONT);                          // gpta count mode
+	csp_gpta_set_pscr(ptGptaBase, (uint16_t)wClkDiv - 1);					// clk div
+	csp_gpta_set_prdr(ptGptaBase, (uint16_t)wPrdrLoad);				    // prdr load value
+
+	csp_gpta_int_enable(ptGptaBase, GPTA_INT_PEND, true);		        //enable interrupt
+	csi_irq_enable((uint32_t *)ptGptaBase);							    //enable  irq
+	
+	return CSI_OK;					
 }
 
 /** \brief set gpta count mode
@@ -787,4 +829,31 @@ csi_error_t csi_gpta_set_evcntinit(csp_gpta_t *ptGptaBase, uint8_t byCntChx, uin
  
  return CSI_OK;
 }
+
+/**
+ \brief  gpta configuration Loading
+ \param  ptGptaBase    	pointer of gptb register structure
+ \param  tCfg           refer to csi_gpta_feglk_config_t
+ \return CSI_OK /CSI_ERROR
+*/
+csi_error_t csi_gpta_reglk_config(csp_gpta_t *ptGptaBase,csi_gpta_feglk_config_t *Global)
+{   uint32_t w_GLK;	
+	w_GLK =0;
+    w_GLK = (w_GLK & ~GPTA_PRDR_MSK )| ((Global-> byPrdr & 0xF)<< GPTA_PRDR_POS);
+	w_GLK = (w_GLK & ~GPTA_CMPA_MSK )| ((Global-> byCmpa & 0xF)<< GPTA_CMPA_POS);
+	w_GLK = (w_GLK & ~GPTA_CMPB_MSK )| ((Global-> byCmpb & 0xF)<< GPTA_CMPB_POS);
+	w_GLK = (w_GLK & ~GPTA_GLD2_MSK )| ((Global-> byGld2 & 0xF)<< GPTA_GLD2_POS);
+	w_GLK = (w_GLK & ~GPTA_RSSR_MSK )| ((Global-> byRssr & 0xF)<< GPTA_RSSR_POS);
+	csp_gpta_set_feglk(ptGptaBase,w_GLK);
+	w_GLK =0;
+	w_GLK = (w_GLK & ~GPTA_EMSLCLR_MSK )| ((Global-> byEmslclr & 0xF)<< GPTA_EMSLCLR_POS);
+	w_GLK = (w_GLK & ~GPTA_EMHLCLR_MSK )| ((Global-> byEmhlclr & 0xF)<< GPTA_EMHLCLR_POS);
+	w_GLK = (w_GLK & ~GPTA_EMICR_MSK )  | ((Global-> byEmicr   & 0xF)<< GPTA_EMICR_POS);
+	w_GLK = (w_GLK & ~GPTA_EMFRCR_MSK ) | ((Global-> byEmfrcr  & 0xF)<< GPTA_EMFRCR_POS);
+	w_GLK = (w_GLK & ~GPTA_AQOSF_MSK )  | ((Global-> byAqosf   & 0xF)<< GPTA_AQOSF_POS);
+	w_GLK = (w_GLK & ~GPTA_AQCSF_MSK )  | ((Global-> byAqcsf   & 0xF)<< GPTA_AQCSF_POS);
+	csp_gpta_set_feglk2(ptGptaBase,w_GLK);	
+	return CSI_OK;
+}
+
 

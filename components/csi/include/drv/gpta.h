@@ -19,8 +19,6 @@
 extern "C" {
 #endif
 
-extern uint32_t g_gpta_prd;
-
 typedef struct csi_gpta_config    csi_gpta_config_t;
 struct csi_gpta_config {
     uint8_t		byWorkmod;          //Count or capture
@@ -111,6 +109,20 @@ typedef struct {
 	uint16_t	byWinOffset;		//window offset
 	uint16_t 	byWinWidth;			//window width		
 } csi_gpta_filter_config_t;
+
+typedef struct {
+	uint8_t		byPrdr;			
+	uint8_t		byCmpa;			
+	uint8_t		byCmpb;			
+	uint8_t		byGld2;			
+	uint8_t 	byRssr;		          
+	uint8_t 	byEmslclr;
+	uint8_t 	byEmhlclr;
+    uint8_t 	byEmicr;
+	uint8_t 	byEmfrcr;
+    uint8_t 	byAqosf;
+	uint8_t 	byAqcsf;		
+} csi_gpta_feglk_config_t;
 
 typedef enum {	
 	 byprdr_A=0,	
@@ -279,10 +291,7 @@ typedef enum{
  *  \param[in] none
  *  \return    none
  */
-__attribute__((weak)) void gpta0_initen_irqhandler(csp_gpta_t *ptGptaBase);
-
-__attribute__((weak)) void gpta1_initen_irqhandler(csp_gpta_t *ptGptaBase);
-
+__attribute__((weak)) void gpta_irqhandler(csp_gpta_t *ptGptaBase);
 
 /** \brief capture configuration
  * 
@@ -300,6 +309,14 @@ csi_error_t csi_gpta_capture_init(csp_gpta_t *ptGptaBase, csi_gpta_captureconfig
  *  \return error code \ref csi_error_t
  */
 csi_error_t  csi_gpta_wave_init(csp_gpta_t *ptGptaBase, csi_gpta_pwmconfig_t *ptGptaPwmCfg);
+
+/** \brief initialize gpta data structure
+ * 
+ *  \param[in] ptGptaBase: pointer of gpta register structure
+ *  \param[in] wTimeOut: the timeout for gpta, unit: us, 20us < wTimeOut < 3S
+ *  \return error code \ref csi_error_t
+ */ 
+csi_error_t csi_gpta_timer_init(csp_gpta_t *ptGptaBase, uint32_t wTimeOut);
 
 /** \brief set gpta count mode
  * 
@@ -360,7 +377,7 @@ csi_error_t csi_gpta_global_config(csp_gpta_t *ptGptaBase,csi_gpta_Global_load_c
  * 
  *  \param[in] ptGptaBase of gpta register structure
  *  \param[in] Glo:  csi_gpta_Global_load_gldcfg  
- *  \param[in] bENABLE£ºENABLE or DISABLE
+ *  \param[in] bENABLE:ENABLE or DISABLE
  *  \return CSI_OK
  */
 csi_error_t csi_gpta_gldcfg(csp_gpta_t *ptGptaBase ,csi_gpta_Global_load_gldcfg Glo,bool bENABLE);
@@ -396,7 +413,7 @@ void csi_gpta_stop(csp_gpta_t *ptGptaBase);
 
 /** \brief set gpta start mode. 
  * 
- *  \param[in] ptGptaBase £ºpointer of gpta register structure
+ *  \param[in] ptGptaBase Â£Âºpointer of gpta register structure
  *  \param[in] eMode GPTA_SW/GPTA_SYNC
  *  \return none
  */
@@ -404,8 +421,8 @@ void csi_gpta_set_start_mode(csp_gpta_t *ptGptaBase, csi_gpta_stmd_e eMode);
 
 /** \brief set gpta operation mode
  * 
- *  \param[in] ptGptaBase £ºpointer of gpta register structure
- *  \param[in] eMode £º GPTA_OP_CONT/GPTA_OP_OT
+ *  \param[in] ptGptaBase Â£Âºpointer of gpta register structure
+ *  \param[in] eMode Â£Âº GPTA_OP_CONT/GPTA_OP_OT
  *  \return none
  */
 void csi_gpta_set_os_mode(csp_gpta_t *ptGptaBase, csi_gpta_opmd_e eMode);
@@ -543,13 +560,13 @@ csi_error_t csi_gpta_set_evtrg(csp_gpta_t *ptGptaBase, csi_gpta_trgout_e byTrgOu
 csi_error_t csi_gpta_set_evcntinit(csp_gpta_t *ptGptaBase, uint8_t byCntChx, uint8_t byCntVal, uint8_t byCntInitVal);
 
 
- /**
- \brief  Basic configuration
- \param  ptGptaBase    	    pointer of ept register structure
- \param  ptGptaPwmCfg   	refer to csi_gpta_config_t
- \return CSI_OK/CSI_ERROR
+/**
+ \brief  gpta configuration Loading
+ \param  ptGptaBase    	pointer of gptb register structure
+ \param  tCfg           refer to csi_gpta_feglk_config_t
+ \return CSI_OK /CSI_ERROR
 */
-csi_error_t csi_gpta_config_init(csp_gpta_t *ptGptaBase, csi_gpta_config_t *ptGptaPwmCfg);
+csi_error_t csi_gpta_reglk_config(csp_gpta_t *ptGptaBase,csi_gpta_feglk_config_t *Global);
 
 #ifdef __cplusplus
 }

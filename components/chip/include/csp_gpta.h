@@ -53,7 +53,8 @@
    __IM uint32_t  	MISR;       //0x00D4    Interrupt MISR
    __IOM uint32_t   IMCR;       //0x00D8    Interrupt IMCR
    __OM uint32_t   	ICR;        //0x00DC    Interrupt clear
-   __IM uint32_t	RSVD4[2];
+   __IOM uint32_t   REGLK;           //0x00e0                                             
+   __IOM uint32_t   REGLK2;          //0x00e4    
    __OM uint32_t 	REGPROT;	//0x00E8	Protection Register
    __IM uint32_t	RESERVED6[467-3];  
    __IM uint32_t 	CMPAA;	        //0x082C	cmpa active reg for capture mode
@@ -537,15 +538,39 @@ typedef enum{
 ///EVSWF
 #define GPTA_SWF_EV(n)	(0x1 << n)
 
+//REGLK 
+#define GPTA_PRDR_POS	(0)
+#define GPTA_PRDR_MSK   (0xf << GPTA_PRDR_POS)
+#define GPTA_CMPA_POS	(4)
+#define GPTA_CMPA_MSK   (0xf << GPTA_CMPA_POS)
+#define GPTA_CMPB_POS	(8)
+#define GPTA_CMPB_MSK   (0xf << GPTA_CMPB_POS)
+#define GPTA_GLD2_POS	(20)
+#define GPTA_GLD2_MSK   (0xf << GPTA_GLD2_POS)	
+#define GPTA_RSSR_POS	(24)
+#define GPTA_RSSR_MSK   (0xf << GPTA_RSSR_POS)	
 
+//REGLK2 
+#define GPTA_EMSLCLR_POS   (0)
+#define GPTA_EMSLCLR_MSK   (0xf << GPTA_EMSLCLR_POS)
+#define GPTA_EMHLCLR_POS   (4)
+#define GPTA_EMHLCLR_MSK   (0xf << GPTA_EMHLCLR_POS)
+#define GPTA_EMICR_POS	   (8)
+#define GPTA_EMICR_MSK     (0xf << GPTA_EMICR_POS)
+#define GPTA_EMFRCR_POS	   (12)
+#define GPTA_EMFRCR_MSK    (0xf << GPTA_EMFRCR_POS)	
+#define GPTA_AQOSF_POS	   (16)
+#define GPTA_AQOSF_MSK     (0xf << GPTA_AQOSF_POS)
+#define GPTA_AQCSF_POS	   (20)
+#define GPTA_AQCSF_MSK     (0xf << GPTA_AQCSF_POS)
 /******************************************************************************
 /// Interrupt Related
 ******************************************************************************/
 typedef enum{
 	GPTA_INT_TRGEV0 = 0x1,
 	GPTA_INT_TRGEV1 = 0x2,
-	GPTA_INT_TRGEV2 = 0x4,
-	GPTA_INT_TRGEV3 = 0x8,
+//	GPTA_INT_TRGEV2 = 0x4,
+//	GPTA_INT_TRGEV3 = 0x8,
 	GPTA_INT_CAPLD0 = 0x1 << 4,
 	GPTA_INT_CAPLD1 = 0x1 << 5,
 	GPTA_INT_CAPLD2 = 0x1 << 6,
@@ -836,6 +861,16 @@ static inline uint32_t csp_gpta_get_misr(csp_gpta_t *ptGptaBase)
 static inline void csp_gpta_clr_int(csp_gpta_t *ptGptaBase, csp_gpta_int_e byInt)
 {
 	ptGptaBase -> ICR = byInt;
+}
+
+static inline void csp_gpta_set_feglk(csp_gpta_t *ptGptaBase, uint32_t byCh)
+{
+	ptGptaBase -> REGLK = byCh;
+}
+
+static inline void csp_gpta_set_feglk2(csp_gpta_t *ptGptaBase, uint32_t byCh)
+{
+	ptGptaBase -> REGLK2 = byCh;
 }
 
 ///function declaratioN
