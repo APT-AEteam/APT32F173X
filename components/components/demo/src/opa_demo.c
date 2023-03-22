@@ -56,14 +56,13 @@ void opa_internal_gain_mode_test(void)
 	csi_pin_set_mux(PA5,PA5_OPA3X); //PIN21 输出
 	
 	//OPA 参数配置
-	ptOpaConfig_t.byMode = OPA_INTERNAL_MODE;
-	ptOpaConfig_t.byInternalGain = OPA_PGAC_X2;
-	ptOpaConfig_t.byInputMode = SINGEL;
-	ptOpaConfig_t.byOpaNegativeInput = DISABLE;
-	ptOpaConfig_t.byOpaOutput = ENABLE;
+	ptOpaConfig_t.byMode = OPA_INTERNAL_MODE;//内部增益模式
+	ptOpaConfig_t.byInternalGain = OPA_PGAC_X2;//两倍增益（在OPAx_CR的19位置1情况下失效）
+	ptOpaConfig_t.byInputMode = SINGEL;//单端输入
+	ptOpaConfig_t.byOpaNegativeInput = DISABLE;//关闭负端使能
+	ptOpaConfig_t.byOpaOutput = ENABLE;//开启放大器输出
 	
 	csi_opa_init(OPA0,&ptOpaConfig_t);
-	OPA0 ->CR |= 0x1<<19;
 	csi_opa_start(OPA0);
 	
 	csi_opa_init(OPA1,&ptOpaConfig_t);
@@ -136,9 +135,9 @@ void opa_external_gain_mode_test(void)
 	csi_pin_set_mux(PA4,PA4_OPA3N); //PIN20 输入负端
 	csi_pin_set_mux(PA5,PA5_OPA3X); //PIN21 输出
 	//OPA 参数配置
-	ptOpaConfig_t.byMode = OPA_EXTERNAL_MODE;
-	ptOpaConfig_t.byOpaNegativeInput = ENABLE;
-	ptOpaConfig_t.byOpaOutput = ENABLE;
+	ptOpaConfig_t.byMode = OPA_EXTERNAL_MODE;//外部增益模式
+	ptOpaConfig_t.byOpaNegativeInput = ENABLE;//开启负端使能
+	ptOpaConfig_t.byOpaOutput = ENABLE;//开启放大器输出
 	
 	csi_opa_init(OPA0,&ptOpaConfig_t);
 	csi_opa_start(OPA0);
