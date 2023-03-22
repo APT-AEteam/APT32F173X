@@ -1008,5 +1008,15 @@ static inline void csp_exi_flt(csp_syscon_t *ptSysconBase, uint8_t byFltNum, exi
 	ptSysconBase->EXICFG = (ptSysconBase->EXICFG & ~EXI_FLT_MSK(byFltNum)) | (eFlt << EXI_FLT_POS(byFltNum));
 }
 
+static inline void csp_set_swd_lock(csp_syscon_t *ptSysconBase)
+{
+	ptSysconBase->DBGCR = 0x00;
+}
+
+static inline void csp_set_swd_unlock(csp_syscon_t *ptSysconBase)
+{
+	ptSysconBase->DBGCR = 0x5a;
+}
+
 #endif  /* _CSP_SYSCON_H*/
 
