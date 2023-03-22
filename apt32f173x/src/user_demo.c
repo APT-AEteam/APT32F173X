@@ -90,6 +90,10 @@ void user_demo(void)
 /// ***************************************************
 //	lpt_timer_demo();
 //	lpt_pwm_demo();
+//	lpt_sync_trg_start_demo();
+//	lpt_trg_out_demo( );
+//    lpt_filter_demo( );
+//    lpt_window_demo( );
 
 /// ***************************************************
 ///  Counter A相关的示例代码
@@ -187,6 +191,9 @@ void user_demo(void)
 //	iic_master_demo();
 //	iic_master_slave_demo();
 //	iic_slave_demo();
+//  iic_multi_slave_address_demo( );
+//    iic_dma_tx_demo();
+//    iic_dma_rx_demo();
 	
 /// ***************************************************
 ///  SIO相关的示例代码
