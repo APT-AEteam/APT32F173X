@@ -47,6 +47,11 @@ typedef enum{
 
 typedef enum
 {
+	LPT_TRGOUT	= 0,  		   
+}csi_lpt_trgout_e;
+
+typedef enum
+{
     LPT_TRGSRC_DIS 		= (0x00ul ),  	       
 	LPT_TRGSRC_ZRO 		= (0x01ul ),
 	LPT_TRGSRC_PRD 		= (0x02ul ),
@@ -263,6 +268,14 @@ csi_error_t csi_lpt_set_fre(csp_lpt_t *ptLptBase, csi_lpt_clksrc_e eClk, uint16_
  *  \return void
  */
 void csi_lpt_swsync_enable(csp_lpt_t *ptLptBase, bool bEnable);
+
+
+/** \brief lpt software generates a trigger event
+ * 
+ *  \param[in] ptLptBase:pointer of lpt register structure
+ *  \return none
+ */
+void csi_lpt_soft_evtrg(csp_lpt_t *ptLptBase);
 
 #ifdef __cplusplus
 }

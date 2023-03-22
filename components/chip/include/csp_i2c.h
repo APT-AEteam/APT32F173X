@@ -7,6 +7,7 @@
  * <tr><td> 2020-9-01 <td>V0.0  <td>ZJY   <td>initial
  * <tr><td> 2021-1-21 <td>V0.1  <td>ZJY   <td> modified in 110
   * <tr><td> 2021-1-22 <td>V0.2  <td>WNN   <td> move to 102
+  * <tr><td> 2023-3-2 <td>V0.3  <td>YT   <td> move to 173
  * </table>
  * *********************************************************************
 */
@@ -53,7 +54,14 @@ typedef struct
     __IOM  uint32_t  SDA_TOUT; 	//0x0070 	I2C SDA Stuck at Low Timeout          	 
     __IM   uint32_t  TX_ABRT; 	//0x0074 	I2C Transmit Abort Status             	 
     __IOM  uint32_t  GCALL;     //0x0078 	I2C ACK General Call                  	 
-	__IOM  uint32_t  NACK; 		//0x007C 	I2C Generate SLV_DATA_NACK            	 
+	__IOM  uint32_t  NACK; 		//0x007C 	I2C Generate SLV_DATA_NACK
+	__IOM  uint32_t  DMACR; 	//0x0080 	DMA Control
+    __IOM  uint32_t  RSVD7;		//0x0084	
+    __IOM  uint32_t  RSVD8;		//0x0088	
+    __IOM  uint32_t  SRR; 		//0x008C 	Soft Reset Control   
+    __IOM  uint32_t  SADDRQUAL; //0x0090 	I2C Slave Address Qualifier
+    __IOM  uint32_t  ADDRMON; 	//0x0094 	I2C Slave Address Monitor
+	
 } csp_i2c_t;
 
 /*****************************************************************************
@@ -376,6 +384,85 @@ typedef enum
 	I2C_NACK_DATA
 }i2c_nack_e;
 
+/*****************************************************************************
+* DMACR : I2C DMA Control Register
+******************************************************************************/ 
+#define	I2C_RDMA_EN_POS		(0)		
+#define	I2C_RDMA_EN_MSK		(0x01ul << I2C_RDMA_EN_POS)	
+typedef enum{
+	I2C_RDMA_DIS		= 0,
+	I2C_RDMA_EN
+}i2c_rdma_en_e;
+
+#define	I2C_TDMA_EN_POS		(1)	
+#define	I2C_TDMA_EN_MSK		(0x01ul << I2C_TDMA_EN_POS)	
+typedef enum{
+	I2C_TDMA_DIS		= 0,
+	I2C_TDMA_EN
+}i2c_tdma_en_e;
+
+#define	I2C_RDMA_SEL_POS	(2)			 
+#define	I2C_RDMA_SEL_MSK	(0x01ul << I2C_RDMA_SEL_POS)	
+typedef enum{
+	I2C_RDMA_FIFO_NSPACE = 0,
+	I2C_RDMA_FIFO_RX_FLSEL
+}i2c_rdma_sel_e;
+
+#define	I2C_TDMA_SEL_POS	(3)			 
+#define	I2C_TDMA_SEL_MSK	(0x01ul << I2C_TDMA_SEL_POS)	
+typedef enum{
+	I2C_TDMA_FIFO_NFULL		= 0,
+	I2C_TDMA_FIF0_TX_FLSEL
+}i2c_tdma_sel_e;
+
+/*****************************************************************************
+* SRR : I2C Soft Reset Register
+******************************************************************************/ 
+#define	I2C_SWRST_R_POS		(0)		
+#define	I2C_SWRST_R_MSK		(0x01ul << I2C_SWRST_R_POS)	
+typedef enum{
+	I2C_SWRST_R_NO_AVAIL = 0,
+	I2C_SWRST_R
+}i2c_swrst_r_e;
+
+#define	I2C_SWRST_C_POS		(1)		
+#define	I2C_SWRST_C_MSK		(0x01ul << I2C_SWRST_C_POS)	
+typedef enum{
+	I2C_SWRST_C_NO_AVAIL = 0,
+	I2C_SWRST_C
+}i2c_swrst_c_e;
+
+#define	I2C_SWRST_F_POS		(2)		
+#define	I2C_SWRST_F_MSK		(0x01ul << I2C_SWRST_F_POS)	
+typedef enum{
+	I2C_SWRST_F_NO_AVAIL = 0,
+	I2C_SWRST_F
+}i2c_swrst_f_e;
+
+
+/*****************************************************************************
+* SADDRQUAL : I2C Slave Address Qualifier Register
+******************************************************************************/
+#define	I2C_SLV_QUAL_POS		(0)		
+#define	I2C_SLV_QUAL_MSK		(0x3FFul << I2C_SLV_QUAL_POS)
+
+#define	I2C_QUAL_MODE_POS		(10)		
+#define	I2C_QUAL_MODE_MSK		(0x01ul << I2C_QUAL_MODE_POS)	
+typedef enum
+{
+	I2C_QUAL_MASK	= 0,
+	I2C_QUAL_EXTEND    
+}i2c_qual_e;
+
+
+/*****************************************************************************
+* ADDRMON : I2C Slave Address Monitor
+******************************************************************************/
+ 
+
+
+
+
 /******************************************************************************
 ********************** IIC External Functions Declaration *********************
 ******************************************************************************/
@@ -602,4 +689,47 @@ static inline void csp_i2c_vic_int_dis(void)
 	csi_vic_disable_irq(I2C_IRQn); 
 }
 
+static inline void csp_i2c_set_rxdma(csp_i2c_t *ptI2cBase, i2c_rdma_en_e eRxDmaEn, i2c_rdma_sel_e eRxDmaSel) 
+{
+	ptI2cBase->DMACR = (ptI2cBase->DMACR & ~(I2C_RDMA_EN_MSK | I2C_RDMA_SEL_MSK)) | (eRxDmaEn << I2C_RDMA_EN_POS) | (eRxDmaSel << I2C_RDMA_SEL_POS);
+}
+
+static inline void csp_i2c_set_txdma(csp_i2c_t *ptI2cBase, i2c_tdma_en_e eTxDmaEn, i2c_tdma_sel_e eTxDmaSel) 
+{
+	ptI2cBase->DMACR = (ptI2cBase->DMACR & ~(I2C_TDMA_EN_MSK | I2C_TDMA_SEL_MSK)) | (eTxDmaEn << I2C_TDMA_EN_POS) | (eTxDmaSel << I2C_TDMA_SEL_POS);
+}
+
+static inline void csp_i2c_register_soft_reset(csp_i2c_t *ptI2cBase)
+{
+	ptI2cBase->SRR |= (I2C_SWRST_R<<I2C_SWRST_R_POS);
+}
+
+static inline void csp_i2c_control_logic_soft_reset(csp_i2c_t *ptI2cBase)
+{
+	ptI2cBase->SRR |= (I2C_SWRST_C<<I2C_SWRST_C_POS);
+}
+
+static inline void csp_i2c_fifo_soft_reset(csp_i2c_t *ptI2cBase)
+{
+	ptI2cBase->SRR |= (I2C_SWRST_F<<I2C_SWRST_F_POS);
+}
+
+static inline void csp_i2c_set_qualmode(csp_i2c_t *ptI2cBase, i2c_qual_e eQualmode)
+{
+	ptI2cBase->SADDRQUAL =(ptI2cBase->SADDRQUAL  & ~I2C_QUAL_MODE_MSK) | (eQualmode<<I2C_QUAL_MODE_POS);
+}
+
+static inline void csp_i2c_set_slvqual(csp_i2c_t *ptI2cBase, uint32_t wSlvqual)
+{
+	ptI2cBase->SADDRQUAL = (ptI2cBase->SADDRQUAL  & ~I2C_SLV_QUAL_MSK) | (wSlvqual<<I2C_SLV_QUAL_POS);
+}
+
+static inline uint32_t csp_i2c_get_monaddr(csp_i2c_t *ptI2cBase)
+{
+	return ptI2cBase->ADDRMON;
+}
+
+
+
 #endif
+

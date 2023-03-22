@@ -144,8 +144,9 @@ __attribute__((weak)) void can_irqhandler(csp_can_t *ptCanBase)
 			break;
 		default:			//message channel handle
 		
-			while(csp_can_get_sr(ptCanBase) & CAN_BUSY1_S);											//If1 Busy?	
+			//while(csp_can_get_sr(ptCanBase) & CAN_BUSY1_S);											//If1 Busy?	
 			csp_can_set_tmr(ptCanBase, hwIntNum, 1, CAN_AMCR_MSK | CAN_CLRIT_MSK | CAN_TRND_MSK);	//Write If1 command request, clear NAWDATA and ITPND flag
+			while(csp_can_get_sr(ptCanBase) & CAN_BUSY1_S);											//If1 Busy?	
 			hwMcrVal = csp_can_get_mcr(ptCanBase);													//Read If1 message control reg, Read first and clean up NAWDATA and ITPND
 			
 			if(hwMcrVal & CAN_NEWDAT_MSK)		//NEWDAT flag = 1 ? receive msg
@@ -337,13 +338,13 @@ void csi_can_chnl_send(csp_can_t *ptCanBase, csi_can_chnl_e eChNum, uint8_t byDa
 {
 	uint32_t wMcrVal;
 	//read MCR reg
-	while(csp_can_get_sr(ptCanBase) & CAN_BUSY1_S);
+	//while(csp_can_get_sr(ptCanBase) & CAN_BUSY1_S);
 	csp_can_set_tmr(ptCanBase, eChNum, CAN_IF1, CAN_AMCR_MSK);
-	wMcrVal = (csp_can_get_mcr(ptCanBase) & 0xdef0);
+	while(csp_can_get_sr(ptCanBase) & CAN_BUSY1_S);
+	wMcrVal = (csp_can_get_mcr(ptCanBase) & 0xfe80);
 	//write MCR reg
-	while(csp_can_get_sr(ptCanBase) & CAN_BUSY0_S);
-	//csp_can_set_mcr_wr(ptCanBase, byDataLen, CAN_TXREQST_DOING, eTxIe, CAN_RMTEN_SET);
 	csp_can_set_mcr(ptCanBase, (wMcrVal | CAN_DLC(byDataLen) | (CAN_TXREQST_EN << CAN_TXREQST_POS)));
+	while(csp_can_get_sr(ptCanBase) & CAN_BUSY0_S);
 	csp_can_set_tmr(ptCanBase, eChNum, CAN_IF0, CAN_DIR_WRITE | CAN_AMCR_MSK);
 }
 /** \brief  can transfer manage register control 
@@ -534,6 +535,7 @@ uint32_t csi_can_get_ifx(csp_can_t *ptCanBase, csi_can_chnl_e eChNum, csi_can_if
 		case CAN_IFX_MCR:			//mask
 			csp_can_set_tmr(ptCanBase, eChNum, 1, CAN_AMCR_MSK);
 			while(csp_can_get_sr(ptCanBase) & CAN_BUSY1_S);
+			nop;nop;
 			return csp_can_get_mcr(ptCanBase);
 		case CAN_IFX_STRP:			//strp
 			csp_can_set_tmr(ptCanBase, eChNum, 1, 0);

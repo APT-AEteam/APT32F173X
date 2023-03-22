@@ -169,7 +169,8 @@ csi_error_t csi_lpt_timer_init(csp_lpt_t *ptLptBase,csi_lpt_clksrc_e eClk, uint3
 	csp_lpt_soft_rst(ptLptBase);
 	csp_lpt_clk_enable(ptLptBase, ENABLE);
 	
-	wLptClk = apt_get_lpt_clk(eClk);	
+	wLptClk = apt_get_lpt_clk(eClk);
+//	wLptClk = 2000000;
 	wMult = wLptClk/1000*wTimeOut;
 		
 	wLptPrd = apt_set_lpt_clk(ptLptBase,eClk,wMult);
@@ -181,7 +182,7 @@ csi_error_t csi_lpt_timer_init(csp_lpt_t *ptLptBase,csi_lpt_clksrc_e eClk, uint3
 	{
 		csp_lpt_set_prdr(ptLptBase, (uint16_t)wLptPrd);
 	}
-	csi_lpt_int_enable(ptLptBase,LPT_PEND_INT,ENABLE);	 //enable PEND interrupt
+	csi_lpt_int_enable(ptLptBase,LPT_TRGEV_INT|LPT_PEND_INT,ENABLE);	 //enable PEND interrupt
 	return tRet;	
 }
 
@@ -302,7 +303,7 @@ csi_error_t csi_lpt_set_evtrg(csp_lpt_t *ptLptBase, uint8_t byEvtrg, csi_lpt_trg
 	
 	csp_lpt_set_evtrg(ptLptBase, eTrgsrc);
 	csp_lpt_set_trgprd(ptLptBase, byTrgprd-1);
-	csp_lpt_trg_enable(ptLptBase, ENABLE);
+	csp_lpt_trg_enable(ptLptBase, DISABLE);      // DISABLE for test CR[SWSYNEN]
 	
 	return ret;
 }
@@ -365,7 +366,7 @@ csi_error_t csi_lpt_pwm_init(csp_lpt_t *ptLptBase, csi_lpt_pwm_config_t *ptLptPa
 		return CSI_ERROR;
 		
 	wLptClk = apt_get_lpt_clk(ptLptPara->byClksrc);
-	
+//	wLptClk = 12000000;
 
 	wMult = wLptClk/ptLptPara->wFreq;
 	
@@ -545,4 +546,62 @@ csi_error_t csi_lpt_set_sync(csp_lpt_t *ptLptBase, uint8_t bySync, csi_lpt_syncm
 void csi_lpt_swsync_enable(csp_lpt_t *ptLptBase, bool bEnable)
 {
 	csp_lpt_swsync_enable(ptLptBase, bEnable);
+}
+
+
+/** \brief lpt software generates a trigger event
+ * 
+ *  \param[in] ptLptBase:pointer of lpt register structure
+ *  \return none
+ */
+void csi_lpt_soft_evtrg(csp_lpt_t *ptLptBase)
+{
+	csi_clk_enable(ptLptBase);										
+	csp_lpt_trg_enable(ptLptBase, ENABLE);
+	csp_lpt_evswf_en(ptLptBase);
+}
+
+
+/** \brief lpt sync window config  
+ * 
+ *  \param[in] lpt: LPT handle to operate
+ *  \param bCrossEnable: window cross enable/disable
+ *  \param bInvEnable: window invert enable/disable
+ *  \param hwOffset: window start point from CNT=ZRO, us
+ *  \param hwWindow: window width, us
+ *  \return error code \ref csi_error_t
+ */
+csi_error_t csi_lpt_set_sync_window(csp_lpt_t *ptLptBase, bool bCrossEnable, bool bInvEnable, uint16_t hwOffset, uint16_t hwWindow)
+{
+	uint32_t wOffset, wWindow;
+	
+	wOffset = (long long )csi_get_pclk_freq() * hwOffset / 1000000;
+	wWindow = (long long )csi_get_pclk_freq() * hwWindow / 1000000;
+	
+	if((wWindow > 0xffff) || (wOffset > 0xffff))
+		return CSI_ERROR;
+		
+	csp_lpt_sync_window_cross_enable(ptLptBase, bCrossEnable);
+	csp_lpt_sync_window_inv_enable(ptLptBase, bInvEnable);
+	
+	csp_lpt_set_sync_offset(ptLptBase, (uint16_t)wOffset);
+	csp_lpt_set_sync_window(ptLptBase, (uint16_t)wWindow);	
+	csp_lpt_sync_window_enable(ptLptBase, ENABLE);
+	
+	return CSI_OK;
+//	
+//	hwOffset = wLptPrd * hwOffsetRate/100;
+//	hwWindow = wLptPrd * hwWindowRate/100;
+//	
+//	if (hwOffsetRate + hwWindowRate > 100)
+//			csp_lpt_sync_window_cross_enable(ptLptBase, ENABLE);
+//	else
+//			csp_lpt_sync_window_cross_enable(ptLptBase, DISABLE);
+//			
+//	csp_lpt_set_sync_offset(ptLptBase, hwOffset);
+//	csp_lpt_set_sync_window(ptLptBase, hwWindow);
+//	
+//	csp_lpt_sync_window_enable(ptLptBase, ENABLE);
+
+
 }

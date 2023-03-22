@@ -31,18 +31,11 @@ typedef struct{
 #endif
 
 typedef enum {
-
-    WKUP_EXI0 = 0,
-	WKUP_EXI1,
-	WKUP_EXI2,
-	WKUP_EXI3,
-	WKUP_EXI4,
+	
 	WKUP_IWDT = 8,
 	WKUP_RTC,
 	WKUP_LPT,
-	WKUP_LVD,
-	WKUP_TCH,
-	WKUP_I2C
+	WKUP_LVD
 	
 } csi_wakeup_src_e;
 

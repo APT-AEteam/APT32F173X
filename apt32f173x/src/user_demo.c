@@ -90,6 +90,10 @@ void user_demo(void)
 /// ***************************************************
 //	lpt_timer_demo();
 //	lpt_pwm_demo();
+//	lpt_sync_trg_start_demo();
+//	lpt_trg_out_demo( );
+//    lpt_filter_demo( );
+//    lpt_window_demo( );
 
 /// ***************************************************
 ///  Counter A相关的示例代码
@@ -101,9 +105,12 @@ void user_demo(void)
 /// ***************************************************
 ///  GPTA相关的示例代码
 /// ***************************************************
-//	gpta_capture_demo();
+//	gpta_timer_demo();
+//	gpta_capture_sync_demo0();
+//	gpta_capture_sync_demo1();
 //	gpta_pwm_demo();
-//	gpta_demo12();
+//	gpta_pwm_waveform_demo();
+//	gpta_reglk_demo();
 
 /// ***************************************************
 ///  GPTB相关的示例代码
@@ -184,6 +191,9 @@ void user_demo(void)
 //	iic_master_demo();
 //	iic_master_slave_demo();
 //	iic_slave_demo();
+//  iic_multi_slave_address_demo( );
+//    iic_dma_tx_demo();
+//    iic_dma_rx_demo();
 	
 /// ***************************************************
 ///  SIO相关的示例代码
@@ -223,5 +233,9 @@ void user_demo(void)
 ///  DAC相关的示例代码
 /// ***************************************************
 //	dac_demo();
+
+///  LED相关的示例代码
+/// ***************************************************
+//	led_demo();
 }
 

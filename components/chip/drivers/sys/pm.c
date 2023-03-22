@@ -103,7 +103,6 @@ csi_error_t csi_pm_enter_sleep(csi_pm_mode_e mode)
 */
 csi_error_t csi_pm_config_wakeup_source(csi_wakeup_src_e eWkupSrc, bool bEnable)
 {
-    uint32_t wIrqNum;
 	csi_error_t ret = CSI_OK;
 	csp_syscon_t *ptSysconBase  = (csp_syscon_t*)APB_SYS_BASE;
 	

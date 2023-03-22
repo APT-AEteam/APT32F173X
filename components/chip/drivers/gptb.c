@@ -28,7 +28,7 @@ uint32_t wGptb_Cmp_Buff[4] = {0};
  *  \param[in] none
  *  \return    none
  */
-__attribute__((weak)) void gptb0_irqhandler(csp_gptb_t *ptGptbBase)
+__attribute__((weak)) void gptb_irqhandler(csp_gptb_t *ptGptbBase)
 {
 	volatile csp_gptb_emint_e wEMMisr = csp_gptb_get_emmisr(ptGptbBase);
 	volatile csp_gptb_int_e   wMisr   = csp_gptb_get_misr(ptGptbBase);	
@@ -112,16 +112,6 @@ __attribute__((weak)) void gptb0_irqhandler(csp_gptb_t *ptGptbBase)
 			csp_gptb_clr_int(ptGptbBase, GPTB_INT_ZROMA);
 		}
 	}
-}
-
-__attribute__((weak)) void gptb1_irqhandler(csp_gptb_t *ptGptbBase)
-{
-	
-}
- 
-__attribute__((weak)) void gptb2_irqhandler(csp_gptb_t *ptGptbBase)
-{
-	
 }
 
  /**

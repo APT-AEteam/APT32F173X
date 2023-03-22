@@ -759,7 +759,7 @@ static inline void csp_can_test_mode(csp_can_t *ptCanBase, can_test_mode_e eTest
 
 static inline void csp_can_set_tstr(csp_can_t *ptCanBase, uint8_t byValue)
 {
-	ptCanBase->TSTR = (CAN_TSTKEY << CAN_TSTKEY_POS) | byValue;
+	ptCanBase->TSTR |= ((CAN_TSTKEY << CAN_TSTKEY_POS) | byValue);
 }
 
 
