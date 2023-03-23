@@ -14,7 +14,6 @@
 #include <iostring.h>
 
 #include "demo.h"
-
 /* Private macro-----------------------------------------------------------*/
 
 /* externs function--------------------------------------------------------*/
@@ -23,26 +22,22 @@ extern void board_init(void);
 extern void user_demo(void);
 
 /* externs variablesr------------------------------------------------------*/
-
 /* Private variablesr------------------------------------------------------*/
 
 int main()
 {
     system_init();
-	board_init();
-	
+	board_init();	
 	csi_pin_set_mux(PA6, PA6_OUTPUT);		//PA06 output
 	csi_pin_set_high(PA6);					//PA06 output high;
 	
-//	my_printf("Hello World~~~~~~~\n");		//print message
-	
-	user_demo();							//demo				
-	
-	
+	my_printf("Hello World~~~~~~~\n");		//print message
+	user_demo();							//demo
+
 	while(1)
-	{
-		mdelay(100);						//delay 100ms
-		csi_pin_toggle(PA6);				//PA06 toggle
+	{	
+	delay_ums(100);
+	csi_pin_toggle(PA6);				//PA06 toggle
 	}
 	
     return 0;

@@ -113,24 +113,13 @@ extern int cnta_pwm_demo(void);
 extern int cnta_envelope_demo(void);
 
 //spi demo
-extern int spi_sync_sendbuff(void);
-extern int spi_async_sendbuff(void);
-extern int spi_w25q16jvsiq_write_read(void);
-extern int spi_sync_test_speed(void);
-extern void spi_master_sync_send_sync_receive(void); //主机示例1
-extern void spi_slave_sync_send_sync_receive(void);  //从机示例1
-extern void spi_master_sync_send_async_receive(void);//主机示例2
-extern void spi_slave_async_send_async_receive(void);//从机示例2
-extern void test_clr_txrxfifo(void);//接收fifo清除测试
-extern void spi_etcb_dma_send(void);//etcb硬件触发dma发spi数据
-extern void spi_dma_send(void); //dma软件触发，发spi数据
-extern void spi_dma_send_receive(void);//dma软件触发，收发spi数据
-extern void spi_etcb_dma_send_receive(void);//etcb硬件触发dma收发spi数据
-//extern int spi_w25q16jvsiq_write_read_demo(void);
-//extern void spi_master_sync_send_sync_receive_demo(void); //主机示例1
-//extern void spi_slave_sync_send_sync_receive_demo(void);  //从机示例1
-//extern void spi_master_sync_send_async_receive_demo(void);//主机示例2
-//extern void spi_slave_async_send_async_receive_demo(void);//从机示例2
+extern int spi_master_send_demo(void);
+extern int spi_master_send_int_demo(void);
+extern void spi_master_send_receive_demo(void); 
+extern void spi_slave_send_receive_demo(void);  
+extern int spi_flash_read_write_demo(void);
+extern void spi_dma_send_demo(void);
+extern void spi_dma_send_receive_demo(void);
 
 //cmp demo
 extern int cmp_base_demo(void);
@@ -138,8 +127,12 @@ extern int cmp_dfcr_demo(void);
 extern int cmp_wfcr_demo(void);
 
 //gpta demo
-extern int gpta_capture_demo();
-extern int gpta_pwm_demo();
+extern int gpta_timer_demo(void);
+extern int gpta_capture_sync_demo0(void);
+extern int gpta_capture_sync_demo1(void);
+extern int gpta_pwm_demo(void);
+extern int gpta_pwm_waveform_demo(void);
+extern int gpta_reglk_demo(void);
 
 //gptb demo
 extern int gptb_capture_demo(void);
@@ -161,4 +154,10 @@ extern void opa_external_gain_mode_test(void);
 extern void fvr_output_demo(void);
 extern void fvr_buf_demo(void);
 
+//can
+int can_send_demo(void);
+int can_recv_demo(void);
+
+//dac demo
+extern void dac_demo(void);	
 #endif

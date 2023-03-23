@@ -167,6 +167,19 @@ csi_error_t csi_iic_write_nbyte(csp_i2c_t *ptIicBase,uint32_t wDevAddr, uint32_t
 csi_error_t csi_iic_read_nbyte(csp_i2c_t *ptIicBase,uint32_t wDevAddr, uint32_t wReadAdds, uint8_t wReadAddrNumByte,volatile uint8_t *pbyIicData,uint32_t wNumByteRead);
 
 
+
+/** \brief  iic  master  read n byte data by dma
+ * 
+ *  \param[in] ptIicBase: pointer of iic register structure
+ * 	\param[in] wDevAddr: Addrress of slave device
+ *  \param[in] wReadAdds: Read address
+ * 	\param[in] byReadAddrNumByte: Read address length (unit byte)
+ * 	\param[in] pbyIicData: Read the address pointer of the data storage array
+ * 	\param[in] wNumByteRead: Read data length
+ *  \return error code \ref csi_error_t
+ */ 
+csi_error_t csi_iic_read_nbyte_dma(csp_i2c_t *ptIicBase,uint32_t wDevAddr, uint32_t wReadAdds, uint8_t byReadAddrNumByte,volatile uint8_t *pbyIicData,uint32_t wNumByteRead);
+
 /** \brief  IIC slave handler
  * 
  *  \param[in] ptIicBase: pointer of iic register structure
@@ -200,6 +213,24 @@ void csi_iic_spklen_set(csp_i2c_t *ptIicBase, uint8_t bySpklen);
  */
  
 __attribute__((weak)) void i2c_irqhandler(csp_i2c_t *ptIicBase);
+
+/** \brief  set iic slave address qualifier mode
+ * 
+ *  \param[in] ptIicBase: pointer of iic register structure
+ *  \param[in] eQualmode: iic slave address qualifier mode
+ *  \return error code \ref csi_error_t
+ */ 
+void csi_iic_qualmode_set(csp_i2c_t *ptIicBase,i2c_qual_e eQualmode);
+
+
+/** \brief  set iic slave address qualifier value
+ * 
+ *  \param[in] ptIicBase: pointer of iic register structure
+ *  \param[in] wSlvqual: iic slave address qualifier value
+ *  \return error code \ref csi_error_t
+ */ 
+void csi_iic_slvqual_set(csp_i2c_t *ptIicBase,uint32_t wSlvqual);
+
 
 #ifdef __cplusplus
 }

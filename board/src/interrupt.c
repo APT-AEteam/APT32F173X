@@ -28,15 +28,13 @@
 #include "cnta.h"
 
 /* externs function--------------------------------------------------------*/
+extern void nmi_int_handler(void);
 extern void tick_irqhandler(void);
 extern void uart_irqhandler(csp_uart_t *ptUartBase,uint8_t byIdx);
 extern void usart_irqhandler(csp_usart_t *ptUsartBase,uint8_t byIdx);
 extern void can_irqhandler(csp_can_t *ptCanBase);
 extern void dma_irqhandler(csp_dma_t *ptDmaBase);						//DMA
-extern void gpta0_initen_irqhandler(csp_gpta_t *ptGptaBase);
-extern void gpta1_initen_irqhandler(csp_gpta_t *ptGptaBase);
-extern void gpta2_initen_irqhandler(csp_gpta_t *ptGptaBase);
-extern void gpta3_initen_irqhandler(csp_gpta_t *ptGptaBase);
+extern void gpta_irqhandler(csp_gpta_t *ptGptaBase);
 extern void gpio_irqhandler(uint8_t byExiNum);
 extern void ifc_irqhandler(void);
 extern void bt_irqhandler(csp_bt_t *ptBtBase);
@@ -47,9 +45,7 @@ extern void syscon_irqhandler(csp_syscon_t *ptSysconBase);
 extern void led_irqhandler(csp_led_t *ptLedBase);
 extern void i2c_irqhandler(csp_i2c_t *ptIicBase);
 
-extern void gptb0_irqhandler(csp_gptb_t *ptGptbBase);
-extern void gptb1_irqhandler(csp_gptb_t *ptGptbBase);
-extern void gptb2_irqhandler(csp_gptb_t *ptGptbBase);
+extern void gptb_irqhandler(csp_gptb_t *ptGptbBase);
 extern void sio_irqhandler(csp_sio_t *ptSioBase);
 
 
@@ -62,6 +58,20 @@ extern void sio_irqhandler(csp_sio_t *ptSioBase);
 //EntryParameter:NONE
 //ReturnValue:NONE
 /*************************************************************/
+void nmi_int_handler(void)
+{
+	if(csp_syscon_get_int_st(SYSCON) & LVD_INT)
+	{
+		nop;
+		csp_syscon_int_clr(SYSCON, LVD_INT);
+	}
+	if(csp_exi_port_get_isr(SYSCON) & STATUS_EXI0)
+	{
+		nop;
+		gpio_irqhandler(0);
+	}
+}
+
 void coret_int_handler(void)
 {
 	// ISR content ...
@@ -141,7 +151,7 @@ void gpta0_int_handler(void)
 {
 #if GPTA0_INT_HANDLE_EN	
 	 // ISR content ...
-	gpta0_initen_irqhandler(GPTA0);
+	gpta_irqhandler(GPTA0);
 #endif
 }
 
@@ -149,6 +159,7 @@ void gpta1_int_handler(void)
 {
 #if GPTA1_INT_HANDLE_EN	
 	 // ISR content ...
+	gpta_irqhandler(GPTA1);
 #endif	
 }
 
@@ -157,12 +168,14 @@ void gpta2_int_handler(void)
 {
 #if GPTA2_INT_HANDLE_EN	
 	 // ISR content ...
+	gpta_irqhandler(GPTA2);
 #endif
 }
 
 void gpta3_int_handler(void) 
 {
 #if GPTA3_INT_HANDLE_EN	
+	gpta_irqhandler(GPTA3);
 	 // ISR content ...
 #endif
 }
@@ -171,7 +184,7 @@ void gptb0_int_handler(void)
 {
 #if GPTB0_INT_HANDLE_EN		
     // ISR content ...	
-	gptb0_irqhandler(GPTB0);
+	gptb_irqhandler(GPTB0);
 #endif
 }
 
@@ -179,7 +192,7 @@ void gptb1_int_handler(void)
 {
 #if GPTB1_INT_HANDLE_EN		
     // ISR content ...	
-	gptb1_irqhandler(GPTB1);
+	gptb_irqhandler(GPTB1);
 #endif	
 }
 
@@ -187,7 +200,7 @@ void gptb2_int_handler(void)
 {
 #if GPTB2_INT_HANDLE_EN		
     // ISR content ...	
-	gptb2_irqhandler(GPTB2);
+	gptb_irqhandler(GPTB2);
 #endif	
 }
 
@@ -195,6 +208,7 @@ void gptb3_int_handler(void)
 {
 #if GPTB3_INT_HANDLE_EN		
     // ISR content ...	
+	gptb_irqhandler(GPTB3);
 #endif
 }
 
@@ -202,6 +216,7 @@ void gptb4_int_handler(void)
 {
 #if GPTB4_INT_HANDLE_EN		
     // ISR content ...	
+	gptb_irqhandler(GPTB4);
 #endif	
 }
 
@@ -209,6 +224,7 @@ void gptb5_int_handler(void)
 {
 #if GPTB5_INT_HANDLE_EN		
     // ISR content ...	
+	gptb_irqhandler(GPTB5);
 #endif
 }
 

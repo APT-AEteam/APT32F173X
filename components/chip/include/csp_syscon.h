@@ -383,6 +383,8 @@ typedef enum {
 	SRAM_16KRAM0_16KRAM1
 }sram_blk_e;
 
+#define NMI_POS 		(27)
+#define NMI_MSK 		(0xFul << NMI_POS)
 typedef enum
 {
 	NMI_LVD_INT    	=	(0x01ul << 27), 
@@ -764,6 +766,16 @@ static inline void csp_sram_blk_ctrl(csp_syscon_t *ptSysconBase, sram_blk_e eSra
 	ptSysconBase->OPT1 = (ptSysconBase->OPT1 & ~SRAMBLKCTRL_MSK)| (eSramBlk << SRAMBLKCTRL_POS);
 }
 
+static inline void csp_nmi_int_enable(csp_syscon_t *ptSysconBase, nmi_sel_e eNmiSel)
+{
+	ptSysconBase->OPT1 |=  eNmiSel;
+}
+
+static inline void csp_nmi_int_disable(csp_syscon_t *ptSysconBase, nmi_sel_e eNmiSel)
+{
+	ptSysconBase->OPT1 &= ~eNmiSel;
+}
+
 static inline void csp_set_em_gain(csp_syscon_t *ptSysconBase, uint8_t byGn)
 {
 	ptSysconBase->OSTR = (ptSysconBase->OSTR & (~EM_GM_MSK)) | (byGn << EM_GM_POS);
@@ -994,6 +1006,16 @@ static inline void csp_set_swrst(csp_syscon_t *ptSysconBase, sw_rst_e eSwRst)
 static inline void csp_exi_flt(csp_syscon_t *ptSysconBase, uint8_t byFltNum, exi_flt_e eFlt)
 {
 	ptSysconBase->EXICFG = (ptSysconBase->EXICFG & ~EXI_FLT_MSK(byFltNum)) | (eFlt << EXI_FLT_POS(byFltNum));
+}
+
+static inline void csp_set_swd_lock(csp_syscon_t *ptSysconBase)
+{
+	ptSysconBase->DBGCR = 0x00;
+}
+
+static inline void csp_set_swd_unlock(csp_syscon_t *ptSysconBase)
+{
+	ptSysconBase->DBGCR = 0x5a;
 }
 
 #endif  /* _CSP_SYSCON_H*/

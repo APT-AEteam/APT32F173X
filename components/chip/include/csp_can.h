@@ -174,7 +174,8 @@ typedef enum{
 	CAN_RS_S			= (0x01ul << 22),
 	CAN_TS_S			= (0x01ul << 23),	
 	CAN_CCENS_S			= (0x01ul << 24),
-	CAN_BTXPD_S			= (0x01ul << 25)				
+	CAN_BTXPD_S			= (0x01ul << 25),
+	CAN_STA_ALL_INT		= 0xff1e
 }can_int_e; 
 
 
@@ -213,7 +214,8 @@ typedef enum{
 	CAN_CH29_INT		= (0x01ul << 28),
 	CAN_CH30_INT		= (0x01ul << 29),	
 	CAN_CH31_INT		= (0x01ul << 30),
-	CAN_CH32_INT		= (0x01ul << 31)					
+	CAN_CH32_INT		= (0x01ul << 31),
+	CAN_CHNL_ALL_INT	= 0xffffffff					
 }can_sint_e; 
 
 #define	CAN_CHNL_POS(num)	(num)	
@@ -381,8 +383,8 @@ typedef enum{
 #define	CAN_TXREQST_POS		(8)	
 #define	CAN_TXREQST_MSK		(0x01ul << CAN_TXREQST_POS)
 typedef enum{
-	CAN_TXREQST_NOWAIT	= 0,
-	CAN_TXREQST_DOING	
+	CAN_TXREQST_DIS	= 0,
+	CAN_TXREQST_EN	
 }can_txreqst_e;
 
 #define	CAN_RMTEN_POS		(9)	
@@ -757,7 +759,7 @@ static inline void csp_can_test_mode(csp_can_t *ptCanBase, can_test_mode_e eTest
 
 static inline void csp_can_set_tstr(csp_can_t *ptCanBase, uint8_t byValue)
 {
-	ptCanBase->TSTR = (CAN_TSTKEY << CAN_TSTKEY_POS) | byValue;
+	ptCanBase->TSTR |= ((CAN_TSTKEY << CAN_TSTKEY_POS) | byValue);
 }
 
 

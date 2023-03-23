@@ -41,7 +41,7 @@
 #include <drv/uart.h>
 #include <drv/usart.h>
 //#include <drv/tkey.h>
-
+#include <drv/can.h>
 
 
 #endif /* _CSI_DRV_H_ */

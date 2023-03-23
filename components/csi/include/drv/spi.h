@@ -214,12 +214,12 @@ csi_error_t csi_spi_receive_async(csp_spi_t *ptSpiBase, void *pData, uint32_t wS
 /** \brief  receiving data from spi receiver,blocking mode
  * 
  *  \param[in] ptSpiBase: pointer of spi register structure
- *  \param[in] pDataout: pointer to buffer with data to send to spi transmitter
- *  \param[in] pDatain: number of data to receive(byte)
- *  \param[in] wSize: number of data to receive(byte)
+ *  \param[in] pTXdata: pointer to buffer with data to send to spi transmitter
+ *  \param[in] pRXdata: pointer to buffer with data to receive to spi transmitter
+ *  \param[in] wSize: number of data to send or receive(byte)
  *  \return error code \ref csi_error_t
  */
-int32_t csi_spi_send_receive(csp_spi_t *ptSpiBase, void *pDataout, void *pDatain, uint32_t wSize);
+int32_t csi_spi_send_receive(csp_spi_t *ptSpiBase, void *pTXdata, void *pRXdata, uint32_t wSize);
 
 /** \brief  receiving data from spi receiver, not-blocking mode
  * 

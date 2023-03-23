@@ -13,8 +13,8 @@
     <VendorName>new_soc_project_c_solution_e906fdp</VendorName>
   </VendorInfo>
   <MonitorProgress>
-    <DebugLaunch>87</DebugLaunch>
-    <FlashOperate>43</FlashOperate>
+    <DebugLaunch>88</DebugLaunch>
+    <FlashOperate>78</FlashOperate>
   </MonitorProgress>
   <ToolsConfig>
     <Compiler>
@@ -23,18 +23,6 @@
     </Compiler>
   </ToolsConfig>
   <PackPathes>$(ProjectPath)/../board|$(ProjectPath)/../components|</PackPathes>
-  <DebugSessions>
-    <watchExpressions>SYSCON:1</watchExpressions>
-    <memoryExpressions>0x00;;;</memoryExpressions>
-    <statistics>;;32;;MHZ;</statistics>
-    <peripheralTabs>
-      <Tab disFormat="Hex">SYSCON</Tab>
-    </peripheralTabs>
-    <WatchDisplayFormat>1</WatchDisplayFormat>
-    <LocalDisplayFormat>1</LocalDisplayFormat>
-    <debugLayout/>
-    <memoryTabColSizeExpressions>100:8;100:8;100:8;100:8;</memoryTabColSizeExpressions>
-  </DebugSessions>
   <BuildConfigs>
     <BuildConfig Name="BuildSet">
       <Target>
@@ -176,7 +164,7 @@
         <PreInit/>
         <AfterLoadFile/>
         <AutoRun>yes</AutoRun>
-        <ResetType>Soft Reset</ResetType>
+        <ResetType>Hard Reset</ResetType>
         <SoftResetVal>2</SoftResetVal>
         <ResetAfterLoad>no</ResetAfterLoad>
         <AfterResetFile/>
@@ -201,7 +189,7 @@
           <ResetAfterConnect>yes</ResetAfterConnect>
           <GDBName/>
           <GDBServerType>Local</GDBServerType>
-          <OtherFlags/>
+          <OtherFlags>-ndmrstdelay 1000</OtherFlags>
           <ICEEnablePCSampling>no</ICEEnablePCSampling>
           <ICESamplingFreq>1000</ICESamplingFreq>
           <RemoteICEEnablePCSampling>yes</RemoteICEEnablePCSampling>
@@ -245,4 +233,14 @@
       </Flash>
     </BuildConfig>
   </BuildConfigs>
+  <DebugSessions>
+    <watchExpressions>SYSCON:1</watchExpressions>
+    <memoryExpressions>0x00;;;</memoryExpressions>
+    <statistics>;;32;;MHZ;</statistics>
+    <peripheralTabs/>
+    <WatchDisplayFormat>1</WatchDisplayFormat>
+    <LocalDisplayFormat>1</LocalDisplayFormat>
+    <debugLayout/>
+    <memoryTabColSizeExpressions>100:8;100:8;100:8;100:8;</memoryTabColSizeExpressions>
+  </DebugSessions>
 </Project>

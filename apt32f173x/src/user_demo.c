@@ -90,6 +90,10 @@ void user_demo(void)
 /// ***************************************************
 //	lpt_timer_demo();
 //	lpt_pwm_demo();
+//	lpt_sync_trg_start_demo();
+//	lpt_trg_out_demo( );
+//    lpt_filter_demo( );
+//    lpt_window_demo( );
 
 /// ***************************************************
 ///  Counter A相关的示例代码
@@ -101,15 +105,18 @@ void user_demo(void)
 /// ***************************************************
 ///  GPTA相关的示例代码
 /// ***************************************************
-//	gpta_capture_demo();
+//	gpta_timer_demo();
+//	gpta_capture_sync_demo0();
+//	gpta_capture_sync_demo1();
 //	gpta_pwm_demo();
-//	gpta_demo12();
+//	gpta_pwm_waveform_demo();
+//	gpta_reglk_demo();
 
 /// ***************************************************
 ///  GPTB相关的示例代码
 /// ***************************************************
-//	gpta_capture_demo();
-//	gpta_pwm_demo();
+//	gptb_capture_demo();
+//	gptb_pwm_demo();
 //	gptb_pwm_dz_demo();
 //	gptb_pwm_dz_em_demo();
 
@@ -184,6 +191,9 @@ void user_demo(void)
 //	iic_master_demo();
 //	iic_master_slave_demo();
 //	iic_slave_demo();
+//  iic_multi_slave_address_demo( );
+//    iic_dma_tx_demo();
+//    iic_dma_rx_demo();
 	
 /// ***************************************************
 ///  SIO相关的示例代码
@@ -199,13 +209,13 @@ void user_demo(void)
 /// ***************************************************
 ///  SPI相关的示例代码
 /// ***************************************************
-//	spi_master_send_demo();
-//	spi_master_send_int_demo();
-//	spi_slave_receive_int_demo();
-//	spi_master_send_receive_demo();
-//	spi_slave_send_receive_int_demo();
-//	spi_etcb_dma_send();
-//	spi_etcb_dma_send_receive();          
+//  spi_master_send_demo();
+//  spi_master_send_int_demo();
+//  spi_master_send_receive_demo(); 
+//  spi_slave_send_receive_demo();  
+//  spi_flash_read_write_demo();
+//  spi_dma_send_demo();
+//  spi_dma_send_receive_demo();          
 	
 /// ***************************************************
 ///  OPA相关的示例代码
@@ -216,8 +226,16 @@ void user_demo(void)
 /// ***************************************************
 ///  FVR相关的示例代码
 /// ***************************************************
-	fvr_output_demo();
+//	fvr_output_demo();
 //	fvr_buf_demo();
 
+/// ***************************************************
+///  DAC相关的示例代码
+/// ***************************************************
+//	dac_demo();
+
+///  LED相关的示例代码
+/// ***************************************************
+//	led_demo();
 }
 

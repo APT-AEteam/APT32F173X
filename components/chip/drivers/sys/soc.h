@@ -419,9 +419,10 @@ typedef enum {
 	PA13_OUTPUT			    =  2U,		//output
 	PA13_OUTPUT_MONI		=  3U,		//output with monitor
 	PA13_SWDIO				=  4U,
-    PA13_I2C_SCL             =  5U,
-    PA13_UART1_RX            =  6U,
-    PA13_UART0_RX	  	     =  7U,
+    PA13_I2C_SCL            =  5U,
+    PA13_UART1_RX           =  6U,
+    PA13_UART0_RX	  	    =  7U,
+	PA13_LED_C8             =  10U,
 
 	
 	PA14_GPD				=  0U,

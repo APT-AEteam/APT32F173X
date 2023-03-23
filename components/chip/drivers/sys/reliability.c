@@ -408,7 +408,7 @@ void csi_escm_disable(void)
  */
 void csi_swd_lock(void)
 {
-	*(uint32_t *)(0x40011128) = 0;
+	csp_set_swd_lock(SYSCON);
 }
 
 /** \brief SWD Unlock
@@ -418,5 +418,5 @@ void csi_swd_lock(void)
  */
 void csi_swd_unlock(void)
 {
-	*(uint32_t *)(0x40011128) = 0x5a;
+	csp_set_swd_unlock(SYSCON);
 }

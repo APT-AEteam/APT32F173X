@@ -61,18 +61,18 @@
 /******************************************************************************
 * CR : ADC12 Control Register
 ******************************************************************************/
-#define ADC12_BUFEN_POS		16
-#define ADC12_BUFEN_MSK		(0x01ul << ADC12_BUFEN_POS)
-
-#define ADC12_FVRSEL_POS	25
-#define ADC12_FVRSEL_MSK	(0x01ul << ADC12_FVRSEL_POS)
-#define ADC12_FVREN_POS		24
-#define ADC12_FVREN_MSK		(0x01ul << ADC12_FVREN_POS)
-
-typedef enum {	
-	ADC12_FVR_2048 		= 0,
-	ADC12_FVR_4096
-}adc_fvrsel_e;
+//#define ADC12_BUFEN_POS		16
+//#define ADC12_BUFEN_MSK		(0x01ul << ADC12_BUFEN_POS)
+//
+//#define ADC12_FVRSEL_POS	25
+//#define ADC12_FVRSEL_MSK	(0x01ul << ADC12_FVRSEL_POS)
+//#define ADC12_FVREN_POS		24
+//#define ADC12_FVREN_MSK		(0x01ul << ADC12_FVREN_POS)
+//
+//typedef enum {	
+//	ADC12_FVR_2048 		= 0,
+//	ADC12_FVR_4096
+//}adc_fvrsel_e;
 
 typedef enum
 {
@@ -90,15 +90,8 @@ typedef enum
 #define ADC12_VREF_MSK 	(0x03ul << ADC12_VREF_POS) 
 typedef enum{
 	VERF_VDD_VSS 		= (0x00ul),
-	VREF_VREFP_VSS		= (0x01ul),
-	VREF_FVR2048_VSS	= (0x02ul),
-	VREF_FVR4096_VSS	= (0x03ul),
-	VREF_INTVREF_VSS	= (0x04ul),
-	VREF_VDD_VREFN		= (0x08ul),
-	VREF_VREFP_VREFN	= (0x09ul),
-	VREF_FVR2048_VREFN	= (0x0aul),
-	VREF_FVR4096_VREFN	= (0x0bul),
-	VREF_INTVREF_VREFN	= (0x0cul)
+	VREF_VREFP_VSS		= (0x02ul),
+	VREF_INTVREF_VSS	= (0x03ul)
 }adc_vref_e;
 
 #define ADC12_BUFSEL_POS	17
@@ -180,7 +173,40 @@ typedef enum{
 	ADC12_ADCIN15,
 	ADC12_ADCIN16,
 	ADC12_ADCIN17,
-	ADC12_ADCIN_INTVREF	= 0x1cul,
+	ADC12_ADCIN18,
+	ADC12_ADCIN19,
+	ADC12_ADCIN20,
+	ADC12_ADCIN21,
+	ADC12_ADCIN22,
+	ADC12_ADCIN23,
+	ADC12_ADCINB0		= 0x40ul,
+	ADC12_ADCINB1,
+	ADC12_ADCINB2,
+	ADC12_ADCINB3,
+	ADC12_ADCINB4,
+	ADC12_ADCINB5,
+	ADC12_ADCINB6,
+	ADC12_ADCINB7,
+	ADC12_ADCINB8,
+	ADC12_ADCINB9,
+	ADC12_ADCINB10,
+	ADC12_ADCINB11,
+	ADC12_ADCINB12,
+	ADC12_ADCINB13,
+	ADC12_ADCINB14,
+	ADC12_ADCINB15,
+	ADC12_ADCINB16,
+	ADC12_ADCINB17,
+	ADC12_ADCINB18,
+	ADC12_ADCINB19,
+	ADC12_ADCINB20,
+	ADC12_ADCINB21,
+	ADC12_ADCINB22,
+	ADC12_OPA0X     = 0x79ul,
+	ADC12_OPA1X,
+	ADC12_OPA2X,
+	ADC12_OPA3X,
+	ADC12_ADCIN_INTVREF,
 	ADC12_ADCIN_1_4VDD,
 	ADC12_ADCIN_VSS
 }adc_chnl_e;
@@ -490,22 +516,22 @@ static inline void csp_adc_set_vref(csp_adc_t *ptAdcBase, adc_vref_e eVrefSel)
 
 }
 //
-static inline void csp_adc_bufout_enable(csp_adc_t *ptAdcBase, bool bEnable)
-{
-	ptAdcBase -> CR = (ptAdcBase->CR & ~ADC12_BUFEN_MSK)| (bEnable << ADC12_BUFEN_POS);
-}
-static inline void csp_adc_bufsel_set(csp_adc_t *ptAdcBase, adc_bufsel_e eBufSel)
-{
-	ptAdcBase -> CR = (ptAdcBase->CR & ~ADC12_BUFSEL_MSK)| (eBufSel << ADC12_BUFSEL_POS);
-}
-static inline void csp_adc_set_fvrout_lvl(csp_adc_t *ptAdcBase, adc_fvrsel_e eLvl)
-{
-	ptAdcBase -> CR = (ptAdcBase->CR & ~ADC12_FVRSEL_MSK)| (eLvl << ADC12_FVRSEL_POS);
-}
-static inline void csp_adc_fvrout_enable(csp_adc_t *ptAdcBase, bool bEnable)
-{
-	ptAdcBase -> CR = (ptAdcBase->CR & ~ADC12_FVREN_MSK)| (bEnable << ADC12_FVREN_POS);
-}
+//static inline void csp_adc_bufout_enable(csp_adc_t *ptAdcBase, bool bEnable)
+//{
+//	ptAdcBase -> CR = (ptAdcBase->CR & ~ADC12_BUFEN_MSK)| (bEnable << ADC12_BUFEN_POS);
+//}
+//static inline void csp_adc_bufsel_set(csp_adc_t *ptAdcBase, adc_bufsel_e eBufSel)
+//{
+//	ptAdcBase -> CR = (ptAdcBase->CR & ~ADC12_BUFSEL_MSK)| (eBufSel << ADC12_BUFSEL_POS);
+//}
+//static inline void csp_adc_set_fvrout_lvl(csp_adc_t *ptAdcBase, adc_fvrsel_e eLvl)
+//{
+//	ptAdcBase -> CR = (ptAdcBase->CR & ~ADC12_FVRSEL_MSK)| (eLvl << ADC12_FVRSEL_POS);
+//}
+//static inline void csp_adc_fvrout_enable(csp_adc_t *ptAdcBase, bool bEnable)
+//{
+//	ptAdcBase -> CR = (ptAdcBase->CR & ~ADC12_FVREN_MSK)| (bEnable << ADC12_FVREN_POS);
+//}
 //
 static inline void csp_adc_set_seq_num(csp_adc_t *ptAdcBase, uint8_t bySeqNum)
 {

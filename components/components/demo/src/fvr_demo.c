@@ -23,6 +23,7 @@
 void fvr_output_demo(void)//FVR电平通过PB7输出
 {
 	csi_pin_set_mux(PB7, PB7_FVROUT);//设置PB7为FVR输出
+	SYSCON -> PCER0 |= 0x1 << 3;//配置FVR时钟
 	csi_fvr_lvl_set(FVR, FVR_LVL_4V);//设置输出电平为4V
 	csi_fvr_cmpref_set(FVR,FVR_CMPREF_FVR);//设置输出电平为FVR
 //	csi_fvr_opacm(FVR);	//设置OPA CM电平为FVR
@@ -33,6 +34,7 @@ void fvr_output_demo(void)//FVR电平通过PB7输出
 void fvr_buf_demo(void)//设置FVR的BUF功能
 {
 	csi_pin_set_mux(PB7, PB7_FVROUT);//设置PB7为FVR输出
+	SYSCON -> PCER0 |= 0x1 << 3;//配置FVR时钟
 	csi_fvr_lvl_set(FVR, FVR_LVL_4V);//设置输出电平为4V
 	csi_pin_set_mux(PD4, PD4_INPUT);//设置BUF输入管脚PD4
 	csi_pin_set_mux(PB8, PB8_BUF);//设置BUF输出管脚PB8

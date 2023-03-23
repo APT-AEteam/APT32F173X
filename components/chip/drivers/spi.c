@@ -422,12 +422,12 @@ csi_error_t csi_spi_receive_async(csp_spi_t *ptSpiBase, void *pData, uint32_t wS
 /** \brief  receiving data from spi receiver,blocking mode
  * 
  *  \param[in] ptSpiBase: pointer of spi register structure
- *  \param[in] pDataout: pointer to buffer with data to send to spi transmitter
- *  \param[in] pDatain: number of data to receive(byte)
- *  \param[in] wSize: number of data to receive(byte)
+ *  \param[in] pTXdata: pointer to buffer with data to send to spi transmitter
+ *  \param[in] pRXdata: pointer to buffer with data to receive to spi transmitter
+ *  \param[in] wSize: number of data to send or receive(byte)
  *  \return error code \ref csi_error_t
  */
-int32_t csi_spi_send_receive(csp_spi_t *ptSpiBase, void *pDataout, void *pDatain, uint32_t wSize)
+int32_t csi_spi_send_receive(csp_spi_t *ptSpiBase, void *pTXdata, void *pRXdata, uint32_t wSize)
 {
 	csi_error_t ret = CSI_OK;
 	uint32_t wCount = 0U;
@@ -445,8 +445,8 @@ int32_t csi_spi_send_receive(csp_spi_t *ptSpiBase, void *pDataout, void *pDatain
 		
 		g_tSpiTransmit.tState.writeable = 0U;
         g_tSpiTransmit.tState.readable  = 0U;
-		g_tSpiTransmit.pbyTxData = (uint8_t *)pDataout;
-		g_tSpiTransmit.pbyRxData = (uint8_t *)pDatain;
+		g_tSpiTransmit.pbyTxData = (uint8_t *)pTXdata;
+		g_tSpiTransmit.pbyRxData = (uint8_t *)pRXdata;
 		csp_spi_en(ptSpiBase);							//enable spi
 		csp_spi_softreset(ptSpiBase,SPI_RXFIFO_RST);	//clear rx fifo		
 		csp_spi_softreset(ptSpiBase,SPI_TXFIFO_RST);	//clear tx fifo									
@@ -1045,7 +1045,7 @@ csi_error_t csi_spi_send_receive_d8(csp_spi_t *ptSpiBase, uint8_t *pDataOut,uint
 void csi_spi_send_dma(csp_spi_t *ptSpiBase, const void *pData, uint16_t hwSize, csp_dma_t *ptDmaBase,uint8_t byDmaCh)
 {
 	csp_spi_set_txdma(ptSpiBase, SPI_TDMA_EN, SPI_TDMA_FIFO_NFULL);
-	csi_dma_ch_start(ptDmaBase, byDmaCh, (void *)pData, (void *)&(ptSpiBase->DR), hwSize,1);
+	csi_dma_ch_start(ptDmaBase, byDmaCh, (void *)pData, (void *)&(ptSpiBase->DR), 1,hwSize);
 }
 
 /** \brief receive data of spi by DMA
@@ -1060,5 +1060,5 @@ void csi_spi_send_dma(csp_spi_t *ptSpiBase, const void *pData, uint16_t hwSize, 
 void csi_spi_recv_dma(csp_spi_t *ptSpiBase, void *pbyRecv, uint16_t hwSize, csp_dma_t *ptDmaBase,uint8_t byDmaCh)
 {
 	csp_spi_set_rxdma(ptSpiBase, SPI_RDMA_EN, SPI_RDMA_FIFO_NSPACE);
-	csi_dma_ch_start(ptDmaBase, byDmaCh, (void *)&(ptSpiBase->DR),(void *)pbyRecv, hwSize,1);
+	csi_dma_ch_start(ptDmaBase, byDmaCh, (void *)&(ptSpiBase->DR),(void *)pbyRecv, 1,hwSize);
 }

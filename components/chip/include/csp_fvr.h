@@ -35,7 +35,7 @@ typedef enum{
 }fvr_en_e;
 
 #define FVR_LVL_POS		(4)				//FVR LVL Control
-#define FVR_LVL_MSK		(0x03ul << FVR_LVL_PO)
+#define FVR_LVL_MSK		(0x03ul << FVR_LVL_POS)
 typedef enum{
 	FVR_LVL_1V	= 0,
 	FVR_LVL_2V,
@@ -44,7 +44,7 @@ typedef enum{
 }fvr_lvl_e;
 
 #define FVR_CMPREF_POS		(8)			//FVR CMPREF Control
-#define FVR_CMPREF_MSK		(0x01ul << FVR_CMPREF_PO)
+#define FVR_CMPREF_MSK		(0x01ul << FVR_CMPREF_POS)
 typedef enum{
 	FVR_CMPREF_AVDD	= 0,
 	FVR_CMPREF_FVR,
@@ -95,18 +95,18 @@ static inline void csp_fvr_dis(csp_fvr_t *ptFvrBase)
 }
 
 static inline void csp_fvr_set_lvl(csp_fvr_t *ptFvrBase, fvr_lvl_e eLvl)
-{
-	ptFvrBase->CR |= eLvl << FVR_LVL_POS;
+{	
+	ptFvrBase->CR = (ptFvrBase->CR & (~FVR_LVL_MSK)) | ((eLvl << FVR_LVL_POS));
 }
 
 static inline void csp_fvr_cmpref_set(csp_fvr_t *ptFvrBase,  fvr_cmpref_e eOpacmpref)
 {
-	ptFvrBase->CR |= eOpacmpref << FVR_CMPREF_POS;
+	ptFvrBase->CR = (ptFvrBase->CR & (~FVR_CMPREF_MSK)) | ((eOpacmpref << FVR_CMPREF_POS));
 }
 
 static inline void csp_fvr_opacm_set(csp_fvr_t *ptFvrBase, fvr_opacm_e eOpacm)
 {
-	ptFvrBase->CR |= eOpacm << FVR_OPACM_POS;
+	ptFvrBase->CR = (ptFvrBase->CR & (~FVR_OPACM_MSK)) | ((eOpacm << FVR_OPACM_POS));
 }
 
 static inline void csp_fvr_bufen_en(csp_fvr_t *ptFvrBase)

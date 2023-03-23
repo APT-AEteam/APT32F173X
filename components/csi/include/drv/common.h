@@ -25,10 +25,12 @@
 extern "C" {
 #endif
 
-#define ENABLE  1
-#define DISABLE  0
-#define FALSE 	0
-#define OK  	0
+
+#define ENABLE  	1
+#define DISABLE  	0
+#define FALSE 		0
+#define OK  		0
+
 
 #ifdef CONFIG_DEBUG_MODE
 #define CSI_ASSERT(expr)                            \

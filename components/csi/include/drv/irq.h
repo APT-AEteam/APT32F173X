@@ -25,7 +25,7 @@ typedef struct {
   \param[in]   irq_num Number of IRQ.
   \return      None.
 */
-void csi_irq_enable(uint32_t *pIpBase);
+void csi_irq_enable(void *pIpBase);
 //__ALWAYS_STATIC_INLINE void csi_irq_enable(uint32_t irq_num)
 //{
 ////    extern void soc_irq_enable(uint32_t irq_num);
@@ -38,7 +38,7 @@ void csi_irq_enable(uint32_t *pIpBase);
   \param[in]   irq_num Number of IRQ.
   \return      None.
 */
-void csi_irq_disable(uint32_t *pIpBase);
+void csi_irq_disable(void *pIpBase);
 //__ALWAYS_STATIC_INLINE void csi_irq_disable(uint32_t irq_num)
 //{
 ////    extern void soc_irq_disable(uint32_t irq_num);
