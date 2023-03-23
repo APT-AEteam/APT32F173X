@@ -38,6 +38,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 
+#ifdef DBG_PRINT2PC
 
 // define this globally (e.g. gcc -DPRINTF_INCLUDE_CONFIG_H ...) to include the
 // printf_config.h header file
@@ -1014,3 +1015,5 @@ int fctprintf(void (*out)(char character, void* arg), void* arg, const char* for
   va_end(va);
   return ret;
 }
+
+#endif
