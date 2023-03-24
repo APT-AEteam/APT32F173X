@@ -85,7 +85,9 @@ csi_error_t csi_sysclk_config(void)
 			if (wFreq == IM_131K)
 				byFlashLp = 1;
 			break;
-		case (SRC_EMOSC):	
+		case (SRC_EMOSC):
+			csp_em_flt_sel(SYSCON,EM_FLT_10NS);
+			csp_em_flt_enable(SYSCON,ENABLE);
 			csi_pin_set_mux(PD0, PD0_XIN);
 			csi_pin_set_mux(PD1, PD1_XOUT);
 			if (wFreq == EMOSC_32K_VALUE)
