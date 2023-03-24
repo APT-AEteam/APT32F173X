@@ -167,4 +167,22 @@ void my_printf(const char *fmt, ...)
     va_end(ap);
 
 }
-
+//
+//int putc(int c, FILE *stream)
+//{
+//   return fputc(c, stream);
+//}
+//
+//
+//
+//int puts(const char *s)
+//{
+//   while(*s !='\0')
+//   {
+//       fputc(*s, (void *)-1);
+//       s++;
+//   }
+//   fputc('\n', (void *)-1);
+//   return 0;
+//}
+//

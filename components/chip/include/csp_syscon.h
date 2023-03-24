@@ -211,6 +211,13 @@ typedef enum{
 
 #define EM_FLTSEL_POS	(26)
 #define EM_FLTSEL_MSK	(0x03ul << EM_FLTSEL_POS)
+typedef enum {
+	EM_FLT_5NS = 0,
+	EM_FLT_10NS,
+	EM_FLT_15NS,
+	EM_FLT_20NS,
+}em_fltsel_e;
+
 
 #define ES_GM_POS		(28)
 #define ES_GM_MSK		(0x0Ful << ES_GM_POS)
@@ -749,6 +756,16 @@ static inline void csp_set_em_lfmd(csp_syscon_t *ptSysconBase, bool bMode)
 		ptSysconBase->OSTR |= EM_LF;
 	else
 		ptSysconBase->OSTR &= ~EM_LF;
+}
+
+static inline void csp_em_flt_enable(csp_syscon_t *ptSysconBase,bool bEnable)
+{
+	ptSysconBase->OSTR = (ptSysconBase->OSTR & ~EM_FLTEN_MSK)| (bEnable << EM_FLTEN_POS);	
+}
+
+static inline void csp_em_flt_sel(csp_syscon_t *ptSysconBase,em_fltsel_e eFltSel)
+{
+	ptSysconBase->OSTR = (ptSysconBase->OSTR & ~EM_FLTSEL_MSK)| (eFltSel << EM_FLTSEL_POS);	
 }
 
 static inline void csp_eflash_lpmd_enable(csp_syscon_t *ptSysconBase, bool bEnable)
