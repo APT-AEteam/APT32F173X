@@ -157,6 +157,9 @@ csi_error_t csi_clo_config(clo_src_e eCloSrc, clo_div_e eCloDiv, pin_name_e ePin
 		case (PA2):
 			csi_pin_set_mux(PA2, PA2_CLO);
 			break;
+		case (PB3):
+			csi_pin_set_mux(PB3, PB3_CLO);
+			break;
 		case (PD3):
 			csi_pin_set_mux(PD3, PD3_CLO);
 			break;
