@@ -30,7 +30,7 @@ const csi_irqmap_t irq_map[] = {
     {APB_SYS_BASE,				SYSCON_IRQ_NUM	},
 	{APB_IFC_BASE,				IFC_IRQn		},
     {APB_ADC0_BASE,             ADC0_IRQn		},
-    {APB_ADC1_BASE,             ADC0_IRQn		},
+    {APB_ADC1_BASE,             ADC1_IRQn		},
 	{APB_DMA0_BASE,             DMA0_IRQn		},
     {APB_DMA1_BASE,             DMA1_IRQn		},
     {APB_GPTA0_BASE,           	GPTA0_IRQn		},
