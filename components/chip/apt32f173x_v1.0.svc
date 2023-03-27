@@ -169,7 +169,7 @@
         <Bit Name="CHKTIMES" Authority="RW" Bits="15-0" Description="校验重试次数设置。&#xD;&#xA;设置SRAM校验错后的重试次数。如果SRAM校验发生错误，SRAM控制器会再次重读SRAM进行校验，重读的次数由该寄存器设置。连续重读次数满足该寄存器设置的次数后，如果仍然失败，那么会产生SRAM校验错的中断，或者产生系统复位(由RSTEN位控制)。" />
       </Register>
       <Register Name="SYSCON_EFLCHK" Authority="RW" Address="0x40011018" Width="32" Description="Embedded Flash 校验控制寄存器">
-        <Bit Name="CHKEN" Authority="RW" Bits="31-24" Description="Flash校验使能控制位。&#xD;&#xA;5Ah：使能Flash的备份校验功能。&#xD;&#xA;A5h：使能Flash的ECC校验功能。&#xD;&#xA;其他：关闭Flash的校验功能。" />
+        <Bit Name="CHKEN" Authority="RW" Bits="31-24" Description="Flash校验使能控制位。&#xD;&#xA;5Ah：使能Flash的crc校验功能。&#xD;&#xA;其他：关闭Flash的校验功能。" />
         <Bit Name="CHKTIMES" Authority="RW" Bits="23-0" Description="校验重试次数设置。&#xD;&#xA;设置Flash校验错后的重试次数。如果Flash校验发生错误，Flash控制器会再次重读当前地址，进行校验，重读的次数由该寄存器设置。重读次数满足该寄存器设置的次数后，如果仍然失败，系统会产生相应系统复位(由CHKEN位控制)。" />
       </Register>
       <Register Name="SYSCON_SCLKCR" Authority="RW" Address="0x4001101c" Width="32" Description="系统时钟控制寄存器">
@@ -378,10 +378,11 @@
       <Register Name="SYSCON_OPT3" Authority="RW" Address="0x4001105c" Width="32" Description="系统配置寄存器3" />
       <Register Name="SYSCON_OPT2" Authority="RW" Address="0x40011060" Width="32" Description="系统配置寄存器2" />
       <Register Name="SYSCON_OPT1" Authority="RW" Address="0x40011064" Width="32" Description="系统配置寄存器1 (TRIM value for OSC) [1]">
-        <Bit Name="NMI_SEL" Authority="RW" Bits="30-27" Description="NMI触发源选择控制位。通过相应控制位独立选择触发源的使能。&#xD;&#xA;0h：禁止该触发源触发NMI&#xD;&#xA;1h：使能该触发源触发NMI&#xD;&#xA;&#xD;&#xA;bit0：LVD中断事件&#xD;&#xA;bit1：内存错误时间（SRAM或者FLASH校验异常）&#xD;&#xA;bit2：EXI0中断事件&#xD;&#xA;bit3：外部时钟异常事件" />
+        <Bit Name="NMI_SEL" Authority="RW" Bits="30-27" Description="NMI触发源选择控制位。通过相应控制位独立选择触发源的使能。&#xD;&#xA;0h：禁止该触发源触发NMI&#xD;&#xA;1h：使能该触发源触发NMI&#xD;&#xA;&#xD;&#xA;bit0：LVD中断事件&#xD;&#xA;bit1：内存错误事件（SRAM或者FLASH校验异常）&#xD;&#xA;bit2：EXI0中断事件&#xD;&#xA;bit3：外部时钟异常事件" />
         <Bit Name="SRAMBLKCTRL" Authority="RW" Bits="26" Description="SRAM 分区控制。SRAM0始终为DSRAM，SRAM1的功能受OPT1[24]位控制&#xD;&#xA;0h： SRAM0 24K。 地址范围0x20000000~0x20005FFF&#xD;&#xA;        SRAM1 8K。 地址范围0x20006000~0x20007FFF&#xD;&#xA;1h:   SRAM0 16K。 地址范围0x20000000~0x20003FFF&#xD;&#xA;        SRAM1 16K。 地址范围0x20004000~0x20007FFF" />
         <Bit Name="SRAM1FUNCCTRL" Authority="RW" Bits="24" Description="SRAM1指令存取功能控制&#xD;&#xA;0h：SRAM1作为DSRAM用（作为普通SRAM使用）&#xD;&#xA;1h：SRAM1作为ISRAM用，不可写（作为指令空间使用）" />
         <Bit Name="EMCKM_DUR" Authority="RW" Bits="23-21" Description="EMCKM的检测时间间隔设置，检测周期基于当前IMOSC的频率设置。&#xD;&#xA;0h：18个周期&#xD;&#xA;1h：14个周期&#xD;&#xA;2h：10个周期&#xD;&#xA;3h：8个周期&#xD;&#xA;4h：6个周期&#xD;&#xA;5h：5个周期&#xD;&#xA;6h：4个周期&#xD;&#xA;7h：3个周期" />
+        <Bit Name="ESCKM_DUR" Authority="RW" Bits="20-19" Description="ESCKM的检测时间间隔设置，检测周期基于当前IMOSC的频率设置。&#xD;&#xA;0h：40个周期&#xD;&#xA;1h：30个周期&#xD;&#xA;2h：20个周期&#xD;&#xA;3h：10个周期" />
         <Bit Name="EFL_LPMD" Authority="RW" Bits="15" Description="Flash的Low Power模式选择。在此模式下，Flash的读取周期保证大于8us。当HCLK频率比较高时，需要配合选择合适的WAIT CYCLE来保证。&#xD;&#xA;0h：禁止Flash LP模式。&#xD;&#xA;1h：使能Flash LP模式。" />
         <Bit Name="CLODIV" Authority="RW" Bits="14-12" Description="CLO输出分频选择。&#xD;&#xA;0h：4分频。&#xD;&#xA;1h：不分频。&#xD;&#xA;2h：2分频。&#xD;&#xA;4h：8分频。&#xD;&#xA;5h：16分频。&#xD;&#xA;其他：4分频。" />
         <Bit Name="CLOMX" Authority="RW" Bits="11-8" Description="CLO输出选择。（CLO管脚输出最高频率不超过10MHz，若输出频率较高，可选择CLODIV分频后输出）&#xD;&#xA;0h：ISCLK输出。&#xD;&#xA;1h：IMCLK输出。&#xD;&#xA;2h：ESCLK输出。&#xD;&#xA;3h：EMCLK输出。&#xD;&#xA;4h：HFCLK输出。&#xD;&#xA;5h：EFCLK输出。             （测试用，供FLASH用）&#xD;&#xA;6h：RTCCLK输出。&#xD;&#xA;7h：PCLK输出。&#xD;&#xA;8h：HCLK输出。&#xD;&#xA;9h：IWDTCLK输出。&#xD;&#xA;Ah：PLL_PCLK输出。&#xD;&#xA;Bh：PLL_QCLK输出。&#xD;&#xA;Ch：PLL_FEED_OUT输出。（测试用）&#xD;&#xA;Dh：SYSCLK输出。&#xD;&#xA;其他：保留。" />
@@ -390,10 +391,14 @@
       </Register>
       <Register Name="SYSCON_OPT0" Authority="RW" Address="0x40011068" Width="32" Description="系统配置寄存器0 [2]">
         <Bit Name="RDP" Authority="RO" Bits="27" Description="Read Protection使能User Option状态查询。&#xD;&#xA;0h：缺省关闭Read Protection。&#xD;&#xA;1h：缺省打开Read Protection。" />
-        <Bit Name="HDP_4K" Authority="RO" Bits="17" Description="4K空间Hard Protection使能User Option状态查询。&#xD;&#xA;0h：缺省禁止Hard Protection。&#xD;&#xA;1h：缺省使能Hard Protection。" />
+        <Bit Name="HDP_IFE" Authority="RO" Bits="20" Description="取址保护使能状态查询" />
+        <Bit Name="HDP_32K" Authority="RO" Bits="19" Description="32K空间Hard Protection使能User Option状态查询。&#xD;&#xA;0h：缺省禁止Hard Protection。&#xD;&#xA;1h：缺省使能Hard Protection。" />
+        <Bit Name="HDP_16K" Authority="RO" Bits="18" Description="16K空间Hard Protection使能User Option状态查询。&#xD;&#xA;0h：缺省禁止Hard Protection。&#xD;&#xA;1h：缺省使能Hard Protection。" />
+        <Bit Name="HDP_8K" Authority="RO" Bits="17" Description="8K空间Hard Protection使能User Option状态查询。&#xD;&#xA;0h：缺省禁止Hard Protection。&#xD;&#xA;1h：缺省使能Hard Protection。" />
         <Bit Name="HDP_ALL" Authority="RO" Bits="16" Description="Hard Protection使能User Option状态查询。&#xD;&#xA;0h：缺省禁止Hard Protection。&#xD;&#xA;1h：缺省使能Hard Protection。" />
         <Bit Name="DBP" Authority="RO" Bits="8" Description="Debug Port 使能User Option状态查询。&#xD;&#xA;0h：缺省打开Debug Port。&#xD;&#xA;1h：缺省关闭Debug Port。" />
         <Bit Name="CIPVALID" Authority="RO" Bits="7" Description="烧录器加密通讯使能User Option状态查询。&#xD;&#xA;0h：禁止通讯加密。&#xD;&#xA;1h：使能通讯加密。" />
+        <Bit Name="CKHEN" Authority="RO" Bits="3" Description="上电后，Flash的crc校验功能使能状态" />
         <Bit Name="CPUFTRST" Authority="RO" Bits="2" Description="CPU Fault时产生硬件复位User Option设置状态查询。&#xD;&#xA;0h：禁止自动复位。&#xD;&#xA;1h：使能自动复位。" />
         <Bit Name="EXIRSTEN" Authority="RO" Bits="1" Description="外部复位管脚功能User Option设置状态查询。&#xD;&#xA;0h：外部复位管脚禁用。&#xD;&#xA;1h：外部复位管脚使能。" />
         <Bit Name="IWDTEN" Authority="RO" Bits="0" Description="独立看门狗User Option设置状态查询。&#xD;&#xA;0h：缺省关闭看门狗。&#xD;&#xA;1h：缺省打开看门狗。" />
@@ -574,7 +579,7 @@
         <Bit Name="ISOSC_ST" Authority="RO" Bits="0" Description="ISOSC时钟稳定中断。" />
       </Register>
       <Register Name="SYSCON_RSR" Authority="RW" Address="0x40011090" Width="32" Description="复位源记录状态寄存器">
-        <Bit Name="SW1RST" Authority="RW" Bits="16" Description="SYSCON产生软件复位（CPU CORE复位）。" />
+        <Bit Name="" Authority="" Bits="16" Description="" />
         <Bit Name="CPU1RST" Authority="RW" Bits="15" Description="CPU产生的软件复位（CPU CORE复位）。" />
         <Bit Name="WWDT" Authority="RW" Bits="13" Description="WWDT复位。" />
         <Bit Name="EFL_ERR" Authority="RW" Bits="12" Description="EFLASH校验错误产生的系统复位。" />
@@ -7878,7 +7883,7 @@
       </Register>
       <Register Name="CAN_TSTR" Authority="RW" Address="0x400f014c" Width="32" Description="CAN测试寄存器">
         <Bit Name="TSTKEY" Authority="RW" Bits="31-16" Description="测试寄存器KEY&#xD;&#xA;只有在写入CAN_TSTR时有效。读时为0。&#xD;&#xA;0x0C75：CAN_TSTR可以写入&#xD;&#xA;其他值：CAN_TSTR不可以写入" />
-        <Bit Name="RX" Authority="RW" Bits="6" Description="CAN_RX管脚电平值&#xD;&#xA;0h：显性（CAN_RX = ‘0’）&#xD;&#xA;1h：隐性（CAN_RX = ‘1’）" />
+        <Bit Name="RX" Authority="RO" Bits="6" Description="CAN_RX管脚电平值&#xD;&#xA;0h：显性（CAN_RX = ‘0’）&#xD;&#xA;1h：隐性（CAN_RX = ‘1’）" />
         <Bit Name="TXOPD" Authority="RW" Bits="5" Description="CAN_TX管脚开漏&#xD;&#xA;0h：CAN_TX管脚不配置为开漏输出&#xD;&#xA;1h：CAN_TX管脚配置为开漏输出。这允许将CAN控制器在没有外部收发器的情况下直接连接或工作于3.3V时仍然可以通过外部上拉电阻正常驱动5V的收发器。&#xD;&#xA;注意：这个控制位在切换时，需要关闭CAN，从而避免在CAN_TX管脚上次产生毛刺。" />
         <Bit Name="TX" Authority="" Bits="4-3" Description="CAN_TX管脚的控制&#xD;&#xA;当CAN在进行报文传输，或处于任何一个测试模式时（基础、回环或静默模式），CAN_TX必须处理其默认功能。CAN_TX的三种测试功能（监控、输出0，输出1）可以在其他所有CAN协议功能下使用。&#xD;&#xA;TX[1:0]	控制&#xD;&#xA;00	CAN核控制CAN_TX的状态&#xD;&#xA;01	CAN_TX监控采样点 (CAN控制器应处于使能状态）&#xD;&#xA;10	CAN_TX 输出显性值 (‘0’) &#xD;&#xA;11	CAN_TX 输出隐性值 (‘1’)" />
         <Bit Name="LBACK" Authority="RW" Bits="2" Description="回环模式&#xD;&#xA;0h：不使用回环模式&#xD;&#xA;1h：使用回环模式" />
@@ -10093,586 +10098,521 @@
       </Register>
       <Register Name="CLICINT0" Authority="RW" Address="0xe0801000" Width="32" Description="Interrupt x Control Register(x=0~63)">
         <Bit Name="INT_CTL" Authority="RW" Bits="31-24" Description="参与仲裁的优先级" />
-        <Bit Name="MODE" Authority="RW" Bits="22-21" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
-        <Bit Name="TRIG" Authority="RW" Bits="17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
-        <Bit Name="ATTR" Authority="RW" Bits="16" Description="" />
-        <Bit Name="SHV" Authority="RW" Bits="15" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
+        <Bit Name="MODE" Authority="RW" Bits="23-22" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
+        <Bit Name="TRIG" Authority="RW" Bits="18-17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
+        <Bit Name="SHV" Authority="RW" Bits="16" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
         <Bit Name="IE" Authority="RW" Bits="8" Description="该中断使能状态&#xD;&#xA;0h：该中断没有使能&#xD;&#xA;1h：该中断使能" />
         <Bit Name="IP" Authority="RW" Bits="0" Description="该中断等待状态&#xD;&#xA;0h：该中断没有处于等待状态&#xD;&#xA;1h：该中断处于等待状态" />
       </Register>
       <Register Name="CLICINT1" Authority="RW" Address="0xe0801004" Width="32" Description="Interrupt x Control Register(x=0~63)">
         <Bit Name="INT_CTL" Authority="RW" Bits="31-24" Description="参与仲裁的优先级" />
-        <Bit Name="MODE" Authority="RW" Bits="22-21" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
-        <Bit Name="TRIG" Authority="RW" Bits="17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
-        <Bit Name="ATTR" Authority="RW" Bits="16" Description="" />
-        <Bit Name="SHV" Authority="RW" Bits="15" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
+        <Bit Name="MODE" Authority="RW" Bits="23-22" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
+        <Bit Name="TRIG" Authority="RW" Bits="18-17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
+        <Bit Name="SHV" Authority="RW" Bits="16" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
         <Bit Name="IE" Authority="RW" Bits="8" Description="该中断使能状态&#xD;&#xA;0h：该中断没有使能&#xD;&#xA;1h：该中断使能" />
         <Bit Name="IP" Authority="RW" Bits="0" Description="该中断等待状态&#xD;&#xA;0h：该中断没有处于等待状态&#xD;&#xA;1h：该中断处于等待状态" />
       </Register>
       <Register Name="CLICINT2" Authority="RW" Address="0xe0801008" Width="32" Description="Interrupt x Control Register(x=0~63)">
         <Bit Name="INT_CTL" Authority="RW" Bits="31-24" Description="参与仲裁的优先级" />
-        <Bit Name="MODE" Authority="RW" Bits="22-21" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
-        <Bit Name="TRIG" Authority="RW" Bits="17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
-        <Bit Name="ATTR" Authority="RW" Bits="16" Description="" />
-        <Bit Name="SHV" Authority="RW" Bits="15" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
+        <Bit Name="MODE" Authority="RW" Bits="23-22" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
+        <Bit Name="TRIG" Authority="RW" Bits="18-17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
+        <Bit Name="SHV" Authority="RW" Bits="16" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
         <Bit Name="IE" Authority="RW" Bits="8" Description="该中断使能状态&#xD;&#xA;0h：该中断没有使能&#xD;&#xA;1h：该中断使能" />
         <Bit Name="IP" Authority="RW" Bits="0" Description="该中断等待状态&#xD;&#xA;0h：该中断没有处于等待状态&#xD;&#xA;1h：该中断处于等待状态" />
       </Register>
       <Register Name="CLICINT3" Authority="RW" Address="0xe080100c" Width="32" Description="Interrupt x Control Register(x=0~63)">
         <Bit Name="INT_CTL" Authority="RW" Bits="31-24" Description="参与仲裁的优先级" />
-        <Bit Name="MODE" Authority="RW" Bits="22-21" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
-        <Bit Name="TRIG" Authority="RW" Bits="17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
-        <Bit Name="ATTR" Authority="RW" Bits="16" Description="" />
-        <Bit Name="SHV" Authority="RW" Bits="15" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
+        <Bit Name="MODE" Authority="RW" Bits="23-22" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
+        <Bit Name="TRIG" Authority="RW" Bits="18-17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
+        <Bit Name="SHV" Authority="RW" Bits="16" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
         <Bit Name="IE" Authority="RW" Bits="8" Description="该中断使能状态&#xD;&#xA;0h：该中断没有使能&#xD;&#xA;1h：该中断使能" />
         <Bit Name="IP" Authority="RW" Bits="0" Description="该中断等待状态&#xD;&#xA;0h：该中断没有处于等待状态&#xD;&#xA;1h：该中断处于等待状态" />
       </Register>
       <Register Name="CLICINT4" Authority="RW" Address="0xe0801010" Width="32" Description="Interrupt x Control Register(x=0~63)">
         <Bit Name="INT_CTL" Authority="RW" Bits="31-24" Description="参与仲裁的优先级" />
-        <Bit Name="MODE" Authority="RW" Bits="22-21" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
-        <Bit Name="TRIG" Authority="RW" Bits="17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
-        <Bit Name="ATTR" Authority="RW" Bits="16" Description="" />
-        <Bit Name="SHV" Authority="RW" Bits="15" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
+        <Bit Name="MODE" Authority="RW" Bits="23-22" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
+        <Bit Name="TRIG" Authority="RW" Bits="18-17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
+        <Bit Name="SHV" Authority="RW" Bits="16" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
         <Bit Name="IE" Authority="RW" Bits="8" Description="该中断使能状态&#xD;&#xA;0h：该中断没有使能&#xD;&#xA;1h：该中断使能" />
         <Bit Name="IP" Authority="RW" Bits="0" Description="该中断等待状态&#xD;&#xA;0h：该中断没有处于等待状态&#xD;&#xA;1h：该中断处于等待状态" />
       </Register>
       <Register Name="CLICINT5" Authority="RW" Address="0xe0801014" Width="32" Description="Interrupt x Control Register(x=0~63)">
         <Bit Name="INT_CTL" Authority="RW" Bits="31-24" Description="参与仲裁的优先级" />
-        <Bit Name="MODE" Authority="RW" Bits="22-21" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
-        <Bit Name="TRIG" Authority="RW" Bits="17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
-        <Bit Name="ATTR" Authority="RW" Bits="16" Description="" />
-        <Bit Name="SHV" Authority="RW" Bits="15" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
+        <Bit Name="MODE" Authority="RW" Bits="23-22" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
+        <Bit Name="TRIG" Authority="RW" Bits="18-17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
+        <Bit Name="SHV" Authority="RW" Bits="16" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
         <Bit Name="IE" Authority="RW" Bits="8" Description="该中断使能状态&#xD;&#xA;0h：该中断没有使能&#xD;&#xA;1h：该中断使能" />
         <Bit Name="IP" Authority="RW" Bits="0" Description="该中断等待状态&#xD;&#xA;0h：该中断没有处于等待状态&#xD;&#xA;1h：该中断处于等待状态" />
       </Register>
       <Register Name="CLICINT6" Authority="RW" Address="0xe0801018" Width="32" Description="Interrupt x Control Register(x=0~63)">
         <Bit Name="INT_CTL" Authority="RW" Bits="31-24" Description="参与仲裁的优先级" />
-        <Bit Name="MODE" Authority="RW" Bits="22-21" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
-        <Bit Name="TRIG" Authority="RW" Bits="17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
-        <Bit Name="ATTR" Authority="RW" Bits="16" Description="" />
-        <Bit Name="SHV" Authority="RW" Bits="15" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
+        <Bit Name="MODE" Authority="RW" Bits="23-22" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
+        <Bit Name="TRIG" Authority="RW" Bits="18-17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
+        <Bit Name="SHV" Authority="RW" Bits="16" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
         <Bit Name="IE" Authority="RW" Bits="8" Description="该中断使能状态&#xD;&#xA;0h：该中断没有使能&#xD;&#xA;1h：该中断使能" />
         <Bit Name="IP" Authority="RW" Bits="0" Description="该中断等待状态&#xD;&#xA;0h：该中断没有处于等待状态&#xD;&#xA;1h：该中断处于等待状态" />
       </Register>
       <Register Name="CLICINT7" Authority="RW" Address="0xe080101c" Width="32" Description="Interrupt x Control Register(x=0~63)">
         <Bit Name="INT_CTL" Authority="RW" Bits="31-24" Description="参与仲裁的优先级" />
-        <Bit Name="MODE" Authority="RW" Bits="22-21" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
-        <Bit Name="TRIG" Authority="RW" Bits="17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
-        <Bit Name="ATTR" Authority="RW" Bits="16" Description="" />
-        <Bit Name="SHV" Authority="RW" Bits="15" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
+        <Bit Name="MODE" Authority="RW" Bits="23-22" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
+        <Bit Name="TRIG" Authority="RW" Bits="18-17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
+        <Bit Name="SHV" Authority="RW" Bits="16" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
         <Bit Name="IE" Authority="RW" Bits="8" Description="该中断使能状态&#xD;&#xA;0h：该中断没有使能&#xD;&#xA;1h：该中断使能" />
         <Bit Name="IP" Authority="RW" Bits="0" Description="该中断等待状态&#xD;&#xA;0h：该中断没有处于等待状态&#xD;&#xA;1h：该中断处于等待状态" />
       </Register>
       <Register Name="CLICINT8" Authority="RW" Address="0xe0801020" Width="32" Description="Interrupt x Control Register(x=0~63)">
         <Bit Name="INT_CTL" Authority="RW" Bits="31-24" Description="参与仲裁的优先级" />
-        <Bit Name="MODE" Authority="RW" Bits="22-21" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
-        <Bit Name="TRIG" Authority="RW" Bits="17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
-        <Bit Name="ATTR" Authority="RW" Bits="16" Description="" />
-        <Bit Name="SHV" Authority="RW" Bits="15" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
+        <Bit Name="MODE" Authority="RW" Bits="23-22" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
+        <Bit Name="TRIG" Authority="RW" Bits="18-17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
+        <Bit Name="SHV" Authority="RW" Bits="16" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
         <Bit Name="IE" Authority="RW" Bits="8" Description="该中断使能状态&#xD;&#xA;0h：该中断没有使能&#xD;&#xA;1h：该中断使能" />
         <Bit Name="IP" Authority="RW" Bits="0" Description="该中断等待状态&#xD;&#xA;0h：该中断没有处于等待状态&#xD;&#xA;1h：该中断处于等待状态" />
       </Register>
       <Register Name="CLICINT9" Authority="RW" Address="0xe0801024" Width="32" Description="Interrupt x Control Register(x=0~63)">
         <Bit Name="INT_CTL" Authority="RW" Bits="31-24" Description="参与仲裁的优先级" />
-        <Bit Name="MODE" Authority="RW" Bits="22-21" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
-        <Bit Name="TRIG" Authority="RW" Bits="17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
-        <Bit Name="ATTR" Authority="RW" Bits="16" Description="" />
-        <Bit Name="SHV" Authority="RW" Bits="15" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
+        <Bit Name="MODE" Authority="RW" Bits="23-22" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
+        <Bit Name="TRIG" Authority="RW" Bits="18-17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
+        <Bit Name="SHV" Authority="RW" Bits="16" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
         <Bit Name="IE" Authority="RW" Bits="8" Description="该中断使能状态&#xD;&#xA;0h：该中断没有使能&#xD;&#xA;1h：该中断使能" />
         <Bit Name="IP" Authority="RW" Bits="0" Description="该中断等待状态&#xD;&#xA;0h：该中断没有处于等待状态&#xD;&#xA;1h：该中断处于等待状态" />
       </Register>
       <Register Name="CLICINT10" Authority="RW" Address="0xe0801028" Width="32" Description="Interrupt x Control Register(x=0~63)">
         <Bit Name="INT_CTL" Authority="RW" Bits="31-24" Description="参与仲裁的优先级" />
-        <Bit Name="MODE" Authority="RW" Bits="22-21" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
-        <Bit Name="TRIG" Authority="RW" Bits="17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
-        <Bit Name="ATTR" Authority="RW" Bits="16" Description="" />
-        <Bit Name="SHV" Authority="RW" Bits="15" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
+        <Bit Name="MODE" Authority="RW" Bits="23-22" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
+        <Bit Name="TRIG" Authority="RW" Bits="18-17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
+        <Bit Name="SHV" Authority="RW" Bits="16" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
         <Bit Name="IE" Authority="RW" Bits="8" Description="该中断使能状态&#xD;&#xA;0h：该中断没有使能&#xD;&#xA;1h：该中断使能" />
         <Bit Name="IP" Authority="RW" Bits="0" Description="该中断等待状态&#xD;&#xA;0h：该中断没有处于等待状态&#xD;&#xA;1h：该中断处于等待状态" />
       </Register>
       <Register Name="CLICINT11" Authority="RW" Address="0xe080102c" Width="32" Description="Interrupt x Control Register(x=0~63)">
         <Bit Name="INT_CTL" Authority="RW" Bits="31-24" Description="参与仲裁的优先级" />
-        <Bit Name="MODE" Authority="RW" Bits="22-21" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
-        <Bit Name="TRIG" Authority="RW" Bits="17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
-        <Bit Name="ATTR" Authority="RW" Bits="16" Description="" />
-        <Bit Name="SHV" Authority="RW" Bits="15" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
+        <Bit Name="MODE" Authority="RW" Bits="23-22" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
+        <Bit Name="TRIG" Authority="RW" Bits="18-17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
+        <Bit Name="SHV" Authority="RW" Bits="16" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
         <Bit Name="IE" Authority="RW" Bits="8" Description="该中断使能状态&#xD;&#xA;0h：该中断没有使能&#xD;&#xA;1h：该中断使能" />
         <Bit Name="IP" Authority="RW" Bits="0" Description="该中断等待状态&#xD;&#xA;0h：该中断没有处于等待状态&#xD;&#xA;1h：该中断处于等待状态" />
       </Register>
       <Register Name="CLICINT12" Authority="RW" Address="0xe0801030" Width="32" Description="Interrupt x Control Register(x=0~63)">
         <Bit Name="INT_CTL" Authority="RW" Bits="31-24" Description="参与仲裁的优先级" />
-        <Bit Name="MODE" Authority="RW" Bits="22-21" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
-        <Bit Name="TRIG" Authority="RW" Bits="17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
-        <Bit Name="ATTR" Authority="RW" Bits="16" Description="" />
-        <Bit Name="SHV" Authority="RW" Bits="15" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
+        <Bit Name="MODE" Authority="RW" Bits="23-22" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
+        <Bit Name="TRIG" Authority="RW" Bits="18-17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
+        <Bit Name="SHV" Authority="RW" Bits="16" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
         <Bit Name="IE" Authority="RW" Bits="8" Description="该中断使能状态&#xD;&#xA;0h：该中断没有使能&#xD;&#xA;1h：该中断使能" />
         <Bit Name="IP" Authority="RW" Bits="0" Description="该中断等待状态&#xD;&#xA;0h：该中断没有处于等待状态&#xD;&#xA;1h：该中断处于等待状态" />
       </Register>
       <Register Name="CLICINT13" Authority="RW" Address="0xe0801034" Width="32" Description="Interrupt x Control Register(x=0~63)">
         <Bit Name="INT_CTL" Authority="RW" Bits="31-24" Description="参与仲裁的优先级" />
-        <Bit Name="MODE" Authority="RW" Bits="22-21" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
-        <Bit Name="TRIG" Authority="RW" Bits="17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
-        <Bit Name="ATTR" Authority="RW" Bits="16" Description="" />
-        <Bit Name="SHV" Authority="RW" Bits="15" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
+        <Bit Name="MODE" Authority="RW" Bits="23-22" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
+        <Bit Name="TRIG" Authority="RW" Bits="18-17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
+        <Bit Name="SHV" Authority="RW" Bits="16" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
         <Bit Name="IE" Authority="RW" Bits="8" Description="该中断使能状态&#xD;&#xA;0h：该中断没有使能&#xD;&#xA;1h：该中断使能" />
         <Bit Name="IP" Authority="RW" Bits="0" Description="该中断等待状态&#xD;&#xA;0h：该中断没有处于等待状态&#xD;&#xA;1h：该中断处于等待状态" />
       </Register>
       <Register Name="CLICINT14" Authority="RW" Address="0xe0801038" Width="32" Description="Interrupt x Control Register(x=0~63)">
         <Bit Name="INT_CTL" Authority="RW" Bits="31-24" Description="参与仲裁的优先级" />
-        <Bit Name="MODE" Authority="RW" Bits="22-21" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
-        <Bit Name="TRIG" Authority="RW" Bits="17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
-        <Bit Name="ATTR" Authority="RW" Bits="16" Description="" />
-        <Bit Name="SHV" Authority="RW" Bits="15" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
+        <Bit Name="MODE" Authority="RW" Bits="23-22" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
+        <Bit Name="TRIG" Authority="RW" Bits="18-17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
+        <Bit Name="SHV" Authority="RW" Bits="16" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
         <Bit Name="IE" Authority="RW" Bits="8" Description="该中断使能状态&#xD;&#xA;0h：该中断没有使能&#xD;&#xA;1h：该中断使能" />
         <Bit Name="IP" Authority="RW" Bits="0" Description="该中断等待状态&#xD;&#xA;0h：该中断没有处于等待状态&#xD;&#xA;1h：该中断处于等待状态" />
       </Register>
       <Register Name="CLICINT15" Authority="RW" Address="0xe080103c" Width="32" Description="Interrupt x Control Register(x=0~63)">
         <Bit Name="INT_CTL" Authority="RW" Bits="31-24" Description="参与仲裁的优先级" />
-        <Bit Name="MODE" Authority="RW" Bits="22-21" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
-        <Bit Name="TRIG" Authority="RW" Bits="17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
-        <Bit Name="ATTR" Authority="RW" Bits="16" Description="" />
-        <Bit Name="SHV" Authority="RW" Bits="15" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
+        <Bit Name="MODE" Authority="RW" Bits="23-22" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
+        <Bit Name="TRIG" Authority="RW" Bits="18-17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
+        <Bit Name="SHV" Authority="RW" Bits="16" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
         <Bit Name="IE" Authority="RW" Bits="8" Description="该中断使能状态&#xD;&#xA;0h：该中断没有使能&#xD;&#xA;1h：该中断使能" />
         <Bit Name="IP" Authority="RW" Bits="0" Description="该中断等待状态&#xD;&#xA;0h：该中断没有处于等待状态&#xD;&#xA;1h：该中断处于等待状态" />
       </Register>
       <Register Name="CLICINT16" Authority="RW" Address="0xe0801040" Width="32" Description="Interrupt x Control Register(x=0~63)">
         <Bit Name="INT_CTL" Authority="RW" Bits="31-24" Description="参与仲裁的优先级" />
-        <Bit Name="MODE" Authority="RW" Bits="22-21" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
-        <Bit Name="TRIG" Authority="RW" Bits="17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
-        <Bit Name="ATTR" Authority="RW" Bits="16" Description="" />
-        <Bit Name="SHV" Authority="RW" Bits="15" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
+        <Bit Name="MODE" Authority="RW" Bits="23-22" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
+        <Bit Name="TRIG" Authority="RW" Bits="18-17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
+        <Bit Name="SHV" Authority="RW" Bits="16" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
         <Bit Name="IE" Authority="RW" Bits="8" Description="该中断使能状态&#xD;&#xA;0h：该中断没有使能&#xD;&#xA;1h：该中断使能" />
         <Bit Name="IP" Authority="RW" Bits="0" Description="该中断等待状态&#xD;&#xA;0h：该中断没有处于等待状态&#xD;&#xA;1h：该中断处于等待状态" />
       </Register>
       <Register Name="CLICINT17" Authority="RW" Address="0xe0801044" Width="32" Description="Interrupt x Control Register(x=0~63)">
         <Bit Name="INT_CTL" Authority="RW" Bits="31-24" Description="参与仲裁的优先级" />
-        <Bit Name="MODE" Authority="RW" Bits="22-21" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
-        <Bit Name="TRIG" Authority="RW" Bits="17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
-        <Bit Name="ATTR" Authority="RW" Bits="16" Description="" />
-        <Bit Name="SHV" Authority="RW" Bits="15" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
+        <Bit Name="MODE" Authority="RW" Bits="23-22" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
+        <Bit Name="TRIG" Authority="RW" Bits="18-17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
+        <Bit Name="SHV" Authority="RW" Bits="16" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
         <Bit Name="IE" Authority="RW" Bits="8" Description="该中断使能状态&#xD;&#xA;0h：该中断没有使能&#xD;&#xA;1h：该中断使能" />
         <Bit Name="IP" Authority="RW" Bits="0" Description="该中断等待状态&#xD;&#xA;0h：该中断没有处于等待状态&#xD;&#xA;1h：该中断处于等待状态" />
       </Register>
       <Register Name="CLICINT18" Authority="RW" Address="0xe0801048" Width="32" Description="Interrupt x Control Register(x=0~63)">
         <Bit Name="INT_CTL" Authority="RW" Bits="31-24" Description="参与仲裁的优先级" />
-        <Bit Name="MODE" Authority="RW" Bits="22-21" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
-        <Bit Name="TRIG" Authority="RW" Bits="17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
-        <Bit Name="ATTR" Authority="RW" Bits="16" Description="" />
-        <Bit Name="SHV" Authority="RW" Bits="15" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
+        <Bit Name="MODE" Authority="RW" Bits="23-22" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
+        <Bit Name="TRIG" Authority="RW" Bits="18-17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
+        <Bit Name="SHV" Authority="RW" Bits="16" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
         <Bit Name="IE" Authority="RW" Bits="8" Description="该中断使能状态&#xD;&#xA;0h：该中断没有使能&#xD;&#xA;1h：该中断使能" />
         <Bit Name="IP" Authority="RW" Bits="0" Description="该中断等待状态&#xD;&#xA;0h：该中断没有处于等待状态&#xD;&#xA;1h：该中断处于等待状态" />
       </Register>
       <Register Name="CLICINT19" Authority="RW" Address="0xe080104c" Width="32" Description="Interrupt x Control Register(x=0~63)">
         <Bit Name="INT_CTL" Authority="RW" Bits="31-24" Description="参与仲裁的优先级" />
-        <Bit Name="MODE" Authority="RW" Bits="22-21" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
-        <Bit Name="TRIG" Authority="RW" Bits="17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
-        <Bit Name="ATTR" Authority="RW" Bits="16" Description="" />
-        <Bit Name="SHV" Authority="RW" Bits="15" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
+        <Bit Name="MODE" Authority="RW" Bits="23-22" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
+        <Bit Name="TRIG" Authority="RW" Bits="18-17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
+        <Bit Name="SHV" Authority="RW" Bits="16" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
         <Bit Name="IE" Authority="RW" Bits="8" Description="该中断使能状态&#xD;&#xA;0h：该中断没有使能&#xD;&#xA;1h：该中断使能" />
         <Bit Name="IP" Authority="RW" Bits="0" Description="该中断等待状态&#xD;&#xA;0h：该中断没有处于等待状态&#xD;&#xA;1h：该中断处于等待状态" />
       </Register>
       <Register Name="CLICINT20" Authority="RW" Address="0xe0801050" Width="32" Description="Interrupt x Control Register(x=0~63)">
         <Bit Name="INT_CTL" Authority="RW" Bits="31-24" Description="参与仲裁的优先级" />
-        <Bit Name="MODE" Authority="RW" Bits="22-21" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
-        <Bit Name="TRIG" Authority="RW" Bits="17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
-        <Bit Name="ATTR" Authority="RW" Bits="16" Description="" />
-        <Bit Name="SHV" Authority="RW" Bits="15" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
+        <Bit Name="MODE" Authority="RW" Bits="23-22" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
+        <Bit Name="TRIG" Authority="RW" Bits="18-17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
+        <Bit Name="SHV" Authority="RW" Bits="16" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
         <Bit Name="IE" Authority="RW" Bits="8" Description="该中断使能状态&#xD;&#xA;0h：该中断没有使能&#xD;&#xA;1h：该中断使能" />
         <Bit Name="IP" Authority="RW" Bits="0" Description="该中断等待状态&#xD;&#xA;0h：该中断没有处于等待状态&#xD;&#xA;1h：该中断处于等待状态" />
       </Register>
       <Register Name="CLICINT21" Authority="RW" Address="0xe0801054" Width="32" Description="Interrupt x Control Register(x=0~63)">
         <Bit Name="INT_CTL" Authority="RW" Bits="31-24" Description="参与仲裁的优先级" />
-        <Bit Name="MODE" Authority="RW" Bits="22-21" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
-        <Bit Name="TRIG" Authority="RW" Bits="17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
-        <Bit Name="ATTR" Authority="RW" Bits="16" Description="" />
-        <Bit Name="SHV" Authority="RW" Bits="15" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
+        <Bit Name="MODE" Authority="RW" Bits="23-22" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
+        <Bit Name="TRIG" Authority="RW" Bits="18-17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
+        <Bit Name="SHV" Authority="RW" Bits="16" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
         <Bit Name="IE" Authority="RW" Bits="8" Description="该中断使能状态&#xD;&#xA;0h：该中断没有使能&#xD;&#xA;1h：该中断使能" />
         <Bit Name="IP" Authority="RW" Bits="0" Description="该中断等待状态&#xD;&#xA;0h：该中断没有处于等待状态&#xD;&#xA;1h：该中断处于等待状态" />
       </Register>
       <Register Name="CLICINT22" Authority="RW" Address="0xe0801058" Width="32" Description="Interrupt x Control Register(x=0~63)">
         <Bit Name="INT_CTL" Authority="RW" Bits="31-24" Description="参与仲裁的优先级" />
-        <Bit Name="MODE" Authority="RW" Bits="22-21" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
-        <Bit Name="TRIG" Authority="RW" Bits="17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
-        <Bit Name="ATTR" Authority="RW" Bits="16" Description="" />
-        <Bit Name="SHV" Authority="RW" Bits="15" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
+        <Bit Name="MODE" Authority="RW" Bits="23-22" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
+        <Bit Name="TRIG" Authority="RW" Bits="18-17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
+        <Bit Name="SHV" Authority="RW" Bits="16" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
         <Bit Name="IE" Authority="RW" Bits="8" Description="该中断使能状态&#xD;&#xA;0h：该中断没有使能&#xD;&#xA;1h：该中断使能" />
         <Bit Name="IP" Authority="RW" Bits="0" Description="该中断等待状态&#xD;&#xA;0h：该中断没有处于等待状态&#xD;&#xA;1h：该中断处于等待状态" />
       </Register>
       <Register Name="CLICINT23" Authority="RW" Address="0xe080105c" Width="32" Description="Interrupt x Control Register(x=0~63)">
         <Bit Name="INT_CTL" Authority="RW" Bits="31-24" Description="参与仲裁的优先级" />
-        <Bit Name="MODE" Authority="RW" Bits="22-21" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
-        <Bit Name="TRIG" Authority="RW" Bits="17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
-        <Bit Name="ATTR" Authority="RW" Bits="16" Description="" />
-        <Bit Name="SHV" Authority="RW" Bits="15" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
+        <Bit Name="MODE" Authority="RW" Bits="23-22" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
+        <Bit Name="TRIG" Authority="RW" Bits="18-17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
+        <Bit Name="SHV" Authority="RW" Bits="16" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
         <Bit Name="IE" Authority="RW" Bits="8" Description="该中断使能状态&#xD;&#xA;0h：该中断没有使能&#xD;&#xA;1h：该中断使能" />
         <Bit Name="IP" Authority="RW" Bits="0" Description="该中断等待状态&#xD;&#xA;0h：该中断没有处于等待状态&#xD;&#xA;1h：该中断处于等待状态" />
       </Register>
       <Register Name="CLICINT24" Authority="RW" Address="0xe0801060" Width="32" Description="Interrupt x Control Register(x=0~63)">
         <Bit Name="INT_CTL" Authority="RW" Bits="31-24" Description="参与仲裁的优先级" />
-        <Bit Name="MODE" Authority="RW" Bits="22-21" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
-        <Bit Name="TRIG" Authority="RW" Bits="17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
-        <Bit Name="ATTR" Authority="RW" Bits="16" Description="" />
-        <Bit Name="SHV" Authority="RW" Bits="15" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
+        <Bit Name="MODE" Authority="RW" Bits="23-22" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
+        <Bit Name="TRIG" Authority="RW" Bits="18-17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
+        <Bit Name="SHV" Authority="RW" Bits="16" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
         <Bit Name="IE" Authority="RW" Bits="8" Description="该中断使能状态&#xD;&#xA;0h：该中断没有使能&#xD;&#xA;1h：该中断使能" />
         <Bit Name="IP" Authority="RW" Bits="0" Description="该中断等待状态&#xD;&#xA;0h：该中断没有处于等待状态&#xD;&#xA;1h：该中断处于等待状态" />
       </Register>
       <Register Name="CLICINT25" Authority="RW" Address="0xe0801064" Width="32" Description="Interrupt x Control Register(x=0~63)">
         <Bit Name="INT_CTL" Authority="RW" Bits="31-24" Description="参与仲裁的优先级" />
-        <Bit Name="MODE" Authority="RW" Bits="22-21" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
-        <Bit Name="TRIG" Authority="RW" Bits="17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
-        <Bit Name="ATTR" Authority="RW" Bits="16" Description="" />
-        <Bit Name="SHV" Authority="RW" Bits="15" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
+        <Bit Name="MODE" Authority="RW" Bits="23-22" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
+        <Bit Name="TRIG" Authority="RW" Bits="18-17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
+        <Bit Name="SHV" Authority="RW" Bits="16" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
         <Bit Name="IE" Authority="RW" Bits="8" Description="该中断使能状态&#xD;&#xA;0h：该中断没有使能&#xD;&#xA;1h：该中断使能" />
         <Bit Name="IP" Authority="RW" Bits="0" Description="该中断等待状态&#xD;&#xA;0h：该中断没有处于等待状态&#xD;&#xA;1h：该中断处于等待状态" />
       </Register>
       <Register Name="CLICINT26" Authority="RW" Address="0xe0801068" Width="32" Description="Interrupt x Control Register(x=0~63)">
         <Bit Name="INT_CTL" Authority="RW" Bits="31-24" Description="参与仲裁的优先级" />
-        <Bit Name="MODE" Authority="RW" Bits="22-21" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
-        <Bit Name="TRIG" Authority="RW" Bits="17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
-        <Bit Name="ATTR" Authority="RW" Bits="16" Description="" />
-        <Bit Name="SHV" Authority="RW" Bits="15" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
+        <Bit Name="MODE" Authority="RW" Bits="23-22" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
+        <Bit Name="TRIG" Authority="RW" Bits="18-17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
+        <Bit Name="SHV" Authority="RW" Bits="16" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
         <Bit Name="IE" Authority="RW" Bits="8" Description="该中断使能状态&#xD;&#xA;0h：该中断没有使能&#xD;&#xA;1h：该中断使能" />
         <Bit Name="IP" Authority="RW" Bits="0" Description="该中断等待状态&#xD;&#xA;0h：该中断没有处于等待状态&#xD;&#xA;1h：该中断处于等待状态" />
       </Register>
       <Register Name="CLICINT27" Authority="RW" Address="0xe080106c" Width="32" Description="Interrupt x Control Register(x=0~63)">
         <Bit Name="INT_CTL" Authority="RW" Bits="31-24" Description="参与仲裁的优先级" />
-        <Bit Name="MODE" Authority="RW" Bits="22-21" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
-        <Bit Name="TRIG" Authority="RW" Bits="17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
-        <Bit Name="ATTR" Authority="RW" Bits="16" Description="" />
-        <Bit Name="SHV" Authority="RW" Bits="15" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
+        <Bit Name="MODE" Authority="RW" Bits="23-22" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
+        <Bit Name="TRIG" Authority="RW" Bits="18-17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
+        <Bit Name="SHV" Authority="RW" Bits="16" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
         <Bit Name="IE" Authority="RW" Bits="8" Description="该中断使能状态&#xD;&#xA;0h：该中断没有使能&#xD;&#xA;1h：该中断使能" />
         <Bit Name="IP" Authority="RW" Bits="0" Description="该中断等待状态&#xD;&#xA;0h：该中断没有处于等待状态&#xD;&#xA;1h：该中断处于等待状态" />
       </Register>
       <Register Name="CLICINT28" Authority="RW" Address="0xe0801070" Width="32" Description="Interrupt x Control Register(x=0~63)">
         <Bit Name="INT_CTL" Authority="RW" Bits="31-24" Description="参与仲裁的优先级" />
-        <Bit Name="MODE" Authority="RW" Bits="22-21" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
-        <Bit Name="TRIG" Authority="RW" Bits="17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
-        <Bit Name="ATTR" Authority="RW" Bits="16" Description="" />
-        <Bit Name="SHV" Authority="RW" Bits="15" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
+        <Bit Name="MODE" Authority="RW" Bits="23-22" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
+        <Bit Name="TRIG" Authority="RW" Bits="18-17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
+        <Bit Name="SHV" Authority="RW" Bits="16" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
         <Bit Name="IE" Authority="RW" Bits="8" Description="该中断使能状态&#xD;&#xA;0h：该中断没有使能&#xD;&#xA;1h：该中断使能" />
         <Bit Name="IP" Authority="RW" Bits="0" Description="该中断等待状态&#xD;&#xA;0h：该中断没有处于等待状态&#xD;&#xA;1h：该中断处于等待状态" />
       </Register>
       <Register Name="CLICINT29" Authority="RW" Address="0xe0801074" Width="32" Description="Interrupt x Control Register(x=0~63)">
         <Bit Name="INT_CTL" Authority="RW" Bits="31-24" Description="参与仲裁的优先级" />
-        <Bit Name="MODE" Authority="RW" Bits="22-21" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
-        <Bit Name="TRIG" Authority="RW" Bits="17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
-        <Bit Name="ATTR" Authority="RW" Bits="16" Description="" />
-        <Bit Name="SHV" Authority="RW" Bits="15" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
+        <Bit Name="MODE" Authority="RW" Bits="23-22" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
+        <Bit Name="TRIG" Authority="RW" Bits="18-17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
+        <Bit Name="SHV" Authority="RW" Bits="16" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
         <Bit Name="IE" Authority="RW" Bits="8" Description="该中断使能状态&#xD;&#xA;0h：该中断没有使能&#xD;&#xA;1h：该中断使能" />
         <Bit Name="IP" Authority="RW" Bits="0" Description="该中断等待状态&#xD;&#xA;0h：该中断没有处于等待状态&#xD;&#xA;1h：该中断处于等待状态" />
       </Register>
       <Register Name="CLICINT30" Authority="RW" Address="0xe0801078" Width="32" Description="Interrupt x Control Register(x=0~63)">
         <Bit Name="INT_CTL" Authority="RW" Bits="31-24" Description="参与仲裁的优先级" />
-        <Bit Name="MODE" Authority="RW" Bits="22-21" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
-        <Bit Name="TRIG" Authority="RW" Bits="17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
-        <Bit Name="ATTR" Authority="RW" Bits="16" Description="" />
-        <Bit Name="SHV" Authority="RW" Bits="15" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
+        <Bit Name="MODE" Authority="RW" Bits="23-22" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
+        <Bit Name="TRIG" Authority="RW" Bits="18-17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
+        <Bit Name="SHV" Authority="RW" Bits="16" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
         <Bit Name="IE" Authority="RW" Bits="8" Description="该中断使能状态&#xD;&#xA;0h：该中断没有使能&#xD;&#xA;1h：该中断使能" />
         <Bit Name="IP" Authority="RW" Bits="0" Description="该中断等待状态&#xD;&#xA;0h：该中断没有处于等待状态&#xD;&#xA;1h：该中断处于等待状态" />
       </Register>
       <Register Name="CLICINT31" Authority="RW" Address="0xe080107c" Width="32" Description="Interrupt x Control Register(x=0~63)">
         <Bit Name="INT_CTL" Authority="RW" Bits="31-24" Description="参与仲裁的优先级" />
-        <Bit Name="MODE" Authority="RW" Bits="22-21" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
-        <Bit Name="TRIG" Authority="RW" Bits="17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
-        <Bit Name="ATTR" Authority="RW" Bits="16" Description="" />
-        <Bit Name="SHV" Authority="RW" Bits="15" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
+        <Bit Name="MODE" Authority="RW" Bits="23-22" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
+        <Bit Name="TRIG" Authority="RW" Bits="18-17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
+        <Bit Name="SHV" Authority="RW" Bits="16" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
         <Bit Name="IE" Authority="RW" Bits="8" Description="该中断使能状态&#xD;&#xA;0h：该中断没有使能&#xD;&#xA;1h：该中断使能" />
         <Bit Name="IP" Authority="RW" Bits="0" Description="该中断等待状态&#xD;&#xA;0h：该中断没有处于等待状态&#xD;&#xA;1h：该中断处于等待状态" />
       </Register>
       <Register Name="CLICINT32" Authority="RW" Address="0xe0801080" Width="32" Description="Interrupt x Control Register(x=0~63)">
         <Bit Name="INT_CTL" Authority="RW" Bits="31-24" Description="参与仲裁的优先级" />
-        <Bit Name="MODE" Authority="RW" Bits="22-21" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
-        <Bit Name="TRIG" Authority="RW" Bits="17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
-        <Bit Name="ATTR" Authority="RW" Bits="16" Description="" />
-        <Bit Name="SHV" Authority="RW" Bits="15" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
+        <Bit Name="MODE" Authority="RW" Bits="23-22" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
+        <Bit Name="TRIG" Authority="RW" Bits="18-17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
+        <Bit Name="SHV" Authority="RW" Bits="16" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
         <Bit Name="IE" Authority="RW" Bits="8" Description="该中断使能状态&#xD;&#xA;0h：该中断没有使能&#xD;&#xA;1h：该中断使能" />
         <Bit Name="IP" Authority="RW" Bits="0" Description="该中断等待状态&#xD;&#xA;0h：该中断没有处于等待状态&#xD;&#xA;1h：该中断处于等待状态" />
       </Register>
       <Register Name="CLICINT33" Authority="RW" Address="0xe0801084" Width="32" Description="Interrupt x Control Register(x=0~63)">
         <Bit Name="INT_CTL" Authority="RW" Bits="31-24" Description="参与仲裁的优先级" />
-        <Bit Name="MODE" Authority="RW" Bits="22-21" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
-        <Bit Name="TRIG" Authority="RW" Bits="17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
-        <Bit Name="ATTR" Authority="RW" Bits="16" Description="" />
-        <Bit Name="SHV" Authority="RW" Bits="15" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
+        <Bit Name="MODE" Authority="RW" Bits="23-22" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
+        <Bit Name="TRIG" Authority="RW" Bits="18-17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
+        <Bit Name="SHV" Authority="RW" Bits="16" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
         <Bit Name="IE" Authority="RW" Bits="8" Description="该中断使能状态&#xD;&#xA;0h：该中断没有使能&#xD;&#xA;1h：该中断使能" />
         <Bit Name="IP" Authority="RW" Bits="0" Description="该中断等待状态&#xD;&#xA;0h：该中断没有处于等待状态&#xD;&#xA;1h：该中断处于等待状态" />
       </Register>
       <Register Name="CLICINT34" Authority="RW" Address="0xe0801088" Width="32" Description="Interrupt x Control Register(x=0~63)">
         <Bit Name="INT_CTL" Authority="RW" Bits="31-24" Description="参与仲裁的优先级" />
-        <Bit Name="MODE" Authority="RW" Bits="22-21" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
-        <Bit Name="TRIG" Authority="RW" Bits="17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
-        <Bit Name="ATTR" Authority="RW" Bits="16" Description="" />
-        <Bit Name="SHV" Authority="RW" Bits="15" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
+        <Bit Name="MODE" Authority="RW" Bits="23-22" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
+        <Bit Name="TRIG" Authority="RW" Bits="18-17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
+        <Bit Name="SHV" Authority="RW" Bits="16" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
         <Bit Name="IE" Authority="RW" Bits="8" Description="该中断使能状态&#xD;&#xA;0h：该中断没有使能&#xD;&#xA;1h：该中断使能" />
         <Bit Name="IP" Authority="RW" Bits="0" Description="该中断等待状态&#xD;&#xA;0h：该中断没有处于等待状态&#xD;&#xA;1h：该中断处于等待状态" />
       </Register>
       <Register Name="CLICINT35" Authority="RW" Address="0xe080108c" Width="32" Description="Interrupt x Control Register(x=0~63)">
         <Bit Name="INT_CTL" Authority="RW" Bits="31-24" Description="参与仲裁的优先级" />
-        <Bit Name="MODE" Authority="RW" Bits="22-21" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
-        <Bit Name="TRIG" Authority="RW" Bits="17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
-        <Bit Name="ATTR" Authority="RW" Bits="16" Description="" />
-        <Bit Name="SHV" Authority="RW" Bits="15" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
+        <Bit Name="MODE" Authority="RW" Bits="23-22" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
+        <Bit Name="TRIG" Authority="RW" Bits="18-17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
+        <Bit Name="SHV" Authority="RW" Bits="16" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
         <Bit Name="IE" Authority="RW" Bits="8" Description="该中断使能状态&#xD;&#xA;0h：该中断没有使能&#xD;&#xA;1h：该中断使能" />
         <Bit Name="IP" Authority="RW" Bits="0" Description="该中断等待状态&#xD;&#xA;0h：该中断没有处于等待状态&#xD;&#xA;1h：该中断处于等待状态" />
       </Register>
       <Register Name="CLICINT36" Authority="RW" Address="0xe0801090" Width="32" Description="Interrupt x Control Register(x=0~63)">
         <Bit Name="INT_CTL" Authority="RW" Bits="31-24" Description="参与仲裁的优先级" />
-        <Bit Name="MODE" Authority="RW" Bits="22-21" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
-        <Bit Name="TRIG" Authority="RW" Bits="17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
-        <Bit Name="ATTR" Authority="RW" Bits="16" Description="" />
-        <Bit Name="SHV" Authority="RW" Bits="15" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
+        <Bit Name="MODE" Authority="RW" Bits="23-22" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
+        <Bit Name="TRIG" Authority="RW" Bits="18-17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
+        <Bit Name="SHV" Authority="RW" Bits="16" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
         <Bit Name="IE" Authority="RW" Bits="8" Description="该中断使能状态&#xD;&#xA;0h：该中断没有使能&#xD;&#xA;1h：该中断使能" />
         <Bit Name="IP" Authority="RW" Bits="0" Description="该中断等待状态&#xD;&#xA;0h：该中断没有处于等待状态&#xD;&#xA;1h：该中断处于等待状态" />
       </Register>
       <Register Name="CLICINT37" Authority="RW" Address="0xe0801094" Width="32" Description="Interrupt x Control Register(x=0~63)">
         <Bit Name="INT_CTL" Authority="RW" Bits="31-24" Description="参与仲裁的优先级" />
-        <Bit Name="MODE" Authority="RW" Bits="22-21" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
-        <Bit Name="TRIG" Authority="RW" Bits="17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
-        <Bit Name="ATTR" Authority="RW" Bits="16" Description="" />
-        <Bit Name="SHV" Authority="RW" Bits="15" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
+        <Bit Name="MODE" Authority="RW" Bits="23-22" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
+        <Bit Name="TRIG" Authority="RW" Bits="18-17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
+        <Bit Name="SHV" Authority="RW" Bits="16" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
         <Bit Name="IE" Authority="RW" Bits="8" Description="该中断使能状态&#xD;&#xA;0h：该中断没有使能&#xD;&#xA;1h：该中断使能" />
         <Bit Name="IP" Authority="RW" Bits="0" Description="该中断等待状态&#xD;&#xA;0h：该中断没有处于等待状态&#xD;&#xA;1h：该中断处于等待状态" />
       </Register>
       <Register Name="CLICINT38" Authority="RW" Address="0xe0801098" Width="32" Description="Interrupt x Control Register(x=0~63)">
         <Bit Name="INT_CTL" Authority="RW" Bits="31-24" Description="参与仲裁的优先级" />
-        <Bit Name="MODE" Authority="RW" Bits="22-21" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
-        <Bit Name="TRIG" Authority="RW" Bits="17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
-        <Bit Name="ATTR" Authority="RW" Bits="16" Description="" />
-        <Bit Name="SHV" Authority="RW" Bits="15" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
+        <Bit Name="MODE" Authority="RW" Bits="23-22" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
+        <Bit Name="TRIG" Authority="RW" Bits="18-17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
+        <Bit Name="SHV" Authority="RW" Bits="16" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
         <Bit Name="IE" Authority="RW" Bits="8" Description="该中断使能状态&#xD;&#xA;0h：该中断没有使能&#xD;&#xA;1h：该中断使能" />
         <Bit Name="IP" Authority="RW" Bits="0" Description="该中断等待状态&#xD;&#xA;0h：该中断没有处于等待状态&#xD;&#xA;1h：该中断处于等待状态" />
       </Register>
       <Register Name="CLICINT39" Authority="RW" Address="0xe080109c" Width="32" Description="Interrupt x Control Register(x=0~63)">
         <Bit Name="INT_CTL" Authority="RW" Bits="31-24" Description="参与仲裁的优先级" />
-        <Bit Name="MODE" Authority="RW" Bits="22-21" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
-        <Bit Name="TRIG" Authority="RW" Bits="17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
-        <Bit Name="ATTR" Authority="RW" Bits="16" Description="" />
-        <Bit Name="SHV" Authority="RW" Bits="15" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
+        <Bit Name="MODE" Authority="RW" Bits="23-22" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
+        <Bit Name="TRIG" Authority="RW" Bits="18-17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
+        <Bit Name="SHV" Authority="RW" Bits="16" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
         <Bit Name="IE" Authority="RW" Bits="8" Description="该中断使能状态&#xD;&#xA;0h：该中断没有使能&#xD;&#xA;1h：该中断使能" />
         <Bit Name="IP" Authority="RW" Bits="0" Description="该中断等待状态&#xD;&#xA;0h：该中断没有处于等待状态&#xD;&#xA;1h：该中断处于等待状态" />
       </Register>
       <Register Name="CLICINT40" Authority="RW" Address="0xe08010a0" Width="32" Description="Interrupt x Control Register(x=0~63)">
         <Bit Name="INT_CTL" Authority="RW" Bits="31-24" Description="参与仲裁的优先级" />
-        <Bit Name="MODE" Authority="RW" Bits="22-21" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
-        <Bit Name="TRIG" Authority="RW" Bits="17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
-        <Bit Name="ATTR" Authority="RW" Bits="16" Description="" />
-        <Bit Name="SHV" Authority="RW" Bits="15" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
+        <Bit Name="MODE" Authority="RW" Bits="23-22" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
+        <Bit Name="TRIG" Authority="RW" Bits="18-17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
+        <Bit Name="SHV" Authority="RW" Bits="16" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
         <Bit Name="IE" Authority="RW" Bits="8" Description="该中断使能状态&#xD;&#xA;0h：该中断没有使能&#xD;&#xA;1h：该中断使能" />
         <Bit Name="IP" Authority="RW" Bits="0" Description="该中断等待状态&#xD;&#xA;0h：该中断没有处于等待状态&#xD;&#xA;1h：该中断处于等待状态" />
       </Register>
       <Register Name="CLICINT41" Authority="RW" Address="0xe08010a4" Width="32" Description="Interrupt x Control Register(x=0~63)">
         <Bit Name="INT_CTL" Authority="RW" Bits="31-24" Description="参与仲裁的优先级" />
-        <Bit Name="MODE" Authority="RW" Bits="22-21" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
-        <Bit Name="TRIG" Authority="RW" Bits="17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
-        <Bit Name="ATTR" Authority="RW" Bits="16" Description="" />
-        <Bit Name="SHV" Authority="RW" Bits="15" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
+        <Bit Name="MODE" Authority="RW" Bits="23-22" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
+        <Bit Name="TRIG" Authority="RW" Bits="18-17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
+        <Bit Name="SHV" Authority="RW" Bits="16" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
         <Bit Name="IE" Authority="RW" Bits="8" Description="该中断使能状态&#xD;&#xA;0h：该中断没有使能&#xD;&#xA;1h：该中断使能" />
         <Bit Name="IP" Authority="RW" Bits="0" Description="该中断等待状态&#xD;&#xA;0h：该中断没有处于等待状态&#xD;&#xA;1h：该中断处于等待状态" />
       </Register>
       <Register Name="CLICINT42" Authority="RW" Address="0xe08010a8" Width="32" Description="Interrupt x Control Register(x=0~63)">
         <Bit Name="INT_CTL" Authority="RW" Bits="31-24" Description="参与仲裁的优先级" />
-        <Bit Name="MODE" Authority="RW" Bits="22-21" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
-        <Bit Name="TRIG" Authority="RW" Bits="17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
-        <Bit Name="ATTR" Authority="RW" Bits="16" Description="" />
-        <Bit Name="SHV" Authority="RW" Bits="15" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
+        <Bit Name="MODE" Authority="RW" Bits="23-22" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
+        <Bit Name="TRIG" Authority="RW" Bits="18-17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
+        <Bit Name="SHV" Authority="RW" Bits="16" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
         <Bit Name="IE" Authority="RW" Bits="8" Description="该中断使能状态&#xD;&#xA;0h：该中断没有使能&#xD;&#xA;1h：该中断使能" />
         <Bit Name="IP" Authority="RW" Bits="0" Description="该中断等待状态&#xD;&#xA;0h：该中断没有处于等待状态&#xD;&#xA;1h：该中断处于等待状态" />
       </Register>
       <Register Name="CLICINT43" Authority="RW" Address="0xe08010ac" Width="32" Description="Interrupt x Control Register(x=0~63)">
         <Bit Name="INT_CTL" Authority="RW" Bits="31-24" Description="参与仲裁的优先级" />
-        <Bit Name="MODE" Authority="RW" Bits="22-21" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
-        <Bit Name="TRIG" Authority="RW" Bits="17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
-        <Bit Name="ATTR" Authority="RW" Bits="16" Description="" />
-        <Bit Name="SHV" Authority="RW" Bits="15" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
+        <Bit Name="MODE" Authority="RW" Bits="23-22" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
+        <Bit Name="TRIG" Authority="RW" Bits="18-17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
+        <Bit Name="SHV" Authority="RW" Bits="16" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
         <Bit Name="IE" Authority="RW" Bits="8" Description="该中断使能状态&#xD;&#xA;0h：该中断没有使能&#xD;&#xA;1h：该中断使能" />
         <Bit Name="IP" Authority="RW" Bits="0" Description="该中断等待状态&#xD;&#xA;0h：该中断没有处于等待状态&#xD;&#xA;1h：该中断处于等待状态" />
       </Register>
       <Register Name="CLICINT44" Authority="RW" Address="0xe08010b0" Width="32" Description="Interrupt x Control Register(x=0~63)">
         <Bit Name="INT_CTL" Authority="RW" Bits="31-24" Description="参与仲裁的优先级" />
-        <Bit Name="MODE" Authority="RW" Bits="22-21" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
-        <Bit Name="TRIG" Authority="RW" Bits="17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
-        <Bit Name="ATTR" Authority="RW" Bits="16" Description="" />
-        <Bit Name="SHV" Authority="RW" Bits="15" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
+        <Bit Name="MODE" Authority="RW" Bits="23-22" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
+        <Bit Name="TRIG" Authority="RW" Bits="18-17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
+        <Bit Name="SHV" Authority="RW" Bits="16" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
         <Bit Name="IE" Authority="RW" Bits="8" Description="该中断使能状态&#xD;&#xA;0h：该中断没有使能&#xD;&#xA;1h：该中断使能" />
         <Bit Name="IP" Authority="RW" Bits="0" Description="该中断等待状态&#xD;&#xA;0h：该中断没有处于等待状态&#xD;&#xA;1h：该中断处于等待状态" />
       </Register>
       <Register Name="CLICINT45" Authority="RW" Address="0xe08010b4" Width="32" Description="Interrupt x Control Register(x=0~63)">
         <Bit Name="INT_CTL" Authority="RW" Bits="31-24" Description="参与仲裁的优先级" />
-        <Bit Name="MODE" Authority="RW" Bits="22-21" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
-        <Bit Name="TRIG" Authority="RW" Bits="17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
-        <Bit Name="ATTR" Authority="RW" Bits="16" Description="" />
-        <Bit Name="SHV" Authority="RW" Bits="15" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
+        <Bit Name="MODE" Authority="RW" Bits="23-22" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
+        <Bit Name="TRIG" Authority="RW" Bits="18-17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
+        <Bit Name="SHV" Authority="RW" Bits="16" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
         <Bit Name="IE" Authority="RW" Bits="8" Description="该中断使能状态&#xD;&#xA;0h：该中断没有使能&#xD;&#xA;1h：该中断使能" />
         <Bit Name="IP" Authority="RW" Bits="0" Description="该中断等待状态&#xD;&#xA;0h：该中断没有处于等待状态&#xD;&#xA;1h：该中断处于等待状态" />
       </Register>
       <Register Name="CLICINT46" Authority="RW" Address="0xe08010b8" Width="32" Description="Interrupt x Control Register(x=0~63)">
         <Bit Name="INT_CTL" Authority="RW" Bits="31-24" Description="参与仲裁的优先级" />
-        <Bit Name="MODE" Authority="RW" Bits="22-21" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
-        <Bit Name="TRIG" Authority="RW" Bits="17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
-        <Bit Name="ATTR" Authority="RW" Bits="16" Description="" />
-        <Bit Name="SHV" Authority="RW" Bits="15" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
+        <Bit Name="MODE" Authority="RW" Bits="23-22" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
+        <Bit Name="TRIG" Authority="RW" Bits="18-17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
+        <Bit Name="SHV" Authority="RW" Bits="16" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
         <Bit Name="IE" Authority="RW" Bits="8" Description="该中断使能状态&#xD;&#xA;0h：该中断没有使能&#xD;&#xA;1h：该中断使能" />
         <Bit Name="IP" Authority="RW" Bits="0" Description="该中断等待状态&#xD;&#xA;0h：该中断没有处于等待状态&#xD;&#xA;1h：该中断处于等待状态" />
       </Register>
       <Register Name="CLICINT47" Authority="RW" Address="0xe08010bc" Width="32" Description="Interrupt x Control Register(x=0~63)">
         <Bit Name="INT_CTL" Authority="RW" Bits="31-24" Description="参与仲裁的优先级" />
-        <Bit Name="MODE" Authority="RW" Bits="22-21" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
-        <Bit Name="TRIG" Authority="RW" Bits="17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
-        <Bit Name="ATTR" Authority="RW" Bits="16" Description="" />
-        <Bit Name="SHV" Authority="RW" Bits="15" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
+        <Bit Name="MODE" Authority="RW" Bits="23-22" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
+        <Bit Name="TRIG" Authority="RW" Bits="18-17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
+        <Bit Name="SHV" Authority="RW" Bits="16" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
         <Bit Name="IE" Authority="RW" Bits="8" Description="该中断使能状态&#xD;&#xA;0h：该中断没有使能&#xD;&#xA;1h：该中断使能" />
         <Bit Name="IP" Authority="RW" Bits="0" Description="该中断等待状态&#xD;&#xA;0h：该中断没有处于等待状态&#xD;&#xA;1h：该中断处于等待状态" />
       </Register>
       <Register Name="CLICINT48" Authority="RW" Address="0xe08010c0" Width="32" Description="Interrupt x Control Register(x=0~63)">
         <Bit Name="INT_CTL" Authority="RW" Bits="31-24" Description="参与仲裁的优先级" />
-        <Bit Name="MODE" Authority="RW" Bits="22-21" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
-        <Bit Name="TRIG" Authority="RW" Bits="17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
-        <Bit Name="ATTR" Authority="RW" Bits="16" Description="" />
-        <Bit Name="SHV" Authority="RW" Bits="15" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
+        <Bit Name="MODE" Authority="RW" Bits="23-22" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
+        <Bit Name="TRIG" Authority="RW" Bits="18-17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
+        <Bit Name="SHV" Authority="RW" Bits="16" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
         <Bit Name="IE" Authority="RW" Bits="8" Description="该中断使能状态&#xD;&#xA;0h：该中断没有使能&#xD;&#xA;1h：该中断使能" />
         <Bit Name="IP" Authority="RW" Bits="0" Description="该中断等待状态&#xD;&#xA;0h：该中断没有处于等待状态&#xD;&#xA;1h：该中断处于等待状态" />
       </Register>
       <Register Name="CLICINT49" Authority="RW" Address="0xe08010c4" Width="32" Description="Interrupt x Control Register(x=0~63)">
         <Bit Name="INT_CTL" Authority="RW" Bits="31-24" Description="参与仲裁的优先级" />
-        <Bit Name="MODE" Authority="RW" Bits="22-21" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
-        <Bit Name="TRIG" Authority="RW" Bits="17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
-        <Bit Name="ATTR" Authority="RW" Bits="16" Description="" />
-        <Bit Name="SHV" Authority="RW" Bits="15" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
+        <Bit Name="MODE" Authority="RW" Bits="23-22" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
+        <Bit Name="TRIG" Authority="RW" Bits="18-17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
+        <Bit Name="SHV" Authority="RW" Bits="16" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
         <Bit Name="IE" Authority="RW" Bits="8" Description="该中断使能状态&#xD;&#xA;0h：该中断没有使能&#xD;&#xA;1h：该中断使能" />
         <Bit Name="IP" Authority="RW" Bits="0" Description="该中断等待状态&#xD;&#xA;0h：该中断没有处于等待状态&#xD;&#xA;1h：该中断处于等待状态" />
       </Register>
       <Register Name="CLICINT50" Authority="RW" Address="0xe08010c8" Width="32" Description="Interrupt x Control Register(x=0~63)">
         <Bit Name="INT_CTL" Authority="RW" Bits="31-24" Description="参与仲裁的优先级" />
-        <Bit Name="MODE" Authority="RW" Bits="22-21" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
-        <Bit Name="TRIG" Authority="RW" Bits="17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
-        <Bit Name="ATTR" Authority="RW" Bits="16" Description="" />
-        <Bit Name="SHV" Authority="RW" Bits="15" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
+        <Bit Name="MODE" Authority="RW" Bits="23-22" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
+        <Bit Name="TRIG" Authority="RW" Bits="18-17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
+        <Bit Name="SHV" Authority="RW" Bits="16" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
         <Bit Name="IE" Authority="RW" Bits="8" Description="该中断使能状态&#xD;&#xA;0h：该中断没有使能&#xD;&#xA;1h：该中断使能" />
         <Bit Name="IP" Authority="RW" Bits="0" Description="该中断等待状态&#xD;&#xA;0h：该中断没有处于等待状态&#xD;&#xA;1h：该中断处于等待状态" />
       </Register>
       <Register Name="CLICINT51" Authority="RW" Address="0xe08010cc" Width="32" Description="Interrupt x Control Register(x=0~63)">
         <Bit Name="INT_CTL" Authority="RW" Bits="31-24" Description="参与仲裁的优先级" />
-        <Bit Name="MODE" Authority="RW" Bits="22-21" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
-        <Bit Name="TRIG" Authority="RW" Bits="17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
-        <Bit Name="ATTR" Authority="RW" Bits="16" Description="" />
-        <Bit Name="SHV" Authority="RW" Bits="15" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
+        <Bit Name="MODE" Authority="RW" Bits="23-22" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
+        <Bit Name="TRIG" Authority="RW" Bits="18-17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
+        <Bit Name="SHV" Authority="RW" Bits="16" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
         <Bit Name="IE" Authority="RW" Bits="8" Description="该中断使能状态&#xD;&#xA;0h：该中断没有使能&#xD;&#xA;1h：该中断使能" />
         <Bit Name="IP" Authority="RW" Bits="0" Description="该中断等待状态&#xD;&#xA;0h：该中断没有处于等待状态&#xD;&#xA;1h：该中断处于等待状态" />
       </Register>
       <Register Name="CLICINT52" Authority="RW" Address="0xe08010d0" Width="32" Description="Interrupt x Control Register(x=0~63)">
         <Bit Name="INT_CTL" Authority="RW" Bits="31-24" Description="参与仲裁的优先级" />
-        <Bit Name="MODE" Authority="RW" Bits="22-21" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
-        <Bit Name="TRIG" Authority="RW" Bits="17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
-        <Bit Name="ATTR" Authority="RW" Bits="16" Description="" />
-        <Bit Name="SHV" Authority="RW" Bits="15" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
+        <Bit Name="MODE" Authority="RW" Bits="23-22" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
+        <Bit Name="TRIG" Authority="RW" Bits="18-17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
+        <Bit Name="SHV" Authority="RW" Bits="16" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
         <Bit Name="IE" Authority="RW" Bits="8" Description="该中断使能状态&#xD;&#xA;0h：该中断没有使能&#xD;&#xA;1h：该中断使能" />
         <Bit Name="IP" Authority="RW" Bits="0" Description="该中断等待状态&#xD;&#xA;0h：该中断没有处于等待状态&#xD;&#xA;1h：该中断处于等待状态" />
       </Register>
       <Register Name="CLICINT53" Authority="RW" Address="0xe08010d4" Width="32" Description="Interrupt x Control Register(x=0~63)">
         <Bit Name="INT_CTL" Authority="RW" Bits="31-24" Description="参与仲裁的优先级" />
-        <Bit Name="MODE" Authority="RW" Bits="22-21" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
-        <Bit Name="TRIG" Authority="RW" Bits="17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
-        <Bit Name="ATTR" Authority="RW" Bits="16" Description="" />
-        <Bit Name="SHV" Authority="RW" Bits="15" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
+        <Bit Name="MODE" Authority="RW" Bits="23-22" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
+        <Bit Name="TRIG" Authority="RW" Bits="18-17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
+        <Bit Name="SHV" Authority="RW" Bits="16" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
         <Bit Name="IE" Authority="RW" Bits="8" Description="该中断使能状态&#xD;&#xA;0h：该中断没有使能&#xD;&#xA;1h：该中断使能" />
         <Bit Name="IP" Authority="RW" Bits="0" Description="该中断等待状态&#xD;&#xA;0h：该中断没有处于等待状态&#xD;&#xA;1h：该中断处于等待状态" />
       </Register>
       <Register Name="CLICINT54" Authority="RW" Address="0xe08010d8" Width="32" Description="Interrupt x Control Register(x=0~63)">
         <Bit Name="INT_CTL" Authority="RW" Bits="31-24" Description="参与仲裁的优先级" />
-        <Bit Name="MODE" Authority="RW" Bits="22-21" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
-        <Bit Name="TRIG" Authority="RW" Bits="17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
-        <Bit Name="ATTR" Authority="RW" Bits="16" Description="" />
-        <Bit Name="SHV" Authority="RW" Bits="15" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
+        <Bit Name="MODE" Authority="RW" Bits="23-22" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
+        <Bit Name="TRIG" Authority="RW" Bits="18-17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
+        <Bit Name="SHV" Authority="RW" Bits="16" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
         <Bit Name="IE" Authority="RW" Bits="8" Description="该中断使能状态&#xD;&#xA;0h：该中断没有使能&#xD;&#xA;1h：该中断使能" />
         <Bit Name="IP" Authority="RW" Bits="0" Description="该中断等待状态&#xD;&#xA;0h：该中断没有处于等待状态&#xD;&#xA;1h：该中断处于等待状态" />
       </Register>
       <Register Name="CLICINT55" Authority="RW" Address="0xe08010dc" Width="32" Description="Interrupt x Control Register(x=0~63)">
         <Bit Name="INT_CTL" Authority="RW" Bits="31-24" Description="参与仲裁的优先级" />
-        <Bit Name="MODE" Authority="RW" Bits="22-21" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
-        <Bit Name="TRIG" Authority="RW" Bits="17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
-        <Bit Name="ATTR" Authority="RW" Bits="16" Description="" />
-        <Bit Name="SHV" Authority="RW" Bits="15" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
+        <Bit Name="MODE" Authority="RW" Bits="23-22" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
+        <Bit Name="TRIG" Authority="RW" Bits="18-17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
+        <Bit Name="SHV" Authority="RW" Bits="16" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
         <Bit Name="IE" Authority="RW" Bits="8" Description="该中断使能状态&#xD;&#xA;0h：该中断没有使能&#xD;&#xA;1h：该中断使能" />
         <Bit Name="IP" Authority="RW" Bits="0" Description="该中断等待状态&#xD;&#xA;0h：该中断没有处于等待状态&#xD;&#xA;1h：该中断处于等待状态" />
       </Register>
       <Register Name="CLICINT56" Authority="RW" Address="0xe08010e0" Width="32" Description="Interrupt x Control Register(x=0~63)">
         <Bit Name="INT_CTL" Authority="RW" Bits="31-24" Description="参与仲裁的优先级" />
-        <Bit Name="MODE" Authority="RW" Bits="22-21" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
-        <Bit Name="TRIG" Authority="RW" Bits="17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
-        <Bit Name="ATTR" Authority="RW" Bits="16" Description="" />
-        <Bit Name="SHV" Authority="RW" Bits="15" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
+        <Bit Name="MODE" Authority="RW" Bits="23-22" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
+        <Bit Name="TRIG" Authority="RW" Bits="18-17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
+        <Bit Name="SHV" Authority="RW" Bits="16" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
         <Bit Name="IE" Authority="RW" Bits="8" Description="该中断使能状态&#xD;&#xA;0h：该中断没有使能&#xD;&#xA;1h：该中断使能" />
         <Bit Name="IP" Authority="RW" Bits="0" Description="该中断等待状态&#xD;&#xA;0h：该中断没有处于等待状态&#xD;&#xA;1h：该中断处于等待状态" />
       </Register>
       <Register Name="CLICINT57" Authority="RW" Address="0xe08010e4" Width="32" Description="Interrupt x Control Register(x=0~63)">
         <Bit Name="INT_CTL" Authority="RW" Bits="31-24" Description="参与仲裁的优先级" />
-        <Bit Name="MODE" Authority="RW" Bits="22-21" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
-        <Bit Name="TRIG" Authority="RW" Bits="17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
-        <Bit Name="ATTR" Authority="RW" Bits="16" Description="" />
-        <Bit Name="SHV" Authority="RW" Bits="15" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
+        <Bit Name="MODE" Authority="RW" Bits="23-22" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
+        <Bit Name="TRIG" Authority="RW" Bits="18-17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
+        <Bit Name="SHV" Authority="RW" Bits="16" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
         <Bit Name="IE" Authority="RW" Bits="8" Description="该中断使能状态&#xD;&#xA;0h：该中断没有使能&#xD;&#xA;1h：该中断使能" />
         <Bit Name="IP" Authority="RW" Bits="0" Description="该中断等待状态&#xD;&#xA;0h：该中断没有处于等待状态&#xD;&#xA;1h：该中断处于等待状态" />
       </Register>
       <Register Name="CLICINT58" Authority="RW" Address="0xe08010e8" Width="32" Description="Interrupt x Control Register(x=0~63)">
         <Bit Name="INT_CTL" Authority="RW" Bits="31-24" Description="参与仲裁的优先级" />
-        <Bit Name="MODE" Authority="RW" Bits="22-21" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
-        <Bit Name="TRIG" Authority="RW" Bits="17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
-        <Bit Name="ATTR" Authority="RW" Bits="16" Description="" />
-        <Bit Name="SHV" Authority="RW" Bits="15" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
+        <Bit Name="MODE" Authority="RW" Bits="23-22" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
+        <Bit Name="TRIG" Authority="RW" Bits="18-17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
+        <Bit Name="SHV" Authority="RW" Bits="16" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
         <Bit Name="IE" Authority="RW" Bits="8" Description="该中断使能状态&#xD;&#xA;0h：该中断没有使能&#xD;&#xA;1h：该中断使能" />
         <Bit Name="IP" Authority="RW" Bits="0" Description="该中断等待状态&#xD;&#xA;0h：该中断没有处于等待状态&#xD;&#xA;1h：该中断处于等待状态" />
       </Register>
       <Register Name="CLICINT59" Authority="RW" Address="0xe08010ec" Width="32" Description="Interrupt x Control Register(x=0~63)">
         <Bit Name="INT_CTL" Authority="RW" Bits="31-24" Description="参与仲裁的优先级" />
-        <Bit Name="MODE" Authority="RW" Bits="22-21" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
-        <Bit Name="TRIG" Authority="RW" Bits="17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
-        <Bit Name="ATTR" Authority="RW" Bits="16" Description="" />
-        <Bit Name="SHV" Authority="RW" Bits="15" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
+        <Bit Name="MODE" Authority="RW" Bits="23-22" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
+        <Bit Name="TRIG" Authority="RW" Bits="18-17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
+        <Bit Name="SHV" Authority="RW" Bits="16" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
         <Bit Name="IE" Authority="RW" Bits="8" Description="该中断使能状态&#xD;&#xA;0h：该中断没有使能&#xD;&#xA;1h：该中断使能" />
         <Bit Name="IP" Authority="RW" Bits="0" Description="该中断等待状态&#xD;&#xA;0h：该中断没有处于等待状态&#xD;&#xA;1h：该中断处于等待状态" />
       </Register>
       <Register Name="CLICINT60" Authority="RW" Address="0xe08010f0" Width="32" Description="Interrupt x Control Register(x=0~63)">
         <Bit Name="INT_CTL" Authority="RW" Bits="31-24" Description="参与仲裁的优先级" />
-        <Bit Name="MODE" Authority="RW" Bits="22-21" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
-        <Bit Name="TRIG" Authority="RW" Bits="17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
-        <Bit Name="ATTR" Authority="RW" Bits="16" Description="" />
-        <Bit Name="SHV" Authority="RW" Bits="15" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
+        <Bit Name="MODE" Authority="RW" Bits="23-22" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
+        <Bit Name="TRIG" Authority="RW" Bits="18-17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
+        <Bit Name="SHV" Authority="RW" Bits="16" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
         <Bit Name="IE" Authority="RW" Bits="8" Description="该中断使能状态&#xD;&#xA;0h：该中断没有使能&#xD;&#xA;1h：该中断使能" />
         <Bit Name="IP" Authority="RW" Bits="0" Description="该中断等待状态&#xD;&#xA;0h：该中断没有处于等待状态&#xD;&#xA;1h：该中断处于等待状态" />
       </Register>
       <Register Name="CLICINT61" Authority="RW" Address="0xe08010f4" Width="32" Description="Interrupt x Control Register(x=0~63)">
         <Bit Name="INT_CTL" Authority="RW" Bits="31-24" Description="参与仲裁的优先级" />
-        <Bit Name="MODE" Authority="RW" Bits="22-21" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
-        <Bit Name="TRIG" Authority="RW" Bits="17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
-        <Bit Name="ATTR" Authority="RW" Bits="16" Description="" />
-        <Bit Name="SHV" Authority="RW" Bits="15" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
+        <Bit Name="MODE" Authority="RW" Bits="23-22" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
+        <Bit Name="TRIG" Authority="RW" Bits="18-17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
+        <Bit Name="SHV" Authority="RW" Bits="16" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
         <Bit Name="IE" Authority="RW" Bits="8" Description="该中断使能状态&#xD;&#xA;0h：该中断没有使能&#xD;&#xA;1h：该中断使能" />
         <Bit Name="IP" Authority="RW" Bits="0" Description="该中断等待状态&#xD;&#xA;0h：该中断没有处于等待状态&#xD;&#xA;1h：该中断处于等待状态" />
       </Register>
       <Register Name="CLICINT62" Authority="RW" Address="0xe08010f8" Width="32" Description="Interrupt x Control Register(x=0~63)">
         <Bit Name="INT_CTL" Authority="RW" Bits="31-24" Description="参与仲裁的优先级" />
-        <Bit Name="MODE" Authority="RW" Bits="22-21" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
-        <Bit Name="TRIG" Authority="RW" Bits="17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
-        <Bit Name="ATTR" Authority="RW" Bits="16" Description="" />
-        <Bit Name="SHV" Authority="RW" Bits="15" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
+        <Bit Name="MODE" Authority="RW" Bits="23-22" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
+        <Bit Name="TRIG" Authority="RW" Bits="18-17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
+        <Bit Name="SHV" Authority="RW" Bits="16" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
         <Bit Name="IE" Authority="RW" Bits="8" Description="该中断使能状态&#xD;&#xA;0h：该中断没有使能&#xD;&#xA;1h：该中断使能" />
         <Bit Name="IP" Authority="RW" Bits="0" Description="该中断等待状态&#xD;&#xA;0h：该中断没有处于等待状态&#xD;&#xA;1h：该中断处于等待状态" />
       </Register>
       <Register Name="CLICINT63" Authority="RW" Address="0xe08010fc" Width="32" Description="Interrupt x Control Register(x=0~63)">
         <Bit Name="INT_CTL" Authority="RW" Bits="31-24" Description="参与仲裁的优先级" />
-        <Bit Name="MODE" Authority="RW" Bits="22-21" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
-        <Bit Name="TRIG" Authority="RW" Bits="17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
-        <Bit Name="ATTR" Authority="RW" Bits="16" Description="" />
-        <Bit Name="SHV" Authority="RW" Bits="15" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
+        <Bit Name="MODE" Authority="RW" Bits="23-22" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
+        <Bit Name="TRIG" Authority="RW" Bits="18-17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
+        <Bit Name="SHV" Authority="RW" Bits="16" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
         <Bit Name="IE" Authority="RW" Bits="8" Description="该中断使能状态&#xD;&#xA;0h：该中断没有使能&#xD;&#xA;1h：该中断使能" />
         <Bit Name="IP" Authority="RW" Bits="0" Description="该中断等待状态&#xD;&#xA;0h：该中断没有处于等待状态&#xD;&#xA;1h：该中断处于等待状态" />
       </Register>
       <Register Name="CLICINT64" Authority="RW" Address="0xe0801100" Width="32" Description="Interrupt x Control Register(x=0~63)">
         <Bit Name="INT_CTL" Authority="RW" Bits="31-24" Description="参与仲裁的优先级" />
-        <Bit Name="MODE" Authority="RW" Bits="22-21" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
-        <Bit Name="TRIG" Authority="RW" Bits="17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
-        <Bit Name="ATTR" Authority="RW" Bits="16" Description="" />
-        <Bit Name="SHV" Authority="RW" Bits="15" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
+        <Bit Name="MODE" Authority="RW" Bits="23-22" Description="中断特权态：&#xD;&#xA;E906该位段为 3h。" />
+        <Bit Name="TRIG" Authority="RW" Bits="18-17" Description="中断触发方式：&#xD;&#xA;x0b：电平中断&#xD;&#xA;01b：上升沿中断&#xD;&#xA;11b：下降沿中断" />
+        <Bit Name="SHV" Authority="RW" Bits="16" Description="硬件矢量中断设置：&#xD;&#xA;0h：非硬件矢量中断&#xD;&#xA;1h：硬件矢量中断" />
         <Bit Name="IE" Authority="RW" Bits="8" Description="该中断使能状态&#xD;&#xA;0h：该中断没有使能&#xD;&#xA;1h：该中断使能" />
         <Bit Name="IP" Authority="RW" Bits="0" Description="该中断等待状态&#xD;&#xA;0h：该中断没有处于等待状态&#xD;&#xA;1h：该中断处于等待状态" />
       </Register>
