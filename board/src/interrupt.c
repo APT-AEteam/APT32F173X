@@ -75,7 +75,7 @@ void nmi_int_handler(void)
 void coret_int_handler(void)
 {
 	// ISR content ...
-	tick_irqhandler();
+//	tick_irqhandler();
 }
 
 void syscon_int_handler(void) 
