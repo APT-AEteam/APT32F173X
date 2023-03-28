@@ -25,31 +25,11 @@
 #include "csp_syscon.h"
 #include "board_config.h"
 
-/* Private macro------------------------------------------------------*/
-#define	SRAM1_LEN		256
 
 /* externs function---------------------------------------------------*/
 /* externs variablesr-------------------------------------------------*/
 /* Private variablesr-------------------------------------------------*/
-uint8_t *bypSramAddr = (uint8_t *)0x20002000;	
 
-
-volatile uint8_t byExiFlg = 0x00;
-
-/** \brief  delay, imprecise delay timer
- * 
- *  \param[in] t: delay timer; unit: 10us systick = 48M
- *  \return none
- */ 
-//void delay_ums(uint32_t t)
-//{
-//	volatile uint32_t i,j ,k=0;
-//	j = 25* t;
-//	for ( i = 0; i < j; i++ )
-//	{
-//		k++;
-//	}
-//}
 
 /** \brief 进入低功耗模式前的准备动作
  *  \param[in] none
@@ -136,7 +116,7 @@ void lp_lpt_wakeup_deepsleep_demo(void)
 	}
 }
 
-/** \brief 各种源唤醒低功耗的示例代码，低功耗的模式=sleep/deepsleep/snooze/shutdown
+/** \brief 各种源唤醒低功耗的示例代码，低功耗的模式=sleep/deepsleep
  * 		   sleep模式时,tick中断会唤醒cpu，测试时需要注意(可在system_init中注释掉tick初始化)
  * 
  *  \param  none
@@ -180,7 +160,7 @@ void lp_wakeup_demo(void)
 	csi_pin_pull_mode(PB1, GPIO_PULLUP);						//PB1 上拉
 	csi_pin_irq_mode(PB1,EXI_GRP1, GPIO_IRQ_FALLING_EDGE);		//PB1 下降沿产生中断
 	csi_pin_irq_enable(PB1, ENABLE);							//PB1 中断使能，选择中断组1
-	csi_pin_vic_irq_enable(EXI_GRP18, ENABLE);					//PB1 VIC中断使能，选择中断组1	
+	csi_pin_vic_irq_enable(EXI_GRP1, ENABLE);					//PB1 VIC中断使能，选择中断组1	
 	csi_vic_get_pending_irq(EXI1_IRQ_NUM);
 	
 	csi_pm_clk_enable(SP_IDLE_PCLK, DISABLE);					//sleep模式下关闭PCLK
