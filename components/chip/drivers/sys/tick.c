@@ -15,6 +15,7 @@
 #include <drv/pin.h>
 #include <drv/uart.h>
 #include <drv/irq.h>
+#include <drv/bt.h>
 
 /* Private macro------------------------------------------------------*/
 #define __WEAK	__attribute__((weak))
@@ -33,6 +34,18 @@ static volatile uint64_t last_time_us = 0U;
 //{
 //	return  CORETIMER->MTIME;
 //}
+void bt_irqhandler3(csp_bt_t *ptBtBase)
+{
+    // ISR content ...
+	volatile uint32_t wMisr = csp_bt_get_isr(ptBtBase);
+	
+	if(wMisr & BT_PEND_INT)					//PEND interrupt
+	{
+		csp_bt_clr_isr(ptBtBase, BT_PEND_INT);			//PA06 toggle	
+	}
+
+}
+
 
 void csi_tick_increase(void)
 {

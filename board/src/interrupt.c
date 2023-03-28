@@ -13,19 +13,17 @@
 
 #include "soc.h"
 #include "gpio.h"
-//#include "ept.h"
 #include "adc.h"
 #include "lpt.h"
 #include "pin.h"
 #include "spi.h"
 #include "board_config.h"
 #include "csp.h"
-
 #include "rtc.h"
-
 #include "qspi.h"
 #include "irq.h"
 #include "cnta.h"
+#include <drv/tick.h>
 
 /* externs function--------------------------------------------------------*/
 extern void nmi_int_handler(void);
@@ -40,6 +38,7 @@ extern void ifc_irqhandler(void);
 extern void bt_irqhandler0(csp_bt_t *ptBtBase);
 extern void bt_irqhandler1(csp_bt_t *ptBtBase);
 extern void bt_irqhandler2(csp_bt_t *ptBtBase);
+extern void bt_irqhandler3(csp_bt_t *ptBtBase);
 extern void cnta_irqhandler(csp_cnta_t *ptCntaBase);
 extern void wwdt_irqhandler(void);
 extern void cmp_irqhandler(csp_cmp_t *ptCmpBase);
@@ -455,10 +454,11 @@ void bt2_int_handler(void)
 
 void bt3_int_handler(void) 
 {
-//#if	BT3_INT_HANDLE_EN
+#if	BT3_INT_HANDLE_EN
 //    // ISR content ...
-//	bt_irqhandler3(BT3);
-//#endif	
+	csi_tick_increase();
+	bt_irqhandler3(BT3);   //BT3 is for systick!!!
+#endif	
 }
 /*************************************************************/
 /*************************************************************/
