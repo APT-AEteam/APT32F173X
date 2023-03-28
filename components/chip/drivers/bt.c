@@ -17,34 +17,10 @@
 
 /* Private macro------------------------------------------------------*/
 
-volatile bool BT_Flag = 0;
 /* externs function---------------------------------------------------*/
 /* externs variablesr-------------------------------------------------*/
 /* Private variablesr-------------------------------------------------*/
 
-__attribute__((weak)) void bt_irqhandler(csp_bt_t *ptBtBase)
-{
-    // ISR content ...
-	volatile uint32_t wMisr = csp_bt_get_isr(ptBtBase);
-	
-	if(wMisr & BT_PEND_INT)					//PEND interrupt
-	{
-		csp_bt_clr_isr(ptBtBase, BT_PEND_INT);
-		csi_pin_toggle(PA6);				//PA06 toggle	
-	}
-	
-	if(wMisr & BT_CMP_INT)					//CMP interrupt
-	{
-		csp_bt_clr_isr(ptBtBase, BT_CMP_INT);
-		csi_pin_set_low(PA5);
-//		csi_pin_set_high(PA6);	
-	}
-	if(wMisr & BT_EVTRG_INT)				//EVTRG interrupt
-	{
-		csi_pin_set_low(PA5);
-		csp_bt_clr_isr(ptBtBase, BT_EVTRG_INT);
-	}
-}
 /** \brief initialize bt data structure
  * 
  *  \param[in] ptBtBase: pointer of bt register structure
@@ -60,22 +36,24 @@ csi_error_t csi_bt_timer_init(csp_bt_t *ptBtBase, uint32_t wTimeOut)
 	csp_bt_soft_rst(ptBtBase);												//reset bt
 	
 	wClkDiv = (csi_get_pclk_freq() / 100000 * wTimeOut / 600000);			//bt clk div value
-	if(wClkDiv == 0)
-		wClkDiv  = 1;
+//	if(wClkDiv == 0)
+//		wClkDiv  = 1;
+	if(wClkDiv < 0xfffe)	
+		wClkDiv  += 1;
 	//wTmLoad = (csi_get_pclk_freq() / (wClkDiv * 20000)) * wTimeOut / 50;	//bt prdr load value
 	wTmLoad = (csi_get_pclk_freq() / wClkDiv /20000) * wTimeOut / 50;		//bt prdr load value
 	if(wTmLoad > 0xffff)
 		wTmLoad = 0xffff;
 		
-	csp_bt_set_cr(ptBtBase, (BT_IMMEDIATE << BT_SHDW_POS) | (BT_CONTINUOUS << BT_OPM_POS) |		//bt work mode
+	csp_bt_set_cr(ptBtBase, (BT_SHDOW << BT_SHDW_POS) | (BT_CONTINUOUS << BT_OPM_POS) |		//bt work mode
 			(BT_PCLKDIV << BT_EXTCKM_POS) | (BT_CNTRLD_EN << BT_CNTRLD_POS) | BT_CLK_EN );
 	csp_bt_set_pscr(ptBtBase, (uint16_t)wClkDiv - 1);						//bt clk div	
 	csp_bt_set_prdr(ptBtBase, (uint16_t)wTmLoad);							//bt prdr load value
 	csp_bt_set_cmp(ptBtBase, (uint16_t)(wTmLoad >> 1));						//bt prdr load value
 	
-//	csp_bt_set_pscr(ptBtBase, 0);						//bt clk div	
-//	csp_bt_set_prdr(ptBtBase, 10);							//bt prdr load value
-//	csp_bt_set_cmp(ptBtBase, 5);						//bt prdr load value
+//	csp_bt_set_pscr(ptBtBase, 5);						//bt clk div	
+//	csp_bt_set_prdr(ptBtBase, 10000);							//bt prdr load value
+//	csp_bt_set_cmp(ptBtBase, 5000);						//bt prdr load value
 	
 	csp_bt_int_set(ptBtBase, BT_PEND_INT, ENABLE);							//enable PEND interrupt
 //	csp_bt_int_set(ptBtBase, BT_CMP_INT, ENABLE);							//enable PEND interrupt

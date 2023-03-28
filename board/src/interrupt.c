@@ -37,7 +37,10 @@ extern void dma_irqhandler(csp_dma_t *ptDmaBase);						//DMA
 extern void gpta_irqhandler(csp_gpta_t *ptGptaBase);
 extern void gpio_irqhandler(uint8_t byExiNum);
 extern void ifc_irqhandler(void);
-extern void bt_irqhandler(csp_bt_t *ptBtBase);
+extern void bt_irqhandler0(csp_bt_t *ptBtBase);
+extern void bt_irqhandler1(csp_bt_t *ptBtBase);
+extern void bt_irqhandler2(csp_bt_t *ptBtBase);
+extern void cnta_irqhandler(csp_cnta_t *ptCntaBase);
 extern void wwdt_irqhandler(void);
 extern void cmp_irqhandler(csp_cmp_t *ptCmpBase);
 extern void adc_irqhandler(csp_adc_t *ptAdcBase);
@@ -430,7 +433,7 @@ void bt0_int_handler(void)
 {
 #if	BT0_INT_HANDLE_EN
     // ISR content ...
-	bt_irqhandler(BT0);
+	bt_irqhandler0(BT0);
 #endif
 }
 
@@ -438,7 +441,7 @@ void bt1_int_handler(void)
 {
 #if	BT1_INT_HANDLE_EN
     // ISR content ...
-	bt_irqhandler(BT1);
+	bt_irqhandler1(BT1);
 #endif
 }
 
@@ -446,16 +449,16 @@ void bt2_int_handler(void)
 {
 #if	BT2_INT_HANDLE_EN
     // ISR content ...
-	bt_irqhandler(BT2);	
+	bt_irqhandler2(BT2);	
 #endif
 }
 
 void bt3_int_handler(void) 
 {
-#if	BT3_INT_HANDLE_EN
-    // ISR content ...
-	bt_irqhandler(BT3);
-#endif	
+//#if	BT3_INT_HANDLE_EN
+//    // ISR content ...
+//	bt_irqhandler3(BT3);
+//#endif	
 }
 /*************************************************************/
 /*************************************************************/
