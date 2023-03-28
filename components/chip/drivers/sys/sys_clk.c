@@ -24,12 +24,13 @@ const uint32_t g_wHclkDiv[] = {
 	1, 1, 2, 3, 4, 5, 6, 7, 8, 12, 16, 24, 32, 36, 64, 128, 256
 };
 
-static uint32_t get_hclk(void)
+static uint32_t apt_get_hclk(void)
 {
 	uint32_t tRslt;
-	tRslt = tClkConfig.wFreq/tClkConfig.eSdiv;
+	tRslt = tClkConfig.wSclk;
 	return (tRslt);
 }
+
 /** \brief sysctem clock (HCLK) configuration
  * 
  *  To set CPU frequence according to tClkConfig
@@ -37,34 +38,24 @@ static uint32_t get_hclk(void)
  *  \param[in] none.
  *  \return csi_error_t.
  */ 
-csi_error_t csi_sysclk_config(void)
-{
-	
+csi_error_t csi_sysclk_config(csi_clk_config_t tClkCfg)
+{	
 	csi_error_t ret = CSI_OK;
 	uint8_t byFreqIdx = 0;
-	uint32_t wFreq;
-	uint32_t wHFreq;
+	uint32_t wFreq,wTargetSclk;
 	cclk_src_e eSrc;
-	uint8_t byFlashLp = 0;//0->1
-	wFreq = tClkConfig.wFreq;
-	eSrc = tClkConfig.eClkSrc;
-	wHFreq = get_hclk();
+	uint8_t byFlashLp = 0;
+	wFreq = tClkCfg.wFreq;
+	
+	wTargetSclk = wFreq/g_wHclkDiv[tClkCfg.eSdiv];
+	eSrc = tClkCfg.eClkSrc;
 	csp_set_clksrc(SYSCON, SRC_IMOSC);
-//	csp_ifc_set_speed(IFC_REG_BASE, get_hclk());
-	IFC->CEDR = IFC_CLKEN;
-	IFC->MR = IFC->MR & (~(HIGH_SPEED|PF_WAIT3));
-	if (wHFreq > 24000000)
-		IFC->MR = ((IFC->MR & (~PF_SPEED_MSK)) & (~PF_WAIT_MSK)) |HIGH_SPEED | PF_WAIT2;
-    else if (wHFreq >= 16000000) 
-		IFC->MR = ((IFC->MR & (~PF_SPEED_MSK)) & (~PF_WAIT_MSK)) |HIGH_SPEED | PF_WAIT1;	
-	else {
-		IFC->MR = ((IFC->MR & (~PF_SPEED_MSK)) & (~PF_WAIT_MSK)) |LOW_SPEED | PF_WAIT0;
-	}	
+	csp_eflash_lpmd_enable(SYSCON, 0);					//disable Flash LP Mode					
 	
 	switch (eSrc)
 	{
 		case (SRC_ISOSC): 	
-			ret = csi_isosc_enable();
+			csi_isosc_enable();
 			byFlashLp = 1;
 			break;
 		case (SRC_IMOSC):	
@@ -81,15 +72,16 @@ csi_error_t csi_sysclk_config(void)
 				default: ret = CSI_ERROR;	
 					break;
 			}
-			ret = csi_imosc_enable(byFreqIdx);
+			csi_imosc_enable(byFreqIdx);
+		
 			if (wFreq == IM_131K)
 				byFlashLp = 1;
 			break;
 		case (SRC_EMOSC):
 			csp_em_flt_sel(SYSCON,EM_FLT_10NS);
 			csp_em_flt_enable(SYSCON,ENABLE);
-			csi_pin_set_mux(PD0, PD0_XIN);
-			csi_pin_set_mux(PD1, PD1_XOUT);
+		//	csi_pin_set_mux(PD0, PD0_XIN);
+		//	csi_pin_set_mux(PD1, PD1_XOUT);
 			if (wFreq == EMOSC_32K_VALUE)
 				csp_set_em_lfmd(SYSCON, 1);
 			ret = csi_emosc_enable(wFreq);
@@ -105,42 +97,61 @@ csi_error_t csi_sysclk_config(void)
 					break;
 				case (HFOSC_6M_VALUE):  byFreqIdx = 3;
 					break;
-				default: ret = CSI_ERROR;	
+				default: ret = CSI_ERROR;
+					return ret;
 					break;
 			}
-			ret = csi_hfosc_enable(byFreqIdx);
+			csi_hfosc_enable(byFreqIdx);
 			break;
 		case (SRC_PLL):	
+			csi_pll_disable();
 			csi_hfosc_enable(1);           // HFOSC_24M_VALUE
-			IFC->MR |= HIGH_SPEED | PF_WAIT7;
-		
 			csp_pll_clk_sel(SYSCON, PLL_CLK_SEL_HFOSC);
-			csp_pll_set_div_m(SYSCON, 1);
-			csp_pll_set_nul(SYSCON, 4);
+			csp_pll_set_div_m(SYSCON, 3);
+			csp_pll_set_nul(SYSCON, 35);
 			csp_pll_set_ckp_div(SYSCON, 1);
 			csp_pll_clk_enable(SYSCON, ENABLE);
 			csi_pll_enable();
 			break;
 		case(SRC_ESOSC):
- 			csi_pin_set_mux(PC14, PC14_SXIN);
-			csi_pin_set_mux(PC15, PC15_SXOUT);   // Config pins before use ESOSC 
+ 		//	csi_pin_set_mux(PC14, PC14_SXIN);
+		//	csi_pin_set_mux(PC15, PC15_SXOUT);   // Config pins before use ESOSC 
 			csi_esosc_enable(wFreq);
 			byFlashLp = 1;
 			break;
 		default: 
 			break;
 	}
-	
-	csp_set_sdiv(SYSCON, tClkConfig.eSdiv);
+	IFC->CEDR = IFC_CLKEN;
+	if (wTargetSclk > 80000000) {
+		IFC->MR = (IFC->MR & (~PF_SPEED_MSK) & (~PF_WAIT_MSK)) | HIGH_SPEED | PF_WAIT4;
+	}
+	else if(wTargetSclk > 64000000) {
+		IFC->MR = (IFC->MR & (~PF_SPEED_MSK) & (~PF_WAIT_MSK)) | HIGH_SPEED | PF_WAIT3;
+	}
+	else if(wTargetSclk > 48000000) {
+		IFC->MR = (IFC->MR & (~PF_SPEED_MSK) & (~PF_WAIT_MSK)) | HIGH_SPEED | PF_WAIT2;
+	}
+	else if(wTargetSclk > 16000000) {
+		IFC->MR = (IFC->MR & (~PF_SPEED_MSK) & (~PF_WAIT_MSK)) | HIGH_SPEED | PF_WAIT1;
+	}
+	else if(wTargetSclk > 8000000) {
+		IFC->MR = (IFC->MR & (~PF_SPEED_MSK) & (~PF_WAIT_MSK)) | HIGH_SPEED | PF_WAIT0;
+	}
+	else{
+		IFC->MR = (IFC->MR & (~PF_SPEED_MSK) & (~PF_WAIT_MSK)) | LOW_SPEED | PF_WAIT0;
+	}
+	csp_set_sdiv(SYSCON, tClkCfg.eSdiv);
 	csp_set_clksrc(SYSCON, eSrc);
+	
 	
 	csp_eflash_lpmd_enable(SYSCON, (bool)byFlashLp);
 	
-	csp_set_pdiv(SYSCON, tClkConfig.ePdiv);
+	csp_set_pdiv(SYSCON, tClkCfg.ePdiv);
 	
 	//update wSclk and wPclk in tClkConfig
-	tClkConfig.wSclk = wHFreq;
-	tClkConfig.wPclk = tClkConfig.wSclk/(0x1<<tClkConfig.ePdiv);
+	tClkConfig.wSclk = wTargetSclk;
+	tClkConfig.wPclk = tClkConfig.wSclk/(0x1<<tClkCfg.ePdiv);
 	return ret;
 }
 
