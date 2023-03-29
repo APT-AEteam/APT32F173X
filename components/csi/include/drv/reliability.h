@@ -47,6 +47,10 @@ typedef enum {
 	LVD_INTFR
 }csi_lvd_pol_e;
 
+#define AUTOTRIM_KEY_UREG   (*(unsigned int *)(0x400111FC)) 
+#define AUTOTRIM_TRIM_UREG  (*(unsigned int *)(0x40011204))
+#define AUTOTRIM_KEY         0x00006996 
+
 /**
   \brief       lvd  int enable  
   \param       ePol      lvd falling/rising/both 
@@ -301,5 +305,13 @@ void csi_swd_lock(void);
 */
 void csi_swd_unlock(void);
 
+/** \brief cmos auto trim
+ * 
+ *  
+ * 
+ *  \param none
+ *  \return csi_error_t.
+ */
+csi_error_t csi_cmos_autotrim(void);
 
 #endif /* _DRV_RLBLTY_H_ */

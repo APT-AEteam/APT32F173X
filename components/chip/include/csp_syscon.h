@@ -609,6 +609,16 @@ typedef enum{
 #define SWFC_EV_MSK(n)  (0x1 << (n))
 
 
+#define CMRTRIM_VULUE_MSK             (0x1f)  
+#define CMRTRIML_VULUE_POS            (5) 
+#define CMRTRIML_VULUE_MSK            (0x1f << CMRTRIML_VULUE_POS)  
+
+#define CMRTRIM_CTL_POS               (10)
+#define CMRTRIM_CTL_MSK               (1 << 10)
+#define CMRTRIML_CTL_POS              (11)
+#define CMRTRIML_CTL_MSK              (1 << 11)
+
+
 ///API to access setup of SYSCON
 static inline uint32_t csp_get_ckst(csp_syscon_t *ptSysconBase)
 {
