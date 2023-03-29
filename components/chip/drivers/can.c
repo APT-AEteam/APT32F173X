@@ -19,17 +19,34 @@
 /* Private macro-----------------------------------------------------------*/
 /* externs function--------------------------------------------------------*/
 /* externs variablesr------------------------------------------------------*/
-/* Private variablesr------------------------------------------------------*/
 extern 	csi_can_bittime_t  tBitTime[];
 
-//const csi_can_bittime_t  tBitTime[] = {
-//	//pclk = 6MHz
-//	//Baudrate			SyncJump	PhaseSeg1	PhaseSeg2	BaudDiv
-//	{CAN_BDR_200K, 		1, 			3,			4,			2		},			//Tq num = 10, T_bit = 5us	
-//	{CAN_BDR_250K, 		1, 			4,			5,			1		},			//Tq num = 12, T_bit = 4us
-//	{CAN_BDR_500K, 		1, 			4,			5,			0		},			//Tq num = 12, T_bit = 2us
-//	{0, 				0, 			0,			0,			0		},				
-//};
+/* Private variablesr------------------------------------------------------*/
+csi_can_trans_t 	g_tCanTran;	
+
+static uint32_t s_wCanStaMsg	= 0;			//Status Interrupt Msg
+static uint32_t s_wCanChnlMsg	= 0;			//Source Channel Interrupt Msg
+
+/** \brief get can bit time config
+ * 
+ *  \param[in] eBaudRate: can transfer baud rate
+ *  \return pointer of can bit time structure
+ */ 
+static uint8_t apt_can_post_msg(uint32_t wMsg, csi_can_msg_mode_e eMsgMode)
+{
+	switch(eMsgMode)
+	{
+		case CAN_MSG_STATUS:
+			s_wCanStaMsg |= wMsg;			//Status Msg
+			break;
+		case CAN_MSG_SOURCE:
+			s_wCanChnlMsg |= wMsg;			//Source Msg
+			break;
+		default:
+			return false;
+	}
+	return true;
+}
 
 /** \brief get can bit time config
  * 
@@ -59,9 +76,10 @@ static csi_can_bittime_t *apt_can_get_bittime(csi_can_baudRate_e eBaudRate)
  */ 
 __attribute__((weak)) void can_irqhandler(csp_can_t *ptCanBase)
 {
-	volatile uint16_t hwMcrVal = 0x00;
-	volatile uint16_t hwIntNum = csp_can_get_hpir(ptCanBase);			//get interrupt pointer							
-	volatile uint32_t wData[2] = {0x00 ,0x00};
+	uint8_t byRecvPos	= 0;
+	volatile uint32_t wIrVal  = 0;
+	volatile uint32_t wStatus = 0;
+	volatile uint16_t hwIntNum = csp_can_get_hpir(ptCanBase);		//get interrupt pointer							
 	
 	switch(hwIntNum)		//receive handle
 	{
@@ -69,104 +87,124 @@ __attribute__((weak)) void can_irqhandler(csp_can_t *ptCanBase)
 			break;
 		case 0x8000:		//status change interrupt handle
 			//
-			if(csp_can_get_sr(ptCanBase) & CAN_ERWARNTR_INT)		//error passive warning transition interrupt
+			wStatus = csp_can_get_sr(ptCanBase) & CAN_MSG_STATUS_ALL;
+			apt_can_post_msg(wStatus, 0);
+			
+			if(wStatus & CAN_ERWARNTR_INT)					//error passive warning transition interrupt
 			{
 				nop;
 				csp_can_clr_isr(ptCanBase, CAN_ERWARNTR_INT);	
 			}
 			//
-			if(csp_can_get_sr(ptCanBase) & CAN_ERPASSTR_INT)		//error passive transition interrupt
+			if(wStatus & CAN_ERPASSTR_INT)					//error passive transition interrupt
 			{
 				nop;
 				csp_can_clr_isr(ptCanBase, CAN_ERPASSTR_INT);
 			}
 			//
-			if(csp_can_get_sr(ptCanBase) & CAN_BUSOFFTR_INT)		//bus off transition interrupt
+			if(wStatus & CAN_BUSOFFTR_INT)					//bus off transition interrupt
 			{
 				nop;
 				csp_can_clr_isr(ptCanBase, CAN_BUSOFFTR_INT);
 			}
 			//
-			if(csp_can_get_sr(ptCanBase) & CAN_ACTVT_INT)			//activity interrupt
+			if(wStatus & CAN_ACTVT_INT)						//activity interrupt
 			{
 				nop;
 				csp_can_clr_isr(ptCanBase, CAN_ACTVT_INT);
 			}
 			//
-			if(csp_can_get_sr(ptCanBase) & CAN_RXOK_INT)			//successfully received a message interrupt
+			if(wStatus & CAN_RXOK_INT)						//successfully received a message interrupt
 			{
 				nop;
 				csp_can_clr_isr(ptCanBase, CAN_RXOK_INT);
 			}
 			//
-			if(csp_can_get_sr(ptCanBase) & CAN_TXOK_INT)			//successfully transmit a message interrupt.
+			if(wStatus & CAN_TXOK_INT)						//successfully transmit a message interrupt.
 			{
 				nop;
 				csp_can_clr_isr(ptCanBase, CAN_TXOK_INT);
 			}
 			//
-			if(csp_can_get_sr(ptCanBase) & CAN_STUFF_INT)			//stuff error interrupt
+			if(wStatus & CAN_STUFF_INT)						//stuff error interrupt
 			{
 				nop;
 				csp_can_clr_isr(ptCanBase, CAN_STUFF_INT);
 			}
 			//
-			if(csp_can_get_sr(ptCanBase) & CAN_FORM_INT)			//form error interrupt
+			if(wStatus & CAN_FORM_INT)						//form error interrupt
 			{
 				nop;
 				csp_can_clr_isr(ptCanBase, CAN_FORM_INT);
 			}
 			//
-			if(csp_can_get_sr(ptCanBase) & CAN_ACK_INT)				//acknowledge error interrupt.
+			if(wStatus & CAN_ACK_INT)						//acknowledge error interrupt.
 			{
 				nop;
 				csp_can_clr_isr(ptCanBase, CAN_ACK_INT);
 			}
 			//
-			if(csp_can_get_sr(ptCanBase) & CAN_BIT1_INT)			//bit to one error interrupt
+			if(wStatus & CAN_BIT1_INT)						//bit to one error interrupt
 			{
 				nop;
 				csp_can_clr_isr(ptCanBase, CAN_BIT1_INT);
 			}
 			//
-			if(csp_can_get_sr(ptCanBase) & CAN_BIT0_INT)			//bit to zero error interrupt
+			if(wStatus & CAN_BIT0_INT)						//bit to zero error interrupt
 			{
 				nop;
 				csp_can_clr_isr(ptCanBase, CAN_BIT0_INT);
 			}
 			//
-			if(csp_can_get_sr(ptCanBase) & CAN_CRC_INT)				//CRC error interrupt
+			if(wStatus & CAN_CRC_INT)						//CRC error interrupt
 			{
 				nop;
 				csp_can_clr_isr(ptCanBase, CAN_CRC_INT);
 			}
 			
 			break;
-		default:			//message channel handle
-		
-			//while(csp_can_get_sr(ptCanBase) & CAN_BUSY1_S);											//If1 Busy?	
+		default:			
+			//message channel handle
 			csp_can_set_tmr(ptCanBase, hwIntNum, 1, CAN_AMCR_MSK | CAN_CLRIT_MSK | CAN_TRND_MSK);	//Write If1 command request, clear NAWDATA and ITPND flag
 			while(csp_can_get_sr(ptCanBase) & CAN_BUSY1_S);											//If1 Busy?	
-			hwMcrVal = csp_can_get_mcr(ptCanBase);													//Read If1 message control reg, Read first and clean up NAWDATA and ITPND
+			wStatus = csp_can_get_mcr(ptCanBase);													//Read If1 message control reg, Read first and clean up NAWDATA and ITPND
 			
-			if(hwMcrVal & CAN_NEWDAT_MSK)		//NEWDAT flag = 1 ? receive msg
+			//receive msg
+			if(wStatus & CAN_NEWDAT_MSK)															//NEWDAT flag == 1 receive msg
 			{
-				wData[0] = csi_can_get_ifx(ptCanBase, hwIntNum, CAN_IFX_DAR);			//DATA A
-				wData[1] = csi_can_get_ifx(ptCanBase, hwIntNum, CAN_IFX_DBR);			//DATA B
+				if(g_tCanTran.ptCanRecv)
+				{
 				
-				hwMcrVal = csi_can_get_ifx(ptCanBase, hwIntNum, CAN_IFX_MCR);			//MCR
-				hwMcrVal = csi_can_get_ifx(ptCanBase, hwIntNum, CAN_IFX_MSKR);			//MSKR
-				hwMcrVal = csi_can_get_ifx(ptCanBase, hwIntNum, CAN_IFX_IR);			//IR
-				nop;
-
+					byRecvPos = hwIntNum - g_tCanTran.byStrChnl;
+					if((g_tCanTran.ptCanRecv + byRecvPos)->wRecvId & (0x01ul << 31))
+					{
+						if(byRecvPos < (g_tCanTran.byChTolNum -1))
+						{
+							byRecvPos++;
+							apt_can_post_msg((0x01ul << hwIntNum), 1);
+						}
+						else
+							return;
+					}
+					else
+						apt_can_post_msg((0x01ul << (hwIntNum - 1)), 1);
+					
+					
+					wIrVal = csi_can_get_ifx(ptCanBase, hwIntNum, CAN_IFX_IR);
+					if(wIrVal & CAN_XTD_MSK)														
+						wIrVal &= (CAN_EXTID_MSK | CAN_EXTID_MSK);									//extid
+					else
+						wIrVal = (wIrVal & CAN_BASEID_MSK) >> 18;									//stdid
+					
+					(g_tCanTran.ptCanRecv + byRecvPos)->wRecvId =	wIrVal | (0x01ul << 31);									//ID
+					(g_tCanTran.ptCanRecv + byRecvPos)->wRecvData[0] = csi_can_get_ifx(ptCanBase, hwIntNum, CAN_IFX_DAR);		//DATA_A
+					(g_tCanTran.ptCanRecv + byRecvPos)->wRecvData[1] = csi_can_get_ifx(ptCanBase, hwIntNum, CAN_IFX_DBR);		//DATA_B
+					(g_tCanTran.ptCanRecv + byRecvPos)->byDataLen = wStatus & 0x0f;												//DATA LEN
+					(g_tCanTran.ptCanRecv + byRecvPos)->byChnlNum = hwIntNum;													//Channel Num
+				}
 			}
-			
-			//csp_can_clr_isr(ptCanBase, CAN_RXOK_INT);		//clear RXOK flag
-			nop;
 			break;
-		
 	}
-	
 }
 /** \brief initialize can work parameter structure
  * 
@@ -287,6 +325,20 @@ void csi_can_rx_config(csp_can_t *ptCanBase, csi_can_chnl_e eChNum, csi_can_rx_c
 	while(csp_can_get_sr(ptCanBase) & CAN_BUSY0_S);
 	csp_can_set_tmr(ptCanBase, eChNum, CAN_IF0, CAN_TMR_RX_NORMAL);
 }
+
+/** \brief initialize can rx parameter structure
+ * 
+ *  \param[in] ptCanRecv: pointer of can receive structure
+ *  \param[in] eStrChNum: start channel of receive message
+ *  \param[in] byChTolNum: total number of channel
+ *  \return none
+ */ 
+void csi_can_recv_init(csi_can_recv_t *ptCanRecv, csi_can_chnl_e eStrChNum, uint8_t byChTolNum)
+{
+	g_tCanTran.ptCanRecv = ptCanRecv;
+	g_tCanTran.byStrChnl = eStrChNum;
+	g_tCanTran.byChTolNum = byChTolNum;
+}
 /** \brief can message status interrupt enable
  * 
  *  \param[in] ptCanBase: pointer of can register structure
@@ -326,10 +378,10 @@ void csi_can_chnl_int_enable(csp_can_t *ptCanBase, csi_can_chnl_e eChNum, bool b
 			csi_irq_disable(ptCanBase);
 	}
 }
-/** \brief can msg channel send enable
+/** \brief can message channel send 
  * 
  *  \param[in] ptCanBase: pointer of can register structure
- *  \param[in] eChNum: number of message
+ *  \param[in] eChNum: number of message channel
  *  \param[in] eTxIe: TX interrupt ITPAND SET enable
  *  \param[in] byDataLen: data length of message
  *  \return none
@@ -347,6 +399,35 @@ void csi_can_chnl_send(csp_can_t *ptCanBase, csi_can_chnl_e eChNum, uint8_t byDa
 	while(csp_can_get_sr(ptCanBase) & CAN_BUSY0_S);
 	csp_can_set_tmr(ptCanBase, eChNum, CAN_IF0, CAN_DIR_WRITE | CAN_AMCR_MSK);
 }
+
+/** \brief can read message channel send enable
+ * 
+ *  \param[in] ptCanBase: pointer of can register structure
+ *  \param[in] pRecvBuf: pointer of  receive buffer
+ *  \param[in] eChNum: number of message channel
+ *  \return message length
+ */
+uint8_t csi_can_chnl_read(csp_can_t *ptCanBase, uint8_t *pRecvBuf, csi_can_chnl_e eChNum)
+{
+	uint8_t byBufNum = eChNum - g_tCanTran.byStrChnl;						//buf number
+	uint8_t byMsgLen = 4 + g_tCanTran.ptCanRecv[byBufNum].byDataLen;	
+	uint8_t byRet = 0;
+	
+	csi_irq_disable(ptCanBase);
+	if(g_tCanTran.ptCanRecv[byBufNum].wRecvId & (0x01ul << 31))		
+	{
+		g_tCanTran.ptCanRecv[byBufNum].wRecvId &= ~(0x01ul << 31);
+		pRecvBuf[0] = g_tCanTran.ptCanRecv[byBufNum].byDataLen;
+		memcpy((pRecvBuf+1), (uint8_t *)&g_tCanTran.ptCanRecv[byBufNum].wRecvId, byMsgLen);
+		s_wCanChnlMsg &= ~(0x01ul << (eChNum - 1));							//clear receive channel msg
+		
+		byRet =  g_tCanTran.ptCanRecv[byBufNum].byDataLen;
+	}
+	csi_irq_enable(ptCanBase);
+	
+	return byRet;
+}
+
 /** \brief  can transfer manage register control 
  * 
  *  \param[in] ptCanBase: pointer of can register structure
@@ -532,7 +613,7 @@ uint32_t csi_can_get_ifx(csp_can_t *ptCanBase, csi_can_chnl_e eChNum, csi_can_if
 			csp_can_set_tmr(ptCanBase, eChNum, 1, CAN_AIR_MSK);
 			while(csp_can_get_sr(ptCanBase) & CAN_BUSY1_S);
 			return csp_can_get_ir(ptCanBase);
-		case CAN_IFX_MCR:			//mask
+		case CAN_IFX_MCR:			//mcr
 			csp_can_set_tmr(ptCanBase, eChNum, 1, CAN_AMCR_MSK);
 			while(csp_can_get_sr(ptCanBase) & CAN_BUSY1_S);
 			nop;nop;
@@ -617,3 +698,22 @@ uint32_t csi_can_get_clr_recv_flg(csp_can_t *ptCanBase, csi_can_chnl_e eChNum)
 	return csp_can_get_mcr(ptCanBase);	
 }
 
+/** \brief  get msg of receive channel receive message
+ * 
+ *  \param[in] none
+ *  \return message channel mask
+ */
+uint32_t csi_can_get_recv_msg(void)
+{
+	return s_wCanChnlMsg;
+}
+
+/** \brief  clr msg of can receive message channel 
+ * 
+ *  \param[in] eChNum: number of channel 
+ *  \return none
+ */
+void csi_can_clr_recv_msg(csi_can_chnl_e eChNum)
+{
+	s_wCanChnlMsg &= (0x01ul << (eChNum -1));
+}

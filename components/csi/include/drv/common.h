@@ -31,6 +31,8 @@ extern "C" {
 #define FALSE 		0
 #define OK  		0
 
+//struct alignment of one byte; 1/2/4 = one/two/four 
+//#pragma pack(1)  									
 
 #ifdef CONFIG_DEBUG_MODE
 #define CSI_ASSERT(expr)                            \
