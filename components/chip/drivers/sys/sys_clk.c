@@ -105,13 +105,41 @@ csi_error_t csi_sysclk_config(csi_clk_config_t tClkCfg)
 			break;
 		case (SRC_PLL):	
 			csi_pll_disable();
-			csi_hfosc_enable(1);           // HFOSC_24M_VALUE
-			csp_pll_clk_sel(SYSCON, PLL_CLK_SEL_HFOSC);
-			csp_pll_set_div_m(SYSCON, 3);
-			csp_pll_set_nul(SYSCON, 35);
-			csp_pll_set_ckp_div(SYSCON, 1);
+			if(tPllClkConfig.eClkSel == PLL_SEL_EMOSC_24M)
+			{
+			//	csi_pin_set_mux(PD0, PD0_XIN);
+			//	csi_pin_set_mux(PD1, PD1_XOUT);
+				csi_emosc_enable(EMOSC_VALUE);         //EMOSC_VALUE
+				csp_pll_clk_sel(SYSCON, PLL_CLK_SEL_EMOSC);				
+			}
+			else
+			{
+				switch(tPllClkConfig.eClkSel)
+				{
+					case (PLL_SEL_HFOSC_48M):	byFreqIdx = 0;
+					break;
+					case (PLL_SEL_HFOSC_24M):  	byFreqIdx = 1;
+					break;
+					case (PLL_SEL_HFOSC_12M):  	byFreqIdx = 2;
+					break;
+					case (PLL_SEL_HHFOSC_24M):	byFreqIdx = 0;
+					break;
+					case (PLL_SEL_HHFOSC_12M):  byFreqIdx = 1;
+					break;
+					case (PLL_SEL_HHFOSC_6M):   byFreqIdx = 2;
+					break;
+					default:
+					break;
+				}
+				csi_hfosc_enable(byFreqIdx);   
+				csp_pll_clk_sel(SYSCON, PLL_CLK_SEL_HFOSC);
+				
+			}
+			csp_pll_set_div_m(SYSCON, tPllClkConfig.byDivM);
+			csp_pll_set_nul(SYSCON, tPllClkConfig.byNul);
+			csp_pll_set_ckp_div(SYSCON, tPllClkConfig.byCkp_Div);
 			csp_pll_clk_enable(SYSCON, ENABLE);
-			csi_pll_enable();
+			csi_pll_enable();	
 			break;
 		case(SRC_ESOSC):
  		//	csi_pin_set_mux(PC14, PC14_SXIN);

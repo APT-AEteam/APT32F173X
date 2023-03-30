@@ -90,6 +90,24 @@ typedef struct {
 
 extern csi_clk_config_t tClkConfig;
 
+typedef enum{
+	PLL_SEL_HFOSC_48M,
+	PLL_SEL_HFOSC_24M,
+	PLL_SEL_HFOSC_12M,
+	PLL_SEL_HHFOSC_24M,	
+	PLL_SEL_HHFOSC_12M,	
+	PLL_SEL_HHFOSC_6M,	
+	PLL_SEL_EMOSC_24M
+}pll_sel_e;
+
+typedef struct {
+	pll_sel_e	    eClkSel;	//clock frequency
+	uint8_t         byDivM;
+	uint8_t         byNul;
+	uint8_t         byCkp_Div;
+}csi_pll_clk_config_t;
+
+extern csi_pll_clk_config_t tPllClkConfig;
 //typedef struct {
 //    cclk_src_e	eSysClkSrc;      /* select sysclk source clock */
 //	uint32_t 	wOscFreq;        /* select frequence */

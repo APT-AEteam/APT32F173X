@@ -32,6 +32,17 @@ csi_clk_config_t tClkConfig =
 	//{SRC_IMOSC, IMOSC_4M_VALUE, SCLK_DIV2, PCLK_DIV1,5556000, 5556000};
 	//{SRC_ESOSC, ESOSC_VALUE, SCLK_DIV8, PCLK_DIV1,5556000, 5556000};
 
+//PLLCLK = 24 /(tPllClkConfig.byDivM+1) * tPllClkConfig.byNul / (tPllClkConfig.byCkp_Div+1)
+csi_pll_clk_config_t tPllClkConfig = 
+
+	//{PLL_SEL_HFOSC_48M,     7, 35, 1};   
+	//{PLL_SEL_HFOSC_24M,   3, 35, 1};    
+	//{PLL_SEL_HFOSC_12M,   1, 35, 1};  
+	{PLL_SEL_HHFOSC_24M, 3, 35, 1};
+	//{PLL_SEL_HHFOSC_12M, 1, 35, 1};
+	//{PLL_SEL_HHFOSC_6M,  1, 70, 1};
+	//{PLL_SEL_EMOSC_24M,   3, 35, 1};	
+	
 /// can bit timer parameters config, Standard baud rate
 const csi_can_bittime_t  tBitTime[] = {
 	
