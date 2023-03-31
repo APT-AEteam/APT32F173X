@@ -556,7 +556,7 @@ void csi_lpt_swsync_enable(csp_lpt_t *ptLptBase, bool bEnable)
  */
 void csi_lpt_soft_evtrg(csp_lpt_t *ptLptBase)
 {
-	csi_clk_enable(ptLptBase);										
+	csi_clk_enable((uint32_t *)ptLptBase);										
 	csp_lpt_trg_enable(ptLptBase, ENABLE);
 	csp_lpt_evswf_en(ptLptBase);
 }
