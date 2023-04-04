@@ -57,9 +57,8 @@ void system_init(void)		//__attribute__((weak))
 	irq_vectors_init();
 #endif
 	
-//	csi_reliability_init();
 	csi_iwdt_close();				//close iwdt
-	csi_sysclk_config();			//sysclk config	
+	csi_sysclk_config(tClkConfig);			//sysclk config	
 	csi_calc_clk_freq();			//calculate(updata) sclk and pclk
 	csi_tick_init();
 	

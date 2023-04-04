@@ -1,7 +1,1 @@
-/demo/.cdk/*.*
-*.cdkproj
-*.bak
-*.tmp
-/apt32f171x/*.cdkws
-/apt32f171x/src/*.*
-/apt32f171x/package.yaml
+

@@ -99,7 +99,7 @@ void rtc_timer_demo(void);
 void rtc_trgev_demo(void);
 
 //low power demo
-void lp_exi_wakeup_demo(void);
+void lp_lpt_wakeup_deepsleep_demo(void);
 void lp_wakeup_demo(void);
 
 //iic demo

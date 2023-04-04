@@ -420,3 +420,29 @@ void csi_swd_unlock(void)
 {
 	csp_set_swd_unlock(SYSCON);
 }
+
+
+/** \brief cmos auto trim
+ * 
+ *  
+ * 
+ *  \param none
+ *  \return csi_error_t.
+ */
+csi_error_t csi_cmos_autotrim(void)
+{
+	uint32_t wTrimValue;
+	SYSCON->UREG3 = CMRTRIM_CTL_MSK;
+	while((SYSCON->UREG3 & CMRTRIM_CTL_MSK) == CMRTRIM_CTL_MSK);
+	wTrimValue = SYSCON->UREG3 & CMRTRIM_VULUE_MSK;
+	AUTOTRIM_KEY_UREG = AUTOTRIM_KEY;
+	AUTOTRIM_TRIM_UREG = (AUTOTRIM_TRIM_UREG &0xff00ffff)|(wTrimValue<<16);
+	
+	SYSCON->UREG3 = CMRTRIML_CTL_MSK;
+	while((SYSCON->UREG3 & CMRTRIML_CTL_MSK) == CMRTRIML_CTL_MSK);
+	wTrimValue = ((SYSCON->UREG3 & CMRTRIML_VULUE_MSK)>> CMRTRIML_VULUE_POS);
+	AUTOTRIM_KEY_UREG = AUTOTRIM_KEY;
+	AUTOTRIM_TRIM_UREG = (AUTOTRIM_TRIM_UREG &0x00ffffff)|(wTrimValue<<24);	
+	
+	return CSP_SUCCESS;
+}

@@ -32,23 +32,34 @@ csi_clk_config_t tClkConfig =
 	//{SRC_IMOSC, IMOSC_4M_VALUE, SCLK_DIV2, PCLK_DIV1,5556000, 5556000};
 	//{SRC_ESOSC, ESOSC_VALUE, SCLK_DIV8, PCLK_DIV1,5556000, 5556000};
 
+//PLLCLK = 24 /(tPllClkConfig.byDivM+1) * tPllClkConfig.byNul / (tPllClkConfig.byCkp_Div+1)
+csi_pll_clk_config_t tPllClkConfig = 
+
+	//{PLL_SEL_HFOSC_48M,     7, 35, 1};   
+	//{PLL_SEL_HFOSC_24M,   3, 35, 1};    
+	//{PLL_SEL_HFOSC_12M,   1, 35, 1};  
+	{PLL_SEL_HHFOSC_24M, 3, 35, 1};
+	//{PLL_SEL_HHFOSC_12M, 1, 35, 1};
+	//{PLL_SEL_HHFOSC_6M,  1, 70, 1};
+	//{PLL_SEL_EMOSC_24M,   3, 35, 1};	
+	
 /// can bit timer parameters config, Standard baud rate
 const csi_can_bittime_t  tBitTime[] = {
 	
 	
 	//CAN clk source = pclk = 6MHz
 	//Baudrate			SyncJump	PhaseSeg1	PhaseSeg2	BaudDiv
-	{CAN_BDR_200K, 		1, 			3,			4,			2		},			//Tq num = 10, T_bit = 5us	
-	{CAN_BDR_250K, 		1, 			4,			5,			1		},			//Tq num = 12, T_bit = 4us
-	{CAN_BDR_500K, 		2, 			4,			5,			0		},			//Tq num = 12, T_bit = 2us
-	{0, 				0, 			0,			0,			0		},	
+//	{CAN_BDR_200K, 		1, 			3,			4,			2		},			//Tq num = 10, T_bit = 5us	
+//	{CAN_BDR_250K, 		1, 			4,			5,			1		},			//Tq num = 12, T_bit = 4us
+//	{CAN_BDR_500K, 		2, 			4,			5,			0		},			//Tq num = 12, T_bit = 2us
+//	{0, 				0, 			0,			0,			0		},	
 	
-	//CAN clk source = pclk = 32MHz
+	//CAN clk source = pclk = 24MHz
 	//Baudrate			SyncJump	PhaseSeg1	PhaseSeg2	BaudDiv
-//	{CAN_BDR_200K, 		3, 			3,			4,			15		},			//Tq num = 10, T_bit = 5us	
-//	{CAN_BDR_250K, 		2, 			2,			3,			15		},			//Tq num = 12, T_bit = 4us
-//	{CAN_BDR_500K, 		2, 			2,			3,			7		},			//Tq num = 8,  T_bit = 2us
-//	{0, 				0, 			0,			0,			0		},		
+	{CAN_BDR_200K, 		1, 			4,			5,			9		},			//Tq num = 12, T_bit = 5us	
+	{CAN_BDR_250K, 		1, 			4,			5,			7		},			//Tq num = 12, T_bit = 4us
+	{CAN_BDR_500K, 		2, 			2,			3,			5		},			//Tq num = 8,  T_bit = 2us
+	{0, 				0, 			0,			0,			0		},	
 };
 
 /** \brief board initialize config; 

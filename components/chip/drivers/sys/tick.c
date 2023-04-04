@@ -15,6 +15,7 @@
 #include <drv/pin.h>
 #include <drv/uart.h>
 #include <drv/irq.h>
+#include <drv/bt.h>
 
 /* Private macro------------------------------------------------------*/
 #define __WEAK	__attribute__((weak))
@@ -29,37 +30,43 @@ static volatile uint32_t last_time_ms = 0U;
 static volatile uint64_t last_time_us = 0U;
 
 
-static inline unsigned long long apt_coret_get_value(void)
+//static inline unsigned long long apt_coret_get_value(void)
+//{
+//	return  CORETIMER->MTIME;
+//}
+void bt_irqhandler3(csp_bt_t *ptBtBase)
 {
-	return  CORETIMER->MTIME;
+    // ISR content ...
+	volatile uint32_t wMisr = csp_bt_get_isr(ptBtBase);
+	
+	if(wMisr & BT_PEND_INT)					//PEND interrupt
+	{
+		csp_bt_clr_isr(ptBtBase, BT_PEND_INT);			//PA06 toggle	
+	}
+
 }
+
 
 void csi_tick_increase(void)
 {
     csi_tick++;
 }
 
-void tick_irqhandler(void)
-{
-	
-	csi_coret_config(tClkConfig.wSclk / CONFIG_SYSTICK_HZ, CORET_IRQn);
-	csi_tick++;
-}
+
 
 csi_error_t csi_tick_init(void)
 {
     csi_tick = 0U;
 
-    csi_coret_config(tClkConfig.wSclk/ CONFIG_SYSTICK_HZ, CORET_IRQn);
-	csi_vic_set_prio(CORET_IRQn, 0x00);									//0->15: low->high
-    csi_vic_enable_irq((uint32_t)CORET_IRQn);
+	csi_bt_timer_init(BT3, 10000);		//初始化BT3, 定时10ms； BT定时，默认采用PEND中断
+	csi_bt_start(BT3);
 	
     return CSI_OK;
 }
 
 void csi_tick_uninit(void)
 {
-    csi_vic_disable_irq((uint32_t)CORET_IRQn);
+	csi_irq_enable((uint32_t *)BT3);	
 }
 
 uint32_t csi_tick_get(void)
@@ -70,18 +77,12 @@ uint32_t csi_tick_get(void)
 uint32_t csi_tick_get_ms(void)
 {
     uint32_t time;
-	unsigned long long cur;
-	unsigned long long start = apt_coret_get_value();
+	uint16_t cnttm;
 	
     while (1) 
 	{
-		cur = apt_coret_get_value();
-		
-		if(cur > start)
-			time = (csi_tick * (1000U / CONFIG_SYSTICK_HZ)) + ((cur - start) / (soc_get_coret_freq() / 1000U));
-		else
-			time = (csi_tick * (1000U / CONFIG_SYSTICK_HZ)) + ((0xffffffffffffffff - start + cur) / (soc_get_coret_freq() / 1000U));
-			
+		cnttm = (csp_bt_get_cnt(BT3) * (csp_bt_get_pscr(BT3)+1) * 1000) / csi_get_pclk_freq();
+		time = (csi_tick * (1000U / CONFIG_SYSTICK_HZ))+ cnttm;
         if (time >= last_time_ms) 
             break;
     }
@@ -90,81 +91,74 @@ uint32_t csi_tick_get_ms(void)
     return time;
 }
 
-static void _mdelay(void)
+static void _500usdelay(void)
 {
-	unsigned long long start, cur;				
-    uint32_t startl = csi_coret_get_value();
-    uint32_t starth = csi_coret_get_valueh();
-    uint32_t curl, curh;
-    uint32_t cnt = (soc_get_coret_freq() / 1000);
-    start = ((unsigned long long)starth << 32) | startl;
+    uint32_t start = csp_bt_get_cnt(BT3);
+    uint32_t load = csp_bt_get_prdr(BT3);
+    uint32_t cur;
+    volatile  uint32_t cnt = csi_get_pclk_freq() / (csp_bt_get_pscr(BT3)+1) /2000U  ;
 
-    while (1) 
-	{
-        curl = csi_coret_get_value();
-        curh = csi_coret_get_valueh();
-        cur = ((unsigned long long)curh << 32) | curl;
-		if(cur > start)
-		{
-			if((cur - start) >= cnt)
-				break;
-		}
-		else
-		{
-			if((0xffffffffffffffff - start + cur) >= cnt)
-				break;
-		}
-    }
-}
+    while (1) {
+        cur = csp_bt_get_cnt(BT3);
 
-void mdelay(uint32_t ms)
-{
-    if (ms == 0) {
-        return;
-    }
-
-    while (ms--) {
-        _mdelay();
+        if (start <= cur) {
+            if ((cur - start) >= cnt) {
+                break;
+            }
+        } else {
+            if (((load - start) + cur) > cnt) {
+                break;
+            }
+        }
     }
 }
 
 
 void _10udelay(void)
 {
-	unsigned long long start, cur;
-    uint32_t cnt = (soc_get_coret_freq() / 250000);
-	start = apt_coret_get_value();
+    uint32_t start = csp_bt_get_cnt(BT3);
+    uint32_t load  = csp_bt_get_prdr(BT3);
+    uint32_t cnt   = ((long long)csi_get_pclk_freq() /(csp_bt_get_pscr(BT3)+1) / 1000U / 100U);
 
-    while (1) 
-	{
-		cur = apt_coret_get_value();
-       	if(cur > start)
-		{
-			if((cur - start) >= cnt)
-				break;
-		}
-		else
-		{
-			if((0xffffffffffffffff - start + cur) >= cnt)
-				break;
-		}
+    while (1) {
+        uint32_t cur = csp_bt_get_cnt(BT3);
+
+        if (start <= cur) {
+            if ((cur - start) >= cnt) {
+                break;
+            }
+        } else {
+            if (((load - start) + cur) > cnt) {
+                break;
+            }
+        }
     }
 }
-
+/** \brief  delay
+ * 
+ *  \param[in] ms: delay timer,unit: ms 
+ *  \return none
+ */ 
+__WEAK void mdelay(uint32_t ms)
+{
+    while (ms) {
+        ms--;
+        _500usdelay();
+        _500usdelay();
+    }
+}
 /**
- * Ps: At least delay over 10us
+ * Ps: At least delay over 20us
 */
 void udelay(uint32_t us)
 {
-    //us /= 10U;
-	  us /= 10U;
-
+	us /= 10U;
+	
     while (us) {
         us--;
         _10udelay();
     }
 }
-
 /** \brief  delay, imprecise delay timer
  * 
  *  \param[in] t: delay timer; unit: 10us systick = 48M

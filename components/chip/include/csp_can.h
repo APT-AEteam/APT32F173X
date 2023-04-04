@@ -631,32 +631,8 @@ static inline void csp_can_set_bdata(csp_can_t *ptCanBase, uint8_t *pbyData)
 {
 	ptCanBase->IF[0].DBR = (uint32_t)(pbyData[0] | (pbyData[1] << 8) | (pbyData[2] << 16) | (pbyData[3] << 24));
 }
-//static inline void csp_can_set_tmr(csp_can_t *ptCanBase, uint8_t byNum, uint32_t wCmdVal)
-//{
-//	ptCanBase->IF[0].TMR = CAN_NUMBER(byNum) | wCmdVal; 
-//} 
 
-//
-//static inline void csp_can_mskr_config(csp_can_t *ptCanBase, uint8_t byIfx, uint32_t wExtMsk, uint16_t hwStdMsk, can_mmdir_e eMmdir, can_mxtd_e eMxtd)
-//{
-//	ptCanBase->IF[byIfx].MASKR =  CAN_EXTMASK(wExtMsk) | CAN_BASEMASK(hwStdMsk) | (eMmdir << CAN_MMDIR_POS) | (eMxtd << CAN_MXTD_POS);
-//} 
-//static inline void csp_can_set_mskr(csp_can_t *ptCanBase, uint8_t byIfx, uint32_t wValue)
-//{
-//	ptCanBase->IF[byIfx].MASKR = wValue;
-//}
-//static inline void csp_can_ir_config(csp_can_t *ptCanBase, uint8_t byIfx, uint16_t hwExtId, uint16_t hwBaseId, can_mdir_e eMdir, can_xtd_e eXtd, can_msgval_e eMsgVal)
-//{
-//	ptCanBase->IF[byIfx].IR =  CAN_EXTID(hwExtId) | CAN_BASEID(hwBaseId) | (eMdir << CAN_MDIR_POS) | (eXtd << CAN_XTD_POS) | (eMsgVal << CAN_MSGVAL_POS); 
-//} 
-//static inline void csp_can_set_ir(csp_can_t *ptCanBase, uint8_t byIfx, uint32_t wValue)
-//{
-//	ptCanBase->IF[byIfx].MASKR = wValue;
-//}
-//static inline void csp_can_set_mcr(csp_can_t *ptCanBase, uint8_t byIfx, uint32_t wValue)
-//{
-//	ptCanBase->IF[byIfx].MCR = wValue;
-//} 
+ 
 static inline void csp_can_mskr_config(csp_can_t *ptCanBase, uint32_t wExtMsk, uint16_t hwStdMsk, can_mmdir_e eMmdir, can_mxtd_e eMxtd)
 {
 	ptCanBase->IF[0].MASKR =  CAN_EXTMASK(wExtMsk) | CAN_BASEMASK(hwStdMsk) | (eMmdir << CAN_MMDIR_POS) | (eMxtd << CAN_MXTD_POS);

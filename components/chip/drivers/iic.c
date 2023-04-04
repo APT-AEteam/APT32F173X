@@ -523,7 +523,6 @@ csi_error_t csi_iic_read_nbyte(csp_i2c_t *ptIicBase,uint32_t wDevAddr, uint32_t 
  */ 
 csi_error_t csi_iic_read_nbyte_dma(csp_i2c_t *ptIicBase,uint32_t wDevAddr, uint32_t wReadAdds, uint8_t byReadAddrNumByte,volatile uint8_t *pbyIicData,uint32_t wNumByteRead)
 {
-	uint16_t hwEerorCont=0;
 	uint32_t i;
 	uint8_t byreadnum = 1;
 	uint8_t byReadAdds = 0;

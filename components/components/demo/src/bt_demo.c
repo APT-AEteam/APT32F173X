@@ -30,10 +30,10 @@ int bt_timer_demo(void)
 {
 	int iRet = 0;
 	
-	csi_pin_set_mux(PA6, PA6_OUTPUT);	//PA6 output ，并在BT中断里面翻转IO
-	csi_pin_set_high(PA6);				//PA6 output high;
+//	csi_pin_set_mux(PA6, PA6_OUTPUT);	//PA6 output ，并在BT中断里面翻转IO
+//	csi_pin_set_high(PA6);				//PA6 output high;
 	
-	csi_bt_timer_init(BT0, 1000);		//初始化BT0:BT0定时，默认采用PEND中断
+	csi_bt_timer_init(BT0, 1000);		//初始化BT0:BT0定时1000 us，默认采用PEND中断
 	csi_bt_start(BT0);					//启动BT0定时器
 	
 	while(1)
@@ -93,8 +93,8 @@ int bt_sync_trg_start_demo(void)
 	csi_pin_irq_enable(PB1,ENABLE);										//PB1 中断使能	
 	csi_exi_set_evtrg(1, TRGSRC_EXI1, 0);						        //EXI1 触发EXI_TRGOUT0
 	
-	csi_pin_set_mux(PA6, PA6_OUTPUT);									//PA6 output ，并在BT0中断里面翻转IO
-	csi_pin_set_high(PA6);												//PA6 output high;		
+//	csi_pin_set_mux(PA6, PA6_OUTPUT);									//PA6 output ，并在BT0中断里面翻转IO
+//	csi_pin_set_high(PA6);												//PA6 output high;		
 	
 	csi_bt_timer_init(BT0,1000);					//BT0 定时
 	csi_bt_set_sync(BT0, BT_TRGIN_SYNCEN0, BT_TRG_CONTINU, BT_TRG_SYCAREARM);	//外部触发bt0启动(SYNCIN0)
@@ -147,8 +147,8 @@ int bt_sync_trg_count_demo(void)
 	csi_pin_irq_enable(PB1,ENABLE);				//PB1 中断使能
 	csi_exi_set_evtrg(1, TRGSRC_EXI1, 1);					//EXI1(PB1) 触发EXI_TRGOUT1(PB1用EXI1触发输出)
 	
-	csi_pin_set_mux(PA6, PA6_OUTPUT);		                //PA6 output ，并在BT中断里面翻转IO
-	csi_pin_set_high(PA6);					                //PA6 output high;		
+//	csi_pin_set_mux(PA6, PA6_OUTPUT);		                //PA6 output ，并在BT中断里面翻转IO
+//	csi_pin_set_high(PA6);					                //PA6 output high;		
 
 	//BT1 初始化
 	csi_bt_timer_init(BT1,10);								//BT1定时
@@ -161,9 +161,9 @@ int bt_sync_trg_count_demo(void)
 	tEtbConfig.byTrgMode = ETB_HARDWARE_TRG;
 	
 	csi_etb_init();
-	ch = csi_etb_ch_alloc(tEtbConfig.byChType);	    //自动获取空闲通道号,ch >= 0 获取成功
+	ch = csi_etb_ch_alloc(tEtbConfig.byChType);	            //自动获取空闲通道号,ch >= 0 获取成功
 	if(ch < 0)
-		return -1;								    //ch < 0,则获取通道号失败
+		return -1;								   		    //ch < 0,则获取通道号失败
 	iRet = csi_etb_ch_config(ch, &tEtbConfig);
 	
 	// BT0 初始化
@@ -200,12 +200,12 @@ int bt_sync_trg_stop_demo(void)
 	csi_pin_set_mux(PB1, PB1_INPUT);									//PB1 配置为输入
 	csi_pin_pull_mode(PB1, GPIO_PULLUP);								//PB1 上拉
 	csi_pin_irq_mode(PB1, EXI_GRP1, GPIO_IRQ_FALLING_EDGE);			    //PB1 下降沿产生中断，选择中断组1
-	csi_pin_irq_enable(PB1,ENABLE);							//PB1 中断使能	
+	csi_pin_irq_enable(PB1,ENABLE);							            //PB1 中断使能	
 	csi_exi_set_evtrg(1, TRGSRC_EXI1, 0);						        //EXI1 触发EXI_TRGOUT0
 	
 	
-	csi_pin_set_mux(PA6, PA6_OUTPUT);		//PA6 output ，并在BT中断里面翻转IO
-	csi_pin_set_high(PA6);					//PA6 output high;		
+//	csi_pin_set_mux(PA6, PA6_OUTPUT);		//PA6 output ，并在BT中断里面翻转IO
+//	csi_pin_set_high(PA6);					//PA6 output high;		
 	
 	csi_bt_timer_init(BT0,1000);									//BT0 定时
 	csi_bt_set_sync(BT0, BT_TRGIN_SYNCEN1, BT_TRG_ONCE, BT_TRG_AUTOAREARM);	//外部触发BT0启动(SYNCIN1)，单次模式
@@ -256,8 +256,8 @@ int bt_trgev_demo(void)
 	csi_etb_config_t tEtbConfig;				               		//ETB 参数配置结构体		
 	csi_bt_pwm_config_t tPwmCfg;									//BT PWM输出参数初始化配置结构体
 	
-	csi_pin_set_mux(PA6, PA6_OUTPUT);								//PA6 output ，并在BT中断里面翻转IO
-	csi_pin_set_low(PA6);											//PA6 output high;	
+//	csi_pin_set_mux(PA6, PA6_OUTPUT);								//PA6 output ，并在BT中断里面翻转IO
+//	csi_pin_set_low(PA6);											//PA6 output high;	
 
 	csi_bt_timer_init(BT0,10000);									//BT0 定时
 	csi_bt_set_evtrg(BT0, BT_TRGSRC_PEND,ENABLE);					//BT0 PEND事件触发输出
@@ -297,4 +297,86 @@ int bt_trgev_demo(void)
 		}
 	}
 	return iRet;
+}
+
+/** \brief bt_irqhandler: BT0 中断处理示例函数
+ *  \param[in] csp_bt_t
+ *  \return error code
+ */
+__attribute__((weak)) void bt_irqhandler0(csp_bt_t *ptBtBase)
+{
+    // ISR content ...
+	volatile uint32_t wMisr = csp_bt_get_isr(ptBtBase);
+	
+	if(wMisr & BT_PEND_INT)					//PEND interrupt
+	{
+		csp_bt_clr_isr(ptBtBase, BT_PEND_INT);
+//		csi_pin_toggle(PA6);				//PA06 toggle	
+	}
+	if(wMisr & BT_CMP_INT)					//CMP interrupt
+	{
+		csp_bt_clr_isr(ptBtBase, BT_CMP_INT);
+//		csi_pin_set_low(PA5);
+//		csi_pin_set_high(PA6);	
+	}
+	if(wMisr & BT_EVTRG_INT)				//EVTRG interrupt
+	{
+//		csi_pin_set_low(PA5);
+		csp_bt_clr_isr(ptBtBase, BT_EVTRG_INT);
+	}
+}
+
+/** \brief bt_irqhandler: BT1 中断处理示例函数
+ *  \param[in] csp_bt_t
+ *  \return error code
+ */
+__attribute__((weak)) void bt_irqhandler1(csp_bt_t *ptBtBase)
+{
+    // ISR content ...
+	volatile uint32_t wMisr = csp_bt_get_isr(ptBtBase);
+	
+	if(wMisr & BT_PEND_INT)					//PEND interrupt
+	{
+		csp_bt_clr_isr(ptBtBase, BT_PEND_INT);
+//		csi_pin_toggle(PA6);				//PA06 toggle	
+	}
+	
+	if(wMisr & BT_CMP_INT)					//CMP interrupt
+	{
+		csp_bt_clr_isr(ptBtBase, BT_CMP_INT);
+//		csi_pin_set_low(PA5);
+//		csi_pin_set_high(PA6);	
+	}
+	if(wMisr & BT_EVTRG_INT)				//EVTRG interrupt
+	{
+//		csi_pin_set_low(PA5);
+		csp_bt_clr_isr(ptBtBase, BT_EVTRG_INT);
+	}
+}
+
+/** \brief bt_irqhandler: BT2 中断处理示例函数
+ *  \param[in] csp_bt_t
+ *  \return error code
+ */
+__attribute__((weak)) void bt_irqhandler2(csp_bt_t *ptBtBase)
+{
+    // ISR content ...
+	volatile uint32_t wMisr = csp_bt_get_isr(ptBtBase);
+	
+	if(wMisr & BT_PEND_INT)					//PEND interrupt
+	{
+		csp_bt_clr_isr(ptBtBase, BT_PEND_INT);
+//		csi_pin_toggle(PA6);				//PA06 toggle	
+	}
+	if(wMisr & BT_CMP_INT)					//CMP interrupt
+	{
+		csp_bt_clr_isr(ptBtBase, BT_CMP_INT);
+//		csi_pin_set_low(PA5);
+//		csi_pin_set_high(PA6);	
+	}
+	if(wMisr & BT_EVTRG_INT)				//EVTRG interrupt
+	{
+//		csi_pin_set_low(PA5);
+		csp_bt_clr_isr(ptBtBase, BT_EVTRG_INT);
+	}
 }

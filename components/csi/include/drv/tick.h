@@ -14,6 +14,7 @@
 
 #include <stdint.h>
 #include <stdint.h>
+#include <drv/bt.h>
 #include <drv/common.h>
 
 #ifndef CONFIG_SYSTICK_HZ
@@ -24,6 +25,7 @@
 extern "C" {
 #endif
 
+void bt_irqhandler3(csp_bt_t *ptBtBase);
 /**
   \brief       Initializes the resources needed for the TICK interface
   \return      error code
