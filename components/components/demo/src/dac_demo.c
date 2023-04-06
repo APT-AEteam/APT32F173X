@@ -19,16 +19,7 @@
 /* externs variablesr------------------------------------------------------*/
 /* Private macro-----------------------------------------------------------*/
 /* Private variablesr------------------------------------------------------*/
-void delay(uint16_t val)
-{bool t;uint32_t vha;
-    vha=val;t=1;
-	while(t){if(vha)vha--;
-			 else{
-				 t=0;
-				 }
-	}
-}
-uint16_t i;
+
 void dac_demo(void)	
 {
 	csp_dac_clr_da(DAC0);//清除转换数据
