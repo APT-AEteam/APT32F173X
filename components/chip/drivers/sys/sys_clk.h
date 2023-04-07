@@ -45,7 +45,6 @@ typedef enum {
 }imo_freq_e;
 
 typedef enum{
-	HF_48M 	= HFOSC_48M_VALUE,
 	HF_24M  = HFOSC_24M_VALUE,
 	HF_12M  = HFOSC_12M_VALUE,
 	HF_6M   = HFOSC_6M_VALUE
@@ -62,19 +61,6 @@ typedef enum{
 typedef enum{
 	SCLK_DIV1	= 1,
 	SCLK_DIV2,
-	SCLK_DIV3,
-	SCLK_DIV4,
-	SCLK_DIV5,
-	SCLK_DIV6,
-	SCLK_DIV8	=7,
-	SCLK_DIV12	=8,
-	SCLK_DIV16	=9,
-	SCLK_DIV24	=10,
-	SCLK_DIV32	=11,
-	SCLK_DIV36	=12,
-	SCLK_DIV64	=13,
-	SCLK_DIV128	=14,
-	SCLK_DIV256	=15
 }hclk_div_e;
 
 /// \struct system_clk_config_t
@@ -91,12 +77,9 @@ typedef struct {
 extern csi_clk_config_t tClkConfig;
 
 typedef enum{
-	PLL_SEL_HFOSC_48M,
-	PLL_SEL_HFOSC_24M,
-	PLL_SEL_HFOSC_12M,
-	PLL_SEL_HHFOSC_24M,	
-	PLL_SEL_HHFOSC_12M,	
-	PLL_SEL_HHFOSC_6M,	
+	PLL_SEL_HFOSC_24M,	
+	PLL_SEL_HFOSC_12M,	
+	PLL_SEL_HFOSC_6M,	
 	PLL_SEL_EMOSC_24M
 }pll_sel_e;
 

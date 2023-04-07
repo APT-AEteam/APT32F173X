@@ -45,9 +45,6 @@ extern "C" {
 #define IMOSC_131K_VALUE	131000U
 #endif
 
-#ifndef HFOSC_48M_VALUE
-#define HFOSC_48M_VALUE     48000000U
-#endif
 #ifndef HFOSC_24M_VALUE
 #define HFOSC_24M_VALUE     24000000U
 #endif

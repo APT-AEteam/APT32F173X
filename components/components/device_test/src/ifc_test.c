@@ -113,7 +113,7 @@ csi_error_t eflash_parallel_test(void)
 	
 	
 	tClkConfig.eClkSrc = SRC_HFOSC;
-	tClkConfig.wFreq = HFOSC_48M_VALUE;
+	tClkConfig.wFreq = HFOSC_24M_VALUE;
 	tClkConfig.eSdiv = 1;
 	tClkConfig.ePdiv = 1;
 	csi_sysclk_config(tClkConfig);	
@@ -135,7 +135,7 @@ csi_error_t eflash_parallel_test(void)
 		
 		
 	tClkConfig.eClkSrc = SRC_HFOSC;
-	tClkConfig.wFreq = HFOSC_48M_VALUE;
+	tClkConfig.wFreq = HFOSC_24M_VALUE;
 	tClkConfig.eSdiv = 2;
 	tClkConfig.ePdiv = 1;
 	csi_sysclk_config(tClkConfig);	

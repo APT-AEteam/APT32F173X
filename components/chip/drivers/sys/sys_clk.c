@@ -89,13 +89,11 @@ csi_error_t csi_sysclk_config(csi_clk_config_t tClkCfg)
 		case (SRC_HFOSC):	
 			switch (wFreq) 	
 			{
-				case (HFOSC_48M_VALUE): byFreqIdx = 0;
+				case (HFOSC_24M_VALUE): byFreqIdx = 0;
 					break;
-				case (HFOSC_24M_VALUE): byFreqIdx = 1;
+				case (HFOSC_12M_VALUE): byFreqIdx = 1;
 					break;
-				case (HFOSC_12M_VALUE): byFreqIdx = 2;
-					break;
-				case (HFOSC_6M_VALUE):  byFreqIdx = 3;
+				case (HFOSC_6M_VALUE):  byFreqIdx = 2;
 					break;
 				default: ret = CSI_ERROR;
 					return ret;
@@ -116,17 +114,12 @@ csi_error_t csi_sysclk_config(csi_clk_config_t tClkCfg)
 			{
 				switch(tPllClkConfig.eClkSel)
 				{
-					case (PLL_SEL_HFOSC_48M):	byFreqIdx = 0;
 					break;
-					case (PLL_SEL_HFOSC_24M):  	byFreqIdx = 1;
+					case (PLL_SEL_HFOSC_24M):	byFreqIdx = 0;
 					break;
-					case (PLL_SEL_HFOSC_12M):  	byFreqIdx = 2;
+					case (PLL_SEL_HFOSC_12M):  byFreqIdx = 1;
 					break;
-					case (PLL_SEL_HHFOSC_24M):	byFreqIdx = 0;
-					break;
-					case (PLL_SEL_HHFOSC_12M):  byFreqIdx = 1;
-					break;
-					case (PLL_SEL_HHFOSC_6M):   byFreqIdx = 2;
+					case (PLL_SEL_HFOSC_6M):   byFreqIdx = 2;
 					break;
 					default:
 					break;
@@ -293,15 +286,12 @@ csi_error_t csi_calc_clk_freq(void)
 				switch (wHfoFreq)
 				{
 					case (0): 
-						tClkConfig.wSclk = HFOSC_48M_VALUE;
-						break;
-					case (1): 
 						tClkConfig.wSclk = HFOSC_24M_VALUE;
 						break;
-					case (2): 
+					case (1): 
 						tClkConfig.wSclk = HFOSC_12M_VALUE;	
 						break;
-					case (3): 
+					case (2): 
 						tClkConfig.wSclk = HFOSC_6M_VALUE;	
 						break;
 					default:  
