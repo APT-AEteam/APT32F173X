@@ -1,5 +1,11 @@
 /***********************************************************************//** 
-
+ * \file  gptb.c
+ * \brief  GPTB driver
+ * \copyright Copyright (C) 2015-2020 @ APTCHIP
+ * <table>
+ * <tr><th> Date  <th>Version  <th>Author  <th>Description
+ * <tr><td> 2021-6-17 <td>V0.0  <td>ljy   <td>initial
+ * </table>
  * *********************************************************************
 */
 #include "sys_clk.h"
@@ -10,16 +16,7 @@
 #include "drv/irq.h"
 #include "drv/etb.h"
 
-
-//to maximize the  speed
- uint32_t gGptb0Prd;
- uint32_t gGptb1Prd;
- uint32_t gGptb2Prd;
- uint32_t gGptb3Prd;
- uint32_t gGptb4Prd;
- uint32_t gGptb5Prd;
-
-uint32_t wGptb_Cmp_Buff[4] = {0};
+uint32_t wGptbCmpBuff[4] = {0};
 
 /** \brief gptb0 interrupt handle weak function
  *   		- 
@@ -68,28 +65,28 @@ __attribute__((weak)) void gptb_irqhandler(csp_gptb_t *ptGptbBase)
 		if((wMisr & GPTB_INT_CAPLD0) == GPTB_INT_CAPLD0)
 		{
 			csp_gptb_clr_int(ptGptbBase, GPTB_INT_CAPLD0);
-			wGptb_Cmp_Buff[0]=csp_gptb_get_cmpa(ptGptbBase);
+			wGptbCmpBuff[0]=csp_gptb_get_cmpa(ptGptbBase);
 		}
 		if((wMisr & GPTB_INT_CAPLD1) == GPTB_INT_CAPLD1)
 		{
 			csp_gptb_clr_int(ptGptbBase, GPTB_INT_CAPLD1);
-			wGptb_Cmp_Buff[0]=csp_gptb_get_cmpa(ptGptbBase);
-			wGptb_Cmp_Buff[1]=csp_gptb_get_cmpb(ptGptbBase);
+			wGptbCmpBuff[0]=csp_gptb_get_cmpa(ptGptbBase);
+			wGptbCmpBuff[1]=csp_gptb_get_cmpb(ptGptbBase);
 		}
 		if((wMisr & GPTB_INT_CAPLD2) == GPTB_INT_CAPLD2)
 		{
 			csp_gptb_clr_int(ptGptbBase, GPTB_INT_CAPLD2);
-			wGptb_Cmp_Buff[0]=csp_gptb_get_cmpa(ptGptbBase);
-			wGptb_Cmp_Buff[1]=csp_gptb_get_cmpb(ptGptbBase);
-			wGptb_Cmp_Buff[2]=csp_gptb_get_cmpaa(ptGptbBase);
+			wGptbCmpBuff[0]=csp_gptb_get_cmpa(ptGptbBase);
+			wGptbCmpBuff[1]=csp_gptb_get_cmpb(ptGptbBase);
+			wGptbCmpBuff[2]=csp_gptb_get_cmpaa(ptGptbBase);
 		}
 		if((wMisr & GPTB_INT_CAPLD3) == GPTB_INT_CAPLD3)
 		{
 			csp_gptb_clr_int(ptGptbBase, GPTB_INT_CAPLD3);
-			wGptb_Cmp_Buff[0]=csp_gptb_get_cmpa(ptGptbBase);
-			wGptb_Cmp_Buff[1]=csp_gptb_get_cmpb(ptGptbBase);
-			wGptb_Cmp_Buff[2]=csp_gptb_get_cmpaa(ptGptbBase);
-			wGptb_Cmp_Buff[3]=csp_gptb_get_cmpba(ptGptbBase);
+			wGptbCmpBuff[0]=csp_gptb_get_cmpa(ptGptbBase);
+			wGptbCmpBuff[1]=csp_gptb_get_cmpb(ptGptbBase);
+			wGptbCmpBuff[2]=csp_gptb_get_cmpaa(ptGptbBase);
+			wGptbCmpBuff[3]=csp_gptb_get_cmpba(ptGptbBase);
 		}
 		if((wMisr & GPTB_INT_CAU) == GPTB_INT_CAU)
 		{
@@ -130,7 +127,7 @@ csi_error_t csi_gptb_config_init(csp_gptb_t *ptGptbBase, csi_gptb_config_t *ptgp
 	if(ptgptbPwmCfg->wFreq == 0 ){ptgptbPwmCfg->wFreq =100;}
 	
 	
-	csi_clk_enable((uint32_t *)ptGptbBase);								// clk enable   ??????????????
+	csi_clk_enable((uint32_t *)ptGptbBase);								// clk enable
 	
 	csp_gptb_clken(ptGptbBase);
 	csp_gptb_wr_key(ptGptbBase);                                           //Unlocking
@@ -186,8 +183,6 @@ csi_error_t csi_gptb_config_init(csp_gptb_t *ptGptbBase, csi_gptb_config_t *ptgp
 		csi_irq_enable((uint32_t *)ptGptbBase);							//enable  irq
 	}
 	
-	gGptb0Prd=wPrdrLoad;
-	
 	return CSI_OK;
 }
 
@@ -236,8 +231,6 @@ csi_error_t csi_gptb_capture_init(csp_gptb_t *ptGptbBase, csi_gptb_captureconfig
 		csp_gptb_int_enable(ptGptbBase, ptgptbPwmCfg->byInter, true);   //enable interrupt
 		csi_irq_enable((uint32_t *)ptGptbBase);							//enable  irq
 	}
-	
-	gGptb0Prd=wPrdrLoad;
 	
 	return CSI_OK;
 }
@@ -294,8 +287,6 @@ csi_error_t  csi_gptb_wave_init(csp_gptb_t *ptGptbBase, csi_gptb_pwmconfig_t *pt
 		csp_gptb_int_enable(ptGptbBase, ptgptbPwmCfg->byInter, true);		//enable interrupt
 		csi_irq_enable((uint32_t *)ptGptbBase);							//enable  irq
 	}
-	
-	gGptb0Prd=wPrdrLoad;
 	
 	return CSI_OK;	
 }

@@ -30,5 +30,6 @@ build_config:
   libpath: 
 source_file:
   - src/ifc_elec_test.c
+  - src/gpio_elec_test.c
 def_config: 
 install: 
