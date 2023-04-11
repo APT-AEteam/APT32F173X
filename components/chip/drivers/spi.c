@@ -12,7 +12,6 @@
 #include <sys_clk.h>
 #include <drv/spi.h>
 #include <drv/irq.h>
-#include <drv/gpio.h>
 #include <drv/pin.h>
 #include <drv/porting.h>
 #include <drv/tick.h>
@@ -47,29 +46,6 @@ void csi_spi_nss_low(pin_name_e ePinName)
 	csi_pin_set_low(ePinName);
 }
 
-/** \brief init spi gpio 
- * 
- *  \param[in] eMode:master or slave
- *  \return none
- */ 
-static void apt_spi_gpio_init(csi_spi_mode_e eMode)
-{
-	if(SPI_MASTER == eMode)
-	{
-		csi_pin_set_mux(PA4, PA4_OUTPUT);                         //gpio_port as output
-		csi_pin_output_mode(PA4, GPIO_PUSH_PULL);                 //push pull mode
-		csi_spi_nss_high(PA4);									  //NSS init high												    
-	}
-	else
-	{
-		csi_pin_set_mux(PA4,PA4_SPI0_NSS);
-	}
-	csi_pin_set_mux(PA5,PA5_SPI0_SCK);							//PA5 = SPI_SCK
-	csi_pin_set_mux(PA6,PA6_SPI0_MISO);							//PA6 = SPI_MISO
-	csi_pin_set_mux(PA7,PA7_SPI0_MOSI);							//PA7 = SPI_MOSI
-	
-}
-
 /** \brief apt_spi_int_set 
  * 
  *  \param[in] ptSpiBase: pointer of spi register structure
@@ -100,8 +76,6 @@ static void apt_spi_int_set(csp_spi_t *ptSpiBase,spi_int_e eSpiInt)
 csi_error_t csi_spi_init(csp_spi_t *ptSpiBase,csi_spi_config_t *ptSpiCfg)
 {
 	csi_error_t tRet = CSI_OK;
-	
-	//apt_spi_gpio_init(ptSpiCfg->eSpiMode);			      	  //端口初始化
 
 	csi_clk_enable((uint32_t *)ptSpiBase);				       //打开时钟
 	csp_spi_default_init(ptSpiBase);					       //寄存器初始值复位
@@ -646,7 +620,7 @@ static void apt_spi_intr_recv_data(csp_spi_t *ptSpiBase)
  */ 
 static void apt_spi_intr_send_data(csp_spi_t *ptSpiBase)
 {	
-	uint8_t byCount = 0;
+	uint8_t byCount;
 	if( (ptSpiBase->CR1 & 0x02) && (g_tSpiTransmit.byTxSize) )//要确保使能已打开（没使能spi，仅使能了中断也会进来的）
 	{
 		
