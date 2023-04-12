@@ -5,6 +5,10 @@
 #include "csp_cnta.h"
 #include "cnta_test.h"
 
+/** \brief CountA所有功能测试总入口函数
+ *  \param[in] none
+ *  \return error code
+ */
 void cnta_test(void)
 {
 	cnta_timer_test(); 
@@ -12,6 +16,10 @@ void cnta_test(void)
 	cnta_envelope_test();
 }
 
+/** \brief CountA 定时测试
+ *  \param[in] none
+ *  \return error code
+ */
 void cnta_timer_test(void)
 {
 	csi_conta_timer_config_t tTimerCfg;
@@ -34,7 +42,10 @@ void cnta_timer_test(void)
 	}
 }
 
-
+/** \brief CountA 通用PWM输出测试
+ *  \param[in] none
+ *  \return error code
+ */
 void cnta_pwm_test(void)
 {
 	csi_conta_pwm_config_t tPwmCfg;
@@ -63,7 +74,10 @@ void cnta_pwm_test(void)
 	}
 }
 
-
+/** \brief CountA 载波输出PWM测试
+ *  \param[in] none
+ *  \return error code
+ */
 void cnta_envelope_test(void)
 {
 	csi_conta_pwm_config_t tPwmCfg;
@@ -129,151 +143,3 @@ void cnta_envelope_test(void)
 		nop;
 	}
 }
-
-
-/*
-void cnta_reset_test(void)
-{
-	csp_cnta_soft_rst(CA0);				//default init valu
-	while(1)
-	{
-		NOP;
-	}
-}
-
-void cnta_timer_test(void)
-{
-	csi_pin_set_mux(PA10, PA10_OUTPUT);         //配置输出
-	csi_pin_set_high(PA10);					    //初始设置为高，在cnta的中断中翻转
-	
-	csi_clk_enable((uint32_t *)CA0);		    //cnta clk enable
-    csp_cnta_soft_rst(CA0);				        //default init valu
-	csp_cnta_set_ckdiv(CA0,CNTA_CK_DIV8,CNTA_REPEAT_MODE);	//cnta clk = pclk/eClkDiv
-	apt_cnta_int_arrt_set(CLIC_INTATTR_TRIG_UP); 
-	csp_cnta_set_datal(CA0, 5000);				//set data
-	csp_cnta_set_datah(CA0, 5000);		    //set data
-	csp_cnta_soft_updata(CA0);	
-	csp_cnta_set_int(CA0,CNTA_PENDHL_INT, true); //set intrrupt
-	
-//	csp_cnta_set_datal(CA0, 5000);				//set data
-//	csp_cnta_set_datah(CA0, 0);				//set data
-//	csp_cnta_soft_updata(CA0);	
-//	csp_cnta_set_int(CA0,CNTA_PENDL_INT, true); //set intrrupt
-	
-//	csp_cnta_set_datal(CA0, 5000);				//set data
-//	csp_cnta_set_datah(CA0, 5000);				//set data
-//	csp_cnta_soft_updata(CA0);	
-//	csp_cnta_set_int(CA0,CNTA_PENDHL_INT, true); //set intrrupt
-	
-	csi_irq_enable((uint32_t *)CA0);			//enable cnta irq
-	
-	csi_cnta_start(CA0);
-	
-	while(1)
-	{
-		NOP;
-	}
-}
-
-
-__attribute__((weak)) void cnta_test_irqhandler(csp_cnta_t *ptCntaBase)
-{	
-//	if(CA0->INTMASK & 0x01)
-	csi_pin_toggle(PA10);
-}
-
-
-void cnta_pwm_test(void)
-{
-	csi_pin_set_mux(PA6, PA6_OUTPUT);		//PA06 output
-	csi_pin_set_high(PA6);					//PA06 output high;
-	
-	csi_pin_set_mux(PA10,PA10_CNTA_BUZ); //set counter output pin
-//	csi_pin_set_mux(PD5,PD5_CNTA_BUZ);   //set counter output pin
-//	csi_pin_set_mux(PD3,PD3_CNTA_BUZ);   //set counter output pin
-
-	csi_clk_enable((uint32_t *)CA0);		//cnta clk enable
-    csp_cnta_soft_rst(CA0);				//default init valu
-	csp_cnta_set_ckdiv(CA0,CNTA_CK_DIV8,CNTA_REPEAT_MODE);	//cnta clk = pclk/eClkDiv
-	csp_cnta_set_carrier(CA0, CNTA_CARRIER_EN, PWM_CARRIER, STOP_HIGH, POLAR_LOW);
-	apt_cnta_int_arrt_set(CLIC_INTATTR_TRIG_UP); 
-	csp_cnta_set_datal(CA0, 5000);				//set data
-    csp_cnta_set_datah(CA0, 5000);				//set data
-	csp_cnta_soft_updata(CA0);	
-	csp_cnta_set_int(CA0,CNTA_NONE_INT, true);//set intrrupt
-	csi_irq_enable((uint32_t *)CA0);					//enable cnta irq
-	
-	
-	csi_pin_set_low(PA6);					//PA06 output low;
-	csi_cnta_start(CA0);
-	while(1)
-	{
-		NOP;
-		
-		Delay_Nms(100);
-//		csi_cnta_stop(CA0);                  //停止CountA
-		CA0->CACON = CA0->CACON & 0xFDFFFFFF; // 关闭载波，可测试REM_STAT位
-		csi_pin_set_high(PA6);  //PA06 output high;
-		
-		Delay_Nms(100);
-//		csi_cnta_start(CA0);                  //启动CountA 
-		CA0->CACON = CA0->CACON | 0x02000000; // 打开载波，可测试REM_STAT位
-		csi_pin_set_low(PA6);   //PA06 output low;
-	}
-}
-
-
-void cnta_bt_test(void)
-{
-	csi_pin_set_mux(PA6, PA6_OUTPUT);		//PA06 output
-	csi_pin_set_high(PA6);					//PA06 output high;
-	csi_pin_set_mux(PA5, PA5_OUTPUT);		//PA06 output
-	csi_pin_set_high(PA5);					//PA06 output high;
-	
-	//BT 初始化
-	csp_bt_set_cr(BT0, (BT_IMMEDIATE << BT_SHDW_POS) | (BT_CONTINUOUS << BT_OPM_POS) |		//bt work mode
-			(BT_PCLKDIV << BT_EXTCKM_POS) | (BT_CNTRLD_EN << BT_CNTRLD_POS) | BT_CLK_EN );
-	csp_bt_set_pscr(BT0,2);						//bt clk div	
-	csp_bt_set_prdr(BT0,5000);				    //bt prdr load value
-	csp_bt_set_cmp(BT0, 2500);				    //bt prdr load value
-	
-	csp_bt_int_enable(BT0, BT_PEND_INT, true);  //enable PEND interrupt
-	csp_bt_int_enable(BT0, BT_CMP_INT, true);	//enable CMP interrupt
-	
-	csi_irq_enable((uint32_t *)BT0);		    //enable bt irq
-	csi_bt_start(BT0);					        //启动BT
-	
-	//CountA 初始化
-	csi_pin_set_mux(PA10,PA10_CNTA_BUZ); //set counter output pin
-//	csi_pin_set_mux(PD5,PD5_CNTA_BUZ);   //set counter output pin
-//	csi_pin_set_mux(PD3,PD3_CNTA_BUZ);   //set counter output pin
-
-	csi_clk_enable((uint32_t *)CA0);		//cnta clk enable
-    csp_cnta_soft_rst(CA0);				//default init valu
-	csp_cnta_set_ckdiv(CA0,CNTA_CK_DIV1,CNTA_REPEAT_MODE);	//cnta clk = pclk/eClkDiv
-	
-	
-	// CACON.ENVELOPE测试
-	csp_cnta_set_carrier(CA0, CNTA_CARRIER_EN, PWM_CARRIER, STOP_LOW, POLAR_LOW); //载波输出	
-//	csp_cnta_set_carrier(CA0, CNTA_CARRIER_EN, PWM_ENVELOPE, STOP_LOW, POLAR_LOW); //包络输出
-
-	// CACON.BTPEND_REM_CON 和 CACONBTMATCH_REM_CON 测试
-//	csp_cnta_set_sync(CA0, PEND_CARRIERON_CLR, MATCH_CARRIERON_SET,CNTA_HW_TCPEND);//BT脉冲匹配中断发生时，CARRIERON位会被硬件自动置位
-	csp_cnta_set_sync(CA0, PEND_CARRIERON_SET, MATCH_CARRIERON_CLR,CNTA_HW_TCPEND);//BT周期结束中断发生时，CARRIERON位会被硬件自动置位
-//	csp_cnta_set_sync(CA0, PEND_CARRIERON_DIS, MATCH_CARRIERON_DIS,CNTA_HW_TCPEND);//禁止CARRIERON的硬件自动触发
-	
-	
-	csp_cnta_set_datal(CA0, 100);				//set data
-    csp_cnta_set_datah(CA0, 100);				//set data
-	csp_cnta_soft_updata(CA0);	
-	csp_cnta_set_int(CA0,CNTA_NONE_INT, true);//set intrrupt
-	csi_irq_enable((uint32_t *)CA0);					//enable cnta irq
-	
-	csi_cnta_start(CA0);
-	while(1)
-	{
-		NOP;
-	}
-}
-
-*/

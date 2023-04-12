@@ -20,6 +20,10 @@ void Delay_Nms(uint32_t ms)
 	}
 }
 
+/** \brief BT所有功能测试总入口函数
+ *  \param[in] none
+ *  \return error code
+ */
 void bt_test(void)
 {	
 	bt_timer_test();
@@ -558,7 +562,10 @@ int bt_evtrg_test(void)
 	return iRet;
 }
 
-
+/** \brief bt_syncmd_start_test: 软件触发BT事件
+ *  \param[in] none
+ *  \return error code
+ */
 int bt_syncmd_start_test(void)
 {
 	bool byExiFlag = 0;
