@@ -20,7 +20,6 @@
 #include "board_config.h"
 #include "csp.h"
 #include "rtc.h"
-#include "qspi.h"
 #include "irq.h"
 #include "cnta.h"
 #include <drv/tick.h>

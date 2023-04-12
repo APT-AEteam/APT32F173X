@@ -29,7 +29,6 @@
 #include "csp_rtc.h"
 #include "csp_sio.h"
 #include "csp_spi.h"
-#include "csp_qspi.h"
 #include "csp_dma.h"
 #include "csp_syscon.h"
 #include "csp_uart.h"
@@ -61,7 +60,6 @@ extern csp_usart_t 		*USART0, *USART1;
 extern csp_uart_t 		*UART0, *UART1, *UART2;
 extern csp_spi_t  		*SPI0;
 extern csp_spi_t  		*SPI1;
-extern csp_qspi_t       *QSPI;
 extern csp_sio_t  		*SIO0, *SIO1;
 extern csp_cmp_t  		*CMP0;
 extern csp_cmp_t  		*CMP1;
