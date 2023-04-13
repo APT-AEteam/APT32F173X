@@ -17,6 +17,8 @@
 #include "common.h"
 
 //cmp test
-
+extern int cmp_base_test(void);
+extern int cmp_dfcr_test(void);
+extern int cmp_wfcr_test(void);
 
 #endif
