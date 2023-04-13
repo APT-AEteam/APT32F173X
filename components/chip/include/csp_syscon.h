@@ -425,14 +425,14 @@ typedef enum
 
 #define VOS_SLEEP_VCREF_P0S	     (16+0)
 typedef enum{
-	BGR_1V		= 0,
-	CMOS_09V	= 1
+	BGR_1V		= 0,                   // BGR(1.0V)
+	CMOS_09V	= 1                    // CMOS(0.9V)
 }sleep_vcref_e;
 
 #define VOS_SLEEP_VDDCORE_P0S	 (16+1)
 typedef enum{
-	VCREF_12		= 0,
-	VCREF_10	    = 1
+	VCREF_12		= 0,              //VDDCORE = VCref x 1.2
+	VCREF_10	    = 1               //VDDCORE = VCref x 1.0
 }sleep_vddcore_e;
 
 #define VOS_SLEEP_SLP_CTRL_P0S	     (16+2)
