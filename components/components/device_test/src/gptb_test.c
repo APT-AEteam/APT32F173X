@@ -356,6 +356,7 @@ int gptb_pwm_dz_em_test(void)
 		csi_gptb_change_ch_duty(GPTB0,GPTB_COMPB, 80);
 		mdelay(1);
 	}	
+	return iRet;
 }
 
 void load1(void)

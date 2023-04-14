@@ -218,7 +218,6 @@ void gpio_iofout_test(void)
  */
 void gpio_iofin_test(void)
 {
-	int iRet = 0;
 //------------------------------------------------------------------------------------------------------------------------	
 	csi_pin_set_mux(PA1,PA1_INPUT);		
 	csi_pin_pull_mode(PA1, GPIO_PULLUP);						//PA01 上拉
@@ -235,7 +234,7 @@ void gpio_iofin_test(void)
 	tEtbConfig.byTrgMode = ETB_HARDWARE_TRG;
 	csi_etb_init();
 	ch = csi_etb_ch_alloc(tEtbConfig.byChType);	//自动获取空闲通道号,ch >= 0 获取成功						//ch < 0,则获取通道号失败		
-	iRet = csi_etb_ch_config(ch, &tEtbConfig);	
+	csi_etb_ch_config(ch, &tEtbConfig);	
 //------------------------------------------------------------------------------------------------------------------------	
 	csi_gptb_captureconfig_t tPwmCfg;								  
 	tPwmCfg.byWorkmod         = GPTB_CAPTURE;                     //WAVE or CAPTURE    //计数或捕获	

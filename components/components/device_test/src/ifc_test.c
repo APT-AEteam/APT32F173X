@@ -104,7 +104,7 @@ csi_error_t eflash_parallel_test(void)
 	if (g_bFlashCheckPass == 0)
 		tRet =  CSI_ERROR;
 	
-	printf("wait %d ",  (IFC->MR) & 0x7);
+	printf("wait %d ",  (uint8_t)((IFC->MR) & 0x7));
 	if (tRet == 0)
 		printf("Pass!\n");
 	else
@@ -150,7 +150,7 @@ csi_error_t eflash_parallel_test(void)
 	if (g_bFlashCheckPass == 0)
 		tRet =  CSI_ERROR;
 	
-	printf("wait %d ",  (IFC->MR) & 0x7);
+	printf("wait %d ",  (uint8_t)((IFC->MR) & 0x7));
 	if (tRet == 0)
 		printf("Pass!\n");
 	else
