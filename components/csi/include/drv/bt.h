@@ -76,8 +76,8 @@ typedef enum{
  * \brief    BT sync arearm mode 
  */
 typedef enum{
-	BT_TRG_AUTOAREARM	= 1,			//x1：计数器周期结束时，自动AREARM
-	BT_TRG_SYCAREARM	                //1x：SYNCIN[1]时，自动AREARM			
+	BT_TRG_AUTOAREARM	= 1,			//x1锛氳鏁板櫒鍛ㄦ湡缁撴潫鏃讹紝鑷姩AREARM
+	BT_TRG_SYCAREARM	                //1x锛歋YNCIN[1]鏃讹紝鑷姩AREARM			
 }csi_bt_arearm_e;					    //BT  sync arearm mode 
 
 
@@ -214,7 +214,7 @@ void csi_bt_pwm_updata(csp_bt_t *ptBtBase, uint32_t wfreq, uint8_t byDutyCycle);
   \param[in]   bAutoRearm 	auto rearm, ENABLE/DISABLE(true/false)
   \return      none
 */
-csi_error_t csi_bt_set_sync(csp_bt_t *ptBtBase,csi_bt_trgin_e eTrgin, csi_bt_trgmode_e eTrgMode, csi_bt_trgmode_e bAutoRearm);
+csi_error_t csi_bt_set_sync(csp_bt_t *ptBtBase,csi_bt_trgin_e eTrgin, csi_bt_trgmode_e eTrgMode, csi_bt_arearm_e bAutoRearm);
 
 /** 
   \brief 	   restart bt sync evtrg 
