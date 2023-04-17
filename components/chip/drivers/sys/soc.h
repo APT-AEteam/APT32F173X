@@ -98,6 +98,8 @@ extern "C" {
 #define DFLASHPAGENUM		128
 #define DFLASHLIMIT 		(DFLASHBASE + DFLASHSIZE) 
 
+#define START_SRAM1_ADDR     0x20006000
+
 typedef enum {
 	
 	NMI_EXPn                        = -2,      /* NMI Exception */

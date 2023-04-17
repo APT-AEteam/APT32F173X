@@ -28,11 +28,33 @@
 
 extern void irq_vectors_init(void);
 
+#ifdef CODE_REMAP_TO_IRAM
+extern char _end_rodata[];
+extern char _start_data[],_end_data[];
+extern char _start_code[],_end_code[];
+   
+void csi_code_remap_to_iram(void) 
+{
+	char *dst = (char *)START_SRAM1_ADDR;
+	char *src = _end_rodata + (_end_data - _start_data);
+	if(_end_code != _start_code)
+	{
+		memcpy( dst, src, (_end_code - _start_code + 4));
+		csp_sram1_func_ctrl(SYSCON,SRAM1_ISRAM);  //dram remap to iram
+	}
+}
+#endif
+
 void system_init(void)		//__attribute__((weak))
 {
 	uint32_t i;
 
 	csi_icache_enable ();
+	
+#ifdef CODE_REMAP_TO_IRAM
+	csi_code_remap_to_iram();  //Need to work with gcc_flash_dram16k_iram16k.ld or gcc_flash_dram24k_iram8k.ld
+#endif	
+	
 	__disable_excp_irq();
 	
     /* enable mstatus FS */
