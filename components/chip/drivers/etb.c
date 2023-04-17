@@ -4,7 +4,7 @@
  * \brief  ETCB(event trigger control block) driver
  * \copyright Copyright (C) 2015-2020 @ APTCHIP
  * <table>
- * <tr><th> Date  <th>Version  <th>Author  <th>Description
+ * <tr><th> Date  <th>Version   <th>Author  <th>Description
  * <tr><td> 2020-10-8 <td>V0.0  <td>WNN   <td>initial
  * <tr><td> 2021-1-8  <td>V0.1  <td>WNN   <td>SW trigger
  * <tr><td> 2021-5-14 <td>V0.1  <td>ZJY   <td>initial
