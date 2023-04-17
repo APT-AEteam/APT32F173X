@@ -24,14 +24,14 @@ MEMORY
 {
 	ROM(RX)    : ORIGIN = 0x00000000,  LENGTH = 128K
 	IROM(RX)   : ORIGIN = 0x00040000,  LENGTH = 16K
-	RAM(RWX)   : ORIGIN = 0x20000000,  LENGTH = 16K
+	SRAM0(RWX)  : ORIGIN = 0x20000000,  LENGTH = 16K
 	SRAM1(RWX) : ORIGIN = 0x20006000,  LENGTH = 16K
 }
 
 /*heap and stack*/
 __heap_size  = 0x00;							/* heap for dynamically allocated memory */	
 __stack_size = STACK_SIZE;
-__stack_top = ORIGIN(RAM) + LENGTH(RAM);
+__stack_top = ORIGIN(SRAM0) + LENGTH(SRAM0);
 __stack_start = __stack_top - STACK_SIZE - __heap_size; 
 
 /*PROVIDE (__ram_end  = 0x0000C000); */			/* define symbol for external reference*/
@@ -39,8 +39,8 @@ __stack_start = __stack_top - STACK_SIZE - __heap_size;
 
 REGION_ALIAS("REGION_TEXT",    ROM);			/* Assign alias names to memory regions */
 REGION_ALIAS("REGION_RODATA",  ROM);
-REGION_ALIAS("REGION_DATA",    RAM);
-REGION_ALIAS("REGION_BSS",     RAM);
+REGION_ALIAS("REGION_DATA",    SRAM0);
+REGION_ALIAS("REGION_BSS",     SRAM0);
 
 ENTRY(Reset_Handler)							/* Entrance address */
 
@@ -79,7 +79,7 @@ SECTIONS {
     	_end_data = .; 							/* Provide the name for the end of this section */
     } > REGION_DATA AT > REGION_RODATA			
  
-     .func :
+     .fastfunc :
     {
 		 . = ALIGN(0x4) ;  
 		 _start_code = .;	
