@@ -158,7 +158,7 @@ int gpta_capture_sync_demo1(void)
 	tPwmCfg.byCaptureLdbaret  =0;  
 	tPwmCfg.byCaptureCapmdSel = GPTA_CMPMD_SEL_DIFF;
                                                         	
-	tPwmCfg.wInt 		 = GPTA_INTSRC_PEND;                   //interrupt//
+	tPwmCfg.wInt 		 = GPTA_INTSRC_CAPLD1;                   //interrupt//
 		
 	csi_gpta_capture_init(GPTA0, &tPwmCfg);
 
