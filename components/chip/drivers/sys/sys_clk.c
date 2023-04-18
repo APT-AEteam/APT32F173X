@@ -93,6 +93,8 @@ csi_error_t csi_sysclk_config(csi_clk_config_t tClkCfg)
 					break;
 				case (HFOSC_6M_VALUE):  byFreqIdx = 2;
 					break;
+				case (HFOSC_3M_VALUE):  byFreqIdx = 3;
+					break;
 				default: ret = CSI_ERROR;
 					return ret;
 					break;

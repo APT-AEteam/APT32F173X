@@ -54,6 +54,9 @@ extern "C" {
 #ifndef HFOSC_6M_VALUE
 #define HFOSC_6M_VALUE      6000000U
 #endif
+#ifndef HFOSC_3M_VALUE
+#define HFOSC_3M_VALUE      3000000U
+#endif
 
 #ifndef EMOSC_VALUE
 #define EMOSC_VALUE             24000000U
