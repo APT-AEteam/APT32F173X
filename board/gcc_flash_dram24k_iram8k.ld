@@ -82,10 +82,10 @@ SECTIONS {
     .fastfunc :
     {
 		 . = ALIGN(0x4) ;  
-		 _start_code = .;	
+		 _start_fastfunc = .;	
 		 *(func)
 		 . = ALIGN(0x4) ;	
-		 _end_code = .; 	
+		 _end_fastfunc = .; 	
 	} >IROM AT>ROM	
 
    .bss :

@@ -32,15 +32,15 @@ extern void irq_vectors_init(void);
 #ifdef CODE_REMAP_TO_IRAM
 extern char _end_rodata[];
 extern char _start_data[],_end_data[];
-extern char _start_code[],_end_code[];
+extern char _start_fastfunc[],_end_fastfunc[];
    
 void csi_iram_init(void) 
 {
 	char *dst = (char *)START_SRAM1_ADDR;
 	char *src = _end_rodata + (_end_data - _start_data);
-	if(_end_code != _start_code)
+	if(_end_fastfunc != _start_fastfunc)
 	{
-		memcpy( dst, src, (_end_code - _start_code + 4));
+		memcpy( dst, src, (_end_fastfunc - _start_fastfunc + 4));
 		csp_sram1_func_ctrl(SYSCON,SRAM1_ISRAM);  //dram remap to iram
 	}
 }
