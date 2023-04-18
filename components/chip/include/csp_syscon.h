@@ -89,9 +89,8 @@ typedef volatile struct {                   			/*!< SYSCON Structure            
 	volatile unsigned int UREG0;                      	/*!< 0x100: User defined reg0                              */
 	volatile unsigned int UREG1;                       	/*!< 0x104: User defined reg1                              */
 	volatile unsigned int UREG2;                       	/*!< 0x108: User defined reg0                              */
-	volatile unsigned int UREG3;                       	/*!< 0x10C: User defined reg0                              */
-	volatile unsigned int RTCPTR;						/*!< 0x110: RTC config protect reg                            */
-	volatile unsigned int _RSVD7;					    /*!< 0x114:*/
+	volatile unsigned int TRIMUREG;                       /*!< 0x10C: User defined reg0                              */
+	volatile unsigned int _RSVD7[2];					
 	volatile unsigned int CQCR;                        	/*!< 0x118: Clock Quality check control reg                */
 	volatile unsigned int CQSR;						   	/*!< 0x11C: Clock Qualifty check control reg  			   */
 	volatile unsigned int _RSVD8[2];
