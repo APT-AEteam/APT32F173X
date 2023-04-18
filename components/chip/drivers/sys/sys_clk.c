@@ -103,6 +103,8 @@ csi_error_t csi_sysclk_config(csi_clk_config_t tClkCfg)
 			csi_pll_disable();
 			if(tPllClkConfig.eClkSel == PLL_SEL_EMOSC_24M)
 			{
+				csp_em_flt_sel(SYSCON,EM_FLT_10NS);
+				csp_em_flt_enable(SYSCON,ENABLE);
 				csi_emosc_enable(EMOSC_VALUE);         //EMOSC_VALUE
 				csp_pll_clk_sel(SYSCON, PLL_CLK_SEL_EMOSC);				
 			}
