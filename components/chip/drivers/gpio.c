@@ -229,7 +229,6 @@ csi_error_t csi_gpio_port_output_mode(csp_gpio_t *ptGpioBase, uint32_t wPinMask,
 {
 	csi_error_t	ret = CSI_OK;
 	uint32_t wOpdVal = (wPinMask & 0xffff);
-	uint32_t wCurrVal = ((wPinMask & 0xffff) << 16);
 	
 	switch(eOutMode)
 	{
@@ -238,12 +237,6 @@ csi_error_t csi_gpio_port_output_mode(csp_gpio_t *ptGpioBase, uint32_t wPinMask,
 			break;
 		case GPIO_OPEN_DRAIN:						//open drain output
 			ptGpioBase->OMCR = (ptGpioBase->OMCR & ~wOpdVal) | wOpdVal;
-			break;
-		case GPIO_CONST_CURR:
-			ptGpioBase->OMCR = (ptGpioBase->OMCR & ~wCurrVal) | wCurrVal;
-			break;
-		case GPIO_CONST_CURR_NONE:
-			ptGpioBase->OMCR &= ~wCurrVal;
 			break;
 		default:
 			ret = CSI_ERROR;
@@ -262,38 +255,38 @@ csi_error_t csi_gpio_port_output_mode(csp_gpio_t *ptGpioBase, uint32_t wPinMask,
 csi_error_t csi_gpio_port_input_mode(csp_gpio_t *ptGpioBase, uint32_t wPinMask, csi_gpio_input_mode_e eInputMode)
 {
 	csi_error_t	ret = CSI_OK;
-//	uint8_t i, byPortNum =  apt_get_gpio_port_num(ptGpioBase);	
-//
-//	if(byPortNum > 16)
-//		return CSI_ERROR;
-//		
-//	for(i = 0; i < byPortNum; i++)
-//	{
-//		if(wPinMask & 0x01)
-//		{
-//			switch(eInputMode)
-//			{
-//				case (GPIO_INPUT_TTL2):	csp_gpio_ccm_ttl2(ptGpioBase, i);
-//					break;
-//				case (GPIO_INPUT_TTL1): csp_gpio_ccm_ttl1(ptGpioBase, i);
-//					break;
-//				case (GPIO_INPUT_CMOS):	csp_gpio_ccm_cmos(ptGpioBase, i);
-//					break;
-//				default:
-//					ret = CSI_ERROR;
-//				break;
-//			}
-//		}
-//		wPinMask = (wPinMask >> 1);
-//	}
+	uint8_t i, byPortNum =  apt_get_gpio_port_num(ptGpioBase);	
+
+	if(byPortNum > 16)
+		return CSI_ERROR;
+		
+	for(i = 0; i < byPortNum; i++)
+	{
+		if(wPinMask & 0x01)
+		{
+			switch(eInputMode)
+			{
+				case (GPIO_INPUT_TTL2):	csp_gpio_ccm_ttl2(ptGpioBase, i);
+					break;
+				case (GPIO_INPUT_TTL1): csp_gpio_ccm_ttl1(ptGpioBase, i);
+					break;
+				case (GPIO_INPUT_CMOS):	csp_gpio_ccm_cmos(ptGpioBase, i);
+					break;
+				default:
+					ret = CSI_ERROR;
+				break;
+			}
+		}
+		wPinMask = (wPinMask >> 1);
+	}
 	
 	return ret;
 }
-/** \brief config gpio input drive
+/** \brief config gpio output drive
  * 
  *  \param[in] ptGpioBase: pointer of gpio register structure
  *  \param[in] wPinMask: pin mask,0x0001~0xffff
- *  \param[in] eDrive: pin input drive; GPIO_DRIVE_LV0/GPIO_DRIVE_LV1
+ *  \param[in] eDrive: pin output drive; GPIO_DRIVE_LV0/GPIO_DRIVE_LV1
  *  \return error code \ref csi_error_t
  */ 
 csi_error_t csi_gpio_port_drive(csp_gpio_t *ptGpioBase, uint32_t wPinMask, csi_gpio_drive_e eDrive)
@@ -309,6 +302,32 @@ csi_error_t csi_gpio_port_drive(csp_gpio_t *ptGpioBase, uint32_t wPinMask, csi_g
 		if(wPinMask & 0x01)
 		{
 			csp_gpio_drv_set(ptGpioBase, i, (uint8_t)eDrive);
+		}
+		wPinMask = (wPinMask >> 1);
+	}
+	
+	return ret;
+}
+/** \brief config gpio ouput speed
+ * 
+ *  \param[in] ptGpioBase: pointer of gpio register structure
+ *  \param[in] wPinMask: pin mask,0x0001~0xffff
+ *  \param[in] eSpeed: pin output speed; GPIO_SPEED_LV0/GPIO_SPEED_LV1
+ *  \return error code \ref csi_error_t
+ */ 
+csi_error_t csi_gpio_port_speed(csp_gpio_t *ptGpioBase, uint32_t wPinMask, csi_gpio_speed_e eSpeed)
+{
+	csi_error_t	ret = CSI_OK;
+	uint8_t i, byPortNum =  apt_get_gpio_port_num(ptGpioBase);	
+
+	if(byPortNum > 16)
+		return CSI_ERROR;
+		
+	for(i = 0; i < byPortNum; i++)
+	{
+		if(wPinMask & 0x01)
+		{
+			csp_gpio_speed_set(ptGpioBase, i, (uint8_t)eSpeed);
 		}
 		wPinMask = (wPinMask >> 1);
 	}

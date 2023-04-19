@@ -78,8 +78,6 @@ typedef enum {
 typedef enum {
 	GPIO_PUSH_PULL 		= 0,	//push-pull 
 	GPIO_OPEN_DRAIN,			//open drain 
-	GPIO_CONST_CURR,			//constant current 
-	GPIO_CONST_CURR_NONE,		//constant current dis
 } csi_gpio_output_mode_e;
 
 /**
@@ -276,6 +274,15 @@ csi_error_t csi_gpio_port_input_mode(csp_gpio_t *ptGpioBase, uint32_t wPinMask, 
   \return error code \ref csi_error_t
  */ 
 csi_error_t csi_gpio_port_drive(csp_gpio_t *ptGpioBase, uint32_t wPinMask, csi_gpio_drive_e eDrive);
+
+/** 
+  \brief config gpio ouput speed
+  \param[in] ptGpioBase: pointer of gpio register structure
+  \param[in] wPinMask: pin mask,0x0001~0xffff
+  \param[in] eSpeed: pin output speed; GPIO_SPEED_LV0/GPIO_SPEED_LV1
+  \return error code \ref csi_error_t
+ */ 
+csi_error_t csi_gpio_port_speed(csp_gpio_t *ptGpioBase, uint32_t wPinMask, csi_gpio_speed_e eSpeed);
 
 /**
   \brief       Config gpio irq params

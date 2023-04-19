@@ -452,27 +452,26 @@ csi_error_t csi_pin_drive(pin_name_e ePinName, csi_gpio_drive_e eDrive)
 csi_error_t csi_pin_input_mode(pin_name_e ePinName, csi_gpio_input_mode_e eInputMode)
 {
 
-//	csi_error_t ret = CSI_OK;
-//	csp_gpio_t *ptGpioBase = NULL;
-//	unsigned int *pwPinMess = apt_get_pin_name_addr(ePinName);
-//
-//	ptGpioBase = (csp_gpio_t *)pwPinMess[0];			//pin addr
-//	ePinName = (pin_name_e)pwPinMess[1];				//pin
-//	
-//	switch (eInputMode)
-//	{
-//		case (GPIO_INPUT_TTL2):	csp_gpio_ccm_ttl2(ptGpioBase, ePinName);
-//			break;
-//		case (GPIO_INPUT_TTL1): csp_gpio_ccm_ttl1(ptGpioBase, ePinName);
-//			break;
-//		case (GPIO_INPUT_CMOS):	csp_gpio_ccm_cmos(ptGpioBase, ePinName);
-//			break;
-//		default:
-//			ret = CSI_ERROR;
-//			break;
-//	}
-//		return ret;
-	return CSI_UNSUPPORTED;
+	csi_error_t ret = CSI_OK;
+	csp_gpio_t *ptGpioBase = NULL;
+	unsigned int *pwPinMess = apt_get_pin_name_addr(ePinName);
+
+	ptGpioBase = (csp_gpio_t *)pwPinMess[0];			//pin addr
+	ePinName = (pin_name_e)pwPinMess[1];				//pin
+	
+	switch (eInputMode)
+	{
+		case (GPIO_INPUT_TTL2):	csp_gpio_ccm_ttl2(ptGpioBase, ePinName);
+			break;
+		case (GPIO_INPUT_TTL1): csp_gpio_ccm_ttl1(ptGpioBase, ePinName);
+			break;
+		case (GPIO_INPUT_CMOS):	csp_gpio_ccm_cmos(ptGpioBase, ePinName);
+			break;
+		default:
+			ret = CSI_ERROR;
+			break;
+	}
+		return ret;
 }
 /** \brief set gpio pin input mode
  * 
@@ -496,12 +495,6 @@ csi_error_t csi_pin_output_mode(pin_name_e ePinName, csi_gpio_output_mode_e eOut
 			break;
 		case GPIO_OPEN_DRAIN:
 			csp_gpio_opendrain_en(ptGpioBase, ePinName);	//open drain mode 
-			break;
-		case GPIO_CONST_CURR:
-			csp_gpio_constcurr_en(ptGpioBase, ePinName);	//constant current
-			break;
-		case GPIO_CONST_CURR_NONE:
-			csp_gpio_constcurr_dis(ptGpioBase, ePinName);
 			break;
 		default:
 			ret = CSI_ERROR;

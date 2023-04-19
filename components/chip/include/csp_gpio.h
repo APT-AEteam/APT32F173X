@@ -290,14 +290,14 @@ static inline void csp_gpio_opendrain_dis(csp_gpio_t *ptGpioBase,uint8_t byPinNu
 	ptGpioBase->OMCR  = (ptGpioBase->OMCR) & ~(0x01 << byPinNum);
 }
 
-static inline void csp_gpio_constcurr_en(csp_gpio_t *ptGpioBase,uint8_t byPinNum)
-{
-	ptGpioBase->OMCR  = (ptGpioBase->OMCR) | (0x01 << (byPinNum+16));
-}
-static inline void csp_gpio_constcurr_dis(csp_gpio_t *ptGpioBase,uint8_t byPinNum)
-{
-	ptGpioBase->OMCR  = (ptGpioBase->OMCR) & ~(0x01 << (byPinNum+16));
-}
+//static inline void csp_gpio_constcurr_en(csp_gpio_t *ptGpioBase,uint8_t byPinNum)
+//{
+//	ptGpioBase->OMCR  = (ptGpioBase->OMCR) | (0x01 << (byPinNum+16));
+//}
+//static inline void csp_gpio_constcurr_dis(csp_gpio_t *ptGpioBase,uint8_t byPinNum)
+//{
+//	ptGpioBase->OMCR  = (ptGpioBase->OMCR) & ~(0x01 << (byPinNum+16));
+//}
 /*************************************************************************
  * @brief  gpio pin driver strength
 ****************************************************************************/
