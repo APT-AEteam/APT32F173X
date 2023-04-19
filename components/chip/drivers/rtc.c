@@ -140,6 +140,7 @@ void csi_rtc_start(csp_rtc_t *ptRtc)
 	csp_rtc_run(ptRtc);
 }
 
+
 /**
   \brief       To stop RTC 
   \param       pointer of rtc register structure pointer of rtc register structure to operate
@@ -148,6 +149,16 @@ void csi_rtc_start(csp_rtc_t *ptRtc)
 void csi_rtc_stop(csp_rtc_t *ptRtc)
 {
 	csp_rtc_stop(ptRtc);
+}
+
+/**
+  \brief       To reset RTC 
+  \param       pointer of rtc register structure pointer of rtc register structure to operate
+  \return      none
+*/
+void csi_rtc_reset(csp_rtc_t *ptRtc)
+{
+	csp_rtc_reset(ptRtc);
 }
 
 /**

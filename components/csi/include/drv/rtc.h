@@ -59,7 +59,7 @@ struct csi_rtc {
 typedef enum{
 	RTC_CLKSRC_ISOSC = 0,
 	RTC_CLKSRC_IMOSC_DIV4,
-	RTC_CLKSRC_EMOSC,
+	RTC_CLKSRC_ESOSC,
 	RTC_CLKSRC_EMOSC_DIV4
 }csi_rtc_clksrc_e;
 
