@@ -8,10 +8,6 @@ hw_info:
   flash_program: ""
 def_config:
   CONFIG_ARCH_INTERRUPTSTACK: 1024
-  CONFIG_DEBUG_MODE: 1
-  CONFIG_KERNEL_NONE: 1
-  CONFIG_SUPPORT_TSPEND: 1
-  CONFIG_XIP: 1
 name: apt32f173x
 version: v1.0.0
 description: 我的第一个方案工程

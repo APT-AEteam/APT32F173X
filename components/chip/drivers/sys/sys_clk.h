@@ -17,8 +17,6 @@
 #include <stdint.h>
 #include <soc.h>
 #include "csp_syscon.h"
-#include "csp_hwdiv.h"
-
 
 typedef enum {
     SRC_IMOSC = 0,

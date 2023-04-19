@@ -355,6 +355,7 @@ void csi_rtc_int_enable(csp_rtc_t *ptRtc, rtc_int_e eIntSrc, bool bEnable)
 */
 void csi_rtc_get_time(csp_rtc_t *ptRtc, csi_rtc_time_t *rtctime)
 {
+	csi_rtc_rb_enable(ptRtc,ENABLE); 
 	rtctime->tm_year = csp_rtc_read_year(ptRtc);
 	rtctime->tm_mon = csp_rtc_read_mon(ptRtc);
 	rtctime->tm_wday = csp_rtc_read_wday(ptRtc);
@@ -363,6 +364,7 @@ void csi_rtc_get_time(csp_rtc_t *ptRtc, csi_rtc_time_t *rtctime)
 	rtctime->tm_min = csp_rtc_read_min(ptRtc);
 	rtctime->tm_sec = csp_rtc_read_sec(ptRtc);
 	rtctime->tm_pm = csp_rtc_read_pm(ptRtc);
+	csi_rtc_rb_enable(ptRtc,DISABLE);
 }
 
 /**

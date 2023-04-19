@@ -424,7 +424,7 @@ int sio_led_rgb_recv_rxdone_demo(void)
 int sio_hdq_send_demo(void)
 {
 	int iRet = 0;
-	volatile uint8_t byRecv;
+//	volatile uint8_t byRecv;
 	csi_sio_tx_config_t tHdqTxCfg;
 	
 	uint32_t wSendBuf[2];		

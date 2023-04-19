@@ -89,9 +89,8 @@ typedef volatile struct {                   			/*!< SYSCON Structure            
 	volatile unsigned int UREG0;                      	/*!< 0x100: User defined reg0                              */
 	volatile unsigned int UREG1;                       	/*!< 0x104: User defined reg1                              */
 	volatile unsigned int UREG2;                       	/*!< 0x108: User defined reg0                              */
-	volatile unsigned int UREG3;                       	/*!< 0x10C: User defined reg0                              */
-	volatile unsigned int RTCPTR;						/*!< 0x110: RTC config protect reg                            */
-	volatile unsigned int _RSVD7;					    /*!< 0x114:*/
+	volatile unsigned int TRIMUREG;                       /*!< 0x10C: User defined reg0                              */
+	volatile unsigned int _RSVD7[2];					
 	volatile unsigned int CQCR;                        	/*!< 0x118: Clock Quality check control reg                */
 	volatile unsigned int CQSR;						   	/*!< 0x11C: Clock Qualifty check control reg  			   */
 	volatile unsigned int _RSVD8[2];
@@ -409,6 +408,39 @@ typedef enum
 #define DBP_S  		(0x1 << 8)
 #define HDP_ALL_S	(0x1 << 16)
 #define HDP_4K_S  (0x1 << 17)
+
+//PWRCR
+#define VOS_RUN_EN_P0S	         (0)
+#define VOS_RUN_EN_P0S_MSK	     (0x1ul << VOS_RUN_EN_P0S)
+
+#define VOS_SLEEP_EN_P0S	     (1)
+#define VOS_SLEEP_EN_P0S_MSK	 (0x1ul << VOS_SLEEP_EN_P0S)
+
+#define VOS_DSLEEP_EN_P0S	     (2)
+#define VOS_DSLEEP_EN_P0S_MSK	 (0x1ul << VOS_DSLEEP_EN_P0S)
+
+#define VOS_SLEEP_CFG_P0S	     (16)
+#define VOS_SLEEP_CFG_MSK        (0xful << VOS_SLEEP_CFG_P0S)
+
+#define VOS_SLEEP_VCREF_P0S	     (16+0)
+typedef enum{
+	BGR_1V		= 0,                   // BGR(1.0V)
+	CMOS_09V	= 1                    // CMOS(0.9V)
+}sleep_vcref_e;
+
+#define VOS_SLEEP_VDDCORE_P0S	 (16+1)
+typedef enum{
+	VCREF_12		= 0,              //VDDCORE = VCref x 1.2
+	VCREF_10	    = 1               //VDDCORE = VCref x 1.0
+}sleep_vddcore_e;
+
+#define VOS_SLEEP_SLP_CTRL_P0S	     (16+2)
+#define VOS_SLEEP_SLP_CTRL_P0S_MSK	 (0x1ul << VOS_SLEEP_SLP_CTRL_P0S)
+
+#define VOS_SLEEP_PD_CTRL_P0S	     (16+3)
+#define VOS_SLEEP_PD_CTRL_P0S_MSK	 (0x1ul << VOS_SLEEP_PD_CTRL_P0S)
+
+#define PWRCR_KEY                     0xA67A6CC7       
 
 /// WKCR: wakeup(from deep-sleep) source register
 #define IWDT_WKEN	(0x1<<8)
@@ -993,6 +1025,29 @@ static inline void csp_escm_rst_enable(csp_syscon_t *ptSysconBase, bool bEnable)
 	else
 		ptSysconBase -> GCDR = ES_CMRST;
 }
+
+//pwrcr
+static inline void csp_sleep_vos_config(csp_syscon_t *ptSysconBase, sleep_vcref_e eVcref,sleep_vddcore_e eVddcore)
+{
+	ptSysconBase->PWRKEY = PWRCR_KEY;
+	ptSysconBase->PWRCR = (ptSysconBase->PWRCR & (~VOS_SLEEP_CFG_MSK)) | (eVcref << VOS_SLEEP_VCREF_P0S)| (eVddcore << VOS_SLEEP_VDDCORE_P0S);
+}
+
+static inline void csp_sleep_vos_config_enable(csp_syscon_t *ptSysconBase)
+{
+	ptSysconBase->PWRKEY = PWRCR_KEY;
+	ptSysconBase->PWRCR = (ptSysconBase->PWRCR & (~VOS_SLEEP_PD_CTRL_P0S_MSK)) | (VOS_SLEEP_SLP_CTRL_P0S_MSK);
+}
+
+static inline void csp_sleep_vos_enable(csp_syscon_t *ptSysconBase, bool bEnable)
+{
+	ptSysconBase->PWRKEY = PWRCR_KEY;
+	if(bEnable)
+		ptSysconBase->PWRCR |=  VOS_SLEEP_EN_P0S_MSK;	
+	else
+		ptSysconBase->PWRCR &= (~VOS_SLEEP_EN_P0S_MSK); 	
+}
+
 
 //wkcr 
 static inline void csp_set_deepsleep_mode(csp_syscon_t *ptSysconBase, deepsleep_mode_e eDpSleep)

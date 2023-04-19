@@ -18,6 +18,7 @@
 #include "drv/iwdt.h" 
 #include "drv/pin.h" 
 #include "csp.h"
+#include "board_config.h"
 
 
 /**
@@ -28,11 +29,33 @@
 
 extern void irq_vectors_init(void);
 
+#ifdef CODE_REMAP_TO_IRAM
+extern char _end_rodata[];
+extern char _start_data[],_end_data[];
+extern char _start_fastfunc[],_end_fastfunc[];
+   
+void csi_iram_init(void) 
+{
+	char *dst = (char *)START_SRAM1_ADDR;
+	char *src = _end_rodata + (_end_data - _start_data);
+	if(_end_fastfunc != _start_fastfunc)
+	{
+		memcpy( dst, src, (_end_fastfunc - _start_fastfunc + 4));
+		csp_sram1_func_ctrl(SYSCON,SRAM1_ISRAM);  //dram remap to iram
+	}
+}
+#endif
+
 void system_init(void)		//__attribute__((weak))
 {
 	uint32_t i;
 
 	csi_icache_enable ();
+	
+#ifdef CODE_REMAP_TO_IRAM
+	csi_iram_init();  //Need to work with gcc_flash_dram16k_iram16k.ld or gcc_flash_dram24k_iram8k.ld
+#endif	
+	
 	__disable_excp_irq();
 	
     /* enable mstatus FS */

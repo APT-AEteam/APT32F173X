@@ -54,6 +54,9 @@ extern "C" {
 #ifndef HFOSC_6M_VALUE
 #define HFOSC_6M_VALUE      6000000U
 #endif
+#ifndef HFOSC_3M_VALUE
+#define HFOSC_3M_VALUE      3000000U
+#endif
 
 #ifndef EMOSC_VALUE
 #define EMOSC_VALUE             24000000U
@@ -97,6 +100,8 @@ extern "C" {
 #define DFLASHPAGESIZE		64
 #define DFLASHPAGENUM		128
 #define DFLASHLIMIT 		(DFLASHBASE + DFLASHSIZE) 
+
+#define START_SRAM1_ADDR     0x20006000
 
 typedef enum {
 	
@@ -345,10 +350,9 @@ typedef enum {
 	PA8_INPUT				=  1U,		//input
 	PA8_OUTPUT				=  2U,		//output
 	PA8_OUTPUT_MONI		    =  3U,		//output with monitor
-	PA8_DAC0_OUT            =  4U,
     PA8_USART0_CK           =  5U,
     PA8_GPTB3_CHAX          =  6U,
-    PA8_QSPI_nCS3	  	    =  7U,
+	PA8_DAC0_OUT            =  7U,
 	PA8_GPTB0_CHAX			=  8U,
 	PA8_GPTB1_CHAX          =  9U,	
 	PA8_CP0_OUT             =  11U,

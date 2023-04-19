@@ -21,7 +21,7 @@
 /* Private macro-----------------------------------------------------------*/
 /* Private variablesr------------------------------------------------------*/
 
-/** \brief bt timer:BT0做基本定时器功能，周期结束产生中断，并在中断里面翻转IO
+/** \brief bt timer:BT0做基本定时器功能，周期结束产生中断，并在中断里面翻转IO（需要打开PA6IO配置注释）
  * 
  *  \param[in] none
  *  \return error code
@@ -76,7 +76,7 @@ int bt_pwm_demo(void)
 	return iRet;
 }
 
-/** \brief bt sync trg start ：外部中断触发BT0工作
+/** \brief bt sync trg start ：PB1外部下降沿中断触发BT0工作
  *  
  *  \param[in] none
  *  \return error code
@@ -129,7 +129,7 @@ int bt_sync_trg_start_demo(void)
 	return iRet;
 }
 
-/** \brief bt sync trg count: BT0 输出PWM触发EXI，再通过BT1同步输入端口，触发BT1计数值加1
+/** \brief bt sync trg count: BT0 输出PWM触发EXI脚PB1，再通过BT1同步输入端口，触发BT1计数值加1
  *                            BT0的PWM输出脚PA0要和PB1脚连接在一起
  *  \param[in] none
  *  \return error code
@@ -176,6 +176,7 @@ int bt_sync_trg_count_demo(void)
 	//tPwmCfg.byInter 	= BT_INTSRC_PEND | BT_INTSRC_CMP;	//PWM 中断配置(PEND and CMP)
 	tPwmCfg.byInter		= BT_INTSRC_NONE;	
 	csi_bt_pwm_init(BT0, &tPwmCfg);							//初始化BT0 PWM输出
+	
 	csi_bt_start(BT0);	     //启动BT0
 	csi_bt_start(BT1);	     //启动BT1	
 	
@@ -244,7 +245,7 @@ int bt_sync_trg_stop_demo(void)
 	return iRet;	
 }
 
-/** \brief bt evtrg out: 用一个BT定时触发另外一个BT PWM输出
+/** \brief bt evtrg out: 用BT0定时触发另外BT1 PWM输出，当BT0定时周期到时触发BT1输出PWM
  *  \param[in] none
  *  \return error code
  */

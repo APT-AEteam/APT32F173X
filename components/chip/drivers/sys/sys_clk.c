@@ -80,8 +80,6 @@ csi_error_t csi_sysclk_config(csi_clk_config_t tClkCfg)
 		case (SRC_EMOSC):
 			csp_em_flt_sel(SYSCON,EM_FLT_10NS);
 			csp_em_flt_enable(SYSCON,ENABLE);
-			csi_pin_set_mux(PD0, PD0_XIN);
-			csi_pin_set_mux(PD1, PD1_XOUT);
 			if (wFreq == EMOSC_32K_VALUE)
 				csp_set_em_lfmd(SYSCON, 1);
 			ret = csi_emosc_enable(wFreq);
@@ -95,6 +93,8 @@ csi_error_t csi_sysclk_config(csi_clk_config_t tClkCfg)
 					break;
 				case (HFOSC_6M_VALUE):  byFreqIdx = 2;
 					break;
+				case (HFOSC_3M_VALUE):  byFreqIdx = 3;
+					break;
 				default: ret = CSI_ERROR;
 					return ret;
 					break;
@@ -105,8 +105,8 @@ csi_error_t csi_sysclk_config(csi_clk_config_t tClkCfg)
 			csi_pll_disable();
 			if(tPllClkConfig.eClkSel == PLL_SEL_EMOSC_24M)
 			{
-			//	csi_pin_set_mux(PD0, PD0_XIN);
-			//	csi_pin_set_mux(PD1, PD1_XOUT);
+				csp_em_flt_sel(SYSCON,EM_FLT_10NS);
+				csp_em_flt_enable(SYSCON,ENABLE);
 				csi_emosc_enable(EMOSC_VALUE);         //EMOSC_VALUE
 				csp_pll_clk_sel(SYSCON, PLL_CLK_SEL_EMOSC);				
 			}
@@ -135,8 +135,6 @@ csi_error_t csi_sysclk_config(csi_clk_config_t tClkCfg)
 			csi_pll_enable();	
 			break;
 		case(SRC_ESOSC):
- 		//	csi_pin_set_mux(PC14, PC14_SXIN);
-		//	csi_pin_set_mux(PC15, PC15_SXOUT);   // Config pins before use ESOSC 
 			csi_esosc_enable(wFreq);
 			byFlashLp = 1;
 			break;

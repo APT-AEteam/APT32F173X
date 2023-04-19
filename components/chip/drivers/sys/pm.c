@@ -68,13 +68,16 @@ static csi_error_t soc_sleep(csi_pm_mode_e mode)
 */
 csi_error_t csi_pm_enter_sleep(csi_pm_mode_e mode)
 {
-	
+	csp_syscon_t *ptSysconBase  = (csp_syscon_t*)APB_SYS_BASE;
 	switch (mode)
 	{
 		case PM_MODE_SLEEP:		
 			#ifdef CONFIG_USER_PM
 			g_tPmCore.prepare_to_sleep();
 			#endif
+			csp_sleep_vos_config(ptSysconBase, BGR_1V,VCREF_12);
+			csp_sleep_vos_config_enable(ptSysconBase);
+			csp_sleep_vos_enable(ptSysconBase, ENABLE);
 			soc_sleep(PM_MODE_SLEEP);	
 			#ifdef CONFIG_USER_PM
 			g_tPmCore.wkup_frm_sleep();		

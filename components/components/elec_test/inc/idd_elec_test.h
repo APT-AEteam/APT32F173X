@@ -1,24 +1,22 @@
 /***********************************************************************//** 
- * \file  cmp test.h
+ * \file  idd_elec_test.h
  * \brief  cmp test description and static inline functions at register level 
  * \copyright Copyright (C) 2015-2020 @ APTCHIP
  * <table>
  * <tr><th> Date  <th>Version  <th>Author  <th>Description
- * <tr><td> 2023-3-24 <td>V0.0  <td>YYM   <td>initial
+ * <tr><td> 2023-4-6 <td>V0.0  <td>YT   <td>initial
  * </table>
  * *********************************************************************
 */
 
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef _CMP_TEST_H
-#define _CMP_TEST_H
+#ifndef _IDD_ELEC_TEST_H
+#define _IDD_ELEC_TEST_H
 
-/* Includes ------------------------------------------------------------------*/
-#include "common.h"
+void idd1_elec_test(void);
 
-//cmp test
-extern int cmp_base_test(void);
-extern int cmp_dfcr_test(void);
-extern int cmp_wfcr_test(void);
+void idd2_elec_test(void);
+
+void idd3_elec_test(void);
 
 #endif

@@ -26,7 +26,7 @@
 void eflash_endurance(void)
 {
 	csi_rsr_src_e eRstSrc;
-	uint32_t i,wTime1,wTime2,wTime;
+	uint32_t i,wTime1,wTime;
 	uint32_t wFillData[64] = {0xffff0000};
 	uint32_t wTimeData[1] = {0};
 	csi_error_t tError;
@@ -47,7 +47,7 @@ void eflash_endurance(void)
 	
 	
 	wTime1 = *(uint32_t *)(0x10000000);
-	wTime2 = *(uint32_t *)(0x10000040);
+	//wTime2 = *(uint32_t *)(0x10000040);
 	
 	wTime = wTime1;
 	

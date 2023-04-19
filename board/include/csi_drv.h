@@ -23,7 +23,6 @@
 #include <drv/adc.h>
 #include <drv/rtc.h>
 #include <drv/pm.h>
-#include <drv/hwdiv.h>
 #include <drv/reliability.h>
 #include <drv/pin.h>
 #include <drv/gpio.h>

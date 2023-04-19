@@ -262,10 +262,10 @@ void csi_bt_pwm_updata(csp_bt_t *ptBtBase, uint32_t wFreq, uint8_t byDutyCycle)
  *  \param[in] ptBtBase: pointer of bt register structure
  *  \param[in] eTrgin: bt sync evtrg input channel(0~1)
  *  \param[in] eTrgMode: bt evtrg mode, continuous/once
- *  \param[in] bAutoRearm: auto rearm, ENABLE/DISABLE(true/false)
+ *  \param[in] bAutoRearm: auto rearm, BT_TRG_AUTOAREARM/BT_TRG_SYCAREARM
  *  \return none
  */
-csi_error_t csi_bt_set_sync(csp_bt_t *ptBtBase,csi_bt_trgin_e eTrgin, csi_bt_trgmode_e eTrgMode, csi_bt_trgmode_e bAutoRearm)
+csi_error_t csi_bt_set_sync(csp_bt_t *ptBtBase,csi_bt_trgin_e eTrgin, csi_bt_trgmode_e eTrgMode, csi_bt_arearm_e bAutoRearm)
 {
 	if(eTrgin > BT_TRGIN_SYNCEN2)
 		return CSI_ERROR;
