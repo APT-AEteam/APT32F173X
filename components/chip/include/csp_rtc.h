@@ -174,7 +174,7 @@ typedef enum {
 #define RTC_TKEYTRG_POS		(17ul)
 #define RTC_TKEYTRT_MSK		(0x3 << RTC_TKEYTRG_POS)
 
-
+#define RTC_RESET          (0x5 << 20)
 ///CCR
 #define RTC_DIVS_POS	(0ul)
 #define RTC_DIVS_MSK	(0x7fff << RTC_DIVS_POS)
@@ -381,6 +381,12 @@ static inline void csp_rtc_run(csp_rtc_t *ptRtcBase)
 	ptRtcBase->CR &= (~RTC_INIT);
 	ptRtcBase->KEY = 0x0;
 	while(ptRtcBase->CR & RTC_BSY);
+}
+
+static inline void csp_rtc_reset(csp_rtc_t *ptRtcBase)
+{
+
+	ptRtcBase->CR |= RTC_RESET;
 }
 
 static inline bool csp_rtc_is_busy(csp_rtc_t *ptRtcBase)
