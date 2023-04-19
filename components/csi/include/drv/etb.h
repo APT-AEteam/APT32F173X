@@ -34,8 +34,7 @@ typedef enum {
  */
 typedef enum {
     ETB_ONE_TRG_ONE	= 0,      //one device trig one deivce, 3~31channel
-    ETB_ONE_TRG_MORE,         //one device trig two for more device, 1~2channel
-    ETB_MORE_TRG_ONE,         //two or more device trig one deivce, 0 channel
+    ETB_ONE_TRG_MORE,         //one device trig two for more device, 0~2channel
 	ETB_ONE_TRG_ONE_DMA       //one device trig one deivce of dma, 20->31channel
 } csi_etb_ch_type_e;
 
@@ -331,7 +330,7 @@ typedef struct {
 void csi_etb_init(void);
 
 /**
-  \brief       alloc an etb channel
+  \brief       alloc an  etb channel
   \param[in]   eChType		etb channel work mode
   \return      channel id or CSI_ERROR
 */

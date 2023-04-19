@@ -4,7 +4,7 @@
  * \brief  ETCB(event trigger control block) driver
  * \copyright Copyright (C) 2015-2020 @ APTCHIP
  * <table>
- * <tr><th> Date  <th>Version  <th>Author  <th>Description
+ * <tr><th> Date  <th>Version   <th>Author  <th>Description
  * <tr><td> 2020-10-8 <td>V0.0  <td>WNN   <td>initial
  * <tr><td> 2021-1-8  <td>V0.1  <td>WNN   <td>SW trigger
  * <tr><td> 2021-5-14 <td>V0.1  <td>ZJY   <td>initial
@@ -172,16 +172,8 @@ int32_t csi_etb_ch_alloc(csi_etb_ch_type_e eChType)
     uint32_t result = csi_irq_save();
 
     switch (eChType) {
-        case ETB_MORE_TRG_ONE:
-            ret_ch = 0;
-            if (check_is_alloced(ret_ch) < 0) 
-                ret = CSI_ERROR;
-			else 
-                ret = ret_ch;
-				
-            break;
         case ETB_ONE_TRG_MORE:
-            for (ret_ch = 1; ret_ch < 3; ret_ch++) 
+            for (ret_ch = 0; ret_ch < 3; ret_ch++) 
 			{
                 if (check_is_alloced(ret_ch) != -1) 
                     break;
@@ -263,17 +255,11 @@ csi_error_t csi_etb_ch_config(csi_etb_ch_e eEtbCh, csi_etb_config_t *ptConfig)
 
 			break;
 		case ETB_ONE_TRG_MORE:					//channel num = [1:2]		
-			if((eEtbCh == ETB_CH1) || (eEtbCh == ETB_CH2))
+			if((eEtbCh == ETB_CH0) ||(eEtbCh == ETB_CH1) || (eEtbCh == ETB_CH2))
 				etb_one_trg_more_set(ETCB, eEtbCh, ptConfig->bySrcIp, ptConfig->byDstIp, ptConfig->byDstIp1, ptConfig->byDstIp2,ptConfig->byTrgMode);
 			else
 				ret = CSI_ERROR;
 				
-			break;
-		case ETB_MORE_TRG_ONE:					//channel num = 0
-			if(eEtbCh == ETB_CH0)
-				etb_more_trg_one_set(ETCB,ptConfig->bySrcIp, ptConfig->bySrcIp1, ptConfig->bySrcIp2, ptConfig->byDstIp, ptConfig->byTrgMode);
-			else
-				ret = CSI_ERROR;
 			break;
 		case ETB_ONE_TRG_ONE_DMA:				//channel num = [20:31]
 			if((eEtbCh >= ETB_CH_DMA_STAR) && (eEtbCh < ETB_CH_MAX_NUM))
