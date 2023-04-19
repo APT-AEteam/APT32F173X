@@ -166,7 +166,7 @@ void gpio_vol_test(void)
  *  \param[in] none
  *  \return none
  */
-void gpio_rpu_rpd_test(void)
+void gpio_rpu_test(void)
 {	
 	csi_pin_set_mux(PA0,PA0_GPD);
 	csi_pin_set_mux(PB1,PB1_GPD);

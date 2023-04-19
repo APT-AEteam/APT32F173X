@@ -584,6 +584,10 @@ typedef enum{
 #define EFLR_CTL_SLP	(0x1<<20)
 #define EFLR_CTL_SLP_LP	(0x2<<20)
 
+#define DSP_PRCVTIM_POS		(0x00)
+#define DSP_PRCVTIM_MSK		(0x03ul << DSP_PRCVTIM_POS)
+#define SLP_PRCVTIM_POS		(0x02)
+#define SLP_PRCVTIM_MSK		(0x03ul << SLP_PRCVTIM_POS)
 ///System Protection Information Mirror Register Access
 #define PROT_ACCESS_KEY  0x6996ul
 #define IDCCR_KEY (0xE11Eul<<16)

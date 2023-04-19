@@ -350,10 +350,9 @@ typedef enum {
 	PA8_INPUT				=  1U,		//input
 	PA8_OUTPUT				=  2U,		//output
 	PA8_OUTPUT_MONI		    =  3U,		//output with monitor
-	PA8_DAC0_OUT            =  4U,
     PA8_USART0_CK           =  5U,
     PA8_GPTB3_CHAX          =  6U,
-    PA8_QSPI_nCS3	  	    =  7U,
+	PA8_DAC0_OUT            =  7U,
 	PA8_GPTB0_CHAX			=  8U,
 	PA8_GPTB1_CHAX          =  9U,	
 	PA8_CP0_OUT             =  11U,
