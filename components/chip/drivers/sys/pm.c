@@ -75,9 +75,8 @@ csi_error_t csi_pm_enter_sleep(csi_pm_mode_e mode)
 			#ifdef CONFIG_USER_PM
 			g_tPmCore.prepare_to_sleep();
 			#endif
-			csp_sleep_vos_config(ptSysconBase, BGR_1V,VCREF_12);
-			csp_sleep_vos_config_enable(ptSysconBase);
-			csp_sleep_vos_enable(ptSysconBase, ENABLE);
+			ptSysconBase->PWRKEY = 0xA67A6CC7;
+			ptSysconBase->PWRCR = (ptSysconBase->PWRCR & (~(0x0f<<16))) | 0x40002;
 			soc_sleep(PM_MODE_SLEEP);	
 			#ifdef CONFIG_USER_PM
 			g_tPmCore.wkup_frm_sleep();		
