@@ -22,7 +22,9 @@ typedef enum {
     SRC_IMOSC = 0,
     SRC_EMOSC,
     SRC_HFOSC,
-	SRC_PLL,
+	SRC_AUTO_HF_PLL,
+	SRC_AUTO_EM_PLL,
+	SRC_MANUAL_PLL,
 	SRC_ISOSC,
 	SRC_ESOSC	
 } cclk_src_e;
@@ -79,16 +81,30 @@ typedef enum{
 	PLL_SEL_HFOSC_12M,	
 	PLL_SEL_HFOSC_6M,	
 	PLL_SEL_EMOSC_24M
-}pll_sel_e;
+}pll_manual_sel_e;
+
+typedef enum{
+	PLL_HFOSC_24M_AUTO,
+	PLL_EMOSC_24M_AUTO
+}pll_auto_sel_e;
+
+typedef enum{
+	CKQ_DIV2,	
+	CKQ_DIV4,	
+	CKQ_DIV6,
+	CKQ_DIV8,
+}pll_ckqdiv_e;
 
 typedef struct {
-	pll_sel_e	    eClkSel;	//clock frequency
-	uint8_t         byDivM;
-	uint8_t         byNul;
-	uint8_t         byCkp_Div;
-}csi_pll_clk_config_t;
+	pll_manual_sel_e  eClkSel;	//clock frequency
+	uint8_t           byDivM;
+	uint8_t           byNul;
+	uint8_t           byCkp_Div;
+	pll_ckqdiv_e      byCkq_Div;
+}csi_pll_manual_config_t;
 
-extern csi_pll_clk_config_t tPllClkConfig;
+extern csi_pll_manual_config_t tPllClkConfig;
+
 //typedef struct {
 //    cclk_src_e	eSysClkSrc;      /* select sysclk source clock */
 //	uint32_t 	wOscFreq;        /* select frequence */
@@ -163,6 +179,23 @@ extern uint32_t g_wSystemClk;
   \return csi_error_t.
  */ 
 csi_error_t csi_sysclk_config(csi_clk_config_t tClkCfg);
+
+/** \brief PLL clk manual config
+ * 
+ *  \param[in] ePllCfg: pll clock configuration 
+ *  \param[in] wFreq: pll clk freq 
+ *  \return csi_error_t.
+ */
+ csi_error_t csi_pll_manual_config(csi_pll_manual_config_t ePllCfg,uint32_t wFreq);
+ 
+/** \brief PLL clk auto config
+ * 
+ *  \param[in] ePllAutoSel: auto clk source
+ *  \param[in] wFreq: pll clk freq 
+ *  \return csi_error_t.
+ */
+ csi_error_t csi_pll_auto_config(pll_auto_sel_e ePllAutoSel,uint32_t wFreq);
+ 
 /** 
   \brief Clock output configuration
   \param[in] eCloSrc: source to output
@@ -170,6 +203,7 @@ csi_error_t csi_sysclk_config(csi_clk_config_t tClkCfg);
   \param[in] tPin: output pin
   \return csi_error_t.
  */
+
 csi_error_t csi_clo_config(clo_src_e, clo_div_e, pin_name_e);
 
 /** 

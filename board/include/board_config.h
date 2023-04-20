@@ -28,6 +28,18 @@ extern "C" {
 // Otherwise, the project will report an error
 //#define CODE_REMAP_TO_IRAM
 
+#ifndef EMOSC_VALUE
+#define EMOSC_VALUE             24000000U
+#endif
+
+#ifndef ESOSC_VALUE
+#define ESOSC_VALUE             32768U
+#endif
+
+#ifndef PLL_VALUE
+#define PLL_VALUE               105000000U
+#endif
+
 /* example pin manager */
 
 #define CONSOLE_IDX                     1

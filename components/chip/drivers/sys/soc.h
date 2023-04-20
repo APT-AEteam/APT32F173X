@@ -58,18 +58,6 @@ extern "C" {
 #define HFOSC_3M_VALUE      3000000U
 #endif
 
-#ifndef EMOSC_VALUE
-#define EMOSC_VALUE             24000000U
-#endif
-
-#ifndef ESOSC_VALUE
-#define ESOSC_VALUE             32768U
-#endif
-
-#ifndef PLL_105M_VALUE
-#define PLL_105M_VALUE     105000000U
-#endif
-
 //UARTx id number
 #define UART_IDX_NUM   		3
 #define UART_RECV_MAX_LEN	128
