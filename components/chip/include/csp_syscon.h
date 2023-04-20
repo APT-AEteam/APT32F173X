@@ -313,6 +313,9 @@ typedef enum{
 #define PLL_CKQEN_MSK 	(0x1ul << PLL_CKQEN_POS)
 #define PLL_CKQEN_POS 	(24)
 
+#define PLL_CKQ_DIV_MSK 	(0x3ul << PLL_CKQ_DIV_POS)
+#define PLL_CKQ_DIV_POS 	(25)
+
 #define PLL_CKREN_MSK 	(0x1ul << PLL_CKREN_POS)
 #define PLL_CKREN_POS 	(28)
 
@@ -697,6 +700,10 @@ static inline void csp_pll_clk_enable(csp_syscon_t *ptSysconBase, bool bEnable)
 	ptSysconBase->PLLCR = (ptSysconBase->PLLCR & ~PLL_CKPEN_MSK)| (bEnable << PLL_CKPEN_POS);
 }
 
+static inline void csp_pll_set_ckq_div(csp_syscon_t *ptSysconBase, uint8_t byCkp_Div)
+{
+	ptSysconBase->PLLCR = (ptSysconBase->PLLCR & (~PLL_CKQ_DIV_MSK)) | byCkp_Div << PLL_CKQ_DIV_POS;
+}
 /*
 static inline void csp_pll_ckq_enable(csp_syscon_t *ptSysconBase, bool bEnable)
 {
