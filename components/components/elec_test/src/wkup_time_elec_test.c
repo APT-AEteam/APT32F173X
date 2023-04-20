@@ -12,7 +12,7 @@
 #include <string.h>
 #include <iostring.h>
 #include <csi_drv.h>
-
+#include "board_config.h"
 /* externs function--------------------------------------------------------*/
 /* externs variablesr------------------------------------------------------*/
 /* Private macro-----------------------------------------------------------*/
@@ -102,7 +102,7 @@ void deepsleep_wkup_time_test(uint32_t wSclkFreq, uint8_t byDspRcvTim)
 		eCloDiv = CLO_DIV2;					
 	else if(wSclkFreq == HFOSC_24M_VALUE)
 		eCloDiv = CLO_DIV8;
-	else if(wSclkFreq == PLL_105M_VALUE)
+	else if(wSclkFreq == PLL_VALUE)
 		eCloDiv = CLO_DIV16;
 			
 	csi_clo_config(CLO_PCLK, eCloDiv, PD4);						//CLO = PD4 OUTPUT PCLK

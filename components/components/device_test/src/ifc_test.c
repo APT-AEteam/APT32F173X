@@ -19,6 +19,7 @@
 #include "iwdt.h"
 #include "reliability.h"
 #include "pin.h"
+#include "board_config.h"
  
 /* externs function--------------------------------------------------------*/
 extern csi_error_t csi_iwdt_init(csi_iwdt_to_e eTimeOut);
@@ -88,8 +89,8 @@ csi_error_t eflash_parallel_test(void)
 	
 	csi_ifc_dflash_paramode_enable(IFC, ENABLE);
 	
-	tClkConfig.eClkSrc = SRC_PLL;
-	tClkConfig.wFreq = PLL_105M_VALUE;
+	tClkConfig.eClkSrc = SRC_AUTO_HF_PLL;
+	tClkConfig.wFreq = PLL_VALUE;
 	tClkConfig.eSdiv = 1;
 	tClkConfig.ePdiv = 1;
 	csi_sysclk_config(tClkConfig);	
