@@ -44,7 +44,6 @@ int gpta_timer_test(void)
  *  \param[in] none
  *  \return error code
  */
-
 int gpta_capture_sync_test(void)
 {
 	int iRet = 0;	
@@ -106,7 +105,6 @@ int gpta_capture_sync_test(void)
  *  \param[in] none
  *  \return error code
  */
-
 int gpta_capture_sync_test1(void)
 {
 	int iRet = 0;	
@@ -297,13 +295,11 @@ int gpta_pwm_waveform_test(void)
     return iRet;
 }
 
-//================================================================================== 
-//
-//GPTA链接代码实例
-//
-//通过GPTA1链接GPTA0,实现波形的输出
-//
-//==================================================================================
+/** \brief GPTA链接代码实例
+ *         通过GPTA1链接GPTA0,实现波形的输出
+ *  \param[in] none
+ *  \return error code
+ */
 int gpta_reglk_test(void)
 {
 	int iRet = 0;	

@@ -23,17 +23,20 @@
 #include <irq.h>
 #include <iostring.h>
 #include "syscon_test.h"
+#include "board_config.h"
 /* externs function--------------------------------------------------------*/
 /* externs variablesr------------------------------------------------------*/
 /* Private macro-----------------------------------------------------------*/
 /* Private variablesr------------------------------------------------------*/
 
-//================================================================================== 
-//
-//NMI中断测试
-//nmi中断测试，中断后，会进入NMI_Handler处理函数中
-//
 
+/** \brief NMI中断测试
+ *   	   - nmi中断测试，中断后，会进入NMI_Handler处理函数中
+ *     		
+\
+ *  \param[in] none
+ *  \return error code
+ */
 void syscon_nmi_int_test(void)
 {
 	csp_nmi_int_enable(SYSCON, NMI_EXI0_INT);
@@ -47,12 +50,13 @@ void syscon_nmi_int_test(void)
 
 }
 
-//================================================================================== 
-//
-//闪灯程序，可进行EFT状态显示测试等
-//
-//
-//==================================================================================
+/** \brief 闪灯程序
+ *         - 可进行EFT状态显示测试等
+ *     		
+\
+ *  \param[in] none
+ *  \return error code
+ */
 void syscon_eft_led_test(void)
 {
 	csi_pin_set_mux(PA6, PA6_OUTPUT);		//PA06 output
@@ -71,11 +75,14 @@ void syscon_eft_led_test(void)
 	}		
 }
 
-//================================================================================== 
-//
-//FVR测试,BUF 1v输出
-//
-//==================================================================================
+/** \brief FVR测试
+ *   	   - BUF 1v输出 
+ *         - 对应输出管脚为PB8
+ *     		
+\
+ *  \param[in] none
+ *  \return error code
+ */
 void syscon_fvr_test(void)
 {
 	csi_pin_set_mux(PB8, PB8_BUF);
@@ -83,12 +90,13 @@ void syscon_fvr_test(void)
 	*(unsigned int *)(0x40032000) = 0x5a110000;
 }
 
-//================================================================================== 
-//
-//在测试的过程中，系统时钟选择EM clk,{SRC_EMOSC, EMOSC_VALUE, SCLK_DIV1, PCLK_DIV1, 5556000, 5556000};
-//EM时钟测试，失效后，会进行复位，程序指示灯不闪烁
-//
-//==================================================================================
+/** \brief EM时钟失效测试
+ *   	   - 在测试的过程中，系统时钟选择EM clk,{SRC_EMOSC, EMOSC_VALUE, SCLK_DIV1, PCLK_DIV1, 5556000, 5556000};
+ *         - 失效后，会进行复位，程序指示灯不闪烁 		
+\
+ *  \param[in] none
+ *  \return error code
+ */
 void syscon_emosc_rst_test(void)
 {
 	SYSCON->GCER |= (1<< 18);
@@ -96,24 +104,30 @@ void syscon_emosc_rst_test(void)
 	SYSCON->OPT1 |= (1<< 21);   //EMCKM的检测时间间隔设置，检测周期基于当前IMOSC的频率设置,1h：14个周期
 	syscon_eft_led_test();
 }
-//================================================================================== 
-//
-//在测试的过程中，系统时钟选择EM clk,{SRC_EMOSC, EMOSC_VALUE, SCLK_DIV1, PCLK_DIV1, 5556000, 5556000};
-//EM时钟测试。失效后，会切换到IM时钟，程序指示灯还在闪烁
-//
-//==================================================================================
+
+/** \brief EM时钟失效测试，会切换到IM时钟
+ *   	   - 系统时钟选择EM clk,{SRC_EMOSC, EMOSC_VALUE, SCLK_DIV1, PCLK_DIV1, 5556000, 5556000};
+ *         - 失效后，会切换到IM时钟，程序指示灯还在闪烁
+ *     		
+\
+ *  \param[in] none
+ *  \return error code
+ */
 void syscon_emosc_audo_imosc_test(void)
 {
 	SYSCON->GCER |= (1<< 18);
 	SYSCON->GCDR |= (1<< 19);  //禁止EM失效后，进行复位，会切换到IM时钟   
 	syscon_eft_led_test();
 }
-//================================================================================== 
-//
-//在测试的过程中，系统时钟选择EM clk,{SRC_EMOSC, EMOSC_VALUE, SCLK_DIV1, PCLK_DIV1, 5556000, 5556000};
-//EM时钟测试，失效中断测试，EM失效后，会进入中断函数syscon_int_handler
-//
-//==================================================================================
+
+/** \brief EM时钟失效中断测试
+ *   	   - 在测试的过程中，系统时钟选择EM clk,{SRC_EMOSC, EMOSC_VALUE, SCLK_DIV1, PCLK_DIV1, 5556000, 5556000};
+ *         - EM失效后，会进入中断函数syscon_int_handler
+ *     		
+\
+ *  \param[in] none
+ *  \return error code
+ */
 void syscon_emosc_cmk_int_test(void)
 {
 	SYSCON->GCER |= (1<< 18);
@@ -123,13 +137,14 @@ void syscon_emosc_cmk_int_test(void)
 	syscon_eft_led_test();	
 }
 
-//================================================================================== 
-//
-//osc5005时钟测试
-//时钟选择{SRC_HFOSC, HFOSC_48M_VALUE, SCLK_DIV4, PCLK_DIV1, 5556000, 5556000};
-//切换到osc5005时钟，为HFOSC时钟的1/2，即24M
-//==================================================================================
-
+/** \brief osc5005时钟测试
+ *   	   - 时钟选择{SRC_HFOSC, HFOSC_48M_VALUE, SCLK_DIV4, PCLK_DIV1, 5556000, 5556000};
+ *         - 切换到osc5005时钟，为HFOSC时钟的1/2，即24M
+ *     		
+\
+ *  \param[in] none
+ *  \return error code
+ */
 void syscon_osc5005_trim_test(void)
 {
 	*(unsigned int *)(0x40011000+0x1FC) = 0x00006996;	
@@ -138,25 +153,29 @@ void syscon_osc5005_trim_test(void)
 	csi_clo_config(CLO_HFCLK, CLO_DIV4, PA2);             
 	
 }
- //================================================================================== 
-//
-//EXTRST 外部复位管脚触发的硬件 RESET 信号（低电平有效）。此复位只有在外部复位脚有效时可用（通过User Option配置）。
-//
-//代码下载完成后，会存在一直复位的现象，此时将PD5拉高，芯片将不会一直复位
-//测试过程中，RESET脚拉低，指示IO口不翻转，一直进行复位，RESET脚拉高，指示IO口翻转
-//==================================================================================
+
+/** \brief 外部EXTRST管脚RESET 测试
+ *   	   - EXTRST 外部复位管脚触发的硬件 RESET 信号（低电平有效）。此复位只有在外部复位脚有效时可用（通过User Option配置）。
+ *         - 代码下载完成后，会存在一直复位的现象，此时将PD5拉高，芯片将不会一直复位
+ *         - 测试过程中，RESET脚拉低，指示IO口不翻转，一直进行复位，RESET脚拉高，指示IO口翻转
+ *     		
+\
+ *  \param[in] none
+ *  \return error code
+ */
 void syscon_rst_test(void)
 {
 	csi_ifc_wr_useroption(IFC, 0x05);
 }
 
- //================================================================================== 
-//
-//pll失锁测试
-//PLL失锁产生的系统复位
-//使用EM时钟为PLL源时钟，测试过程中，拔掉EM时钟，会产生PLL失锁系统复位
-//
-//==================================================================================
+/** \brief pll失锁测试
+ *   	   - PLL失锁产生的系统复位
+ *         - 使用EM时钟为PLL源时钟，测试过程中，拔掉EM时钟，会产生PLL失锁系统复位
+ *     		
+\
+ *  \param[in] none
+ *  \return error code
+ */
 void syscon_pllunlock_test(void)
 {
 	csi_pin_set_mux(PD0, PD0_XIN);
@@ -178,12 +197,14 @@ void syscon_pllunlock_test(void)
 	csi_pll_enable();
 }
 
-//================================================================================== 
-//
-//sram测试
-//
-//==================================================================================
-//link部分修改
+/** \brief sram测试
+ *   	   - link部分修改
+ * 
+ *     		
+ *  \param[in] none
+ *  \return error code
+ */
+
 /*
 MEMORY
 {
@@ -222,12 +243,13 @@ void syscon_sram_test(void)
 	sram_isram_testing();
 }
 
-//================================================================================== 
-//
-//系统复位测试
-//注意添加相应的延迟,以防下次上电CDK连接困难的问题
-//
-//==================================================================================
+/** \brief 系统复位测试
+ *   	   - 注意添加相应的延迟,以防下次上电CDK连接困难的问题
+ *        
+ *     		
+ *  \param[in] none
+ *  \return error code
+ */
 void syscon_reset_test(void)
 {
 	mdelay(1000);
@@ -236,12 +258,13 @@ void syscon_reset_test(void)
 	csp_set_swrst(SYSCON, SYS_SWRST);
 }
 
-//================================================================================== 
-//
-//系统复位测试，跳转到4K对齐地址
-//注意添加相应的延迟,以防下次上电CDK连接困难的问题
-//系统复位后，跳转到0x4000地址
-//==================================================================================
+/** \brief 系统复位测试，跳转到4K对齐地址
+ *   	   - 注意添加相应的延迟,以防下次上电CDK连接困难的问题
+ *         - 系统复位后，跳转到0x4000地址
+ *     		
+ *  \param[in] none
+ *  \return error code
+ */
 void syscon_reset_srb_test(void)
 {
 	mdelay(1000);
@@ -252,79 +275,82 @@ void syscon_reset_srb_test(void)
 	csp_set_swrst(SYSCON, SYS_SWRST);
 }
 
-//================================================================================== 
-//
-//低频率输出测试，需要加延迟，防止下次CDK连接困难
-//
-//
-//==================================================================================
+/** \brief 低频率输出测试
+ *   	   - 需要加延迟，防止下次CDK连接困难
+ *     		
+ *  \param[in] none
+ *  \return error code
+ */
 void syscon_fre_testing(void)
 {
 	mdelay(1000);
 	mdelay(1000);
-	//csi_clo_config(CLO_HFCLK, CLO_DIV4, PB3);	
-	csi_clo_config(CLO_IMCLK, CLO_DIV1, PB3);	
+	//csi_clo_config(CLO_HFCLK, CLO_DIV2, PB3);	
+	//csi_clo_config(CLO_IMCLK, CLO_DIV1, PB3);	
 	//csi_clo_config(CLO_ISCLK, CLO_DIV1, PB3);	
 	//csi_clo_config(CLO_PLL_PCLK, CLO_DIV16, PB3);	
+	csi_clo_config(CLO_PLL_QCLK, CLO_DIV16, PB3);	
 	
 }
 
-//================================================================================== 
-//
-//LVD测试 调试模式下，中断不是很好测试，可在中断函数中，加入电平变化函数
-//
-//==================================================================================
-
+/** \brief LVD测试
+ *         - 中断测试，可在中断函数中，加入电平变化函数
+ *     		
+ *  \param[in] none
+ *  \return error code
+ */
 void syscon_lvd_test(void)
 {
 	csi_lvd_int_enable(LVD_INTF,LVD_21);  //VDD掉电到3.0V即触发LVD中断
-	
+	csi_pin_set_mux(PA5, PA5_OUTPUT);
 	while(1)
 	{
 		if(csi_lvd_flag())
 		{
-			csi_pin_set_high(PA6);	
+			csi_pin_set_high(PA5);	
 		}
 		else
 		{
-			csi_pin_set_low(PA6);	
+			csi_pin_set_low(PA5);	
 		}
 		
 	}	
 }
 
-//================================================================================== 
-//
-//LVR测试 
-//
-//==================================================================================
+/** \brief LVR测试
+ *   	   - 
+ *     		
+ *  \param[in] none
+ *  \return error code
+ */
 void syscon_lvr_test(void)
 {
 	csi_lvr_enable(LVR_31);      //VDD掉电到3.1V，芯片复位 
-	
+	csi_pin_set_mux(PA5, PA5_OUTPUT);
 	while(1)
 	{
 		mdelay(100);
-		csi_pin_toggle(PA6);	
+		csi_pin_toggle(PA5);	
 	}	
 }
 
-//================================================================================== 
-//
-//power测试，测试的过程中关掉LVD
-//
-//==================================================================================
+/** \brief power测试
+ *         - 测试的过程中关掉LVD
+ *     		
+ *  \param[in] none
+ *  \return error code
+ */
 void syscon_lvd_power_test()
 {
 	csi_lvd_disable();	
 }
 
-//================================================================================== 
-//
-//时钟中断测试
-//
-//==================================================================================
-
+/** \brief 时钟中断测试
+ *         - 时钟稳定后，会进入syscon_int_handler中断函数中
+ *     		
+ *  \param[in] none
+ *  \return error code
+ */
 void syscon_clk_int_test(cclk_src_int_e eSrc)
 {
 	switch(eSrc)
@@ -385,12 +411,12 @@ void syscon_clk_int_test(cclk_src_int_e eSrc)
 	}
 }
 
-//================================================================================== 
-//
-//EM 时钟滤波功能测试
-//将其他时钟切换到IM时钟，如果EM时间打开，先关掉，然后配置EM时钟，最后切换EM时钟为SCLK。
-//==================================================================================
-
+/** \brief EM 时钟滤波功能测试
+ *         - 将其他时钟切换到IM时钟，如果EM时间打开，先关掉，然后配置EM时钟，最后切换EM时钟为SCLK。
+ *     		
+ *  \param[in] none
+ *  \return error code
+ */
 void syscon_em_fiten_test(void)
 {
 	
@@ -414,12 +440,46 @@ void syscon_em_fiten_test(void)
 		
 }
 
-//================================================================================== 
-//
-//iwdt 中断测试
-//在中断中加入IO口翻转功能，可以测量出报警中断的时间
-//==================================================================================
+/** \brief PLL时钟手动配置及测试
+ *         - 如果选择PLL_SEL_HFOSC_24M ~ PLL_SEL_EMOSC_24M,需要自己配置byDivM、byNul、byCkp_Div、byCkq_Div参数
+ *         - 例如选择PLL_SEL_HFOSC_24M
+ *         - 配置出的时钟为：
+ *         - PLLPCLK = 24 /(tPllClkConfig.byDivM+1) * tPllClkConfig.byNul / (tPllClkConfig.byCkp_Div+1)
+ *         - PLLQCLK = 24 /(tPllClkConfig.byDivM+1) * tPllClkConfig.byNul / (tPllClkConfig.byCkq_Div)
+ *     	   - wFreq 不需要配置
+ *  \param[in] none
+ *  \return error code
+ */
+void syscon_pll_manual_clk_test(void)
+{
+	csi_pll_manual_config_t tPllClkCfg;		
+	
+	tPllClkCfg.eClkSel = PLL_SEL_HFOSC_24M;
+	tPllClkCfg.byDivM    = 3;
+	tPllClkCfg.byNul     = 35;
+	tPllClkCfg.byCkp_Div = 1;
+	tPllClkCfg.byCkp_Div = CKQ_DIV4;
+	csi_pll_manual_config(tPllClkCfg,105000000);			
+}
 
+/** \brief PLL时钟自动配置及测试
+ *         - 如果选择PLL_HFOSC_24M_AUTO或PLL_EMOSC_24M_AUTO,只需要配置输出频率即可
+ *         - 例如配置tPllClkCfg.eClkSel = PLL_HFOSC_24M_AUTO;   wFreq = 96000000
+ *     		
+ *  \param[in] none
+ *  \return error code
+ */
+void syscon_pll_auto_clk_test(void)
+{
+	csi_pll_auto_config(PLL_HFOSC_24M_AUTO,96000000);	//如果使用EM为PLL时钟源，需要配置EM管脚		
+}
+
+/** \brief iwdt 中断测试
+ *         - 在中断中加入IO口翻转功能，可以测量出报警中断的时间
+ *     		
+ *  \param[in] none
+ *  \return error code
+ */
 void syscon_iwdt_irq_test(void)
 {
 
@@ -429,13 +489,12 @@ void syscon_iwdt_irq_test(void)
 
 }
 
-//================================================================================== 
-//
-//deepsleep测试
-//通过LPT唤醒DEEPSLEEP模式
-//
-//==================================================================================
-
+/** \brief deepsleep测试
+ *         - 通过LPT唤醒DEEPSLEEP模式
+ *     	   - 通过IO口翻转，可以测量出deepsleep休眠时间
+ *  \param[in] none
+ *  \return error code
+ */
 void syscon_lpt_wakeup_deepsleep_test(void)
 {
 	
@@ -503,13 +562,14 @@ void syscon_lpt_wakeup_deepsleep_test(void)
 	}
 }
 
-//================================================================================== 
-//
-//sleep测试
-//通过LPT唤醒SLEEP模式
-//需要关掉BT3
-//==================================================================================
-
+/** \brief sleep模式测试
+ *         - 通过LPT唤醒SLEEP模式
+ *         - 需要关掉BT3
+ *         - 通过IO口翻转，可以测量出sleep休眠时间
+ *     		
+ *  \param[in] none
+ *  \return error code
+ */
 void syscon_lpt_wakeup_sleep_test(void)
 {
 	
@@ -587,7 +647,7 @@ void syscon_lpt_wakeup_sleep_test(void)
 	}
 }
 
-/** \brief 通过LPT唤醒DEEPSLEEP模式
+/** \brief 通过IO口唤醒DEEPSLEEP模式
  * 
  *  \param  none
  *  \return none
@@ -668,12 +728,12 @@ void syscon_io_wakeup_sleep_test(void)
 	}
 }
 
-
-//================================================================================== 
-//
-//时钟切换测试
-//
-//==================================================================================
+/** \brief 时钟切换测试
+ *         - 
+ *     		
+ *  \param[in] none
+ *  \return error code
+ */
 int syscon_low_temp_mclk_switch_test(void)
 {
 	
@@ -780,12 +840,12 @@ int syscon_low_temp_mclk_switch_test(void)
 	return 0;
 }
 
-//================================================================================== 
-//
-//低温下deepsleep 1000次测试
-//打开看门狗,记得在syscon_irqhandler函数中（在reliability.c中）喂狗
-//
-//==================================================================================
+/** \brief 低温下deepsleep 1000次测试
+ *         - 打开看门狗,记得在syscon_irqhandler函数中（在reliability.c中）喂狗
+ *     		
+ *  \param[in] none
+ *  \return error code
+ */
 void syscon_deepsleep_lowtemp_test(void)
 { 
 	 uint32_t wTimes = 0;
@@ -826,14 +886,15 @@ void syscon_deepsleep_lowtemp_test(void)
 	 }
 }
 
-//================================================================================== 
-//
-//硬件触发，需要触发三次，  TRGEV1CNT = 2 测试寄存器 SYSCON_EVTRG  SYSCON_EVPS
-//EXI1 		 --> BT_SYNC0 
-//EV1TRG  事件触发输出Event1 触发的中断。
-//测试寄存器： SYSCON_IMER SYSCON_IMDR SYSCON_IMCR  SYSCON_ICR SYSCON_RISR SYSCON_MISR SYSCON_RSR
-//SYSCON_IAR 对应位写入1，即可触发相应的中断
-//==================================================================================
+/** \brief 外部事件触发输出测试 EXI1 		 --> BT_SYNC0 
+ *         - 硬件触发，需要触发三次，  TRGEV1CNT = 2 测试寄存器 SYSCON_EVTRG  SYSCON_EVPS
+ *         - EV1TRG  事件触发输出Event1 触发的中断。
+ *         - 测试寄存器： SYSCON_IMER SYSCON_IMDR SYSCON_IMCR  SYSCON_ICR SYSCON_RISR SYSCON_MISR SYSCON_RSR
+ *         - SYSCON_IAR 对应位写入1，即可触发相应的中断
+ *     		
+ *  \param[in] none
+ *  \return error code
+ */
 int syscon_evtrg_int_test(void)
 {
 	int iRet = 0;
@@ -870,13 +931,12 @@ int syscon_evtrg_int_test(void)
 	return iRet;
 }
 
-//================================================================================== 
-//
-//软件产生一次触发 
-//
-//测试寄存器：SYSCON_EVTRG SYSCON_EVSWF
-//
-//==================================================================================
+/** \brief 软件产生一次触发测试
+ *         - 测试寄存器：SYSCON_EVTRG SYSCON_EVSWF
+ *     		
+ *  \param[in] none
+ *  \return error code
+ */
 int syscon_evswf_test(void)
 {
 	int iRet = 0;

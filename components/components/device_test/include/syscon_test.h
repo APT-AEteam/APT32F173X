@@ -45,6 +45,8 @@ extern void syscon_lvr_test(void);
 extern void syscon_lvd_power_test(void);
 extern void syscon_clk_int_test(cclk_src_int_e eSrc);
 extern void syscon_em_fiten_test(void);
+extern void syscon_pll_auto_clk_test(void);
+extern void syscon_pll_manual_clk_test(void);
 extern void syscon_iwdt_irq_test(void);
 extern void syscon_lpt_wakeup_deepsleep_test(void);
 extern void syscon_lpt_wakeup_sleep_testing(void);
