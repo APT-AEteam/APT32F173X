@@ -96,30 +96,8 @@
         <Bit Name="SWRST" Authority="RW" Bits="7-5" Description="SYSCON产生软件复位。效果和CPU通过软复位指令产生软件复位一致。&#xD;&#xA;4h：产生系统复位。&#xD;&#xA;其他：无效。" />
         <Bit Name="CPUFTRST" Authority="RW" Bits="4-1" Description="CPU Fault发生时硬件触发系统复位使能控制位。（可由User Option加载复位缺省值）&#xD;&#xA;Other：禁止CPU Fault时硬件触发复位。&#xD;&#xA;Ah：   使能CPU Fault时硬件触发复位。" />
         <Bit Name="CLKEN" Authority="RW" Bits="0" Description="使能或禁止SYSCON模块的PCLK时钟。&#xD;&#xA;0h：禁止SYSCON模块的时钟。&#xD;&#xA;1h：使能SYSCON模块的时钟。" />
-        <Bit Name="IDCODE/ID_KEY" Authority="RW" Bits="31-16" Description="对当前寄存器进行写入时，必须同时写入正确KEY值。只有在ID_KEY等于0xE11E时，写入才有效。" />
-        <Bit Name="IDCODE" Authority="RO" Bits="15-8" Description="读取时，返回ID CODE（IP版本信息）" />
-        <Bit Name="SWRST" Authority="RW" Bits="7-5" Description="SYSCON产生软件复位。效果和CPU通过软复位指令产生软件复位一致。&#xD;&#xA;4h：产生系统复位。&#xD;&#xA;其他：无效。" />
-        <Bit Name="CPUFTRST" Authority="RW" Bits="4-1" Description="CPU Fault发生时硬件触发系统复位使能控制位。（可由User Option加载复位缺省值）&#xD;&#xA;Other：禁止CPU Fault时硬件触发复位。&#xD;&#xA;Ah：   使能CPU Fault时硬件触发复位。" />
-        <Bit Name="CLKEN" Authority="RW" Bits="0" Description="使能或禁止SYSCON模块的PCLK时钟。&#xD;&#xA;0h：禁止SYSCON模块的时钟。&#xD;&#xA;1h：使能SYSCON模块的时钟。" />
       </Register>
       <Register Name="SYSCON_GCER" Authority="RW" Address="0x40011004" Width="32" Description="通用使能控制寄存器">
-        <Bit Name="EMO_CMRST" Authority="RW" Bits="19" Description="在EMO_CKM功能使能后，使能或禁止外部EMOSC失效复位。（缺省使能）&#xD;&#xA;0h：无效。&#xD;&#xA;1h：使能或禁止EMOSC失效产生系统复位。当禁止产生系统复位时，EMOSC失效后，会自动切换系统时钟到IMOSC上。" />
-        <Bit Name="EMO_CKM" Authority="RW" Bits="18" Description="使能或禁止外部EMOSC监测功能（缺省禁止）。&#xD;&#xA;0h：无效。&#xD;&#xA;1h：使能或禁止EMOSC监测。" />
-        <Bit Name="ESO_CMRST" Authority="RW" Bits="17" Description="在ESO_CKM功能使能后，使能或禁止外部ESOSC失效复位。（缺省使能）&#xD;&#xA;0h：无效。&#xD;&#xA;1h：使能或禁止ESOSC失效产生系统复位。当禁止产生系统复位时，ESOSC失效后，会自动切换系统时钟到IMOSC上。" />
-        <Bit Name="ESO_CKM" Authority="RW" Bits="16" Description="使能或禁止外部ESOSC监测功能（缺省禁止）。&#xD;&#xA;0h：无效。&#xD;&#xA;1h：使能或禁止ESOSC监测。" />
-        <Bit Name="LP_EMOEN" Authority="RW" Bits="15" Description="使能或禁止DEEP-SLEEP模式下EMOSC工作状态（缺省禁止）。&#xD;&#xA;0h：无效。&#xD;&#xA;1h：使能或禁止EMOSC在DEEP-SLEEP模式下工作。" />
-        <Bit Name="LP_ESOEN" Authority="RW" Bits="14" Description="使能或禁止DEEP-SLEEP模式下ESOSC工作状态（缺省禁止）。&#xD;&#xA;0h：无效。&#xD;&#xA;1h：使能或禁止ESOSC在DEEP-SLEEP模式下工作。" />
-        <Bit Name="LP_IMOEN" Authority="RW" Bits="13" Description="使能或禁止DEEP-SLEEP模式下IMOSC工作状态（缺省禁止）。&#xD;&#xA;0h：无效。&#xD;&#xA;1h：使能或禁止IMOSC在DEEP-SLEEP模式下工作。" />
-        <Bit Name="LP_ISOEN" Authority="RW" Bits="12" Description="使能或禁止DEEP-SLEEP模式下ISOSC工作状态（缺省禁止，若IWDT使能，则该控制位设置无效）。&#xD;&#xA;0h：无效。&#xD;&#xA;1h：使能或禁止ISOSC在DEEP-SLEEP模式下工作。" />
-        <Bit Name="SYSTICK" Authority="RW" Bits="11" Description="使能或禁止CORET的计数时钟（缺省禁止）。&#xD;&#xA;0h：无效。&#xD;&#xA;1h：使能或禁止指定功能。" />
-        <Bit Name="IDLE_HCLK" Authority="RW" Bits="9" Description="使能或禁止SLEEP模式下的HCLK（缺省禁止）。&#xD;&#xA;0h：无效。&#xD;&#xA;1h：使能或禁止指定功能。" />
-        <Bit Name="IDLE_PCLK" Authority="RW" Bits="8" Description="使能或禁止SLEEP模式下的PCLK（缺省使能）。&#xD;&#xA;0h：无效。&#xD;&#xA;1h：使能或禁止指定功能。" />
-        <Bit Name="PLL" Authority="RW" Bits="5" Description="使能或禁止PLL（缺省禁止）。&#xD;&#xA;0h：无效。&#xD;&#xA;1h：使能或禁止PLL。" />
-        <Bit Name="HFOSC" Authority="RW" Bits="4" Description="使能或禁止HFOSC 内部振荡器（缺省禁止）。&#xD;&#xA;0h：无效。&#xD;&#xA;1h：使能或禁止指定振荡器。" />
-        <Bit Name="EMOSC" Authority="RW" Bits="3" Description="使能或禁止EMOSC 外部振荡器（XIN和XOUT管脚功能必须已经在GPIO中进行预先配置）。&#xD;&#xA;0h：无效。&#xD;&#xA;1h：使能或禁止指定振荡器。" />
-        <Bit Name="ESOSC" Authority="RW" Bits="2" Description="使能ESOSC 内部振荡器（缺省使能）。&#xD;&#xA;0h：无效。&#xD;&#xA;1h：使能指定振荡器。" />
-        <Bit Name="IMOSC" Authority="RW" Bits="1" Description="使能或禁止IMOSC 内部振荡器（缺省使能）。&#xD;&#xA;0h：无效。&#xD;&#xA;1h：使能或禁止指定振荡器。" />
-        <Bit Name="ISOSC" Authority="RW" Bits="0" Description="使能或禁止ISOSC 内部振荡器（缺省使能）。&#xD;&#xA;0h：无效。&#xD;&#xA;1h：使能或禁止指定振荡器。" />
         <Bit Name="EMO_CMRST" Authority="RW" Bits="19" Description="在EMO_CKM功能使能后，使能或禁止外部EMOSC失效复位。（缺省使能）&#xD;&#xA;0h：无效。&#xD;&#xA;1h：使能或禁止EMOSC失效产生系统复位。当禁止产生系统复位时，EMOSC失效后，会自动切换系统时钟到IMOSC上。" />
         <Bit Name="EMO_CKM" Authority="RW" Bits="18" Description="使能或禁止外部EMOSC监测功能（缺省禁止）。&#xD;&#xA;0h：无效。&#xD;&#xA;1h：使能或禁止EMOSC监测。" />
         <Bit Name="ESO_CMRST" Authority="RW" Bits="17" Description="在ESO_CKM功能使能后，使能或禁止外部ESOSC失效复位。（缺省使能）&#xD;&#xA;0h：无效。&#xD;&#xA;1h：使能或禁止ESOSC失效产生系统复位。当禁止产生系统复位时，ESOSC失效后，会自动切换系统时钟到IMOSC上。" />
@@ -156,42 +134,8 @@
         <Bit Name="ESOSC" Authority="RW" Bits="2" Description="使能或禁止ESOSC 内部振荡器（缺省使能）。&#xD;&#xA;0h：无效。&#xD;&#xA;1h：使能或禁止指定振荡器。" />
         <Bit Name="IMOSC" Authority="RW" Bits="1" Description="使能或禁止IMOSC 内部振荡器（缺省使能）。&#xD;&#xA;0h：无效。&#xD;&#xA;1h：使能或禁止指定振荡器。" />
         <Bit Name="ISOSC" Authority="RW" Bits="0" Description="使能或禁止ISOSC 内部振荡器（缺省使能）。&#xD;&#xA;0h：无效。&#xD;&#xA;1h：使能或禁止指定振荡器。" />
-        <Bit Name="EMO_CMRST" Authority="RW" Bits="19" Description="在EMO_CKM功能使能后，使能或禁止外部EMOSC失效复位。（缺省使能）&#xD;&#xA;0h：无效。&#xD;&#xA;1h：使能或禁止EMOSC失效产生系统复位。当禁止产生系统复位时，EMOSC失效后，会自动切换系统时钟到IMOSC上。" />
-        <Bit Name="EMO_CKM" Authority="RW" Bits="18" Description="使能或禁止外部EMOSC监测功能（缺省禁止）。&#xD;&#xA;0h：无效。&#xD;&#xA;1h：使能或禁止EMOSC监测。" />
-        <Bit Name="ESO_CMRST" Authority="RW" Bits="17" Description="在ESO_CKM功能使能后，使能或禁止外部ESOSC失效复位。（缺省使能）&#xD;&#xA;0h：无效。&#xD;&#xA;1h：使能或禁止ESOSC失效产生系统复位。当禁止产生系统复位时，ESOSC失效后，会自动切换系统时钟到IMOSC上。" />
-        <Bit Name="ESO_CKM" Authority="RW" Bits="16" Description="使能或禁止外部ESOSC监测功能（缺省禁止）。&#xD;&#xA;0h：无效。&#xD;&#xA;1h：使能或禁止ESOSC监测。" />
-        <Bit Name="LP_EMOEN" Authority="RW" Bits="15" Description="使能或禁止DEEP-SLEEP模式下EMOSC工作状态（缺省禁止）。&#xD;&#xA;0h：无效。&#xD;&#xA;1h：使能或禁止EMOSC在DEEP-SLEEP模式下工作。" />
-        <Bit Name="LP_ESOEN" Authority="RW" Bits="14" Description="使能或禁止DEEP-SLEEP模式下ESOSC工作状态（缺省禁止）。&#xD;&#xA;0h：无效。&#xD;&#xA;1h：使能或禁止ESOSC在DEEP-SLEEP模式下工作。" />
-        <Bit Name="LP_IMOEN" Authority="RW" Bits="13" Description="使能或禁止DEEP-SLEEP模式下IMOSC工作状态（缺省禁止）。&#xD;&#xA;0h：无效。&#xD;&#xA;1h：使能或禁止IMOSC在DEEP-SLEEP模式下工作。" />
-        <Bit Name="LP_ISOEN" Authority="RW" Bits="12" Description="使能或禁止DEEP-SLEEP模式下ISOSC工作状态（缺省禁止，若IWDT使能，则该控制位设置无效）。&#xD;&#xA;0h：无效。&#xD;&#xA;1h：使能或禁止ISOSC在DEEP-SLEEP模式下工作。" />
-        <Bit Name="SYSTICK" Authority="RW" Bits="11" Description="使能或禁止CORET的计数时钟（缺省禁止）。&#xD;&#xA;0h：无效。&#xD;&#xA;1h：使能或禁止指定功能。" />
-        <Bit Name="IDLE_HCLK" Authority="RW" Bits="9" Description="使能或禁止SLEEP模式下的HCLK（缺省禁止）。&#xD;&#xA;0h：无效。&#xD;&#xA;1h：使能或禁止指定功能。" />
-        <Bit Name="IDLE_PCLK" Authority="RW" Bits="8" Description="使能或禁止SLEEP模式下的PCLK（缺省使能）。&#xD;&#xA;0h：无效。&#xD;&#xA;1h：使能或禁止指定功能。" />
-        <Bit Name="PLL" Authority="RW" Bits="5" Description="使能或禁止PLL（缺省禁止）。&#xD;&#xA;0h：无效。&#xD;&#xA;1h：使能或禁止PLL。" />
-        <Bit Name="HFOSC" Authority="RW" Bits="4" Description="使能或禁止HFOSC 内部振荡器（缺省禁止）。&#xD;&#xA;0h：无效。&#xD;&#xA;1h：使能或禁止指定振荡器。" />
-        <Bit Name="EMOSC" Authority="RW" Bits="3" Description="使能或禁止EMOSC 外部振荡器（XIN和XOUT管脚功能必须已经在GPIO中进行预先配置）。&#xD;&#xA;0h：无效。&#xD;&#xA;1h：使能或禁止指定振荡器。" />
-        <Bit Name="ESOSC" Authority="RW" Bits="2" Description="使能或禁止ESOSC 内部振荡器（缺省使能）。&#xD;&#xA;0h：无效。&#xD;&#xA;1h：使能或禁止指定振荡器。" />
-        <Bit Name="IMOSC" Authority="RW" Bits="1" Description="使能或禁止IMOSC 内部振荡器（缺省使能）。&#xD;&#xA;0h：无效。&#xD;&#xA;1h：使能或禁止指定振荡器。" />
-        <Bit Name="ISOSC" Authority="RW" Bits="0" Description="使能或禁止ISOSC 内部振荡器（缺省使能）。&#xD;&#xA;0h：无效。&#xD;&#xA;1h：使能或禁止指定振荡器。" />
       </Register>
       <Register Name="SYSCON_GCSR" Authority="RW" Address="0x4001100c" Width="32" Description="通用状态寄存器">
-        <Bit Name="EMO_CMRST" Authority="RO" Bits="19" Description="EMOSC Clock Fail时，产生系统复位。&#xD;&#xA;0h：禁止产生系统复位。&#xD;&#xA;1h：使能产生系统复位。" />
-        <Bit Name="EMO_CKM" Authority="RO" Bits="18" Description="EMOSC Clock Monitor功能状态。&#xD;&#xA;0h：EMO CKM被关闭。&#xD;&#xA;1h：EMO CKM被打开。" />
-        <Bit Name="ESO_CMRST" Authority="RO" Bits="17" Description="ESOSC Clock Fail时，产生系统复位。&#xD;&#xA;0h：禁止产生系统复位。&#xD;&#xA;1h：使能产生系统复位。" />
-        <Bit Name="ESO_CKM" Authority="RO" Bits="16" Description="ESOSC Clock Monitor功能状态。&#xD;&#xA;0h：ESO CKM被关闭。&#xD;&#xA;1h：ESO CKM被打开。" />
-        <Bit Name="LP_EMOEN" Authority="RO" Bits="15" Description="DEEP-SLEEP模式下EMOSC工作状态。&#xD;&#xA;0h：EMOSC被关闭。&#xD;&#xA;1h：EMOSC被打开。" />
-        <Bit Name="LP_ESOEN" Authority="RO" Bits="14" Description="DEEP-SLEEP模式下ESOSC工作状态。&#xD;&#xA;0h：ESOSC被关闭。&#xD;&#xA;1h：ESOSC被打开。" />
-        <Bit Name="LP_IMOEN" Authority="RO" Bits="13" Description="DEEP-SLEEP模式下IMOSC工作状态。&#xD;&#xA;0h：IMOSC被关闭。&#xD;&#xA;1h：IMOSC被打开。" />
-        <Bit Name="LP_ISOEN" Authority="RO" Bits="12" Description="DEEP-SLEEP模式下ISOSC工作状态。&#xD;&#xA;0h：ISOSC被关闭。&#xD;&#xA;1h：ISOSC被打开。" />
-        <Bit Name="SYSTICK" Authority="RO" Bits="11" Description="CORET的时钟工作状态。&#xD;&#xA;0h：CORET时钟被关闭。&#xD;&#xA;1h：CORET时钟被打开。" />
-        <Bit Name="IDLE_HCLK" Authority="RO" Bits="9" Description="SLEEP 模式下HCLK状态。&#xD;&#xA;0h：SLEEP模式下HCLK被关闭。&#xD;&#xA;1h：SLEEP模式下HCLK被打开。" />
-        <Bit Name="IDLE_PCLK" Authority="RO" Bits="8" Description="SLEEP 模式下PCLK状态。&#xD;&#xA;0h：SLEEP模式下PCLK被关闭。&#xD;&#xA;1h：SLEEP模式下PCLK被打开。" />
-        <Bit Name="PLL" Authority="RO" Bits="5" Description="PLL工作状态。&#xD;&#xA;0h：PLL被关闭。&#xD;&#xA;1h：PLL被打开。" />
-        <Bit Name="HFOSC" Authority="RO" Bits="4" Description="HFOSC 内部振荡器工作状态。&#xD;&#xA;0h：HFOSC被关闭。&#xD;&#xA;1h：HFOSC被打开。" />
-        <Bit Name="EMOSC" Authority="RO" Bits="3" Description="EMOSC 振荡器工作状态。&#xD;&#xA;0h：EMOSC被关闭。&#xD;&#xA;1h：EMOSC被打开。" />
-        <Bit Name="ESOSC" Authority="RO" Bits="2" Description="ESOSC 振荡器工作状态。&#xD;&#xA;0h：ESOSC被关闭。&#xD;&#xA;1h：ESOSC被打开。" />
-        <Bit Name="IMOSC" Authority="RO" Bits="1" Description="IMOSC 内部振荡器工作状态。&#xD;&#xA;0h：IMOSC被关闭。&#xD;&#xA;1h：IMOSC被打开。" />
-        <Bit Name="ISOSC" Authority="RO" Bits="0" Description="ISOSC 内部振荡器工作状态。&#xD;&#xA;0h：ISOSC被关闭。&#xD;&#xA;1h：ISOSC被打开。" />
         <Bit Name="EMO_CMRST" Authority="RO" Bits="19" Description="EMOSC Clock Fail时，产生系统复位。&#xD;&#xA;0h：禁止产生系统复位。&#xD;&#xA;1h：使能产生系统复位。" />
         <Bit Name="EMO_CKM" Authority="RO" Bits="18" Description="EMOSC Clock Monitor功能状态。&#xD;&#xA;0h：EMO CKM被关闭。&#xD;&#xA;1h：EMO CKM被打开。" />
         <Bit Name="ESO_CMRST" Authority="RO" Bits="17" Description="ESOSC Clock Fail时，产生系统复位。&#xD;&#xA;0h：禁止产生系统复位。&#xD;&#xA;1h：使能产生系统复位。" />
@@ -218,18 +162,8 @@
         <Bit Name="ESOSC" Authority="RO" Bits="2" Description="ESOSC 振荡器稳定状态。&#xD;&#xA;0h：ESOSC时钟未稳定。&#xD;&#xA;1h：ESOSC时钟已稳定。" />
         <Bit Name="IMOSC" Authority="RO" Bits="1" Description="IMOSC 内部振荡器稳定状态。&#xD;&#xA;0h：IMOSC时钟未稳定。&#xD;&#xA;1h：IMOSC时钟已稳定。" />
         <Bit Name="ISOSC" Authority="RO" Bits="0" Description="ISOSC 内部振荡器稳定状态。&#xD;&#xA;0h：ISOSC时钟未稳定。&#xD;&#xA;1h：ISOSC时钟已稳定。" />
-        <Bit Name="SYS_CLK" Authority="RO" Bits="8" Description="SYS_CLK （系统时钟）稳定状态。&#xD;&#xA;0h：SYS_CLK时钟未稳定。&#xD;&#xA;1h：SYS_CLK时钟已稳定。" />
-        <Bit Name="PLL" Authority="RO" Bits="5" Description="PLL 荡器稳定状态。&#xD;&#xA;0h：PLL时钟未稳定。&#xD;&#xA;1h：PLL时钟已稳定。" />
-        <Bit Name="HFOSC" Authority="RO" Bits="4" Description="HFOSC 内部振荡器稳定状态。&#xD;&#xA;0h：HFOSC时钟未稳定。&#xD;&#xA;1h：HFOSC时钟已稳定。" />
-        <Bit Name="EMOSC" Authority="RO" Bits="3" Description="EMOSC 振荡器稳定状态。&#xD;&#xA;0h：EMOSC时钟未稳定。&#xD;&#xA;1h：EMOSC时钟已稳定。" />
-        <Bit Name="ESOSC" Authority="RO" Bits="2" Description="ESOSC 振荡器稳定状态。&#xD;&#xA;0h：ESOSC时钟未稳定。&#xD;&#xA;1h：ESOSC时钟已稳定。" />
-        <Bit Name="IMOSC" Authority="RO" Bits="1" Description="IMOSC 内部振荡器稳定状态。&#xD;&#xA;0h：IMOSC时钟未稳定。&#xD;&#xA;1h：IMOSC时钟已稳定。" />
-        <Bit Name="ISOSC" Authority="RO" Bits="0" Description="ISOSC 内部振荡器稳定状态。&#xD;&#xA;0h：ISOSC时钟未稳定。&#xD;&#xA;1h：ISOSC时钟已稳定。" />
       </Register>
       <Register Name="SYSCON_RAMCHK" Authority="RW" Address="0x40011014" Width="32" Description="SRAM 校验控制寄存器">
-        <Bit Name="CHKEN" Authority="RW" Bits="31-24" Description="SRAM校验使能控制位。&#xD;&#xA;5Ah：使能SRAM的奇偶校验功能。&#xD;&#xA;其他：关闭SRAM的奇偶校验功能。" />
-        <Bit Name="RSTEN" Authority="RW" Bits="23-16" Description="SRAM校验失败复位控制位。在初次校验失败后，系统会自动重试（RE-READ），当重试次数达到CHKCNT设置值时，校验仍未通过，则系统认为校验失败。&#xD;&#xA;5Ah：SRAM校验失败后复位。&#xD;&#xA;其他：SRAM校验失败后不复位，只产生中断。" />
-        <Bit Name="CHKTIMES" Authority="RW" Bits="15-0" Description="校验重试次数设置。&#xD;&#xA;设置SRAM校验错后的重试次数。如果SRAM校验发生错误，SRAM控制器会再次重读SRAM进行校验，重读的次数由该寄存器设置。连续重读次数满足该寄存器设置的次数后，如果仍然失败，那么会产生SRAM校验错的中断，或者产生系统复位(由RSTEN位控制)。" />
         <Bit Name="CHKEN" Authority="RW" Bits="31-24" Description="SRAM校验使能控制位。&#xD;&#xA;5Ah：使能SRAM的奇偶校验功能。&#xD;&#xA;其他：关闭SRAM的奇偶校验功能。" />
         <Bit Name="RSTEN" Authority="RW" Bits="23-16" Description="SRAM校验失败复位控制位。在初次校验失败后，系统会自动重试（RE-READ），当重试次数达到CHKCNT设置值时，校验仍未通过，则系统认为校验失败。&#xD;&#xA;5Ah：SRAM校验失败后复位。&#xD;&#xA;其他：SRAM校验失败后不复位，只产生中断。" />
         <Bit Name="CHKTIMES" Authority="RW" Bits="15-0" Description="校验重试次数设置。&#xD;&#xA;设置SRAM校验错后的重试次数。如果SRAM校验发生错误，SRAM控制器会再次重读SRAM进行校验，重读的次数由该寄存器设置。连续重读次数满足该寄存器设置的次数后，如果仍然失败，那么会产生SRAM校验错的中断，或者产生系统复位(由RSTEN位控制)。" />
@@ -237,20 +171,13 @@
       <Register Name="SYSCON_EFLCHK" Authority="RW" Address="0x40011018" Width="32" Description="Embedded Flash 校验控制寄存器">
         <Bit Name="CHKEN" Authority="RW" Bits="31-24" Description="Flash校验使能控制位。&#xD;&#xA;5Ah：使能Flash的crc校验功能。&#xD;&#xA;其他：关闭Flash的校验功能。" />
         <Bit Name="CHKTIMES" Authority="RW" Bits="23-0" Description="校验重试次数设置。&#xD;&#xA;设置Flash校验错后的重试次数。如果Flash校验发生错误，Flash控制器会再次重读当前地址，进行校验，重读的次数由该寄存器设置。重读次数满足该寄存器设置的次数后，如果仍然失败，系统会产生相应系统复位(由CHKEN位控制)。" />
-        <Bit Name="CHKEN" Authority="RW" Bits="31-24" Description="Flash校验使能控制位。&#xD;&#xA;5Ah：使能Flash的crc校验功能。&#xD;&#xA;其他：关闭Flash的校验功能。" />
-        <Bit Name="CHKTIMES" Authority="RW" Bits="23-0" Description="校验重试次数设置。&#xD;&#xA;设置Flash校验错后的重试次数。如果Flash校验发生错误，Flash控制器会再次重读当前地址，进行校验，重读的次数由该寄存器设置。重读次数满足该寄存器设置的次数后，如果仍然失败，系统会产生相应系统复位(由CHKEN位控制)。" />
       </Register>
       <Register Name="SYSCON_SCLKCR" Authority="RW" Address="0x4001101c" Width="32" Description="系统时钟控制寄存器">
         <Bit Name="SCLK_KEY" Authority="RW" Bits="31-16" Description="" />
         <Bit Name="SCLK_DIV" Authority="RW" Bits="11-8" Description="系统时钟分频设置（SYSCLK分频后，即为HCLK频率）。&#xD;&#xA;0h：不分频。&#xD;&#xA;1h：不分频。&#xD;&#xA;2h：2分频。" />
         <Bit Name="SCLK_SEL" Authority="RW" Bits="2-0" Description="系统时钟源控制，选择当前系统时钟SYSCLK工作的时钟。&#xD;&#xA;0h：IMOSC作为系统工作时钟源。&#xD;&#xA;1h：EMOSC作为系统工作时钟源。&#xD;&#xA;2h：HFOSC作为系统工作时钟源。&#xD;&#xA;3h：PLL作为系统时钟源&#xD;&#xA;4h：ISOSC作为系统工作时钟源。&#xD;&#xA;5h：ESOSC作为系统工作时钟源。&#xD;&#xA;其他：保留" />
-        <Bit Name="SCLK_KEY" Authority="RW" Bits="31-16" Description="" />
-        <Bit Name="SCLK_DIV" Authority="RW" Bits="11-8" Description="系统时钟分频设置（SYSCLK分频后，即为HCLK频率）。&#xD;&#xA;0h：不分频。&#xD;&#xA;1h：不分频。&#xD;&#xA;2h：2分频。" />
-        <Bit Name="SCLK_SEL" Authority="RW" Bits="2-0" Description="系统时钟源控制，选择当前系统时钟SYSCLK工作的时钟。&#xD;&#xA;0h：IMOSC作为系统工作时钟源。&#xD;&#xA;1h：EMOSC作为系统工作时钟源。&#xD;&#xA;2h：HFOSC作为系统工作时钟源。&#xD;&#xA;3h：PLL作为系统时钟源&#xD;&#xA;4h：ISOSC作为系统工作时钟源。&#xD;&#xA;5h：ESOSC作为系统工作时钟源。&#xD;&#xA;其他：保留" />
       </Register>
       <Register Name="SYSCON_PCLKCR" Authority="RW" Address="0x40011020" Width="32" Description="外设时钟控制寄存器">
-        <Bit Name="PCLK_KEY" Authority="RW" Bits="31-16" Description="" />
-        <Bit Name="PCLK_DIV" Authority="RW" Bits="11-8" Description="PCLK的时钟分频设置，PCLK分频基于HCLK的频率。&#xD;&#xA;0000B：不分频。&#xD;&#xA;0001B：2分频。&#xD;&#xA;001xB：4分频。&#xD;&#xA;01xxB：8分频。&#xD;&#xA;1xxxB：16分频。" />
         <Bit Name="PCLK_KEY" Authority="RW" Bits="31-16" Description="" />
         <Bit Name="PCLK_DIV" Authority="RW" Bits="11-8" Description="PCLK的时钟分频设置，PCLK分频基于HCLK的频率。&#xD;&#xA;0000B：不分频。&#xD;&#xA;0001B：2分频。&#xD;&#xA;001xB：4分频。&#xD;&#xA;01xxB：8分频。&#xD;&#xA;1xxxB：16分频。" />
       </Register>
@@ -263,32 +190,8 @@
         <Bit Name="EXIFLT_GRP2" Authority="RW" Bits="11-8" Description="" />
         <Bit Name="EXIFLT_GPR1" Authority="RW" Bits="7-4" Description="" />
         <Bit Name="EXIFLT_GRP0" Authority="RW" Bits="3-0" Description="" />
-        <Bit Name="EXIFLT_GRP19" Authority="RW" Bits="31-28" Description="外部中断滤波器参数选择&#xD;&#xA;0000：无滤波&#xD;&#xA;0001:  3/HFOSC&#xD;&#xA;0010:  6/HFOSC&#xD;&#xA;0011:  9/HFOSC&#xD;&#xA;0100:  12/HFOSC&#xD;&#xA;0101:  18/HFOSC&#xD;&#xA;0110:  24/HFOSC&#xD;&#xA;0111:  36/HFOSC&#xD;&#xA;1000:  48/HFOSC&#xD;&#xA;1001:  60/HFOSC&#xD;&#xA;1010:  72/HFOSC&#xD;&#xA;1011:  84/HFOSC&#xD;&#xA;1100:  96/HFOSC&#xD;&#xA;1101:  120/HFOSC&#xD;&#xA;1110:  168/HFOSC&#xD;&#xA;1111:  216/HFOSC" />
-        <Bit Name="EXIFLT_GRP18" Authority="RW" Bits="27-24" Description="" />
-        <Bit Name="EXIFLT_GRP17" Authority="RW" Bits="23-20" Description="" />
-        <Bit Name="EXIFLT_GRP16" Authority="RW" Bits="19-16" Description="" />
-        <Bit Name="EXIFLT_GRP3" Authority="RW" Bits="15-12" Description="" />
-        <Bit Name="EXIFLT_GRP2" Authority="RW" Bits="11-8" Description="" />
-        <Bit Name="EXIFLT_GPR1" Authority="RW" Bits="7-4" Description="" />
-        <Bit Name="EXIFLT_GRP0" Authority="RW" Bits="3-0" Description="" />
       </Register>
       <Register Name="SYSCON_PCER0" Authority="RW" Address="0x40011028" Width="32" Description="外设时钟使能寄存器0">
-        <Bit Name="CAN" Authority="RW" Bits="24" Description="" />
-        <Bit Name="I2C" Authority="RW" Bits="22" Description="" />
-        <Bit Name="SIO1" Authority="RW" Bits="21" Description="" />
-        <Bit Name="SIO0" Authority="RW" Bits="20" Description="" />
-        <Bit Name="SPI1" Authority="RW" Bits="17" Description="" />
-        <Bit Name="SPI0" Authority="RW" Bits="16" Description="" />
-        <Bit Name="USART1" Authority="RW" Bits="14" Description="" />
-        <Bit Name="USART0" Authority="RW" Bits="13" Description="" />
-        <Bit Name="UART2" Authority="RW" Bits="10" Description="" />
-        <Bit Name="UART1" Authority="RW" Bits="9" Description="" />
-        <Bit Name="UART0" Authority="RW" Bits="8" Description="" />
-        <Bit Name="ETCB" Authority="RW" Bits="7" Description="" />
-        <Bit Name="ADC1" Authority="RW" Bits="5" Description="" />
-        <Bit Name="ADC0" Authority="RW" Bits="4" Description="" />
-        <Bit Name="FVR" Authority="RW" Bits="3" Description="" />
-        <Bit Name="IFC" Authority="RW" Bits="0" Description="" />
         <Bit Name="CAN" Authority="RW" Bits="24" Description="" />
         <Bit Name="I2C" Authority="RW" Bits="22" Description="" />
         <Bit Name="SIO1" Authority="RW" Bits="21" Description="" />
@@ -323,22 +226,6 @@
         <Bit Name="ADC0" Authority="RW" Bits="4" Description="" />
         <Bit Name="FVR" Authority="RW" Bits="3" Description="" />
         <Bit Name="IFC" Authority="RW" Bits="0" Description="" />
-        <Bit Name="CAN" Authority="RW" Bits="24" Description="" />
-        <Bit Name="I2C" Authority="RW" Bits="22" Description="" />
-        <Bit Name="SIO1" Authority="RW" Bits="21" Description="" />
-        <Bit Name="SIO0" Authority="RW" Bits="20" Description="" />
-        <Bit Name="SPI1" Authority="RW" Bits="17" Description="" />
-        <Bit Name="SPI0" Authority="RW" Bits="16" Description="" />
-        <Bit Name="USART1" Authority="RW" Bits="14" Description="" />
-        <Bit Name="USART0" Authority="RW" Bits="13" Description="" />
-        <Bit Name="UART2" Authority="RW" Bits="10" Description="" />
-        <Bit Name="UART1" Authority="RW" Bits="9" Description="" />
-        <Bit Name="UART0" Authority="RW" Bits="8" Description="" />
-        <Bit Name="ETCB" Authority="RW" Bits="7" Description="" />
-        <Bit Name="ADC1" Authority="RW" Bits="5" Description="" />
-        <Bit Name="ADC0" Authority="RW" Bits="4" Description="" />
-        <Bit Name="FVR" Authority="RW" Bits="3" Description="" />
-        <Bit Name="IFC" Authority="RW" Bits="0" Description="" />
       </Register>
       <Register Name="SYSCON_PCSR0" Authority="RW" Address="0x40011030" Width="32" Description="外设时钟状态寄存器0">
         <Bit Name="CAN" Authority="RO" Bits="24" Description="" />
@@ -353,56 +240,12 @@
         <Bit Name="UART1" Authority="RO" Bits="9" Description="" />
         <Bit Name="UART0" Authority="RO" Bits="8" Description="" />
         <Bit Name="ETCB" Authority="RO" Bits="7" Description="" />
-        <Bit Name="TOUCH" Authority="RO" Bits="6" Description="" />
-        <Bit Name="ADC1" Authority="RO" Bits="5" Description="" />
-        <Bit Name="ADC0" Authority="RO" Bits="4" Description="" />
-        <Bit Name="FVR" Authority="RO" Bits="3" Description="" />
-        <Bit Name="IFC" Authority="RO" Bits="0" Description="" />
-        <Bit Name="CAN" Authority="RO" Bits="24" Description="" />
-        <Bit Name="I2C" Authority="RO" Bits="22" Description="" />
-        <Bit Name="SIO1" Authority="RO" Bits="21" Description="" />
-        <Bit Name="SIO0" Authority="RO" Bits="20" Description="" />
-        <Bit Name="SPI1" Authority="RO" Bits="17" Description="" />
-        <Bit Name="SPI0" Authority="RO" Bits="16" Description="" />
-        <Bit Name="USART1" Authority="RO" Bits="14" Description="" />
-        <Bit Name="USART0" Authority="RO" Bits="13" Description="" />
-        <Bit Name="UART2" Authority="RO" Bits="10" Description="" />
-        <Bit Name="UART1" Authority="RO" Bits="9" Description="" />
-        <Bit Name="UART0" Authority="RO" Bits="8" Description="" />
-        <Bit Name="ETCB" Authority="RO" Bits="7" Description="" />
-        <Bit Name="TOUCH" Authority="RO" Bits="6" Description="" />
         <Bit Name="ADC1" Authority="RO" Bits="5" Description="" />
         <Bit Name="ADC0" Authority="RO" Bits="4" Description="" />
         <Bit Name="FVR" Authority="RO" Bits="3" Description="" />
         <Bit Name="IFC" Authority="RO" Bits="0" Description="" />
       </Register>
       <Register Name="SYSCON_PCER1" Authority="RW" Address="0x40011034" Width="32" Description="外设时钟使能寄存器1">
-        <Bit Name="BT3" Authority="RW" Bits="31" Description="" />
-        <Bit Name="BT2" Authority="RW" Bits="30" Description="" />
-        <Bit Name="OPA3" Authority="RW" Bits="26" Description="" />
-        <Bit Name="OPA2" Authority="RW" Bits="25" Description="" />
-        <Bit Name="OPA1" Authority="RW" Bits="24" Description="" />
-        <Bit Name="OPA0" Authority="RW" Bits="23" Description="" />
-        <Bit Name="CMP2" Authority="RW" Bits="20" Description="" />
-        <Bit Name="CMP1" Authority="RW" Bits="19" Description="" />
-        <Bit Name="CMP0" Authority="RW" Bits="18" Description="" />
-        <Bit Name="LED" Authority="RW" Bits="17" Description="" />
-        <Bit Name="BT1" Authority="RW" Bits="16" Description="" />
-        <Bit Name="BT0" Authority="RW" Bits="15" Description="" />
-        <Bit Name="RTC" Authority="RW" Bits="14" Description="" />
-        <Bit Name="CNTA" Authority="RW" Bits="13" Description="" />
-        <Bit Name="LPT" Authority="RW" Bits="12" Description="" />
-        <Bit Name="WDT" Authority="RW" Bits="11" Description="" />
-        <Bit Name="GPTB5" Authority="RW" Bits="10" Description="" />
-        <Bit Name="GPTB4" Authority="RW" Bits="9" Description="" />
-        <Bit Name="GPTB3" Authority="RW" Bits="8" Description="" />
-        <Bit Name="GPTB2" Authority="RW" Bits="7" Description="" />
-        <Bit Name="GPTB1" Authority="RW" Bits="6" Description="" />
-        <Bit Name="GPTB0" Authority="RW" Bits="5" Description="" />
-        <Bit Name="GPTA3" Authority="RW" Bits="4" Description="" />
-        <Bit Name="GPTA2" Authority="RW" Bits="3" Description="" />
-        <Bit Name="GPTA1" Authority="RW" Bits="2" Description="" />
-        <Bit Name="GPTA0" Authority="RW" Bits="1" Description="" />
         <Bit Name="BT3" Authority="RW" Bits="31" Description="" />
         <Bit Name="BT2" Authority="RW" Bits="30" Description="" />
         <Bit Name="OPA3" Authority="RW" Bits="26" Description="" />
@@ -457,96 +300,36 @@
         <Bit Name="GPTA2" Authority="RW" Bits="3" Description="" />
         <Bit Name="GPTA1" Authority="RW" Bits="2" Description="" />
         <Bit Name="GPTA0" Authority="RW" Bits="1" Description="" />
-        <Bit Name="BT3" Authority="RW" Bits="31" Description="" />
-        <Bit Name="BT2" Authority="RW" Bits="30" Description="" />
-        <Bit Name="OPA3" Authority="RW" Bits="26" Description="" />
-        <Bit Name="OPA2" Authority="RW" Bits="25" Description="" />
-        <Bit Name="OPA1" Authority="RW" Bits="24" Description="" />
-        <Bit Name="OPA0" Authority="RW" Bits="23" Description="" />
-        <Bit Name="CMP2" Authority="RW" Bits="20" Description="" />
-        <Bit Name="CMP1" Authority="RW" Bits="19" Description="" />
-        <Bit Name="CMP0" Authority="RW" Bits="18" Description="" />
-        <Bit Name="LED" Authority="RW" Bits="17" Description="" />
-        <Bit Name="BT1" Authority="RW" Bits="16" Description="" />
-        <Bit Name="BT0" Authority="RW" Bits="15" Description="" />
-        <Bit Name="RTC" Authority="RW" Bits="14" Description="" />
-        <Bit Name="CNTA" Authority="RW" Bits="13" Description="" />
-        <Bit Name="LPT" Authority="RW" Bits="12" Description="" />
-        <Bit Name="WDT" Authority="RW" Bits="11" Description="" />
-        <Bit Name="GPTB5" Authority="RW" Bits="10" Description="" />
-        <Bit Name="GPTB4" Authority="RW" Bits="9" Description="" />
-        <Bit Name="GPTB3" Authority="RW" Bits="8" Description="" />
-        <Bit Name="GPTB2" Authority="RW" Bits="7" Description="" />
-        <Bit Name="GPTB1" Authority="RW" Bits="6" Description="" />
-        <Bit Name="GPTB0" Authority="RW" Bits="5" Description="" />
-        <Bit Name="GPTA3" Authority="RW" Bits="4" Description="" />
-        <Bit Name="GPTA2" Authority="RW" Bits="3" Description="" />
-        <Bit Name="GPTA1" Authority="RW" Bits="2" Description="" />
-        <Bit Name="GPTA0" Authority="RW" Bits="1" Description="" />
       </Register>
       <Register Name="SYSCON_PCSR1" Authority="RW" Address="0x4001103c" Width="32" Description="外设时钟状态寄存器1">
-        <Bit Name="BT3" Authority="RW" Bits="31" Description="" />
-        <Bit Name="BT2" Authority="RW" Bits="30" Description="" />
-        <Bit Name="OPA3" Authority="RW" Bits="26" Description="" />
-        <Bit Name="OPA2" Authority="RW" Bits="25" Description="" />
-        <Bit Name="OPA1" Authority="RW" Bits="24" Description="" />
-        <Bit Name="OPA0" Authority="RW" Bits="23" Description="" />
-        <Bit Name="CMP2" Authority="RW" Bits="20" Description="" />
-        <Bit Name="CMP1" Authority="RW" Bits="19" Description="" />
-        <Bit Name="CMP0" Authority="RW" Bits="18" Description="" />
-        <Bit Name="LED" Authority="RW" Bits="17" Description="" />
-        <Bit Name="BT1" Authority="RW" Bits="16" Description="" />
-        <Bit Name="BT0" Authority="RW" Bits="15" Description="" />
-        <Bit Name="RTC" Authority="RW" Bits="14" Description="" />
-        <Bit Name="CNTA" Authority="RW" Bits="13" Description="" />
-        <Bit Name="LPT" Authority="RW" Bits="12" Description="" />
-        <Bit Name="WDT" Authority="RW" Bits="11" Description="" />
-        <Bit Name="GPTB5" Authority="RW" Bits="10" Description="" />
-        <Bit Name="GPTB4" Authority="RW" Bits="9" Description="" />
-        <Bit Name="GPTB3" Authority="RW" Bits="8" Description="" />
-        <Bit Name="GPTB2" Authority="RW" Bits="7" Description="" />
-        <Bit Name="GPTB1" Authority="RW" Bits="6" Description="" />
-        <Bit Name="GPTB0" Authority="RW" Bits="5" Description="" />
-        <Bit Name="GPTA3" Authority="RW" Bits="4" Description="" />
-        <Bit Name="GPTA2" Authority="RW" Bits="3" Description="" />
-        <Bit Name="GPTA1" Authority="RW" Bits="2" Description="" />
-        <Bit Name="GPTA0" Authority="RW" Bits="1" Description="" />
-        <Bit Name="BT3" Authority="RW" Bits="31" Description="" />
-        <Bit Name="BT2" Authority="RW" Bits="30" Description="" />
-        <Bit Name="OPA3" Authority="RW" Bits="26" Description="" />
-        <Bit Name="OPA2" Authority="RW" Bits="25" Description="" />
-        <Bit Name="OPA1" Authority="RW" Bits="24" Description="" />
-        <Bit Name="OPA0" Authority="RW" Bits="23" Description="" />
-        <Bit Name="CMP2" Authority="RW" Bits="20" Description="" />
-        <Bit Name="CMP1" Authority="RW" Bits="19" Description="" />
-        <Bit Name="CMP0" Authority="RW" Bits="18" Description="" />
-        <Bit Name="LED" Authority="RW" Bits="17" Description="" />
-        <Bit Name="BT1" Authority="RW" Bits="16" Description="" />
-        <Bit Name="BT0" Authority="RW" Bits="15" Description="" />
-        <Bit Name="RTC" Authority="RW" Bits="14" Description="" />
-        <Bit Name="CNTA" Authority="RW" Bits="13" Description="" />
-        <Bit Name="LPT" Authority="RW" Bits="12" Description="" />
-        <Bit Name="WDT" Authority="RW" Bits="11" Description="" />
-        <Bit Name="GPTB5" Authority="RW" Bits="10" Description="" />
-        <Bit Name="GPTB4" Authority="RW" Bits="9" Description="" />
-        <Bit Name="GPTB3" Authority="RW" Bits="8" Description="" />
-        <Bit Name="GPTB2" Authority="RW" Bits="7" Description="" />
-        <Bit Name="GPTB1" Authority="RW" Bits="6" Description="" />
-        <Bit Name="GPTB0" Authority="RW" Bits="5" Description="" />
-        <Bit Name="GPTA3" Authority="RW" Bits="4" Description="" />
-        <Bit Name="GPTA2" Authority="RW" Bits="3" Description="" />
-        <Bit Name="GPTA1" Authority="RW" Bits="2" Description="" />
-        <Bit Name="GPTA0" Authority="RW" Bits="1" Description="" />
+        <Bit Name="BT3" Authority="RO" Bits="31" Description="" />
+        <Bit Name="BT2" Authority="RO" Bits="30" Description="" />
+        <Bit Name="OPA3" Authority="RO" Bits="26" Description="" />
+        <Bit Name="OPA2" Authority="RO" Bits="25" Description="" />
+        <Bit Name="OPA1" Authority="RO" Bits="24" Description="" />
+        <Bit Name="OPA0" Authority="RO" Bits="23" Description="" />
+        <Bit Name="CMP2" Authority="RO" Bits="20" Description="" />
+        <Bit Name="CMP1" Authority="RO" Bits="19" Description="" />
+        <Bit Name="CMP0" Authority="RO" Bits="18" Description="" />
+        <Bit Name="LED" Authority="RO" Bits="17" Description="" />
+        <Bit Name="BT1" Authority="RO" Bits="16" Description="" />
+        <Bit Name="BT0" Authority="RO" Bits="15" Description="" />
+        <Bit Name="RTC" Authority="RO" Bits="14" Description="" />
+        <Bit Name="CNTA" Authority="RO" Bits="13" Description="" />
+        <Bit Name="LPT" Authority="RO" Bits="12" Description="" />
+        <Bit Name="WDT" Authority="RO" Bits="11" Description="" />
+        <Bit Name="GPTB5" Authority="RO" Bits="10" Description="" />
+        <Bit Name="GPTB4" Authority="RO" Bits="9" Description="" />
+        <Bit Name="GPTB3" Authority="RO" Bits="8" Description="" />
+        <Bit Name="GPTB2" Authority="RO" Bits="7" Description="" />
+        <Bit Name="GPTB1" Authority="RO" Bits="6" Description="" />
+        <Bit Name="GPTB0" Authority="RO" Bits="5" Description="" />
+        <Bit Name="GPTA3" Authority="RO" Bits="4" Description="" />
+        <Bit Name="GPTA2" Authority="RO" Bits="3" Description="" />
+        <Bit Name="GPTA1" Authority="RO" Bits="2" Description="" />
+        <Bit Name="GPTA0" Authority="RO" Bits="1" Description="" />
       </Register>
       <Register Name="SYSCON_OSTR" Authority="RW" Address="0x40011040" Width="32" Description="外部振荡器稳定时间配置寄存器">
-        <Bit Name="ES_GMCTL" Authority="RW" Bits="31-28" Description="外部副晶振的增益控制位。根据不同的震荡频率，选择适当的增益控制，频率越高，选择的GM值应越大。" />
-        <Bit Name="EM_FLTSEL" Authority="RW" Bits="27-26" Description="外部振荡器滤波范围选择。选择可滤除的信号间隔幅度。&#xD;&#xA;0h：小于5ns间隔脉冲滤波。&#xD;&#xA;1h：小于10ns间隔脉冲滤波。&#xD;&#xA;2h：小于15ns间隔脉冲滤波。&#xD;&#xA;3h：小于20ns间隔脉冲滤波。" />
-        <Bit Name="EM_FLTEN" Authority="RW" Bits="25" Description="外部振荡器滤波使能控制位。在高噪声环境下，使能该滤波器可以防止时钟路径串入抖动信号造成系统工作错误。&#xD;&#xA;0h：禁止滤波&#xD;&#xA;1h：打开滤波" />
-        <Bit Name="ES_SMTDIS" Authority="RW" Bits="24" Description="外部副晶振的斯密特滤波使能控制位。斯密特滤波可以提升振荡器的抗干扰性能，但具有额外功耗。&#xD;&#xA;0h：使能斯密特滤波。&#xD;&#xA;1h：关闭斯密特滤波。" />
-        <Bit Name="ESCNT" Authority="RW" Bits="23-16" Description="外部副晶振的时钟稳定计数器" />
-        <Bit Name="EM_GMCTL" Authority="RW" Bits="15-11" Description="外部晶振的增益控制位。根据不同的震荡频率，选择适当的增益控制，频率越高，选择的GM值应越大。" />
-        <Bit Name="EM_LFSEL" Authority="RW" Bits="10" Description="外部晶振的低速模式设置。当外接32.768KHz晶振，需要将该位设置为使能。&#xD;&#xA;0h：EMOSC为普通模式。&#xD;&#xA;1h：EMOSC为低速模式。" />
-        <Bit Name="EMCNT" Authority="RW" Bits="9-0" Description="外部晶振的时钟稳定计数器。&#xD;&#xA;该计数器值可以在EMOSC禁止时进行修改。EMOSC使能时，时钟稳定计数器开始递减计数，当计数值达到零，RISR状态寄存器中的EMOSC_ST位被置位，同时CKST寄存器中的EMOSC状态位置位。&#xD;&#xA;时钟稳定计数器的计数时钟为外部时钟的256分频，所以在缺省状态下，当外部晶振为8MHz时，稳定计数时间为：&#xD;&#xA;0x3FF x 256 x 125ns = 32.7ms" />
         <Bit Name="ES_GMCTL" Authority="RW" Bits="31-28" Description="外部副晶振的增益控制位。根据不同的震荡频率，选择适当的增益控制，频率越高，选择的GM值应越大。" />
         <Bit Name="EM_FLTSEL" Authority="RW" Bits="27-26" Description="外部振荡器滤波范围选择。选择可滤除的信号间隔幅度。&#xD;&#xA;0h：小于5ns间隔脉冲滤波。&#xD;&#xA;1h：小于10ns间隔脉冲滤波。&#xD;&#xA;2h：小于15ns间隔脉冲滤波。&#xD;&#xA;3h：小于20ns间隔脉冲滤波。" />
         <Bit Name="EM_FLTEN" Authority="RW" Bits="25" Description="外部振荡器滤波使能控制位。在高噪声环境下，使能该滤波器可以防止时钟路径串入抖动信号造成系统工作错误。&#xD;&#xA;0h：禁止滤波&#xD;&#xA;1h：打开滤波" />
@@ -565,23 +348,8 @@
         <Bit Name="NUL" Authority="RW" Bits="14-8" Description="VCO倍频设置。Fvco在150MHz~300MHz&#xD;&#xA;Fvco = Fin x N(NUL)" />
         <Bit Name="DIVM" Authority="RW" Bits="5-2" Description="PLL输入时钟的预分频控制。VCO的最大输入频率范围：4MHz ~ 8MHz&#xD;&#xA;Fin = Fcksrc / (M + 1)" />
         <Bit Name="CKSEL" Authority="RW" Bits="1-0" Description="PLL时钟输入源选择控制位&#xD;&#xA;0h：Disabled&#xD;&#xA;1h：Disabled&#xD;&#xA;2h：HFOSC 选择作为时钟源&#xD;&#xA;3h：EMOSC 选择作为时钟源" />
-        <Bit Name="CKRDIV" Authority="RW" Bits="30-29" Description="CKR 端口的VCO分频输出设置&#xD;&#xA;0h：div2&#xD;&#xA;1h：div4&#xD;&#xA;2h：div6&#xD;&#xA;3h：div8" />
-        <Bit Name="CKQDIV" Authority="RW" Bits="26-25" Description="CKQ 端口的VCO分频输出设置&#xD;&#xA;0h：div2&#xD;&#xA;1h：div4&#xD;&#xA;2h：div6&#xD;&#xA;3h：div8" />
-        <Bit Name="CKPDIV" Authority="RW" Bits="22-17" Description="CKP 端口的VCO分频输出设置&#xD;&#xA;MSB控制位决定采用TYPEA或者TYPEB分频机制中的一种。&#xD;&#xA;0h：TYPEA 分频。&#xD;&#xA;1h：TYPEB 分频。&#xD;&#xA;&#xD;&#xA;TYPEA 配置：Fckp = Fvco / (CKPDIV[4:0] + 1)&#xD;&#xA;&#xD;&#xA;TYPEB 配置：&#xD;&#xA;0h：和 TYPEA 相同的配置公式。&#xD;&#xA;1h：div2&#xD;&#xA;2h：div6&#xD;&#xA;3h：div8" />
-        <Bit Name="CLKEN" Authority="RW" Bits="16" Description="PLL 端口输出使能控制。&#xD;&#xA;0h：禁止PLLCLK的时钟输出。&#xD;&#xA;1h：打开PLLCLK的时钟输出。" />
-        <Bit Name="UNLCKRST" Authority="RW" Bits="15" Description="PLL 失锁复位控制位。&#xD;&#xA;0h：在PLL失锁时，禁止产生系统复位。&#xD;&#xA;1h：在PLL失锁时，产生系统复位。" />
-        <Bit Name="NUL" Authority="RW" Bits="14-8" Description="VCO倍频设置。Fvco在150MHz~300MHz&#xD;&#xA;Fvco = Fin x N(NUL)" />
-        <Bit Name="DIVM" Authority="RW" Bits="5-2" Description="PLL输入时钟的预分频控制。VCO的最大输入频率范围：4MHz ~ 8MHz&#xD;&#xA;Fin = Fcksrc / (M + 1)" />
-        <Bit Name="CKSEL" Authority="RW" Bits="1-0" Description="PLL时钟输入源选择控制位&#xD;&#xA;0h：Disabled&#xD;&#xA;1h：Disabled&#xD;&#xA;2h：HFOSC 选择作为时钟源&#xD;&#xA;3h：EMOSC 选择作为时钟源" />
       </Register>
-      <Register Name="SYSCON_PLLOPT" Authority="RW" Address="0x40011048" Width="32" Description="PLL 特性配置寄存器（工厂设置）" />
       <Register Name="SYSCON_LVDCR" Authority="RW" Address="0x4001104c" Width="32" Description="低电压检测控制寄存器">
-        <Bit Name="LVD_KEY" Authority="RW" Bits="31-16" Description="" />
-        <Bit Name="LVDFLAG" Authority="RO" Bits="15" Description="LVD的当前状态查询&#xD;&#xA;0h：VDD 的当前电压高于 INTLVL 设置的检测阈值。&#xD;&#xA;1h：VDD 的当前电压低于 INTLVL 设置的检测阈值。" />
-        <Bit Name="RSTLVL" Authority="RW" Bits="14-12" Description="低电压复位触发的电压选择。&#xD;&#xA;0h：1.9V&#xD;&#xA;1h：2.2V&#xD;&#xA;2h：2.5V&#xD;&#xA;3h：2.8V&#xD;&#xA;4h：3.1V&#xD;&#xA;5h：3.4V&#xD;&#xA;6h：3.7V&#xD;&#xA;7h：4.0V" />
-        <Bit Name="INTLVL" Authority="RW" Bits="10-8" Description="低电压检测中断触发电压选择。&#xD;&#xA;0h：2.1V&#xD;&#xA;1h：2.4V&#xD;&#xA;2h：2.7V&#xD;&#xA;3h：3.0V&#xD;&#xA;4h：3.3V&#xD;&#xA;5h：3.6V&#xD;&#xA;6h：3.9V&#xD;&#xA;注：比较电压为VDD电压和选择的电压进行比较。" />
-        <Bit Name="INTPOL" Authority="RW" Bits="7-6" Description="低电压检测中断触发的极性选择。&#xD;&#xA;0h：无效。&#xD;&#xA;1h：当电压下降到低于LVDLVL(falling)设置时，触发中断。&#xD;&#xA;2h：当电压升高到超过LVDLVL(rising)设置时，触发中断。&#xD;&#xA;3h：当电压下降到低于或者升高到超过LVDLVL(both)时，触发中断。" />
-        <Bit Name="LVDEN" Authority="RW" Bits="3-0" Description="使能/禁止LVD模块控制位。使能LVD模块后，当VDD电压低于RSTLVL设置值时，系统将产生低电压异常的复位。&#xD;&#xA;0Ah：禁止LVD模块。&#xD;&#xA;其他：使能LVD模块。" />
         <Bit Name="LVD_KEY" Authority="RW" Bits="31-16" Description="" />
         <Bit Name="LVDFLAG" Authority="RO" Bits="15" Description="LVD的当前状态查询&#xD;&#xA;0h：VDD 的当前电压高于 INTLVL 设置的检测阈值。&#xD;&#xA;1h：VDD 的当前电压低于 INTLVL 设置的检测阈值。" />
         <Bit Name="RSTLVL" Authority="RW" Bits="14-12" Description="低电压复位触发的电压选择。&#xD;&#xA;0h：1.9V&#xD;&#xA;1h：2.2V&#xD;&#xA;2h：2.5V&#xD;&#xA;3h：2.8V&#xD;&#xA;4h：3.1V&#xD;&#xA;5h：3.4V&#xD;&#xA;6h：3.7V&#xD;&#xA;7h：4.0V" />
@@ -594,16 +362,8 @@
         <Bit Name="IMO_TRM" Authority="RW" Bits="23-16" Description="IMOSC 的 TRIM 调整位&#xD;&#xA;IMOSC 的频率输出随着调整值递增，值越大，频率越高。" />
         <Bit Name="HFO_TRM" Authority="RW" Bits="15-9" Description="HFOSC 的 TRIM 调整位&#xD;&#xA;HFOSC 的频率输出随着调整值递增，值越大，频率越高。" />
         <Bit Name="HFO_TUNE" Authority="RW" Bits="8-0" Description="HFOSC 频率的微调设置。&#xD;&#xA;通过 HFO_TUNE 控制位，可以精细调整 HFOSC 的输出频率。&#xD;&#xA;0x1FF：标准输出频率（工程校准后的输出值）。&#xD;&#xA;0x1FE：标准输出频率-大约13KHz @ HFOSC=24MHz。&#xD;&#xA;0x1FD：标准输出频率-大约26KHz @ HFOSC=24MHz。&#xD;&#xA;0x1FC：标准输出频率-大约39KHz @ HFOSC=24MHz&#xD;&#xA;……..&#xD;&#xA;当HFOSC选择其他值时，步进频率等比例改变，即大约26KHz@48MHz，大约6.5KHz@12MHz。" />
-        <Bit Name="ISO_TRM" Authority="RW" Bits="31-24" Description="ISOSC 的 TRIM 调整位&#xD;&#xA;ISOSC 的频率输出随着调整值递增，值越大，频率越高。" />
-        <Bit Name="IMO_TRM" Authority="RW" Bits="23-16" Description="IMOSC 的 TRIM 调整位&#xD;&#xA;IMOSC 的频率输出随着调整值递增，值越大，频率越高。" />
-        <Bit Name="HFO_TRM" Authority="RW" Bits="15-9" Description="HFOSC 的 TRIM 调整位&#xD;&#xA;HFOSC 的频率输出随着调整值递增，值越大，频率越高。" />
-        <Bit Name="HFO_TUNE" Authority="RW" Bits="8-0" Description="HFOSC 频率的微调设置。&#xD;&#xA;通过 HFO_TUNE 控制位，可以精细调整 HFOSC 的输出频率。&#xD;&#xA;0x1FF：标准输出频率（工程校准后的输出值）。&#xD;&#xA;0x1FE：标准输出频率-大约13KHz @ HFOSC=24MHz。&#xD;&#xA;0x1FD：标准输出频率-大约26KHz @ HFOSC=24MHz。&#xD;&#xA;0x1FC：标准输出频率-大约39KHz @ HFOSC=24MHz&#xD;&#xA;……..&#xD;&#xA;当HFOSC选择其他值时，步进频率等比例改变，即大约26KHz@48MHz，大约6.5KHz@12MHz。" />
       </Register>
       <Register Name="SYSCON_PWRCR" Authority="RW" Address="0x40011054" Width="32" Description="功耗控制寄存器">
-        <Bit Name="DSL_CFG" Authority="RW" Bits="27-24" Description="Power srtategy under deep-sleep mode&#xD;&#xA;bit0: VCref(VDDCORE reference) selection &#xD;&#xA;       0h: BGR(1.0V)&#xD;&#xA;       1h: CMOS(0.9V)&#xD;&#xA;bit1: VDDCORE control &#xD;&#xA;       0h: VDDCORE = VCref x 1.2&#xD;&#xA;       1h: VDDCORE = VCref x 1.0&#xD;&#xA;bit2: SLP ctl of main reg. &#xD;&#xA;       0h: disable &#xD;&#xA;       1h: enable: main reg is working in lowspeed mode whcih consumes less power&#xD;&#xA;bit3: pd ctl of main reg. &#xD;&#xA;       0h: enable&#xD;&#xA;       1h: power-down: fix VDDCORE = VCref x 1.0 with extra low power consumption but weak driving capability" />
-        <Bit Name="SLP_CFG" Authority="RW" Bits="19-16" Description="Power srtategy under sleep mode&#xD;&#xA;bit0: VCref(VDDCORE reference) selection &#xD;&#xA;       0h: BGR(1.0V)&#xD;&#xA;       1h: CMOS(0.9V)&#xD;&#xA;bit1: VDDCORE control &#xD;&#xA;       0h: VDDCORE = VCref x 1.2&#xD;&#xA;       1h: VDDCORE = VCref x 1.0&#xD;&#xA;bit2: SLP ctl of main reg. &#xD;&#xA;       0h: disable &#xD;&#xA;       1h: enable: main reg is working in lowspeed mode whcih consumes less power&#xD;&#xA;bit3: pd ctl of main reg. &#xD;&#xA;       0h: enable&#xD;&#xA;       1h: power-down: fix VDDCORE = VCref x 1.0 with extra low power consumption but weak driving capability" />
-        <Bit Name="RUN_CFG" Authority="RW" Bits="11-8" Description="Power srtategy under normal run mode&#xD;&#xA;bit0: VCref(VDDCORE reference) selection &#xD;&#xA;       0h: BGR(1.0V)&#xD;&#xA;       1h: CMOS(0.9V)&#xD;&#xA;bit1: VDDCORE control &#xD;&#xA;       0h: VDDCORE = VCref x 1.2&#xD;&#xA;       1h: VDDCORE = VCref x 1.0&#xD;&#xA;bit2: SLP ctl of main reg. &#xD;&#xA;       0h: disable &#xD;&#xA;       1h: enable: main reg is working in lowspeed mode whcih consumes less power&#xD;&#xA;bit3: pd ctl of main reg. &#xD;&#xA;       0h: enable&#xD;&#xA;       1h: power-down: fix VDDCORE = VCref x 1.0 with extra low power consumption but weak driving capability" />
-        <Bit Name="VOSEN" Authority="RW" Bits="3-0" Description="VOS模式使能控制。（1）&#xD;&#xA;xxx1b：使能RUN模式下的VOS&#xD;&#xA;xx1xb：使能SLEEP模式下的VOS&#xD;&#xA;x1xxb：使能DEEP-SLEEP模式下的VOS" />
         <Bit Name="DSL_CFG" Authority="RW" Bits="27-24" Description="Power srtategy under deep-sleep mode&#xD;&#xA;bit0: VCref(VDDCORE reference) selection &#xD;&#xA;       0h: BGR(1.0V)&#xD;&#xA;       1h: CMOS(0.9V)&#xD;&#xA;bit1: VDDCORE control &#xD;&#xA;       0h: VDDCORE = VCref x 1.2&#xD;&#xA;       1h: VDDCORE = VCref x 1.0&#xD;&#xA;bit2: SLP ctl of main reg. &#xD;&#xA;       0h: disable &#xD;&#xA;       1h: enable: main reg is working in lowspeed mode whcih consumes less power&#xD;&#xA;bit3: pd ctl of main reg. &#xD;&#xA;       0h: enable&#xD;&#xA;       1h: power-down: fix VDDCORE = VCref x 1.0 with extra low power consumption but weak driving capability" />
         <Bit Name="SLP_CFG" Authority="RW" Bits="19-16" Description="Power srtategy under sleep mode&#xD;&#xA;bit0: VCref(VDDCORE reference) selection &#xD;&#xA;       0h: BGR(1.0V)&#xD;&#xA;       1h: CMOS(0.9V)&#xD;&#xA;bit1: VDDCORE control &#xD;&#xA;       0h: VDDCORE = VCref x 1.2&#xD;&#xA;       1h: VDDCORE = VCref x 1.0&#xD;&#xA;bit2: SLP ctl of main reg. &#xD;&#xA;       0h: disable &#xD;&#xA;       1h: enable: main reg is working in lowspeed mode whcih consumes less power&#xD;&#xA;bit3: pd ctl of main reg. &#xD;&#xA;       0h: enable&#xD;&#xA;       1h: power-down: fix VDDCORE = VCref x 1.0 with extra low power consumption but weak driving capability" />
         <Bit Name="RUN_CFG" Authority="RW" Bits="11-8" Description="Power srtategy under normal run mode&#xD;&#xA;bit0: VCref(VDDCORE reference) selection &#xD;&#xA;       0h: BGR(1.0V)&#xD;&#xA;       1h: CMOS(0.9V)&#xD;&#xA;bit1: VDDCORE control &#xD;&#xA;       0h: VDDCORE = VCref x 1.2&#xD;&#xA;       1h: VDDCORE = VCref x 1.0&#xD;&#xA;bit2: SLP ctl of main reg. &#xD;&#xA;       0h: disable &#xD;&#xA;       1h: enable: main reg is working in lowspeed mode whcih consumes less power&#xD;&#xA;bit3: pd ctl of main reg. &#xD;&#xA;       0h: enable&#xD;&#xA;       1h: power-down: fix VDDCORE = VCref x 1.0 with extra low power consumption but weak driving capability" />
@@ -612,20 +372,8 @@
       <Register Name="SYSCON_PWRKEY" Authority="RW" Address="0x40011058" Width="32" Description="功耗调整使能寄存器">
         <Bit Name="PWR_KEY" Authority="RW" Bits="31-16" Description="" />
         <Bit Name="VOSLCK" Authority="RW" Bits="15-0" Description="VOS全局使能控制。&#xD;&#xA;只有在该控制器被配置为0x6CC7时，PWRCR寄存器的配置才有效。" />
-        <Bit Name="PWR_KEY" Authority="RW" Bits="31-16" Description="" />
-        <Bit Name="VOSLCK" Authority="RW" Bits="15-0" Description="VOS全局使能控制。&#xD;&#xA;只有在该控制器被配置为0x6CC7时，PWRCR寄存器的配置才有效。" />
       </Register>
       <Register Name="SYSCON_OPT1" Authority="RW" Address="0x40011064" Width="32" Description="系统配置寄存器1 (TRIM value for OSC) [1]">
-        <Bit Name="NMI_SEL" Authority="RW" Bits="30-27" Description="NMI触发源选择控制位。通过相应控制位独立选择触发源的使能。&#xD;&#xA;0h：禁止该触发源触发NMI&#xD;&#xA;1h：使能该触发源触发NMI&#xD;&#xA;&#xD;&#xA;bit0：LVD中断事件&#xD;&#xA;bit1：内存错误事件（SRAM或者FLASH校验异常）&#xD;&#xA;bit2：EXI0中断事件&#xD;&#xA;bit3：外部时钟异常事件" />
-        <Bit Name="SRAMBLKCTRL" Authority="RW" Bits="26" Description="SRAM 分区控制。SRAM0始终为DSRAM，SRAM1的功能受OPT1[24]位控制&#xD;&#xA;0h： SRAM0 24K。 地址范围0x20000000~0x20005FFF&#xD;&#xA;        SRAM1 8K。 地址范围0x20006000~0x20007FFF&#xD;&#xA;1h:   SRAM0 16K。 地址范围0x20000000~0x20003FFF&#xD;&#xA;        SRAM1 16K。 地址范围0x20004000~0x20007FFF" />
-        <Bit Name="SRAM1FUNCCTRL" Authority="RW" Bits="24" Description="SRAM1指令存取功能控制&#xD;&#xA;0h：SRAM1作为DSRAM用（作为普通SRAM使用）&#xD;&#xA;1h：SRAM1作为ISRAM用，不可写（作为指令空间使用）" />
-        <Bit Name="EMCKM_DUR" Authority="RW" Bits="23-21" Description="EMCKM的检测时间间隔设置，检测周期基于当前IMOSC的频率设置。&#xD;&#xA;0h：18个周期&#xD;&#xA;1h：14个周期&#xD;&#xA;2h：10个周期&#xD;&#xA;3h：8个周期&#xD;&#xA;4h：6个周期&#xD;&#xA;5h：5个周期&#xD;&#xA;6h：4个周期&#xD;&#xA;7h：3个周期" />
-        <Bit Name="ESCKM_DUR" Authority="RW" Bits="20-19" Description="ESCKM的检测时间间隔设置，检测周期基于当前IMOSC的频率设置。&#xD;&#xA;0h：40个周期&#xD;&#xA;1h：30个周期&#xD;&#xA;2h：20个周期&#xD;&#xA;3h：10个周期" />
-        <Bit Name="EFL_LPMD" Authority="RW" Bits="15" Description="Flash的Low Power模式选择。在此模式下，Flash的读取周期保证大于8us。当HCLK频率比较高时，需要配合选择合适的WAIT CYCLE来保证。&#xD;&#xA;0h：禁止Flash LP模式。&#xD;&#xA;1h：使能Flash LP模式。" />
-        <Bit Name="CLODIV" Authority="RW" Bits="14-12" Description="CLO输出分频选择。&#xD;&#xA;0h：4分频。&#xD;&#xA;1h：不分频。&#xD;&#xA;2h：2分频。&#xD;&#xA;4h：8分频。&#xD;&#xA;5h：16分频。&#xD;&#xA;其他：4分频。" />
-        <Bit Name="CLOMX" Authority="RW" Bits="11-8" Description="CLO输出选择。（CLO管脚输出最高频率不超过10MHz，若输出频率较高，可选择CLODIV分频后输出）&#xD;&#xA;0h：ISCLK输出。&#xD;&#xA;1h：IMCLK输出。&#xD;&#xA;2h：ESCLK输出。&#xD;&#xA;3h：EMCLK输出。&#xD;&#xA;4h：HFCLK输出。&#xD;&#xA;5h：EFCLK输出。             （测试用，供FLASH用）&#xD;&#xA;6h：RTCCLK输出。&#xD;&#xA;7h：PCLK输出。&#xD;&#xA;8h：HCLK输出。&#xD;&#xA;9h：IWDTCLK输出。&#xD;&#xA;Ah：PLL_PCLK输出。&#xD;&#xA;Bh：PLL_QCLK输出。&#xD;&#xA;Ch：PLL_FEED_OUT输出。（测试用）&#xD;&#xA;Dh：SYSCLK输出。&#xD;&#xA;其他：保留。" />
-        <Bit Name="HFO_FSEL" Authority="RW" Bits="5-4" Description="HFOSC频率选择。&#xD;&#xA;0h：24MHz。&#xD;&#xA;1h：12MHz。&#xD;&#xA;2h：6MHz。&#xD;&#xA;3h：3MHz。" />
-        <Bit Name="IMO_FSEL" Authority="RW" Bits="1-0" Description="IMOSC频率选择。&#xD;&#xA;0h：5.556MHz。&#xD;&#xA;1h：4.194MHz。&#xD;&#xA;2h：2.097MHz。&#xD;&#xA;3h：131.072KHz。" />
         <Bit Name="NMI_SEL" Authority="RW" Bits="30-27" Description="NMI触发源选择控制位。通过相应控制位独立选择触发源的使能。&#xD;&#xA;0h：禁止该触发源触发NMI&#xD;&#xA;1h：使能该触发源触发NMI&#xD;&#xA;&#xD;&#xA;bit0：LVD中断事件&#xD;&#xA;bit1：内存错误事件（SRAM或者FLASH校验异常）&#xD;&#xA;bit2：EXI0中断事件&#xD;&#xA;bit3：外部时钟异常事件" />
         <Bit Name="SRAMBLKCTRL" Authority="RW" Bits="26" Description="SRAM 分区控制。SRAM0始终为DSRAM，SRAM1的功能受OPT1[24]位控制&#xD;&#xA;0h： SRAM0 24K。 地址范围0x20000000~0x20005FFF&#xD;&#xA;        SRAM1 8K。 地址范围0x20006000~0x20007FFF&#xD;&#xA;1h:   SRAM0 16K。 地址范围0x20000000~0x20003FFF&#xD;&#xA;        SRAM1 16K。 地址范围0x20004000~0x20007FFF" />
         <Bit Name="SRAM1FUNCCTRL" Authority="RW" Bits="24" Description="SRAM1指令存取功能控制&#xD;&#xA;0h：SRAM1作为DSRAM用（作为普通SRAM使用）&#xD;&#xA;1h：SRAM1作为ISRAM用，不可写（作为指令空间使用）" />
@@ -650,53 +398,14 @@
         <Bit Name="CPUFTRST" Authority="RO" Bits="2" Description="CPU Fault时产生硬件复位User Option设置状态查询。&#xD;&#xA;0h：禁止自动复位。&#xD;&#xA;1h：使能自动复位。" />
         <Bit Name="EXIRSTEN" Authority="RO" Bits="1" Description="外部复位管脚功能User Option设置状态查询。&#xD;&#xA;0h：外部复位管脚禁用。&#xD;&#xA;1h：外部复位管脚使能。" />
         <Bit Name="IWDTEN" Authority="RO" Bits="0" Description="独立看门狗User Option设置状态查询。&#xD;&#xA;0h：缺省关闭看门狗。&#xD;&#xA;1h：缺省打开看门狗。" />
-        <Bit Name="RDP" Authority="RO" Bits="27" Description="Read Protection使能User Option状态查询。&#xD;&#xA;0h：缺省关闭Read Protection。&#xD;&#xA;1h：缺省打开Read Protection。" />
-        <Bit Name="HDP_IFE" Authority="RO" Bits="20" Description="取址保护使能状态查询" />
-        <Bit Name="HDP_32K" Authority="RO" Bits="19" Description="32K空间Hard Protection使能User Option状态查询。&#xD;&#xA;0h：缺省禁止Hard Protection。&#xD;&#xA;1h：缺省使能Hard Protection。" />
-        <Bit Name="HDP_16K" Authority="RO" Bits="18" Description="16K空间Hard Protection使能User Option状态查询。&#xD;&#xA;0h：缺省禁止Hard Protection。&#xD;&#xA;1h：缺省使能Hard Protection。" />
-        <Bit Name="HDP_8K" Authority="RO" Bits="17" Description="8K空间Hard Protection使能User Option状态查询。&#xD;&#xA;0h：缺省禁止Hard Protection。&#xD;&#xA;1h：缺省使能Hard Protection。" />
-        <Bit Name="HDP_ALL" Authority="RO" Bits="16" Description="Hard Protection使能User Option状态查询。&#xD;&#xA;0h：缺省禁止Hard Protection。&#xD;&#xA;1h：缺省使能Hard Protection。" />
-        <Bit Name="DBP" Authority="RO" Bits="8" Description="Debug Port 使能User Option状态查询。&#xD;&#xA;0h：缺省打开Debug Port。&#xD;&#xA;1h：缺省关闭Debug Port。" />
-        <Bit Name="CIPVALID" Authority="RO" Bits="7" Description="烧录器加密通讯使能User Option状态查询。&#xD;&#xA;0h：禁止通讯加密。&#xD;&#xA;1h：使能通讯加密。" />
-        <Bit Name="CKHEN" Authority="RO" Bits="3" Description="上电后，Flash的crc校验功能使能状态" />
-        <Bit Name="CPUFTRST" Authority="RO" Bits="2" Description="CPU Fault时产生硬件复位User Option设置状态查询。&#xD;&#xA;0h：禁止自动复位。&#xD;&#xA;1h：使能自动复位。" />
-        <Bit Name="EXIRSTEN" Authority="RO" Bits="1" Description="外部复位管脚功能User Option设置状态查询。&#xD;&#xA;0h：外部复位管脚禁用。&#xD;&#xA;1h：外部复位管脚使能。" />
-        <Bit Name="IWDTEN" Authority="RO" Bits="0" Description="独立看门狗User Option设置状态查询。&#xD;&#xA;0h：缺省关闭看门狗。&#xD;&#xA;1h：缺省打开看门狗。" />
       </Register>
       <Register Name="SYSCON_WKCR" Authority="RW" Address="0x4001106c" Width="32" Description="低功耗唤醒使能控制寄存器">
         <Bit Name="LVD_WKEN" Authority="RW" Bits="11" Description="LVD中断唤醒DEEP-SLEEP使能控制位。&#xD;&#xA;0h：禁止LVD中断唤醒DEEP-SLEEP。&#xD;&#xA;1h：使能LVD中断唤醒DEEP-SLEEP。" />
         <Bit Name="LPT_WKEN" Authority="RW" Bits="10" Description="LPT中断唤醒DEEP-SLEEP使能控制位。&#xD;&#xA;0h：禁止LPT中断唤醒DEEP-SLEEP。&#xD;&#xA;1h：使能LPT中断唤醒DEEP-SLEEP。" />
         <Bit Name="RTC_WKEN" Authority="RW" Bits="9" Description="RTC中断唤醒DEEP-SLEEP使能控制位。&#xD;&#xA;0h：禁止RTC中断唤醒DEEP-SLEEP。&#xD;&#xA;1h：使能RTC中断唤醒DEEP-SLEEP。" />
         <Bit Name="IWDT_WKEN" Authority="RW" Bits="8" Description="看门狗中断唤醒DEEP-SLEEP使能控制位。&#xD;&#xA;0h：禁止IWDT中断唤醒DEEP-SLEEP。&#xD;&#xA;1h：使能IWDT中断唤醒DEEP-SLEEP。" />
-        <Bit Name="LVD_WKEN" Authority="RW" Bits="11" Description="LVD中断唤醒DEEP-SLEEP使能控制位。&#xD;&#xA;0h：禁止LVD中断唤醒DEEP-SLEEP。&#xD;&#xA;1h：使能LVD中断唤醒DEEP-SLEEP。" />
-        <Bit Name="LPT_WKEN" Authority="RW" Bits="10" Description="LPT中断唤醒DEEP-SLEEP使能控制位。&#xD;&#xA;0h：禁止LPT中断唤醒DEEP-SLEEP。&#xD;&#xA;1h：使能LPT中断唤醒DEEP-SLEEP。" />
-        <Bit Name="RTC_WKEN" Authority="RW" Bits="9" Description="RTC中断唤醒DEEP-SLEEP使能控制位。&#xD;&#xA;0h：禁止RTC中断唤醒DEEP-SLEEP。&#xD;&#xA;1h：使能RTC中断唤醒DEEP-SLEEP。" />
-        <Bit Name="IWDT_WKEN" Authority="RW" Bits="8" Description="看门狗中断唤醒DEEP-SLEEP使能控制位。&#xD;&#xA;0h：禁止IWDT中断唤醒DEEP-SLEEP。&#xD;&#xA;1h：使能IWDT中断唤醒DEEP-SLEEP。" />
       </Register>
-      <Register Name="SYSCON_PCAR" Authority="RW" Address="0x40011070" Width="32" Description="LP模式入口PC地址监视寄存器" />
       <Register Name="SYSCON_IMER" Authority="RW" Address="0x40011074" Width="32" Description="中断使能控制寄存器">
-        <Bit Name="CMD_ERR" Authority="RW" Bits="29" Description="命令错误中断，在对某些寄存器错误操作时会产生此中断。" />
-        <Bit Name="EV3TRG" Authority="RW" Bits="22" Description="事件触发输出Event3 触发的中断" />
-        <Bit Name="EV2TRG" Authority="RW" Bits="21" Description="事件触发输出Event2 触发的中断" />
-        <Bit Name="EV1TRG" Authority="RW" Bits="20" Description="事件触发输出Event1 触发的中断" />
-        <Bit Name="EV0TRG" Authority="RW" Bits="19" Description="事件触发输出Event0 触发的中断" />
-        <Bit Name="EM_CMFAIL" Authority="RW" Bits="18" Description="EMOSC时钟失效中断" />
-        <Bit Name="CQCDN" Authority="RW" Bits="17" Description="Clock Qualification完成中断" />
-        <Bit Name="ES_CMFALL" Authority="RW" Bits="16" Description="ESOSC时钟失效中断" />
-        <Bit Name="PLLUL" Authority="RW" Bits="15" Description="PLL UNLOCK中断" />
-        <Bit Name="OPL_ERR" Authority="RW" Bits="14" Description="Option初始化配置加载失败中断" />
-        <Bit Name="EFL_ERR" Authority="RW" Bits="13" Description="EFLASH校验失败中断" />
-        <Bit Name="HWD_ERR" Authority="RW" Bits="12" Description="硬件除法器除零中断" />
-        <Bit Name="LVD_INT" Authority="RW" Bits="11" Description="LVD中断" />
-        <Bit Name="RAM_ERR" Authority="RW" Bits="10" Description="SRAM校验失败中断" />
-        <Bit Name="IWDT_INT" Authority="RW" Bits="8" Description="IWDT中断" />
-        <Bit Name="SYSCLK_ST" Authority="RW" Bits="7" Description="SYSCLK时钟稳定中断" />
-        <Bit Name="PLL_ST" Authority="RW" Bits="5" Description="PLL时钟稳定中断" />
-        <Bit Name="HFOSC_ST" Authority="RW" Bits="4" Description="HFOSC时钟稳定中断" />
-        <Bit Name="EMOSC_ST" Authority="RW" Bits="3" Description="EMOSC时钟稳定中断" />
-        <Bit Name="ESOSC" Authority="RW" Bits="2" Description="ESOSC时钟稳定中断" />
-        <Bit Name="IMOSC_ST" Authority="RW" Bits="1" Description="IMOSC时钟稳定中断" />
-        <Bit Name="ISOSC_ST" Authority="RW" Bits="0" Description="ISOSC时钟稳定中断" />
         <Bit Name="CMD_ERR" Authority="RW" Bits="29" Description="命令错误中断，在对某些寄存器错误操作时会产生此中断。" />
         <Bit Name="EV3TRG" Authority="RW" Bits="22" Description="事件触发输出Event3 触发的中断" />
         <Bit Name="EV2TRG" Authority="RW" Bits="21" Description="事件触发输出Event2 触发的中断" />
@@ -743,52 +452,8 @@
         <Bit Name="ESOSC_ST" Authority="RW" Bits="2" Description="ESOSC时钟稳定中断。" />
         <Bit Name="IMOSC_ST" Authority="RW" Bits="1" Description="IMOSC时钟稳定中断。" />
         <Bit Name="ISOSC_ST" Authority="RW" Bits="0" Description="ISOSC时钟稳定中断。" />
-        <Bit Name="CMD_ERR" Authority="RW" Bits="29" Description="命令错误中断，在对某些寄存器错误操作时会产生此中断。" />
-        <Bit Name="EV3TRG" Authority="RW" Bits="22" Description="同步触发输出Event3 触发的中断" />
-        <Bit Name="EV2TRG" Authority="RW" Bits="21" Description="同步触发输出Event2 触发的中断" />
-        <Bit Name="EV1TRG" Authority="RW" Bits="20" Description="同步触发输出Event1 触发的中断" />
-        <Bit Name="EV0TRG" Authority="RW" Bits="19" Description="同步触发输出Event0 触发的中断" />
-        <Bit Name="EM_CMFAIL" Authority="RW" Bits="18" Description="EMOSC时钟失效中断" />
-        <Bit Name="CQCDN" Authority="RW" Bits="17" Description="Clock Qualification完成中断" />
-        <Bit Name="ES_CMFALL" Authority="RW" Bits="16" Description="ESOSC时钟失效中断" />
-        <Bit Name="PLLUL" Authority="RW" Bits="15" Description="PLL UNLOCK" />
-        <Bit Name="OPL_ERR" Authority="RW" Bits="14" Description="Option初始化配置加载失败中断。" />
-        <Bit Name="EFL_ERR" Authority="RW" Bits="13" Description="EFLASH校验失败中断。" />
-        <Bit Name="HWD_ERR" Authority="RW" Bits="12" Description="硬件除法器除零中断。" />
-        <Bit Name="LVD_INT" Authority="RW" Bits="11" Description="LVD中断。" />
-        <Bit Name="RAM_ERR" Authority="RW" Bits="10" Description="SRAM校验失败中断。" />
-        <Bit Name="IWDT_INT" Authority="RW" Bits="8" Description="IWDT中断。" />
-        <Bit Name="SYSCLK_ST" Authority="RW" Bits="7" Description="SYSCLK时钟稳定中断。" />
-        <Bit Name="SYPLL" Authority="RW" Bits="5" Description="PLL时钟稳定中断" />
-        <Bit Name="HFOSC_ST" Authority="RW" Bits="4" Description="HFOSC时钟稳定中断。" />
-        <Bit Name="EMOSC_ST" Authority="RW" Bits="3" Description="EMOSC时钟稳定中断。" />
-        <Bit Name="ESOSC_ST" Authority="RW" Bits="2" Description="ESOSC时钟稳定中断。" />
-        <Bit Name="IMOSC_ST" Authority="RW" Bits="1" Description="IMOSC时钟稳定中断。" />
-        <Bit Name="ISOSC_ST" Authority="RW" Bits="0" Description="ISOSC时钟稳定中断。" />
       </Register>
       <Register Name="SYSCON_IMCR" Authority="RW" Address="0x4001107c" Width="32" Description="中断使能/禁止状态寄存器">
-        <Bit Name="CMD_ERR" Authority="RW" Bits="29" Description="命令错误中断，在对某些寄存器错误操作时会产生此中断。&#xD;&#xA;0h：禁止中断。&#xD;&#xA;1h：使能中断。" />
-        <Bit Name="EV3TRG" Authority="RW" Bits="22" Description="同步触发输出Event3 触发的中断。&#xD;&#xA;0h：禁止中断。&#xD;&#xA;1h：使能中断。" />
-        <Bit Name="EV2TRG" Authority="RW" Bits="21" Description="同步触发输出Event2 触发的中断。&#xD;&#xA;0h：禁止中断。&#xD;&#xA;1h：使能中断。" />
-        <Bit Name="EV1TRG" Authority="RW" Bits="20" Description="同步触发输出Event1 触发的中断。&#xD;&#xA;0h：禁止中断。&#xD;&#xA;1h：使能中断。" />
-        <Bit Name="EV0TRG" Authority="RW" Bits="19" Description="同步触发输出Event0 触发的中断。&#xD;&#xA;0h：禁止中断。&#xD;&#xA;1h：使能中断。" />
-        <Bit Name="EM_CMFAIL" Authority="RW" Bits="18" Description="EMOSC时钟失效中断。&#xD;&#xA;0h：禁止中断。&#xD;&#xA;1h：使能中断。" />
-        <Bit Name="CQCDN" Authority="RW" Bits="17" Description="CQCDN校验失败中断。&#xD;&#xA;0h：禁止中断。&#xD;&#xA;1h：使能中断。" />
-        <Bit Name="ES_CMFALL" Authority="RW" Bits="16" Description="ES_CMFALL校验失败中断。&#xD;&#xA;0h：禁止中断。&#xD;&#xA;1h：使能中断。" />
-        <Bit Name="PLLUL" Authority="RW" Bits="15" Description="PLLUL校验失败中断。&#xD;&#xA;0h：禁止中断。&#xD;&#xA;1h：使能中断。" />
-        <Bit Name="OPL_ERR" Authority="RW" Bits="14" Description="Option初始化配置加载失败中断。&#xD;&#xA;0h：禁止中断。&#xD;&#xA;1h：使能中断。" />
-        <Bit Name="EFL_ERR" Authority="RW" Bits="13" Description="EFLASH校验失败中断。&#xD;&#xA;0h：禁止中断。&#xD;&#xA;1h：使能中断。" />
-        <Bit Name="HWD_ERR" Authority="RW" Bits="12" Description="硬件除法器除零中断。&#xD;&#xA;0h：禁止中断。&#xD;&#xA;1h：使能中断。" />
-        <Bit Name="LVD_INT" Authority="RW" Bits="11" Description="LVD中断。&#xD;&#xA;0h：禁止中断。&#xD;&#xA;1h：使能中断。" />
-        <Bit Name="RAM_ERR" Authority="RW" Bits="10" Description="SRAM校验失败中断。&#xD;&#xA;0h：禁止中断。&#xD;&#xA;1h：使能中断。" />
-        <Bit Name="IWDT_INT" Authority="RW" Bits="8" Description="IWDT中断。&#xD;&#xA;0h：禁止中断。&#xD;&#xA;1h：使能中断。" />
-        <Bit Name="SYSCLK_ST" Authority="RW" Bits="7" Description="SYSCLK时钟稳定中断。&#xD;&#xA;0h：禁止中断。&#xD;&#xA;1h：使能中断。" />
-        <Bit Name="SYPLL" Authority="RW" Bits="5" Description="PLL时钟稳定中断。&#xD;&#xA;0h：禁止中断。&#xD;&#xA;1h：使能中断。" />
-        <Bit Name="HFOSC_ST" Authority="RW" Bits="4" Description="HFOSC时钟稳定中断。&#xD;&#xA;0h：禁止中断。&#xD;&#xA;1h：使能中断。" />
-        <Bit Name="EMOSC_ST" Authority="RW" Bits="3" Description="EMOSC时钟稳定中断。&#xD;&#xA;0h：禁止中断。&#xD;&#xA;1h：使能中断。" />
-        <Bit Name="ESOSC_ST" Authority="RW" Bits="2" Description="ESOSC时钟稳定中断。&#xD;&#xA;0h：禁止中断。&#xD;&#xA;1h：使能中断。" />
-        <Bit Name="IMOSC_ST" Authority="RW" Bits="1" Description="IMOSC时钟稳定中断。&#xD;&#xA;0h：禁止中断。&#xD;&#xA;1h：使能中断。" />
-        <Bit Name="ISOSC_ST" Authority="RW" Bits="0" Description="ISOSC时钟稳定中断。&#xD;&#xA;0h：禁止中断。&#xD;&#xA;1h：使能中断。" />
         <Bit Name="CMD_ERR" Authority="RW" Bits="29" Description="命令错误中断，在对某些寄存器错误操作时会产生此中断。&#xD;&#xA;0h：禁止中断。&#xD;&#xA;1h：使能中断。" />
         <Bit Name="EV3TRG" Authority="RW" Bits="22" Description="同步触发输出Event3 触发的中断。&#xD;&#xA;0h：禁止中断。&#xD;&#xA;1h：使能中断。" />
         <Bit Name="EV2TRG" Authority="RW" Bits="21" Description="同步触发输出Event2 触发的中断。&#xD;&#xA;0h：禁止中断。&#xD;&#xA;1h：使能中断。" />
@@ -835,52 +500,8 @@
         <Bit Name="ESOSC_ST" Authority="RW" Bits="2" Description="ESOSC时钟稳定中断。" />
         <Bit Name="IMOSC_ST" Authority="RW" Bits="1" Description="IMOSC时钟稳定中断。" />
         <Bit Name="ISOSC_ST" Authority="RW" Bits="0" Description="ISOSC时钟稳定中断。" />
-        <Bit Name="CMD_ERR" Authority="RW" Bits="29" Description="命令错误中断，在对某些寄存器错误操作时会产生此中断。" />
-        <Bit Name="EV3TRG" Authority="RW" Bits="22" Description="同步触发输出Event3 触发的中断" />
-        <Bit Name="EV2TRG" Authority="RW" Bits="21" Description="同步触发输出Event2 触发的中断" />
-        <Bit Name="EV1TRG" Authority="RW" Bits="20" Description="同步触发输出Event1 触发的中断" />
-        <Bit Name="EV0TRG" Authority="RW" Bits="19" Description="同步触发输出Event0 触发的中断" />
-        <Bit Name="EM_CMFAIL" Authority="RW" Bits="18" Description="EMOSC时钟失效中断" />
-        <Bit Name="CQCDN" Authority="RW" Bits="17" Description="Clock Qualification完成中断" />
-        <Bit Name="ES_CMFALL" Authority="RW" Bits="16" Description="ESOSC时钟失效中断" />
-        <Bit Name="PLLUL" Authority="RW" Bits="15" Description="PLL UNLOCK" />
-        <Bit Name="OPL_ERR" Authority="RW" Bits="14" Description="Option初始化配置加载失败中断。" />
-        <Bit Name="EFL_ERR" Authority="RW" Bits="13" Description="EFLASH校验失败中断。" />
-        <Bit Name="HWD_ERR" Authority="RW" Bits="12" Description="硬件除法器除零中断。" />
-        <Bit Name="LVD_INT" Authority="RW" Bits="11" Description="LVD中断。" />
-        <Bit Name="RAM_ERR" Authority="RW" Bits="10" Description="SRAM校验失败中断。" />
-        <Bit Name="IWDT_INT" Authority="RW" Bits="8" Description="IWDT中断。" />
-        <Bit Name="SYSCLK_ST" Authority="RW" Bits="7" Description="SYSCLK时钟稳定中断。" />
-        <Bit Name="SYPLL" Authority="RW" Bits="5" Description="PLL时钟稳定中断" />
-        <Bit Name="HFOSC_ST" Authority="RW" Bits="4" Description="HFOSC时钟稳定中断。" />
-        <Bit Name="EMOSC_ST" Authority="RW" Bits="3" Description="EMOSC时钟稳定中断。" />
-        <Bit Name="ESOSC_ST" Authority="RW" Bits="2" Description="ESOSC时钟稳定中断。" />
-        <Bit Name="IMOSC_ST" Authority="RW" Bits="1" Description="IMOSC时钟稳定中断。" />
-        <Bit Name="ISOSC_ST" Authority="RW" Bits="0" Description="ISOSC时钟稳定中断。" />
       </Register>
       <Register Name="SYSCON_ICR" Authority="RW" Address="0x40011084" Width="32" Description="中断清除寄存器">
-        <Bit Name="CMD_ERR" Authority="RW" Bits="29" Description="命令错误中断，在对某些寄存器错误操作时会产生此中断。" />
-        <Bit Name="EV3TRG" Authority="RW" Bits="22" Description="事件触发输出Event3 触发的中断" />
-        <Bit Name="EV2TRG" Authority="RW" Bits="21" Description="事件触发输出Event2 触发的中断" />
-        <Bit Name="EV1TRG" Authority="RW" Bits="20" Description="事件触发输出Event1 触发的中断" />
-        <Bit Name="EV0TRG" Authority="RW" Bits="19" Description="事件触发输出Event0 触发的中断" />
-        <Bit Name="EM_CMFAIL" Authority="RW" Bits="18" Description="EMOSC时钟失效中断" />
-        <Bit Name="CQCDN" Authority="RW" Bits="17" Description="Clock Qualification完成中断" />
-        <Bit Name="ES_CMFALL" Authority="RW" Bits="16" Description="ESOSC时钟失效中断" />
-        <Bit Name="PLLUL" Authority="RW" Bits="15" Description="PLL UNLOCK中断" />
-        <Bit Name="OPL_ERR" Authority="RW" Bits="14" Description="Option初始化配置加载失败中断" />
-        <Bit Name="EFL_ERR" Authority="RW" Bits="13" Description="EFLASH校验失败中断" />
-        <Bit Name="HWD_ERR" Authority="RW" Bits="12" Description="硬件除法器除零中断" />
-        <Bit Name="LVD_INT" Authority="RW" Bits="11" Description="LVD中断" />
-        <Bit Name="RAM_ERR" Authority="RW" Bits="10" Description="SRAM校验失败中断" />
-        <Bit Name="IWDT_INT" Authority="RW" Bits="8" Description="IWDT中断" />
-        <Bit Name="SYSCLK_ST" Authority="RW" Bits="7" Description="SYSCLK时钟稳定中断" />
-        <Bit Name="PLL_ST" Authority="RW" Bits="5" Description="PLL时钟稳定中断" />
-        <Bit Name="HFOSC_ST" Authority="RW" Bits="4" Description="HFOSC时钟稳定中断" />
-        <Bit Name="EMOSC_ST" Authority="RW" Bits="3" Description="EMOSC时钟稳定中断" />
-        <Bit Name="ESOSC_ST" Authority="RW" Bits="2" Description="ESOSC时钟稳定中断" />
-        <Bit Name="IMOSC_ST" Authority="RW" Bits="1" Description="IMOSC时钟稳定中断" />
-        <Bit Name="ISOSC_ST" Authority="RW" Bits="0" Description="ISOSC时钟稳定中断" />
         <Bit Name="CMD_ERR" Authority="RW" Bits="29" Description="命令错误中断，在对某些寄存器错误操作时会产生此中断。" />
         <Bit Name="EV3TRG" Authority="RW" Bits="22" Description="事件触发输出Event3 触发的中断" />
         <Bit Name="EV2TRG" Authority="RW" Bits="21" Description="事件触发输出Event2 触发的中断" />
@@ -927,52 +548,8 @@
         <Bit Name="ESOSC_ST" Authority="RO" Bits="2" Description="ESOSC时钟稳定中断" />
         <Bit Name="IMOSC_ST" Authority="RO" Bits="1" Description="IMOSC时钟稳定中断" />
         <Bit Name="ISOSC_ST" Authority="RO" Bits="0" Description="ISOSC时钟稳定中断" />
-        <Bit Name="CMD_ERR" Authority="RO" Bits="29" Description="命令错误中断，在对某些寄存器错误操作时会产生此中断。" />
-        <Bit Name="EV3TRG" Authority="RO" Bits="22" Description="事件触发输出Event3 触发的中断" />
-        <Bit Name="EV2TRG" Authority="RO" Bits="21" Description="事件触发输出Event2 触发的中断" />
-        <Bit Name="EV1TRG" Authority="RO" Bits="20" Description="事件触发输出Event1 触发的中断" />
-        <Bit Name="EV0TRG" Authority="RO" Bits="19" Description="事件触发输出Event0 触发的中断" />
-        <Bit Name="EM_CMFAIL" Authority="RO" Bits="18" Description="EMOSC时钟失效中断" />
-        <Bit Name="CQCDN" Authority="RO" Bits="17" Description="Clock Qualification完成中断" />
-        <Bit Name="ES_CMFALL" Authority="RO" Bits="16" Description="ESOSC时钟失效中断" />
-        <Bit Name="PLLUL" Authority="RO" Bits="15" Description="PLL UNLOCK中断" />
-        <Bit Name="OPL_ERR" Authority="RO" Bits="14" Description="Option初始化配置加载失败中断" />
-        <Bit Name="EFL_ERR" Authority="RO" Bits="13" Description="EFLASH校验失败中断" />
-        <Bit Name="HWD_ERR" Authority="RO" Bits="12" Description="硬件除法器除零中断" />
-        <Bit Name="LVD_INT" Authority="RO" Bits="11" Description="LVD中断" />
-        <Bit Name="RAM_ERR" Authority="RO" Bits="10" Description="SRAM校验失败中断" />
-        <Bit Name="IWDT_INT" Authority="RO" Bits="8" Description="IWDT中断" />
-        <Bit Name="SYSCLK_ST" Authority="RO" Bits="7" Description="SYSCLK时钟稳定中断" />
-        <Bit Name="PLL_ST" Authority="RO" Bits="5" Description="PLL时钟稳定中断" />
-        <Bit Name="HFOSC_ST" Authority="RO" Bits="4" Description="HFOSC时钟稳定中断" />
-        <Bit Name="EMOSC_ST" Authority="RO" Bits="3" Description="EMOSC时钟稳定中断" />
-        <Bit Name="ESOSC_ST" Authority="RO" Bits="2" Description="ESOSC时钟稳定中断" />
-        <Bit Name="IMOSC_ST" Authority="RO" Bits="1" Description="IMOSC时钟稳定中断" />
-        <Bit Name="ISOSC_ST" Authority="RO" Bits="0" Description="ISOSC时钟稳定中断" />
       </Register>
       <Register Name="SYSCON_MISR" Authority="RW" Address="0x4001108c" Width="32" Description="中断标志状态寄存器">
-        <Bit Name="CMD_ERR" Authority="RO" Bits="29" Description="命令错误中断，在对某些寄存器错误操作时会产生此中断。" />
-        <Bit Name="EV3TRG" Authority="RO" Bits="22" Description="事件触发输出Event3 触发的中断" />
-        <Bit Name="EV2TRG" Authority="RO" Bits="21" Description="事件触发输出Event2 触发的中断" />
-        <Bit Name="EV1TRG" Authority="RO" Bits="20" Description="事件触发输出Event1 触发的中断" />
-        <Bit Name="EV0TRG" Authority="RO" Bits="19" Description="事件触发输出Event0 触发的中断" />
-        <Bit Name="EM_CMFAIL" Authority="RO" Bits="18" Description="EMOSC时钟失效中断" />
-        <Bit Name="CQCDN" Authority="RO" Bits="17" Description="Clock Qualification完成中断" />
-        <Bit Name="ES_CMFALL" Authority="RO" Bits="16" Description="ESOSC时钟失效中断" />
-        <Bit Name="PLLUL" Authority="RO" Bits="15" Description="PLL UNLOCK中断" />
-        <Bit Name="OPL_ERR" Authority="RO" Bits="14" Description="Option初始化配置加载失败中断" />
-        <Bit Name="EFL_ERR" Authority="RO" Bits="13" Description="EFLASH校验失败中断" />
-        <Bit Name="HWD_ERR" Authority="RO" Bits="12" Description="硬件除法器除零中断" />
-        <Bit Name="LVD_INT" Authority="RO" Bits="11" Description="LVD中断" />
-        <Bit Name="RAM_ERR" Authority="RO" Bits="10" Description="SRAM校验失败中断" />
-        <Bit Name="IWDT_INT" Authority="RO" Bits="8" Description="IWDT中断" />
-        <Bit Name="SYSCLK_ST" Authority="RO" Bits="7" Description="SYSCLK时钟稳定中断" />
-        <Bit Name="PLL_ST" Authority="RO" Bits="5" Description="PLL时钟稳定中断" />
-        <Bit Name="HFOSC_ST" Authority="RO" Bits="4" Description="HFOSC时钟稳定中断" />
-        <Bit Name="EMOSC_ST" Authority="RO" Bits="3" Description="EMOSC时钟稳定中断" />
-        <Bit Name="ESOSC_ST" Authority="RO" Bits="2" Description="ESOSC时钟稳定中断" />
-        <Bit Name="IMOSC_ST" Authority="RO" Bits="1" Description="IMOSC时钟稳定中断" />
-        <Bit Name="ISOSC_ST" Authority="RO" Bits="0" Description="ISOSC时钟稳定中断" />
         <Bit Name="CMD_ERR" Authority="RO" Bits="29" Description="命令错误中断，在对某些寄存器错误操作时会产生此中断。" />
         <Bit Name="EV3TRG" Authority="RO" Bits="22" Description="事件触发输出Event3 触发的中断" />
         <Bit Name="EV2TRG" Authority="RO" Bits="21" Description="事件触发输出Event2 触发的中断" />
@@ -1012,61 +589,32 @@
         <Bit Name="EXTRST" Authority="RW" Bits="2" Description="外部复位管脚复位。" />
         <Bit Name="LVR" Authority="RW" Bits="1" Description="LVD产生的系统复位。" />
         <Bit Name="POR" Authority="RW" Bits="0" Description="POR上电复位。" />
-        <Bit Name="" Authority="" Bits="16" Description="" />
-        <Bit Name="CPU1RST" Authority="RW" Bits="15" Description="CPU产生的软件复位（CPU CORE复位）。" />
-        <Bit Name="WWDT" Authority="RW" Bits="13" Description="WWDT复位。" />
-        <Bit Name="EFL_ERR" Authority="RW" Bits="12" Description="EFLASH校验错误产生的系统复位。" />
-        <Bit Name="RAM_ERR" Authority="RW" Bits="11" Description="SRAM校验错误产生的系统复位。" />
-        <Bit Name="PLLUNLOCK" Authority="RO" Bits="10" Description="PLL失锁产生的系统复位" />
-        <Bit Name="CPUFAULT" Authority="RW" Bits="9" Description="CPU锁定产生的系统复位。" />
-        <Bit Name="SWRST" Authority="RW" Bits="8" Description="SYSCON产生软件复位（系统级复位）。" />
-        <Bit Name="CPURST" Authority="RW" Bits="7" Description="CPU产生的软件复位（系统级复位）。" />
-        <Bit Name="EMCKM" Authority="RW" Bits="6" Description="EMOSC CKM Fail产生的系统复位。" />
-        <Bit Name="ESCKM" Authority="RW" Bits="5" Description="ESOSC CKM Fail产生的系统复位。" />
-        <Bit Name="IWDT" Authority="RW" Bits="4" Description="IWDT产生的系统复位。" />
-        <Bit Name="EXTRST" Authority="RW" Bits="2" Description="外部复位管脚复位。" />
-        <Bit Name="LVR" Authority="RW" Bits="1" Description="LVD产生的系统复位。" />
-        <Bit Name="POR" Authority="RW" Bits="0" Description="POR上电复位。" />
       </Register>
       <Register Name="SYSCON_EXIRT" Authority="RW" Address="0x40011094" Width="32" Description="外部中断上升沿选择寄存器">
-        <Bit Name="EXI0 ~ EXI19" Authority="RW" Bits="19-0" Description="外部中断上升沿/下降沿使能控制。&#xD;&#xA;0h：该边沿触发关闭。&#xD;&#xA;1h：该边沿触发打开。" />
         <Bit Name="EXI0 ~ EXI19" Authority="RW" Bits="19-0" Description="外部中断上升沿/下降沿使能控制。&#xD;&#xA;0h：该边沿触发关闭。&#xD;&#xA;1h：该边沿触发打开。" />
       </Register>
       <Register Name="SYSCON_EXIFT" Authority="RW" Address="0x40011098" Width="32" Description="外部中断下降沿选择寄存器">
         <Bit Name="EXI0 ~ EXI19" Authority="RW" Bits="19-0" Description="外部中断上升沿/下降沿使能控制。&#xD;&#xA;0h：该边沿触发关闭。&#xD;&#xA;1h：该边沿触发打开。" />
-        <Bit Name="EXI0 ~ EXI19" Authority="RW" Bits="19-0" Description="外部中断上升沿/下降沿使能控制。&#xD;&#xA;0h：该边沿触发关闭。&#xD;&#xA;1h：该边沿触发打开。" />
       </Register>
       <Register Name="SYSCON_EXIER" Authority="RW" Address="0x4001109c" Width="32" Description="外部中断使能寄存器">
-        <Bit Name="EXI0 ~ EXI19" Authority="RW" Bits="19-0" Description="外部中断使能控制。&#xD;&#xA;EXIER和EXIDR为只写寄存器。通过EXIER使能中断，EXIDR禁止中断。只有对寄存器写入’1’时才有效，读取时返回总为‘0’。&#xD;&#xA;寄存器写入时：&#xD;&#xA;0h：无效。&#xD;&#xA;1h：打开/关闭该EXI中断源。" />
         <Bit Name="EXI0 ~ EXI19" Authority="RW" Bits="19-0" Description="外部中断使能控制。&#xD;&#xA;EXIER和EXIDR为只写寄存器。通过EXIER使能中断，EXIDR禁止中断。只有对寄存器写入’1’时才有效，读取时返回总为‘0’。&#xD;&#xA;寄存器写入时：&#xD;&#xA;0h：无效。&#xD;&#xA;1h：打开/关闭该EXI中断源。" />
       </Register>
       <Register Name="SYSCON_EXIDR" Authority="RW" Address="0x400110a0" Width="32" Description="外部中断禁止寄存器">
         <Bit Name="EXI0 ~ EXI19" Authority="RW" Bits="19-0" Description="外部中断使能控制。&#xD;&#xA;EXIER和EXIDR为只写寄存器。通过EXIER使能中断，EXIDR禁止中断。只有对寄存器写入’1’时才有效，读取时返回总为‘0’。&#xD;&#xA;寄存器写入时：&#xD;&#xA;0h：无效。&#xD;&#xA;1h：打开/关闭该EXI中断源。" />
-        <Bit Name="EXI0 ~ EXI19" Authority="RW" Bits="19-0" Description="外部中断使能控制。&#xD;&#xA;EXIER和EXIDR为只写寄存器。通过EXIER使能中断，EXIDR禁止中断。只有对寄存器写入’1’时才有效，读取时返回总为‘0’。&#xD;&#xA;寄存器写入时：&#xD;&#xA;0h：无效。&#xD;&#xA;1h：打开/关闭该EXI中断源。" />
       </Register>
       <Register Name="SYSCON_EXIMR" Authority="RW" Address="0x400110a4" Width="32" Description="外部中断使能/禁止状态寄存器">
-        <Bit Name="EXI0 ~ EXI19" Authority="RW" Bits="19-0" Description="EXIMR为只读寄存器，读取时返回当前中断使能状态。&#xD;&#xA;读取时：&#xD;&#xA;0h：中断处于关闭状态。&#xD;&#xA;1h：中断处于打开状态。" />
         <Bit Name="EXI0 ~ EXI19" Authority="RW" Bits="19-0" Description="EXIMR为只读寄存器，读取时返回当前中断使能状态。&#xD;&#xA;读取时：&#xD;&#xA;0h：中断处于关闭状态。&#xD;&#xA;1h：中断处于打开状态。" />
       </Register>
       <Register Name="SYSCON_EXIAR" Authority="RW" Address="0x400110a8" Width="32" Description="外部中断软件触发寄存器">
         <Bit Name="EXI0 ~ EXI19" Authority="RW" Bits="19-0" Description="EXIAR为只写寄存器，只有对寄存器写入’1’时才有效，读取时返回总为‘0’。&#xD;&#xA;寄存器写入时：&#xD;&#xA;0h：无效。&#xD;&#xA;1h：软件触发该EXI中断源。" />
-        <Bit Name="EXI0 ~ EXI19" Authority="RW" Bits="19-0" Description="EXIAR为只写寄存器，只有对寄存器写入’1’时才有效，读取时返回总为‘0’。&#xD;&#xA;寄存器写入时：&#xD;&#xA;0h：无效。&#xD;&#xA;1h：软件触发该EXI中断源。" />
       </Register>
       <Register Name="SYSCON_EXICR" Authority="RW" Address="0x400110ac" Width="32" Description="外部中断清除寄存器">
-        <Bit Name="EXI0 ~ EXI19" Authority="RW" Bits="19-0" Description="EXICR为读写寄存器。读取时返回当前中断pending标志。写入‘1’时，清除当前中断标志；写入‘0’时无效。&#xD;&#xA;读取时：&#xD;&#xA;0h：中断标志处于未Pending状态。&#xD;&#xA;1h：中断标志处于Pending状态。&#xD;&#xA;写入时：&#xD;&#xA;0h：无效。&#xD;&#xA;1h：清除该EXI Pending状态。" />
         <Bit Name="EXI0 ~ EXI19" Authority="RW" Bits="19-0" Description="EXICR为读写寄存器。读取时返回当前中断pending标志。写入‘1’时，清除当前中断标志；写入‘0’时无效。&#xD;&#xA;读取时：&#xD;&#xA;0h：中断标志处于未Pending状态。&#xD;&#xA;1h：中断标志处于Pending状态。&#xD;&#xA;写入时：&#xD;&#xA;0h：无效。&#xD;&#xA;1h：清除该EXI Pending状态。" />
       </Register>
       <Register Name="SYSCON_EXIRS" Authority="RW" Address="0x400110b0" Width="32" Description="外部中断原始标志状态寄存器">
         <Bit Name="EXI0 ~ EXI19" Authority="RW" Bits="19-0" Description="EXIRS为只读寄存器，读取时返回当前中断原始标志状态。&#xD;&#xA;读取时：&#xD;&#xA;0h：中断处于未Pending状态。&#xD;&#xA;1h：中断处于Pending状态。" />
-        <Bit Name="EXI0 ~ EXI19" Authority="RW" Bits="19-0" Description="EXIRS为只读寄存器，读取时返回当前中断原始标志状态。&#xD;&#xA;读取时：&#xD;&#xA;0h：中断处于未Pending状态。&#xD;&#xA;1h：中断处于Pending状态。" />
       </Register>
       <Register Name="SYSCON_IWDCR" Authority="RW" Address="0x400110b4" Width="32" Description="独立看门狗控制寄存器">
-        <Bit Name="IWDT_KEY" Authority="RW" Bits="31-16" Description="对本寄存器进行写操作时，需要填入对应的KEY值。&#xD;&#xA;只有在IWDT_KEY等于0x8778时，对本寄存器的写入才有效" />
-        <Bit Name="BUSY" Authority="RW" Bits="12" Description="看门狗工作状态。&#xD;&#xA;0h：看门狗未使能。&#xD;&#xA;1h：看门狗已使能。" />
-        <Bit Name="DBGEN" Authority="RW" Bits="11" Description="SHORT工作模式，该模式用于缩短IWDT的溢出时间。正常使用时，保持该位为零。&#xD;&#xA;0h：禁止SHORT模式。&#xD;&#xA;1h：使能SHORT模式。" />
-        <Bit Name="OVTIME" Authority="RW" Bits="10-8" Description="总溢出时间设置。当看门狗计数器计数溢出时，产生复位。&#xD;&#xA;0h：128ms。&#xD;&#xA;1h：256ms。&#xD;&#xA;2h：512ms。&#xD;&#xA;3h：1.024s。&#xD;&#xA;4h：2.048s。&#xD;&#xA;5h：3.096s。&#xD;&#xA;6h：4.12s。&#xD;&#xA;7h：8.196s。" />
-        <Bit Name="INTVAL" Authority="RW" Bits="4-2" Description="看门狗报警中断的时间设置。当看门狗计数器计数到总溢出时间的一定比例时，产生报警中断。&#xD;&#xA;0h：1/8总溢出时间。&#xD;&#xA;1h：2/8总溢出时间。&#xD;&#xA;2h：3/8总溢出时间。&#xD;&#xA;3h：4/8总溢出时间。&#xD;&#xA;4h：5/8总溢出时间。&#xD;&#xA;5h：6/8总溢出时间。&#xD;&#xA;6h：7/8总溢出时间。&#xD;&#xA;7h：7/8总溢出时间。" />
-        <Bit Name="SHORT" Authority="RW" Bits="0" Description="SHORT工作模式，该模式用于缩短IWDT的溢出时间。正常使用时，保持该位为零。&#xD;&#xA;0h：禁止SHORT模式。&#xD;&#xA;1h：使能SHORT模式。" />
         <Bit Name="IWDT_KEY" Authority="RW" Bits="31-16" Description="对本寄存器进行写操作时，需要填入对应的KEY值。&#xD;&#xA;只有在IWDT_KEY等于0x8778时，对本寄存器的写入才有效" />
         <Bit Name="BUSY" Authority="RW" Bits="12" Description="看门狗工作状态。&#xD;&#xA;0h：看门狗未使能。&#xD;&#xA;1h：看门狗已使能。" />
         <Bit Name="DBGEN" Authority="RW" Bits="11" Description="SHORT工作模式，该模式用于缩短IWDT的溢出时间。正常使用时，保持该位为零。&#xD;&#xA;0h：禁止SHORT模式。&#xD;&#xA;1h：使能SHORT模式。" />
@@ -1078,25 +626,12 @@
         <Bit Name="CLR_BUSY" Authority="RO" Bits="31" Description="看门狗清除请求执行状态。&#xD;&#xA;0h：没有挂起的清除操作。&#xD;&#xA;1h：当前清除正在执行。" />
         <Bit Name="CLR" Authority="RW" Bits="30-24" Description="看门狗计数器清除请求。&#xD;&#xA;只写控制位，只有写入‘0x5A’时有效。" />
         <Bit Name="CNT" Authority="RO" Bits="11-0" Description="返回IWDT当前计数值。" />
-        <Bit Name="CLR_BUSY" Authority="RO" Bits="31" Description="看门狗清除请求执行状态。&#xD;&#xA;0h：没有挂起的清除操作。&#xD;&#xA;1h：当前清除正在执行。" />
-        <Bit Name="CLR" Authority="RW" Bits="30-24" Description="看门狗计数器清除请求。&#xD;&#xA;只写控制位，只有写入‘0x5A’时有效。" />
-        <Bit Name="CNT" Authority="RO" Bits="11-0" Description="返回IWDT当前计数值。" />
       </Register>
       <Register Name="SYSCON_IWDEDR" Authority="RW" Address="0x400110bc" Width="32" Description="独立看门狗使能寄存器">
         <Bit Name="IWDTE_KEY" Authority="RW" Bits="31-16" Description="对本寄存器进行写操作时，需要填入对应的KEY值。&#xD;&#xA;只有在IWDTE_KEY等于0x7887时，对本寄存器的写入才有效。" />
         <Bit Name="ENDIS" Authority="RW" Bits="15-0" Description="IWDT使能控制。&#xD;&#xA;写入0x55AA时，关闭IWDT。&#xD;&#xA;写入其他值时，使能IWDT。" />
-        <Bit Name="IWDTE_KEY" Authority="RW" Bits="31-16" Description="对本寄存器进行写操作时，需要填入对应的KEY值。&#xD;&#xA;只有在IWDTE_KEY等于0x7887时，对本寄存器的写入才有效。" />
-        <Bit Name="ENDIS" Authority="RW" Bits="15-0" Description="IWDT使能控制。&#xD;&#xA;写入0x55AA时，关闭IWDT。&#xD;&#xA;写入其他值时，使能IWDT。" />
       </Register>
       <Register Name="SYSCON_IOMAP0" Authority="RW" Address="0x400110c0" Width="32" Description="GPIO分组0的功能映射配置寄存器">
-        <Bit Name="CFGVAL7" Authority="RW" Bits="31-28" Description="" />
-        <Bit Name="CFGVAL6" Authority="RW" Bits="27-24" Description="" />
-        <Bit Name="CFGVAL5" Authority="RW" Bits="23-20" Description="" />
-        <Bit Name="CFGVAL4" Authority="RW" Bits="19-16" Description="" />
-        <Bit Name="CFGVAL3" Authority="RW" Bits="15-12" Description="" />
-        <Bit Name="CFGVAL2" Authority="RW" Bits="11-8" Description="" />
-        <Bit Name="CFGVAL1" Authority="RW" Bits="7-4" Description="" />
-        <Bit Name="CFGVAL0" Authority="RW" Bits="3-0" Description="" />
         <Bit Name="CFGVAL7" Authority="RW" Bits="31-28" Description="" />
         <Bit Name="CFGVAL6" Authority="RW" Bits="27-24" Description="" />
         <Bit Name="CFGVAL5" Authority="RW" Bits="23-20" Description="" />
@@ -1119,17 +654,8 @@
         <Bit Name="ERR_IMOSCDIS" Authority="RO" Bits="6" Description="尝试关闭IMOSC时发生错误，可能IMOSC正被其他模块占用。" />
         <Bit Name="ERR_ISOSCDIS" Authority="RO" Bits="5" Description="尝试关闭ISOSC时发生错误，可能ISOSC正被其他模块占用。" />
         <Bit Name="ERR_SYSCKSEL" Authority="RO" Bits="4" Description="尝试将SYSCLK选择为未使能的时钟源。" />
-        <Bit Name="ERR_WDTREF" Authority="RO" Bits="15" Description="尝试重载iWDT时发生错误，可能ISOSC未稳定。" />
-        <Bit Name="ERR_EMCKMEN" Authority="RO" Bits="14" Description="尝试打开EMCKM时发生错误，可能监测时钟未正确配置。" />
-        <Bit Name="ERR_ESCKMEN" Authority="RO" Bits="11" Description="尝试打开ESCKM时发生错误，可能监测时钟未正确配置。" />
-        <Bit Name="ERR_EMOSCEN" Authority="RO" Bits="9" Description="尝试打开EMOSC时发生错误，可能EMOSC管脚未正确配置。" />
-        <Bit Name="ERR_EMOSCDIS" Authority="RO" Bits="8" Description="尝试关闭EMOSC时发生错误，可能EMOSC正被其他模块占用。" />
-        <Bit Name="ERR_IMOSCDIS" Authority="RO" Bits="6" Description="尝试关闭IMOSC时发生错误，可能IMOSC正被其他模块占用。" />
-        <Bit Name="ERR_ISOSCDIS" Authority="RO" Bits="5" Description="尝试关闭ISOSC时发生错误，可能ISOSC正被其他模块占用。" />
-        <Bit Name="ERR_SYSCKSEL" Authority="RO" Bits="4" Description="尝试将SYSCLK选择为未使能的时钟源。" />
       </Register>
       <Register Name="SYSCON_UID0" Authority="RW" Address="0x400110e4" Width="32" Description="UID寄存器0">
-        <Bit Name="UID" Authority="RO" Bits="31-0" Description="唯一ID寄存器。&#xD;&#xA;在出厂时，由工厂写入的唯一ID码。" />
         <Bit Name="UID" Authority="RO" Bits="31-0" Description="唯一ID寄存器。&#xD;&#xA;在出厂时，由工厂写入的唯一ID码。" />
       </Register>
       <Register Name="SYSCON_UID1" Authority="RW" Address="0x400110e8" Width="32" Description="UID寄存器1" />
@@ -1141,23 +667,8 @@
         <Bit Name="EFL_PD" Authority="RW" Bits="17-16" Description="EFLASH 的电源控制。&#xD;&#xA;当程序在SRAM中运行时，为降低功耗，可以临时将EFLASH的供电关闭。当写入‘11’时，关闭EFLASH的供电；当写入其他值时，打开EFLASH的供电。" />
         <Bit Name="SLPRCVTIM" Authority="RW" Bits="3-2" Description="SLEEP低功耗模式唤醒稳定时间，Tslp为固定值&#xD;&#xA;0h: Tslp+30us&#xD;&#xA;1h: Tslp+20us&#xD;&#xA;2h: Tslp+10us&#xD;&#xA;3h: Tslp+5us" />
         <Bit Name="DSPRCVTIM" Authority="RW" Bits="1-0" Description="DEEPSLEEP低功耗模式唤醒稳定时间，Tdsp为固定值&#xD;&#xA;0h: Tdsp+30us&#xD;&#xA;1h: Tdsp+20us&#xD;&#xA;2h: Tdsp+10us&#xD;&#xA;3h: Tdsp+5us" />
-        <Bit Name="KEY" Authority="RW" Bits="31-24" Description="" />
-        <Bit Name="EFLR_CTL" Authority="RW" Bits="21-20" Description="EFLASH的内部参考源使能硬件控制策略设置。&#xD;&#xA;0h：参考源不随模式改变切换供电开关。&#xD;&#xA;1h：参考源在 SLEEP模式下自动关闭。&#xD;&#xA;3h：参考源在 SLEEP模式、EFL_PD或 EFLASH LP模式下自动关闭。&#xD;&#xA;2h：保留。&#xD;&#xA;EFLASH LP模式通过OPT1[EFL_LPMD]控制位设置。" />
-        <Bit Name="EFLR_PD" Authority="RW" Bits="19-18" Description="EFLASH的内部参考软件使能控制。&#xD;&#xA;当EFLASH断电时，可以关闭EFLASH的参考源，以降低功耗。当写入‘11’时，关闭参考源的供电；当写入其他值时，打开参考源的供电。EFLASH参考源必须在EFLASH断电后，才能关闭；同样在恢复时，需要先恢复参考源，然后再打开EFLASH供电。" />
-        <Bit Name="EFL_PD" Authority="RW" Bits="17-16" Description="EFLASH 的电源控制。&#xD;&#xA;当程序在SRAM中运行时，为降低功耗，可以临时将EFLASH的供电关闭。当写入‘11’时，关闭EFLASH的供电；当写入其他值时，打开EFLASH的供电。" />
-        <Bit Name="SLPRCVTIM" Authority="RW" Bits="3-2" Description="SLEEP低功耗模式唤醒稳定时间，Tslp为固定值&#xD;&#xA;0h: Tslp+30us&#xD;&#xA;1h: Tslp+20us&#xD;&#xA;2h: Tslp+10us&#xD;&#xA;3h: Tslp+5us" />
-        <Bit Name="DSPRCVTIM" Authority="RW" Bits="1-0" Description="DEEPSLEEP低功耗模式唤醒稳定时间，Tdsp为固定值&#xD;&#xA;0h: Tdsp+30us&#xD;&#xA;1h: Tdsp+20us&#xD;&#xA;2h: Tdsp+10us&#xD;&#xA;3h: Tdsp+5us" />
       </Register>
       <Register Name="SYSCON_EVTRG" Authority="RW" Address="0x400110f4" Width="32" Description="事件触发选择寄存器">
-        <Bit Name="CNTxCLR" Authority="" Bits="31-28" Description="TRGEVxCNT软件清除&#xD;&#xA;0h：无效&#xD;&#xA;1h：EVxCNT重置为零" />
-        <Bit Name="" Authority="" Bits="27-26" Description="" />
-        <Bit Name="TRGxOE" Authority="" Bits="25-20" Description="外部触发端口TRGOUTx使能。&#xD;&#xA;0h：禁止触发输出。&#xD;&#xA;1h：允许触发输出。" />
-        <Bit Name="TRGSEL5" Authority="" Bits="19-18" Description="TRGEVx事件的触发源选择。&#xD;&#xA;0h：选择EXI16事件作为当前触发通道事件。&#xD;&#xA;1h：选择EXI17事件作为当前触发通道事件。&#xD;&#xA;2h：选择EXI18事件作为当前触发通道事件。&#xD;&#xA;3h：选择EXI19事件作为当前触发通道事件。" />
-        <Bit Name="TRGSEL4" Authority="" Bits="17-16" Description="TRGEVx事件的触发源选择。&#xD;&#xA;0h：选择EXI16事件作为当前触发通道事件。&#xD;&#xA;1h：选择EXI17事件作为当前触发通道事件。&#xD;&#xA;2h：选择EXI18事件作为当前触发通道事件。&#xD;&#xA;3h：选择EXI19事件作为当前触发通道事件。" />
-        <Bit Name="TRGSEL3" Authority="" Bits="15-12" Description="TRGEVx事件的触发源选择。&#xD;&#xA;0h：选择EXI0事件作为当前触发通道事件。&#xD;&#xA;1h：选择EXI1事件作为当前触发通道事件。&#xD;&#xA;2h：选择EXI2事件作为当前触发通道事件。&#xD;&#xA;3h：选择EXI3事件作为当前触发通道事件。&#xD;&#xA;……&#xD;&#xA;Fh：选择EXI15事件作为当前触发通道事件。" />
-        <Bit Name="TRGSEL2" Authority="" Bits="11-8" Description="TRGEVx事件的触发源选择。&#xD;&#xA;0h：选择EXI0事件作为当前触发通道事件。&#xD;&#xA;1h：选择EXI1事件作为当前触发通道事件。&#xD;&#xA;2h：选择EXI2事件作为当前触发通道事件。&#xD;&#xA;3h：选择EXI3事件作为当前触发通道事件。&#xD;&#xA;……&#xD;&#xA;Fh：选择EXI15事件作为当前触发通道事件。" />
-        <Bit Name="TRGSEL1" Authority="" Bits="7-4" Description="TRGEVx事件的触发源选择。&#xD;&#xA;0h：选择EXI0事件作为当前触发通道事件。&#xD;&#xA;1h：选择EXI1事件作为当前触发通道事件。&#xD;&#xA;2h：选择EXI2事件作为当前触发通道事件。&#xD;&#xA;3h：选择EXI3事件作为当前触发通道事件。&#xD;&#xA;……&#xD;&#xA;Fh：选择EXI15事件作为当前触发通道事件。" />
-        <Bit Name="TRGSEL0" Authority="" Bits="3-0" Description="TRGEVx事件的触发源选择。&#xD;&#xA;0h：选择EXI0事件作为当前触发通道事件。&#xD;&#xA;1h：选择EXI1事件作为当前触发通道事件。&#xD;&#xA;2h：选择EXI2事件作为当前触发通道事件。&#xD;&#xA;3h：选择EXI3事件作为当前触发通道事件。&#xD;&#xA;……&#xD;&#xA;Fh：选择EXI15事件作为当前触发通道事件。" />
         <Bit Name="CNTxCLR" Authority="" Bits="31-28" Description="TRGEVxCNT软件清除&#xD;&#xA;0h：无效&#xD;&#xA;1h：EVxCNT重置为零" />
         <Bit Name="" Authority="" Bits="27-26" Description="" />
         <Bit Name="TRGxOE" Authority="" Bits="25-20" Description="外部触发端口TRGOUTx使能。&#xD;&#xA;0h：禁止触发输出。&#xD;&#xA;1h：允许触发输出。" />
@@ -1177,22 +688,8 @@
         <Bit Name="TRGEV2PRD" Authority="RW" Bits="11-8" Description="TRGEVx 的事件计数器周期设置。&#xD;&#xA;当TRGEVx事件发生时，TRGEVxCNT递增一次，当TRGEVxCNT的计数值等于TRGEVxPRD设置周期时，产生TRGEVx触发事件。" />
         <Bit Name="TRGEV1PRD" Authority="RW" Bits="7-4" Description="TRGEVx 的事件计数器周期设置。&#xD;&#xA;当TRGEVx事件发生时，TRGEVxCNT递增一次，当TRGEVxCNT的计数值等于TRGEVxPRD设置周期时，产生TRGEVx触发事件。" />
         <Bit Name="TRGEV0PRD" Authority="RW" Bits="3-0" Description="TRGEVx 的事件计数器周期设置。&#xD;&#xA;当TRGEVx事件发生时，TRGEVxCNT递增一次，当TRGEVxCNT的计数值等于TRGEVxPRD设置周期时，产生TRGEVx触发事件。" />
-        <Bit Name="TRGEV3CNT" Authority="RO" Bits="31-28" Description="当前TRGEVx事件计数器值。&#xD;&#xA;读取时，返回当前事件计数器值。此计数器不能设置初始值，只能通过EVTRG的CNTCLR控制位进行清零。" />
-        <Bit Name="TRGEV2CNT" Authority="RO" Bits="27-24" Description="当前TRGEVx事件计数器值。&#xD;&#xA;读取时，返回当前事件计数器值。此计数器不能设置初始值，只能通过EVTRG的CNTCLR控制位进行清零。" />
-        <Bit Name="TRGEV1CNT" Authority="RO" Bits="23-20" Description="当前TRGEVx事件计数器值。&#xD;&#xA;读取时，返回当前事件计数器值。此计数器不能设置初始值，只能通过EVTRG的CNTCLR控制位进行清零。" />
-        <Bit Name="TRGEV0CNT" Authority="RO" Bits="19-16" Description="当前TRGEVx事件计数器值。&#xD;&#xA;读取时，返回当前事件计数器值。此计数器不能设置初始值，只能通过EVTRG的CNTCLR控制位进行清零。" />
-        <Bit Name="TRGEV3PRD" Authority="RW" Bits="15-12" Description="TRGEVx 的事件计数器周期设置。&#xD;&#xA;当TRGEVx事件发生时，TRGEVxCNT递增一次，当TRGEVxCNT的计数值等于TRGEVxPRD设置周期时，产生TRGEVx触发事件。" />
-        <Bit Name="TRGEV2PRD" Authority="RW" Bits="11-8" Description="TRGEVx 的事件计数器周期设置。&#xD;&#xA;当TRGEVx事件发生时，TRGEVxCNT递增一次，当TRGEVxCNT的计数值等于TRGEVxPRD设置周期时，产生TRGEVx触发事件。" />
-        <Bit Name="TRGEV1PRD" Authority="RW" Bits="7-4" Description="TRGEVx 的事件计数器周期设置。&#xD;&#xA;当TRGEVx事件发生时，TRGEVxCNT递增一次，当TRGEVxCNT的计数值等于TRGEVxPRD设置周期时，产生TRGEVx触发事件。" />
-        <Bit Name="TRGEV0PRD" Authority="RW" Bits="3-0" Description="TRGEVx 的事件计数器周期设置。&#xD;&#xA;当TRGEVx事件发生时，TRGEVxCNT递增一次，当TRGEVxCNT的计数值等于TRGEVxPRD设置周期时，产生TRGEVx触发事件。" />
       </Register>
       <Register Name="SYSCON_EVSWF" Authority="RW" Address="0x400110fc" Width="32" Description="事件计数器软件触发控制寄存器">
-        <Bit Name="EV5SWF" Authority="RW" Bits="5" Description="软件产生一次EV5的触发&#xD;&#xA;0h：写入‘0’无效&#xD;&#xA;1h：软件产生一次触发" />
-        <Bit Name="EV4SWF" Authority="RW" Bits="4" Description="软件产生一次EV4的触发&#xD;&#xA;0h：写入‘0’无效&#xD;&#xA;1h：软件产生一次触发" />
-        <Bit Name="EV3SWF" Authority="RW" Bits="3" Description="软件产生一次EV3的触发&#xD;&#xA;0h：写入‘0’无效&#xD;&#xA;1h：软件产生一次触发" />
-        <Bit Name="EV2SWF" Authority="RW" Bits="2" Description="软件产生一次EV2的触发&#xD;&#xA;0h：写入‘0’无效&#xD;&#xA;1h：软件产生一次触发" />
-        <Bit Name="EV1SWF" Authority="RW" Bits="1" Description="软件产生一次EV1的触发&#xD;&#xA;0h：写入‘0’无效&#xD;&#xA;1h：软件产生一次触发" />
-        <Bit Name="EV0SWF" Authority="RW" Bits="0" Description="软件产生一次EV0的触发&#xD;&#xA;0h：写入‘0’无效&#xD;&#xA;1h：软件产生一次触发" />
         <Bit Name="EV5SWF" Authority="RW" Bits="5" Description="软件产生一次EV5的触发&#xD;&#xA;0h：写入‘0’无效&#xD;&#xA;1h：软件产生一次触发" />
         <Bit Name="EV4SWF" Authority="RW" Bits="4" Description="软件产生一次EV4的触发&#xD;&#xA;0h：写入‘0’无效&#xD;&#xA;1h：软件产生一次触发" />
         <Bit Name="EV3SWF" Authority="RW" Bits="3" Description="软件产生一次EV3的触发&#xD;&#xA;0h：写入‘0’无效&#xD;&#xA;1h：软件产生一次触发" />
@@ -1202,19 +699,14 @@
       </Register>
       <Register Name="SYSCON_UREG0" Authority="RW" Address="0x40011100" Width="32" Description="32位用户寄存器">
         <Bit Name="UREG" Authority="RW" Bits="31-0" Description="用户寄存器。&#xD;&#xA;可用于用户自定义信息临时保存的寄存器。此寄存器中的内容只有在POR复位时才会清除。" />
-        <Bit Name="UREG" Authority="RW" Bits="31-0" Description="用户寄存器。&#xD;&#xA;可用于用户自定义信息临时保存的寄存器。此寄存器中的内容只有在POR复位时才会清除。" />
       </Register>
       <Register Name="SYSCON_UREG1" Authority="RW" Address="0x40011104" Width="32" Description="32位用户寄存器">
         <Bit Name="UREG" Authority="RW" Bits="31-0" Description="用户寄存器。&#xD;&#xA;可用于用户自定义信息临时保存的寄存器。此寄存器中的内容只有在POR复位时才会清除。" />
       </Register>
       <Register Name="SYSCON_UREG2" Authority="RW" Address="0x40011108" Width="32" Description="16位用户寄存器">
-        <Bit Name="UREG" Authority="RW" Bits="15-0" Description="" />
+        <Bit Name="UREG" Authority="RW" Bits="15-0" Description="用户寄存器。&#xD;&#xA;可用于用户自定义信息临时保存的寄存器。此寄存器中的内容只有在POR复位时才会清除。" />
       </Register>
       <Register Name="SYSCON_CQCR" Authority="RW" Address="0x40011118" Width="32" Description="时钟源频率验证控制寄存器">
-        <Bit Name="CQRVAL" Authority="RW" Bits="25-8" Description="参考时钟计数器的目标计数值设置。&#xD;&#xA;&#xD;&#xA;当CQC启动后，参考时钟计数器和源时钟计数器同时被触发。当参考计数器的计数值等于CQRVAL的设置值时，源时钟计数器的当前计数值将被载入到CQSR寄存器中。" />
-        <Bit Name="SRCSEL" Authority="RW" Bits="7-6" Description="CQC 源时钟选择控制位（源时钟为需要进行频率检查的时钟）&#xD;&#xA;0h：IMOSC&#xD;&#xA;1h：ESOSC&#xD;&#xA;2h：ISOSC&#xD;&#xA;3h：HFOSC" />
-        <Bit Name="REFSEL" Authority="RW" Bits="5-4" Description="CQC 参考时钟选择控制位。&#xD;&#xA;0h：EMOSC&#xD;&#xA;1h：ESOSC&#xD;&#xA;其他：保留" />
-        <Bit Name="CQCREQ" Authority="RW" Bits="0" Description="CQC启动控制位。&#xD;&#xA;写入'1'时，启动CQC&#xD;&#xA;&#xD;&#xA;读取时，返回当前CQC状态：&#xD;&#xA;0h：CQC未启动&#xD;&#xA;1h：CQC已启动" />
         <Bit Name="CQRVAL" Authority="RW" Bits="25-8" Description="参考时钟计数器的目标计数值设置。&#xD;&#xA;&#xD;&#xA;当CQC启动后，参考时钟计数器和源时钟计数器同时被触发。当参考计数器的计数值等于CQRVAL的设置值时，源时钟计数器的当前计数值将被载入到CQSR寄存器中。" />
         <Bit Name="SRCSEL" Authority="RW" Bits="7-6" Description="CQC 源时钟选择控制位（源时钟为需要进行频率检查的时钟）&#xD;&#xA;0h：IMOSC&#xD;&#xA;1h：ESOSC&#xD;&#xA;2h：ISOSC&#xD;&#xA;3h：HFOSC" />
         <Bit Name="REFSEL" Authority="RW" Bits="5-4" Description="CQC 参考时钟选择控制位。&#xD;&#xA;0h：EMOSC&#xD;&#xA;1h：ESOSC&#xD;&#xA;其他：保留" />
@@ -1222,22 +714,17 @@
       </Register>
       <Register Name="SYSCON_CQSR" Authority="RW" Address="0x4001111c" Width="32" Description="时钟源频率验证计数器值">
         <Bit Name="CQSR" Authority="RO" Bits="19-0" Description="由参考计数器触发捕获的源计数器当前计数值" />
-        <Bit Name="CQSR" Authority="RO" Bits="19-0" Description="由参考计数器触发捕获的源计数器当前计数值" />
       </Register>
       <Register Name="SYSCON_DBGCR" Authority="RW" Address="0x40011128" Width="32" Description="调试控制寄存器">
-        <Bit Name="SWD_AFLOCK" Authority="RW" Bits="7-0" Description="SWD AF功能LOCK控制寄存器。&#xD;&#xA;缺省SWD功能的GPIO，在LOCK状态下，不用通过GPIO的CONR进行AF功能修改，必须解除LOCK后，才能进行修改。&#xD;&#xA;0x5A：解除LOCK。&#xD;&#xA;其他：LOCK状态。" />
         <Bit Name="SWD_AFLOCK" Authority="RW" Bits="7-0" Description="SWD AF功能LOCK控制寄存器。&#xD;&#xA;缺省SWD功能的GPIO，在LOCK状态下，不用通过GPIO的CONR进行AF功能修改，必须解除LOCK后，才能进行修改。&#xD;&#xA;0x5A：解除LOCK。&#xD;&#xA;其他：LOCK状态。" />
       </Register>
       <Register Name="SYSCON_BRPKEY" Authority="RW" Address="0x4001112c" Width="32" Description="复位地址配置保护寄存器">
         <Bit Name="RBP_KEY" Authority="RW" Bits="15-0" Description="SRBREG, ERBREG 更新保护寄存器。当对该寄存器写入0x9559后，才能更新SRB和ERB寄存器。每次更新前，必须对该KEY值进行写入。任何错误值的写入，或者对SRB或ERB的更新，都会自动清除RBP_KEY。" />
-        <Bit Name="RBP_KEY" Authority="RW" Bits="15-0" Description="SRBREG, ERBREG 更新保护寄存器。当对该寄存器写入0x9559后，才能更新SRB和ERB寄存器。每次更新前，必须对该KEY值进行写入。任何错误值的写入，或者对SRB或ERB的更新，都会自动清除RBP_KEY。" />
       </Register>
       <Register Name="SYSCON_SRBREG" Authority="RW" Address="0x40011130" Width="32" Description="系统软件复位引导地址配置寄存器">
         <Bit Name="SRB" Authority="RW" Bits="11-0" Description="系统软件复位地址配置寄存器。由SYSCON产生的系统复位发生后，CPU将从0x(SRB&lt;&lt;12)地址开始引导（即SRB只支持4K地址对齐方式进行配置）&#xD;&#xA;&#xD;&#xA;该复位寄存器的设置值只有在SYSCON软件复位后，才会起作用。其他正常复位，例如POR或外部复位等，CPU都使用默认0x00000000作为引导初始地址。&#xD;&#xA;对SRB的修改，必须先对BRPKEY进行写入。" />
-        <Bit Name="SRB" Authority="RW" Bits="11-0" Description="系统软件复位地址配置寄存器。由SYSCON产生的系统复位发生后，CPU将从0x(SRB&lt;&lt;12)地址开始引导（即SRB只支持4K地址对齐方式进行配置）&#xD;&#xA;&#xD;&#xA;该复位寄存器的设置值只有在SYSCON软件复位后，才会起作用。其他正常复位，例如POR或外部复位等，CPU都使用默认0x00000000作为引导初始地址。&#xD;&#xA;对SRB的修改，必须先对BRPKEY进行写入。" />
       </Register>
       <Register Name="SYSCON_ERBREG" Authority="RW" Address="0x40011134" Width="32" Description="系统异常复位引导地址配置寄存器">
-        <Bit Name="ERB" Authority="RW" Bits="11-0" Description="系统异常复位地址配置寄存器。异常复位产生后，CPU将从0x(ERB&lt;&lt;12)地址开始引导（即ERB只支持4K地址对齐方式进行配置）&#xD;&#xA;&#xD;&#xA;该复位寄存器的设置值只有在系统异常复位后，才会起作用。其他正常复位，例如POR或外部复位等，CPU都使用默认0x00000000作为引导初始地址。异常复位源包括：WWDT, EFLERR, SRAMERR, PLLUNLOCK, CPUFAULT, EMCKM, IWDT, LVD。&#xD;&#xA;对ERB的修改，必须先对BRPKEY进行写入。" />
         <Bit Name="ERB" Authority="RW" Bits="11-0" Description="系统异常复位地址配置寄存器。异常复位产生后，CPU将从0x(ERB&lt;&lt;12)地址开始引导（即ERB只支持4K地址对齐方式进行配置）&#xD;&#xA;&#xD;&#xA;该复位寄存器的设置值只有在系统异常复位后，才会起作用。其他正常复位，例如POR或外部复位等，CPU都使用默认0x00000000作为引导初始地址。异常复位源包括：WWDT, EFLERR, SRAMERR, PLLUNLOCK, CPUFAULT, EMCKM, IWDT, LVD。&#xD;&#xA;对ERB的修改，必须先对BRPKEY进行写入。" />
       </Register>
     </Peripheral>
@@ -6228,6 +5715,7 @@
         <Bit Name="DAYU" Authority="RW" Bits="3-0" Description="BCD格式中，日单位的个位数配置。" />
       </Register>
       <Register Name="RTC_CR" Authority="RW" Address="0x40060008" Width="32" Description="通用控制寄存器">
+        <Bit Name="SWRST" Authority="RW" Bits="23-20" Description="软件复位控制位。&#xD;&#xA;当对当前控制位写入‘0x5’时，RTC模块会被复位。复位后，所有寄存器都恢复为RESET状态。" />
         <Bit Name="TKEYTRG" Authority="RW" Bits="18-17" Description="RTC触发TOUCH扫描控制。&#xD;&#xA;0h：禁止触发输出。&#xD;&#xA;1h：由CPRD事件进行触发。&#xD;&#xA;2h：由RTC_CLK触发。&#xD;&#xA;3h：由RTC_CLK的2分频触发。" />
         <Bit Name="RBEN" Authority="RW" Bits="16" Description="TIMR和DATR回读控制。只有在回读使能时，RTC的状态可以被更新到TIMR和DATR中。关闭回读可以降低功耗。&#xD;&#xA;0h：回读禁止。&#xD;&#xA;1h：回读使能。" />
         <Bit Name="CPRD" Authority="RW" Bits="15-13" Description="周期事件选择。该配置适用RTC_CLK设置为2Hz情况，当RTC_CLK不为2Hz时，需要用户自己根据比例进行换算。&#xD;&#xA;0h：禁止周期事件。&#xD;&#xA;1h：每0.5秒发生一次。&#xD;&#xA;2h：每秒发生一次。&#xD;&#xA;3h：每分钟发生一次（在秒为0的时候）。&#xD;&#xA;4h：每小时发生一次（在秒和分钟为0的时候）。&#xD;&#xA;5h：每天发生一次（在秒、分钟和小时为0的时候）。&#xD;&#xA;6h：每月发生一次（每个月的第一天）。&#xD;&#xA;其他：保留。" />
@@ -9506,7 +8994,7 @@
         <Bit Name="SEL" Authority="RW" Bits="4" Description="对位写入时，需要同时高位写入相应KEY_WORD，KEY值不为0x33时，写入无效。" />
         <Bit Name="PWEN" Authority="RW" Bits="3" Description="电源使能&#xD;&#xA;0h：电源关闭。&#xD;&#xA;1h：使能。" />
         <Bit Name="REFSEL" Authority="RW" Bits="2" Description="参考电压模式&#xD;&#xA;0h：无效。&#xD;&#xA;1h：使能。" />
-        <Bit Name="BUFFEN" Authority="RW" Bits="1" Description="Buffer的使能。&#xD;&#xA;0h：无效。&#xD;&#xA;1h：buffer使能。" />
+        <Bit Name="BUFFEN" Authority="RW" Bits="1" Description="Buffer的使能。&#xD;&#xA;0h：无效。&#xD;&#xA;1h：buffer使能。&#xD;&#xA;PA4输出只有在BUF使能时才有效，PA8输出只有在BUF无效时才有效" />
         <Bit Name="CLRB" Authority="RW" Bits="0" Description="DA模拟模块清除控制。&#xD;&#xA;写这位寄存器会清除DA目前的转换结果。" />
       </Register>
       <Register Name="DAC_HSCR" Authority="RW" Address="0x50200008" Width="32" Description="转换时钟分频控制寄存器">
