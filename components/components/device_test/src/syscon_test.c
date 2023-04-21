@@ -281,7 +281,7 @@ void syscon_reset_srb_test(void)
  *  \param[in] none
  *  \return error code
  */
-void syscon_fre_testing(void)
+void syscon_fre_test(void)
 {
 	mdelay(1000);
 	mdelay(1000);

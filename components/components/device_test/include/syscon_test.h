@@ -39,7 +39,7 @@ extern void syscon_pllunlock_test(void);
 extern void syscon_sram_test(void);
 extern void syscon_reset_test(void);
 extern void syscon_reset_srb_test(void);
-extern void syscon_low_fre_testing(void);
+extern void syscon_fre_test(void);
 extern void syscon_lvd_test(void);
 extern void syscon_lvr_test(void);
 extern void syscon_lvd_power_test(void);
