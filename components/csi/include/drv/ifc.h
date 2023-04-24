@@ -120,18 +120,6 @@ void csi_ifc_info(csp_ifc_t *ptIfcBase,csi_ifc_info_t *ifc_info);
 csi_ifc_status_t csi_ifc_get_status(csp_ifc_t *ptIfcBase);
 
 
-/** \brief SWD IO remap
- *  \param[in] 
- * bGrp
- *                SWD               pin number
- * bGrp = 2    PA0.6(CLK)             2
- *             PA0.7(DIO)             3
- * bGrp = 1    PA0.0(DIO)             19
- *             PA0.1(CLK)             20
- * bGrp = 0    PA0.5(CLK)             10
- *             PA0.12(DIO)            11
- */
-csi_error_t csi_ifc_swd_remap(csp_ifc_t * ptIfcBase, uint8_t bGrp);
 
 /** \brief Change user option
  *  \param ptIfcBase pointer of ifc register structure.
@@ -141,10 +129,9 @@ csi_error_t csi_ifc_swd_remap(csp_ifc_t * ptIfcBase, uint8_t bGrp);
 csi_error_t csi_ifc_wr_useroption(csp_ifc_t *ptIfcBase, uint32_t wData);
 
 
-extern volatile uint32_t g_wPageStAddr;
+
 extern volatile bool g_bFlashCheckPass;
 extern volatile bool g_bFlashPgmDne;
-extern volatile uint32_t wBuffForCheck[DFLASH_PAGE_SZ];
 extern void apt_ifc_step_async(csp_ifc_t * ptIfcBase, ifc_cmd_e eStepn, uint32_t wPageStAddr);
 
 

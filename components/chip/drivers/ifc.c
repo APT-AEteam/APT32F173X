@@ -27,11 +27,11 @@ static csp_error_t apt_ifc_wr_nword(csp_ifc_t * ptIfcBase, uint8_t bFlashType, u
 /* Private variables------------------------------------------------------*/
 volatile bool g_bFlashCheckPass = 1;
 volatile bool g_bFlashPgmDne = 1;
-volatile uint32_t g_wPageStAddr;
-volatile uint32_t wBuffForCheck[DFLASH_PAGE_SZ];
+volatile uint32_t s_wPageStAddr;
+volatile uint32_t s_wBuffForCheck[DFLASH_PAGE_SZ];
 
 
-/** \brief ifc interrupt handle function
+/** \brief ifc interrupt handle function,mainly used for para mode PGM of DFLASH
  * 
  *  \param[in] none
  *  \return none
@@ -45,7 +45,7 @@ __attribute__((weak)) void ifc_irqhandler(void)
 		csp_ifc_int_enable(IFC, IFCINT_ERS_END, DISABLE);
 		csp_ifc_clr_int(IFC, IFCINT_ERS_END);
 		///DFLASH step6
-		apt_ifc_step_async(IFC, PROGRAM, g_wPageStAddr);
+		apt_ifc_step_async(IFC, PROGRAM, s_wPageStAddr);
 	}
 	if (csp_ifc_get_misr(IFC) == IFCINT_PGM_END)
 	{
@@ -55,7 +55,7 @@ __attribute__((weak)) void ifc_irqhandler(void)
 		g_bFlashCheckPass = 1;
 		for (i=0; i<DFLASH_PAGE_SZ; i++)
 		{
-			if ((*(uint32_t *)(g_wPageStAddr+4*i)) !=  wBuffForCheck[i]) {
+			if ((*(uint32_t *)(s_wPageStAddr+4*i)) !=  s_wBuffForCheck[i]) {
 				g_bFlashCheckPass = 0;
 				g_bFlashPgmDne = 1;
 				break;
@@ -465,9 +465,9 @@ static csp_error_t apt_ifc_wr_nword(csp_ifc_t * ptIfcBase, uint8_t bFlashType, u
 		///DFLASH step4 
 		for (i=0; i< DFLASH_PAGE_SZ;i++)
 		{
-			wBuffForCheck[i] = wBuff[i];
+			s_wBuffForCheck[i] = wBuff[i];
 		}
-		g_wPageStAddr = wPageStAddr;
+		s_wPageStAddr = wPageStAddr;
 		apt_ifc_step_async(ptIfcBase, PAGE_ERASE, wPageStAddr);
 	}
 	else 

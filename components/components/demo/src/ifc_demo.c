@@ -19,10 +19,10 @@
 /* externs variablesr------------------------------------------------------*/
 /* Private variablesr------------------------------------------------------*/
 
-uint32_t g_wWriteData[] = {0x01010101, 0x23232323, 0x45454545, 0x67676767, 0x89898989, 0xabababab, 0xcdcdcdcd, 0xefefefef};
+uint32_t s_wWriteData[] = {0x01010101, 0x23232323, 0x45454545, 0x67676767, 0x89898989, 0xabababab, 0xcdcdcdcd, 0xefefefef};
 
 
-uint32_t g_wReadBuf[10];
+uint32_t s_wReadBuf[10];
 	
 /** \brief flash读操作示例代码
  *   		- 将从0x0开始两个word数据读入到wReadBuf数组中，并打印
@@ -33,8 +33,8 @@ uint32_t g_wReadBuf[10];
  */	
 void ifc_read_demo(void)
 {	
-	csi_ifc_read(IFC,0x00000000, g_wReadBuf, 2);				//读两个word
-	my_printf("read flash data: 0x%x, 0x%x \n", g_wReadBuf[0], g_wReadBuf[1]);
+	csi_ifc_read(IFC,0x00000000, s_wReadBuf, 2);				//读两个word
+	my_printf("read flash data: 0x%x, 0x%x \n", s_wReadBuf[0], s_wReadBuf[1]);
 }
 
 
@@ -60,7 +60,7 @@ void ifc_page_erase_demo(void)
 void ifc_dflash_page_program_demo(void)
 {	csi_error_t tRet;
 
-	tRet = csi_ifc_dflash_page_program(IFC, 0x10000000,g_wWriteData, 5);
+	tRet = csi_ifc_dflash_page_program(IFC, 0x10000000,s_wWriteData, 5);
 	if (tRet == CSI_ERROR)									//函数带校验功能，如果校验错误返回 CSI_ERROR
 		my_printf("program fail!\n");
 	else
@@ -80,7 +80,7 @@ void ifc_dflash_page_parallel_program_demo(void)
 {	csi_error_t tRet;
 
 	csi_ifc_dflash_paramode_enable(IFC, ENABLE);
-	tRet = csi_ifc_dflash_page_program(IFC, 0x10000000,g_wWriteData, 5);
+	tRet = csi_ifc_dflash_page_program(IFC, 0x10000000,s_wWriteData, 5);
 	if (tRet == CSI_ERROR)									//函数带校验功能，如果校验错误返回 CSI_ERROR
 		my_printf("program fail!\n");
 	else
@@ -100,7 +100,7 @@ void ifc_dflash_page_parallel_program_demo(void)
 void ifc_pflash_page_program_demo(void)
 {	csi_error_t tRet;
 
-	tRet = csi_ifc_pflash_page_program(IFC, 0x0000F000,g_wWriteData, 5);
+	tRet = csi_ifc_pflash_page_program(IFC, 0x0000F000,s_wWriteData, 5);
 	if (tRet == CSI_ERROR)									//函数带校验功能，如果校验错误返回 CSI_ERROR
 		my_printf("program fail!\n");
 	else
@@ -120,13 +120,13 @@ void ifc_program_demo(void)
 {	csi_error_t tRet;
 
 
-	tRet = csi_ifc_program(IFC, 0xfef8, g_wWriteData, 3);     //从0xfe78地址（PFLASH)开始，写wWriteData[0]~[2] 3个word
+	tRet = csi_ifc_program(IFC, 0xfef8, s_wWriteData, 3);     //从0xfe78地址（PFLASH)开始，写wWriteData[0]~[2] 3个word
 	if (tRet == CSI_ERROR)									//函数带校验功能，如果校验错误返回 CSI_ERROR
 		my_printf("program fail!\n");
 	else
 		my_printf("program pass!\n");
 		
-	tRet = csi_ifc_program(IFC, 0x10000078, g_wWriteData, 5); //从0x10000078地址（DFLASH)开始，写wWriteData[0]~[4] 5个word
+	tRet = csi_ifc_program(IFC, 0x10000078, s_wWriteData, 5); //从0x10000078地址（DFLASH)开始，写wWriteData[0]~[4] 5个word
 	if (tRet == CSI_ERROR)									//函数带校验功能，如果校验错误返回 CSI_ERROR
 		my_printf("program fail!\n");
 	else
