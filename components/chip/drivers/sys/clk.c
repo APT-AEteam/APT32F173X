@@ -318,10 +318,10 @@ csi_error_t csi_imosc_disable(void)
  * 
  *  enable high frequency oscillator in SYSCON
  * 
- *  \param byFre. 	0 - 48MHz
- * 					1 - 24MHz
- * 					2 - 12MHz
-					3 - 6KHz
+ *  \param byFre. 	0 - 24MHz
+ * 					1 - 12MHz
+ * 					2 - 6MHz
+					3 - 3MHz
  *  \return csi_error_t.
  */
 csi_error_t csi_hfosc_enable(uint8_t byFre)

@@ -24,6 +24,11 @@ const uint32_t g_wHclkDiv[] = {
 	1, 1, 2, 3, 4, 5, 6, 7, 8, 12, 16, 24, 32, 36, 64, 128, 256
 };
 
+/** \brief get hclk freq
+ * 
+ *  \param[in] none
+ *  \return hclk freq
+ */	
 static uint32_t apt_get_hclk(void)
 {
 	uint32_t tRslt;
@@ -31,8 +36,11 @@ static uint32_t apt_get_hclk(void)
 	return (tRslt);
 }
 
-// auto pll config
-	
+/** \brief auto pll config
+ * 
+ *  \param[in] wPllFreq: pll clk freq 
+ *  \return csi_error_t.
+ */	
 static csi_error_t apt_auto_pll_cfg(uint32_t wPllFreq)
 {
 	uint8_t byStep;
@@ -55,7 +63,6 @@ static csi_error_t apt_auto_pll_cfg(uint32_t wPllFreq)
 	}
 	else 
 	{
-		
 		tPllClkConfig.byCkq_Div = byStep/2;
 	}
 	for(byStep=3;byStep < 7;byStep ++)
@@ -358,8 +365,6 @@ csi_error_t csi_sysclk_config(csi_clk_config_t tClkCfg)
 	return ret;
  }
 
-
-
 /** \brief Clock output configuration
  * 
  *  \param[in] eCloSrc: source to output
@@ -545,16 +550,6 @@ uint32_t csi_get_pclk_freq(void)
  */ 
 uint32_t soc_get_coret_freq(void)
 {
-/*	switch ((CORETIMER->CTRL & 0x4) >> 2)
-	{
-		case 0: return tClkConfig.wSclk/8;
-			break;
-		case 1: return tClkConfig.wSclk;
-			break;
-		default:
-			return tClkConfig.wSclk;
-			break;
-	}*/
 	return tClkConfig.wSclk;
 }
 /** \brief to set clock status in PM mode 
