@@ -44,11 +44,14 @@ csi_clk_config_t tClkConfig =
 	//{SRC_IMOSC, IMOSC_131K_VALUE, SCLK_DIV1, PCLK_DIV1,IMOSC_131K_VALUE, IMOSC_131K_VALUE};
 	//{SRC_ESOSC, ESOSC_VALUE, SCLK_DIV2, PCLK_DIV1,ESOSC_VALUE/2, ESOSC_VALUE/2};
 
-// PLL MANUAL CONFIG
-//PLLPCLK = 24 /(tPllClkConfig.byDivM+1) * tPllClkConfig.byNul / (tPllClkConfig.byCkp_Div+1)
-//PLLQCLK = 24 /(tPllClkConfig.byDivM+1) * tPllClkConfig.byNul / (tPllClkConfig.byCkq_Div)
+/*  PLL MANUAL CONFIG
+ * 
+ * PLLPCLK = 24 /(tPllClkConfig.byDivM+1) * tPllClkConfig.byNul / (tPllClkConfig.byCkp_Div+1)
+ * tPllClkConfig.byCkq_Div= CKQ_DIV4, PLLQCLK = 24 /(tPllClkConfig.byDivM+1) * tPllClkConfig.byNul / 4  
+ * 
+ */  
 csi_pll_manual_config_t tPllClkConfig = 
-	{PLL_SEL_HFOSC_24M, 3, 35, 1,CKQ_DIV4};
+	{PLL_SEL_HFOSC_24M, 3, 35, 1,CKQ_DIV4};       //PLLPCLK = 24 /(3+1) *35 / (1+1)  PLLQCLK = 24 /(3+1) *35 / 4 
 	//{PLL_SEL_HFOSC_12M, 1, 35, 1,CKQ_DIV4};
 	//{PLL_SEL_HFOSC_6M,  1, 70, 1,CKQ_DIV4};
 	//{PLL_SEL_EMOSC_24M, 3, 35, 1,CKQ_DIV4};	

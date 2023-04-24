@@ -39,66 +39,6 @@ void csi_clk_enable(uint32_t *pIpBase)
 		
         ptMap++;
     }
-	
-//	switch((uint32_t)pIpBase)
-//	{
-//		case APB_IFC_BASE:
-//			csp_pcer0_clk_en(SYSCON, (uint32_t)IFC_SYS_CLK);		//IFC clk enable
-//			break;
-//		case APB_ADC0_BASE:
-//			csp_pcer0_clk_en(SYSCON, (uint32_t)ADC_SYS_CLK);		//ADC clk enable
-//			break;
-//		case APB_TKEY_BASE:
-//			csp_pcer0_clk_en(SYSCON, (uint32_t)TOUCH_SYS_CLK);		//TKEY clk enable
-//			break;
-//		case APB_ETCB_BASE:
-//			csp_pcer0_clk_en(SYSCON, (uint32_t)ETCB_SYS_CLK);		//ETCB clk enable
-//			break;
-//		case APB_UART0_BASE:
-//			csp_pcer0_clk_en(SYSCON, (uint32_t)UART0_SYS_CLK);		//UART0 clk enable
-//			break;
-//		case APB_UART1_BASE:
-//			csp_pcer0_clk_en(SYSCON, (uint32_t)UART1_SYS_CLK);		//UART1 clk enable
-//			break;
-//		case APB_UART2_BASE:
-//			csp_pcer0_clk_en(SYSCON, (uint32_t)UART2_SYS_CLK);		//UART2 clk enable
-//			break;
-//		case APB_SPI0_BASE:
-//			csp_pcer0_clk_en(SYSCON, (uint32_t)SPI_SYS_CLK);		//SPI clk enable
-//			break;
-//		case APB_SIO0_BASE:
-//			csp_pcer0_clk_en(SYSCON, (uint32_t)SIO_SYS_CLK);		//SIO clk enable
-//			break;
-//		case APB_I2C0_BASE:
-//			csp_pcer0_clk_en(SYSCON, (uint32_t)I2C_SYS_CLK);		//I2C clk enable
-//			break;
-//		case APB_WWDT_BASE:
-//			csp_pder1_clk_dis(SYSCON, (uint32_t)WWDT_SYS_CLK - 32);	//WWDT clk enable
-//			break;
-//		case APB_RTC_BASE:
-//			csp_pder1_clk_dis(SYSCON, (uint32_t)RTC_SYS_CLK - 32);	//RTC clk enable
-//			break;
-//		case APB_LPT_BASE:
-//			csp_pder1_clk_dis(SYSCON, (uint32_t)LPT_SYS_CLK - 32);	//LPT clk enable
-//			break;
-//		case APB_CNTA_BASE:
-//			csp_pder1_clk_dis(SYSCON, (uint32_t)CNTA_SYS_CLK - 32);	//CNTA clk enable
-//			break;
-//		case APB_BT0_BASE:
-//			csp_pder1_clk_dis(SYSCON, (uint32_t)BT0_SYS_CLK - 32);	//BT0 clk enable
-//			break;
-//		case APB_BT1_BASE:
-//			csp_pder1_clk_dis(SYSCON, (uint32_t)BT1_SYS_CLK - 32);	//BT1 clk enable
-//			break;
-//		case APB_GPTA0_BASE:
-//			csp_pder1_clk_dis(SYSCON, (uint32_t)GPT_SYS_CLK - 32);	//GPT clk enable
-//			break;
-//		case APB_EPT0_BASE:
-//			csp_pder1_clk_dis(SYSCON, (uint32_t)EPT_SYS_CLK - 32);	//EPT clk enable
-//			break;
-//		default:
-//			break;
-//	}
 }
 
 /** \brief clock disable
@@ -121,66 +61,6 @@ void csi_clk_disable(uint32_t *pIpBase)
         }
         ptMap++;
     }
-	
-//	switch((uint32_t)pIpBase)
-//	{
-//		case APB_IFC_BASE:
-//			csp_pder0_clk_dis(SYSCON, (uint32_t)IFC_SYS_CLK);		//IFC clk disable
-//			break;
-//		case APB_ADC0_BASE:
-//			csp_pder0_clk_dis(SYSCON, (uint32_t)ADC_SYS_CLK);		//ADC clk disable
-//			break;
-//		case APB_TKEY_BASE:
-//			csp_pder0_clk_dis(SYSCON, (uint32_t)TOUCH_SYS_CLK);		//TKEY clk disable
-//			break;
-//		case APB_ETCB_BASE:
-//			csp_pder0_clk_dis(SYSCON, (uint32_t)ETCB_SYS_CLK);		//ETCB clk disable
-//			break;
-//		case APB_UART0_BASE:
-//			csp_pder0_clk_dis(SYSCON, (uint32_t)UART0_SYS_CLK);		//UART0 clk disable
-//			break;
-//		case APB_UART1_BASE:
-//			csp_pder0_clk_dis(SYSCON, (uint32_t)UART1_SYS_CLK);		//UART1 clk disable
-//			break;
-//		case APB_UART2_BASE:
-//			csp_pder0_clk_dis(SYSCON, (uint32_t)UART2_SYS_CLK);		//UART2 clk disable
-//			break;
-//		case APB_SPI0_BASE:
-//			csp_pder0_clk_dis(SYSCON, (uint32_t)SPI_SYS_CLK);		//SPI clk disable
-//			break;
-//		case APB_SIO0_BASE:
-//			csp_pder0_clk_dis(SYSCON, (uint32_t)SIO_SYS_CLK);		//SIO clk disable
-//			break;
-//		case APB_I2C0_BASE:
-//			csp_pder0_clk_dis(SYSCON, (uint32_t)I2C_SYS_CLK);		//I2C clk disable
-//			break;
-//		case APB_WWDT_BASE:
-//			csp_pder1_clk_dis(SYSCON, (uint32_t)WWDT_SYS_CLK - 32);	//WWDT clk disable
-//			break;
-//		case APB_RTC_BASE:
-//			csp_pder1_clk_dis(SYSCON, (uint32_t)RTC_SYS_CLK - 32);	//RTC clk disable
-//			break;
-//		case APB_LPT_BASE:
-//			csp_pder1_clk_dis(SYSCON, (uint32_t)LPT_SYS_CLK - 32);	//LPT clk disable
-//			break;
-//		case APB_CNTA_BASE:
-//			csp_pder1_clk_dis(SYSCON, (uint32_t)CNTA_SYS_CLK - 32);	//CNTA clk disable
-//			break;
-//		case APB_BT0_BASE:
-//			csp_pder1_clk_dis(SYSCON, (uint32_t)BT0_SYS_CLK - 32);	//BT0 clk disable
-//			break;
-//		case APB_BT1_BASE:
-//			csp_pder1_clk_dis(SYSCON, (uint32_t)BT1_SYS_CLK - 32);	//BT1 clk disable
-//			break;
-//		case APB_GPTA0_BASE:
-//			csp_pder1_clk_dis(SYSCON, (uint32_t)GPT_SYS_CLK - 32);	//GPT clk disable
-//			break;
-//		case APB_EPT0_BASE:
-//			csp_pder1_clk_dis(SYSCON, (uint32_t)EPT_SYS_CLK - 32);	//EPT clk disable
-//			break;
-//		default:
-//			break;
-//	}
 }
 
 /** \brief emosc enable
@@ -192,10 +72,6 @@ void csi_clk_disable(uint32_t *pIpBase)
  */
 csi_error_t csi_emosc_enable(uint32_t wFreq)
 {
-	
-	//if ((csi_pin_get_mux(XIN_PIN) != (pin_func_e)XIN_PIN_FUNC) || (csi_pin_get_mux(XOUT_PIN) != (pin_func_e)XOUT_PIN_FUNC))
-	//	return CSI_ERROR;
-	
 	if (wFreq > 20000000)
 		csp_set_em_gain(SYSCON, 0x1f);
 	else
@@ -223,11 +99,6 @@ csi_error_t csi_emosc_disable(void)
 		SYSCON->GCDR = EMOSC;
 		return CSI_OK;
 	}
-	
-//	if (csp_emosc_disable(SYSCON_REG_BASE) == CSP_FAIL)
-//		return CSI_ERROR;
-//	else
-//		return CSI_OK;
 }
 
 /** \brief esosc enable
@@ -239,10 +110,6 @@ csi_error_t csi_emosc_disable(void)
  */
 csi_error_t csi_esosc_enable(uint32_t wFreq)
 {
-	
-	//if ((csi_pin_get_mux(SXIN_PIN) != SXIN_PIN_FUNC) || (csi_pin_get_mux(SXOUT_PIN) != SXOUT_PIN_FUNC))
-	//	return CSI_ERROR;
-	
 	csp_set_es_gain(SYSCON, 0x7);
 	
 
@@ -287,9 +154,6 @@ csi_error_t csi_imosc_enable(uint8_t byFre)
 	//wait for IMOSC to stable
 	while(!(csp_get_ckst(SYSCON)& IMOSC));
 	return CSI_OK;
-	
-//	csp_imosc_enable(SYSCON_REG_BASE, byFre);
-//	return CSI_OK;
 }
 
 /** \brief imosc disable
@@ -307,11 +171,6 @@ csi_error_t csi_imosc_disable(void)
 		SYSCON->GCDR = IMOSC;
 		return CSI_OK;
 	}
-	
-//	if (csp_imosc_disable(SYSCON_REG_BASE) == CSP_FAIL)
-//		return CSI_ERROR;
-//	else
-//		return CSI_OK;
 }
 
  /** \brief hfosc enable
@@ -331,9 +190,6 @@ csi_error_t csi_hfosc_enable(uint8_t byFre)
 	//wait for HFOSC to stable
 	while(!(csp_get_ckst(SYSCON)& HFOSC));
 	return CSI_OK;
-	
-//	csp_hfosc_enable(SYSCON_REG_BASE, byFre);
-//	return CSI_OK;
 }
 
  /** \brief hfosc disable
@@ -352,11 +208,6 @@ csi_error_t csi_hfosc_disable(void)
 		SYSCON->GCDR = HFOSC;
 		return CSI_OK;
 	}
-	
-//	if (csp_hfosc_disable(SYSCON_REG_BASE) == CSP_FAIL)
-//		return CSI_ERROR;
-//	else
-//		return CSI_OK;
 }
 
 /** \brief isosc enable
@@ -372,9 +223,6 @@ csi_error_t csi_isosc_enable(void)
 	//wait for ISOSC to stable
 	while(!(csp_get_ckst(SYSCON)& ISOSC));
 	return CSI_OK;
-	
-//	csp_isosc_enable(SYSCON_REG_BASE);
-//	return CSI_OK;
 }
 
 /** \brief isosc disable
@@ -393,10 +241,6 @@ csi_error_t csi_isosc_disable(void)
 		SYSCON->GCDR = ISOSC;
 		return CSP_SUCCESS;
 	}	
-//	if (csp_isosc_disable(SYSCON_REG_BASE) == CSP_FAIL)
-//		return CSI_ERROR;
-//	else
-//		return CSI_OK;
 }
 
 /** \brief pll enable
