@@ -150,7 +150,9 @@ void syscon_osc5005_trim_test(void)
 	*(unsigned int *)(0x40011000+0x1FC) = 0x00006996;	
 	//*(unsigned int *)0x40011278         = 0x05025047;	  //0x5000000为切换到osc5005模式，为HFOSC时钟的1/2，0x47为trim值 	 TSEL=b'10
 	*(unsigned int *)0x40011278         = 0x05035047;	  //0x5000000为切换到osc5005模式，为HFOSC时钟的1/2，0x47为trim值 	 TSEL=b'11
-	csi_clo_config(CLO_HFCLK, CLO_DIV4, PA2);             
+	
+	csi_pin_set_mux(PA2, PA2_CLO);	
+	csi_clo_config(CLO_HFCLK, CLO_DIV4);             
 	
 }
 
@@ -230,7 +232,8 @@ __attribute__((section("func")))void sram_isram_testing(void)
 	    NOP;
 	    NOP;
 	    mdelay(100);
-		csi_clo_config(CLO_HCLK, CLO_DIV2, PA2);
+		csi_pin_set_mux(PA2, PA2_CLO);
+		csi_clo_config(CLO_HCLK, CLO_DIV2);
 		csi_pin_set_mux(PA6, PA6_OUTPUT);		//PA06 output
 		csi_pin_set_high(PA6);					//PA06 output high;
 		NOP;
@@ -283,13 +286,14 @@ void syscon_reset_srb_test(void)
  */
 void syscon_fre_test(void)
 {
-	mdelay(1000);
-	mdelay(1000);
-	//csi_clo_config(CLO_HFCLK, CLO_DIV2, PB3);	
-	//csi_clo_config(CLO_IMCLK, CLO_DIV1, PB3);	
-	//csi_clo_config(CLO_ISCLK, CLO_DIV1, PB3);	
-	//csi_clo_config(CLO_PLL_PCLK, CLO_DIV16, PB3);	
-	csi_clo_config(CLO_PLL_QCLK, CLO_DIV16, PB3);	
+	//mdelay(1000);
+	//mdelay(1000);
+	csi_pin_set_mux(PB3, PB3_CLO);
+	csi_clo_config(CLO_HFCLK, CLO_DIV4);	
+	//csi_clo_config(CLO_IMCLK, CLO_DIV1);	
+	//csi_clo_config(CLO_ISCLK, CLO_DIV1);	
+	//csi_clo_config(CLO_PLL_PCLK, CLO_DIV16);	
+	//csi_clo_config(CLO_PLL_QCLK, CLO_DIV16);	
 	
 }
 

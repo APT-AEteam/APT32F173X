@@ -31,7 +31,8 @@ void sleep_wkup_time_test(uint8_t bySlpRcvTim)
 	csi_pin_set_high(PD0);										//PD0 OUTPUT H
 	
 	//sleep模式下系统时钟选择IM_5M
-	csi_clo_config(CLO_PCLK, CLO_DIV2, PD4);					//CLO = PD4 OUTPUT PCLK
+	csi_pin_set_mux(PD4, PD4_CLO);
+	csi_clo_config(CLO_PCLK, CLO_DIV2);					//CLO = PD4 OUTPUT PCLK
 	
 	//PB1唤醒sleep，PB1的输入用信号发生器,周期100ms
 	csi_pin_set_mux(PB1,PB1_INPUT);								//PB1 输入							
@@ -104,8 +105,9 @@ void deepsleep_wkup_time_test(uint32_t wSclkFreq, uint8_t byDspRcvTim)
 		eCloDiv = CLO_DIV8;
 	else if(wSclkFreq == PLL_VALUE)
 		eCloDiv = CLO_DIV16;
-			
-	csi_clo_config(CLO_PCLK, eCloDiv, PD4);						//CLO = PD4 OUTPUT PCLK
+		
+	csi_pin_set_mux(PD4, PD4_CLO);
+	csi_clo_config(CLO_PCLK, eCloDiv);						//CLO = PD4 OUTPUT PCLK
 	
 	//PB1唤醒deepsleep，PB1的输入用信号发生器,,周期100ms
 	csi_pin_set_mux(PB1,PB1_INPUT);								//PB1 输入							

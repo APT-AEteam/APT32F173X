@@ -206,7 +206,8 @@ void gpio_rpd_test(void)
  */
 void gpio_iofout_test(void)
 {	
-	csi_clo_config(CLO_HFCLK,CLO_DIV2,PD3);
+	csi_pin_set_mux(PD3, PD3_CLO);
+	csi_clo_config(CLO_HFCLK,CLO_DIV2);
 }
 
 /** \brief GPIO输入频率测试

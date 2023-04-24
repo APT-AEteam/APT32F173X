@@ -200,11 +200,10 @@ csi_error_t csi_sysclk_config(csi_clk_config_t tClkCfg);
   \brief Clock output configuration
   \param[in] eCloSrc: source to output
   \param[in] eCloDiv: clo divider 
-  \param[in] tPin: output pin
   \return csi_error_t.
  */
 
-csi_error_t csi_clo_config(clo_src_e, clo_div_e, pin_name_e);
+csi_error_t csi_clo_config(clo_src_e eCloSrc, clo_div_e eCloDiv);
 
 /** 
   \brief to set clock status in PM mode 

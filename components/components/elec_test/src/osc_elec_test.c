@@ -31,7 +31,8 @@ void osc_deepsleep_imosc_test(void)
 	mdelay(1000);
 	mdelay(1000);
 	
-	csi_clo_config(CLO_IMCLK, CLO_DIV1, PB3);	
+	csi_pin_set_mux(PB3, PB3_CLO);
+	csi_clo_config(CLO_IMCLK, CLO_DIV1);	
 	csi_cmos_autotrim();
 	csi_pm_mode_e ePmMode = PM_MODE_DEEPSLEEP;		  //PM_MODE_DEEPSLEEP  PM_MODE_SLEEP
 	csi_pm_clk_enable(DP_IMOSC, ENABLE);                    
@@ -68,7 +69,8 @@ void osc_deepsleep_isosc_test(void)
 	mdelay(1000);
 	mdelay(1000);
 	
-	csi_clo_config(CLO_ISCLK, CLO_DIV1, PB3);	
+	csi_pin_set_mux(PB3, PB3_CLO);
+	csi_clo_config(CLO_ISCLK, CLO_DIV1);	
 	
 	csi_cmos_autotrim();
 	csi_pm_mode_e ePmMode = PM_MODE_DEEPSLEEP;		  //PM_MODE_DEEPSLEEP  PM_MODE_SLEEP
@@ -110,7 +112,8 @@ void osc_sleep_imosc_test(void)
 	
 	mdelay(1000);
 	mdelay(1000);
-	csi_clo_config(CLO_IMCLK, CLO_DIV1, PB3);	
+	csi_pin_set_mux(PB3, PB3_CLO);
+	csi_clo_config(CLO_IMCLK, CLO_DIV1);	
 	SYSCON->PWRKEY = 0xA67A6CC7;
 	SYSCON->PWRCR = (SYSCON->PWRCR & (~(0x0f<<16))) | 0x40002;
 	
@@ -149,7 +152,9 @@ void osc_sleep_hfosc_test(void)
 	
 	mdelay(1000);
 	mdelay(1000);
-	csi_clo_config(CLO_HFCLK, CLO_DIV4, PB3);	
+	
+	csi_pin_set_mux(PB3, PB3_CLO);
+	csi_clo_config(CLO_HFCLK, CLO_DIV4);	
 
 	SYSCON->PWRKEY = 0xA67A6CC7;
 	SYSCON->PWRCR = (SYSCON->PWRCR & (~(0x0f<<16))) | 0x40002;
@@ -189,7 +194,8 @@ void osc_sleep_isosc_test(void)
 	
 	mdelay(1000);
 	mdelay(1000);
-	csi_clo_config(CLO_ISCLK, CLO_DIV1, PB3);
+	csi_pin_set_mux(PB3, PB3_CLO);
+	csi_clo_config(CLO_ISCLK, CLO_DIV1);
 
 	SYSCON->PWRKEY = 0xA67A6CC7;
 	SYSCON->PWRCR = (SYSCON->PWRCR & (~(0x0f<<16))) | 0x40002;
@@ -229,7 +235,8 @@ void osc_sleep_pll_test(void)
 	
 	mdelay(1000);
 	mdelay(1000);
-	csi_clo_config(CLO_PLL_PCLK, CLO_DIV16, PB3);		
+	csi_pin_set_mux(PB3, PB3_CLO);
+	csi_clo_config(CLO_PLL_PCLK, CLO_DIV16);		
 
 	SYSCON->PWRKEY = 0xA67A6CC7;
 	SYSCON->PWRCR = (SYSCON->PWRCR & (~(0x0f<<16))) | 0x40002;
