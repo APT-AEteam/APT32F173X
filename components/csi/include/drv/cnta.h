@@ -20,16 +20,16 @@
 extern "C" {
 #endif
 
-/// \struct csi_conta_timer_config_t
+/// \struct csi_cnta_timer_config_t
 /// \brief  conta timer parameter configuration
 typedef struct {
 	cnta_ckdiv_e eClkDiv;  //时钟分频
 	cnta_mode_e  eRunMode; //单次还是重复
 	uint8_t     byInter;   //int source
 	uint32_t	wTime;	   //周期（us）
-} csi_conta_timer_config_t;
+} csi_cnta_timer_config_t;
 
-/// \struct csi_conta_pwm_config_t
+/// \struct csi_cnta_pwm_config_t
 /// \brief  conta pwm parameter configuration
 typedef struct {
 	cnta_ckdiv_e eClkDiv;    //时钟分频选择
@@ -38,34 +38,34 @@ typedef struct {
 	uint8_t     byInter;     //int source
 	uint8_t		byDutyCycle; //占空比(0-100)
 	uint32_t	wFreq;	     //频率（hz）	
-} csi_conta_pwm_config_t;
+} csi_cnta_pwm_config_t;
 
 typedef enum
 {
-	POLAR_LOW	= 0,
-    POLAR_HIGH,       
-	STOP_LOW    = 0,	
-    STOP_HIGH   	    
+	CNTA_POLAR_LOW	= 0,
+    CNTA_POLAR_HIGH,       
+	CNTA_STOP_LOW    = 0,	
+    CNTA_STOP_HIGH   	    
 }csi_cnta_pwmlev_t;
 
 typedef enum
 {
-	PWM_CARRIER		= 0,
-    PWM_ENVELOPE    
+	CNTA_PWM_CARRIER		= 0,
+    CNTA_PWM_ENVELOPE    
 }csi_cnta_pwmout_t;
 
 typedef enum
 {
-	MATCH_CARRIERON_DIS	= 0,
-	MATCH_CARRIERON_CLR, 
-	MATCH_CARRIERON_SET       
+	CNTA_MATCH_CARRIERON_DIS	= 0,
+	CNTA_MATCH_CARRIERON_CLR, 
+	CNTA_MATCH_CARRIERON_SET       
 }csi_cnta_tcmatch_e;
 
 typedef enum
 {
-	PEND_CARRIERON_DIS	= 0,
-	PEND_CARRIERON_CLR, 
-	PEND_CARRIERON_SET      
+	CNTA_PEND_CARRIERON_DIS	= 0,
+	CNTA_PEND_CARRIERON_CLR, 
+	CNTA_PEND_CARRIERON_SET      
 }csi_cnta_tcpend_e;
 
 typedef enum
@@ -88,7 +88,7 @@ typedef enum
  *  \param[in] ptContaTimerCfg:point of timer parameter config
  *  \return error code \ref csi_error_t
  */ 
-csi_error_t csi_cnta_timer_init(csp_cnta_t *ptCntaBase,csi_conta_timer_config_t *ptContaTimerCfg);
+csi_error_t csi_cnta_timer_init(csp_cnta_t *ptCntaBase,csi_cnta_timer_config_t *ptContaTimerCfg);
 
 /** \brief start cnta
  * 
@@ -124,7 +124,7 @@ uint32_t csi_cnta_get_datal_value(csp_cnta_t *ptCntaBase);
  *  \param[in] ptContaPwmCfg:point of pwm parameter config
  *  \return error code \ref csi_error_t
  */ 
-csi_error_t csi_cnta_pwm_init(csp_cnta_t *ptCntaBase,csi_conta_pwm_config_t *ptContaPwmCfg);
+csi_error_t csi_cnta_pwm_init(csp_cnta_t *ptCntaBase,csi_cnta_pwm_config_t *ptContaPwmCfg);
 
 /** \brief updata cnta pwm freq para: (datah and datal value)
  * 
