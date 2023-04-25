@@ -81,6 +81,7 @@ csi_error_t csi_cmp_init(csp_cmp_t *ptCmpBase,csi_cmp_config_t *ptCmpCfg)
 	csp_cmp_clk_enable(ptCmpBase, ENABLE);
 	csp_cmp_inpcr(ptCmpBase ,ptCmpCfg->byNsel,ptCmpCfg->byPsel);
 	csp_cmp_hystpol(ptCmpBase , ptCmpCfg->byPhystpol,ptCmpCfg->byNhystpol);
+	csp_cmp_speedup(ptCmpBase , SPEEDUP_FAST);
 	csp_cmp_polarity(ptCmpBase , ptCmpCfg->byPolarity);
 	csp_cmp_out(ptCmpBase , ptCmpCfg->byCpoSel);
 	csi_cmp_int_enable(ptCmpBase, ptCmpCfg->wInt,ENABLE);
