@@ -32,7 +32,7 @@
  *  \param[in] ptContaTimerCfg:pointer of timer parameter config
  *  \return error code \ref csi_error_t
  */ 
-csi_error_t csi_cnta_timer_init(csp_cnta_t *ptCntaBase,csi_conta_timer_config_t *ptContaTimerCfg)
+csi_error_t csi_cnta_timer_init(csp_cnta_t *ptCntaBase,csi_cnta_timer_config_t *ptContaTimerCfg)
 {
 	uint8_t byDivTemp = 1;
 	uint32_t wTempLoad = 1;
@@ -101,7 +101,7 @@ uint32_t csi_cnta_get_datal_value(csp_cnta_t *ptCntaBase)
  *  \param[in] ptContaPwmCfg:point of pwm parameter config
  *  \return error code \ref csi_error_t
  */ 
-csi_error_t csi_cnta_pwm_init(csp_cnta_t *ptCntaBase,csi_conta_pwm_config_t *ptContaPwmCfg)
+csi_error_t csi_cnta_pwm_init(csp_cnta_t *ptCntaBase,csi_cnta_pwm_config_t *ptContaPwmCfg)
 {	
 	csi_error_t ret = CSI_OK;
 	volatile uint32_t wDatahLoad; 
@@ -130,18 +130,18 @@ csi_error_t csi_cnta_pwm_init(csp_cnta_t *ptCntaBase,csi_conta_pwm_config_t *ptC
 	else
 		wDatalLoad = wPeriod * (100 - ptContaPwmCfg->byDutyCycle) / 100 - 3 ;//转换计数模式需要3个周期
 	
-	if(ptContaPwmCfg->byStartLevel == POLAR_LOW)			//initial polarity
+	if(ptContaPwmCfg->byStartLevel == CNTA_POLAR_LOW)			//initial polarity
 		eOsp = CNTA_OSP_LOW;
-	else if(ptContaPwmCfg->byStartLevel == POLAR_HIGH)
+	else if(ptContaPwmCfg->byStartLevel == CNTA_POLAR_HIGH)
 		eOsp = CNTA_OSP_HIGH;
 		
-	if(ptContaPwmCfg->byStopLevel == STOP_LOW)				//stop output level
+	if(ptContaPwmCfg->byStopLevel == CNTA_STOP_LOW)				//stop output level
 		eRemStat = CNTA_REMSTAT_LOW;
-	else if(ptContaPwmCfg->byStopLevel == STOP_HIGH)
+	else if(ptContaPwmCfg->byStopLevel == CNTA_STOP_HIGH)
 		eRemStat = CNTA_REMSTAT_HIGH;
 			
 	csp_cnta_set_ckdiv(ptCntaBase, ptContaPwmCfg->eClkDiv, CNTA_REPEAT_MODE);		//cnta clk = pclk/eClkDiv
-	csp_cnta_set_carrier(ptCntaBase, CNTA_CARRIER_EN, PWM_CARRIER, eRemStat, eOsp);
+	csp_cnta_set_carrier(ptCntaBase, CNTA_CARRIER_EN, CNTA_PWM_CARRIER, eRemStat, eOsp);
 	csp_cnta_set_datah(ptCntaBase, wDatahLoad);
 	csp_cnta_set_datal(ptCntaBase, wDatalLoad);	
 	apt_cnta_int_arrt_set(CLIC_INTATTR_TRIG_UP); 

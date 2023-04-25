@@ -22,7 +22,7 @@ void cnta_test(void)
  */
 void cnta_timer_test(void)
 {
-	csi_conta_timer_config_t tTimerCfg;
+	csi_cnta_timer_config_t tTimerCfg;
 	
 	csi_pin_set_mux(PA10, PA10_OUTPUT);         //配置输出
 	csi_pin_set_high(PA10);					    //初始设置为高，在cnta的中断中翻转
@@ -48,14 +48,14 @@ void cnta_timer_test(void)
  */
 void cnta_pwm_test(void)
 {
-	csi_conta_pwm_config_t tPwmCfg;
+	csi_cnta_pwm_config_t tPwmCfg;
 	
 	csi_pin_set_mux(PA5, PA5_OUTPUT);         //配置输出
 	csi_pin_set_high(PA5);					    //初始设置为高，在cnta的中断中翻转
 	
 	tPwmCfg.eClkDiv      = CNTA_CK_DIV8;   //时钟8分频
-	tPwmCfg.byStartLevel = POLAR_LOW;	   //开始极性低
-	tPwmCfg.byStopLevel  = STOP_LOW;       //结束极性低
+	tPwmCfg.byStartLevel = CNTA_POLAR_LOW;	   //开始极性低
+	tPwmCfg.byStopLevel  = CNTA_STOP_LOW;       //结束极性低
 	tPwmCfg.byDutyCycle  = 60;             //占空比
 	tPwmCfg.wFreq        = 38000;          //频率(hz)
 	tPwmCfg.byInter      = CNTA_NONE_INT;  //无中断源
@@ -66,7 +66,7 @@ void cnta_pwm_test(void)
 	//csi_pin_set_mux(PD5,PD5_CNTA_BUZ);//set counter output pin
 	
 	csi_cnta_pwm_init(CA0,&tPwmCfg);
-	//csi_cnta_bt0_sync(CA0, PEND_CARRIERON_SET, MATCH_CARRIERON_CLR,CNTA_HW_DIS);//结合bt0设置硬件自动打开或者关闭载波
+	//csi_cnta_bt0_sync(CA0, CNTA_PEND_CARRIERON_SET, CNTA_MATCH_CARRIERON_CLR,CNTA_HW_DIS);//结合bt0设置硬件自动打开或者关闭载波
 	csi_cnta_start(CA0);
 	while(1)
 	{
@@ -80,7 +80,7 @@ void cnta_pwm_test(void)
  */
 void cnta_envelope_test(void)
 {
-	csi_conta_pwm_config_t tPwmCfg;
+	csi_cnta_pwm_config_t tPwmCfg;
 	csi_bt_pwm_config_t tBTPwmCfg;							//BT PWM输出参数初始化配置结构体
 	
 	csi_pin_set_mux(PA6, PA6_OUTPUT);		//PA6 output，并在BT_PEND_INT中断里翻转，用于查看CountA的状态
@@ -116,8 +116,8 @@ void cnta_envelope_test(void)
 	
 	//CountA 初始化
 	tPwmCfg.eClkDiv      = CNTA_CK_DIV1;   //时钟8分频
-	tPwmCfg.byStartLevel = POLAR_LOW;	   //开始极性低
-	tPwmCfg.byStopLevel  = STOP_LOW;       //结束极性低
+	tPwmCfg.byStartLevel = CNTA_POLAR_LOW;	   //开始极性低
+	tPwmCfg.byStopLevel  = CNTA_STOP_LOW;       //结束极性低
 	tPwmCfg.byDutyCycle  = 60;             //占空比
 	tPwmCfg.wFreq        = 380000;          //频率(hz)
 	tPwmCfg.byInter      = CNTA_NONE_INT;  //无中断源
@@ -130,12 +130,12 @@ void cnta_envelope_test(void)
 	csi_cnta_pwm_init(CA0,&tPwmCfg);
 	
 	// CACON.ENVELOPE测试
-	csp_cnta_set_carrier(CA0, CNTA_CARRIER_EN, PWM_CARRIER, STOP_LOW, POLAR_LOW);  //载波输出	
-//	csp_cnta_set_carrier(CA0, CNTA_CARRIER_EN, PWM_ENVELOPE, STOP_LOW, POLAR_LOW); //包络输出
+	csp_cnta_set_carrier(CA0, CNTA_CARRIER_EN, CNTA_PWM_CARRIER, CNTA_STOP_LOW, CNTA_POLAR_LOW);  //载波输出	
+//	csp_cnta_set_carrier(CA0, CNTA_CARRIER_EN, PWM_ENVELOPE, CNTA_STOP_LOW, CNTA_POLAR_LOW); //包络输出
 
 	// CACON.BTPEND_REM_CON 和 CACONBTMATCH_REM_CON 测试
 //	csp_cnta_set_sync(CA0, PEND_CARRIERON_CLR, MATCH_CARRIERON_SET,CNTA_HW_TCPEND);//BT脉冲匹配中断发生时，CARRIERON位会被硬件自动置位
-	csp_cnta_set_sync(CA0, PEND_CARRIERON_SET, MATCH_CARRIERON_CLR,CNTA_HW_TCPEND);//BT周期结束中断发生时，CARRIERON位会被硬件自动置位
+	csp_cnta_set_sync(CA0, CNTA_PEND_CARRIERON_SET, CNTA_MATCH_CARRIERON_CLR,CNTA_HW_TCPEND);//BT周期结束中断发生时，CARRIERON位会被硬件自动置位
 //	csp_cnta_set_sync(CA0, PEND_CARRIERON_DIS, MATCH_CARRIERON_DIS,CNTA_HW_TCPEND);//禁止CARRIERON的硬件自动触发
 	csi_cnta_start(CA0);
 	while(1)

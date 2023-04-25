@@ -10,17 +10,16 @@
 */
 /* Includes ---------------------------------------------------------------*/
 #include <string.h>
-#include <gpta.h>
 #include <drv/pin.h>
-#include "drv/etb.h"
-#include "drv/bt.h"
-#include "drv/cmp.h"
+#include <drv/etb.h>
+#include <drv/bt.h>
+#include <drv/cmp.h>
 
-//#include "test.h"
 /* externs function--------------------------------------------------------*/
 /* externs variablesr------------------------------------------------------*/
 /* Private macro-----------------------------------------------------------*/
 /* Private variablesr------------------------------------------------------*/
+
 
 /** \brief 比较器基本功能测试
  *  \brief N-和P+输入不同的电平值，如果P+大于N-，将输出高电平，如果P+小于N-，将输出低电平
@@ -36,8 +35,8 @@ int cmp_base_test(void)
 	csi_pin_set_mux(PA8,PA8_CPIN1P);		
 	csi_pin_set_mux(PA9,PA9_CPIN1N);	
 	
-//	csi_pin_set_mux(PB2,PB2_CP0_OUT);                  //正常管脚输出
-	csi_pin_set_iomap(PB1, IOMAP1_CMP0_OUT);           //测试CMP输出 IOMAPG管脚
+	csi_pin_set_mux(PB2,PB2_CP0_OUT);                  //正常管脚输出
+//	csi_pin_set_iomap(PB1, IOMAP1_CMP0_OUT);           //测试CMP输出 IOMAPG管脚
 	
 	tCmpCfg.byNsel = CMP_P_SEL_CP1;                   //N- 端口选择
 	tCmpCfg.byPsel = CMP_P_SEL_CP1;	                  //P+ 端口选择
@@ -181,4 +180,29 @@ int cmp_wfcr_test(void)
 	}	
 
 	return iRet;	
+}
+
+/** \brief CMP interrupt handle function
+ * 
+ *  \param[in] none
+ *  \return none
+ */ 
+__attribute__((weak)) void cmp_irqhandler(csp_cmp_t *ptCmpBase)
+{
+    // ISR content ...
+	if(csi_cmp_get_misr(ptCmpBase) & CMP_EDGEDET0_INT)
+	{
+		csi_cmp_int_clear(ptCmpBase,CMP_INTSRC_EDGEDET);
+		csi_pin_set_mux(PA2, PA2_OUTPUT);	  
+		csi_pin_set_mux(PA3, PA3_OUTPUT);	 
+		csi_pin_set_low(PA2);
+	}
+	else if(csi_cmp_get_misr(ptCmpBase) & CMP_EDGEDET1_INT)
+	{
+		csi_cmp_int_clear(ptCmpBase,CMP_INTSRC_EDGEDET);
+	}
+	else if(csi_cmp_get_misr(ptCmpBase) & CMP_EDGEDET2_INT)
+	{
+		csi_cmp_int_clear(ptCmpBase,CMP_INTSRC_EDGEDET);
+	}
 }
