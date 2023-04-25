@@ -32,22 +32,21 @@ int spi_master_send_demo(void)
 {
 	int iRet = 0;
 	uint8_t byData[8] = {1,2,3,4,5,6,7,8};
-	csi_spi_config_t t_SpiConfig;  //spi初始化参数配置结构体
-	
+	csi_spi_config_t tSpiConfig;  //spi初始化参数配置结构体
+
 	//端口配置
 	csi_pin_set_mux(PB12,PB12_SPI0_NSS);
 	csi_pin_set_mux(PB13,PB13_SPI0_SCK);
 	csi_pin_set_mux(PB14,PB14_SPI0_MISO);
 	csi_pin_set_mux(PB15,PB15_SPI0_MOSI);
 	
-	t_SpiConfig.eSpiMode = SPI_MASTER;						//作为主机
-	t_SpiConfig.eSpiPolarityPhase = SPI_FORMAT_CPOL0_CPHA0; //clk空闲电平为0，相位为在第一个边沿采集数据
-	t_SpiConfig.eSpiFrameLen = SPI_FRAME_LEN_8;             //帧数据长度为8bit
-	t_SpiConfig.dwSpiBaud = 1000000; 						//通讯速率1Mbps			
-    t_SpiConfig.eSpiRxFifoLevel = SPI_RXFIFO_1_2;  			//接收fifo中断阈值，1/2*8=4个
-	t_SpiConfig.byInter = (uint8_t)SPI_NONE_INT;			//初始配置无中断
-		
-	csi_spi_init(SPI0,&t_SpiConfig);
+	tSpiConfig.bySpiMode 			= SPI_MASTER;				//作为主机
+	tSpiConfig.bySpiPolarityPhase 	= SPI_FORMAT_CPOL0_CPHA0; 	//clk空闲电平为0，相位为在第一个边沿采集数据
+	tSpiConfig.bySpiFrameLen 		= SPI_FRAME_LEN_8;          //帧数据长度为8bit
+	tSpiConfig.wSpiBaud 			= 1000000; 					//通讯速率1Mbps			
+	tSpiConfig.byInt 				= (uint8_t)SPI_INTSRC_NONE;	//初始配置无中断
+	tSpiConfig.byTxMode 			= SPI_TX_MODE_POLL;         //发送轮询模式	
+	csi_spi_init(SPI0,&tSpiConfig);
 
 	while(1)
 	{
@@ -66,7 +65,7 @@ int spi_master_send_demo(void)
 {
 	int iRet = 0;
 	uint8_t bySendData[8] = {1,2,3,4,5,6,7,8};
-	csi_spi_config_t t_SpiConfig;  //spi初始化参数配置结构体
+	csi_spi_config_t tSpiConfig;  //spi初始化参数配置结构体
 	
 	//端口配置
 	csi_pin_set_mux(PB12,PB12_SPI0_NSS);
@@ -74,18 +73,18 @@ int spi_master_send_demo(void)
 	csi_pin_set_mux(PB14,PB14_SPI0_MISO);
 	csi_pin_set_mux(PB15,PB15_SPI0_MOSI);
 	
-	t_SpiConfig.eSpiMode = SPI_MASTER;						//作为主机
-	t_SpiConfig.eSpiPolarityPhase = SPI_FORMAT_CPOL0_CPHA0; //clk空闲电平为0，相位为在第一个边沿采集数据
-	t_SpiConfig.eSpiFrameLen = SPI_FRAME_LEN_8;             //帧数据长度为8bit
-	t_SpiConfig.dwSpiBaud = 1000000; 						//通讯速率1Mbps			
-    t_SpiConfig.eSpiRxFifoLevel = SPI_RXFIFO_1_2;  			//接收fifo中断阈值，1/2*8=4个//（当阈值为fifo深度的一半时效率高）
-	t_SpiConfig.byInter = (uint8_t)SPI_TXIM_INT;			//发送使用中断	  	
-	
-	csi_spi_init(SPI0,&t_SpiConfig);
+	tSpiConfig.bySpiMode 			= SPI_MASTER;				//作为主机
+	tSpiConfig.bySpiPolarityPhase 	= SPI_FORMAT_CPOL0_CPHA0; 	//clk空闲电平为0，相位为在第一个边沿采集数据
+	tSpiConfig.bySpiFrameLen 		= SPI_FRAME_LEN_8;          //帧数据长度为8bit
+	tSpiConfig.wSpiBaud 			= 1000000; 					//通讯速率1Mbps			
+	tSpiConfig.byInt 				= (uint8_t)SPI_INTSRC_TXIM;	//发送使用中断	  	
+	tSpiConfig.byTxMode 			= SPI_TX_MODE_INT;          //发送使用中断模式
+	csi_spi_init(SPI0,&tSpiConfig);
 
 	while(1)
 	{
-		csi_spi_send_async(SPI0, (void *)bySendData, 8);
+		csi_spi_send(SPI0, bySendData, 8);
+		while(SPI_STATE_BUSY == csi_spi_get_state(SPI_SEND));
 		mdelay(10);		
 	}
 	return iRet;
@@ -99,7 +98,7 @@ int spi_master_send_demo(void)
 void spi_master_send_receive_demo(void)
 {
 	uint8_t bySendData[16] = {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16};
-	uint8_t byReceData[16] = {0};
+	uint8_t byRecvData[16] = {0};
 	
 	//端口配置
 	csi_pin_set_mux(PB12,PB12_SPI0_NSS);
@@ -107,20 +106,57 @@ void spi_master_send_receive_demo(void)
 	csi_pin_set_mux(PB14,PB14_SPI0_MISO);
 	csi_pin_set_mux(PB15,PB15_SPI0_MOSI);
 	
-	csi_spi_config_t t_SpiConfig;  //spi初始化参数配置结构体
-	t_SpiConfig.eSpiMode = SPI_MASTER;					//作为主机
-	t_SpiConfig.eSpiPolarityPhase = SPI_FORMAT_CPOL0_CPHA0; //clk空闲电平为0，相位为在第一个边沿采集数据
-	t_SpiConfig.eSpiFrameLen = SPI_FRAME_LEN_8;             //帧数据长度为8bit
-	t_SpiConfig.dwSpiBaud = 1000000; 						//通讯速率2兆			
-    t_SpiConfig.eSpiRxFifoLevel = SPI_RXFIFO_1_2;  			//接收fifo中断阈值，1/2*8=4个
-	t_SpiConfig.byInter = (uint8_t)SPI_NONE_INT;			//初始配置无中断	
-	csi_spi_init(SPI0,&t_SpiConfig);				
+	csi_spi_config_t tSpiConfig;  //spi初始化参数配置结构体
+	tSpiConfig.bySpiMode 			= SPI_MASTER;				//作为主机
+	tSpiConfig.bySpiPolarityPhase 	= SPI_FORMAT_CPOL0_CPHA0; 	//clk空闲电平为0，相位为在第一个边沿采集数据
+	tSpiConfig.bySpiFrameLen		= SPI_FRAME_LEN_8;          //帧数据长度为8bit
+	tSpiConfig.wSpiBaud 			= 1000000; 					//通讯速率1Mbps			
+	tSpiConfig.byInt 				= (uint8_t)SPI_INTSRC_NONE;	//初始配置无中断
+	tSpiConfig.byTxRxMode 			= SPI_TX_RX_MODE_POLL;      //收发使用轮询模式	
+	csi_spi_init(SPI0,&tSpiConfig);				
 
 	while(1)
 	{
-		csi_spi_send_receive(SPI0, bySendData, byReceData, 16);
+		csi_spi_send_receive(SPI0, bySendData, byRecvData, 16);
 		mdelay(100);
 	}	
+}
+
+/*  \brief spi slave receive a bunch of data; interrupt(async) mode
+ *  \brief spi 从机接收一串数据，RX使用中断
+ *  \param[in] none
+ *  \return none
+ */
+void spi_slave_receive_int_demo(void)
+{
+	uint8_t byRecvData[16] = {};
+	uint8_t byIndex = 0;
+	csi_spi_config_t tSpiConfig;  //spi初始化参数配置结构体
+	
+	//端口配置
+	csi_pin_set_mux(PB12,PB12_SPI0_NSS);
+	csi_pin_set_mux(PB13,PB13_SPI0_SCK);
+	csi_pin_set_mux(PB14,PB14_SPI0_MISO);
+	csi_pin_set_mux(PB15,PB15_SPI0_MOSI);
+	
+	tSpiConfig.bySpiMode 			= SPI_SLAVE;				//作为从机	
+	tSpiConfig.bySpiPolarityPhase 	= SPI_FORMAT_CPOL0_CPHA1; 	//clk空闲电平为0，相位为在第二个边沿采集数据
+	tSpiConfig.bySpiFrameLen 		= SPI_FRAME_LEN_8;          //帧数据长度为8bit
+	tSpiConfig.wSpiBaud 			= 2000000; 					//通讯速率2兆,此参数取决于主机			
+	tSpiConfig.byInt				= SPI_INTSRC_RXIM;			//初始配置接收中断	
+	tSpiConfig.byRxMode 			= SPI_RX_MODE_INT;          //接收使用中断模式
+	csi_spi_init(SPI0,&tSpiConfig);				
+
+	while(1)
+	{	
+		csi_spi_receive(SPI0,byRecvData,16);
+		while( SPI_STATE_BUSY==csi_spi_get_state(SPI_RECV) );
+		my_printf("\nslave receive data is:");
+		for(byIndex = 0;byIndex<16;byIndex++)
+		{
+			my_printf(" %d", byRecvData[byIndex]);
+		}
+	}
 }
 
 /** \brief spi slave send and receive demo,polling mode
@@ -131,7 +167,7 @@ void spi_master_send_receive_demo(void)
 void spi_slave_send_receive_demo(void)//从机同步发，同步收
 {
 	uint8_t byReceData;
-	csi_spi_config_t t_SpiConfig;  //spi初始化参数配置结构体
+	csi_spi_config_t tSpiConfig;  //spi初始化参数配置结构体
 	
 	//端口配置
 	csi_pin_set_mux(PB12,PB12_SPI0_NSS);
@@ -139,13 +175,12 @@ void spi_slave_send_receive_demo(void)//从机同步发，同步收
 	csi_pin_set_mux(PB14,PB14_SPI0_MISO);
 	csi_pin_set_mux(PB15,PB15_SPI0_MOSI);
 	
-	t_SpiConfig.eSpiMode = SPI_SLAVE;					//作为从机
-	t_SpiConfig.eSpiPolarityPhase = SPI_FORMAT_CPOL0_CPHA1; //clk空闲电平为0，相位为在第二个边沿采集数据
-	t_SpiConfig.eSpiFrameLen = SPI_FRAME_LEN_8;             //帧数据长度为8bit
-	t_SpiConfig.dwSpiBaud = 1000000; 						//通讯速率2兆			
-    t_SpiConfig.eSpiRxFifoLevel = SPI_RXFIFO_1_2;  			//接收fifo中断阈值，1/2*8=4个
-	t_SpiConfig.byInter = (uint8_t)SPI_NONE_INT;			//初始配置无中断	
-	csi_spi_init(SPI0,&t_SpiConfig);				
+	tSpiConfig.bySpiMode 			= SPI_SLAVE;				//作为从机
+	tSpiConfig.bySpiPolarityPhase 	= SPI_FORMAT_CPOL0_CPHA0; 	//clk空闲电平为0，相位为在第一个边沿采集数据
+	tSpiConfig.bySpiFrameLen 		= SPI_FRAME_LEN_8;          //帧数据长度为8bit
+	tSpiConfig.wSpiBaud 			= 1000000; 					//通讯速率1Mbps			
+	tSpiConfig.byInt 				= (uint8_t)SPI_INTSRC_NONE;	//初始配置无中断	
+	csi_spi_init(SPI0,&tSpiConfig);				
 
 	while(1)
 	{
@@ -155,6 +190,175 @@ void spi_slave_send_receive_demo(void)//从机同步发，同步收
 			csi_spi_send_slave(SPI0, byReceData);
 		}
 		nop;
+	}
+}
+
+/** \brief spi DMA发送示例代码，使用DMA循环发送20字节数据
+ *  \param[in] none
+ *  \return error code
+ */
+void spi_etcb_dma_send_demo(void)
+{
+	uint8_t bySdData[20]={0};
+
+	for(uint8_t i = 0; i < sizeof(bySdData); i++)
+	{
+		bySdData[i] = i + 1;
+	}
+	//DMA para config
+	csi_dma_ch_config_t tDmaConfig;					//DMA 配置初始化
+	tDmaConfig.bySrcLinc 	= DMA_ADDR_INC;			//低位传输原地址自增
+	tDmaConfig.bySrcHinc 	= DMA_ADDR_CONSTANT;	//高位传输原地址固定不变
+	tDmaConfig.byDetLinc 	= DMA_ADDR_CONSTANT;	//低位传输目标地址固定不变
+	tDmaConfig.byDetHinc 	= DMA_ADDR_CONSTANT;	//高位传输目标地址固定不变
+	tDmaConfig.byDataWidth 	= DMA_DSIZE_8_BITS;		//传输数据宽度8bit
+	tDmaConfig.byReload 	= DMA_RELOAD_DISABLE;	//禁止自动重载
+	tDmaConfig.byTransMode 	= DMA_TRANS_ONCE;		//DMA服务模式(传输模式)，连续服务
+	tDmaConfig.byTsizeMode  = DMA_TSIZE_ONE_DSIZE;	//传输数据大小，一个 DSIZE , 即DSIZE定义大小
+	tDmaConfig.byReqMode	= DMA_REQ_HARDWARE;		//DMA请求模式，硬件请求（硬件触发）
+	tDmaConfig.wInt 		= DMA_INTSRC_NONE;		//不使用中断
+	csi_dma_soft_rst(DMA0);
+	csi_dma_ch_init(DMA0, 0, &tDmaConfig);			//初始化DMA
+	csp_dma_t *ptDmaChBase = (csp_dma_t *)DMA_REG_BASE(DMA0, 0);
+	
+	//ETCB para config
+	csi_etb_config_t 	tEtbConfig;					//ETB 参数配置结构体
+	tEtbConfig.byChType  = ETB_ONE_TRG_ONE_DMA;		//单个源触发单个目标，DMA方式
+	tEtbConfig.bySrcIp 	 = ETB_SPI0_TXSRC;			//SPI0 TXSRC作为触发源
+	tEtbConfig.byDstIp 	 = ETB_DMA0_CH0;			//ETB DMA0通道0作为目标实际
+	tEtbConfig.byTrgMode = ETB_HARDWARE_TRG;		//通道触发模式采样硬件触发
+	csi_etb_init();									//使能ETB模块
+	csi_etb_ch_config(ETB_CH20, &tEtbConfig);		//初始化ETB，DMA ETB CHANNEL > ETB_CH19_ID
+	
+	//SPI端口配置	
+	csi_pin_set_mux(PB12,PB12_SPI0_NSS);						    
+	csi_pin_set_mux(PB13,PB13_SPI0_SCK);
+	csi_pin_set_mux(PB14,PB14_SPI0_MISO);
+	csi_pin_set_mux(PB15,PB15_SPI0_MOSI);
+	
+	//SPI para config
+	csi_spi_config_t tSpiConfig; //spi初始化参数配置结构体
+	tSpiConfig.bySpiMode 			= SPI_MASTER;				//作为主机
+	tSpiConfig.bySpiPolarityPhase 	= SPI_FORMAT_CPOL0_CPHA0; 	//clk空闲电平为0，相位为在第一个边沿采集数据
+	tSpiConfig.bySpiFrameLen	 	= SPI_FRAME_LEN_8;          //帧数据长度为8bit
+	tSpiConfig.wSpiBaud 			= 1000000; 					//通讯速率1Mbps			
+	tSpiConfig.byInt 				= (uint8_t)SPI_INTSRC_NONE;	//初始配置无中断	  
+	csi_spi_init(SPI0,&tSpiConfig);						//初始化并启动spi
+	
+	while(1)
+	{
+		csi_spi_send_dma(SPI0, (void *)bySdData, sizeof(bySdData), DMA0, 0);
+		while(csp_dma_get_curr_htc(ptDmaChBase));//等待直到dma传输完成
+		mdelay(10);
+	}
+}
+
+/** \brief spi DMA发送接收示例代码，使用DMA循环发送20字节数据
+ *  \brief 1、使用DMA向flash 0x1000地址写10字节数据
+ *  \brief 2、使用DMA向flash 0x1000地址读10字节数据
+ *	\param[in] none
+ *  \return error code
+ */
+void spi_etcb_dma_send_receive_demo(void)
+{	
+	uint8_t byDMAChnlSend = 0;
+	uint8_t byDMAChnlRecv = 1;
+	
+	volatile uint8_t bySrcBuf[6] = {0x90, 0, 0, 0};//读flash id
+	volatile uint8_t byDesBuf[2] = {0};
+	
+	for(uint8_t i = 4; i < sizeof(bySrcBuf); i++)
+	{
+		bySrcBuf[i] = i-3;
+	}
+	
+	//send dma para config
+	csi_dma_ch_config_t tDmaConfigSend;
+	tDmaConfigSend.bySrcLinc 	= DMA_ADDR_INC;		      	//低位传输原地址自增
+	tDmaConfigSend.bySrcHinc 	= DMA_ADDR_CONSTANT;		//高位传输原地址固定不变
+	tDmaConfigSend.byDetLinc 	= DMA_ADDR_CONSTANT;		//低位传输目标地址固定不变
+	tDmaConfigSend.byDetHinc 	= DMA_ADDR_CONSTANT;		//高位传输目标地址固定不变
+	tDmaConfigSend.byDataWidth 	= DMA_DSIZE_8_BITS;		    //传输数据宽度8bit
+	tDmaConfigSend.byReload 	= DMA_RELOAD_DISABLE;		//禁止自动重载
+	tDmaConfigSend.byTransMode 	= DMA_TRANS_ONCE;			//DMA服务模式(传输模式)，连续服务
+	tDmaConfigSend.byTsizeMode  = DMA_TSIZE_ONE_DSIZE;		//传输数据大小，一个 DSIZE , 即DSIZE定义大小
+	tDmaConfigSend.byReqMode	= DMA_REQ_HARDWARE;			//DMA请求模式，硬件请求（硬件触发）
+	tDmaConfigSend.wInt 		= DMA_INTSRC_NONE;			//不使用中断
+	
+	//receive dma para config
+	csi_dma_ch_config_t tDmaConfigRecv;
+	tDmaConfigRecv.bySrcLinc 	= DMA_ADDR_CONSTANT;		//低位传输原地址固定不变
+	tDmaConfigRecv.bySrcHinc 	= DMA_ADDR_CONSTANT;		//高位传输原地址固定不变
+	tDmaConfigRecv.byDetLinc 	= DMA_ADDR_INC;				//低位传输目标地址自增
+	tDmaConfigRecv.byDetHinc 	= DMA_ADDR_CONSTANT;		//高位传输目标地址固定不变
+	tDmaConfigRecv.byDataWidth  = DMA_DSIZE_8_BITS;		    //传输数据宽度8bit
+	tDmaConfigRecv.byReload 	= DMA_RELOAD_DISABLE;		//禁止自动重载
+	tDmaConfigRecv.byTransMode  = DMA_TRANS_ONCE;			//DMA服务模式(传输模式)，连续服务
+	tDmaConfigRecv.byTsizeMode  = DMA_TSIZE_ONE_DSIZE;		//传输数据大小，一个 DSIZE , 即DSIZE定义大小
+	tDmaConfigRecv.byReqMode	= DMA_REQ_HARDWARE;			//DMA请求模式，硬件请求
+	tDmaConfigRecv.wInt		    = DMA_INTSRC_NONE;			//不使用中断
+	
+	//DMA init
+	csi_dma_soft_rst(DMA0);
+	csi_dma_ch_init(DMA0, byDMAChnlSend, &tDmaConfigSend);
+	csi_dma_ch_init(DMA0, byDMAChnlRecv, &tDmaConfigRecv);
+	csp_dma_t *ptDmaChBaseCh0 = (csp_dma_t *)DMA_REG_BASE(DMA0, 0);
+	csp_dma_t *ptDmaChBaseCh1 = (csp_dma_t *)DMA_REG_BASE(DMA0, 1);
+	
+	//send etcb para config
+	csi_etb_config_t 	tEtbConfigSend;						//ETB 参数配置结构体
+	tEtbConfigSend.byChType = ETB_ONE_TRG_ONE_DMA;			//单个源触发单个目标，DMA方式
+	tEtbConfigSend.bySrcIp 	= ETB_SPI0_TXSRC;				//SPI0 TXSRC作为触发源
+	tEtbConfigSend.byDstIp 	= ETB_DMA0_CH0;					//ETB DMA0通道0作为目标实际
+	tEtbConfigSend.byTrgMode = ETB_HARDWARE_TRG;			//通道触发模式采样软件触发
+	
+	//receive etcb para config
+	csi_etb_config_t 	tEtbConfigRecv;						//ETB 参数配置结构体
+	tEtbConfigRecv.byChType = ETB_ONE_TRG_ONE_DMA;			//单个源触发单个目标，DMA方式
+	tEtbConfigRecv.bySrcIp 	= ETB_SPI0_RXSRC;				//SPI0 RXSRC作为触发源
+	tEtbConfigRecv.byDstIp 	= ETB_DMA0_CH1;					//ETB DMA0通道0作为目标实际
+	tEtbConfigRecv.byTrgMode = ETB_HARDWARE_TRG;			//通道触发模式采样软件触发
+	
+	//ETCB init
+	csi_etb_init();									    	//使能ETB模块
+	csi_etb_ch_config(ETB_CH20, &tEtbConfigSend);			//初始化ETB，DMA ETB CHANNEL 大于 ETB_CH19_ID
+	csi_etb_ch_config(ETB_CH21, &tEtbConfigRecv);			//初始化ETB，DMA ETB CHANNEL 大于 ETB_CH19_ID
+	
+	//SPI端口配置		
+	csi_pin_set_mux(PB12, PB12_OUTPUT);                       //gpio_port as output
+	csi_pin_output_mode(PB12, GPIO_PUSH_PULL);                //push pull mode
+	csi_spi_nss_high(PB12);						    
+	csi_pin_set_mux(PB13,PB13_SPI0_SCK);
+	csi_pin_set_mux(PB14,PB14_SPI0_MISO);
+	csi_pin_set_mux(PB15,PB15_SPI0_MOSI);
+	
+	//spi para config
+	csi_spi_config_t tSpiConfig;//spi初始化参数配置结构体
+	tSpiConfig.bySpiMode 			= SPI_MASTER;				//作为主机
+	tSpiConfig.bySpiPolarityPhase 	= SPI_FORMAT_CPOL0_CPHA0; 	//clk空闲电平为0，相位为在第一个边沿采集数据
+	tSpiConfig.bySpiFrameLen 		= SPI_FRAME_LEN_8;          //帧数据长度为8bit
+	tSpiConfig.wSpiBaud 			= 1000000; 					//通讯速率1Mbps			
+	tSpiConfig.byInt 				= (uint8_t)SPI_INTSRC_NONE; //初始配置无中断	  
+	csi_spi_init(SPI0,&tSpiConfig);						//初始化并启动spi
+
+	csi_spi_nss_low(PB12);
+	csi_spi_recv_dma(SPI0, (void *)byDesBuf, sizeof(byDesBuf), DMA0, 1);
+	csi_spi_send_dma(SPI0, (void *)bySrcBuf, sizeof(bySrcBuf), DMA0, 0);
+	while(csp_dma_get_curr_htc(ptDmaChBaseCh0));		//等待直到dma发送完成
+	while(csp_dma_get_curr_htc(ptDmaChBaseCh1));		//等待直到dma接收完成
+	while( (SPI0->SR & SPI_BSY) );						//等到spi传输完成
+	csi_spi_nss_high(PB12);
+
+	while(1)
+	{
+		csi_spi_nss_low(PB12);
+		csi_spi_recv_dma(SPI0, (void *)byDesBuf, sizeof(byDesBuf), DMA0, 1);
+		csi_spi_send_dma(SPI0, (void *)bySrcBuf, sizeof(bySrcBuf), DMA0, 0);
+		while(csp_dma_get_curr_htc(ptDmaChBaseCh0));		//等待直到dma发送完成
+		while(csp_dma_get_curr_htc(ptDmaChBaseCh1));		//等待直到dma接收完成
+		while( (SPI0->SR & SPI_BSY) );						//等到spi传输完成
+		csi_spi_nss_high(PB12);
+		mdelay(10);
 	}
 }
 
@@ -379,14 +583,13 @@ int spi_flash_read_write_demo(void)
 	csi_pin_set_mux(PB14,PB14_SPI0_MISO);
 	csi_pin_set_mux(PB15,PB15_SPI0_MOSI);
 	
-	csi_spi_config_t t_SpiConfig;  //spi初始化参数配置结构体
-	t_SpiConfig.eSpiMode = SPI_MASTER;						//作为主机
-	t_SpiConfig.eSpiPolarityPhase = SPI_FORMAT_CPOL0_CPHA0; //clk空闲电平为0，相位为在第一个边沿采集数据
-	t_SpiConfig.eSpiFrameLen = SPI_FRAME_LEN_8;             //帧数据长度为8bit
-	t_SpiConfig.dwSpiBaud = 1000000; 						//通讯速率1Mbps			
-    t_SpiConfig.eSpiRxFifoLevel = SPI_RXFIFO_1_2;  			//接收fifo中断阈值，1/2*8=4个
-	t_SpiConfig.byInter = (uint8_t)SPI_NONE_INT;			//初始配置无中断	  
-	csi_spi_init(SPI0,&t_SpiConfig);							
+	csi_spi_config_t tSpiConfig;  //spi初始化参数配置结构体
+	tSpiConfig.bySpiMode 			= SPI_MASTER;				//作为主机
+	tSpiConfig.bySpiPolarityPhase 	= SPI_FORMAT_CPOL0_CPHA0; 	//clk空闲电平为0，相位为在第一个边沿采集数据
+	tSpiConfig.bySpiFrameLen 		= SPI_FRAME_LEN_8;          //帧数据长度为8bit
+	tSpiConfig.wSpiBaud 			= 1000000; 					//通讯速率1Mbps			
+	tSpiConfig.byInt 				= (uint8_t)SPI_INTSRC_NONE;	//初始配置无中断	  
+	csi_spi_init(SPI0,&tSpiConfig);							
 
 	while(1)
 	{
@@ -401,175 +604,4 @@ int spi_flash_read_write_demo(void)
 		mdelay(10);
 	}
 	return iRet;
-}
-
-/** \brief spi DMA发送示例代码，使用DMA循环发送20字节数据
- *  \param[in] none
- *  \return error code
- */
-void spi_dma_send_demo(void)
-{
-	uint8_t bySdData[20]={0};
-
-	for(uint8_t i = 0; i < sizeof(bySdData); i++)
-	{
-		bySdData[i] = i + 1;
-	}
-	//DMA para config
-	csi_dma_ch_config_t tDmaConfig;					//DMA 配置初始化
-	tDmaConfig.bySrcLinc 	= DMA_ADDR_INC;			//低位传输原地址自增
-	tDmaConfig.bySrcHinc 	= DMA_ADDR_CONSTANT;	//高位传输原地址固定不变
-	tDmaConfig.byDetLinc 	= DMA_ADDR_CONSTANT;	//低位传输目标地址固定不变
-	tDmaConfig.byDetHinc 	= DMA_ADDR_CONSTANT;	//高位传输目标地址固定不变
-	tDmaConfig.byDataWidth 	= DMA_DSIZE_8_BITS;		//传输数据宽度8bit
-	tDmaConfig.byReload 	= DMA_RELOAD_DISABLE;	//禁止自动重载
-	tDmaConfig.byTransMode 	= DMA_TRANS_ONCE;		//DMA服务模式(传输模式)，连续服务
-	tDmaConfig.byTsizeMode  = DMA_TSIZE_ONE_DSIZE;	//传输数据大小，一个 DSIZE , 即DSIZE定义大小
-	tDmaConfig.byReqMode	= DMA_REQ_HARDWARE;		//DMA请求模式，硬件请求（硬件触发）
-	tDmaConfig.wInt 		= DMA_INTSRC_NONE;		//不使用中断
-	csi_dma_soft_rst(DMA0);
-	csi_dma_ch_init(DMA0, 0, &tDmaConfig);			//初始化DMA
-	csp_dma_t *ptDmaChBase = (csp_dma_t *)DMA_REG_BASE(DMA0, 0);
-	
-	//ETCB para config
-	csi_etb_config_t 	tEtbConfig;					//ETB 参数配置结构体
-	tEtbConfig.byChType  = ETB_ONE_TRG_ONE_DMA;		//单个源触发单个目标，DMA方式
-	tEtbConfig.bySrcIp 	 = ETB_SPI0_TXSRC;			//SPI0 TXSRC作为触发源
-	tEtbConfig.byDstIp 	 = ETB_DMA0_CH0;			//ETB DMA0通道0作为目标实际
-	tEtbConfig.byTrgMode = ETB_HARDWARE_TRG;		//通道触发模式采样硬件触发
-	csi_etb_init();									//使能ETB模块
-	csi_etb_ch_config(ETB_CH20, &tEtbConfig);		//初始化ETB，DMA ETB CHANNEL > ETB_CH19_ID
-	
-	//SPI端口配置	
-	csi_pin_set_mux(PB12,PB12_SPI0_NSS);						    
-	csi_pin_set_mux(PB13,PB13_SPI0_SCK);
-	csi_pin_set_mux(PB14,PB14_SPI0_MISO);
-	csi_pin_set_mux(PB15,PB15_SPI0_MOSI);
-	
-	//SPI para config
-	csi_spi_config_t t_SpiConfig;  							//spi初始化参数配置结构体
-	t_SpiConfig.eSpiMode = SPI_MASTER;						//作为主机
-	t_SpiConfig.eSpiPolarityPhase = SPI_FORMAT_CPOL0_CPHA0; //clk空闲电平为0，相位为在第一个边沿采集数据
-	t_SpiConfig.eSpiFrameLen = SPI_FRAME_LEN_8;             //帧数据长度为8bit
-	t_SpiConfig.dwSpiBaud = 1000000; 						//通讯速率1Mbps			
-    t_SpiConfig.eSpiRxFifoLevel = SPI_RXFIFO_1_2;  			//接收fifo中断阈值，1/2*8=4个
-	t_SpiConfig.byInter = (uint8_t)SPI_NONE_INT;			//初始配置无中断	  
-	csi_spi_init(SPI0,&t_SpiConfig);						//初始化并启动spi
-	
-	while(1)
-	{
-		csi_spi_send_dma(SPI0, (void *)bySdData, sizeof(bySdData), DMA0, 0);
-		while(csp_dma_get_curr_htc(ptDmaChBase));//等待直到dma传输完成
-		mdelay(10);
-	}
-}
-
-/** \brief spi DMA发送接收示例代码，使用DMA循环发送20字节数据
- *  \brief 1、使用DMA向flash 0x1000地址写10字节数据
- *  \brief 2、使用DMA向flash 0x1000地址读10字节数据
- *	\param[in] none
- *  \return error code
- */
-void spi_dma_send_receive_demo(void)
-{	
-	uint8_t byDMAChnlSend = 0;
-	uint8_t byDMAChnlRecv = 1;
-	
-	volatile uint8_t bySrcBuf[14] = {0x03,0x00,0x10,0x00};//读flash0x1000地址
-	volatile uint8_t byDesBuf[14] = {0};
-	
-	for(uint8_t i = 4; i < sizeof(bySrcBuf); i++)
-	{
-		bySrcBuf[i] = i-3;
-	}
-	
-	//send dma para config
-	csi_dma_ch_config_t tDmaConfigSend;
-	tDmaConfigSend.bySrcLinc 	= DMA_ADDR_INC;		      	//低位传输原地址自增
-	tDmaConfigSend.bySrcHinc 	= DMA_ADDR_CONSTANT;		//高位传输原地址固定不变
-	tDmaConfigSend.byDetLinc 	= DMA_ADDR_CONSTANT;		//低位传输目标地址固定不变
-	tDmaConfigSend.byDetHinc 	= DMA_ADDR_CONSTANT;		//高位传输目标地址固定不变
-	tDmaConfigSend.byDataWidth 	= DMA_DSIZE_8_BITS;		    //传输数据宽度8bit
-	tDmaConfigSend.byReload 	= DMA_RELOAD_DISABLE;		//禁止自动重载
-	tDmaConfigSend.byTransMode 	= DMA_TRANS_ONCE;			//DMA服务模式(传输模式)，连续服务
-	tDmaConfigSend.byTsizeMode  = DMA_TSIZE_ONE_DSIZE;		//传输数据大小，一个 DSIZE , 即DSIZE定义大小
-	tDmaConfigSend.byReqMode	= DMA_REQ_HARDWARE;			//DMA请求模式，硬件请求（硬件触发）
-	tDmaConfigSend.wInt 		= DMA_INTSRC_NONE;			//不使用中断
-	
-	//receive dma para config
-	csi_dma_ch_config_t tDmaConfigRecv;
-	tDmaConfigRecv.bySrcLinc 	= DMA_ADDR_CONSTANT;		//低位传输原地址固定不变
-	tDmaConfigRecv.bySrcHinc 	= DMA_ADDR_CONSTANT;		//高位传输原地址固定不变
-	tDmaConfigRecv.byDetLinc 	= DMA_ADDR_INC;				//低位传输目标地址自增
-	tDmaConfigRecv.byDetHinc 	= DMA_ADDR_CONSTANT;		//高位传输目标地址固定不变
-	tDmaConfigRecv.byDataWidth  = DMA_DSIZE_8_BITS;		    //传输数据宽度8bit
-	tDmaConfigRecv.byReload 	= DMA_RELOAD_DISABLE;		//禁止自动重载
-	tDmaConfigRecv.byTransMode  = DMA_TRANS_ONCE;			//DMA服务模式(传输模式)，连续服务
-	tDmaConfigRecv.byTsizeMode  = DMA_TSIZE_ONE_DSIZE;		//传输数据大小，一个 DSIZE , 即DSIZE定义大小
-	tDmaConfigRecv.byReqMode	= DMA_REQ_HARDWARE;			//DMA请求模式，硬件请求
-	tDmaConfigRecv.wInt		    = DMA_INTSRC_NONE;			//不使用中断
-	
-	//DMA init
-	csi_dma_soft_rst(DMA0);
-	csi_dma_ch_init(DMA0, byDMAChnlSend, &tDmaConfigSend);
-	csi_dma_ch_init(DMA0, byDMAChnlRecv, &tDmaConfigRecv);
-	csp_dma_t *ptDmaChBaseCh0 = (csp_dma_t *)DMA_REG_BASE(DMA0, 0);
-	csp_dma_t *ptDmaChBaseCh1 = (csp_dma_t *)DMA_REG_BASE(DMA0, 1);
-	
-	//send etcb para config
-	csi_etb_config_t 	tEtbConfigSend;						//ETB 参数配置结构体
-	tEtbConfigSend.byChType = ETB_ONE_TRG_ONE_DMA;			//单个源触发单个目标，DMA方式
-	tEtbConfigSend.bySrcIp 	= ETB_SPI0_TXSRC;				//SPI0 TXSRC作为触发源
-	tEtbConfigSend.byDstIp 	= ETB_DMA0_CH0;					//ETB DMA0通道0作为目标实际
-	tEtbConfigSend.byTrgMode = ETB_HARDWARE_TRG;			//通道触发模式采样软件触发
-	
-	//receive etcb para config
-	csi_etb_config_t 	tEtbConfigRecv;						//ETB 参数配置结构体
-	tEtbConfigRecv.byChType = ETB_ONE_TRG_ONE_DMA;			//单个源触发单个目标，DMA方式
-	tEtbConfigRecv.bySrcIp 	= ETB_SPI0_RXSRC;				//SPI0 RXSRC作为触发源
-	tEtbConfigRecv.byDstIp 	= ETB_DMA0_CH1;					//ETB DMA0通道0作为目标实际
-	tEtbConfigRecv.byTrgMode = ETB_HARDWARE_TRG;			//通道触发模式采样软件触发
-	
-	//ETCB init
-	csi_etb_init();									    	//使能ETB模块
-	csi_etb_ch_config(ETB_CH20, &tEtbConfigSend);			//初始化ETB，DMA ETB CHANNEL 大于 ETB_CH19_ID
-	csi_etb_ch_config(ETB_CH21, &tEtbConfigRecv);			//初始化ETB，DMA ETB CHANNEL 大于 ETB_CH19_ID
-	
-	//SPI端口配置		
-	csi_pin_set_mux(PB12, PB12_OUTPUT);                       //gpio_port as output
-	csi_pin_output_mode(PB12, GPIO_PUSH_PULL);                //push pull mode
-	csi_spi_nss_high(PB12);						    
-	csi_pin_set_mux(PB13,PB13_SPI0_SCK);
-	csi_pin_set_mux(PB14,PB14_SPI0_MISO);
-	csi_pin_set_mux(PB15,PB15_SPI0_MOSI);
-	
-	//spi para config
-	csi_spi_config_t t_SpiConfig;   						//spi初始化参数配置结构体
-	t_SpiConfig.eSpiMode = SPI_MASTER;						//作为主机
-	t_SpiConfig.eSpiPolarityPhase = SPI_FORMAT_CPOL0_CPHA0; //clk空闲电平为0，相位为在第一个边沿采集数据
-	t_SpiConfig.eSpiFrameLen = SPI_FRAME_LEN_8;            //帧数据长度为8bit
-	t_SpiConfig.dwSpiBaud = 1000000; 						//通讯速率1Mbps			
-    t_SpiConfig.eSpiRxFifoLevel = SPI_RXFIFO_1_2;  			//接收fifo中断阈值，1/2*8=4个
-	t_SpiConfig.byInter = (uint8_t)SPI_NONE_INT;			//初始配置无中断	  
-	csi_spi_init(SPI0,&t_SpiConfig);						//初始化并启动spi
-
-	csi_spi_nss_low(PB12);
-	csi_spi_recv_dma(SPI0, (void *)byDesBuf, sizeof(byDesBuf), DMA0, 1);
-	csi_spi_send_dma(SPI0, (void *)bySrcBuf, sizeof(bySrcBuf), DMA0, 0);
-	while(csp_dma_get_curr_htc(ptDmaChBaseCh0));		//等待直到dma发送完成
-	while(csp_dma_get_curr_htc(ptDmaChBaseCh1));		//等待直到dma接收完成
-	while( (SPI0->SR & SPI_BSY) );						//等到spi传输完成
-	csi_spi_nss_high(PB12);
-
-	while(1)
-	{
-		csi_spi_nss_low(PB12);
-		csi_spi_recv_dma(SPI0, (void *)byDesBuf, sizeof(byDesBuf), DMA0, 1);
-		csi_spi_send_dma(SPI0, (void *)bySrcBuf, sizeof(bySrcBuf), DMA0, 0);
-		while(csp_dma_get_curr_htc(ptDmaChBaseCh0));		//等待直到dma发送完成
-		while(csp_dma_get_curr_htc(ptDmaChBaseCh1));		//等待直到dma接收完成
-		while( (SPI0->SR & SPI_BSY) );						//等到spi传输完成
-		csi_spi_nss_high(PB12);
-		mdelay(10);
-	}
 }

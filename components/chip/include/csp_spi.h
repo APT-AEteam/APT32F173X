@@ -27,12 +27,12 @@ typedef struct
 	__IOM  uint32_t  DR; 		//0x0008	Receive/transmit  data register 
 	__IM   uint32_t  SR;		//0x000C	Status register 
 	__IOM  uint32_t  CPSR;		//0x0010	Clock prescale register         
-	__IOM  uint32_t  IMSCR;		//0x0014	Interrupt set/clear register    
+	__IOM  uint32_t  IMCR;		//0x0014	Interrupt set/clear register    
 	__IM   uint32_t  RISR;		//0x0018	Raw interrupt status register   
 	__IM   uint32_t  MISR;		//0x001C	Mask interrupt status register  
 	__OM   uint32_t  ICR;		//0x0020	Interrupt clear register 
     __IOM  uint32_t  DMACR;     //0x0024    Dma Control Register
-	__OM   uint32_t  SSR;		//0x0028	Software Reset Register
+	__OM   uint32_t  SRR;		//0x0028	Software Reset Register
 	__IM   uint32_t  RXFL;		//0x002C	rx fifo level
 	__IM   uint32_t  TXFL;		//0x0030	tx fifo level
 } csp_spi_t;
@@ -51,7 +51,7 @@ typedef struct
 #define SPI_DR_RST          	(0x00000000)   	 	//DR reset value      
 #define SPI_SR_RST          	(0x00000003)    	//SR reset value      
 #define SPI_CPSR_RST          	(0x00000000)    	//CPSR reset value    
-#define SPI_IMSCR_RST          	(0x00000000)   	 	//IMSCR reset value   
+#define SPI_IMCR_RST          	(0x00000000)   	 	//IMCR reset value   
 #define SPI_RISR_RST          	(0x00000008)    	//RISR reset value    
 #define SPI_MISR_RST          	(0x00000000)    	//MISR reset value    
 #define SPI_ICR_RST          	(0x00000000)    	//ICR reset value     
@@ -341,23 +341,6 @@ static inline void csp_spi_clr_isr(csp_spi_t *ptSpiBase, spi_int_e eSpiInt)
 {
 	ptSpiBase->ICR = eSpiInt;
 }
-//
-//static inline void csp_spi_vic_int_en(void)
-//{
-//	NVIC_EnableIRQ(SPI_IRQn); 
-//}
-//static inline void csp_spi_vic_int_dis(void)
-//{
-//	NVIC_DisableIRQ(SPI_IRQn); 
-//}
-//static inline void csp_spi_wakeup_en(void)
-//{
-//	NVIC_SetWakeupIRQ(SPI_IRQn);
-//}
-//static inline void csp_spi_wakeup_dis(void)
-//{
-//	NVIC_ClearWakeupIRQ(SPI_IRQn);
-//}
 
 //lin add
 static inline uint8_t csp_spi_get_rxifl(csp_spi_t *ptSpiBase)
@@ -394,7 +377,7 @@ static inline void csp_spi_default_init(csp_spi_t *ptSpiBase)
     //ptSpiBase->DR    = SPI_DR_RST;
     //ptSpiBase->SR    = SPI_SR_RST;
     ptSpiBase->CPSR  = SPI_CPSR_RST;
-    ptSpiBase->IMSCR = SPI_IMSCR_RST;
+    ptSpiBase->IMCR = SPI_IMCR_RST;
    //ptSpiBase->RISR  = SPI_RISR_RST;
     //ptSpiBase->MISR  = SPI_MISR_RST;
     ptSpiBase->ICR	 = SPI_ICR_RST; 
@@ -403,9 +386,9 @@ static inline void csp_spi_default_init(csp_spi_t *ptSpiBase)
 static inline void csp_spi_set_int(csp_spi_t *ptSpiBase,spi_int_e eSpiInt,bool bEnable)
 {
 	if(bEnable)
-		ptSpiBase->IMSCR |= eSpiInt;
+		ptSpiBase->IMCR |= eSpiInt;
 	else
-		ptSpiBase->IMSCR &= ~eSpiInt;
+		ptSpiBase->IMCR &= ~eSpiInt;
 
 }
 
@@ -419,7 +402,7 @@ static inline uint8_t csp_spi_read_ready(csp_spi_t *ptSpiBase)
 
 static inline void csp_spi_softreset(csp_spi_t *ptSpiBase,spi_softreset_e eRstSource)
 {
-		ptSpiBase->SSR |= eRstSource;
+		ptSpiBase->SRR |= eRstSource;
 }
 
 static inline uint8_t csp_spi_get_rxfifo_level(csp_spi_t *ptSpiBase)

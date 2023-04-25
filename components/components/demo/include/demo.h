@@ -117,9 +117,10 @@ extern int spi_master_send_demo(void);
 extern int spi_master_send_int_demo(void);
 extern void spi_master_send_receive_demo(void); 
 extern void spi_slave_send_receive_demo(void);  
+extern void spi_slave_receive_int_demo(void);
 extern int spi_flash_read_write_demo(void);
-extern void spi_dma_send_demo(void);
-extern void spi_dma_send_receive_demo(void);
+extern void spi_etcb_dma_send_demo(void);
+extern void spi_etcb_dma_send_receive_demo(void);
 
 //cmp demo
 extern int cmp_base_demo(void);

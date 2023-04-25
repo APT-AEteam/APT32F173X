@@ -213,9 +213,10 @@ void user_demo(void)
 //  spi_master_send_int_demo();
 //  spi_master_send_receive_demo(); 
 //  spi_slave_send_receive_demo();  
-//  spi_flash_read_write_demo();
-//  spi_dma_send_demo();
-//  spi_dma_send_receive_demo();          
+//  spi_slave_receive_int_demo(); 
+//  spi_etcb_dma_send_demo();
+//  spi_etcb_dma_send_receive_demo();
+//  spi_flash_read_write_demo();          
 	
 /// ***************************************************
 ///  OPA相关的示例代码

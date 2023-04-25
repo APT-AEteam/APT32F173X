@@ -65,7 +65,7 @@ typedef enum {
     SPI_FORMAT_CPOL0_CPHA0 = 0,  ///< Clock Polarity 0, Clock Phase 0
     SPI_FORMAT_CPOL0_CPHA1,      ///< Clock Polarity 0, Clock Phase 1
     SPI_FORMAT_CPOL1_CPHA0,      ///< Clock Polarity 1, Clock Phase 0
-    SPI_FORMAT_CPOL1_CPHA1,      ///< Clock Polarity 1, Clock Phase 1
+    SPI_FORMAT_CPOL1_CPHA1       ///< Clock Polarity 1, Clock Phase 1
 } csi_spi_cp_format_e;
 
 /**
@@ -82,28 +82,84 @@ typedef enum {
     SPI_EVENT_ERROR                    ///< Master Mode Fault (SS deactivated when Master).Occurs in master mode when Slave Select is deactivated and indicates Master Mode Fault
 } csi_spi_event_e;
 
+/**
+ *  \enum     csi_spi_int_e
+ *  \brief    Interrupt source set of spi
+ */
+typedef enum
+{
+	SPI_INTSRC_NONE		= (0x00ul << 0),   		//none interrupt 
+	SPI_INTSRC_ROTIM	= (0x01ul << 0), 		//Receive Overrun Interrupt              
+	SPI_INTSRC_RTIM    	= (0x01ul << 1), 		//Receive Timeout Interrupt          
+	SPI_INTSRC_RXIM   	= (0x01ul << 2),		//Receive FIFO Interrupt           
+	SPI_INTSRC_TXIM		= (0x01ul << 3)    		//Transmit FIFO interrupt 
+}csi_spi_intsrc_e;
 
+/**
+ * \enum     csi_spi_work_e
+ * \brief    SPI tx/rx work mode
+ */
+typedef enum{
+	//send mode
+	SPI_TX_MODE_POLL	=	0,			//polling mode, no interrupt
+	SPI_TX_MODE_INT		=	1,			//tx use interrupt mode
+	//receive
+	SPI_RX_MODE_POLL	=	0,			//polling mode, no interrupt
+	SPI_RX_MODE_INT	    =	1,			//rx use interrupt mode	
+	
+	//send and receive
+	SPI_TX_RX_MODE_POLL	=	0,			//tx/rx polling mode, no interrupt
+	SPI_TX_RX_MODE_INT	=	3			//tx/rx use interrupt mode	
+	
+}csi_spi_work_e;
+/**
+ * \enum     csi_spi_work_mode_e
+ * \brief    SPI tx/rx work mode
+ */	
+typedef enum{
+	
+	SPI_SEND = 0,
+	SPI_RECV
+}csi_spi_work_mode_e;
+
+/**
+ * \enum     csi_spi_state_e
+ * \brief    SPI working status
+ */
+typedef enum {
+	SPI_STATE_IDLE		= 0,			//spi idle(rx/tx)
+	SPI_STATE_BUSY                      //spi busy(rx/tx)
+}csi_spi_state_e;
 typedef struct 
 {	
-	spi_rxifl_e         eSpiRxFifoLevel;	//(1/8 or 1/4 or 1/2)fifo trigger rx interrupt
-	csi_spi_mode_e      eSpiMode;	    	//0:master   1:slave
-	csi_spi_cp_format_e eSpiPolarityPhase;  //0:(0 0)   1:(0 1)  2:(1 0) 3:(1 1)
-	csi_spi_frame_len_e eSpiFrameLen;       //4-16 bit
-	uint32_t            dwSpiBaud;			//spi clk
-	uint8_t             byInter;            //int source
+	uint32_t     wSpiBaud;			  //spi clk
+	uint8_t      bySpiMode;	    	  //0:master   1:slave
+	uint8_t 	 bySpiPolarityPhase;  //0:(0 0)   1:(0 1)  2:(1 0) 3:(1 1)
+	uint8_t 	 bySpiFrameLen;       //4-16 bit
+	uint8_t      byInt;            	  //int source
+	uint8_t      byTxMode;            //send mode: polling/interrupt
+	uint8_t      byRxMode;            //recv mode: polling/interrupt
+	uint8_t      byTxRxMode;          //send/receive mode: polling/interrupt
 }csi_spi_config_t;
 
 typedef struct
 {
-	uint8_t             *pbyTxData;      ///< Output data buf
-	uint8_t             *pbyRxData;      ///< Input  data buf
-    uint8_t             byTxSize;        ///< Output data size specified by user
-    uint8_t             byRxSize;        ///< Input  data size specified by user
-	uint8_t             byRxFifoLength;  /// receive fifo  threshold
-	uint8_t             byTxFifoLength;  /// send fifo  threshold
-	uint8_t             byInter;  		 ///< interrupt
-	uint8_t             byWorkMode;      ///< master or slave
-    csi_state_t         tState;          ///< Peripheral state
+	uint8_t             *pbyTxData;      //< Output data buf
+	uint8_t             *pbyRxData;      //< Input  data buf
+	uint8_t             bySendMode;      // send mode
+	uint8_t             byRecvMode;      // receive mode
+    uint16_t            byTxSize;        //< Output data size specified by user
+    uint16_t            byRxSize;        //< Input  data size specified by user
+	uint8_t             byRxFifoLength;  //< receive fifo length
+	uint8_t             byTxFifoLength;  // send fifo  threshold
+	uint8_t             byInt;  		 //< interrupt
+	uint8_t             byWorkMode;      //< master or slave
+	
+    //csi_state_t         tState;          //< Peripheral state
+	uint8_t             byReadable;
+	uint8_t             byWriteable;
+	uint8_t             bySendRecMode;
+	
 }csi_spi_transmit_t;
 extern csi_spi_transmit_t g_tSpiTransmit; 
 
@@ -173,7 +229,7 @@ void csi_spi_nss_low(pin_name_e ePinName);
  *  \param[in] ptState: the state of spi device
  *  \return none
  */ 
-csi_error_t csi_spi_get_state(csi_state_t *ptState);
+int8_t csi_spi_get_state(csi_spi_work_mode_e eWorkMode);
 
 /** \brief sending data to spi transmitter(received data is ignored),blocking mode
  * 
@@ -219,7 +275,7 @@ csi_error_t csi_spi_receive_async(csp_spi_t *ptSpiBase, void *pData, uint32_t wS
  *  \param[in] wSize: number of data to send or receive(byte)
  *  \return error code \ref csi_error_t
  */
-int32_t csi_spi_send_receive(csp_spi_t *ptSpiBase, void *pTXdata, void *pRXdata, uint32_t wSize);
+int32_t csi_spi_send_receive(csp_spi_t *ptSpiBase, void *pDataout, void *pDatain, uint32_t wSize);
 
 /** \brief  receiving data from spi receiver, not-blocking mode
  * 
@@ -313,9 +369,9 @@ csi_error_t csi_spi_send_receive_d8(csp_spi_t *ptSpiBase, uint8_t *pDataOut,uint
  *  \param[in] hwSize: number of data to send (byte).
  *  \param[in] ptDmaBase: pointer of DMA reg structure.
  *  \param[in] byDmaCh: channel of DMA(0 -> 5)
- *  \return  none
+ *  \return  error code \ref csi_error_t
  */
-void csi_spi_send_dma(csp_spi_t *ptSpiBase, const void *pData, uint16_t hwSize, csp_dma_t *ptDmaBase,uint8_t byDmaCh);
+csi_error_t csi_spi_send_dma(csp_spi_t *ptSpiBase, const void *pData, uint16_t hwSize, csp_dma_t *ptDmaBase,uint8_t byDmaCh);
 
 /** \brief receive data of spi by DMA
  * 
@@ -324,9 +380,9 @@ void csi_spi_send_dma(csp_spi_t *ptSpiBase, const void *pData, uint16_t hwSize, 
  *  \param[in] hwSize: number of data to receive (byte).
  *  \param[in] ptDmaBase: pointer of DMA reg structure.
  *  \param[in] byDmaCh: channel of DMA(0 -> 5)
- *  \return  none
+ *  \return  error code \ref csi_error_t
  */
-void csi_spi_recv_dma(csp_spi_t *ptSpiBase, void *pbyRecv, uint16_t hwSize, csp_dma_t *ptDmaBase,uint8_t byDmaCh);
+csi_error_t csi_spi_recv_dma(csp_spi_t *ptSpiBase, void *pbyRecv, uint16_t hwSize, csp_dma_t *ptDmaBase,uint8_t byDmaCh);
 
 #ifdef __cplusplus
 }
