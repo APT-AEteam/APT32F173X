@@ -11,15 +11,16 @@
 */
 /* Includes ---------------------------------------------------------------*/
 #include <string.h>
-#include <gpta.h>
+#include <drv/gpta.h>
 #include <drv/pin.h>
-#include "drv/etb.h"
+#include <drv/etb.h>
 
 //#include "demo.h"
 /* externs function--------------------------------------------------------*/
 /* externs variablesr------------------------------------------------------*/
 /* Private macro-----------------------------------------------------------*/
 /* Private variablesr------------------------------------------------------*/
+static uint32_t s_wGpta_Cmp_Buff[4] = {0};
 
 /** \brief gpta timer
  * 
@@ -405,4 +406,60 @@ int gpta_reglk_demo(void)
 	}	
 	return iRet;	
 	
+}
+
+
+/** \brief gpta interrupt handle weak function
+ *   		- 
+ *  \param[in] none
+ *  \return    none
+ */
+__attribute__((weak)) void gpta_irqhandler(csp_gpta_t *ptGptaBase)
+{
+
+	if(((csp_gpta_get_misr(ptGptaBase) & GPTA_INT_PEND))==GPTA_INT_PEND)
+	{	
+	    csp_gpta_clr_int(ptGptaBase, GPTA_INT_PEND);
+	}
+	if(((csp_gpta_get_misr(ptGptaBase) & GPTA_INT_TRGEV0))==GPTA_INT_TRGEV0)
+	{		
+	    csp_gpta_clr_int(ptGptaBase, GPTA_INT_TRGEV0);
+	}
+	if(((csp_gpta_get_misr(ptGptaBase) & GPTA_INT_TRGEV1))==GPTA_INT_TRGEV1)
+	{		
+	    csp_gpta_clr_int(ptGptaBase, GPTA_INT_TRGEV1);
+	   	
+	}
+    if(((csp_gpta_get_misr(ptGptaBase) & GPTA_INT_CAPLD0))==GPTA_INT_CAPLD0)
+	{		
+		s_wGpta_Cmp_Buff[0]=csp_gpta_get_cmpa(ptGptaBase);
+		csp_gpta_clr_int(ptGptaBase, GPTA_INT_CAPLD0);			
+	}
+	if(((csp_gpta_get_misr(ptGptaBase) & GPTA_INT_CAPLD1))==GPTA_INT_CAPLD1)
+	{		
+     	s_wGpta_Cmp_Buff[0]=csp_gpta_get_cmpa(ptGptaBase);
+		s_wGpta_Cmp_Buff[1]=csp_gpta_get_cmpb(ptGptaBase);
+		csp_gpta_clr_int(ptGptaBase, GPTA_INT_CAPLD1);			
+	}
+    if(((csp_gpta_get_misr(ptGptaBase) & GPTA_INT_CAPLD2))==GPTA_INT_CAPLD2)
+	{		
+     	s_wGpta_Cmp_Buff[0]=csp_gpta_get_cmpa(ptGptaBase);
+		s_wGpta_Cmp_Buff[1]=csp_gpta_get_cmpb(ptGptaBase);
+		s_wGpta_Cmp_Buff[2]=csp_gpta_get_cmpaa(ptGptaBase);
+		csp_gpta_clr_int(ptGptaBase, GPTA_INT_CAPLD2);			
+	}
+	if(((csp_gpta_get_misr(ptGptaBase) & GPTA_INT_CAPLD3))==GPTA_INT_CAPLD3)
+	{		
+     	s_wGpta_Cmp_Buff[0]=csp_gpta_get_cmpa(ptGptaBase);
+		s_wGpta_Cmp_Buff[1]=csp_gpta_get_cmpb(ptGptaBase);
+		s_wGpta_Cmp_Buff[2]=csp_gpta_get_cmpaa(ptGptaBase);
+		s_wGpta_Cmp_Buff[3]=csp_gpta_get_cmpba(ptGptaBase);
+		csp_gpta_clr_int(ptGptaBase, GPTA_INT_CAPLD3);			
+	}	
+	
+    if(((csp_gpta_get_misr(ptGptaBase) & GPTA_INT_CBU))==GPTA_INT_CBU)
+	{	
+	    csp_gpta_clr_int(ptGptaBase, GPTA_INT_CBU);
+	}
+
 }

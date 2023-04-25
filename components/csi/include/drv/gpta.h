@@ -284,15 +284,6 @@ typedef enum{
 	GPTA_INTSRC_PEND = 0x1 << 16	
 }csi_gpta_intsrc_e;
 
-/** \brief gpta interrupt handle weak function
- *   		- 
- *     		- 
- * 			- 
- *  \param[in] none
- *  \return    none
- */
-__attribute__((weak)) void gpta_irqhandler(csp_gpta_t *ptGptaBase);
-
 /** \brief capture configuration
  * 
  *  \param[in] ptGptaBase: pointer of gptb register structure

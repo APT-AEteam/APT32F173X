@@ -10,9 +10,9 @@
 */
 /* Includes ---------------------------------------------------------------*/
 #include <string.h>
-#include <cmp.h>
-#include <pin.h>
-#include "drv/etb.h"
+#include <drv/cmp.h>
+#include <drv/pin.h>
+#include <drv/etb.h>
 #include <drv/lpt.h>
 #include <drv/bt.h>
 #include "demo.h"
@@ -164,4 +164,26 @@ int cmp_wfcr_demo(void)
 	}	
 
 	return iRet;	
+}
+
+/** \brief CMP interrupt handle function
+ * 
+ *  \param[in] none
+ *  \return none
+ */ 
+__attribute__((weak)) void cmp_irqhandler(csp_cmp_t *ptCmpBase)
+{
+    // ISR content ...
+	if(csi_cmp_get_misr(ptCmpBase) & CMP_EDGEDET0_INT)
+	{
+		csi_cmp_int_clear(ptCmpBase,CMP_INTSRC_EDGEDET);
+	}
+	else if(csi_cmp_get_misr(ptCmpBase) & CMP_EDGEDET1_INT)
+	{
+		csi_cmp_int_clear(ptCmpBase,CMP_INTSRC_EDGEDET);
+	}
+	else if(csi_cmp_get_misr(ptCmpBase) & CMP_EDGEDET2_INT)
+	{
+		csi_cmp_int_clear(ptCmpBase,CMP_INTSRC_EDGEDET);
+	}
 }

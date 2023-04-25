@@ -14,9 +14,7 @@
 #include <drv/gpio.h>
 #include <drv/pin.h>
 #include <drv/tick.h>
-#include "csp_syscon.h"
-#include "csp_cmp.h"
-#include "cmp.h"
+#include <drv/cmp.h>
 #include "board_config.h"
 
 /* Private macro-----------------------------------------------------------*/
@@ -24,27 +22,6 @@
 /* externs variablesr------------------------------------------------------*/
 /* Private variablesr------------------------------------------------------*/
 
-/** \brief CMP interrupt handle function
- * 
- *  \param[in] none
- *  \return none
- */ 
-__attribute__((weak)) void cmp_irqhandler(csp_cmp_t *ptCmpBase)
-{
-    // ISR content ...
-	if(csi_cmp_get_misr(ptCmpBase) & CMP_EDGEDET0_INT)
-	{
-		csi_cmp_int_clear(ptCmpBase,CMP_INTSRC_EDGEDET);
-	}
-	else if(csi_cmp_get_misr(ptCmpBase) & CMP_EDGEDET1_INT)
-	{
-		csi_cmp_int_clear(ptCmpBase,CMP_INTSRC_EDGEDET);
-	}
-	else if(csi_cmp_get_misr(ptCmpBase) & CMP_EDGEDET2_INT)
-	{
-		csi_cmp_int_clear(ptCmpBase,CMP_INTSRC_EDGEDET);
-	}
-}
 /** \brief Enable cmp power manage
  * 
  *  \param[in] ptCmpBase: pointer of cmp register structure
