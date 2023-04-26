@@ -33,7 +33,16 @@ typedef enum
 	ADC_CONV_CONTINU,			        //continuous mode	
     ADC_CONV_WAIT                       //wait for syc
 }csi_adc_conv_mode_e;
-
+/**
+ * \enum	csi_adc_conv_mode_e
+ * \brief   adc conversion mode
+ */
+typedef enum
+{
+	ADC_HFOSC		= 0,		//one shot mode
+	ADC_PLLQ,			        //continuous mode	
+    ADC_PCLK                       //wait for syc
+}csi_adc_clksel_e;
 /**
  * \enum	csi_adc_state_e
  * \brief   adc working status
@@ -297,6 +306,7 @@ typedef struct {
 
 typedef struct {
 	uint8_t				byClkDiv;		//adc clkdiv, adc clk = PCLK/(2*byClkDiv)
+	uint8_t				byClksel;		//adc clk select
 	uint8_t				bySampHold;		//adc sample hold period, sample time = (bySmpHold + 16) clk period
 	uint8_t				byConvMode;		//adc conversion  mode, continuous/one shot
 	uint8_t				byVrefSrc;		//adc reference voltage
@@ -499,7 +509,13 @@ void csi_adc_fvrout_enable(csp_adc_t *ptAdcBase, csi_adc_fvrsel_e eLvl, bool bEn
  */
 void csi_adc_bufout_enable(csp_adc_t *ptAdcBase, csi_adc_bufsel_e eBufSel, bool bEnable);
  
- 
+/** \brief select adc clock
+ * 
+ *  \param[in] adc: ADC handle to operate
+ *  \param[in] wInt:  INT
+ */
+void csi_adc_set_clk(csp_adc_t *ptAdcBase,csi_adc_clksel_e eClksel);
+
 #ifdef __cplusplus
 }
 #endif

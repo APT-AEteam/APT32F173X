@@ -76,12 +76,14 @@ int adc_samp_oneshot_demo(void)
 	
 	//adc 参数配置初始化
 	tAdcConfig.byClkDiv = 0x02;							//ADC clk两分频：clk = pclk/2
+	tAdcConfig.byClksel = ADC_PCLK;						//ADC clk选择：PCLK
 	tAdcConfig.bySampHold = 0x06;						//ADC 采样时间： time = 16 + 6 = 22(ADC clk周期)
 	tAdcConfig.byConvMode = ADC_CONV_ONESHOT;			//ADC 转换模式： 单次转换；
 	tAdcConfig.byVrefSrc = ADCVERF_VDD_VSS;				//ADC 参考电压： 系统VDD
 	tAdcConfig.wInt = ADC_INTSRC_NONE;				//ADC 中断配置： 无中断
 	tAdcConfig.ptSeqCfg = (csi_adc_seq_t *)tSeqCfg;		//ADC 采样序列： 具体参考结构体变量 tSeqCfg
 	
+	csi_adc_set_clk(ADC0,tAdcConfig.byClksel);		//配置ADC采样序列
 	csi_adc_init(ADC0, &tAdcConfig);							//初始化ADC参数配置	
 	csi_adc_set_seqx(ADC0, tAdcConfig.ptSeqCfg, byChnlNum);		//配置ADC采样序列
 	csi_adc_set_buffer((uint16_t *)g_hwAdcBuf, 1);				//传递ADC采样buffer，ADC采样值存放于此buffer中
