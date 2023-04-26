@@ -56,8 +56,15 @@
 ******************************************************************************/
 #define ADC12_CLKEN				(0x01ul << 1)       /**< ADC Clock           */
 #define ADC12_IPIDCODE_MSK  	(0x3FFFFFFul << 4)  /**< ADC IPIDCODE mask   */
+#define ADC12_CLKSEL_POS		(16)       			/**< ADC Clock SEL       */
+#define ADC12_CLKSEL_MSK		(0X3ul << 16)       /**< ADC Clock SEL       */
 #define ADC12_DBGEN          	(0x01ul << 31)      /**< Debug Mode Enable   */
-
+typedef enum
+{
+	ADC12_HFOSC			= ( 0),            
+	ADC12_PLLQ       	= ( 1),            
+	ADC12_PCLK   		= ( 2),            
+}adc_clksel_e;
 /******************************************************************************
 * CR : ADC12 Control Register
 ******************************************************************************/
@@ -207,7 +214,7 @@ typedef enum{
 	ADC12_OPA2X,
 	ADC12_OPA3X,
 	ADC12_ADCIN_INTVREF,
-	ADC12_ADCIN_1_4VDD,
+	ADC12_ADCIN_1_5VDD,
 	ADC12_ADCIN_VSS
 }adc_chnl_e;
 
@@ -492,6 +499,10 @@ static inline void csp_adc_clk_dis(csp_adc_t *ptAdcBase)
 {
 	ptAdcBase->DCR = ADC12_CLKEN;
 	while((ptAdcBase->PMSR & ADC12_CLKEN));	
+}
+static inline void csp_adc_clk_sel(csp_adc_t *ptAdcBase,adc_clksel_e eClksel)
+{
+	ptAdcBase->ECR = (ptAdcBase->ECR & (~ ADC12_CLKSEL_MSK)) | ((eClksel << ADC12_CLKSEL_POS));	
 }
 //
 static inline void csp_adc_set_conv_mode(csp_adc_t *ptAdcBase, adc_conv_mode_e eConvMode)

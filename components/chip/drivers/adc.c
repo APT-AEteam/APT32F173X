@@ -537,6 +537,15 @@ void csi_adc_int_enable(csp_adc_t *ptAdcBase, csi_adc_intsrc_e eIntSrc, bool bEn
 	else
 		csi_irq_disable((uint32_t *)ptAdcBase);
 }
+/** \brief select adc clock
+ * 
+ *  \param[in] adc: ADC handle to operate
+ *  \param[in] wInt:  INT
+ */
+void csi_adc_set_clk(csp_adc_t *ptAdcBase,csi_adc_clksel_e eClksel)
+{
+	csp_adc_clk_sel(ptAdcBase,eClksel);
+}
  /** \brief fvr output config
  * 
  *  \param[in] ptAdcBase: pointer of ADC reg structure.
