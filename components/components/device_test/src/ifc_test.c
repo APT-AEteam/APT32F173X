@@ -34,7 +34,7 @@ extern void csi_pin_toggle(pin_name_e ePinName);
 /* device instance---------------------------------------------------------*/
 
 
-uint32_t wData[5] = {0x4, 0x5, 0x33333333, 0x44444444, 0x55555555};
+static uint32_t s_wData[5] = {0x4, 0x5, 0x33333333, 0x44444444, 0x55555555};
 
 
 /**
