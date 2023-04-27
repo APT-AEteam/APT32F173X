@@ -27,8 +27,8 @@ static csp_error_t apt_ifc_wr_nword(csp_ifc_t * ptIfcBase, uint8_t bFlashType, u
 /* Private variables------------------------------------------------------*/
 volatile bool g_bFlashCheckPass = 1;
 volatile bool g_bFlashPgmDne = 1;
-volatile uint32_t s_wPageStAddr;
-volatile uint32_t s_wBuffForCheck[DFLASH_PAGE_SZ];
+volatile static uint32_t s_wPageStAddr;
+volatile static uint32_t s_wBuffForCheck[DFLASH_PAGE_SZ];
 
 
 /** \brief ifc interrupt handle function,mainly used for para mode PGM of DFLASH
