@@ -236,7 +236,7 @@ csi_error_t csi_can_init(csp_can_t *ptCanBase, csi_can_config_t *ptCanCfg)
 {
 	csi_can_bittime_t *ptBitTime = NULL;
 				
-	//csi_clk_enable((uint32_t *)ptCanBase);	//can peripheral clk enable
+	csi_clk_enable((uint32_t *)ptCanBase);		//can peripheral clk enable
 	csp_can_clk_en(ptCanBase);					//clk enable
 	csp_can_soft_rst(ptCanBase);				//soft reset
 	csp_can_dis(ptCanBase);						//can dis
