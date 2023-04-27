@@ -29,6 +29,15 @@ typedef enum {
 	SRC_ESOSC	
 } cclk_src_e;
 
+typedef enum {
+    SEL_IMOSC = 0,
+    SEL_EMOSC,
+    SEL_HFOSC,
+	SEL_PLL,
+	SEL_ISOSC,
+	SEL_ESOSC	
+} sclk_sel_e;
+
 typedef enum{
 	PCLK_PM = 8,
 	HCLK_PM,
