@@ -32,7 +32,7 @@ static uint32_t s_wCanChnlMsg	= 0;			//Source Channel Interrupt Msg
  *  \param[in] eBaudRate: can transfer baud rate
  *  \return pointer of can bit time structure
  */ 
-static uint8_t apt_can_post_msg(uint32_t wMsg, csi_can_msg_mode_e eMsgMode)
+uint8_t apt_can_post_msg(uint32_t wMsg, csi_can_msg_mode_e eMsgMode)
 {
 	switch(eMsgMode)
 	{
@@ -74,138 +74,138 @@ static csi_can_bittime_t *apt_can_get_bittime(csi_can_baudRate_e eBaudRate)
  *  \param[in] ptCanBase: pointer of can register structure
  *  \return none
  */ 
-__attribute__((weak)) void can_irqhandler(csp_can_t *ptCanBase)
-{
-	uint8_t byRecvPos	= 0;
-	volatile uint32_t wIrVal  = 0;
-	volatile uint32_t wStatus = 0;
-	volatile uint16_t hwIntNum = csp_can_get_hpir(ptCanBase);		//get interrupt pointer							
-	
-	switch(hwIntNum)		//receive handle
-	{
-		case 0x00:			//end handle, 
-			break;
-		case 0x8000:		//status change interrupt handle
-			//
-			wStatus = csp_can_get_sr(ptCanBase) & CAN_MSG_STATUS_ALL;
-			apt_can_post_msg(wStatus, 0);
-			
-			if(wStatus & CAN_ERWARNTR_INT)					//error passive warning transition interrupt
-			{
-				nop;
-				csp_can_clr_isr(ptCanBase, CAN_ERWARNTR_INT);	
-			}
-			//
-			if(wStatus & CAN_ERPASSTR_INT)					//error passive transition interrupt
-			{
-				nop;
-				csp_can_clr_isr(ptCanBase, CAN_ERPASSTR_INT);
-			}
-			//
-			if(wStatus & CAN_BUSOFFTR_INT)					//bus off transition interrupt
-			{
-				nop;
-				csp_can_clr_isr(ptCanBase, CAN_BUSOFFTR_INT);
-			}
-			//
-			if(wStatus & CAN_ACTVT_INT)						//activity interrupt
-			{
-				nop;
-				csp_can_clr_isr(ptCanBase, CAN_ACTVT_INT);
-			}
-			//
-			if(wStatus & CAN_RXOK_INT)						//successfully received a message interrupt
-			{
-				nop;
-				csp_can_clr_isr(ptCanBase, CAN_RXOK_INT);
-			}
-			//
-			if(wStatus & CAN_TXOK_INT)						//successfully transmit a message interrupt.
-			{
-				nop;
-				csp_can_clr_isr(ptCanBase, CAN_TXOK_INT);
-			}
-			//
-			if(wStatus & CAN_STUFF_INT)						//stuff error interrupt
-			{
-				nop;
-				csp_can_clr_isr(ptCanBase, CAN_STUFF_INT);
-			}
-			//
-			if(wStatus & CAN_FORM_INT)						//form error interrupt
-			{
-				nop;
-				csp_can_clr_isr(ptCanBase, CAN_FORM_INT);
-			}
-			//
-			if(wStatus & CAN_ACK_INT)						//acknowledge error interrupt.
-			{
-				nop;
-				csp_can_clr_isr(ptCanBase, CAN_ACK_INT);
-			}
-			//
-			if(wStatus & CAN_BIT1_INT)						//bit to one error interrupt
-			{
-				nop;
-				csp_can_clr_isr(ptCanBase, CAN_BIT1_INT);
-			}
-			//
-			if(wStatus & CAN_BIT0_INT)						//bit to zero error interrupt
-			{
-				nop;
-				csp_can_clr_isr(ptCanBase, CAN_BIT0_INT);
-			}
-			//
-			if(wStatus & CAN_CRC_INT)						//CRC error interrupt
-			{
-				nop;
-				csp_can_clr_isr(ptCanBase, CAN_CRC_INT);
-			}
-			
-			break;
-		default:			
-			//message channel handle
-			csp_can_set_tmr(ptCanBase, hwIntNum, 1, CAN_AMCR_MSK | CAN_CLRIT_MSK | CAN_TRND_MSK);	//Write If1 command request, clear NAWDATA and ITPND flag
-			while(csp_can_get_sr(ptCanBase) & CAN_BUSY1_S);											//If1 Busy?	
-			wStatus = csp_can_get_mcr(ptCanBase);													//Read If1 message control reg, Read first and clean up NAWDATA and ITPND
-			
-			//receive msg
-			if(wStatus & CAN_NEWDAT_MSK)															//NEWDAT flag == 1 receive msg
-			{
-				if(g_tCanTran.ptCanRecv)
-				{
-				
-					byRecvPos = hwIntNum - g_tCanTran.byStrChnl;
-					if((g_tCanTran.ptCanRecv + byRecvPos)->wRecvId & (0x01ul << 31))
-					{
-						if(byRecvPos < (g_tCanTran.byChTolNum -1))
-						{
-							byRecvPos++;
-							apt_can_post_msg((0x01ul << hwIntNum), 1);
-						}
-						else
-							return;
-					}
-					else
-						apt_can_post_msg((0x01ul << (hwIntNum - 1)), 1);
-					
-					
-					wIrVal = csi_can_get_ifx(ptCanBase, hwIntNum, CAN_IFX_IR);
-					if(wIrVal & CAN_XTD_MSK)														
-						wIrVal &= (CAN_EXTID_MSK | CAN_EXTID_MSK);									//extid
-					else
-						wIrVal = (wIrVal & CAN_BASEID_MSK) >> 18;									//stdid
-					
-					(g_tCanTran.ptCanRecv + byRecvPos)->wRecvId =	wIrVal | (0x01ul << 31);									//ID
-					(g_tCanTran.ptCanRecv + byRecvPos)->wRecvData[0] = csi_can_get_ifx(ptCanBase, hwIntNum, CAN_IFX_DAR);		//DATA_A
-					(g_tCanTran.ptCanRecv + byRecvPos)->wRecvData[1] = csi_can_get_ifx(ptCanBase, hwIntNum, CAN_IFX_DBR);		//DATA_B
-					(g_tCanTran.ptCanRecv + byRecvPos)->byDataLen = wStatus & 0x0f;												//DATA LEN
-					(g_tCanTran.ptCanRecv + byRecvPos)->byChnlNum = hwIntNum;													//Channel Num
-				}
-			}
-			break;
-	}
-}
+//__attribute__((weak)) void can_irqhandler(csp_can_t *ptCanBase)
+//{
+//	uint8_t byRecvPos	= 0;
+//	volatile uint32_t wIrVal  = 0;
+//	volatile uint32_t wStatus = 0;
+//	volatile uint16_t hwIntNum = csp_can_get_hpir(ptCanBase);		//get interrupt pointer							
+//	
+//	switch(hwIntNum)		//receive handle
+//	{
+//		case 0x00:			//end handle, 
+//			break;
+//		case 0x8000:		//status change interrupt handle
+//			//
+//			wStatus = csp_can_get_sr(ptCanBase) & CAN_MSG_STATUS_ALL;
+//			apt_can_post_msg(wStatus, 0);
+//			
+//			if(wStatus & CAN_ERWARNTR_INT)					//error passive warning transition interrupt
+//			{
+//				nop;
+//				csp_can_clr_isr(ptCanBase, CAN_ERWARNTR_INT);	
+//			}
+//			//
+//			if(wStatus & CAN_ERPASSTR_INT)					//error passive transition interrupt
+//			{
+//				nop;
+//				csp_can_clr_isr(ptCanBase, CAN_ERPASSTR_INT);
+//			}
+//			//
+//			if(wStatus & CAN_BUSOFFTR_INT)					//bus off transition interrupt
+//			{
+//				nop;
+//				csp_can_clr_isr(ptCanBase, CAN_BUSOFFTR_INT);
+//			}
+//			//
+//			if(wStatus & CAN_ACTVT_INT)						//activity interrupt
+//			{
+//				nop;
+//				csp_can_clr_isr(ptCanBase, CAN_ACTVT_INT);
+//			}
+//			//
+//			if(wStatus & CAN_RXOK_INT)						//successfully received a message interrupt
+//			{
+//				nop;
+//				csp_can_clr_isr(ptCanBase, CAN_RXOK_INT);
+//			}
+//			//
+//			if(wStatus & CAN_TXOK_INT)						//successfully transmit a message interrupt.
+//			{
+//				nop;
+//				csp_can_clr_isr(ptCanBase, CAN_TXOK_INT);
+//			}
+//			//
+//			if(wStatus & CAN_STUFF_INT)						//stuff error interrupt
+//			{
+//				nop;
+//				csp_can_clr_isr(ptCanBase, CAN_STUFF_INT);
+//			}
+//			//
+//			if(wStatus & CAN_FORM_INT)						//form error interrupt
+//			{
+//				nop;
+//				csp_can_clr_isr(ptCanBase, CAN_FORM_INT);
+//			}
+//			//
+//			if(wStatus & CAN_ACK_INT)						//acknowledge error interrupt.
+//			{
+//				nop;
+//				csp_can_clr_isr(ptCanBase, CAN_ACK_INT);
+//			}
+//			//
+//			if(wStatus & CAN_BIT1_INT)						//bit to one error interrupt
+//			{
+//				nop;
+//				csp_can_clr_isr(ptCanBase, CAN_BIT1_INT);
+//			}
+//			//
+//			if(wStatus & CAN_BIT0_INT)						//bit to zero error interrupt
+//			{
+//				nop;
+//				csp_can_clr_isr(ptCanBase, CAN_BIT0_INT);
+//			}
+//			//
+//			if(wStatus & CAN_CRC_INT)						//CRC error interrupt
+//			{
+//				nop;
+//				csp_can_clr_isr(ptCanBase, CAN_CRC_INT);
+//			}
+//			
+//			break;
+//		default:			
+//			//message channel handle
+//			csp_can_set_tmr(ptCanBase, hwIntNum, 1, CAN_AMCR_MSK | CAN_CLRIT_MSK | CAN_TRND_MSK);	//Write If1 command request, clear NAWDATA and ITPND flag
+//			while(csp_can_get_sr(ptCanBase) & CAN_BUSY1_S);											//If1 Busy?	
+//			wStatus = csp_can_get_mcr(ptCanBase);													//Read If1 message control reg, Read first and clean up NAWDATA and ITPND
+//			
+//			//receive msg
+//			if(wStatus & CAN_NEWDAT_MSK)															//NEWDAT flag == 1 receive msg
+//			{
+//				if(g_tCanTran.ptCanRecv)
+//				{
+//				
+//					byRecvPos = hwIntNum - g_tCanTran.byStrChnl;
+//					if((g_tCanTran.ptCanRecv + byRecvPos)->wRecvId & (0x01ul << 31))
+//					{
+//						if(byRecvPos < (g_tCanTran.byChTolNum -1))
+//						{
+//							byRecvPos++;
+//							apt_can_post_msg((0x01ul << hwIntNum), 1);
+//						}
+//						else
+//							return;
+//					}
+//					else
+//						apt_can_post_msg((0x01ul << (hwIntNum - 1)), 1);
+//					
+//					
+//					wIrVal = csi_can_get_ifx(ptCanBase, hwIntNum, CAN_IFX_IR);
+//					if(wIrVal & CAN_XTD_MSK)														
+//						wIrVal &= (CAN_EXTID_MSK | CAN_EXTID_MSK);									//extid
+//					else
+//						wIrVal = (wIrVal & CAN_BASEID_MSK) >> 18;									//stdid
+//					
+//					(g_tCanTran.ptCanRecv + byRecvPos)->wRecvId =	wIrVal | (0x01ul << 31);									//ID
+//					(g_tCanTran.ptCanRecv + byRecvPos)->wRecvData[0] = csi_can_get_ifx(ptCanBase, hwIntNum, CAN_IFX_DAR);		//DATA_A
+//					(g_tCanTran.ptCanRecv + byRecvPos)->wRecvData[1] = csi_can_get_ifx(ptCanBase, hwIntNum, CAN_IFX_DBR);		//DATA_B
+//					(g_tCanTran.ptCanRecv + byRecvPos)->byDataLen = wStatus & 0x0f;												//DATA LEN
+//					(g_tCanTran.ptCanRecv + byRecvPos)->byChnlNum = hwIntNum;													//Channel Num
+//				}
+//			}
+//			break;
+//	}
+//}
 /** \brief initialize can work parameter structure
  * 
  *  \param[in] ptCanBase: pointer of can register structure

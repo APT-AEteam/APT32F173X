@@ -75,10 +75,6 @@ int sio_send_test(csp_sio_t *ptSioBase, pin_name_e ePinName)
 	uint8_t i, byRecv;
 	csi_sio_tx_config_t tSioTxCfg;
 	
-	volatile uint8_t bySize;
-	
-	bySize = sizeof(tSioTxCfg);
-	
 //	csi_pin_set_mux(PB0, PB0_SIO0);	
 //	csi_pin_set_mux(PC0, PC0_SIO0);	
 //	csi_pin_set_mux(PD3, PD3_SIO0);
@@ -525,5 +521,63 @@ int sio_recv_dma_test(csp_sio_t *ptSioBase)
 		nop;
 	}
 	return ret;
+}
+/** \brief sio interrupt handle 
+ * 
+ *  \param[in] ptSioBase: pointer of sio register structure
+ *  \return none
+ */
+void sio_irqhandler(csp_sio_t *ptSioBase)
+{
+	volatile uint32_t wStatus = csp_sio_get_isr(ptSioBase) & 0x3f;
+	
+	switch(wStatus)
+	{
+		case SIO_RXBUFFULL:										
+		case SIO_RXDNE:
+			if(NULL == g_tSioTran.pwData || 0 == g_tSioTran.hwSize)
+			{
+				csp_sio_get_rxbuf(ptSioBase);
+				g_tSioTran.byRxStat = SIO_STATE_ERROR;				//receive error
+			}
+			else
+			{
+				*(g_tSioTran.pwData + g_tSioTran.hwTranLen) = csp_sio_get_rxbuf(ptSioBase);	//receive data
+				g_tSioTran.hwTranLen ++;
+				if(g_tSioTran.hwTranLen >= g_tSioTran.hwSize)
+				{
+					g_tSioTran.byRxStat = SIO_STATE_FULL;			//receive buf full, g_tSioTran.hwTranLen = receive data len = receive buf len
+					csp_sio_woke_rst(SIO0);
+				}
+			}
+			csp_sio_clr_isr(ptSioBase, SIO_RXDNE | SIO_RXBUFFULL);
+			break;
+		case SIO_TIMEOUT:
+			nop;
+			csp_sio_clr_isr(ptSioBase, SIO_TIMEOUT);
+			break;
+		case SIO_BREAK:												//receive break interrupt ,reset receive module
+			nop;
+			csp_sio_clr_isr(ptSioBase, SIO_BREAK);
+			break;
+		case SIO_TXBUFEMPT:
+			csp_sio_clr_isr(ptSioBase, SIO_TXBUFEMPT);
+		 	SIO0->TXBUF = *(g_tSioTran.pwData);
+			g_tSioTran.pwData++;
+			g_tSioTran.hwTranLen++;
+			if(g_tSioTran.hwTranLen >= g_tSioTran.hwSize)
+			{
+				csp_sio_int_enable(ptSioBase,SIO_INTSRC_TXBUFEMPT, DISABLE);
+				g_tSioTran.hwTranLen = 0;
+				g_tSioTran.byTxStat = SIO_STATE_IDLE;
+			}
+			break;
+		case SIO_TXDNE:
+			csp_sio_clr_isr(ptSioBase, SIO_TXDNE);
+			break;
+		default:
+			csp_sio_clr_isr(ptSioBase, SIO_BREAK | SIO_RXDNE | SIO_RXBUFFULL | SIO_TIMEOUT);
+			break;
+	}
 }
 
