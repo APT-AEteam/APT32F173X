@@ -20,7 +20,7 @@
 //extern system_clk_config_t g_tSystemClkConfig[];
 
 ///to match the real div to reg setting
-const uint32_t g_wHclkDiv[] = {
+static const uint32_t s_wHclkDiv[] = {
 	1, 1, 2, 3, 4, 5, 6, 7, 8, 12, 16, 24, 32, 36, 64, 128, 256
 };
 
@@ -108,7 +108,7 @@ csi_error_t csi_sysclk_config(csi_clk_config_t tClkCfg)
 	uint8_t byFlashLp = 0;
 	wFreq = tClkCfg.wFreq;
 	
-	wTargetSclk = wFreq/g_wHclkDiv[tClkCfg.eSdiv];
+	wTargetSclk = wFreq/s_wHclkDiv[tClkCfg.eSdiv];
 	eSrc = tClkCfg.eClkSrc;
 	csp_set_clksrc(SYSCON, SRC_IMOSC);
 	csp_eflash_lpmd_enable(SYSCON, 0);					//disable Flash LP Mode					
@@ -479,7 +479,7 @@ csi_error_t csi_calc_clk_freq(void)
 				break;
 		}
 		byHclkDiv = csp_get_hclk_div(SYSCON);
-		tClkConfig.wSclk = tClkConfig.wSclk/g_wHclkDiv[byHclkDiv];
+		tClkConfig.wSclk = tClkConfig.wSclk/s_wHclkDiv[byHclkDiv];
 	}
 
 	//calculate pclk 
