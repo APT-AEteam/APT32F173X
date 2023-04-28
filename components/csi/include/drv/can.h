@@ -112,7 +112,8 @@ typedef enum
 	CAN_BDR_250K	= 250000,
 	CAN_BDR_400K	= 400000,
 	CAN_BDR_500K	= 500000,
-	CAN_BDR_666K	= 660000,
+	CAN_BDR_600K	= 600000,
+	CAN_BDR_750K	= 750000,
 	CAN_BDR_800K	= 800000,
 	CAN_BDR_1000K	= 1000000,
 }csi_can_baudRate_e;
@@ -258,18 +259,18 @@ typedef enum
  */
 typedef enum
 {
-	CAN_MSG_ERWARNTR	= (0x01uL << 1),		//±»¶¯´íÎó¾¯¸æ
-	CAN_MSG_ERPASSTR	= (0x01uL << 2),		//±»¶¯´íÎó·¢ËÍ»òÕß»Ø¸´
-	CAN_MSG_BUSOFFTR	= (0x01uL << 3),		//×ÜÏß¹Ø±Õ
-	CAN_MSG_ACTVT		= (0x01uL << 4),		//RX½ÓÊÕ»î¶¯×´Ì¬
-	CAN_MSG_RXOK		= (0x01uL << 8),		//½ÓÊÕOK
-	CAN_MSG_CTXOK		= (0x01uL << 9),		//·¢ËÍOK
-	CAN_MSG_STUFF		= (0x01uL << 10),		//±¨ÎÄÌî³ä´íÎó
-	CAN_MSG_FORM		= (0x01uL << 11),		//±¨ÎÄÐÎÊ½´íÎó			
-	CAN_MSG_ACK			= (0x01uL << 12),		//±¨ÎÄÓ¦´ð´íÎó
-	CAN_MSG_BIT1		= (0x01uL << 13),		//±¨ÎÄ¸ßÎ»´íÎó		
-	CAN_MSG_BIT0		= (0x01uL << 14),		//±¨ÎÄµÍÎ»´íÎó	
-	CAN_MSG_CRC			= (0x01uL << 15),		//±¨ÎÄCRCÐ£Ñé´íÎó
+	CAN_MSG_ERWARNTR	= (0x01uL << 1),		//è¢«åŠ¨é”™è¯¯è­¦å‘Š
+	CAN_MSG_ERPASSTR	= (0x01uL << 2),		//è¢«åŠ¨é”™è¯¯å‘é€æˆ–è€…å›žå¤
+	CAN_MSG_BUSOFFTR	= (0x01uL << 3),		//æ€»çº¿å…³é—­
+	CAN_MSG_ACTVT		= (0x01uL << 4),		//RXæŽ¥æ”¶æ´»åŠ¨çŠ¶æ€
+	CAN_MSG_RXOK		= (0x01uL << 8),		//æŽ¥æ”¶OK
+	CAN_MSG_CTXOK		= (0x01uL << 9),		//å‘é€OK
+	CAN_MSG_STUFF		= (0x01uL << 10),		//æŠ¥æ–‡å¡«å……é”™è¯¯
+	CAN_MSG_FORM		= (0x01uL << 11),		//æŠ¥æ–‡å½¢å¼é”™è¯¯			
+	CAN_MSG_ACK			= (0x01uL << 12),		//æŠ¥æ–‡åº”ç­”é”™è¯¯
+	CAN_MSG_BIT1		= (0x01uL << 13),		//æŠ¥æ–‡é«˜ä½é”™è¯¯		
+	CAN_MSG_BIT0		= (0x01uL << 14),		//æŠ¥æ–‡ä½Žä½é”™è¯¯	
+	CAN_MSG_CRC			= (0x01uL << 15),		//æŠ¥æ–‡CRCæ ¡éªŒé”™è¯¯
 	CAN_MSG_STATUS_ERR	= (0xfc0e),
 	CAN_MSG_STATUS_ALL	= (0xff1e)
 }csi_can_status_msg_e;
