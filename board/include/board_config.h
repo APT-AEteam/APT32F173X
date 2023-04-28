@@ -138,7 +138,6 @@ extern "C" {
 #define	I2C_INT_HANDLE_EN				1		//I2C
 #define	SPI0_INT_HANDLE_EN				1		//SPI0
 #define	SPI1_INT_HANDLE_EN				1		//SPI1
-#define	QSPI_INT_HANDLE_EN				1		//QSPI
 #define	EXI0_INT_HANDLE_EN				1		//EXI0(GPIO external interrupt), EXI GROUP0 or GROUP16
 #define	EXI1_INT_HANDLE_EN				1		//EXI1(GPIO external interrupt), EXI GROUP1 or GROUP17
 #define	EXI2_3_INT_HANDLE_EN			1		//EXI2~3(GPIO external interrupt), EXI GROUP2~3 or GROUP18~19

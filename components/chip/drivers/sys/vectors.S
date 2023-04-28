@@ -465,16 +465,6 @@ UART2_IRQHandler:
 	jal 	Irq_Exit
 	
 	.align  2
-    .global QSPI_IRQHandler
-    .weak   QSPI_IRQHandler
-    .type   QSPI_IRQHandler, %function
-QSPI_IRQHandler:
-	ipush
-	jal 	Irq_Entry
-    jal		qspi_int_handler
-	jal 	Irq_Exit
-	
-	.align  2
     .global SIO0_IRQHandler
     .weak   SIO0_IRQHandler
     .type   SIO0_IRQHandler, %function
@@ -854,7 +844,6 @@ Default_Handler:
 //    def_irq_handler uart0_int_handler
 //    def_irq_handler uart1_int_handler
 //    def_irq_handler uart2_int_handler
-//    def_irq_handler qspi_int_handler
 //    def_irq_handler sio0_int_handler
 //	def_irq_handler sio1_int_handler
 //    def_irq_handler i2c_int_handler

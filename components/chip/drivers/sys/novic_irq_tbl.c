@@ -56,7 +56,6 @@ void irq_vectors_init(void)
 	g_irqvector[UART0_IRQn] 	= uart0_int_handler;
 	g_irqvector[UART1_IRQn] 	= uart1_int_handler;
 	g_irqvector[UART2_IRQn] 	= uart2_int_handler;
-	g_irqvector[QSPI_IRQn] 		= qspi_int_handler;
 	g_irqvector[SIO0_IRQn] 		= sio0_int_handler;
 	g_irqvector[SIO1_IRQn] 		= sio1_int_handler;
 	g_irqvector[I2C_IRQn] 		= i2c_int_handler;

@@ -49,7 +49,6 @@ const csi_irqmap_t irq_map[] = {
 	{APB_UART0_BASE,           	UART0_IRQn		},
 	{APB_UART1_BASE,           	UART1_IRQn		},
 	{APB_UART2_BASE,           	UART2_IRQn		},
-	{APB_QSPI_BASE,           	QSPI_IRQn		},
 	{APB_SIO0_BASE,             SIO0_IRQn		},
 	{APB_SIO1_BASE,             SIO1_IRQn		},
 	{APB_I2C0_BASE,             I2C_IRQn		},
