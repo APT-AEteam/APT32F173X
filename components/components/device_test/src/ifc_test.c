@@ -95,11 +95,11 @@ csi_error_t eflash_parallel_test(void)
 	tClkConfig.ePdiv = 1;
 	csi_sysclk_config(tClkConfig);	
 	
-	csi_ifc_program(IFC, 0x10000010, wData, 5);		//将wData数组的前5个数据写入flash，起始地址0x10000010
+	csi_ifc_program(IFC, 0x10000010, s_wData, 5);		//将wData数组的前5个数据写入flash，起始地址0x10000010
 	while (csi_ifc_get_status(IFC).busy);
 	csi_ifc_read(IFC, 0x10000010, buff, 5) ;
 	for (i=0; i<5; i++) {
-	if (buff[i] != wData[i])
+	if (buff[i] != s_wData[i])
 		tRet =  CSI_ERROR;
 	}
 	if (g_bFlashCheckPass == 0)
@@ -119,11 +119,11 @@ csi_error_t eflash_parallel_test(void)
 	tClkConfig.ePdiv = 1;
 	csi_sysclk_config(tClkConfig);	
 	
-	csi_ifc_program(IFC, 0x10000010, wData, 5);		//将wData数组的前5个数据写入flash，起始地址0x10000010
+	csi_ifc_program(IFC, 0x10000010, s_wData, 5);		//将wData数组的前5个数据写入flash，起始地址0x10000010
 	while (csi_ifc_get_status(IFC).busy);
 	csi_ifc_read(IFC, 0x10000010, buff, 5) ;
 	for (i=0; i<5; i++) {
-	if (buff[i] != wData[i])
+	if (buff[i] != s_wData[i])
 		tRet =  CSI_ERROR;
 	}
 	if (g_bFlashCheckPass == 0)
@@ -141,11 +141,11 @@ csi_error_t eflash_parallel_test(void)
 	tClkConfig.ePdiv = 1;
 	csi_sysclk_config(tClkConfig);	
 	
-	csi_ifc_program(IFC, 0x10000010, wData, 5);		//将wData数组的前5个数据写入flash，起始地址0x10000010
+	csi_ifc_program(IFC, 0x10000010, s_wData, 5);		//将wData数组的前5个数据写入flash，起始地址0x10000010
 	while (csi_ifc_get_status(IFC).busy);
 	csi_ifc_read(IFC, 0x10000010, buff, 5) ;
 	for (i=0; i<5; i++) {
-	if (buff[i] != wData[i])
+	if (buff[i] != s_wData[i])
 		tRet =  CSI_ERROR;
 	}
 	if (g_bFlashCheckPass == 0)
@@ -179,10 +179,10 @@ csi_error_t eflash_parallel_test(void)
 
 void eflash_useroption_extrst_test(void)
 {
-	//uint32_t wData = 0xaa000000;			//PD5 IO，测试效果：POR 无论PD5电平，PA一直toggle	
-	uint32_t wData = 0xaa000005;			//PD5 EXTRST，测试效果：POR, PD5 force低则PA0停止toggle（进入reset状态）；PD5 force高则PA0持续toggle
+	//uint32_t s_wData = 0xaa000000;			//PD5 IO，测试效果：POR 无论PD5电平，PA一直toggle	
+	uint32_t s_wData = 0xaa000005;			//PD5 EXTRST，测试效果：POR, PD5 force低则PA0停止toggle（进入reset状态）；PD5 force高则PA0持续toggle
 	
-	if(*(uint32_t *)USEROPTION_ADDR != wData) {
+	if(*(uint32_t *)USEROPTION_ADDR != s_wData) {
 		csi_pin_set_mux(PA1, PA1_OUTPUT);
 		
 		while(1);
@@ -211,8 +211,8 @@ void eflash_useroption_extrst_test(void)
 void eflash_useroption_iwdt_test(void)
 {
 	
-	//uint32_t wData = 0xaa000000;			//IWDT disable,测试效果：POR, PA0一直toggle
-	uint32_t wData = 0x00000000;			//IWDT enable，测试效果：POR, PA0 波形持续2s,断500ms(PA1 toggle)
+	//uint32_t s_wData = 0xaa000000;			//IWDT disable,测试效果：POR, PA0一直toggle
+	uint32_t s_wData = 0x00000000;			//IWDT enable，测试效果：POR, PA0 波形持续2s,断500ms(PA1 toggle)
 	
 	
 	uint32_t n = 500;
@@ -222,8 +222,8 @@ void eflash_useroption_iwdt_test(void)
 		mdelay(1);
 	}
 	
-	if(*(uint32_t *)USEROPTION_ADDR != wData) {
-		csi_ifc_wr_useroption(IFC,wData);
+	if(*(uint32_t *)USEROPTION_ADDR != s_wData) {
+		csi_ifc_wr_useroption(IFC,s_wData);
 		while(1);
 	}
 	else {
@@ -250,8 +250,8 @@ void eflash_useroption_iwdt_test(void)
 void eflash_hdp_test(void)
 {
 	
-	csi_ifc_program(IFC, 0x2000, wData, 5);		//将wData数组的前5个数据写入flash，起始地址0x2000 (4K外)
-	csi_ifc_program(IFC, 0x900, wData, 5);		//将wData数组的前5个数据写入flash，起始地址0x900 (4K内)
+	csi_ifc_program(IFC, 0x2000, s_wData, 5);		//将wData数组的前5个数据写入flash，起始地址0x2000 (4K外)
+	csi_ifc_program(IFC, 0x900, s_wData, 5);		//将wData数组的前5个数据写入flash，起始地址0x900 (4K内)
 	
 	while(1);
 }
