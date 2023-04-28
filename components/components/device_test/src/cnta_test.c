@@ -143,3 +143,15 @@ void cnta_envelope_test(void)
 		nop;
 	}
 }
+
+
+/** \brief cnta interrupt handle weak function
+ * 
+ *  \param[in] ptCntaBase: pointer of cnta register structure
+ *  \return none
+ */ 
+__attribute__((weak)) void cnta_irqhandler(csp_cnta_t *ptCntaBase)
+{	
+	csi_pin_toggle(PA10);
+}
+
