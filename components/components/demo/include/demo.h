@@ -148,8 +148,8 @@ extern csi_error_t crc_demo();
 csi_error_t led_demo(void);
 
 //opa demo
-extern void opa_internal_gain_mode_test(void);
-extern void opa_external_gain_mode_test(void);
+extern void opa_internal_gain_mode_demo(void);
+extern void opa_external_gain_mode_demo(void);
 
 //fvr demo
 extern void fvr_output_demo(void);

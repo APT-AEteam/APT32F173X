@@ -109,12 +109,12 @@ static inline void csp_opa_dis(csp_opa_t *ptOpaBase)
 
 static inline void csp_opa_pgac_singel_int(csp_opa_t *ptOpaBase,opa_pgac_singel_e ePcgaSinggel)
 {
-	ptOpaBase->CR |= ePcgaSinggel << OPA_PGAC_POS;
+	ptOpaBase->CR = (ptOpaBase->CR & (~OPA_PGAC_MSK)) | ((ePcgaSinggel << OPA_PGAC_POS));
 }
 
 static inline void csp_opa_pgac_difference_int(csp_opa_t *ptOpaBase,opa_pgac_difference_e ePcgaDifference)
 {
-	ptOpaBase->CR |= ePcgaDifference << OPA_PGAC_POS;
+	ptOpaBase->CR = (ptOpaBase->CR & (~OPA_PGAC_MSK)) | ((ePcgaDifference << OPA_PGAC_POS));
 }
 
 static inline void csp_opa_ex_en(csp_opa_t *ptOpaBase)
