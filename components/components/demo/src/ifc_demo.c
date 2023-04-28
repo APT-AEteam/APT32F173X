@@ -19,7 +19,7 @@
 /* externs variablesr------------------------------------------------------*/
 /* Private variablesr------------------------------------------------------*/
 
-uint32_t s_wWriteData[] = {0x01010101, 0x23232323, 0x45454545, 0x67676767, 0x89898989, 0xabababab, 0xcdcdcdcd, 0xefefefef};
+static uint32_t s_wWriteData[] = {0x01010101, 0x23232323, 0x45454545, 0x67676767, 0x89898989, 0xabababab, 0xcdcdcdcd, 0xefefefef};
 
 
 uint32_t s_wReadBuf[10];

@@ -128,7 +128,7 @@ __Vectors:
     .long   UART0_IRQHandler
     .long   UART1_IRQHandler					
     .long   UART2_IRQHandler		//40
-    .long   QSPI_IRQHandler
+    .long   Default_Handler
     .long   SIO0_IRQHandler
     .long   SIO1_IRQHandler			
     .long   I2C_IRQHandler

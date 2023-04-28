@@ -48,7 +48,7 @@ extern void i2c_irqhandler(csp_i2c_t *ptIicBase);
 
 extern void gptb_irqhandler(csp_gptb_t *ptGptbBase);
 extern void sio_irqhandler(csp_sio_t *ptSioBase);
-
+extern void rtc_irqhandler(csp_rtc_t *ptRtcBase);
 
 /* private function--------------------------------------------------------*/
 /* extern variablesr------------------------------------------------------*/
@@ -127,7 +127,6 @@ void adc1_int_handler(void)
 #if DMA0_INT_HANDLE_EN	
 	// ISR content ...
 	dma_irqhandler(DMA0);
-	//csp_qspi_set_int(QSPI, QSPI_TXE_INT,false);
 #endif
 }
 
@@ -278,13 +277,6 @@ void uart2_int_handler(void)
 #endif
 }
 
-void qspi_int_handler(void) 
-{
-#if	QSPI_INT_HANDLE_EN
-    // ISR content ...
-	//qspi_irqhandler(QSPI);
-#endif
-}
 
 void sio0_int_handler(void) 
 {
@@ -392,6 +384,7 @@ void rtc_int_handler(void)
 {
 #if	RTC_INT_HANDLE_EN
 	// ISR content ...
+	rtc_irqhandler(RTC);
 #endif
 }
 

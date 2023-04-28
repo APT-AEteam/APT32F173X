@@ -121,7 +121,6 @@ typedef enum {
 	UART0_IRQn      				= 38U,
 	UART1_IRQn      				= 39U,
 	UART2_IRQn      				= 40U,
-	QSPI_IRQn     					= 41U,
 	SIO0_IRQn						= 42U,
 	SIO1_IRQn						= 43U,
 	I2C_IRQn    					= 44U,
@@ -1118,7 +1117,6 @@ void usart1_int_handler(void);			//USART1 interrupt
 void uart0_int_handler(void);			//UART0 interrupt
 void uart1_int_handler(void);			//UART1 interrupt
 void uart2_int_handler(void);			//UART2 interrupt
-void qspi_int_handler(void);			//QSPI interrupt
 void sio0_int_handler(void);			//SIO0 interrupt
 void sio1_int_handler(void);			//SIO1 interrupt
 void i2c_int_handler(void);				//I2C  interrupt

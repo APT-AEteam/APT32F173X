@@ -414,22 +414,22 @@ void soc_clk_disable(int32_t wModule)
  */
 csi_error_t csi_calc_clk_freq(void)
 {
-	cclk_src_e eClkSrc;
+	sclk_sel_e eClkSrc;
 	uint8_t  byHclkDiv;
 	uint32_t wHfoFreq;
 	uint32_t wImoFreq;
 	
 	//calculate sclk
 	{
-		eClkSrc = ((cclk_src_e) csp_get_clksrc(SYSCON));
+		eClkSrc = ((sclk_sel_e) csp_get_clksrc(SYSCON));
 		switch(eClkSrc)
-		{ 	case (SRC_ISOSC): 	
+		{ 	case (SEL_ISOSC): 	
 				tClkConfig.wSclk = ISOSC_VALUE;
 				break;
-			case (SRC_EMOSC): 	
+			case (SEL_EMOSC): 	
 				tClkConfig.wSclk = EMOSC_VALUE;
 				break;
-			case (SRC_IMOSC):	
+			case (SEL_IMOSC):	
 				wImoFreq = csp_get_imosc_fre(SYSCON);
 				switch (wImoFreq)
 				{
@@ -450,7 +450,7 @@ csi_error_t csi_calc_clk_freq(void)
 						break;
 				}
 				break;
-			case  (SRC_HFOSC):	
+			case  (SEL_HFOSC):	
 				wHfoFreq =  csp_get_hfosc_fre(SYSCON);
 				switch (wHfoFreq)
 				{
@@ -468,12 +468,10 @@ csi_error_t csi_calc_clk_freq(void)
 						break;
 				}
 				break;
-			case (SRC_AUTO_HF_PLL): 
-			case (SRC_AUTO_EM_PLL): 
-			case (SRC_MANUAL_PLL): 	
+			case (SEL_PLL): 
 				tClkConfig.wSclk = PLL_VALUE;
 				break;
-			case (SRC_ESOSC): 	
+			case (SEL_ESOSC): 	
 				tClkConfig.wSclk = ESOSC_VALUE;
 				break;
 			default:

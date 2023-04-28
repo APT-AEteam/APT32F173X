@@ -127,7 +127,8 @@ typedef enum{
 	//receive
 	UART_RX_MODE_POLL		=	0,			//polling mode, no interrupt
 	UART_RX_MODE_INT_FIX	=	1,			//rx use interrupt mode(RXFIFO), receive assign(fixed) length data		
-	UART_RX_MODE_INT_DYN	=	2			//rx use interrupt mode(RXFIFO), receive a bunch of data(dynamic length data)
+	UART_RX_MODE_INT_DYN	=	2,			//rx use interrupt mode(RXFIFO), receive a bunch of data(dynamic length data)
+	UART_RX_MODE_INT		=	3			//rx use interrupt mode
 }csi_uart_work_e;
 
 /// \struct csi_uart_config_t
@@ -135,9 +136,11 @@ typedef enum{
 typedef struct {
 	uint32_t            wBaudRate;			//baud rate	
 	uint32_t            wInt;				//interrupt
+	uint16_t			hwRecvTo;			//receive timeout
 	uint8_t				byParity;           //parity type 
 	uint8_t				byTxMode;			//send mode: polling/interrupt
 	uint8_t				byRxMode;			//recv mode: polling/interrupt0/interrupt1
+	bool				bRecvToEn;			//enable receive timeout
 } csi_uart_config_t;
 
 

@@ -30,6 +30,8 @@ csp_error_t apt_rtc_set_trgprd(csp_rtc_t *ptRtc, uint8_t byTrg, uint8_t byPrd);
 /* externs variablesr------------------------------------------------------*/
 /* Private variablesr------------------------------------------------------*/
 
+
+
 /**
   \brief       Initialize RTC Interface. Initializes the resources needed for the RTC interface
   \param       ptRtc    pointer of rtc register structure
@@ -53,7 +55,7 @@ void csi_rtc_init(csp_rtc_t *ptRtc, csi_rtc_config_t *tConfig)
 			byDiva = 49;
 			hwDivs = 134;
 			break;
-		case (RTC_EMOSC):
+		case (RTC_ESOSC):
 			csi_emosc_enable(EMOSC_VALUE);
 			byDiva = 3;
 			hwDivs = 2047;
@@ -103,7 +105,7 @@ void csi_rtc_init(csp_rtc_t *ptRtc, csi_rtc_config_t *tConfig)
 	
 	
 	csp_rtc_int_enable(ptRtc, RTC_INT_ALMA|RTC_INT_ALMB|RTC_INT_CPRD|RTC_INT_TRGEV0|RTC_INT_TRGEV1, DISABLE);
-	csp_rtc_int_clr(ptRtc, RTC_INT_ALMA|RTC_INT_ALMB|RTC_INT_CPRD|RTC_INT_TRGEV0|RTC_INT_TRGEV1);
+	csp_rtc_clr_isr(ptRtc, RTC_INT_ALMA|RTC_INT_ALMB|RTC_INT_CPRD|RTC_INT_TRGEV0|RTC_INT_TRGEV1);
 
 
 }
@@ -187,16 +189,16 @@ csi_error_t csi_rtc_set_time(csp_rtc_t *ptRtc, csi_rtc_time_t *ptRtcTime)
 		
 	
 		
-		ptRtcTime->tm_wday = get_week_by_date((struct tm *)ptRtcTime);
+		ptRtcTime->t_wday = get_week_by_date((struct tm *)ptRtcTime);
 		
 		
-		apt_rtc_set_date(ptRtc, ptRtcTime->tm_year, ptRtcTime->tm_mon, ptRtcTime->tm_wday, ptRtcTime->tm_mday);
+		apt_rtc_set_date(ptRtc, ptRtcTime->t_year, ptRtcTime->t_mon, ptRtcTime->t_wday, ptRtcTime->t_mday);
 		
 	
-		if ((ptRtcTime->tm_hour == 12) && (csp_rtc_get_fmt(ptRtc) == RTC_24FMT))
-			ret =  apt_rtc_set_time(ptRtc, RTC_PM, ptRtcTime->tm_hour, ptRtcTime->tm_min,ptRtcTime->tm_sec);
+		if ((ptRtcTime->t_hour == 12) && (csp_rtc_get_fmt(ptRtc) == RTC_24FMT))
+			ret =  apt_rtc_set_time(ptRtc, RTC_PM, ptRtcTime->t_hour, ptRtcTime->t_min,ptRtcTime->t_sec);
 		else
-			ret =  apt_rtc_set_time(ptRtc, ptRtcTime->tm_pm, ptRtcTime->tm_hour, ptRtcTime->tm_min,ptRtcTime->tm_sec);
+			ret =  apt_rtc_set_time(ptRtc, ptRtcTime->t_pm, ptRtcTime->t_hour, ptRtcTime->t_min,ptRtcTime->t_sec);
 		
 		
 		if (ret < CSI_OK) {
@@ -232,21 +234,21 @@ csi_error_t csi_rtc_set_alarm(csp_rtc_t *ptRtc, uint8_t byAlm, uint8_t byMode, c
 	if(byAlm > 1)
 		return CSI_ERROR;
 
-	if (ptAlmTime -> tm_yday == 0xff || byMode == 2) {
+	if (ptAlmTime -> t_yday == 0xff || byMode == 2) {
 		bDmsk = 1;
-		ptAlmTime->tm_mday = 0;			
+		ptAlmTime->t_mday = 0;			
 	}
-	if (ptAlmTime -> tm_hour == 0xff) {
+	if (ptAlmTime -> t_hour == 0xff) {
 		bHmsk = 1;
-		ptAlmTime->tm_hour = 0;
+		ptAlmTime->t_hour = 0;
 	}
-	if (ptAlmTime -> tm_min == 0xff) {
+	if (ptAlmTime -> t_min == 0xff) {
 		bMmsk = 1;
-		ptAlmTime->tm_min = 0;
+		ptAlmTime->t_min = 0;
 	}
-	if (ptAlmTime -> tm_sec == 0xff) {
+	if (ptAlmTime -> t_sec == 0xff) {
 		bSmsk = 1;	
-		ptAlmTime->tm_sec = 0;
+		ptAlmTime->t_sec = 0;
 	}
 	switch (byMode)
 	{
@@ -262,17 +264,17 @@ csi_error_t csi_rtc_set_alarm(csp_rtc_t *ptRtc, uint8_t byAlm, uint8_t byMode, c
 	}
 	
 	if(csp_rtc_get_fmt(RTC) == RTC_24FMT) {
-		if (ptAlmTime -> tm_hour == 12) 
+		if (ptAlmTime -> t_hour == 12) 
 			bFmt = RTC_PM;
 		else
 			bFmt = RTC_AM;
 	}
 	switch (byAlm)
 	{
-		case (RTC_ALMA): 	csp_rtc_int_clr(ptRtc, RTC_INT_ALMA);
+		case (RTC_ALMA): 	csp_rtc_clr_isr(ptRtc, RTC_INT_ALMA);
 							csp_rtc_int_enable(ptRtc, RTC_INT_ALMA, ENABLE);
 							break;
-		case (RTC_ALMB):	csp_rtc_int_clr(ptRtc, RTC_INT_ALMB);
+		case (RTC_ALMB):	csp_rtc_clr_isr(ptRtc, RTC_INT_ALMB);
 							csp_rtc_int_enable(ptRtc, RTC_INT_ALMB, ENABLE);
 							break;
 		default:
@@ -281,7 +283,7 @@ csi_error_t csi_rtc_set_alarm(csp_rtc_t *ptRtc, uint8_t byAlm, uint8_t byMode, c
 	
 	csi_rtc_int_enable(RTC, RTC_INT_ALMA, ENABLE);
 	csp_rtc_alm_enable(ptRtc, byAlm, DISABLE);
-	apt_rtc_alm_set_time(ptRtc, byAlm, ptAlmTime->tm_mday, bFmt,  ptAlmTime->tm_hour, ptAlmTime->tm_min,ptAlmTime->tm_sec);
+	apt_rtc_alm_set_time(ptRtc, byAlm, ptAlmTime->t_mday, bFmt,  ptAlmTime->t_hour, ptAlmTime->t_min,ptAlmTime->t_sec);
 	csp_rtc_alm_set_mode(ptRtc, byAlm, bWdsel, bDmsk, bHmsk, bMmsk, bSmsk);
 	csp_rtc_alm_enable(ptRtc, byAlm, ENABLE);
 	
@@ -301,10 +303,10 @@ void csi_rtc_cancel_alarm(csp_rtc_t *ptRtc, uint8_t byAlm)
 	switch (byAlm)
 	{
 		case (RTC_ALMA): 	csi_rtc_int_enable(ptRtc, RTC_INT_ALMA, DISABLE);
-							csp_rtc_int_clr(ptRtc, RTC_INT_ALMA);
+							csp_rtc_clr_isr(ptRtc, RTC_INT_ALMA);
 							break;
 		case (RTC_ALMB):	csi_rtc_int_enable(ptRtc, RTC_INT_ALMB, DISABLE);
-							csp_rtc_int_clr(ptRtc, RTC_INT_ALMB);
+							csp_rtc_clr_isr(ptRtc, RTC_INT_ALMB);
 							break;
 		default: break;
 	}
@@ -367,14 +369,14 @@ void csi_rtc_int_enable(csp_rtc_t *ptRtc, rtc_int_e eIntSrc, bool bEnable)
 void csi_rtc_get_time(csp_rtc_t *ptRtc, csi_rtc_time_t *rtctime)
 {
 	csi_rtc_rb_enable(ptRtc,ENABLE); 
-	rtctime->tm_year = csp_rtc_read_year(ptRtc);
-	rtctime->tm_mon = csp_rtc_read_mon(ptRtc);
-	rtctime->tm_wday = csp_rtc_read_wday(ptRtc);
-	rtctime->tm_mday = csp_rtc_read_mday(ptRtc);
-	rtctime->tm_hour = csp_rtc_read_hour(ptRtc);
-	rtctime->tm_min = csp_rtc_read_min(ptRtc);
-	rtctime->tm_sec = csp_rtc_read_sec(ptRtc);
-	rtctime->tm_pm = csp_rtc_read_pm(ptRtc);
+	rtctime->t_year = csp_rtc_read_year(ptRtc);
+	rtctime->t_mon = csp_rtc_read_mon(ptRtc);
+	rtctime->t_wday = csp_rtc_read_wday(ptRtc);
+	rtctime->t_mday = csp_rtc_read_mday(ptRtc);
+	rtctime->t_hour = csp_rtc_read_hour(ptRtc);
+	rtctime->t_min = csp_rtc_read_min(ptRtc);
+	rtctime->t_sec = csp_rtc_read_sec(ptRtc);
+	rtctime->t_pm = csp_rtc_read_pm(ptRtc);
 	csi_rtc_rb_enable(ptRtc,DISABLE);
 }
 
@@ -390,38 +392,38 @@ uint32_t csi_rtc_get_alarm_remaining_time(csp_rtc_t *ptRtc, uint8_t byAlm)
 	volatile csi_rtc_time_t tAlmTime;
 	uint32_t wCurrentTime, wAlmTime;
 
-	tCurrentTime.tm_mday = csp_rtc_read_mday(ptRtc); 
-	tCurrentTime.tm_wday = csp_rtc_read_wday(ptRtc); 
-	tCurrentTime.tm_hour = csp_rtc_read_hour(ptRtc);
-	tCurrentTime.tm_min = csp_rtc_read_min(ptRtc); 
-	tCurrentTime.tm_sec = csp_rtc_read_sec(ptRtc); 
+	tCurrentTime.t_mday = csp_rtc_read_mday(ptRtc); 
+	tCurrentTime.t_wday = csp_rtc_read_wday(ptRtc); 
+	tCurrentTime.t_hour = csp_rtc_read_hour(ptRtc);
+	tCurrentTime.t_min = csp_rtc_read_min(ptRtc); 
+	tCurrentTime.t_sec = csp_rtc_read_sec(ptRtc); 
 	
 
-	tAlmTime.tm_mday = csp_rtc_alm_read_mday(ptRtc, byAlm); 
-	tAlmTime.tm_wday = csp_rtc_alm_read_wday(ptRtc, byAlm); 
-	tAlmTime.tm_hour = csp_rtc_alm_read_hour(ptRtc, byAlm);
-	tAlmTime.tm_min = csp_rtc_alm_read_min(ptRtc, byAlm); 
-	tAlmTime.tm_sec = csp_rtc_alm_read_sec(ptRtc, byAlm); 
+	tAlmTime.t_mday = csp_rtc_alm_read_mday(ptRtc, byAlm); 
+	tAlmTime.t_wday = csp_rtc_alm_read_wday(ptRtc, byAlm); 
+	tAlmTime.t_hour = csp_rtc_alm_read_hour(ptRtc, byAlm);
+	tAlmTime.t_min = csp_rtc_alm_read_min(ptRtc, byAlm); 
+	tAlmTime.t_sec = csp_rtc_alm_read_sec(ptRtc, byAlm); 
 	
 
 	
 	if (csp_rtc_alm_read_dmsk(ptRtc, byAlm) == 1) {
-		wCurrentTime = tCurrentTime.tm_hour * 3600 + tCurrentTime.tm_min * 60 + tCurrentTime.tm_sec;
-		wAlmTime = tAlmTime.tm_hour * 3600 + tAlmTime.tm_min * 60 + tAlmTime.tm_sec;
+		wCurrentTime = tCurrentTime.t_hour * 3600 + tCurrentTime.t_min * 60 + tCurrentTime.t_sec;
+		wAlmTime = tAlmTime.t_hour * 3600 + tAlmTime.t_min * 60 + tAlmTime.t_sec;
 		if(wAlmTime < wCurrentTime)
 			return (24*3600 - wCurrentTime + wAlmTime);
 	
 	}
 	else {
 		if (csp_rtc_alm_read_wdsel(ptRtc, byAlm) == 1) {
-			wCurrentTime = tCurrentTime.tm_wday * 86400 + tCurrentTime.tm_hour * 3600 + tCurrentTime.tm_min * 60 + tCurrentTime.tm_sec;
-			wAlmTime = tAlmTime.tm_wday * 86400 + tAlmTime.tm_hour * 3600 + tAlmTime.tm_min * 60 + tAlmTime.tm_sec;
+			wCurrentTime = tCurrentTime.t_wday * 86400 + tCurrentTime.t_hour * 3600 + tCurrentTime.t_min * 60 + tCurrentTime.t_sec;
+			wAlmTime = tAlmTime.t_wday * 86400 + tAlmTime.t_hour * 3600 + tAlmTime.t_min * 60 + tAlmTime.t_sec;
 			if(wAlmTime < wCurrentTime)
 				return (7*24*3600 - wCurrentTime + wAlmTime);
 		}
 		else {
-			wCurrentTime = tCurrentTime.tm_mday * 86400 + tCurrentTime.tm_hour * 3600 + tCurrentTime.tm_min * 60 + tCurrentTime.tm_sec;
-			wAlmTime = tAlmTime.tm_mday * 86400 + tAlmTime.tm_hour * 3600 + tAlmTime.tm_min * 60 + tAlmTime.tm_sec;
+			wCurrentTime = tCurrentTime.t_mday * 86400 + tCurrentTime.t_hour * 3600 + tCurrentTime.t_min * 60 + tCurrentTime.t_sec;
+			wAlmTime = tAlmTime.t_mday * 86400 + tAlmTime.t_hour * 3600 + tAlmTime.t_min * 60 + tAlmTime.t_sec;
 			if(wAlmTime < wCurrentTime)
 				return CSI_UNSUPPORTED;	
 		}
@@ -547,3 +549,4 @@ csp_error_t apt_rtc_set_trgprd(csp_rtc_t *ptRtc, uint8_t byTrg, uint8_t byPrd)
 	ptRtc -> EVPS = (ptRtc->EVPS & ~(RTC_TRGEV0PRD_MSK << (byTrg<<2))) | (((byPrd-1) & 0xf) << (RTC_TRGEV0PRD_POS + (byTrg<<2)));
 	return CSP_SUCCESS;
 }
+

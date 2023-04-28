@@ -21,6 +21,5 @@ extern void rtc_set_time_demo_test(void);
 extern void rtc_alarm_demo_test(void);
 extern void rtc_timer_demo_test(void);
 extern void rtc_trgev_demo_test(void);
-extern void rtc_test(void);
 
 #endif	

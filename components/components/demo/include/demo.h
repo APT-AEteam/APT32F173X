@@ -89,8 +89,11 @@ extern void emcm_demo(void);
 extern csi_error_t wwdt_demo(void);
 
 //ifc demo
-void ifc_read(void);
-void ifc_program(void);
+extern void ifc_read_demo();
+extern void	ifc_dflash_page_program_demo();
+extern void	ifc_dflash_page_parallel_program_demo();
+extern void ifc_pflash_page_program_demo();
+extern void ifc_program_demo();
 
 //rtc_demo
 void rtc_set_time_demo(void);
@@ -148,8 +151,8 @@ extern csi_error_t crc_demo();
 csi_error_t led_demo(void);
 
 //opa demo
-extern void opa_internal_gain_mode_test(void);
-extern void opa_external_gain_mode_test(void);
+extern void opa_internal_gain_mode_demo(void);
+extern void opa_external_gain_mode_demo(void);
 
 //fvr demo
 extern void fvr_output_demo(void);
