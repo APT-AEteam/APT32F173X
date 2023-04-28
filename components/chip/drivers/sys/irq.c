@@ -13,7 +13,7 @@
 #include <stdbool.h>
 #include <irq.h>
 
-extern csi_irqmap_t irq_map[];
+extern csi_irqmap_t g_tIrqMap[];
 extern void Default_Handler(void);
 extern void (*g_irqvector[])(void);
 extern void (*g_nmivector)(void);
@@ -27,7 +27,7 @@ extern void (*g_nmivector)(void);
  */
 void csi_irq_enable(void *pIpBase)
 {
-	csi_irqmap_t *ptMap = irq_map;
+	csi_irqmap_t *ptMap = g_tIrqMap;
 
     while(ptMap->wRegBase) 
 	{
@@ -50,7 +50,7 @@ void csi_irq_enable(void *pIpBase)
  */
 void csi_irq_disable(void *pIpBase)
 {
-	csi_irqmap_t *ptMap = irq_map;
+	csi_irqmap_t *ptMap = g_tIrqMap;
 
     while(ptMap->wRegBase) 
 	{

@@ -25,9 +25,9 @@
 /* externs variablesr-------------------------------------------------*/
 /* Private variablesr-------------------------------------------------*/
 
-static volatile uint32_t csi_tick = 0U;
-static volatile uint32_t last_time_ms = 0U;
-static volatile uint64_t last_time_us = 0U;
+static volatile uint32_t s_wTick = 0U;
+static volatile uint32_t s_wLastTimeMs = 0U;
+
 
 
 //static inline unsigned long long apt_coret_get_value(void)
@@ -49,14 +49,14 @@ void bt_irqhandler3(csp_bt_t *ptBtBase)
 
 void csi_tick_increase(void)
 {
-    csi_tick++;
+    s_wTick++;
 }
 
 
 
 csi_error_t csi_tick_init(void)
 {
-    csi_tick = 0U;
+    s_wTick = 0U;
 
 	csi_bt_timer_init(BT3, 10000);		//初始化BT3, 定时10ms； BT定时，默认采用PEND中断
 	csi_bt_start(BT3);
@@ -71,7 +71,7 @@ void csi_tick_uninit(void)
 
 uint32_t csi_tick_get(void)
 {
-    return csi_tick;
+    return s_wTick;
 }
 
 uint32_t csi_tick_get_ms(void)
@@ -82,12 +82,12 @@ uint32_t csi_tick_get_ms(void)
     while (1) 
 	{
 		cnttm = (csp_bt_get_cnt(BT3) * (csp_bt_get_pscr(BT3)+1) * 1000) / csi_get_pclk_freq();
-		time = (csi_tick * (1000U / CONFIG_SYSTICK_HZ))+ cnttm;
-        if (time >= last_time_ms) 
+		time = (s_wTick * (1000U / CONFIG_SYSTICK_HZ))+ cnttm;
+        if (time >= s_wLastTimeMs) 
             break;
     }
 
-    last_time_ms = time;
+    s_wLastTimeMs = time;
     return time;
 }
 

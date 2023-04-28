@@ -660,7 +660,7 @@ int can_lback_silent_mode_test(void)
  *  \param[in] ptCanBase: pointer of can register structure
  *  \return none
  */ 
-void can_irqhandler_test(csp_can_t *ptCanBase)
+void can_irqhandler(csp_can_t *ptCanBase)
 {
 	volatile uint16_t hwMcrVal = 0x00;
 	volatile uint16_t hwIntNum = csp_can_get_hpir(ptCanBase);		//get interrupt pointer							
