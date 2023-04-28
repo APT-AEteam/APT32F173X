@@ -67,16 +67,16 @@ int usart_send_dma_demo(void)
 	tUsartCfg.byTxMode		= USART_TX_MODE_POLL;		//发送模式：轮询/中断模式
 	tUsartCfg.byRxMode		= USART_RX_MODE_POLL;		//接收模式：轮询模式
 	
-	csi_usart_init(USART1, &tUsartCfg);					//初始化串口
-	csi_usart_start(USART1, USART_FUNC_RX_TX);			//开启USART的RX和TX功能，也可单独开启RX或者TX功能
+	csi_usart_init(USART0, &tUsartCfg);					//初始化串口
+	csi_usart_start(USART0, USART_FUNC_RX_TX);			//开启USART的RX和TX功能，也可单独开启RX或者TX功能
 	
 	csi_etb_init();										//使能ETB模块
 
-	csi_usart_dma_tx_init(USART1,DMA0, DMA_CH0, ETB_CH10);	//发送DMA初始化，选择DMA通道和ETB触发通道，DMA_CH: 0~3; ETB_CH: 8~11
+		csi_usart_dma_tx_init(USART1,DMA0, DMA_CH0, ETB_CH20);	//发送DMA初始化，选择DMA通道和ETB触发通道，DMA_CH: 0~3; ETB_CH: 8~11
 	
 	while(1)
 	{
-		byRecv = csi_usart_getc(USART1);
+		byRecv = csi_usart_getc(USART0);
 		if(byRecv == 0x06)
 			csi_usart_send_dma(USART1,DMA0, (void *)bySdData, DMA_CH0, 31);	//采用DMA方式发送
 		mdelay(10);
@@ -139,8 +139,8 @@ int usart_recv_dma_demo(void)
 	
 	csi_etb_init();										//使能ETB模块
 
-	csi_usart_dma_rx_init(USART0,DMA0, DMA_CH3, ETB_CH11);			//DMA接收初始化，选择DMA通道和ETB触发通道，DMA_CH: 0~3; ETB_CH: 8~11
-	csi_usart_recv_dma(USART0,DMA0,(void*)s_byRecvBuf, DMA_CH3, 25);	//DMA接收
+	csi_usart_dma_rx_init(USART0,DMA0, DMA_CH3, ETB_CH20);			//DMA接收初始化，选择DMA通道和ETB触发通道，DMA_CH: 0~3; ETB_CH: 8~11
+	csi_usart_recv_dma(USART0,DMA0,(void*)s_byRecvBuf, DMA_CH3, 25);	//DMA接收	
 	
 	while(1)
 	{
@@ -169,6 +169,7 @@ int usart_char_demo(void)
 	int iRet = 0;
 	volatile uint8_t byRecv;
 	csi_usart_config_t tUsartCfg;						//USART0 参数配置结构体
+
 	csi_pin_set_mux(PB10, PB10_USART0_TX);				//USART0 TX管脚配置	
 	csi_pin_set_mux(PB11, PB11_USART0_RX);				//USART0 RX管脚配置
 	csi_pin_set_mux(PB2, PB2_USART0_CK);				//CK，同步模式时使用
@@ -224,7 +225,7 @@ int usart_send_demo(void)
 	uint8_t bySdData[30]={31,25,20,34,55,6,7,8,9,10,21,22,23,24,25,26,10,11,12,13,14,15,16,17,18,19,1,2,3};
 	volatile uint8_t byRecv;
 	csi_usart_config_t tUsartCfg;						//USART0 参数配置结构体
-
+	
 	csi_pin_set_mux(PB10, PB10_USART0_TX);				//USART0 TX管脚配置	
 	csi_pin_set_mux(PB11, PB11_USART0_RX);				//USART0 RX管脚配置
 	csi_pin_set_mux(PB2, PB2_USART0_CK);				//CK，同步模式时使用

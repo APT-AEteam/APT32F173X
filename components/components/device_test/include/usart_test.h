@@ -17,13 +17,13 @@
 #include "common.h"
 
 
-extern void  usart_char_demo_test(void);
-extern void  usart_send_demo_test(void);
-extern void  usart_recv_demo_test(void);
-extern void  usart_recv_dma_demo_test(void);
-extern void  usart_send_dma_demo_test(void);
-extern void  usart_send_int_demo_test(void);
-extern void  usart_recv_rx_int_demo_test(void);
-extern void  usart_recv_rxfifo_int_demo_test(void);
+extern int  usart_char_demo_test(void);
+extern int  usart_send_demo_test(void);
+extern int  usart_recv_demo_test(void);
+extern int  usart_recv_dma_demo_test(void);
+extern int  usart_send_dma_demo_test(void);
+extern int  usart_send_int_demo_test(void);
+extern int  usart_recv_rx_int_demo_test(void);
+extern int  usart_recv_rxfifo_int_demo_test(void);
 
 #endif

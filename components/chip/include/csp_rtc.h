@@ -188,7 +188,7 @@ typedef enum {
 typedef enum{
 	RTC_ISOSC = 0,
 	RTC_IMOSC_DIV4,
-	RTC_EMOSC,
+	RTC_ESOSC,
 	RTC_EMOSC_DIV4
 }rtc_clksrc_e;
 
@@ -602,12 +602,12 @@ static inline void csp_rtc_int_enable(csp_rtc_t *ptRtcBase, rtc_int_e eInt, bool
 }
 
 
-static inline void csp_rtc_int_clr(csp_rtc_t *ptRtcBase, rtc_int_e eInt)
+static inline void csp_rtc_clr_isr(csp_rtc_t *ptRtcBase, rtc_int_e eInt)
 {
 	ptRtcBase->ICR = eInt;
 }
 
-static inline uint32_t csp_rtc_get_int_st(csp_rtc_t *ptRtcBase)
+static inline uint32_t csp_rtc_get_isr(csp_rtc_t *ptRtcBase)
 {
 	return (ptRtcBase->MISR);
 }
