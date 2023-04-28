@@ -4,10 +4,9 @@
 #include <csi_drv.h>
 #include "bt_test.h"
 
-void Delay_Nms(uint32_t ms);
-bool SYNCMD_Flag = 0;
+static void Delay_Nms(uint32_t ms);
 
-void Delay_Nms(uint32_t ms)
+static void Delay_Nms(uint32_t ms)
 {
 	uint32_t i,j;
 	
@@ -71,6 +70,7 @@ void bt_timer_test(void)
  */
 void bt_pwm_test(void)
 {
+	bool bSyncmd_Flag = 0;
 	csi_bt_pwm_config_t tPwmCfg;							//BT PWM输出参数初始化配置结构体
 	
 	csi_pin_set_mux(PA6, PA6_OUTPUT);		//PA6 output ，并在BT中断里面翻转IO
@@ -116,8 +116,8 @@ void bt_pwm_test(void)
 	while(1)
 	{
 		NOP;
-		SYNCMD_Flag ^= 1;
-		if(SYNCMD_Flag == 0)
+		bSyncmd_Flag ^= 1;
+		if(bSyncmd_Flag == 0)
 		{
 			BT1->CMP = 1000;
 			Delay_Nms(500);
@@ -651,4 +651,85 @@ int bt_syncmd_start_test(void)
 
 
 
+/** \brief bt_irqhandler: BT0 中断处理示例函数
+ *  \param[in] csp_bt_t
+ *  \return error code
+ */
+__attribute__((weak)) void bt_irqhandler0(csp_bt_t *ptBtBase)
+{
+    // ISR content ...
+	volatile uint32_t wMisr = csp_bt_get_isr(ptBtBase);
+	
+	if(wMisr & BT_PEND_INT)					//PEND interrupt
+	{
+		csp_bt_clr_isr(ptBtBase, BT_PEND_INT);
+//		csi_pin_toggle(PA6);				//PA06 toggle	
+	}
+	if(wMisr & BT_CMP_INT)					//CMP interrupt
+	{
+		csp_bt_clr_isr(ptBtBase, BT_CMP_INT);
+//		csi_pin_set_low(PA5);
+//		csi_pin_set_high(PA6);	
+	}
+	if(wMisr & BT_EVTRG_INT)				//EVTRG interrupt
+	{
+//		csi_pin_set_low(PA5);
+		csp_bt_clr_isr(ptBtBase, BT_EVTRG_INT);
+	}
+}
+
+/** \brief bt_irqhandler: BT1 中断处理示例函数
+ *  \param[in] csp_bt_t
+ *  \return error code
+ */
+__attribute__((weak)) void bt_irqhandler1(csp_bt_t *ptBtBase)
+{
+    // ISR content ...
+	volatile uint32_t wMisr = csp_bt_get_isr(ptBtBase);
+	
+	if(wMisr & BT_PEND_INT)					//PEND interrupt
+	{
+		csp_bt_clr_isr(ptBtBase, BT_PEND_INT);
+//		csi_pin_toggle(PA6);				//PA06 toggle	
+	}
+	
+	if(wMisr & BT_CMP_INT)					//CMP interrupt
+	{
+		csp_bt_clr_isr(ptBtBase, BT_CMP_INT);
+//		csi_pin_set_low(PA5);
+//		csi_pin_set_high(PA6);	
+	}
+	if(wMisr & BT_EVTRG_INT)				//EVTRG interrupt
+	{
+//		csi_pin_set_low(PA5);
+		csp_bt_clr_isr(ptBtBase, BT_EVTRG_INT);
+	}
+}
+
+/** \brief bt_irqhandler: BT2 中断处理示例函数
+ *  \param[in] csp_bt_t
+ *  \return error code
+ */
+__attribute__((weak)) void bt_irqhandler2(csp_bt_t *ptBtBase)
+{
+    // ISR content ...
+	volatile uint32_t wMisr = csp_bt_get_isr(ptBtBase);
+	
+	if(wMisr & BT_PEND_INT)					//PEND interrupt
+	{
+		csp_bt_clr_isr(ptBtBase, BT_PEND_INT);
+//		csi_pin_toggle(PA6);				//PA06 toggle	
+	}
+	if(wMisr & BT_CMP_INT)					//CMP interrupt
+	{
+		csp_bt_clr_isr(ptBtBase, BT_CMP_INT);
+//		csi_pin_set_low(PA5);
+//		csi_pin_set_high(PA6);	
+	}
+	if(wMisr & BT_EVTRG_INT)				//EVTRG interrupt
+	{
+//		csi_pin_set_low(PA5);
+		csp_bt_clr_isr(ptBtBase, BT_EVTRG_INT);
+	}
+}
 
