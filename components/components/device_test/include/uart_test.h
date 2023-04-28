@@ -17,15 +17,15 @@
 #include "common.h"
 
 
-extern void  uart_char_demo_test(void);
-extern void  uart_receive_demo_test(void);
-extern void  uart_recv_dma_demo_test(void);
-extern void  uart_recv_dynamic_demo_test(void);
-extern void  uart_recv_dynamic_int_demo_test(void);
-extern void  uart_recv_int_demo_test(void);
-extern void  uart_send_demo_test(void);
-extern void  uart_send_dma_demo_test(void);
-extern void  uart_send_int_demo_test_test(void);
-extern void usart_test_irqhandler(csp_usart_t *ptUsartBase,uint8_t byIdx);
+extern int  uart_char_demo_test(void);
+extern int  uart_receive_demo_test(void);
+extern int  uart_recv_dma_demo_test(void);
+extern int  uart_recv_dynamic_demo_test(void);
+extern int  uart_recv_dynamic_int_demo_test(void);
+extern int  uart_recv_int_demo_test(void);
+extern int  uart_send_demo_test(void);
+extern int  uart_send_dma_demo_test(void);
+extern int  uart_send_int_demo_test_test(void);
+extern int usart_test_irqhandler(csp_usart_t *ptUsartBase,uint8_t byIdx);
 
 #endif

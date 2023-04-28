@@ -4,7 +4,7 @@
  * \copyright Copyright (C) 2015-2023 @ APTCHIP
  * <table>
  * <tr><th> Date  <th>Version  <th>Author  <th>Description
- * <tr><td> 2022-03-18 <td>V0.0 <td>XB     <td>initial
+ * <tr><td> 2023-03-18 <td>V0.0 <td>XS     <td>initial
  * </table>
  * *********************************************************************
 */
@@ -15,30 +15,20 @@
 #include "pin.h"
 #include "iostring.h"
 
-//#include "demo.h"
+#include "demo.h"
 
 /* externs function--------------------------------------------------------*/
 /* externs variablesr------------------------------------------------------*/
 /* Private macro-----------------------------------------------------------*/
 /* Private variablesr------------------------------------------------------*/
-/********************************************************************
- * 内部增益模式接线图  Vout =  vp * GAIN ；
-                |╲
-            Vp  |  ╲
-            ----|+   ╲
-                |      ╲______Vout
-             NC |      ╱   
-			 ×-|-   ╱    
-                |  ╱      
-                |╱         
-********************************************************************/
+
 /** \brief opa internal gain mode test 
  *  \brief OPA内部增益模式测试
  * 
  *  \param[in] none
  *  \return error code
  */
-void opa_internal_gain_mode_test(void)
+void opa_internal_gain_mode_demo(void)
 {
 	csi_opa_config_t ptOpaConfig_t;
 	
@@ -57,7 +47,7 @@ void opa_internal_gain_mode_test(void)
 	
 	//OPA 参数配置
 	ptOpaConfig_t.byMode = OPA_INTERNAL_MODE;//内部增益模式
-	ptOpaConfig_t.byInternalGain = OPA_PGAC_X2;//两倍增益（在OPAx_CR的19位置1情况下失效）
+	ptOpaConfig_t.byInternalGain = OPA_PGAC_X2;//两倍增益
 	ptOpaConfig_t.byInputMode = SINGEL;//单端输入
 	ptOpaConfig_t.byOpaNegativeInput = DISABLE;//关闭负端使能
 	ptOpaConfig_t.byOpaOutput = ENABLE;//开启放大器输出
@@ -75,41 +65,8 @@ void opa_internal_gain_mode_test(void)
 	csi_opa_start(OPA3); 
 }
 
-/********************************************************************
- * OPA外部增益模式使用接线示意
- * 场景① 外部增益模式接线图  
- * Vout =  vp * (1 + R2/R1)
- * gain =  1 + R2/R1
-	 
-					|╲
-				Vp  |  ╲
-				----|+   ╲
-					|      ╲______Vout
-					|      ╱  |
-				Vn _|_   ╱    |
-				  | |  ╱      |
-			 R1   | |╱   R2   |
-	GND___/\/\/\__|_____/\/\/\_| 		
 
- * 场景② 差分输入外部增益接线示意图
- * Vout =  (((R1+R2)/(R3+R4)) * (R4/R1) * V2) - ((R2/R1) * V1)
- * 当R1 = R3且R2 = R4时，Vout =（R2/R1）* (V2 - V1)
- * 
-			 R1                R2 
-	V1_____/\/\/\____________/\/\/\_
-					|			   |
-					|	|╲        |
-					| N |  ╲      |
-					|___|_   ╲    |
-						|      ╲__|____Vout
-			 R3		  P |      ╱  
-	V2_____/\/\/\_______|+   ╱    
-					|   |  ╱      
-				R4  |   |╱     
-	  GND___/\/\/\__|
-
- * 
-********************************************************************/
+/********************************************************************/
 /** \brief opa external gain mode test 
  *  \brief OPA外部增益模式测试
  * 
@@ -117,7 +74,7 @@ void opa_internal_gain_mode_test(void)
  *  \return error code
  */
  
-void opa_external_gain_mode_test(void)
+void opa_external_gain_mode_demo(void)
 {
 	csi_opa_config_t ptOpaConfig_t;
 	

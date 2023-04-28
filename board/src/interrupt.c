@@ -48,7 +48,7 @@ extern void i2c_irqhandler(csp_i2c_t *ptIicBase);
 
 extern void gptb_irqhandler(csp_gptb_t *ptGptbBase);
 extern void sio_irqhandler(csp_sio_t *ptSioBase);
-
+extern void rtc_irqhandler(csp_rtc_t *ptRtcBase);
 
 /* private function--------------------------------------------------------*/
 /* extern variablesr------------------------------------------------------*/
@@ -392,6 +392,7 @@ void rtc_int_handler(void)
 {
 #if	RTC_INT_HANDLE_EN
 	// ISR content ...
+	rtc_irqhandler(RTC);
 #endif
 }
 

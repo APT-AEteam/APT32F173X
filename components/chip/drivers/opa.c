@@ -26,13 +26,14 @@ csi_error_t csi_opa_init(csp_opa_t *ptOpaBase, csi_opa_config_t *ptOpaCfg)
 	if(ptOpaCfg->byMode == OPA_INTERNAL_MODE)
 	{
 		csp_opa_ex_dis(ptOpaBase);
-		ptOpaBase->CR = (ptOpaBase->CR & ~OPA_PGAC_MSK) | (ptOpaCfg->byInternalGain << OPA_PGAC_POS);
 		if(ptOpaCfg->byInputMode == SINGEL)	
 		{
+			csp_opa_pgac_singel_int(ptOpaBase,ptOpaCfg->byInternalGain);
 			csp_opa_dif_dis(ptOpaBase);
 		}
 		if(ptOpaCfg->byInputMode ==  DIFFERENCE)	
 		{
+			csp_opa_pgac_difference_int(ptOpaBase,ptOpaCfg->byInternalGain);
 			csp_opa_dif_en(ptOpaBase);
 		}
 	}
@@ -74,6 +75,5 @@ void csi_opa_start(csp_opa_t *ptOpaBase)
 */
 void csi_opa_stop(csp_opa_t *ptOpaBase)
 {
-	csp_opa_dis(ptOpaBase);
-	
+	csp_opa_dis(ptOpaBase);	
 }
