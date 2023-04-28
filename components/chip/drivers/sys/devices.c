@@ -24,7 +24,7 @@
 #include <drv/pin.h>
 
 
-const csi_irqmap_t irq_map[] = {
+const csi_irqmap_t g_tIrqMap[] = {
 	
 	{CORE_ADDR_BASE,			CORET_IRQn		},
     {APB_SYS_BASE,				SYSCON_IRQ_NUM	},
@@ -70,7 +70,7 @@ const csi_irqmap_t irq_map[] = {
     {0,  						0				}
 };
 
-const csi_clkmap_t clk_map[] = {
+const csi_clkmap_t g_tClkMap[] = {
     {APB_IFC_BASE,				IFC_SYS_CLK		},
     {APB_FVR_BASE,				FVR_SYS_CLK		},
     {APB_ADC0_BASE,				ADC0_SYS_CLK	},	

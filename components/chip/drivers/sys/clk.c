@@ -16,7 +16,7 @@
 #include "csp.h"
 #include "board_config.h"
 
-extern csi_clkmap_t clk_map[];
+extern csi_clkmap_t g_tClkMap[];
 
 /** \brief clock enable
  * 
@@ -27,7 +27,7 @@ extern csi_clkmap_t clk_map[];
  */
 void csi_clk_enable(uint32_t *pIpBase)
 {
-    csi_clkmap_t *ptMap = clk_map;
+    csi_clkmap_t *ptMap = g_tClkMap;
 
     while(ptMap->wRegBase) 
 	{
@@ -50,7 +50,7 @@ void csi_clk_enable(uint32_t *pIpBase)
  */
 void csi_clk_disable(uint32_t *pIpBase)
 {
-    csi_clkmap_t *ptMap = clk_map;
+    csi_clkmap_t *ptMap = g_tClkMap;
 
 	while(ptMap->wRegBase)
 	{
