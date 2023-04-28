@@ -20,11 +20,11 @@
 csi_iic_master_config_t  tIicMasterCfg;	//主机初始化结构体变量
 csi_iic_slave_config_t  tIicSlaveCfg;	//从机初始化结构体变量
 
-volatile uint8_t bySendBuffer[32]={1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20};
-volatile uint8_t byWriteBuffer[32];
+volatile uint8_t g_bySendBuffer[32]={1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20};
+volatile uint8_t g_byWriteBuffer[32];
 
-volatile uint32_t wTxBuff[32] = {0,1,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20};// 前两个为wWriteAddrs
-volatile uint8_t bRxBuff[32] = {0};
+volatile uint32_t g_wTxBuff[32] = {0,1,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20};// 前两个为wWriteAddrs
+volatile uint8_t g_bRxBuff[32] = {0};
 
 /** \brief IIC master demo
  * 
@@ -129,7 +129,7 @@ void iic_slave_demo(void)
 	tIicSlaveCfg.hwSlaveAddr = 0xa0;				//设置从机地址
 	tIicSlaveCfg.hwInt = IIC_INTSRC_SCL_SLOW | IIC_INTSRC_STOP_DET | 
 					IIC_INTSRC_RD_REQ | IIC_INTSRC_RX_FULL | IIC_INTSRC_TX_ABRT|IIC_INTSRC_TX_OVER; //使能相应中断
-	csi_iic_set_slave_buffer(byWriteBuffer,32,bySendBuffer,32); //从机就是数组和发送数组设置
+	csi_iic_set_slave_buffer(g_byWriteBuffer,32,g_bySendBuffer,32); //从机就是数组和发送数组设置
 	tIicMasterCfg.wSdaTimeout = 0XFFFF;						//SDA 超时时间设置，  1/主频 * tIicMasterCfg.wSdaTimeout  ms
 	tIicMasterCfg.wSclTimeout = 0XFFFF;						//SCL 超时时间设置，  1/主频 * tIicMasterCfg.wSdaTimeout  ms
 	csi_iic_slave_init(I2C0,&tIicSlaveCfg);		//初始化从机
@@ -167,7 +167,7 @@ void iic_multi_slave_address_demo(void)
 	tIicSlaveCfg.hwSlaveAddr = 0x30;				//设置从机地址,SADDR>>1
 	tIicSlaveCfg.hwInt = IIC_INTSRC_SCL_SLOW | IIC_INTSRC_STOP_DET | 
 					IIC_INTSRC_RD_REQ | IIC_INTSRC_RX_FULL | IIC_INTSRC_TX_ABRT; //使能相应中断
-	csi_iic_set_slave_buffer(byWriteBuffer,32,bySendBuffer,32); //从机就是数组和发送数组设置
+	csi_iic_set_slave_buffer(g_byWriteBuffer,32,g_bySendBuffer,32); //从机就是数组和发送数组设置
 	tIicMasterCfg.wSdaTimeout = 0XFFFF;						//SDA 超时时间设置，  1/主频 * tIicMasterCfg.wSdaTimeout  ms
 	tIicMasterCfg.wSclTimeout = 0XFFFF;						//SCL 超时时间设置，  1/主频 * tIicMasterCfg.wSdaTimeout  ms
 	csi_iic_slave_init(I2C0,&tIicSlaveCfg);		//初始化从机
@@ -230,7 +230,7 @@ void iic_multi_slave_address_demo(void)
 	tDmaConfig.wInt  = DMA_INTSRC_NONE;   		//使用TCIT中断
 		
 	csi_dma_ch_init(DMA0, DMA_CH0, &tDmaConfig);  //初始化DMA
-	csi_dma_ch_start(DMA0, DMA_CH0, (void *)wTxBuff, (void *)0x400A0010,9,1);
+	csi_dma_ch_start(DMA0, DMA_CH0, (void *)g_wTxBuff, (void *)0x400A0010,9,1);
 
 	// iic congif
 	tIicMasterCfg.byAddrMode = IIC_ADDRESS_7BIT;			//设置主机地址模式 7/10 bit
@@ -242,7 +242,7 @@ void iic_multi_slave_address_demo(void)
 	csi_iic_master_init(I2C0,&tIicMasterCfg);				//主机初始化
 	
 	I2C0->DMACR = (0X1<<0) | (0X1<<1) | (0X0<<2) | (0X1<<3);
-	wTxBuff[8] |=  I2C_CMD_STOP;     // 最后一个数添加stop
+	g_wTxBuff[8] |=  I2C_CMD_STOP;     // 最后一个数添加stop
 	
 	csi_iic_disable(I2C0);
 	csp_i2c_set_taddr(I2C0,0xa0 >> 1);
@@ -297,7 +297,7 @@ void iic_multi_slave_address_demo(void)
 	tDmaConfig.wInt  = DMA_INTSRC_NONE;   		//使用TCIT中断
 
 	csi_dma_ch_init(DMA0, DMA_CH1, &tDmaConfig);  //初始化DMA
-	csi_dma_ch_start(DMA0, DMA_CH1, (void *)0x400A0010, (void *)bRxBuff,9,1);
+	csi_dma_ch_start(DMA0, DMA_CH1, (void *)0x400A0010, (void *)g_bRxBuff,9,1);
 
 	// iic config
 	tIicMasterCfg.byAddrMode = IIC_ADDRESS_7BIT;			//设置主机地址模式 7/10 bit
@@ -311,7 +311,7 @@ void iic_multi_slave_address_demo(void)
 	I2C0->DMACR = (0X1<<0) | (0X1<<1) | (0X0<<2) | (0X1<<3);
 
 	
-	csi_iic_read_nbyte_dma(I2C0,0xa0,0x0001,2,&bRxBuff[0],9);        
+	csi_iic_read_nbyte_dma(I2C0,0xa0,0x0001,2,&g_bRxBuff[0],9);        
 	
 
 	
@@ -319,6 +319,18 @@ void iic_multi_slave_address_demo(void)
 	
 	
 
+}
+
+/** \brief i2c interrupt handle 
+ * 
+ *  \param[in] ptSioBase: pointer of i2c register structure
+ *  \return none
+ */
+__attribute__((weak)) void i2c_irqhandler(csp_i2c_t *ptIicBase)
+{
+	
+	csi_iic_slave_receive_send(ptIicBase);
+	
 }
 
 

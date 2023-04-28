@@ -20,14 +20,14 @@
 /* Private variablesr------------------------------------------------------*/
 /* device instance---------------------------------------------------------*/
 
-csi_iic_master_config_t  tIicMasterCfgTest;	//主机初始化结构体变量
-csi_iic_slave_config_t  tIicSlaveCfgTest;	//从机初始化结构体变量
+csi_iic_master_config_t  g_tIicMasterCfgTest;	//主机初始化结构体变量
+csi_iic_slave_config_t  g_tIicSlaveCfgTest;	//从机初始化结构体变量
 
-volatile uint8_t bySendBufferTest[32]={1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20};
-volatile uint8_t byWriteBufferTest[32];
+volatile uint8_t g_bySendBufferTest[32]={1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20};
+volatile uint8_t g_byWriteBufferTest[32];
 
-volatile uint32_t wTxBuffTest[32] = {0,1,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20};// 前两个为wWriteAddrs
-volatile uint8_t bRxBuffTest[32] = {0};
+volatile uint32_t g_wTxBuffTest[32] = {0,1,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20};// 前两个为wWriteAddrs
+volatile uint8_t g_bRxBuffTest[32] = {0};
 
 
 /** \brief iic iomap示例代码 
@@ -48,13 +48,13 @@ void iic_master_iomap_test(void)
 	csi_pin_pull_mode(PB12, GPIO_PULLUP);
 	csi_pin_set_iomap(PB12, IOMAP0_I2C_SCL);
 
-	tIicMasterCfgTest.byAddrMode = IIC_ADDRESS_7BIT;			//设置主机地址模式 7/10 bit
-	tIicMasterCfgTest.byReStart = ENABLE;						//使能重复起始位
-	tIicMasterCfgTest.bySpeedMode = IIC_BUS_SPEED_STANDARD;	//设置主机速度模式	IIC_BUS_SPEED_STANDARD <=100kHz   IIC_BUS_SPEED_FAST <=400kHz    IIC_BUS_SPEED_FAST_PLUS <=  1MHz
-	tIicMasterCfgTest.hwInt = IIC_INTSRC_NONE ;;					//使能需要的中断
-	tIicMasterCfgTest.wSdaTimeout = 0XFFFF;						//SDA 超时时间设置，  1/主频 * tIicMasterCfgTest.wSdaTimeout  ms
-	tIicMasterCfgTest.wSclTimeout = 0XFFFF;						//SCL 超时时间设置，  1/主频 * tIicMasterCfgTest.wSdaTimeout  ms
-	csi_iic_master_init(I2C0,&tIicMasterCfgTest);				//主机初始化
+	g_tIicMasterCfgTest.byAddrMode = IIC_ADDRESS_7BIT;			//设置主机地址模式 7/10 bit
+	g_tIicMasterCfgTest.byReStart = ENABLE;						//使能重复起始位
+	g_tIicMasterCfgTest.bySpeedMode = IIC_BUS_SPEED_STANDARD;	//设置主机速度模式	IIC_BUS_SPEED_STANDARD <=100kHz   IIC_BUS_SPEED_FAST <=400kHz    IIC_BUS_SPEED_FAST_PLUS <=  1MHz
+	g_tIicMasterCfgTest.hwInt = IIC_INTSRC_NONE ;;					//使能需要的中断
+	g_tIicMasterCfgTest.wSdaTimeout = 0XFFFF;						//SDA 超时时间设置，  1/主频 * g_tIicMasterCfgTest.wSdaTimeout  ms
+	g_tIicMasterCfgTest.wSclTimeout = 0XFFFF;						//SCL 超时时间设置，  1/主频 * g_tIicMasterCfgTest.wSdaTimeout  ms
+	csi_iic_master_init(I2C0,&g_tIicMasterCfgTest);				//主机初始化
 
 	//该例程为主机读写AT24C04的EEPROM的示例，因AT24C04每次写入的数据不能超过16byte
 	//请使用时注意写的长度。不同的EEPROM会有不同的写入长度限制，请参考相应的数据手册
@@ -87,13 +87,13 @@ void iic_master_test(void)
 	csi_pin_set_mux(PC4,PC4_I2C_SCL);//PIN2 ->	I2C_SCL
 	csi_pin_set_mux(PC5,PC5_I2C_SDA);//PIN3 -> 	I2C_SDA
 
-	tIicMasterCfgTest.byAddrMode = IIC_ADDRESS_7BIT;			//设置主机地址模式 7/10 bit
-	tIicMasterCfgTest.byReStart = ENABLE;						//使能重复起始位
-	tIicMasterCfgTest.bySpeedMode = IIC_BUS_SPEED_STANDARD;	//设置主机速度模式	IIC_BUS_SPEED_STANDARD <=100kHz   IIC_BUS_SPEED_FAST <=400kHz    IIC_BUS_SPEED_FAST_PLUS <=  1MHz
-	tIicMasterCfgTest.hwInt = IIC_INTSRC_NONE ;;					//使能需要的中断
-	tIicMasterCfgTest.wSdaTimeout = 0XFFFF;						//SDA 超时时间设置，  1/主频 * tIicMasterCfgTest.wSdaTimeout  ms
-	tIicMasterCfgTest.wSclTimeout = 0XFFFF;						//SCL 超时时间设置，  1/主频 * tIicMasterCfgTest.wSdaTimeout  ms
-	csi_iic_master_init(I2C0,&tIicMasterCfgTest);				//主机初始化
+	g_tIicMasterCfgTest.byAddrMode = IIC_ADDRESS_7BIT;			//设置主机地址模式 7/10 bit
+	g_tIicMasterCfgTest.byReStart = ENABLE;						//使能重复起始位
+	g_tIicMasterCfgTest.bySpeedMode = IIC_BUS_SPEED_STANDARD;	//设置主机速度模式	IIC_BUS_SPEED_STANDARD <=100kHz   IIC_BUS_SPEED_FAST <=400kHz    IIC_BUS_SPEED_FAST_PLUS <=  1MHz
+	g_tIicMasterCfgTest.hwInt = IIC_INTSRC_NONE ;;					//使能需要的中断
+	g_tIicMasterCfgTest.wSdaTimeout = 0XFFFF;						//SDA 超时时间设置，  1/主频 * g_tIicMasterCfgTest.wSdaTimeout  ms
+	g_tIicMasterCfgTest.wSclTimeout = 0XFFFF;						//SCL 超时时间设置，  1/主频 * g_tIicMasterCfgTest.wSdaTimeout  ms
+	csi_iic_master_init(I2C0,&g_tIicMasterCfgTest);				//主机初始化
 
 	//该例程为主机读写AT24C04的EEPROM的示例，因AT24C04每次写入的数据不能超过16byte
 	//请使用时注意写的长度。不同的EEPROM会有不同的写入长度限制，请参考相应的数据手册
@@ -129,15 +129,15 @@ void iic_slave_test(void)
 	csi_pin_set_mux(PC4,PC4_I2C_SCL);//PIN2 ->	I2C_SCL
 	csi_pin_set_mux(PC5,PC5_I2C_SDA);//PIN3 -> 	I2C_SDA
 	
-	tIicSlaveCfgTest.byAddrMode = IIC_ADDRESS_7BIT;		//设置从机地址模式 
-	tIicSlaveCfgTest.bySpeedMode = IIC_BUS_SPEED_STANDARD;	//设置从机速度	IIC_BUS_SPEED_STANDARD <=100kHz   IIC_BUS_SPEED_FAST <=400kHz    IIC_BUS_SPEED_FAST_PLUS <=  1MHz
-	tIicSlaveCfgTest.hwSlaveAddr = 0xa0;				//设置从机地址
-	tIicSlaveCfgTest.hwInt = IIC_INTSRC_SCL_SLOW | IIC_INTSRC_STOP_DET | 
+	g_tIicSlaveCfgTest.byAddrMode = IIC_ADDRESS_7BIT;		//设置从机地址模式 
+	g_tIicSlaveCfgTest.bySpeedMode = IIC_BUS_SPEED_STANDARD;	//设置从机速度	IIC_BUS_SPEED_STANDARD <=100kHz   IIC_BUS_SPEED_FAST <=400kHz    IIC_BUS_SPEED_FAST_PLUS <=  1MHz
+	g_tIicSlaveCfgTest.hwSlaveAddr = 0xa0;				//设置从机地址
+	g_tIicSlaveCfgTest.hwInt = IIC_INTSRC_SCL_SLOW | IIC_INTSRC_STOP_DET | 
 					IIC_INTSRC_RD_REQ | IIC_INTSRC_RX_FULL | IIC_INTSRC_TX_ABRT; //使能相应中断
-	csi_iic_set_slave_buffer(byWriteBufferTest,32,bySendBufferTest,32); //从机就是数组和发送数组设置
-	tIicMasterCfgTest.wSdaTimeout = 0XFFFF;						//SDA 超时时间设置，  1/主频 * tIicMasterCfgTest.wSdaTimeout  ms
-	tIicMasterCfgTest.wSclTimeout = 0XFFFF;						//SCL 超时时间设置，  1/主频 * tIicMasterCfgTest.wSdaTimeout  ms
-	csi_iic_slave_init(I2C0,&tIicSlaveCfgTest);		//初始化从机
+	csi_iic_set_slave_buffer(g_byWriteBufferTest,32,g_bySendBufferTest,32); //从机就是数组和发送数组设置
+	g_tIicMasterCfgTest.wSdaTimeout = 0XFFFF;						//SDA 超时时间设置，  1/主频 * g_tIicMasterCfgTest.wSdaTimeout  ms
+	g_tIicMasterCfgTest.wSclTimeout = 0XFFFF;						//SCL 超时时间设置，  1/主频 * g_tIicMasterCfgTest.wSdaTimeout  ms
+	csi_iic_slave_init(I2C0,&g_tIicSlaveCfgTest);		//初始化从机
 
 	
 	while(1);
@@ -168,15 +168,15 @@ void iic_multi_slave_address_test(void)
 	csi_pin_pull_mode(PC4, GPIO_PULLUP);
 	csi_pin_pull_mode(PC5, GPIO_PULLUP);
 	
-	tIicSlaveCfgTest.byAddrMode = IIC_ADDRESS_7BIT;		//设置从机地址模式 
-	tIicSlaveCfgTest.bySpeedMode = IIC_BUS_SPEED_STANDARD;	//设置从机速度	IIC_BUS_SPEED_STANDARD <=100kHz   IIC_BUS_SPEED_FAST <=400kHz    IIC_BUS_SPEED_FAST_PLUS <=  1MHz
-	tIicSlaveCfgTest.hwSlaveAddr = 0x30;				//设置从机地址,SADDR>>1
-	tIicSlaveCfgTest.hwInt = IIC_INTSRC_SCL_SLOW | IIC_INTSRC_STOP_DET | 
+	g_tIicSlaveCfgTest.byAddrMode = IIC_ADDRESS_7BIT;		//设置从机地址模式 
+	g_tIicSlaveCfgTest.bySpeedMode = IIC_BUS_SPEED_STANDARD;	//设置从机速度	IIC_BUS_SPEED_STANDARD <=100kHz   IIC_BUS_SPEED_FAST <=400kHz    IIC_BUS_SPEED_FAST_PLUS <=  1MHz
+	g_tIicSlaveCfgTest.hwSlaveAddr = 0x30;				//设置从机地址,SADDR>>1
+	g_tIicSlaveCfgTest.hwInt = IIC_INTSRC_SCL_SLOW | IIC_INTSRC_STOP_DET | 
 					IIC_INTSRC_RD_REQ | IIC_INTSRC_RX_FULL | IIC_INTSRC_TX_ABRT; //使能相应中断
-	csi_iic_set_slave_buffer(byWriteBufferTest,32,bySendBufferTest,32); //从机就是数组和发送数组设置
-	tIicMasterCfgTest.wSdaTimeout = 0XFFFF;						//SDA 超时时间设置，  1/主频 * tIicMasterCfgTest.wSdaTimeout  ms
-	tIicMasterCfgTest.wSclTimeout = 0XFFFF;						//SCL 超时时间设置，  1/主频 * tIicMasterCfgTest.wSdaTimeout  ms
-	csi_iic_slave_init(I2C0,&tIicSlaveCfgTest);		//初始化从机
+	csi_iic_set_slave_buffer(g_byWriteBufferTest,32,g_bySendBufferTest,32); //从机就是数组和发送数组设置
+	g_tIicMasterCfgTest.wSdaTimeout = 0XFFFF;						//SDA 超时时间设置，  1/主频 * g_tIicMasterCfgTest.wSdaTimeout  ms
+	g_tIicMasterCfgTest.wSclTimeout = 0XFFFF;						//SCL 超时时间设置，  1/主频 * g_tIicMasterCfgTest.wSdaTimeout  ms
+	csi_iic_slave_init(I2C0,&g_tIicSlaveCfgTest);		//初始化从机
 	
 	
 	csi_iic_qualmode_set(I2C0,I2C_QUAL_EXTEND);   //QUALMODE=1,地址扩展模式
@@ -237,19 +237,19 @@ void iic_multi_slave_address_test(void)
 	tDmaConfig.wInt  = DMA_INTSRC_NONE;   		//使用TCIT中断
 		
 	csi_dma_ch_init(DMA0, DMA_CH0, &tDmaConfig);  //初始化DMA
-	csi_dma_ch_start(DMA0, DMA_CH0, (void *)wTxBuffTest, (void *)0x400A0010,9,1);
+	csi_dma_ch_start(DMA0, DMA_CH0, (void *)g_wTxBuffTest, (void *)0x400A0010,9,1);
 
 	// iic congif
-	tIicMasterCfgTest.byAddrMode = IIC_ADDRESS_7BIT;			//设置主机地址模式 7/10 bit
-	tIicMasterCfgTest.byReStart = ENABLE;						//使能重复起始位
-	tIicMasterCfgTest.bySpeedMode = IIC_BUS_SPEED_STANDARD;	//设置主机速度模式	IIC_BUS_SPEED_STANDARD <=100kHz   IIC_BUS_SPEED_FAST <=400kHz    IIC_BUS_SPEED_FAST_PLUS <=  1MHz
-	tIicMasterCfgTest.hwInt = IIC_INTSRC_NONE;							//使能需要的中断
-	tIicMasterCfgTest.wSdaTimeout = 0XFFFFFFF;						//SDA 超时时间设置，  1/主频 * tIicMasterCfgTest.wSdaTimeout  ms
-	tIicMasterCfgTest.wSclTimeout = 0XFFFFFFF;						//SCL 超时时间设置，  1/主频 * tIicMasterCfgTest.wSdaTimeout  ms
-	csi_iic_master_init(I2C0,&tIicMasterCfgTest);				//主机初始化
+	g_tIicMasterCfgTest.byAddrMode = IIC_ADDRESS_7BIT;			//设置主机地址模式 7/10 bit
+	g_tIicMasterCfgTest.byReStart = ENABLE;						//使能重复起始位
+	g_tIicMasterCfgTest.bySpeedMode = IIC_BUS_SPEED_STANDARD;	//设置主机速度模式	IIC_BUS_SPEED_STANDARD <=100kHz   IIC_BUS_SPEED_FAST <=400kHz    IIC_BUS_SPEED_FAST_PLUS <=  1MHz
+	g_tIicMasterCfgTest.hwInt = IIC_INTSRC_NONE;							//使能需要的中断
+	g_tIicMasterCfgTest.wSdaTimeout = 0XFFFFFFF;						//SDA 超时时间设置，  1/主频 * g_tIicMasterCfgTest.wSdaTimeout  ms
+	g_tIicMasterCfgTest.wSclTimeout = 0XFFFFFFF;						//SCL 超时时间设置，  1/主频 * g_tIicMasterCfgTest.wSdaTimeout  ms
+	csi_iic_master_init(I2C0,&g_tIicMasterCfgTest);				//主机初始化
 	
 	I2C0->DMACR = (0X1<<0) | (0X1<<1) | (0X0<<2) | (0X1<<3);
-	wTxBuffTest[8] |=  I2C_CMD_STOP;     // 最后一个数添加stop
+	g_wTxBuffTest[8] |=  I2C_CMD_STOP;     // 最后一个数添加stop
 	
 	csi_iic_disable(I2C0);
 	csp_i2c_set_taddr(I2C0,0xa0 >> 1);
@@ -304,21 +304,21 @@ void iic_multi_slave_address_test(void)
 	tDmaConfig.wInt  = DMA_INTSRC_NONE;   		//使用TCIT中断
 
 	csi_dma_ch_init(DMA0, DMA_CH1, &tDmaConfig);  //初始化DMA
-	csi_dma_ch_start(DMA0, DMA_CH1, (void *)0x400A0010, (void *)bRxBuffTest,9,1);
+	csi_dma_ch_start(DMA0, DMA_CH1, (void *)0x400A0010, (void *)g_bRxBuffTest,9,1);
 
 	// iic config
-	tIicMasterCfgTest.byAddrMode = IIC_ADDRESS_7BIT;			//设置主机地址模式 7/10 bit
-	tIicMasterCfgTest.byReStart = ENABLE;						//使能重复起始位
-	tIicMasterCfgTest.bySpeedMode = IIC_BUS_SPEED_STANDARD;	//设置主机速度模式	IIC_BUS_SPEED_STANDARD <=100kHz   IIC_BUS_SPEED_FAST <=400kHz    IIC_BUS_SPEED_FAST_PLUS <=  1MHz
-	tIicMasterCfgTest.hwInt = IIC_INTSRC_NONE;							//使能需要的中断
-	tIicMasterCfgTest.wSdaTimeout = 0XFFFFFFF;						//SDA 超时时间设置，  1/主频 * tIicMasterCfgTest.wSdaTimeout  ms
-	tIicMasterCfgTest.wSclTimeout = 0XFFFFFFF;						//SCL 超时时间设置，  1/主频 * tIicMasterCfgTest.wSdaTimeout  ms
-	csi_iic_master_init(I2C0,&tIicMasterCfgTest);				//主机初始化
+	g_tIicMasterCfgTest.byAddrMode = IIC_ADDRESS_7BIT;			//设置主机地址模式 7/10 bit
+	g_tIicMasterCfgTest.byReStart = ENABLE;						//使能重复起始位
+	g_tIicMasterCfgTest.bySpeedMode = IIC_BUS_SPEED_STANDARD;	//设置主机速度模式	IIC_BUS_SPEED_STANDARD <=100kHz   IIC_BUS_SPEED_FAST <=400kHz    IIC_BUS_SPEED_FAST_PLUS <=  1MHz
+	g_tIicMasterCfgTest.hwInt = IIC_INTSRC_NONE;							//使能需要的中断
+	g_tIicMasterCfgTest.wSdaTimeout = 0XFFFFFFF;						//SDA 超时时间设置，  1/主频 * g_tIicMasterCfgTest.wSdaTimeout  ms
+	g_tIicMasterCfgTest.wSclTimeout = 0XFFFFFFF;						//SCL 超时时间设置，  1/主频 * g_tIicMasterCfgTest.wSdaTimeout  ms
+	csi_iic_master_init(I2C0,&g_tIicMasterCfgTest);				//主机初始化
 	
 	I2C0->DMACR = (0X1<<0) | (0X1<<1) | (0X0<<2) | (0X1<<3);
 
 	
-	csi_iic_read_nbyte_dma(I2C0,0xa0,0x0001,2,&bRxBuffTest[0],9);        
+	csi_iic_read_nbyte_dma(I2C0,0xa0,0x0001,2,&g_bRxBuffTest[0],9);        
 	
 
 	
@@ -329,3 +329,16 @@ void iic_multi_slave_address_test(void)
 }
 
 
+
+
+/** \brief i2c interrupt handle 
+ * 
+ *  \param[in] ptSioBase: pointer of i2c register structure
+ *  \return none
+ */
+__attribute__((weak)) void i2c_irqhandler(csp_i2c_t *ptIicBase)
+{
+	
+	csi_iic_slave_receive_send(ptIicBase);
+	
+}

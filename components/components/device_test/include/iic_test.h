@@ -26,6 +26,6 @@ void iic_multi_slave_address_test(void);
 void iic_dma_tx_test(void);
 void iic_dma_rx_test(void);
 
-
+__attribute__((weak)) void i2c_irqhandler(csp_i2c_t *ptIicBase);
 
 #endif

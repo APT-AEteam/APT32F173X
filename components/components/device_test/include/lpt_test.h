@@ -26,6 +26,6 @@ int lpt_prdld_test(void);
 int lpt_pscld_test(void);
 int lpt_cmpld_test(void);
 
-
+__attribute__((weak)) void lpt_irqhandler(csp_lpt_t *ptLptBase);
 
 #endif

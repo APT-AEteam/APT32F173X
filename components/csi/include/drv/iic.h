@@ -206,13 +206,7 @@ void csi_iic_set_slave_buffer(volatile uint8_t *pbyIicRxBuf,uint16_t hwIicRxSize
  */ 
 void csi_iic_spklen_set(csp_i2c_t *ptIicBase, uint8_t bySpklen);
 
-/** \brief i2c interrupt handle 
- * 
- *  \param[in] ptSioBase: pointer of i2c register structure
- *  \return none
- */
- 
-__attribute__((weak)) void i2c_irqhandler(csp_i2c_t *ptIicBase);
+
 
 /** \brief  set iic slave address qualifier mode
  * 

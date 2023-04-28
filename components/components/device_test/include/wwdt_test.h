@@ -19,5 +19,5 @@
 
 csi_error_t wwdt_test(void);
 csi_error_t wwdt_irq_test(void);
-
+__attribute__((weak)) void wwdt_irqhandler(void);
 #endif

@@ -50,6 +50,8 @@ extern void gptb_irqhandler(csp_gptb_t *ptGptbBase);
 extern void sio_irqhandler(csp_sio_t *ptSioBase);
 extern void rtc_irqhandler(csp_rtc_t *ptRtcBase);
 
+
+extern void lpt_irqhandler(csp_lpt_t *ptLptBase);
 /* private function--------------------------------------------------------*/
 /* extern variablesr------------------------------------------------------*/
 /* Private variablesr------------------------------------------------------*/
