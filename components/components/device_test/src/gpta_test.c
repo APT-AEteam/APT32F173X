@@ -299,6 +299,8 @@ int gpta_pwm_waveform_test(void)
 
 /** \brief GPTA链接代码实例
  *         通过GPTA1链接GPTA0,实现波形的输出
+ *         0x0 不链接, 0x1 GPTA0 ,0x2 GPTA1 0x3 GPTA2 ,0x4 GPTA3 
+ *         0x5 GPTB0 ,0x6 GPTB1,0x7 GPTB2 ,0x8 GPTB3 0x9 GPTB4 ,0xA GPTB5
  *  \param[in] none
  *  \return error code
  */
@@ -342,10 +344,11 @@ int gpta_reglk_test(void)
 	tGptachannelCfg.byChoiceC2sel  =   GPTA_CMPB;
 	csi_gpta_channel_config(GPTA0, &tGptachannelCfg,  GPTA_CHANNEL_2);
 	
-	
-//------------------------------------------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
+// 0x0 不链接, 0x1 GPTA0 ,0x2 GPTA1 0x3 GPTA2 ,0x4 GPTA3 0x5 GPTB0 ,0x6 GPTB1,0x7 GPTB2 ,0x8 GPTB3 0x9 GPTB4 ,0xA GPTB5 
+//---------------------------------------------------------------------------------------------------------------------- 
     csi_gpta_feglk_config_t  FEGLKcfg;                                                                    
-	FEGLKcfg.byPrdr	   = 2;                                                              //0x0 不链接, 0x1 EPT0 ,0x2 GPTA1
+	FEGLKcfg.byPrdr	   = 2;                                                              
 	FEGLKcfg.byRssr    = 2;																                   
 	FEGLKcfg.byCmpa    = 2;																					
 	FEGLKcfg.byCmpb    = 2;																					
