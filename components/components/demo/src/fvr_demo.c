@@ -20,7 +20,12 @@
 /* Private macro-----------------------------------------------------------*/
 /* Private variablesr------------------------------------------------------*/
 
-void fvr_output_demo(void)//FVR电平通过PB7输出
+/** \brief 配置FVR电平，并通过管脚输出示例代码
+ * 
+ *  \param[in] none
+ *  \return none
+ */
+void fvr_output_demo(void)
 {
 	csi_pin_set_mux(PB7, PB7_FVROUT);//设置PB7为FVR输出
 	soc_clk_enable(FVR_SYS_CLK);//配置FVR时钟
@@ -30,12 +35,14 @@ void fvr_output_demo(void)//FVR电平通过PB7输出
 	csi_fvr_start(FVR);	
 }
 
-
-void fvr_buf_demo(void)//设置FVR的BUF(intervref)功能
+/** \brief 配置BUF(intervref)电平，并通过管脚输出
+ * 
+ *  \param[in] none
+ *  \return none
+ */
+void fvr_buf_demo(void)
 {
-	csi_pin_set_mux(PB7, PB7_FVROUT);//设置PB7为FVR输出
 	soc_clk_enable(FVR_SYS_CLK);//配置FVR时钟
-	csi_fvr_lvl_set(FVR, FVR_LVL_4V);//设置FVR电平为4V
 	csi_pin_set_mux(PD4, PD4_INPUT);//设置BUF输入管脚PD4
 	csi_pin_set_mux(PB8, PB8_BUF);//设置BUF输出管脚PB8
 	csi_fvr_buf_init(FVR,FVR_BUFLVL_INPUT);//设置buf的输入源
