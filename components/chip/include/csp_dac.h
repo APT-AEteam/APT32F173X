@@ -282,6 +282,9 @@ static inline void csp_dac_irq_clr(csp_dac_t *ptDacBase,dac_irq_e byVal)
 			break;	
 	}
 }
-
+static inline uint32_t csp_dac_get_misr(csp_dac_t *ptDacBase)
+{
+	return (uint32_t)(ptDacBase->DAC_MISR);
+}
 #endif
 

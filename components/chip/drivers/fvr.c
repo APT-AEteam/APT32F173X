@@ -10,12 +10,7 @@
 */
 #include <drv/fvr.h>
 #include "csp_fvr.h"
-/**
-  \brief       initializes the resources needed for the FVR interface.
-  \param[in]   ptFvrBase	pointer of fvr register structure
-  \param[in]   ptFvrCfg    pointer of fvr parameter config structure
-  \return      error code.
-*/
+
 /**
   \brief       set fvr lvl 
   \param[in]   ptFvrBase	pointer of fvr register structure
