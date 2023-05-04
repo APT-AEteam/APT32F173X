@@ -52,16 +52,20 @@ extern void rtc_irqhandler(csp_rtc_t *ptRtcBase);
 
 
 extern void lpt_irqhandler(csp_lpt_t *ptLptBase);
-/* private function--------------------------------------------------------*/
-/* extern variablesr------------------------------------------------------*/
+
+/* Private macro-----------------------------------------------------------*/
+#define  ATTRIBUTE_ISR __attribute__ ((interrupt ("machine")))
+
+
 /* Private variablesr------------------------------------------------------*/
+
 
 /*************************************************************/
 //CORET Interrupt
 //EntryParameter:NONE
 //ReturnValue:NONE
 /*************************************************************/
-void nmi_int_handler(void)
+ATTRIBUTE_ISR void nmi_int_handler(void)
 {
 	if(csp_syscon_get_int_st(SYSCON) & LVD_INT)
 	{
@@ -75,13 +79,13 @@ void nmi_int_handler(void)
 	}
 }
 
-void coret_int_handler(void)
+ATTRIBUTE_ISR void coret_int_handler(void)
 {
 	// ISR content ...
 //	tick_irqhandler();
 }
 
-void syscon_int_handler(void) 
+ATTRIBUTE_ISR void syscon_int_handler(void) 
 {
     // ISR content ...
 
@@ -100,7 +104,7 @@ void syscon_int_handler(void)
 	}
 }
 
-void ifc_int_handler(void)
+ATTRIBUTE_ISR void ifc_int_handler(void)
 {
 #if	IFC_INT_HANDLE_EN
 	// ISR content ...
@@ -108,7 +112,8 @@ void ifc_int_handler(void)
 #endif
 	
 }
-void adc0_int_handler(void) 
+
+ATTRIBUTE_ISR void adc0_int_handler(void) 
 {	
 #if	ADC0_INT_HANDLE_EN
 	// ISR content ...
@@ -116,7 +121,7 @@ void adc0_int_handler(void)
 #endif	
 }
 
-void adc1_int_handler(void) 
+ATTRIBUTE_ISR void adc1_int_handler(void) 
 {
 #if	ADC1_INT_HANDLE_EN
 	// ISR content ...
@@ -124,7 +129,7 @@ void adc1_int_handler(void)
 #endif	
 }
 
- void dma0_int_handler(void)
+ATTRIBUTE_ISR void dma0_int_handler(void)
 {
 #if DMA0_INT_HANDLE_EN	
 	// ISR content ...
@@ -132,7 +137,7 @@ void adc1_int_handler(void)
 #endif
 }
 
-void dma1_int_handler(void) 
+ATTRIBUTE_ISR void dma1_int_handler(void) 
 {
 #if DMA1_INT_HANDLE_EN	
 	// ISR content ...
@@ -140,7 +145,7 @@ void dma1_int_handler(void)
 #endif	
 }
 
-void wwdt_int_handler(void)
+ATTRIBUTE_ISR void wwdt_int_handler(void)
 {
 #if WWDT_INT_HANDLE_EN
 	 // ISR content ...
@@ -149,7 +154,7 @@ void wwdt_int_handler(void)
 #endif
 }
 
-void gpta0_int_handler(void)
+ATTRIBUTE_ISR void gpta0_int_handler(void)
 {
 #if GPTA0_INT_HANDLE_EN	
 	 // ISR content ...
@@ -157,7 +162,7 @@ void gpta0_int_handler(void)
 #endif
 }
 
-void gpta1_int_handler(void) 
+ATTRIBUTE_ISR void gpta1_int_handler(void) 
 {
 #if GPTA1_INT_HANDLE_EN	
 	 // ISR content ...
@@ -166,7 +171,7 @@ void gpta1_int_handler(void)
 }
 
 
-void gpta2_int_handler(void)
+ATTRIBUTE_ISR void gpta2_int_handler(void)
 {
 #if GPTA2_INT_HANDLE_EN	
 	 // ISR content ...
@@ -174,7 +179,7 @@ void gpta2_int_handler(void)
 #endif
 }
 
-void gpta3_int_handler(void) 
+ATTRIBUTE_ISR void gpta3_int_handler(void) 
 {
 #if GPTA3_INT_HANDLE_EN	
 	gpta_irqhandler(GPTA3);
@@ -182,7 +187,7 @@ void gpta3_int_handler(void)
 #endif
 }
 
-void gptb0_int_handler(void) 
+ATTRIBUTE_ISR void gptb0_int_handler(void) 
 {
 #if GPTB0_INT_HANDLE_EN		
     // ISR content ...	
@@ -190,7 +195,7 @@ void gptb0_int_handler(void)
 #endif
 }
 
-void gptb1_int_handler(void) 
+ATTRIBUTE_ISR void gptb1_int_handler(void) 
 {
 #if GPTB1_INT_HANDLE_EN		
     // ISR content ...	
@@ -198,7 +203,7 @@ void gptb1_int_handler(void)
 #endif	
 }
 
-void gptb2_int_handler(void) 
+ATTRIBUTE_ISR void gptb2_int_handler(void) 
 {
 #if GPTB2_INT_HANDLE_EN		
     // ISR content ...	
@@ -206,7 +211,7 @@ void gptb2_int_handler(void)
 #endif	
 }
 
-void gptb3_int_handler(void) 
+ATTRIBUTE_ISR void gptb3_int_handler(void) 
 {
 #if GPTB3_INT_HANDLE_EN		
     // ISR content ...	
@@ -214,7 +219,7 @@ void gptb3_int_handler(void)
 #endif
 }
 
-void gptb4_int_handler(void) 
+ATTRIBUTE_ISR void gptb4_int_handler(void) 
 {
 #if GPTB4_INT_HANDLE_EN		
     // ISR content ...	
@@ -222,7 +227,7 @@ void gptb4_int_handler(void)
 #endif	
 }
 
-void gptb5_int_handler(void) 
+ATTRIBUTE_ISR void gptb5_int_handler(void) 
 {
 #if GPTB5_INT_HANDLE_EN		
     // ISR content ...	
@@ -230,22 +235,21 @@ void gptb5_int_handler(void)
 #endif
 }
 
-void dac0_int_handler(void) 
+ATTRIBUTE_ISR void dac0_int_handler(void) 
 {
 #if DAC0_INT_HANDLE_EN		
     // ISR content ...
 #endif
 }
 
-
-void usart0_int_handler(void) 
+ATTRIBUTE_ISR void usart0_int_handler(void) 
 {
 #if	USART0_INT_HANDLE_EN	
 	usart_irqhandler(USART0, 0);
 #endif	
 }
 
-void usart1_int_handler(void) 
+ATTRIBUTE_ISR void usart1_int_handler(void) 
 {
 #if	USART0_INT_HANDLE_EN	
     // ISR content ...
@@ -253,7 +257,7 @@ void usart1_int_handler(void)
 #endif
 }
 
-void uart0_int_handler(void) 
+ATTRIBUTE_ISR void uart0_int_handler(void) 
 {
 #if	UART0_INT_HANDLE_EN
     // ISR content ...
@@ -262,7 +266,7 @@ void uart0_int_handler(void)
 #endif
 }
 
-void uart1_int_handler(void) 
+ATTRIBUTE_ISR void uart1_int_handler(void) 
 {
 #if	UART1_INT_HANDLE_EN
     // ISR content ...
@@ -270,7 +274,8 @@ void uart1_int_handler(void)
 
 #endif
 }
-void uart2_int_handler(void) 
+
+ATTRIBUTE_ISR void uart2_int_handler(void) 
 {
 #if	UART2_INT_HANDLE_EN
     // ISR content ...
@@ -279,8 +284,7 @@ void uart2_int_handler(void)
 #endif
 }
 
-
-void sio0_int_handler(void) 
+ATTRIBUTE_ISR void sio0_int_handler(void) 
 {
 #if	SIO0_INT_HANDLE_EN
 	sio_irqhandler(SIO0);
@@ -288,7 +292,7 @@ void sio0_int_handler(void)
 #endif
 }
 
-void sio1_int_handler(void) 
+ATTRIBUTE_ISR void sio1_int_handler(void) 
 {
 #if	SIO1_INT_HANDLE_EN
 	sio_irqhandler(SIO1);
@@ -296,7 +300,7 @@ void sio1_int_handler(void)
 #endif
 }
 
-void i2c_int_handler(void) 
+ATTRIBUTE_ISR void i2c_int_handler(void) 
 {
 #if	I2C_INT_HANDLE_EN
     // ISR content ...
@@ -305,7 +309,7 @@ void i2c_int_handler(void)
 #endif
 }
 
-void spi0_int_handler(void) 
+ATTRIBUTE_ISR void spi0_int_handler(void) 
 {
 #if	SPI0_INT_HANDLE_EN
    // ISR content ...
@@ -313,7 +317,7 @@ void spi0_int_handler(void)
 #endif   
 }
 
-void spi1_int_handler(void) 
+ATTRIBUTE_ISR void spi1_int_handler(void) 
 {
 #if	SPI1_INT_HANDLE_EN
    // ISR content ...
@@ -321,7 +325,7 @@ void spi1_int_handler(void)
 #endif
 }
 
-void exi0_int_handler(void) 
+ATTRIBUTE_ISR void exi0_int_handler(void) 
 {
 #if	EXI0_INT_HANDLE_EN
     // ISR content ...
@@ -329,28 +333,32 @@ void exi0_int_handler(void)
 	csi_pin_toggle(PD0);
 #endif
 }
-void exi1_int_handler(void) 
+
+ATTRIBUTE_ISR void exi1_int_handler(void) 
 {
 #if	EXI1_INT_HANDLE_EN
     // ISR content ...
 	gpio_irqhandler(1);
 #endif
 }
-void exi2_3_int_handler(void) 
+
+ATTRIBUTE_ISR void exi2_3_int_handler(void) 
 {
 #if	EXI2_3_INT_HANDLE_EN
     // ISR content ...
 	gpio_irqhandler(2);
 #endif
 }
-void exi4_9_int_handler(void) 
+
+ATTRIBUTE_ISR void exi4_9_int_handler(void) 
 {
 #if	EXI4_9_INT_HANDLE_EN
     // ISR content ...
 	gpio_irqhandler(3);
 #endif
 }
-void exi10_15_int_handler(void) 
+
+ATTRIBUTE_ISR void exi10_15_int_handler(void) 
 {
 #if	EXI10_15_INT_HANDLE_EN
     // ISR content ...
@@ -358,7 +366,7 @@ void exi10_15_int_handler(void)
 #endif
 }
 
-void can_int_handler(void) 
+ATTRIBUTE_ISR void can_int_handler(void) 
 {
 #if	CAN_INT_HANDLE_EN
     // ISR content ...
@@ -366,7 +374,7 @@ void can_int_handler(void)
 #endif
 }
 
-void cnta_int_handler(void)
+ATTRIBUTE_ISR void cnta_int_handler(void)
 {
 #if	CNTA_INT_HANDLE_EN
 	// ISR content ...
@@ -374,7 +382,7 @@ void cnta_int_handler(void)
 #endif
 }
 
-void lpt_int_handler(void)
+ATTRIBUTE_ISR void lpt_int_handler(void)
 {
 #if	LPT_INT_HANDLE_EN
     // ISR content ...
@@ -382,7 +390,7 @@ void lpt_int_handler(void)
 #endif
 }
 
-void rtc_int_handler(void)
+ATTRIBUTE_ISR void rtc_int_handler(void)
 {
 #if	RTC_INT_HANDLE_EN
 	// ISR content ...
@@ -390,7 +398,7 @@ void rtc_int_handler(void)
 #endif
 }
 
-void cmp0_int_handler(void) 
+ATTRIBUTE_ISR void cmp0_int_handler(void) 
 {
 #if	CMP0_INT_HANDLE_EN
     // ISR content ...
@@ -398,7 +406,7 @@ void cmp0_int_handler(void)
 #endif
 }
 
-void cmp1_int_handler(void) 
+ATTRIBUTE_ISR void cmp1_int_handler(void) 
 {
 #if	CMP1_INT_HANDLE_EN
     // ISR content ...
@@ -406,7 +414,7 @@ void cmp1_int_handler(void)
 #endif
 }
 
-void cmp2_int_handler(void) 
+ATTRIBUTE_ISR void cmp2_int_handler(void) 
 {
 #if	CMP2_INT_HANDLE_EN
     // ISR content ...
@@ -414,7 +422,7 @@ void cmp2_int_handler(void)
 #endif
 }
 
-void led_int_handler(void) 
+ATTRIBUTE_ISR void led_int_handler(void) 
 {
 #if	LED_INT_HANDLE_EN
     // ISR content ...
@@ -422,7 +430,7 @@ void led_int_handler(void)
 #endif
 }
 
-void bt0_int_handler(void) 
+ATTRIBUTE_ISR void bt0_int_handler(void) 
 {
 #if	BT0_INT_HANDLE_EN
     // ISR content ...
@@ -430,7 +438,7 @@ void bt0_int_handler(void)
 #endif
 }
 
-void bt1_int_handler(void) 
+ATTRIBUTE_ISR void bt1_int_handler(void) 
 {
 #if	BT1_INT_HANDLE_EN
     // ISR content ...
@@ -438,7 +446,7 @@ void bt1_int_handler(void)
 #endif
 }
 
-void bt2_int_handler(void) 
+ATTRIBUTE_ISR void bt2_int_handler(void) 
 {
 #if	BT2_INT_HANDLE_EN
     // ISR content ...
@@ -446,7 +454,7 @@ void bt2_int_handler(void)
 #endif
 }
 
-void bt3_int_handler(void) 
+ATTRIBUTE_ISR void bt3_int_handler(void) 
 {
 #if	BT3_INT_HANDLE_EN
 //    // ISR content ...
