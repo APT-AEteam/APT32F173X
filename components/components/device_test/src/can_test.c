@@ -14,6 +14,7 @@
 #include "sys_clk.h"
 #include <drv/can.h>
 #include <drv/pin.h>
+#include <iostring.h>
 
 #include "csp.h"
 
@@ -187,9 +188,6 @@ int can_recv_test(csi_can_chnl_e eCanChnl, uint8_t byChnlNum, uint8_t byMskEn)
 	
 	csi_can_config_t 	 tCanConfig;					//CAN init config
 	csi_can_rx_config_t  tCanRxCfg;						//CAN RX config	
-	csi_can_recv_t		 tCanRecv[byChnlNum];			//接收数据结构体缓存，用户定义大小
-	
-	uint8_t byRxBuf[16];								//接收数据
 	
 //	csi_pin_set_mux(PC4, PC4_CAN_RX);					//CAN RX管脚配置
 //	csi_pin_set_mux(PC5, PC5_CAN_TX);					//CAN TX管脚配置
@@ -239,21 +237,10 @@ int can_recv_test(csi_can_chnl_e eCanChnl, uint8_t byChnlNum, uint8_t byMskEn)
 		csi_can_rx_config(CAN0, i, &tCanRxCfg);
 	}
 	
-	csi_can_recv_init(&tCanRecv[0], eCanChnl, byChnlNum);	//接收数据结构体
 	csi_can_open(CAN0);
 	
 	while(1)
 	{
-		
-		for(i = eCanChnl; i < (eCanChnl + byChnlNum); i++)
-		{
-			if(csi_can_get_recv_msg() & CAN_MSG_CH(i))
-			{
-				iRet = csi_can_chnl_read(CAN0,byRxBuf, i);
-			}
-			mdelay(1);
-		}
-		
 		nop;
 		mdelay(5);
 		nop;
@@ -416,6 +403,7 @@ int can_remote_frames_test(void)
 	wData = csi_can_get_ifx(CAN0,CAN_CH6, CAN_IFX_MCR);
 	wData = csi_can_get_ifx(CAN0,CAN_CH7, CAN_IFX_MCR);
 	wData = csi_can_get_ifx(CAN0,CAN_CH8, CAN_IFX_MCR);
+	my_printf("Can Ch8 Mcr Val: %d \n", wData);
 	
 	//发送数据帧
 	{
@@ -660,7 +648,7 @@ int can_lback_silent_mode_test(void)
  *  \param[in] ptCanBase: pointer of can register structure
  *  \return none
  */ 
-void can_irqhandler(csp_can_t *ptCanBase)
+__attribute__((weak)) void can_irqhandler(csp_can_t *ptCanBase)
 {
 	volatile uint16_t hwMcrVal = 0x00;
 	volatile uint16_t hwIntNum = csp_can_get_hpir(ptCanBase);		//get interrupt pointer							
@@ -755,6 +743,9 @@ void can_irqhandler(csp_can_t *ptCanBase)
 			{
 				wData[0] = csi_can_get_ifx(ptCanBase, hwIntNum, CAN_IFX_DAR);			//DATA A
 				wData[1] = csi_can_get_ifx(ptCanBase, hwIntNum, CAN_IFX_DBR);			//DATA B
+				
+				my_printf("Can Receive Data0: %d \n", wData[0]);
+				my_printf("Can Receive Data1: %d \n", wData[0]);
 				
 				hwMcrVal = csi_can_get_ifx(ptCanBase, hwIntNum, CAN_IFX_MCR);			//MCR
 				hwMcrVal = csi_can_get_ifx(ptCanBase, hwIntNum, CAN_IFX_MSKR);			//MSKR
