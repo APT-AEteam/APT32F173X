@@ -32,14 +32,18 @@
 #include <drv/lpt.h>
 #include <drv/cnta.h>
 #include <drv/gpta.h>
+#include <drv/gptb.h>
 #include <drv/iic.h>
 #include <drv/sio.h>
 #include <drv/spi.h>
-//#include <drv/lin.h>
+#include <drv/lin.h>
 #include <drv/uart.h>
 #include <drv/usart.h>
-//#include <drv/tkey.h>
 #include <drv/can.h>
-
+#include <drv/cmp.h>
+#include <drv/dac.h>
+#include <drv/fvr.h>
+#include <drv/led.h>
+#include <drv/opa.h>
 
 #endif /* _CSI_DRV_H_ */

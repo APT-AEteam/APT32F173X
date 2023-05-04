@@ -54,7 +54,6 @@ csp_gptb_t 		*GPTB3     	= (csp_gptb_t 	*)(APB_GPTB3_BASE);
 csp_gptb_t 		*GPTB4     	= (csp_gptb_t 	*)(APB_GPTB4_BASE);
 csp_gptb_t 		*GPTB5     	= (csp_gptb_t 	*)(APB_GPTB5_BASE);
 
-//csp_ept_t 		*EPT0     	= (csp_ept_t    *)(APB_EPT0_BASE);
 csp_lpt_t 		*LPT     	= (csp_lpt_t 	*)(APB_LPT_BASE) ;
 csp_wwdt_t 		*WWDT      	= (csp_wwdt_t 	*)(APB_WWDT_BASE);
 csp_led_t 		*LED      	= (csp_led_t 	*)(APB_LED_BASE);
