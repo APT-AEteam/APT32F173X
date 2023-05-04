@@ -194,7 +194,7 @@ int gptb_pwm_dz_demo(void)
 	tGptbDeadZoneTime.hwDpsc                 = 0;              //FDBCLK = FHCLK / (DPSC+1)
 	tGptbDeadZoneTime.hwRisingEdgereGister   = 500;             //上升沿-ns
 	tGptbDeadZoneTime.hwFallingEdgereGister  = 200;             //下降沿-ns
-	tGptbDeadZoneTime.byChaDedb              = DB_AR_BF;       //不使用死区双沿
+	tGptbDeadZoneTime.byChaDedb              = B_DB_AR_BF;       //不使用死区双沿
 	csi_gptb_dz_config(GPTB0,&tGptbDeadZoneTime);
 	
 	tGptbDeadZoneTime.byChxOuselS1S0      = GPTB_DBOUT_AR_BF;              //使能通道A的上升沿延时，使能通道B的下降沿延时
@@ -333,16 +333,16 @@ void load1(void)
 	csi_gptb_channel_aqload_config(GPTB0, GPTB_LD_SHDW, GPTB_LDCMP_LD_SYNC ,GPTB_CHANNEL_B);
 	
 	csi_gptb_pwmchannel_config_t  channel1;
-	channel1.byActionZro    =   LO;
-	channel1.byActionPrd    =   LO;
-	channel1.byActionC1u    =   LO;
-	channel1.byActionC1d    =   LO;
-	channel1.byActionC2u    =   LO;
-	channel1.byActionC2d    =   LO;
-	channel1.byActionT1u    =   LO;
-	channel1.byActionT1d    =   LO;
-	channel1.byActionT2u    =   LO;
-	channel1.byActionT2d    =   LO;
+	channel1.byActionZro    =   GPTB_LO;
+	channel1.byActionPrd    =   GPTB_LO;
+	channel1.byActionC1u    =   GPTB_LO;
+	channel1.byActionC1d    =   GPTB_LO;
+	channel1.byActionC2u    =   GPTB_LO;
+	channel1.byActionC2d    =   GPTB_LO;
+	channel1.byActionT1u    =   GPTB_LO;
+	channel1.byActionT1d    =   GPTB_LO;
+	channel1.byActionT2u    =   GPTB_LO;
+	channel1.byActionT2d    =   GPTB_LO;
 	channel1.byChoiceC1sel  =   GPTB_CMPA;
 	channel1.byChoiceC2sel  =   GPTB_CMPA;	
 	csi_gptb_channel_config(GPTB0, &channel1,  GPTB_CHANNEL_A);//channel

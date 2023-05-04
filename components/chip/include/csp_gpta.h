@@ -772,7 +772,7 @@ static inline void csp_gpta_start(csp_gpta_t *ptGptaBase)
 
 static inline void csp_gpta_stop(csp_gpta_t *ptGptaBase)
 {
-	ptGptaBase->RSSR &= ~EPT_START ;
+	ptGptaBase->RSSR &= ~GPTA_START ;
 }
 
 static inline uint16_t csp_gpta_get_prdr(csp_gpta_t *ptGptaBase)

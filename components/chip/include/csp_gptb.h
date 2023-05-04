@@ -585,6 +585,10 @@ typedef enum {
 #define GPTB_DBCR_CHA_EDEB_POS             25                                             /*!< GPTB DBCR: CHA_EDEB Position */
 #define GPTB_DBCR_CHA_EDEB_MSK             (0x1UL << GPTB_DBCR_CHA_EDEB_POS)              /*!< GPTB DBCR: CHA_EDEB Mask */
 
+typedef enum {
+	B_DB_AR_BF = 0,
+	B_DB_BR_BF
+}csp_gptb_dedb_e;
 
 //DPSCR
 #define GPTB_DPSCR_DPSC_POS                0                                              /*!< GPTB DPSCR: DPSC Position */

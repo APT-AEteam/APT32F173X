@@ -329,7 +329,7 @@ csi_error_t csi_gptb_channel_config(csp_gptb_t *ptGptbBase, csi_gptb_pwmchannel_
 
 /** \brief Channel CMPLDR configuration
  * 
- *  \param[in] ptGptbBase: pointer of ept register structure
+ *  \param[in] ptGptbBase: pointer of gptb register structure
  *  \param[in] tld: refer to csp_gptb_cmpdata_ldmd_e
  *  \param[in] tldamd: refer to csp_gptb_ldamd_e
  *  \param[in] eChannel: refer to csi_gptb_comp_e
@@ -354,7 +354,7 @@ csi_error_t csi_gptb_channel_cmpload_config(csp_gptb_t *ptGptbBase, csp_gptb_cmp
 
 /**
  \brief  DeadZoneTime configuration 
- \param  ptGptbBase    	pointer of ept register structure
+ \param  ptGptbBase    	pointer of gptb register structure
  \param  tCfg           refer to csi_ept_deadzone_config_t
  \return CSI_OK /CSI_ERROR
 */
@@ -464,7 +464,7 @@ csi_error_t csi_gptb_emergency_cfg(csp_gptb_t *ptGptbBase, csi_gptb_emergency_co
   uint32_t wEmpol;
   uint32_t wEmecr;
 	
-	if(tCfg -> byEpxInt==ORL0)
+	if(tCfg -> byEpxInt==GPTB_ORL0)
 	{
 		wEmsrc2=csp_gptb_get_src2(ptGptbBase);
 		wEmsrc2=(wEmsrc2 & (~GPTB_EMSRC2_FLT_PACE0_MSK)) | (tCfg -> byFltpace0  << GPTB_EMSRC2_FLT_PACE0_POS);
@@ -472,7 +472,7 @@ csi_error_t csi_gptb_emergency_cfg(csp_gptb_t *ptGptbBase, csi_gptb_emergency_co
 		csp_gptb_set_src2(ptGptbBase,wEmsrc2);
 	}
     
-	if(tCfg -> byEpxInt==ORL1)	
+	if(tCfg -> byEpxInt==GPTB_ORL1)	
 	{
 		wEmsrc2=csp_gptb_get_src2(ptGptbBase);
 		wEmsrc2=(wEmsrc2  & (~GPTB_EMSRC2_FLT_PACE1_MSK) ) | (tCfg -> byFltpace1 << GPTB_EMSRC2_FLT_PACE1_POS);
@@ -489,13 +489,13 @@ csi_error_t csi_gptb_emergency_cfg(csp_gptb_t *ptGptbBase, csi_gptb_emergency_co
 		wEmpol=csp_gptb_get_empol(ptGptbBase);	
 		switch (tCfg ->byEpxInt)
 		{    
-			case (GPTB_EBI0):  wEmpol=( wEmpol  &~ POL_MSK_EBI(0)) | (tCfg -> byPolEbix <<POL_POS_EBI(0) );break;
-			case (GPTB_EBI1):  wEmpol=( wEmpol  &~ POL_MSK_EBI(1)) | (tCfg -> byPolEbix <<POL_POS_EBI(1) );break;
-			case (GPTB_EBI2):  wEmpol=( wEmpol  &~ POL_MSK_EBI(2)) | (tCfg -> byPolEbix <<POL_POS_EBI(2) );break;
-			case (GPTB_EBI3):  wEmpol=( wEmpol  &~ POL_MSK_EBI(3)) | (tCfg -> byPolEbix <<POL_POS_EBI(3) );break;
-			case (GPTB_CMP0):  wEmpol=( wEmpol  &~ POL_MSK_EBI(4)) | (tCfg -> byPolEbix <<POL_POS_EBI(4) );break;
-			case (GPTB_CMP1):  wEmpol=( wEmpol  &~ POL_MSK_EBI(5)) | (tCfg -> byPolEbix <<POL_POS_EBI(5) );break;
-			case (GPTB_CMP2):  wEmpol=( wEmpol  &~ POL_MSK_EBI(6)) | (tCfg -> byPolEbix <<POL_POS_EBI(6) );break;
+			case (GPTB_EBI0):  wEmpol=( wEmpol  &~ GPTB_POL_MSK_EBI(0)) | (tCfg -> byPolEbix <<GPTB_POL_POS_EBI(0) );break;
+			case (GPTB_EBI1):  wEmpol=( wEmpol  &~ GPTB_POL_MSK_EBI(1)) | (tCfg -> byPolEbix <<GPTB_POL_POS_EBI(1) );break;
+			case (GPTB_EBI2):  wEmpol=( wEmpol  &~ GPTB_POL_MSK_EBI(2)) | (tCfg -> byPolEbix <<GPTB_POL_POS_EBI(2) );break;
+			case (GPTB_EBI3):  wEmpol=( wEmpol  &~ GPTB_POL_MSK_EBI(3)) | (tCfg -> byPolEbix <<GPTB_POL_POS_EBI(3) );break;
+			case (GPTB_CMP0):  wEmpol=( wEmpol  &~ GPTB_POL_MSK_EBI(4)) | (tCfg -> byPolEbix <<GPTB_POL_POS_EBI(4) );break;
+			case (GPTB_CMP1):  wEmpol=( wEmpol  &~ GPTB_POL_MSK_EBI(5)) | (tCfg -> byPolEbix <<GPTB_POL_POS_EBI(5) );break;
+			case (GPTB_CMP2):  wEmpol=( wEmpol  &~ GPTB_POL_MSK_EBI(6)) | (tCfg -> byPolEbix <<GPTB_POL_POS_EBI(6) );break;
 			case (GPTB_ORL0):  break;
 			case (GPTB_ORL1):  break;
 			default:return CSI_ERROR;break;
@@ -536,7 +536,7 @@ csi_error_t csi_gptb_emergency_pinxout(csp_gptb_t *ptGptbBase,csi_gptb_osrchx_e 
 
 /** \brief Channel AQLDR configuration
  * 
- *  \param[in] ptGptbBase: pointer of ept register structure
+ *  \param[in] ptGptbBase: pointer of gptb register structure
  *  \param[in] tld: refer to csp_gptb_ld_e
  *  \param[in] tldamd: refer to csp_gptb_ldamd_e
  *  \param[in] eChannel: refer to csi_gptb_channel_e
