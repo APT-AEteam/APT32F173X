@@ -31,7 +31,6 @@
 #include <drv/bt.h>
 #include <drv/lpt.h>
 #include <drv/cnta.h>
-//#include <drv/ept.h>
 #include <drv/gpta.h>
 #include <drv/iic.h>
 #include <drv/sio.h>

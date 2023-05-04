@@ -18,7 +18,6 @@
 #include "csp_bt.h"
 #include "csp_cnta.h"
 #include "csp_crc.h"
-#include "csp_ept.h"
 #include "csp_etb.h"
 #include "csp_gpio.h"
 #include "csp_gpta.h"
