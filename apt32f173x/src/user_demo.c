@@ -11,8 +11,6 @@
 #include "demo.h"
 #include "pin.h"
 
-uint8_t byFlashData[] = {0x12, 0x34, 0x56, 0x78,0x9a,0xbc, 0xde, 0xff};
-
 void user_demo(void)
 {
 
@@ -33,7 +31,7 @@ void user_demo(void)
 ///  通过PA02输出系统时钟，主要用于调试。
 ///  同时示例管脚功能配置的方法。
 /// ***************************************************	
-//	csi_pin_set_mux(PA02, PA02_CLO);
+//	csi_pin_set_mux(PA2, PA2_CLO);
 //	csi_clo_config(CLO_HCLK, CLO_DIV2);
 	
 /// ***************************************************
@@ -93,9 +91,9 @@ void user_demo(void)
 //	lpt_timer_demo();
 //	lpt_pwm_demo();
 //	lpt_sync_trg_start_demo();
-//	lpt_trg_out_demo( );
-//    lpt_filter_demo( );
-//    lpt_window_demo( );
+//	lpt_trg_out_demo();
+//  lpt_filter_demo();
+//  lpt_window_demo();
 
 /// ***************************************************
 ///  Counter A相关的示例代码
@@ -145,11 +143,8 @@ void user_demo(void)
 /// ***************************************************
 ///  ETCB相关的示例代码
 /// ***************************************************
-//	etcb_one_trg_one_demo0();
-//	etcb_one_trg_one_demo1();
+//  etcb_one_trg_one_demo();
 //	etcb_one_trg_more_demo();
-//	etcb_more_trg_one_demo();
-//	etcb_mix_demo();
 
 /// ***************************************************
 ///  UART相关的示例代码
@@ -186,8 +181,8 @@ void user_demo(void)
 //	iic_master_slave_demo();
 //	iic_slave_demo();
 //  iic_multi_slave_address_demo( );
-//    iic_dma_tx_demo();
-//    iic_dma_rx_demo();
+//  iic_dma_tx_demo();
+//  iic_dma_rx_demo();
 	
 /// ***************************************************
 ///  SIO相关的示例代码
@@ -215,8 +210,8 @@ void user_demo(void)
 /// ***************************************************
 ///  OPA相关的示例代码
 /// ***************************************************
-//	opa_internal_gain_mode_test();
-//	opa_external_gain_mode_test();
+//	opa_internal_gain_mode_demo();
+//	opa_external_gain_mode_demo();
 
 /// ***************************************************
 ///  FVR相关的示例代码

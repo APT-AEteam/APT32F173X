@@ -40,44 +40,47 @@ extern int iwdt_irq_demo(void);
 
 //etcb demo
 
-int etcb_one_trg_one_demo0(void);
-int etcb_more_trg_one_demo(void);
-int etcb_mix_demo(void);
-
+extern int etcb_one_trg_one_demo(void);
+extern int etcb_one_trg_more_demo(void);
 
 //uart demo
 //uart send
-int uart_char_demo(void);
-int uart_send_demo(void);
-int uart_send_int_demo(void);
+extern int uart_char_demo(void);
+extern int uart_send_demo(void);
+extern int uart_send_int_demo(void);
 //uart receive
-int uart_receive_demo(void);
-int uart_recv_int_demo(void);
-int uart_recv_dynamic_demo(void);
-int uart_recv_dynamic_int_demo(void);
+extern int uart_receive_demo(void);
+extern int uart_recv_int_demo(void);
+extern int uart_recv_dynamic_demo(void);
+extern int uart_recv_dynamic_int_demo(void);
 
 //adc demo
 //normal mode(no interrupt)
-int adc_samp_oneshot_demo(void);
-int adc_samp_continuous_demo(void);
+extern int adc_samp_oneshot_demo(void);
+extern int adc_samp_continuous_demo(void);
 //interrupt mode
-int adc_samp_oneshot_int_demo(void);
-int adc_samp_continuous_int_demo(void);
+extern int adc_samp_oneshot_int_demo(void);
+extern int adc_samp_continuous_int_demo(void);
 
 //sio demo
 //sio led
-int sio_led_rgb_demo(void);
-int sio_led_rgb_recv_rxfull_demo(void);
-int sio_led_rgb_recv_rxdone_demo(void);
+extern int sio_led_rgb_demo(void);
+extern int sio_led_rgb_recv_rxfull_demo(void);
+extern int sio_led_rgb_recv_rxdone_demo(void);
 //hdq
-int sio_hdq_send_demo(void);
-int sio_hdq_recv_wrcmd_demo(void);
-int sio_hdq_send_recv_demo(void);
-int sio_hdq_recv_rdcmd_demo(void);
+extern int sio_hdq_send_demo(void);
+extern int sio_hdq_recv_wrcmd_demo(void);
+extern int sio_hdq_send_recv_demo(void);
+extern int sio_hdq_recv_rdcmd_demo(void);
 
 //lpt demo
-int lpt_timer_demo(void);
-int lpt_pwm_demo(void);
+extern int lpt_timer_demo(void);
+extern int lpt_pwm_demo(void);
+extern int lpt_sync_trg_start_demo(void);
+extern int lpt_trg_out_demo(void);
+extern int lpt_soft_trg_out_demo(void);
+extern int lpt_filter_demo(void);
+extern int lpt_window_demo(void);
 
 //reliability demo
 extern void lvd_demo(void);
@@ -96,14 +99,14 @@ extern void ifc_pflash_page_program_demo();
 extern void ifc_program_demo();
 
 //rtc_demo
-void rtc_set_time_demo(void);
-void rtc_alarm_demo(void);
-void rtc_timer_demo(void);
-void rtc_trgev_demo(void);
+extern void rtc_set_time_demo(void);
+extern void rtc_alarm_demo(void);
+extern void rtc_timer_demo(void);
+extern void rtc_trgev_demo(void);
 
 //low power demo
-void lp_lpt_wakeup_deepsleep_demo(void);
-void lp_wakeup_demo(void);
+extern void lp_lpt_wakeup_deepsleep_demo(void);
+extern void lp_wakeup_demo(void);
 
 //iic demo
 extern void iic_master_demo(void);
@@ -148,7 +151,7 @@ extern int gptb_pwm_dz_em_demo(void);
 extern csi_error_t crc_demo();
 
 //led
-csi_error_t led_demo(void);
+extern csi_error_t led_demo(void);
 
 //opa demo
 extern void opa_internal_gain_mode_demo(void);
@@ -159,8 +162,8 @@ extern void fvr_output_demo(void);
 extern void fvr_buf_demo(void);
 
 //can
-int can_send_demo(void);
-int can_recv_demo(void);
+extern int can_send_demo(void);
+extern int can_recv_demo(void);
 
 //dac demo
 extern void dac_demo(void);	
