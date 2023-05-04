@@ -65,6 +65,7 @@ const csi_can_bittime_t  tBitTime[] = {
 //	{CAN_BDR_200K, 		1, 			3,			4,			2		},			//Tq num = 10, T_bit = 5us	
 //	{CAN_BDR_250K, 		1, 			4,			5,			1		},			//Tq num = 12, T_bit = 4us
 //	{CAN_BDR_500K, 		2, 			4,			5,			0		},			//Tq num = 12, T_bit = 2us
+//	{CAN_BDR_1000K, 	2, 			1,			2,			0		},			//Tq num = 6,  T_bit = 2us
 //	{0, 				0, 			0,			0,			0		},	
 	
 	//CAN clk source = pclk = 24MHz
@@ -72,13 +73,15 @@ const csi_can_bittime_t  tBitTime[] = {
 	{CAN_BDR_200K, 		1, 			4,			5,			9		},			//Tq num = 12, T_bit = 5us	
 	{CAN_BDR_250K, 		1, 			4,			5,			7		},			//Tq num = 12, T_bit = 4us
 	{CAN_BDR_500K, 		2, 			2,			3,			5		},			//Tq num = 8,  T_bit = 2us
+	{CAN_BDR_1000K, 	2, 			2,			3,			2		},			//Tq num = 8,  T_bit = 1us
 	{0, 				0, 			0,			0,			0		},	
 	
-	//CAN clk source = pclk = 105MHz
+	//CAN clk source = pclk = 72MHz
 	//Baudrate			SyncJump	PhaseSeg1	PhaseSeg2	BaudDiv
-//	{CAN_BDR_250K, 		1, 			7,			5,			27		},			//Tq num = 15, T_bit = 4us	
-//	{CAN_BDR_600K, 		1, 			2,			2,			24		},			//Tq num = 7, T_bit = 1.33us
-//	{CAN_BDR_750K, 		2, 			6,			5,			9		},			//Tq num = 14, T_bit = 1.66us
+//	{CAN_BDR_200K, 		1, 			5,			7,			23		},			//Tq num = 15, T_bit = 5us	
+//	{CAN_BDR_250K, 		1, 			4,			5,			23		},			//Tq num = 12, T_bit = 4us
+//	{CAN_BDR_500K, 		2, 			6,			5,			11		},			//Tq num = 12, T_bit = 2us
+//	{CAN_BDR_1000K, 	2, 			6,			5,			5		},			//Tq num = 12, T_bit = 1us
 //	{0, 				0, 			0,			0,			0		},	
 };
 
