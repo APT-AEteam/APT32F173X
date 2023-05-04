@@ -275,21 +275,21 @@ int adc_samp_oneshot_int_demo(void)
 	csi_gpta_wave_init(GPTA0, &tPwmCfg);
 	csi_gpta_set_evtrg(GPTA0, GPTA_TRGOUT0, GPTA_TRG01_ZRO);     //TRGSEL0
 	csi_gpta_set_evtrg(GPTA0, GPTA_TRGOUT1,GPTA_TRG01_CMPA_R);   //TRGSEL1
-	csi_gpta_pwmchannel_config_t  tEptchannelCfg;
-	tEptchannelCfg.byActionZro    =   GPTA_LO;
-	tEptchannelCfg.byActionPrd    =   GPTA_NA;
-	tEptchannelCfg.byActionC1u    =   GPTA_HI;
-	tEptchannelCfg.byActionC1d    =   GPTA_LO;
-	tEptchannelCfg.byActionC2u    =   GPTA_NA;
-	tEptchannelCfg.byActionC2d    =   GPTA_NA;
-	tEptchannelCfg.byActionT1u    =   GPTA_LO;
-	tEptchannelCfg.byActionT1d    =   GPTA_LO;
-	tEptchannelCfg.byActionT2u    =   GPTA_NA;
-	tEptchannelCfg.byActionT2d    =   GPTA_NA;
-	tEptchannelCfg.byChoiceC1sel  =   GPTA_CMPA;
-	tEptchannelCfg.byChoiceC2sel  =   GPTA_CMPA;	
-	csi_gpta_channel_config(GPTA0, &tEptchannelCfg,  GPTA_CHANNEL_1);//channel
-	csi_gpta_channel_config(GPTA0, &tEptchannelCfg,  GPTA_CHANNEL_2);		
+	csi_gpta_pwmchannel_config_t  tGptachannelCfg;
+	tGptachannelCfg.byActionZro    =   GPTA_LO;
+	tGptachannelCfg.byActionPrd    =   GPTA_NA;
+	tGptachannelCfg.byActionC1u    =   GPTA_HI;
+	tGptachannelCfg.byActionC1d    =   GPTA_LO;
+	tGptachannelCfg.byActionC2u    =   GPTA_NA;
+	tGptachannelCfg.byActionC2d    =   GPTA_NA;
+	tGptachannelCfg.byActionT1u    =   GPTA_LO;
+	tGptachannelCfg.byActionT1d    =   GPTA_LO;
+	tGptachannelCfg.byActionT2u    =   GPTA_NA;
+	tGptachannelCfg.byActionT2d    =   GPTA_NA;
+	tGptachannelCfg.byChoiceC1sel  =   GPTA_CMPA;
+	tGptachannelCfg.byChoiceC2sel  =   GPTA_CMPA;	
+	csi_gpta_channel_config(GPTA0, &tGptachannelCfg,  GPTA_CHANNEL_1);//channel
+	csi_gpta_channel_config(GPTA0, &tGptachannelCfg,  GPTA_CHANNEL_2);		
 	csi_gpta_start(GPTA0);//start  timer
 //------------------------------------------------------------------------------------------------------------------------	
 

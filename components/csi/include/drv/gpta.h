@@ -204,7 +204,7 @@ typedef enum{
 
 /**
  * \enum	csi_ept_trgout_e
- * \brief   ept event trigger out port
+ * \brief   gpta event trigger out port
  */
 typedef enum{
 	GPTA_TRGOUT0		= 0,	//trigger out0
@@ -329,7 +329,7 @@ csi_error_t csi_gpta_burst_enable(csp_gpta_t *ptGptaBase,uint8_t byCgsrc,uint8_t
 
 /** \brief Channel CMPLDR configuration
  * 
- *  \param[in] ptGptaBase: pointer of ept register structure
+ *  \param[in] ptGptaBase: pointer of gpta register structure
  *  \param[in] tld: refer to csp_gpta_cmpdata_ldmd_e
  *  \param[in] tldamd: refer to csp_gpta_ldamd_e
  *  \param[in] eChannel: refer to csi_gpta_camp_e
@@ -348,7 +348,7 @@ csi_error_t csi_gpta_channel_config(csp_gpta_t *ptGptaBase, csi_gpta_pwmchannel_
 
 /** \brief Channel AQLDR configuration
  * 
- *  \param[in] ptGptaBase: pointer of ept register structure
+ *  \param[in] ptGptaBase: pointer of gpta register structure
  *  \param[in] tld: refer to csp_gpta_ld_e
  *  \param[in] tldamd: refer to csp_gpta_ldamd_e
  *  \param[in] eChannel: refer to csi_gpta_channel_e

@@ -320,7 +320,7 @@ typedef enum{
 
 /**
  * \enum     csi_ept_trgin_e
- * \brief    EPT sync trigger input 
+ * \brief    GPTB sync trigger input 
  */
 typedef enum{
 	GPTB_TRGIN_SYNCEN0	= 0,	//start	up or reset count			
@@ -414,7 +414,7 @@ csi_error_t csi_gptb_gldcfg(csp_gptb_t *ptGptbBase ,csi_gptb_Global_load_gldcfg_
 
 /** \brief Channel CMPLDR configuration
  * 
- *  \param[in] ptGptbBase: pointer of ept register structure
+ *  \param[in] ptGptbBase: pointer of gptb register structure
  *  \param[in] tld: refer to csp_gptb_cmpdata_ldmd_e
  *  \param[in] tldamd: refer to csp_gptb_ldamd_e
  *  \param[in] eChannel: refer to csi_gptb_comp_e

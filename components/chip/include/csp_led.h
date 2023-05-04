@@ -38,7 +38,7 @@ typedef volatile struct
  } csp_led_t;
  
 /******************************************************************************
-* EPT Regiser
+* LED Regiser
 ******************************************************************************/ 
 ///CR
 #define LED_COM_EN_POS                  16                                             /*!< LED CR: COM_EN Position */
