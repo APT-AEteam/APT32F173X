@@ -1,10 +1,10 @@
 /***********************************************************************//** 
  * \file  dac_demo.c
- * \brief  FVR_DEMO description and static inline functions at register level 
+ * \brief  DAC_DEMO description and static inline functions at register level 
  * \copyright Copyright (C) 2015-2020 @ APTCHIP
  * <table>
  * <tr><th> Date  <th>Version  <th>Author  <th>Description
- * <tr><td> 2023-3-17 <td>V0.0 <td>dac     <td>initial
+ * <tr><td> 2023-3-17 <td>V0.0 <td>xs     <td>initial
  * </table>
  * *********************************************************************
 */

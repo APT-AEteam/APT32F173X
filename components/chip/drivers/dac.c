@@ -40,6 +40,7 @@ void csi_dac_init(csp_dac_t *ptDacBase, csi_dac_config_t *ptDacCfg)
 	if(ptDacCfg->byBufsel == DISABLE)
 	{
 		csi_pin_set_mux(PA8,PA8_DAC0_OUT);
+		csi_pin_output_mode(PA8,GPIO_OPEN_DRAIN);
 		csp_dac_buff_enable(DAC0,0);
 	}
 }
@@ -51,7 +52,7 @@ void csi_dac_init(csp_dac_t *ptDacBase, csi_dac_config_t *ptDacCfg)
 */
 void csi_dac_en(csp_dac_t *ptDacBase)
 {
-	csp_dac_powerdown_enable(ptDacBase, 0);//开启powerdown
+	csp_dac_powerdown_enable(ptDacBase, 1);//开启powerdown
 }
 
 
@@ -62,7 +63,7 @@ void csi_dac_en(csp_dac_t *ptDacBase)
 */
 void csi_dac_dis(csp_dac_t *ptDacBase)
 {
-	csp_dac_powerdown_enable(ptDacBase, 1);
+	csp_dac_powerdown_enable(ptDacBase, 0);
 	
 }
 
