@@ -11,26 +11,60 @@
 */
 //#include <csi_config.h>
 #include <csp_dac.h>
-//#include "csp_dac.h"
 #include <drv/irq.h>
 #include <drv/clk.h>
 #include <sys_clk.h>
+#include <drv/dac.h>
+#include "drv/gpio.h"
+#include <drv/pin.h>
 #include "csp.h"
-/** \brief dac interrupt handle function
- * 
- *  \param[in] ptAdcBase: pointer of dac register structure
- *  \return none
- */ 
-__attribute__((weak)) void dac_irqhandler(csp_dac_t *ptAdcBase)
-{
-	
-	
-	
 
+/** \brief initialize dac data structure
+ * 
+ *  \param[in] ptDacBase: pointer of dac register structure
+ *  \param[in] ptDacCfg: pointer of dca parameter config structure
+ *  \return error code \ref csi_error_t
+ */ 
+void csi_dac_init(csp_dac_t *ptDacBase, csi_dac_config_t *ptDacCfg)
+{	
+	csp_dac_clr_da(ptDacBase);//清除转换数据
+	csp_dac_set_clk_div(ptDacBase,ptDacCfg->byClkDiv);//设置时钟16分频
+	csp_dac_refsel_enable(ptDacBase,ptDacCfg->byRefsel);//关闭REF
+	csp_dac_set_datar(ptDacBase,ptDacCfg->byDatarset);//在DATAR中写入数据
+	
+	if(ptDacCfg->byBufsel == ENABLE)
+	{	
+	csi_pin_set_mux(PA4,PA4_DAC0_OUT);	
+	csp_dac_buff_enable(DAC0,1);
+	}
+	if(ptDacCfg->byBufsel == DISABLE)
+	{
+		csi_pin_set_mux(PA8,PA8_DAC0_OUT);
+		csp_dac_buff_enable(DAC0,0);
+	}
+}
+
+/**
+  \brief       enable dac power  
+  \param[in]   ptDacBase	pointer of dac register structure
+  \return      none
+*/
+void csi_dac_en(csp_dac_t *ptDacBase)
+{
+	csp_dac_powerdown_enable(ptDacBase, 0);//开启powerdown
 }
 
 
-
+/**
+  \brief       disable dac power  
+  \param[in]   ptDacBase	pointer of dac register structure
+  \return      none
+*/
+void csi_dac_dis(csp_dac_t *ptDacBase)
+{
+	csp_dac_powerdown_enable(ptDacBase, 1);
+	
+}
 
 
 
