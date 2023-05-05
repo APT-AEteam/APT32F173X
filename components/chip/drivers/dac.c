@@ -63,10 +63,45 @@ void csi_dac_en(csp_dac_t *ptDacBase)
 */
 void csi_dac_dis(csp_dac_t *ptDacBase)
 {
-	csp_dac_powerdown_enable(ptDacBase, 0);
-	
+	csp_dac_powerdown_enable(ptDacBase, 0);	
 }
 
+/**
+  \brief       dac interrupt set 
+  \param[in]   ptDacBase	pointer of dac register structure
+  \return      none
+*/
+void csi_dac_irq_enable(csp_dac_t *ptDacBase, csi_dac_irq_e byVal,bool bEnable)
+{
+	csp_dac_irq_enable(ptDacBase,byVal,bEnable);
+}
 
+/**
+  \brief       dac syncr set 
+  \param[in]   ptDacBase	pointer of dac register structure
+  \return      none
+*/
+void csi_dac_syncr_enable(csp_dac_t *ptDacBase, csi_dac_syncr_e byVal,bool bEnable)
+{
+	csp_dac_syncr_enable(ptDacBase,byVal,bEnable);
+}
 
+/**
+  \brief       dac step value set 
+  \param[in]   ptDacBase	pointer of dac register structure
+  \return      none
+*/
+void csi_dac_step_val(csp_dac_t *ptDacBase, uint16_t byDer)
+{
+	csp_dac_step_val(ptDacBase, byDer);
+}
 
+/**
+  \brief       dac start 
+  \param[in]   ptDacBase	pointer of dac register structure
+  \return      none
+*/
+void csi_dac_start(csp_dac_t *ptDacBase)
+{
+	csp_dac_start(ptDacBase);
+}

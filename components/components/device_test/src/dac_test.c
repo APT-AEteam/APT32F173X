@@ -51,7 +51,6 @@ int dac_sync_test(void)
 	if(ch < 0)
 		return -1;								    //ch < 0,则获取通道号失败
 	iRet = csi_etb_ch_config(ch, &tEtbConfig);	
-	int iRet1 = 0;
 	volatile uint8_t ch1;
 	csi_etb_config_t tEtbConfig1;				                //ETB 参数配置结构体				
 	csi_exi_set_evtrg(1, TRGSRC_EXI1, 1);
@@ -64,7 +63,7 @@ int dac_sync_test(void)
 	ch1 = csi_etb_ch_alloc(tEtbConfig1.byChType);	    //自动获取空闲通道号,ch >= 0 获取成功
 	if(ch1 < 0)
 		return -1;								    //ch < 0,则获取通道号失败
-	iRet1= csi_etb_ch_config(ch1, &tEtbConfig1);	
+	csi_etb_ch_config(ch1, &tEtbConfig1);	
 	
 	return iRet;	
 }

@@ -28,99 +28,7 @@
 
 csi_adc_samp_t	g_tAdcSamp;
 
-/** \brief adc interrupt handle function
- * 
- *  \param[in] ptAdcBase: pointer of adc register structure
- *  \return none
- */ 
-__attribute__((weak)) void adc_irqhandler(csp_adc_t *ptAdcBase)
-{
-	uint8_t i,j;
-	uint32_t wIntStat = csp_adc_get_sr(ptAdcBase) & csp_adc_get_isr(ptAdcBase);//ADC_RISR & ADC_MISR
-	
-	
-	
-			for(i = 0; i <= 9; i++)						//data length(length = 1)  of channel 	
-			{
-				if(wIntStat & ADC12_SEQ(i))									//sequence channel sample complete?
-				{   
-					if(i==0){
-						csi_pin_set_high(PA2);g_tAdcSamp.phwData[i] = csp_adc_get_data(ptAdcBase, i);
-					         }
-					if(i==3){
-						csi_pin_set_high(PA3);
-						for(j = 1; j <=3; j++){g_tAdcSamp.phwData[j] = csp_adc_get_data(ptAdcBase, j);}											
-						}		 
-					if(i==6){
-						csi_pin_set_high(PA3);
-						for(j = 4; j <=6; j++){g_tAdcSamp.phwData[j] = csp_adc_get_data(ptAdcBase, j);}											
-						}
-					if(i==9){
-						csi_pin_set_high(PA3);
-						for(j = 7; j <=9; j++){g_tAdcSamp.phwData[j] = csp_adc_get_data(ptAdcBase, j);}											
-						}	
-						
-					csp_adc_clr_sr(ptAdcBase, ADC12_SEQ(i));				//clr channel status
-						
-				}
-			}
-	
-	csi_pin_set_low(PA2);
-	csi_pin_set_low(PA3);
-	
-	//ADC CMP interrupt
-//	switch(wIntStat & 0xf0)
-//	{
-//		case ADC_INTSRC_CMP0H:
-//			csp_adc_clr_sr(ptAdcBase, ADC12_CMP0H);	
-//			break;
-//		case ADC_INTSRC_CMP0L:
-//			csp_adc_clr_sr(ptAdcBase, ADC12_CMP0L);	
-//			break;
-//		case ADC_INTSRC_CMP1H:
-//			csp_adc_clr_sr(ptAdcBase, ADC12_CMP1H);	
-//			break;
-//		case ADC_INTSRC_CMP1L:
-//			csp_adc_clr_sr(ptAdcBase, ADC12_CMP1L);	
-//			break;
-//	}
-	
-	//ADC SEQ_END interrupt
-//	switch(g_tAdcSamp.hwSampCnt)				
-//	{
-//		case 1:																		
-//			for(i = 0; i < g_tAdcSamp.byChnlNum; i++)						//data length(length = 1)  of channel 	
-//			{
-//				if(wIntStat & ADC12_SEQ(i))									//sequence channel sample complete?
-//				{
-//					g_tAdcSamp.phwData[i] = csp_adc_get_data(ptAdcBase, i);	//get adc channel value
-//					csp_adc_clr_sr(ptAdcBase, ADC12_SEQ(i));				//clr channel status
-//				}
-//			}
-//			
-//			g_tAdcSamp.byConvStat = ADC_STATE_DONE;							//sequence	sample complete
-//			
-//			break;
-//		default:			
-//			if(g_tAdcSamp.hwChnlDep)										//data length(length > 1)  of channel 			
-//			{
-//				for(i = 0; i < g_tAdcSamp.byChnlNum; i++)
-//				{
-//					if(wIntStat & ADC12_SEQ(i))								//sequence channel sample complete?
-//					{
-//						*(g_tAdcSamp.phwData + i*g_tAdcSamp.hwSampCnt + g_tAdcSamp.hwChnlDep -1) = csp_adc_get_data(ptAdcBase, i);
-//						csp_adc_clr_sr(ptAdcBase, ADC12_SEQ(i));			//clr channel status
-//					}
-//				}
-//				g_tAdcSamp.hwChnlDep --;
-//			}
-//			
-//			if(g_tAdcSamp.hwChnlDep == 0)
-//				g_tAdcSamp.byConvStat = ADC_STATE_DONE;						//sequence	sample complete
-//	
-//			break;
-//	}
-}
+
 /** \brief initialize adc data structure
  * 
  *  \param[in] ptAdcBase: pointer of adc register structure
@@ -138,11 +46,6 @@ csi_error_t csi_adc_init(csp_adc_t *ptAdcBase, csi_adc_config_t *ptAdcCfg)
 	csp_adc_set_resolution(ptAdcBase, ADC12_12BIT);		//adc 12bit
 	csp_adc_en(ptAdcBase);								//enable adc mode
 	
-	//adc clk div
-	
-//	if((csi_get_pclk_freq() >= 40000000) && (ptAdcCfg->byClkDiv == 0))
-//		return CSI_ERROR;
-		
 	if(ptAdcCfg->byClkDiv > 62)
 		ptAdcCfg->byClkDiv = 62;
 	//adc sample hold period
@@ -546,33 +449,5 @@ void csi_adc_set_clk(csp_adc_t *ptAdcBase,csi_adc_clksel_e eClksel)
 {
 	csp_adc_clk_sel(ptAdcBase,eClksel);
 }
- /** \brief fvr output config
- * 
- *  \param[in] ptAdcBase: pointer of ADC reg structure.
- *  \param[in] eLvl: FVR output level select
- *  \param[in] bEnable: ENABLE/DISABLE
- *  \return none
- */
-//void csi_adc_fvrout_enable(csp_adc_t *ptAdcBase, csi_adc_fvrsel_e eLvl, bool bEnable)
-//{
-//	csi_clk_enable((uint32_t *)(ptAdcBase));     //sys adc clk
-//	csp_adc_clk_en(ptAdcBase);                   //adc clk enable
-//	csp_adc_en(ptAdcBase);                       //enable adc  mode
-//	csp_adc_set_fvrout_lvl(ptAdcBase, eLvl);
-//	csp_adc_fvrout_enable(ptAdcBase, bEnable);
-//}
-///** \brief buffer output(1V0/TEMP) config
-// * 
-// *  \param[in] ptAdcBase: pointer of ADC reg structure.
-// *  \param[in] eBufSel: interior input select, 1V0/TEMP
-// *  \param[in] bEnable: output ENABLE/DISABLE
-// *  \return none
-// */
-//void csi_adc_bufout_enable(csp_adc_t *ptAdcBase, csi_adc_bufsel_e eBufSel, bool bEnable)
-//{
-//	csi_clk_enable((uint32_t *)(ptAdcBase));     //sys adc clk
-//	csp_adc_clk_en(ptAdcBase);                   //adc clk enable
-//	csp_adc_en(ptAdcBase);                       //enable adc mode
-//	csp_adc_bufsel_set(ptAdcBase, eBufSel);
-//	csp_adc_bufout_enable(ptAdcBase, bEnable);
-//}
+
+

@@ -49,14 +49,14 @@ void dac_demo(void)
 	csi_dac_init(DAC0, &tDacConfig);	
 	csi_dac_en(DAC0);
 	
-	csp_dac_irq_enable(DAC0, DAC_EOC,1);	//使能EOC中断
-	csp_dac_irq_enable(DAC0, DAC_WRERR,1);	//使能WRERR中断
-	csp_dac_irq_enable(DAC0, DAC_SYNCERR,1);//使能SYNCERR中断
+	csi_dac_irq_enable(DAC0, EOC,1);	//使能EOC中断
+	csi_dac_irq_enable(DAC0, WRERR,1);	//使能WRERR中断
+	csi_dac_irq_enable(DAC0, SYNCERR,1);//使能SYNCERR中断
 	
-	csp_dac_syncr_enable(DAC0, DAC_SYNCIN0,true);//开启DAC_SYNCIN0触发
-	csp_dac_syncr_enable(DAC0, DAC_SYNCIN1,true);//开启DAC_SYNCIN1触发
-	csp_dac_syncr_enable(DAC0, DAC_SYNCIN2,true);//开启DAC_SYNCIN2触发
-	csp_dac_step_val(DAC0, 409);//设置触发增减值
+	csi_dac_syncr_enable(DAC0, SYNCIN0,true);//开启DAC_SYNCIN0触发
+	csi_dac_syncr_enable(DAC0, SYNCIN1,true);//开启DAC_SYNCIN1触发
+	csi_dac_syncr_enable(DAC0, SYNCIN2,true);//开启DAC_SYNCIN2触发
+	csi_dac_step_val(DAC0, 409);//设置触发增减值
 	
-	csp_dac_start(DAC0);
+	csi_dac_start(DAC0);
 }

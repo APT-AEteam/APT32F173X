@@ -24,7 +24,19 @@
 /* externs variablesr------------------------------------------------------*/
 /* Private macro-----------------------------------------------------------*/
 /* Private variablesr------------------------------------------------------*/
-
+/** \brief adc interrupt handle function
+ * 
+ *  \param[in] ptAdcBase: pointer of adc register structure
+ *  \return none
+ */ 
+__attribute__((weak)) void adc_irqhandler(csp_adc_t *ptAdcBase)
+{
+	uint32_t wIntStat = csp_adc_get_sr(ptAdcBase) & csp_adc_get_imr(ptAdcBase);//ADC_SR & ADC_IMR
+	while (wIntStat != 0) 
+	{
+		csp_adc_clr_sr(ptAdcBase,wIntStat);
+	}
+}
 //ADC采样序列通道参数配置，默认情况，重复采样和平均系数为1(ADC采样值不平均)
 //ADC触发根据实际应用进行配置
 const csi_adc_seq_t tSeqCfg[] =

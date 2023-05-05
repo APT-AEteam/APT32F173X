@@ -24,6 +24,19 @@ typedef struct {
 	uint8_t				byBufsel;		//adc reference voltage
 } csi_dac_config_t;
 
+typedef enum{
+	EOC			    = (0x01uL << 0),
+	WRERR			= (0x01uL << 1),
+	SYNCERR			= (0x01uL << 2),
+	
+}csi_dac_irq_e;
+
+typedef enum{
+	SYNCIN0			= (0x01uL << 0),
+	SYNCIN1			= (0x01uL << 1),
+	SYNCIN2			= (0x01uL << 2),
+	
+}csi_dac_syncr_e;
 /** \brief initialize dac data structure
  * 
  *  \param[in] ptDacBase: pointer of dac register structure
@@ -45,5 +58,33 @@ void csi_dac_en(csp_dac_t *ptDacBase);
   \return      none
 */
 void csi_dac_dis(csp_dac_t *ptDacBase);
+
+/**
+  \brief       dac interrupt set 
+  \param[in]   ptDacBase	pointer of dac register structure
+  \return      none
+*/
+void csi_dac_irq_enable(csp_dac_t *ptDacBase, csi_dac_irq_e byVal,bool bEnable);
+
+/**
+  \brief       dac syncr set 
+  \param[in]   ptDacBase	pointer of dac register structure
+  \return      none
+*/
+void csi_dac_syncr_enable(csp_dac_t *ptDacBase, csi_dac_syncr_e byVal,bool bEnable);
+
+/**
+  \brief       dac step value set 
+  \param[in]   ptDacBase	pointer of dac register structure
+  \return      none
+*/
+void csi_dac_step_val(csp_dac_t *ptDacBase, uint16_t byDer);
+
+/**
+  \brief       dac start 
+  \param[in]   ptDacBase	pointer of dac register structure
+  \return      none
+*/
+void csi_dac_start(csp_dac_t *ptDacBase);
 
 #endif
