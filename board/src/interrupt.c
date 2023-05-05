@@ -125,7 +125,9 @@ ATTRIBUTE_ISR void adc1_int_handler(void)
 {
 #if	ADC1_INT_HANDLE_EN
 	// ISR content ...
-	adc_irqhandler(ADC1);
+	#if	defined(IS_CHIP_1732) 	
+		adc_irqhandler(ADC1);
+	#endif	
 #endif	
 }
 
