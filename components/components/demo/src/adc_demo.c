@@ -19,7 +19,7 @@
 /* externs function--------------------------------------------------------*/
 //ADC通道采样深度(每通道采样数据次数)，连续转换模式时支持
 //单次转换模式时，需将次参数配置为1	
-#define		ADC_DATA_DEPTH		0x01	
+#define		ADC_DATA_DEPTH		0x0a	
 	
 /* externs variablesr------------------------------------------------------*/
 /* Private macro-----------------------------------------------------------*/
@@ -42,16 +42,9 @@ __attribute__((weak)) void adc_irqhandler(csp_adc_t *ptAdcBase)
 const csi_adc_seq_t tSeqCfg[] =
 {
 	//输入通道		//连续重复采样次数		//平均系数			//触发源选择
-	{ADCIN0,		ADC_CV_COUNT_1,			ADC_AVG_COF_1,		ADCSYNC_IN0},
-	{ADCIN1,		ADC_CV_COUNT_1,			ADC_AVG_COF_1,		ADCSYNC_IN1},
-	{ADCIN2,		ADC_CV_COUNT_1,			ADC_AVG_COF_1,		ADCSYNC_IN1},
-	{ADCIN3,		ADC_CV_COUNT_1,			ADC_AVG_COF_1,		ADCSYNC_IN1},
-	{ADCIN1,		ADC_CV_COUNT_1,			ADC_AVG_COF_1,		ADCSYNC_IN1},
-	{ADCIN2,		ADC_CV_COUNT_1,			ADC_AVG_COF_1,		ADCSYNC_IN1},
-	{ADCIN3,		ADC_CV_COUNT_1,			ADC_AVG_COF_1,		ADCSYNC_IN1},
-	{ADCIN1,		ADC_CV_COUNT_1,			ADC_AVG_COF_1,		ADCSYNC_IN1},
-	{ADCIN2,		ADC_CV_COUNT_1,			ADC_AVG_COF_1,		ADCSYNC_IN1},
-	{ADCIN3,		ADC_CV_COUNT_1,			ADC_AVG_COF_1,		ADCSYNC_IN1},
+	{ADCIN0,		ADC_CV_COUNT_1,			ADC_AVG_COF_1,		ADCSYNC_NONE},
+	//{ADCIN1,		ADC_CV_COUNT_1,			ADC_AVG_COF_1,		ADCSYNC_IN1},
+	//{ADCIN2,		ADC_CV_COUNT_1,			ADC_AVG_COF_1,		ADCSYNC_IN1},
 
 }; 
 
@@ -82,7 +75,7 @@ int adc_samp_oneshot_demo(void)
 	csi_adc_config_t tAdcConfig;
 	
 	//adc 输入管脚配置
-//	csi_pin_set_mux(PA09, PA09_ADC_AIN10);				//ADC GPIO作为输入通道
+	csi_pin_set_mux(PC13, PC13_ADC_INA0);				//ADC GPIO作为输入通道
 //	csi_pin_set_mux(PA010, PA010_ADC_AIN11);
 //	csi_pin_set_mux(PA011, PA011_ADC_AIN12);
 	
@@ -153,12 +146,13 @@ int adc_samp_continuous_demo(void)
 	csi_adc_config_t tAdcConfig;
 	
 	//adc 输入管脚配置
-//	csi_pin_set_mux(PA09, PA09_ADC_AIN10);				//ADC GPIO作为输入通道
+	csi_pin_set_mux(PC13, PC13_ADC_INA0);				//ADC GPIO作为输入通道
 //	csi_pin_set_mux(PA010, PA010_ADC_AIN11);
 //	csi_pin_set_mux(PA011, PA011_ADC_AIN12);
 	
 	//adc 参数配置初始化
 	tAdcConfig.byClkDiv = 0x02;							//ADC clk两分频：clk = pclk/2
+	tAdcConfig.byClksel = ADC_PCLK;						//ADC clk选择：PCLK
 	tAdcConfig.bySampHold = 0x06;						//ADC 采样时间： time = 16 + 6 = 22(ADC clk周期)
 	tAdcConfig.byConvMode = ADC_CONV_CONTINU;			//ADC 转换模式： 连续转换
 	tAdcConfig.byVrefSrc = ADCVERF_VDD_VSS;				//ADC 参考电压： 系统VDD
@@ -214,16 +208,36 @@ int adc_samp_continuous_demo(void)
 		//if(ADC_DATA_DEPTH > 1)
 		{
 			uint32_t j;
-			
+			volatile uint32_t wDataMin = 4096;
+			volatile uint32_t wDataMax = 0;
+			volatile uint32_t wDataAve = 0;
+			volatile uint32_t wDataSum = 0;
 			//读ADC采样序列，整个采样序列所有通道读到采样buffer 
 			if(csi_adc_read_seqx(ADC0) == CSI_OK)									//采样通道读取完成，ADC value 保持在 buffer中 
 			{
 				csi_adc_stop(ADC0);													//停止转换
 				for(i = 0; i < byChnlNum; i++)
 				{
-					my_printf("ADC CHANNEL IDx OF SEQ IS : %d \n", i);
+					//my_printf("ADC CHANNEL IDx OF SEQ IS : %d \n", i);
 					for(j = 0; j < ADC_DATA_DEPTH; j++)
-						my_printf("ADC channel value of seq: %d \n", g_hwAdcBuf[i][j]);
+					//my_printf("ADC channel value of seq: %d \n", g_hwAdcBuf[i][j]);	
+					for(j = 0; j < ADC_DATA_DEPTH; j++)
+					{
+						wDataSum = wDataSum + g_hwAdcBuf[i][j];
+						if(wDataMin > g_hwAdcBuf[i][j])
+						{
+							wDataMin = g_hwAdcBuf[i][j];
+						}
+						if(wDataMax < g_hwAdcBuf[i][j])
+						{
+							wDataMax = g_hwAdcBuf[i][j];
+						}
+					}
+					
+					wDataAve = wDataSum / ADC_DATA_DEPTH;
+					my_printf("\nADC max value of seq: %d \n", wDataMax);
+					my_printf("ADC min value of seq: %d \n", wDataMin);
+					my_printf("ADC ave value of seq: %d \n\n", wDataAve);
 				}
 			}
 			else																			
@@ -238,13 +252,35 @@ int adc_samp_continuous_demo(void)
 			
 			do{
 				//读ADC采样序列，整个采样序列所有通道读到采样buffer 
+				wDataMin = 4096;
+				wDataMax = 0;
+				wDataAve = 0;
+				wDataSum = 0;
 				if(csi_adc_read_seqx(ADC0) == CSI_OK)									//采样通道读取完成，ADC value 保持在 buffer中 
 				{
 					for(i = 0; i < byChnlNum; i++)
 					{
-						my_printf("ADC CHANNEL IDx OF SEQ IS : %d \n", i);
+						//my_printf("ADC CHANNEL IDx OF SEQ IS : %d \n", i);
 						for(j = 0; j < ADC_DATA_DEPTH; j++)
-							my_printf("ADC channel value of seq: %d \n", g_hwAdcBuf[i][j]);
+							//my_printf("ADC channel value of seq: %d \n", g_hwAdcBuf[i][j]);
+						
+						for(j = 0; j < ADC_DATA_DEPTH; j++)
+						{
+							wDataSum = wDataSum + g_hwAdcBuf[i][j];
+							if(wDataMin > g_hwAdcBuf[i][j])
+							{
+								wDataMin = g_hwAdcBuf[i][j];
+							}
+							if(wDataMax < g_hwAdcBuf[i][j])
+							{
+								wDataMax = g_hwAdcBuf[i][j];
+							}
+						}						
+						wDataAve = wDataSum / ADC_DATA_DEPTH;
+						my_printf("\nADC max value of seq: %d \n", wDataMax);
+						my_printf("ADC min value of seq: %d \n", wDataMin);						
+						my_printf("ADC ave value of seq: %d \n", wDataAve);
+						mdelay(500);	
 					}
 					csi_adc_set_buffer((uint16_t *)g_hwAdcBuf, ADC_DATA_DEPTH);			//传递ADC采样buffer，ADC采样值存放于此buffer中
 				}
@@ -271,96 +307,59 @@ int adc_samp_continuous_demo(void)
 int adc_samp_oneshot_int_demo(void)
 {
 	int iRet = 0;
-//------------------------------------------------------------------------------------------------------------------------	
-	csi_pin_set_mux(PA0, PA0_GPTA0_CHA);						//
-	csi_pin_set_mux(PA1, PA1_GPTA0_CHB);						//
-    //-----------------------------------------------------------------	
-    csi_gpta_pwmconfig_t tPwmCfg;								  
-	tPwmCfg.byWorkmod        = GPTA_WAVE;                        //WAVE  波形模式
-	tPwmCfg.byCountingMode   = GPTA_UPCNT;                       //CNYMD  //计数方向
-	tPwmCfg.byOneshotMode    = GPTA_OP_CONT;                     //OPM    //单次或连续(工作方式)
-	tPwmCfg.byStartSrc       = GPTA_SYNC_START;					 //软件使能同步触发使能控制（RSSR中START控制位）//启动方式
-	tPwmCfg.byPscld          = GPTA_LDPSCR_ZRO;                  //PSCR(分频)活动寄存器载入控制。活动寄存器在配置条件满足时，从影子寄存器载入更新值		
-	tPwmCfg.byDutyCycle 	 = 50;								 //pwm ouput duty cycle//PWM初始值(X%)			
-	tPwmCfg.wFreq 			 = 2000;							 //pwm ouput frequency	
-//	tPwmCfg.byInter 		 = GPTA_INT_CAU;                     //interrupt
-	csi_gpta_wave_init(GPTA0, &tPwmCfg);
-	csi_gpta_set_evtrg(GPTA0, GPTA_TRGOUT0, GPTA_TRG01_ZRO);     //TRGSEL0
-	csi_gpta_set_evtrg(GPTA0, GPTA_TRGOUT1,GPTA_TRG01_CMPA_R);   //TRGSEL1
-	csi_gpta_pwmchannel_config_t  tGptachannelCfg;
-	tGptachannelCfg.byActionZro    =   GPTA_LO;
-	tGptachannelCfg.byActionPrd    =   GPTA_NA;
-	tGptachannelCfg.byActionC1u    =   GPTA_HI;
-	tGptachannelCfg.byActionC1d    =   GPTA_LO;
-	tGptachannelCfg.byActionC2u    =   GPTA_NA;
-	tGptachannelCfg.byActionC2d    =   GPTA_NA;
-	tGptachannelCfg.byActionT1u    =   GPTA_LO;
-	tGptachannelCfg.byActionT1d    =   GPTA_LO;
-	tGptachannelCfg.byActionT2u    =   GPTA_NA;
-	tGptachannelCfg.byActionT2d    =   GPTA_NA;
-	tGptachannelCfg.byChoiceC1sel  =   GPTA_CMPA;
-	tGptachannelCfg.byChoiceC2sel  =   GPTA_CMPA;	
-	csi_gpta_channel_config(GPTA0, &tGptachannelCfg,  GPTA_CHANNEL_1);//channel
-	csi_gpta_channel_config(GPTA0, &tGptachannelCfg,  GPTA_CHANNEL_2);		
-	csi_gpta_start(GPTA0);//start  timer
-//------------------------------------------------------------------------------------------------------------------------	
-
-	volatile uint8_t ch;
-	csi_etb_config_t tEtbConfig;				    //ETB 参数配置结构体		
-		
-	tEtbConfig.byChType = ETB_ONE_TRG_ONE;  		//单个源触发单个目标
-	tEtbConfig.bySrcIp  = ETB_GPTA0_TRGOUT0 ;  	    //触发源
-	tEtbConfig.bySrcIp1 = 0xff;      
-	tEtbConfig.bySrcIp2 = 0xff;
-	tEtbConfig.byDstIp =  ETB_ADC0_SYNCIN0;   	    //目标事件
-	tEtbConfig.byDstIp1 = 0xff;
-	tEtbConfig.byDstIp2 = 0xff;
-	tEtbConfig.byTrgMode = ETB_HARDWARE_TRG;
-	csi_etb_init();
-	ch = csi_etb_ch_alloc(tEtbConfig.byChType);	    //自动获取空闲通道号,ch >= 0 获取成功
-	if(ch < 0)
-		return -1;								    //ch < 0,则获取通道号失败
-	iRet = csi_etb_ch_config(ch, &tEtbConfig);
-    //------------------------------------------------------------------------------------
-    tEtbConfig.bySrcIp  = ETB_GPTA0_TRGOUT1 ;  	    //触发源
-	tEtbConfig.byDstIp =  ETB_ADC0_SYNCIN1;   	    //目标事件
-	ch = csi_etb_ch_alloc(tEtbConfig.byChType);	    //自动获取空闲通道号,ch >= 0 获取成功
-	if(ch < 0)
-		return -1;								    //ch < 0,则获取通道号失败
-	iRet = csi_etb_ch_config(ch, &tEtbConfig);
-
-//------------------------------------------------------------------------------------------------------------------------		
+	uint8_t i;
 	csi_adc_config_t tAdcConfig;
 	//adc 输入管脚配置
-//	csi_pin_set_mux(PC13,  PC13_ADC_INA0);						//ADC GPIO作为输入通道
+	csi_pin_set_mux(PC13, PC13_ADC_INA0);				//ADC GPIO作为输入通道
 //	csi_pin_set_mux(PC14,  PC14_ADC_INA1);
 //	csi_pin_set_mux(PC15,  PC15_ADC_INA2);
 //	csi_pin_set_mux(PD0,   PD0_ADC_INA3);
 	//adc 参数配置初始化
-	tAdcConfig.byClkDiv = 20;									//ADC clk两分频：clk = pclk/2
+	tAdcConfig.byClkDiv = 48;									//ADC clk两分频：clk = pclk/2
+	tAdcConfig.byClksel = ADC_PCLK;								//ADC clk选择：PCLK
 	tAdcConfig.bySampHold = 0x06;								//ADC 采样时间： time = 16 + 6 = 22(ADC clk周期)
-	tAdcConfig.byConvMode =ADC_CONV_WAIT;                       //ADC 转换模式： 单次转换；ADC_CONV_CONTINU
+	tAdcConfig.byConvMode =ADC_CONV_ONESHOT;                    //ADC 转换模式： 单次转换；ADC_CONV_CONTINU
 	tAdcConfig.byVrefSrc = ADCVERF_VDD_VSS;						//ADC 参考电压： 系统VDD
-	tAdcConfig.wInt = ADC_INTSRC_SEQ0|ADC_INTSRC_SEQ3|ADC_INTSRC_SEQ6|ADC_INTSRC_SEQ9;		//ADC 中断配置：SEQ_END(0~2)中断使能，默认(推荐使用)SEQ_END中断
+	tAdcConfig.wInt = ADC_INTSRC_SEQ0|ADC_INTSRC_SEQ1|ADC_INTSRC_SEQ2;		//ADC 中断配置：SEQ_END(0~2)中断使能，默认(推荐使用)SEQ_END中断
 	tAdcConfig.ptSeqCfg = (csi_adc_seq_t *)tSeqCfg;				//ADC 采样序列： 具体参考结构体变量 tSeqCfg
 	
 	csi_adc_init(ADC0, &tAdcConfig);							//初始化ADC参数配置	
 	csi_adc_set_seqx(ADC0, tAdcConfig.ptSeqCfg, byChnlNum);		//配置ADC采样序列
 	csi_adc_set_buffer((uint16_t *)g_hwAdcBuf, 1);				//传递ADC采样buffer，ADC采样值存放于此buffer中
-	
-	csi_adc_set_sync(ADC0,ADC_TRG_SYNCEN0, ADC_TRG_CONTINU, 0);
-	csi_adc_set_sync(ADC0,ADC_TRG_SYNCEN1, ADC_TRG_CONTINU, 0);
 	csi_adc_start(ADC0);										//启动ADC
 //------------------------------------------------------------------------------------------------------------------------			
-		                                                        //读ADC采样序列，整个采样序列所有通道读到采样buffer 
+	do
+	{
+		//读ADC采样序列，整个采样序列所有通道读到采样buffer 
 		while(1)
-		{   
-			if(csi_adc_get_status(ADC0) == ADC_STATE_DONE)		//采样通道读取完成，ADC value 保持在 buffer中 
+		{
+			if(csi_adc_get_status(ADC0) == ADC_STATE_DONE)			//采样通道读取完成，ADC value 保持在 buffer中 
 			{
 				csi_adc_clr_status(ADC0);
+				for(i = 0; i < byChnlNum; i++)
+					my_printf("ADC channel value of seq: %d \n", g_hwAdcBuf[i]);
 				break;
 			}
-		}				
+		}
+		
+		//若继续采样ADC序列，需再次启动ADC
+		iRet = csi_adc_start(ADC0);								//再次启动ADC
+
+		while(1)
+		{
+			if(csi_adc_get_status(ADC0) == ADC_STATE_DONE)			//采样通道读取完成，ADC value 保持在 buffer中 
+			{
+				csi_adc_clr_status(ADC0);
+				for(i = 0; i < byChnlNum; i++)
+					my_printf("ADC channel value of seq: %d \n", g_hwAdcBuf[i]);
+				break;
+			}
+		
+		}
+		
+		nop;
+		
+	}while(0);
 	
 	return iRet;
 }
@@ -379,12 +378,13 @@ int adc_samp_continuous_int_demo(void)
 	csi_adc_config_t tAdcConfig;
 	
 	//adc 输入管脚配置
-//	csi_pin_set_mux(PA09, PA09_ADC_AIN10);						//ADC GPIO作为输入通道
+	csi_pin_set_mux(PC13, PC13_ADC_INA0);				//ADC GPIO作为输入通道
 //	csi_pin_set_mux(PA010, PA010_ADC_AIN11);
 //	csi_pin_set_mux(PA011, PA011_ADC_AIN12);
 	
 	//adc 参数配置初始化
 	tAdcConfig.byClkDiv = 8;									//ADC clk两分频：clk = pclk/2
+	tAdcConfig.byClksel = ADC_PCLK;								//ADC clk选择：PCLK
 	tAdcConfig.bySampHold = 0x06;								//ADC 采样时间： time = 16 + 6 = 22(ADC clk周期)
 	tAdcConfig.byConvMode = ADC_CONV_CONTINU;					//ADC 转换模式： 连续转换；
 	tAdcConfig.byVrefSrc = ADCVERF_VDD_VSS;						//ADC 参考电压： 系统VDD
