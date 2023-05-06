@@ -243,9 +243,9 @@ uint32_t csi_ureg_read(csi_user_reg_e eUreg)
  *  \param[in] wVal: times
  *  \return none
  */
-void csi_sramcheck_set_times(uint16_t wVal)
+void csi_sramcheck_set_times(uint16_t hwVal)
 {
-	csp_sramcheck_set_times(SYSCON, wVal);
+	csp_sramcheck_set_times(SYSCON, hwVal);
 }
 
 /** \brief set chip to reset when sramcheck fail times > preset value

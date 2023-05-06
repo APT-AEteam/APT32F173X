@@ -191,11 +191,11 @@ csi_error_t csi_sysclk_config(csi_clk_config_t tClkCfg);
 
 /** \brief PLL clk manual config
  * 
- *  \param[in] ePllCfg: pll clock configuration 
+ *  \param[in] tPllCfg: pll clock configuration 
  *  \param[in] wFreq: pll clk freq 
  *  \return csi_error_t.
  */
- csi_error_t csi_pll_manual_config(csi_pll_manual_config_t ePllCfg,uint32_t wFreq);
+ csi_error_t csi_pll_manual_config(csi_pll_manual_config_t tPllCfg,uint32_t wFreq);
  
 /** \brief PLL clk auto config
  * 
