@@ -13,6 +13,7 @@
 #include "sys_clk.h"
 #include <drv/adc.h>
 #include "pin.h"
+#include <iostring.h>
 /* externs function--------------------------------------------------------*/
 /* externs variablesr------------------------------------------------------*/
 /* Private macro-----------------------------------------------------------*/
@@ -35,8 +36,6 @@ void adc_work_current_test(void)
 	csi_adc_config_t tAdcConfig;
 	
 	uint8_t byChnlNum = sizeof(tSeqCfg)/sizeof(tSeqCfg[0]);
-	uint16_t	g_hwAdcBuf[sizeof(tSeqCfg)/sizeof(tSeqCfg[0])];
-	uint16_t DATAADC;
 	//adc 输入管脚配置
 	csi_pin_set_mux(PC13, PC13_ADC_INA0);						//ADC GPIO作为输入通道
 //	csi_pin_set_mux(PC11, PC11_ADC_INA8);
@@ -69,7 +68,6 @@ void adc_work_voltage_test(void)
 	csi_adc_config_t tAdcConfig;
 	
 	uint8_t byChnlNum = sizeof(tSeqCfgDj)/sizeof(tSeqCfgDj[0]);
-	uint16_t	g_hwAdcBuf[sizeof(tSeqCfgDj)/sizeof(tSeqCfgDj[0])];
 	uint16_t DATAADC;
 	//adc 输入管脚配置
 	csi_pin_set_mux(PC13, PC13_ADC_INA0);						//ADC GPIO作为输入通道
@@ -109,7 +107,6 @@ void adc_work_voltage_test(void)
 	csi_adc_config_t tAdcConfig;
 	
 	uint8_t byChnlNum = sizeof(tSeqCfgDj)/sizeof(tSeqCfgDj[0]);
-	uint16_t	g_hwAdcBuf[sizeof(tSeqCfgDj)/sizeof(tSeqCfgDj[0])];
 	uint16_t DATAADC;
 	//adc 输入管脚配置
 	csi_pin_set_mux(PC13, PC13_ADC_INA0);						//ADC GPIO作为输入通道
@@ -159,7 +156,6 @@ void adc_work_voltage_test(void)
 	tAdcConfig.ptSeqCfg = (csi_adc_seq_t *)SeqCfg3;		        //ADC 采样序列： 具体参考结构体变量 SeqCfg3	
 	csi_adc_init(ADC0, &tAdcConfig);//初始化ADC参数配置	
 	csi_adc_set_seqx(ADC0, tAdcConfig.ptSeqCfg, 1);	 //配置ADC采样序列
-	uint16_t hwData = 0;
 	csi_pin_set_mux(PA5,PA5_OUTPUT);
 	csi_pin_set_low(PA5);	
 	ADC0->ECR |= 0x1 << 16;
@@ -167,7 +163,8 @@ void adc_work_voltage_test(void)
 	ADC0->CR |= 0x1 << ADC12_START;
 	while(!(ADC0->SR & ADC12_SEQ(0)));
 	GPIOA->CODR = 0x20;//pa0.5 high	
-	csi_clo_config(CLO_PCLK, CLO_DIV8,PD4);
+	csi_pin_set_mux(PA2, PA2_CLO);
+	csi_clo_config(CLO_PCLK, CLO_DIV8);
 	while(1)
 	{	
 	delay_ums(100);
@@ -186,7 +183,8 @@ void adc_work_voltage_test(void)
 	uint32_t wAve = 0;
 	uint32_t wMin = 8096;
 	uint32_t wMax = 0;
-	uint8_t byTimes =20;
+	static uint8_t byTimes =20;
+	uint8_t i;
 	csi_adc_config_t tAdcConfig;
 	const csi_adc_seq_t SeqCfg3[] =
 {
@@ -207,7 +205,7 @@ void adc_work_voltage_test(void)
 	csi_adc_set_seqx(ADC0, tAdcConfig.ptSeqCfg, 1);	 //配置ADC采样序列
 	while(1)
 	{
-		for(uint8_t i =0;i<byTimes;i++)
+		for(i =0;i<byTimes;i++)
 		{
 			csi_adc_start(ADC0);
 			hwData[i] = csi_adc_read_channel(ADC0, 0);
@@ -255,7 +253,6 @@ void adc_work_voltage_test(void)
 	csi_adc_config_t tAdcConfig;
 	
 	uint8_t byChnlNum = sizeof(tSeqCfgDj)/sizeof(tSeqCfgDj[0]);
-	uint16_t	g_hwAdcBuf[sizeof(tSeqCfgDj)/sizeof(tSeqCfgDj[0])];
 	uint16_t DATAADC;
 	//adc 输入管脚配置
 	csi_pin_set_mux(PC13, PC13_ADC_INA0);						//ADC GPIO作为输入通道
@@ -296,7 +293,6 @@ void adc_work_voltage_test(void)
 	csi_adc_config_t tAdcConfig;
 	
 	uint8_t byChnlNum = sizeof(tSeqCfgDj)/sizeof(tSeqCfgDj[0]);
-	uint16_t	g_hwAdcBuf[sizeof(tSeqCfgDj)/sizeof(tSeqCfgDj[0])];
 	uint16_t DATAADC;
 	//adc 输入管脚配置
 	csi_pin_set_mux(PC13, PC13_ADC_INA0);						//ADC GPIO作为输入通道
