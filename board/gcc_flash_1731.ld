@@ -22,8 +22,8 @@
  ******************************************************************************/
 MEMORY
 {
-	ROM(RX)   : ORIGIN = 0x00000000,  LENGTH = 128K
-	RAM(RWX)  : ORIGIN = 0x20000000,  LENGTH = 32K
+	ROM(RX)   : ORIGIN = 0x00000000,  LENGTH = 64K
+	RAM(RWX)  : ORIGIN = 0x20000000,  LENGTH = 16K
 }
 
 /*heap and stack*/
@@ -32,7 +32,7 @@ __stack_size = STACK_SIZE;
 __stack_top = ORIGIN(RAM) + LENGTH(RAM);
 __stack_start = __stack_top - STACK_SIZE - __heap_size; 
 
-/*PROVIDE (__ram_end  = 0x0000C000); */			/* define symbol for external reference*/
+/*PROVIDE (__ram_end  = 0x00004000); */			/* define symbol for external reference*/
 /*PROVIDE (__heap_end = __ram_end);  */
 
 REGION_ALIAS("REGION_TEXT",    ROM);			/* Assign alias names to memory regions */

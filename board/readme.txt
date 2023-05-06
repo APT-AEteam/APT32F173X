@@ -1,0 +1,9 @@
+173x包含两种型号：1731和1732
+(1)、如果使用1731，可根据需求选择以下ld文件
+      gcc_flash_1731.ld
+      gcc_sram_1731.ld
+(2)、如果使用1732，可根据需求选择以下ld文件
+      gcc_flash_1732.ld
+      gcc_sram_1732.ld
+      gcc_flash_dram24k_iram8k_1732.ld
+      gcc_flash_dram16k_iram16k_1732.ld

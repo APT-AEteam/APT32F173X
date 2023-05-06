@@ -23,9 +23,9 @@
 MEMORY
 {
 	ROM(RX)    : ORIGIN = 0x00000000,  LENGTH = 128K
-	IROM(RX)   : ORIGIN = 0x00040000,  LENGTH = 16K
-	SRAM0(RWX)  : ORIGIN = 0x20000000,  LENGTH = 16K
-	SRAM1(RWX) : ORIGIN = 0x20006000,  LENGTH = 16K
+	IROM(RX)   : ORIGIN = 0x00040000,  LENGTH = 8K
+	SRAM0(RWX) : ORIGIN = 0x20000000,  LENGTH = 24K
+	SRAM1(RWX) : ORIGIN = 0x20006000,  LENGTH = 8K
 }
 
 /*heap and stack*/
@@ -34,7 +34,7 @@ __stack_size = STACK_SIZE;
 __stack_top = ORIGIN(SRAM0) + LENGTH(SRAM0);
 __stack_start = __stack_top - STACK_SIZE - __heap_size; 
 
-/*PROVIDE (__ram_end  = 0x0000C000); */			/* define symbol for external reference*/
+/*PROVIDE (__ram_end  = 0x00006000); */			/* define symbol for external reference*/
 /*PROVIDE (__heap_end = __ram_end);  */
 
 REGION_ALIAS("REGION_TEXT",    ROM);			/* Assign alias names to memory regions */
@@ -53,7 +53,7 @@ SECTIONS {
         *(.text)
 		*(.text.*)
     } > REGION_TEXT
-	
+		
     .rodata :
     {
 		. = ALIGN(0x4) ;
@@ -64,7 +64,7 @@ SECTIONS {
 		. = ALIGN(0x4) ; 
         _end_rodata = . ;
     } > REGION_RODATA
-	
+
     .data : 
     { 
 		. = ALIGN(0x4) ;						/* Align the start of the section */
@@ -79,7 +79,7 @@ SECTIONS {
     	_end_data = .; 							/* Provide the name for the end of this section */
     } > REGION_DATA AT > REGION_RODATA			
  
-     .fastfunc :
+    .fastfunc :
     {
 		 . = ALIGN(0x4) ;  
 		 _start_fastfunc = .;	
@@ -87,7 +87,7 @@ SECTIONS {
 		 . = ALIGN(0x4) ;	
 		 _end_fastfunc = .; 	
 	} >IROM AT>ROM	
-	
+
    .bss :
     {
 		. = ALIGN(0x4) ;
