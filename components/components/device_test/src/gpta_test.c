@@ -41,8 +41,8 @@ int gpta_timer_test(void)
 /** \brief GPTA sync2 sync3合并捕获示例代码
  *          //sync2 sync3不区分，实现4次捕获
  *   		- 捕获4次产生一次捕获中断
- *     		- 由PA01触发外部事件1，经过ETCB  触发sync3 捕获
- * 			- 信号由PA01的高低电平切换产生（一直高电平意味着没有触发）
+ *     		- 由PA1触发外部事件1，经过ETCB  触发sync3 捕获
+ * 			- 信号由PA1的高低电平切换产生（一直高电平意味着没有触发）
  *  \param[in] none
  *  \return error code
  */
@@ -53,9 +53,9 @@ int gpta_capture_sync_test(void)
 
 
 	csi_pin_set_mux(PA1,PA1_INPUT);		
-	csi_pin_pull_mode(PA1, GPIO_PULLUP);						//PA0 上拉
-	csi_pin_irq_mode(PA1, EXI_GRP16, GPIO_IRQ_FALLING_EDGE);     //PA0 上升沿产生中断，选择中断组16
-	csi_pin_irq_enable(PA1, ENABLE);                            //PA0 中断使能                              //PC02 中断使能        
+	csi_pin_pull_mode(PA1, GPIO_PULLUP);						//PA1 上拉
+	csi_pin_irq_mode(PA1, EXI_GRP16, GPIO_IRQ_FALLING_EDGE);     //PA1 上升沿产生中断，选择中断组16
+	csi_pin_irq_enable(PA1, ENABLE);                            //PA1 中断使能                                   
 	csi_exi_set_evtrg(5, TRGSRC_EXI16, 1);	 
 	
 //------------------------------------------------------------------------------------------------------------------------		
@@ -113,14 +113,14 @@ int gpta_capture_sync_test1(void)
     volatile uint8_t ch;
 	
 	csi_pin_set_mux(PA3,PA3_INPUT);		
-	csi_pin_pull_mode(PA3, GPIO_PULLUP);						//PA0 上拉
+	csi_pin_pull_mode(PA3, GPIO_PULLUP);						//PA3 上拉
 	
-	csi_pin_irq_mode(PA3,EXI_GRP3, GPIO_IRQ_RISING_EDGE);		//PA0 下降沿产生中断
+	csi_pin_irq_mode(PA3,EXI_GRP3, GPIO_IRQ_RISING_EDGE);		//PA3 下降沿产生中断
 	csi_pin_irq_enable(PA3, ENABLE);	
 	csi_exi_set_evtrg(0, TRGSRC_EXI3, 1);	
 
-	csi_pin_irq_mode(PA3, EXI_GRP16, GPIO_IRQ_FALLING_EDGE);     //PA0 上升沿产生中断，选择中断组16
-	csi_pin_irq_enable(PA3, ENABLE);                            //PA0 中断使能                              //PC02 中断使能        
+	csi_pin_irq_mode(PA3, EXI_GRP16, GPIO_IRQ_FALLING_EDGE);     //PA3 上升沿产生中断，选择中断组16
+	csi_pin_irq_enable(PA3, ENABLE);                            //PA3 中断使能                                  
 	csi_exi_set_evtrg(5, TRGSRC_EXI16, 1);	   
 	
 //------------------------------------------------------------------------------------------------------------------------		
