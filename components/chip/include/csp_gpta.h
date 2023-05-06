@@ -390,13 +390,6 @@ typedef enum{
 #define GPTA_LDAMD_MSK		(0x7 << GPTA_LDAMD_POS)
 #define GPTA_LDBMD_POS		(5)
 #define GPTA_LDBMD_MSK		(0x7 << GPTA_LDBMD_POS)
-typedef enum{
-	GPTA_LD_SHDW = 0,
-	GPTA_LD_IMM
-
-	
-}csp_gpta_ld_e;
-
 
 ///AQCRA/B
 #define GPTA_ACT_ZRO_POS	(0)
@@ -419,12 +412,8 @@ typedef enum{
 #define GPTA_ACT_T2U_MSK	(0x3 << GPTA_ACT_T2U_POS)
 #define GPTA_ACT_T2D_POS	(18)
 #define GPTA_ACT_T2D_MSK	(0x3 << GPTA_ACT_T2D_POS)
-typedef enum {
-	GPTA_NA = 0,
-	GPTA_LO,
-	GPTA_HI,
-	GPTA_TG	
-}csp_gpta_action_e;
+
+
 #define GPTA_C1SEL_POS	(20)
 #define GPTA_C1SEL_MSK	(0x3<<GPTA_C1SEL_POS)
 #define GPTA_C2SEL_POS	(22)
@@ -512,9 +501,6 @@ typedef enum{
 	GPTA_TRG01_CMPB_F,
 	
 	GPTA_TRG01_SYNC = 0xc,
-	GPTA_TRG01_PE0,
-	GPTA_TRG01_PE1,
-	GPTA_TRG01_PE2
 }csp_gpta_trgsrc0_e;
 
 
