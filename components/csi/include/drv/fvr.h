@@ -17,20 +17,36 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+typedef enum{
+	LVL_1V	= 0,
+	LVL_2V,
+	LVL_3V,
+	LVL_4V
+}csi_fvr_lvl_e;
 
+typedef enum{
+	CMPREF_AVDD	= 0,
+	CMPREF_FVR,
+}csi_fvr_cmpref_e;
+
+typedef enum{
+	BUFLVL_INPUT	= 0,
+	BUFLVL_1V,
+	BUFLVL_TS = 3
+}csi_fvr_buflvl_e;
 /**
   \brief       set fvr lvl 
   \param[in]   ptFvrBase	pointer of fvr register structure
   \return      none
 */
-void csi_fvr_lvl_set(csp_fvr_t *ptFvrBase, fvr_lvl_e eLvl);
+void csi_fvr_lvl_set(csp_fvr_t *ptFvrBase, csi_fvr_lvl_e eLvl);
 
 /**
   \brief       set fvr cmp reference 
   \param[in]   ptFvrBase	pointer of fvr register structure
   \return      none
 */
-void csi_fvr_cmpref_set(csp_fvr_t *ptFvrBase, fvr_cmpref_e eOpacmpref);
+void csi_fvr_cmpref_set(csp_fvr_t *ptFvrBase, csi_fvr_cmpref_e eOpacmpref);
 
 /**
   \brief       start fvr Hardware module 
@@ -51,7 +67,7 @@ void csi_fvr_stop(csp_fvr_t *ptFvrBase);
   \param[in]   ptFvrBase	pointer of fvr register structure
   \return      none
 */
-void csi_fvr_buf_init(csp_fvr_t *ptFvrBase,fvr_buflvl_e eBuflvl);
+void csi_fvr_buf_init(csp_fvr_t *ptFvrBase,csi_fvr_buflvl_e eBuflvl);
 
 /**
   \brief       set fvr opacm 

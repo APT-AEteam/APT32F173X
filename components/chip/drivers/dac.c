@@ -71,9 +71,9 @@ void csi_dac_dis(csp_dac_t *ptDacBase)
   \param[in]   ptDacBase	pointer of dac register structure
   \return      none
 */
-void csi_dac_irq_enable(csp_dac_t *ptDacBase, csi_dac_irq_e byVal,bool bEnable)
+void csi_dac_irq_enable(csp_dac_t *ptDacBase, csi_dac_irq_e eVal,bool eEnable)
 {
-	csp_dac_irq_enable(ptDacBase,byVal,bEnable);
+	csp_dac_irq_enable(ptDacBase,eVal,eEnable);
 }
 
 /**
@@ -81,9 +81,9 @@ void csi_dac_irq_enable(csp_dac_t *ptDacBase, csi_dac_irq_e byVal,bool bEnable)
   \param[in]   ptDacBase	pointer of dac register structure
   \return      none
 */
-void csi_dac_syncr_enable(csp_dac_t *ptDacBase, csi_dac_syncr_e byVal,bool bEnable)
+void csi_dac_syncr_enable(csp_dac_t *ptDacBase, csi_dac_syncr_e eVal,bool eEnable)
 {
-	csp_dac_syncr_enable(ptDacBase,byVal,bEnable);
+	csp_dac_syncr_enable(ptDacBase,eVal,eEnable);
 }
 
 /**
@@ -91,9 +91,9 @@ void csi_dac_syncr_enable(csp_dac_t *ptDacBase, csi_dac_syncr_e byVal,bool bEnab
   \param[in]   ptDacBase	pointer of dac register structure
   \return      none
 */
-void csi_dac_step_val(csp_dac_t *ptDacBase, uint16_t byDer)
+void csi_dac_step_val(csp_dac_t *ptDacBase, uint16_t eDer)
 {
-	csp_dac_step_val(ptDacBase, byDer);
+	csp_dac_step_val(ptDacBase, eDer);
 }
 
 /**

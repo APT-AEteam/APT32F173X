@@ -16,7 +16,7 @@
   \param[in]   ptFvrBase	pointer of fvr register structure
   \return      none
 */
-void csi_fvr_lvl_set(csp_fvr_t *ptFvrBase, fvr_lvl_e eLvl)
+void csi_fvr_lvl_set(csp_fvr_t *ptFvrBase, csi_fvr_lvl_e eLvl)
 {
 	csp_fvr_set_lvl(ptFvrBase,eLvl);
 
@@ -26,7 +26,7 @@ void csi_fvr_lvl_set(csp_fvr_t *ptFvrBase, fvr_lvl_e eLvl)
   \param[in]   ptFvrBase	pointer of fvr register structure
   \return      none
 */
-void csi_fvr_cmpref_set(csp_fvr_t *ptFvrBase, fvr_cmpref_e eOpacmpref)
+void csi_fvr_cmpref_set(csp_fvr_t *ptFvrBase, csi_fvr_cmpref_e eOpacmpref)
 {
 	csp_fvr_cmpref_set(ptFvrBase,eOpacmpref);
 }
@@ -58,11 +58,11 @@ void csi_fvr_stop(csp_fvr_t *ptFvrBase)
   \param[in]   ptFvrBase	pointer of fvr register structure
   \return      none
 */
-void csi_fvr_buf_init(csp_fvr_t *ptFvrBase,fvr_buflvl_e eBuflvl)
+void csi_fvr_buf_init(csp_fvr_t *ptFvrBase,csi_fvr_buflvl_e eBuflvl)
 {
 	csp_fvr_bufkey_unlock(ptFvrBase);
 	csp_fvr_bufen_en(ptFvrBase);
-	if(eBuflvl == FVR_BUFLVL_INPUT)
+	if(eBuflvl == BUFLVL_INPUT)
 	{	
 		csp_fvr_set_buflvl(ptFvrBase, eBuflvl);
 		csp_fvr_bufin_en(ptFvrBase);
