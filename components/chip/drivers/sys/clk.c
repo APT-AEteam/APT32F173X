@@ -235,11 +235,11 @@ csi_error_t csi_isosc_enable(void)
 csi_error_t csi_isosc_disable(void)
 {
 	if((SYSCON->SCLKCR & SYSCLK_SRC_MSK) == SC_ISOSC || csp_iwdt_rd_st(SYSCON))
-		return CSP_FAIL;
+		return CSI_ERROR;
 	else 
 	{
 		SYSCON->GCDR = ISOSC;
-		return CSP_SUCCESS;
+		return CSI_OK;
 	}	
 }
 
@@ -267,10 +267,10 @@ csi_error_t csi_pll_enable(void)
 csi_error_t csi_pll_disable(void)
 {
 	if((SYSCON->SCLKCR & SYSCLK_SRC_MSK) == SC_PLL)
-		return CSP_FAIL;
+		return CSI_ERROR;
 	else 
 	{
 		SYSCON->GCDR = PLL;
-		return CSP_SUCCESS;
+		return CSI_OK;
 	}	
 }

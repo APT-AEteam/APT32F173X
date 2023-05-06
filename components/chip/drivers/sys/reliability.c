@@ -444,5 +444,5 @@ csi_error_t csi_cmos_autotrim(void)
 	AUTOTRIM_KEY_UREG = AUTOTRIM_KEY;
 	AUTOTRIM_TRIM_UREG = (AUTOTRIM_TRIM_UREG &0x00ffffff)|(wTrimValue<<24);	
 	
-	return CSP_SUCCESS;
+	return CSI_ERROR;
 }
