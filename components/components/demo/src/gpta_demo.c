@@ -314,8 +314,8 @@ int gpta_reglk_demo(void)
 	csi_pin_set_mux(PA1, PA1_GPTA0_CHB);						//
 	
 //------------------------------------------------------------------------------------------------------------------------	
-    csi_gpta_channel_cmpload_config(GPTA0, GPTA_CMPLD_SHDW, GPTA_LDCMP_ZRO ,GPTA_CAMPA);
-	csi_gpta_channel_cmpload_config(GPTA0, GPTA_CMPLD_SHDW, GPTA_LDCMP_ZRO ,GPTA_CAMPB);
+    csi_gpta_channel_cmpload_config(GPTA0, GPTA_SHDW_SHADOW, GPTA_LDMD_ZRO ,GPTA_CAMPA);
+	csi_gpta_channel_cmpload_config(GPTA0, GPTA_SHDW_SHADOW, GPTA_LDMD_ZRO ,GPTA_CAMPB);
 	csi_gpta_pwmconfig_t tPwmCfg;								  
 	tPwmCfg.byWorkmod        = GPTA_WAVE;                        //WAVE  波形模式
 	tPwmCfg.byCountingMode   = GPTA_UPCNT;                     //CNYMD  //计数方向
