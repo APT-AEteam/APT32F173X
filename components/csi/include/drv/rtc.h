@@ -35,16 +35,16 @@ typedef struct {
 
 /****** RTC time *****/
 typedef struct {
-    int t_sec;             ///< Second.      [0-59]
-    int t_min;             ///< Minute.      [0-59]
-    int t_hour;            ///< Hour.        [0-23]
-    int t_mday;            ///< Day.         [1-31]
-    int t_mon;             ///< Month.       [0-11]
-    int t_year;            ///< Year-1900.   [70- ]      !NOTE:100=2000    
-	int t_wday;			/// weekday		  [1-7]	     
-    int t_yday;            ///< Days in year.[0-365]     !NOTE:January 1st = 0
-	int t_isdst;			/// Non-0 if daylight savings time is in effect
-	int t_pm;				///< PM.		  [0/1]
+    int iSec;             ///< Second.      [0-59]
+    int iMin;             ///< Minute.      [0-59]
+    int iHour;            ///< Hour.        [0-23]
+    int iMday;            ///< Day.         [1-31]
+    int iMon;             ///< Month.       [1-12]
+    int iYear;            ///< Year-1900.   [70- ]      !NOTE:100=2000    
+	int iWday;			/// weekday		  [1-7]	     
+    int iYday;            ///< Days in year.[0-365]     !NOTE:January 1st = 0
+	int iIsdst;			/// Non-0 if daylight savings time is in effect
+	int iPm;				///< PM.		  [0/1]
 } csi_rtc_time_t;
 
 /****** definition for rtc *****/
