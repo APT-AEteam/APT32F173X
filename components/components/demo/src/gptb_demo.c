@@ -5,6 +5,7 @@
  * <table>
  * <tr><th> Date  <th>Version  <th>Author  <th>Description
  * <tr><td> 2021-5-11 <td>V0.0 <td>ljy     <td>initial
+ * <tr><td> 2023-5-8  <td>V0.1 <td>wangch  <td>modify
  * </table>
  * *********************************************************************
 */
@@ -327,24 +328,94 @@ int gptb_pwm_dz_em_demo(void)
 	return iRet;
 }
 
-void load1(void)
-{   
-	csi_gptb_channel_aqload_config(GPTB0, GPTB_LD_SHDW, GPTB_LDCMP_LD_SYNC ,GPTB_CHANNEL_A);
-	csi_gptb_channel_aqload_config(GPTB0, GPTB_LD_SHDW, GPTB_LDCMP_LD_SYNC ,GPTB_CHANNEL_B);
+static uint32_t s_wGptbCapBuff[4] = {0};
+
+/** \brief gptb0 interrupt handle weak function
+ *  \param[in] none
+ *  \return    none
+ */
+__attribute__((weak)) void gptb_irqhandler(csp_gptb_t *ptGptbBase)
+{
+	volatile uint32_t wEMMisr = csp_gptb_get_emmisr(ptGptbBase);
+	volatile uint32_t wMisr   = csp_gptb_get_misr(ptGptbBase);	
 	
-	csi_gptb_pwmchannel_config_t  channel1;
-	channel1.byActionZro    =   GPTB_LO;
-	channel1.byActionPrd    =   GPTB_LO;
-	channel1.byActionC1u    =   GPTB_LO;
-	channel1.byActionC1d    =   GPTB_LO;
-	channel1.byActionC2u    =   GPTB_LO;
-	channel1.byActionC2d    =   GPTB_LO;
-	channel1.byActionT1u    =   GPTB_LO;
-	channel1.byActionT1d    =   GPTB_LO;
-	channel1.byActionT2u    =   GPTB_LO;
-	channel1.byActionT2d    =   GPTB_LO;
-	channel1.byChoiceC1sel  =   GPTB_CMPA;
-	channel1.byChoiceC2sel  =   GPTB_CMPA;	
-	csi_gptb_channel_config(GPTB0, &channel1,  GPTB_CHANNEL_A);//channel
-	csi_gptb_channel_config(GPTB0, &channel1,  GPTB_CHANNEL_B);
+	//GPTB emergency interrupt
+	if(wEMMisr > 0)
+	{
+		if((wEMMisr & GPTB_EM_INT_EP0) == GPTB_EM_INT_EP0)
+		{
+			csp_gptb_clr_emint(ptGptbBase, GPTB_EM_INT_EP0);
+		}
+		if((wEMMisr & GPTB_EM_INT_EP1) == GPTB_EM_INT_EP1)
+		{
+			csp_gptb_clr_emint(ptGptbBase, GPTB_EM_INT_EP1);
+		}
+		if((wEMMisr & GPTB_EM_INT_EP2) == GPTB_EM_INT_EP2)
+		{
+			csp_gptb_clr_emint(ptGptbBase, GPTB_EM_INT_EP2);
+		}
+		if((wEMMisr & GPTB_EM_INT_EP3) == GPTB_EM_INT_EP3)
+		{
+			csp_gptb_clr_emint(ptGptbBase, GPTB_EM_INT_EP3);
+		}	
+	}
+
+	//GPTB interrupt
+	if(wMisr > 0)
+	{
+		if((wMisr & GPTB_INT_TRGEV0) == GPTB_INT_TRGEV0)
+		{
+			csp_gptb_clr_int(ptGptbBase, GPTB_INT_TRGEV0);
+		}
+		if((wMisr & GPTB_INT_TRGEV1) == GPTB_INT_TRGEV1)
+		{
+			csp_gptb_clr_int(ptGptbBase, GPTB_INT_TRGEV1);
+		}
+		if((wMisr & GPTB_INT_CAPLD0) == GPTB_INT_CAPLD0)
+		{
+			csp_gptb_clr_int(ptGptbBase, GPTB_INT_CAPLD0);
+			s_wGptbCapBuff[0]=csp_gptb_get_cmpa(ptGptbBase);
+		}
+		if((wMisr & GPTB_INT_CAPLD1) == GPTB_INT_CAPLD1)
+		{
+			csp_gptb_clr_int(ptGptbBase, GPTB_INT_CAPLD1);
+			s_wGptbCapBuff[0]=csp_gptb_get_cmpa(ptGptbBase);
+			s_wGptbCapBuff[1]=csp_gptb_get_cmpb(ptGptbBase);
+		}
+		if((wMisr & GPTB_INT_CAPLD2) == GPTB_INT_CAPLD2)
+		{
+			csp_gptb_clr_int(ptGptbBase, GPTB_INT_CAPLD2);
+			s_wGptbCapBuff[0]=csp_gptb_get_cmpa(ptGptbBase);
+			s_wGptbCapBuff[1]=csp_gptb_get_cmpb(ptGptbBase);
+			s_wGptbCapBuff[2]=csp_gptb_get_cmpaa(ptGptbBase);
+		}
+		if((wMisr & GPTB_INT_CAPLD3) == GPTB_INT_CAPLD3)
+		{
+			csp_gptb_clr_int(ptGptbBase, GPTB_INT_CAPLD3);
+			s_wGptbCapBuff[0]=csp_gptb_get_cmpa(ptGptbBase);
+			s_wGptbCapBuff[1]=csp_gptb_get_cmpb(ptGptbBase);
+			s_wGptbCapBuff[2]=csp_gptb_get_cmpaa(ptGptbBase);
+			s_wGptbCapBuff[3]=csp_gptb_get_cmpba(ptGptbBase);
+		}
+		if((wMisr & GPTB_INT_CAU) == GPTB_INT_CAU)
+		{
+			csp_gptb_clr_int(ptGptbBase, GPTB_INT_CAU);
+		}
+		if((wMisr & GPTB_INT_CAD) == GPTB_INT_CAD)
+		{
+			csp_gptb_clr_int(ptGptbBase, GPTB_INT_CAD);
+		}
+		if((wMisr & GPTB_INT_CBU) == GPTB_INT_CBU)
+		{
+			csp_gptb_clr_int(ptGptbBase, GPTB_INT_CBU);
+		}
+		if((wMisr & GPTB_INT_PRDMA) == GPTB_INT_PRDMA)
+		{
+			csp_gptb_clr_int(ptGptbBase, GPTB_INT_PRDMA);
+		}
+		if((wMisr & GPTB_INT_ZROMA) == GPTB_INT_ZROMA)
+		{
+			csp_gptb_clr_int(ptGptbBase, GPTB_INT_ZROMA);
+		}
+	}
 }

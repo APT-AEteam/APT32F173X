@@ -69,6 +69,14 @@ typedef struct csi_led_config {
 */
 csi_error_t csi_led_init(csp_led_t *ptLedBase, csi_led_config_t *tLedCfg);
 
+/** \brief   led bright control
+ * 
+ *  \param[in] ptLedBase: pointer of LED register structure
+ *  \param[in] eBrt:	LED bright control,refer to csi_led_brt_e
+ *  \return  none  
+ */
+void csi_led_set_bright(csp_led_t *ptLedBase, csi_led_brt_e eBrt);
+
 /** 
   \brief 	   LED interrupt enable/disable control
   \param[in]   ptLedBase	pointer of bt register structure

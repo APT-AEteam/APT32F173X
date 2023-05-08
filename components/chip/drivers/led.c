@@ -16,15 +16,6 @@
 #include "csp_common.h"
 #include "sys_clk.h"
 
-/** \brief led interrupt handle function
- * 
- *  \param[in] args: dev of led
- *  \return none
- */ 
-__attribute ((weak))void led_irqhandler(csp_led_t *ptLedBase)
-{
-	csp_led_clr_int(ptLedBase, LED_INT_ICEND|LED_INT_IPEND);
-}
 /** \brief   led init & configuration: clk, brightness, COM mask
  * 
  *  \param[in] ptLedBase: pointer of LED register structure
@@ -34,7 +25,7 @@ __attribute ((weak))void led_irqhandler(csp_led_t *ptLedBase)
 csi_error_t csi_led_init(csp_led_t *ptLedBase, csi_led_config_t *tLedCfg) 
 {
 	csi_clk_enable((uint32_t *)ptLedBase);	
-	csp_led_set_brt(ptLedBase, tLedCfg->byBrt);
+	csi_led_set_bright(ptLedBase, tLedCfg->byBrt);
 	csp_led_set_clk(ptLedBase, tLedCfg->byClk);
 	csp_led_set_commask(ptLedBase, (tLedCfg->hwComMask) & 0x3ff);
 	if(tLedCfg->byOnTime > 2096 || tLedCfg->byBreakTime > 524)
@@ -49,6 +40,18 @@ csi_error_t csi_led_init(csp_led_t *ptLedBase, csi_led_config_t *tLedCfg)
 	return CSI_OK;
 	
 }
+
+/** \brief   led bright control
+ * 
+ *  \param[in] ptLedBase: pointer of LED register structure
+ *  \param[in] eBrt:	LED bright control,refer to csi_led_brt_e
+ *  \return  none  
+ */
+void csi_led_set_bright(csp_led_t *ptLedBase, csi_led_brt_e eBrt) 
+{
+	csp_led_set_brt(ptLedBase,(csp_led_brt_e)eBrt);
+}
+
 /** \brief LED interrupt enable/disable control
  * 
  *  \param[in] ptLedBase: pointer of bt register structure

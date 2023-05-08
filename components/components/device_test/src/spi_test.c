@@ -389,8 +389,8 @@ void spi_etcb_dma_send_receive_test(void)
 #define		RDCHIPID_CMD			0x9F		//read chip ID
 	
 
-static uint8_t byWrBuf[100] = {26,25,24,23,22,21,20,19,18,17,16,15,14,13,12,11};
-volatile static uint8_t byRdBuf[100];
+static uint8_t s_byWrBuf[100] = {26,25,24,23,22,21,20,19,18,17,16,15,14,13,12,11};
+static uint8_t s_byRdBuf[100];
 	
 //flash status reg
 //BIT7    6     5     4     3     2     1     0
@@ -408,7 +408,7 @@ volatile static uint8_t byRdBuf[100];
  *  \param[in] none
  *  \return none
  */
-static void SPI_flash_write_enable(void)
+static void spi_flash_write_enable(void)
 {
 	uint8_t byCmd = WREN_CMD;		//write enable cmd = 0x06
 	
@@ -432,7 +432,7 @@ static void SPI_flash_write_enable(void)
  *  \return flash status
  */
 
-uint8_t SPI_flash_read_status(void)
+uint8_t spi_flash_read_status(void)
 {
 	uint8_t bySend[2] = {RDSR0_CMD, 0x00};		//read status cmd0 = 0x05
 	uint8_t byRecv[2];
@@ -448,9 +448,9 @@ uint8_t SPI_flash_read_status(void)
  *  \param[in] none
  *  \return none
  */
-void SPI_flash_wait_busy(void)
+void spi_flash_wait_busy(void)
 {
-	while((SPI_flash_read_status() & 0x01) == 0x01);  // 1: busy, 0: idle
+	while((spi_flash_read_status() & 0x01) == 0x01);  // 1: busy, 0: idle
 }
 
 /** \brief flash write status 
@@ -459,15 +459,15 @@ void SPI_flash_wait_busy(void)
  *  \return none
  */
 //SPR0,TB,BP2,BP1,BP0(bit 7,5,4,3,2) 
-void SPI_flash_write_Status(uint8_t byStatus)
+void spi_flash_write_Status(uint8_t byStatus)
 {
 	uint8_t bySend[2] = {WRSR_CMD, byStatus};		//write status cmd = 0x01
 
-	SPI_flash_write_enable();		//write enable cmd
+	spi_flash_write_enable();		//write enable cmd
 	csi_spi_nss_low(PB12);
 	csi_spi_send_receive(SPI0, (void *)bySend, NULL, 2);
 	csi_spi_nss_high(PB12);
-	SPI_flash_wait_busy();
+	spi_flash_wait_busy();
 }
 
 /** \brief flash read chip id
@@ -475,7 +475,7 @@ void SPI_flash_write_Status(uint8_t byStatus)
  *  \param[in] none
  *  \return chip id (chip id = 0xef13)
  */
-uint32_t SPI_flash_read_id(void)
+uint32_t spi_flash_read_id(void)
 {
 	uint32_t hwId = 0x00;
 	uint8_t bySend[6] = {RDDEVICEID_CMD, 0, 0, 0};
@@ -495,15 +495,15 @@ uint32_t SPI_flash_read_id(void)
  *  \param[in] none
  *  \return none
  */
-void SPI_flash_chip_erase(void)
+void spi_flash_chip_erase(void)
 {
 	uint8_t byCmd = CHIPERASE_CMD;
 	
-	SPI_flash_write_enable();		//write enable
+	spi_flash_write_enable();		//write enable
 	csi_spi_nss_low(PB12);
 	csi_spi_send_receive(SPI0, (void *)&byCmd, NULL, 1);		//send chip erase cmd
 	csi_spi_nss_high(PB12);
-	SPI_flash_wait_busy();
+	spi_flash_wait_busy();
 }
 
 /** \brief flash sector erase (sector = 4k bytes)
@@ -511,16 +511,16 @@ void SPI_flash_chip_erase(void)
  *  \param[in] wAddr: flash sector addr
  *  \return none
  */
-void SPI_flash_sector_erase(uint32_t wAddr)
+void spi_flash_sector_erase(uint32_t wAddr)
 {
 	wAddr = wAddr & 0xfff000;
 	uint8_t bySend[4] = {SECTORERASE_CMD, (wAddr >> 16), (wAddr >> 8), wAddr};
 	
-	SPI_flash_write_enable();		//write enable
+	spi_flash_write_enable();		//write enable
 	csi_spi_nss_low(PB12);
 	csi_spi_send_receive(SPI0, (void *)bySend, NULL, 4);		//send sector erase cmd and data three bytes addr 
 	csi_spi_nss_high(PB12);
-	SPI_flash_wait_busy();
+	spi_flash_wait_busy();
 }
 
 /** \brief flash read bytes
@@ -530,7 +530,7 @@ void SPI_flash_sector_erase(uint32_t wAddr)
  *  \param[in] hwNum: length of read data
  *  \return none
  */
-void SPI_flash_read_bytes(uint8_t *pbyBuf, uint32_t wAddr, uint16_t hwNum)
+void spi_flash_read_bytes(uint8_t *pbyBuf, uint32_t wAddr, uint16_t hwNum)
 {
 	uint8_t bySend[4] = {READ_CMD, (wAddr >> 16), (wAddr >> 8), wAddr};
 	
@@ -547,16 +547,16 @@ void SPI_flash_read_bytes(uint8_t *pbyBuf, uint32_t wAddr, uint16_t hwNum)
  *  \param[in] hwNum: length of write data
  *  \return none
  */
-void SPI_flash_write_bytes(uint8_t *pbyBuf, uint32_t wAddr, uint16_t hwNum)
+void spi_flash_write_bytes(uint8_t *pbyBuf, uint32_t wAddr, uint16_t hwNum)
 {
 	uint8_t bySend[4] = {PGPRO_CMD, (wAddr >> 16), (wAddr >> 8), wAddr};
 
-	SPI_flash_write_enable();		//write enable
+	spi_flash_write_enable();		//write enable
 	csi_spi_nss_low(PB12);
 	csi_spi_send_receive(SPI0, (void *)bySend, NULL, 4);		//send write bytes cmd and data three bytes addr 
 	csi_spi_send_receive(SPI0, (void *)pbyBuf, NULL, hwNum);	//write hwNum bytes
 	csi_spi_nss_high(PB12);
-	SPI_flash_wait_busy();
+	spi_flash_wait_busy();
 }
 
 /** \brief spi操作flash示例代码
@@ -572,7 +572,7 @@ int spi_flash_read_write_test(void)
 	
 	for(uint8_t byIndex = 0;byIndex < 10; byIndex++)
 	{
-		byWrBuf[byIndex] = byIndex + 1;
+		s_byWrBuf[byIndex] = byIndex + 1;
 	}
 	
 	//主机端口配置
@@ -593,13 +593,13 @@ int spi_flash_read_write_test(void)
 
 	while(1)
 	{
-		iRet = SPI_flash_read_id();
+		iRet = spi_flash_read_id();
 		if(iRet == 0xef13)	
 		{
-			SPI_flash_sector_erase(0x1000);							//erase sector 1; start addr = 0x1000
-			SPI_flash_read_bytes((uint8_t *)byRdBuf, 0x1000, 100);	//read data = 0xff
-			SPI_flash_write_bytes(byWrBuf,0x1000,100);				//write 100 bytes 
-			SPI_flash_read_bytes((uint8_t *)byRdBuf, 0x1000, 100);	//read 100 bytes, read bytes = write bytes
+			spi_flash_sector_erase(0x1000);							//erase sector 1; start addr = 0x1000
+			spi_flash_read_bytes((uint8_t *)s_byRdBuf, 0x1000, 100);	//read data = 0xff
+			spi_flash_write_bytes(s_byWrBuf,0x1000,100);				//write 100 bytes 
+			spi_flash_read_bytes((uint8_t *)s_byRdBuf, 0x1000, 100);	//read 100 bytes, read bytes = write bytes
 		}
 		mdelay(10);
 	}
@@ -711,5 +711,72 @@ int spi_master_dma_send_max_speed_test(void)
 		while( (SPI0->SR & SPI_BSY) );						//等到spi传输完成
 		csi_spi_nss_high(PB12);
 		mdelay(10);
+	}
+}
+
+/** \brief spi interrupt handle weak function
+ * 
+ *  \param[in] ptSpiBase: pointer of spi register structure
+ *  \return none
+ */ 
+__attribute__((weak)) void spi_irqhandler(csp_spi_t *ptSpiBase)
+{	
+	uint32_t wStatus = csp_spi_get_isr(ptSpiBase);
+	volatile uint8_t receive_data[4];
+	//fifo rx 
+	if(wStatus & SPI_RXIM_INT)
+	{
+		//for reference
+		if(0==g_tSpiTransmit.byWorkMode)//主机
+		{
+			apt_spi_intr_recv_data(ptSpiBase);//when use"csi_spi_send_receive_async"function need open
+		}
+		else//从机
+		{
+			for(uint8_t byIdx = 0; byIdx < g_tSpiTransmit.byRxFifoLength; byIdx++)
+			{
+				receive_data[byIdx] = csi_spi_receive_slave(ptSpiBase);
+				csi_spi_send_slave(ptSpiBase, receive_data[byIdx]);
+			}
+		}
+	}
+	//fifo tx 
+	if(wStatus & SPI_TXIM_INT)		
+	{
+		//for reference
+		apt_spi_intr_send_data(ptSpiBase);
+	}
+	
+	//fifo overflow
+	if(wStatus & SPI_ROTIM_INT)
+	{	
+		//for reference
+		csp_spi_softreset(ptSpiBase,SPI_RXFIFO_RST);
+		csp_spi_clr_isr(ptSpiBase, SPI_ROTIM_INT);
+	}
+	
+	//fifo rx timeout
+	if(wStatus & SPI_RTIM_INT)		
+	{	
+		//for reference
+		csp_spi_clr_isr(ptSpiBase, SPI_RTIM_INT);
+		
+		for(uint8_t byIdx = 0; byIdx < g_tSpiTransmit.byRxFifoLength-1; byIdx++)
+		{
+			
+			if(csp_spi_get_sr(ptSpiBase) & SPI_RNE)
+			{
+				*g_tSpiTransmit.pbyRxData = csp_spi_get_data(ptSpiBase);		//receive data
+				g_tSpiTransmit.pbyRxData++;
+			}
+			else
+			{
+				break;
+			}
+			
+		}		
+		g_tSpiTransmit.byRxSize = 0;
+		g_tSpiTransmit.byReadable = SPI_STATE_IDLE;
+		csp_spi_set_int(ptSpiBase, SPI_RXIM_INT | SPI_RTIM_INT, false);			//disable fifo rx int
 	}
 }

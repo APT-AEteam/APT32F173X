@@ -108,10 +108,11 @@ csi_error_t led_demo(void)
 			//display status 0:正常控制，依次显示1，2，3，4
 			case 0:
 				csi_led_lighton(LED);
+				csp_led_set_brt(LED, (csp_led_brt_e)LED_100);
 				for(uint8_t i = 0; i < 4; i++)
 				{
 					csi_led_write_data(LED, i, g_byLedData[i]);
-					mdelay(50);
+					mdelay(10);
 				}
 				csi_led_lightoff(LED);
 				byDisplayStatus++;
@@ -121,11 +122,12 @@ csi_error_t led_demo(void)
 			//display status 1:闪烁控制，关闭COM0，依次显示2，3，4
 			case 1:
 				csi_led_lighton(LED);
+				csp_led_set_brt(LED, (csp_led_brt_e)LED_50);
 				csi_led_blink_control(LED, LED_BLK_OFF,(0x01&LED_BLK_MSK));//disable COM0
 				for(uint8_t i = 0; i < 4; i++)
 				{
 					csi_led_write_data(LED, i, g_byLedData[i]);
-					mdelay(50);
+					mdelay(10);
 				}
 				csi_led_lightoff(LED);
 				byDisplayStatus++;
@@ -135,11 +137,12 @@ csi_error_t led_demo(void)
 			//display status 2:闪烁控制，关闭COM0/1，依次显示3，4
 			case 2:
 				csi_led_lighton(LED);
+				csp_led_set_brt(LED, (csp_led_brt_e)LED_12);
 				csi_led_blink_control(LED, LED_BLK_OFF,(0x02&LED_BLK_MSK));//disable COM1
 				for(uint8_t i = 0; i < 4; i++)
 				{
 					csi_led_write_data(LED, i, g_byLedData[i]);
-					mdelay(50);
+					mdelay(10);
 				}
 				csi_led_lightoff(LED);
 				byDisplayStatus++;
@@ -153,7 +156,7 @@ csi_error_t led_demo(void)
 				for(uint8_t i = 0; i < 4; i++)
 				{
 					csi_led_write_data(LED, i, g_byLedData[i]);
-					mdelay(50);
+					mdelay(10);
 				}
 				csi_led_lightoff(LED);
 				byDisplayStatus = 0;
@@ -168,4 +171,14 @@ csi_error_t led_demo(void)
 		for(uint8_t i = 0;i<4;i++)
 			csi_led_write_data(LED, i, 0x00);
 	}
+}
+
+/** \brief led interrupt handle function
+ * 
+ *  \param[in] args: dev of led
+ *  \return none
+ */ 
+__attribute ((weak))void led_irqhandler(csp_led_t *ptLedBase)
+{
+	csp_led_clr_int(ptLedBase, LED_INT_ICEND|LED_INT_IPEND);
 }

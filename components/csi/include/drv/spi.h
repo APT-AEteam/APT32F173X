@@ -359,7 +359,19 @@ csi_error_t csi_spi_send_receive_x8(csp_spi_t *ptSpiBase, void *pDataOut,void *p
  */ 
 csi_error_t csi_spi_send_receive_d8(csp_spi_t *ptSpiBase, uint8_t *pDataOut,uint8_t *pDataIn, uint32_t wSize);
 //-------------------------------------------------------------------------------------------------------------------------------------
+/** \brief spi receive data,interrupt call 
+ * 
+ *  \param[in] ptSpiBase: pointer of SPI reg structure.
+ *  \return none
+ */ 
+void apt_spi_intr_recv_data(csp_spi_t *ptSpiBase);
 
+/** \brief spi send data,interrupt call
+ * 
+ *  \param[in] ptSpiBase: pointer of SPI reg structure.
+ *  \return none
+ */ 
+void apt_spi_intr_send_data(csp_spi_t *ptSpiBase);
 
 //DMA
 /** \brief send data of spi by DMA

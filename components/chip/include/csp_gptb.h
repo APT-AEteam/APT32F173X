@@ -362,9 +362,9 @@ typedef enum{
 #define GPTB_CMP_LD_MSK(n)  (0x1 << GPTB_CMP_LD_POS(n))
 
 #define GPTB_CMPA_LD_POS	(0)
-#define GPTB_CMPA_LD_MSK    (0x1 << GPTA_CMPA_LD_POS)
+#define GPTB_CMPA_LD_MSK    (0x1 << GPTB_CMPA_LD_POS)
 #define GPTB_CMPB_LD_POS	(1)
-#define GPTB_CMPB_LD_MSK    (0x1 << GPTA_CMPB_LD_POS)
+#define GPTB_CMPB_LD_MSK    (0x1 << GPTB_CMPB_LD_POS)
 
 typedef enum {
 	GPTB_CMPLD_SHDW = 0,
