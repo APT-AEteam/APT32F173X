@@ -73,7 +73,7 @@ int gpta_capture_sync_demo0(void)
 	tPwmCfg.byWorkmod       = GPTA_CAPTURE;                     //WAVE or CAPTURE    //计数或捕获	
 	tPwmCfg.byCountingMode  = GPTA_UPCNT;                       //CNYMD  //计数方向
 	tPwmCfg.byOneshotMode    = GPTA_OP_CONT; 
-	tPwmCfg.byStartSrc      = GPTA_SYNC_START;				    //软件使能同步触发使能控制（RSSR中START控制位）//启动方式
+	tPwmCfg.byStartSrc      = GPTA_SYNC;				    //软件使能同步触发使能控制（RSSR中START控制位）//启动方式
 	tPwmCfg.byPscld         = GPTA_LDPSCR_ZRO;                  //PSCR(分频)活动寄存器载入控制。活动寄存器在配置条件满足时，从影子寄存器载入更新值	
 	tPwmCfg.byCaptureCapmd   = 0;                               //0:连续捕捉模式    1h：一次性捕捉模式
 	tPwmCfg.byCaptureStopWrap=4-1;                              //Capture模式下，捕获事件计数器周期设置值
@@ -149,7 +149,7 @@ int gpta_capture_sync_demo1(void)
 	tPwmCfg.byWorkmod       = GPTA_CAPTURE;                     //WAVE or CAPTURE    //计数或捕获	
 	tPwmCfg.byCountingMode  = GPTA_UPCNT;                       //CNYMD  //计数方向
 	tPwmCfg.byOneshotMode    = GPTA_OP_CONT; 
-	tPwmCfg.byStartSrc      = GPTA_SYNC_START;				    //软件使能同步触发使能控制（RSSR中START控制位）//启动方式
+	tPwmCfg.byStartSrc      = GPTA_SYNC;				    //软件使能同步触发使能控制（RSSR中START控制位）//启动方式
 	tPwmCfg.byPscld         = GPTA_LDPSCR_ZRO;                  //PSCR(分频)活动寄存器载入控制。活动寄存器在配置条件满足时，从影子寄存器载入更新值	
 	tPwmCfg.byCaptureCapmd   = 0;                               //0:连续捕捉模式    1h：一次性捕捉模式
 	tPwmCfg.byCaptureStopWrap=2-1;                              //Capture模式下，捕获事件计数器周期设置值
@@ -192,7 +192,7 @@ int gpta_pwm_demo(void)
 	tPwmCfg.byWorkmod        = GPTA_WAVE;                        //WAVE  波形模式
 	tPwmCfg.byCountingMode   = GPTA_UPCNT;                       //CNYMD  //计数方向
 	tPwmCfg.byOneshotMode    = GPTA_OP_CONT;                     //OPM    //单次或连续(工作方式)
-	tPwmCfg.byStartSrc       = GPTA_SYNC_START;					 //软件使能同步触发使能控制（RSSR中START控制位）//启动方式
+	tPwmCfg.byStartSrc       = GPTA_SYNC;					     //软件使能同步触发使能控制（RSSR中START控制位）//启动方式
 	tPwmCfg.byPscld          = GPTA_LDPSCR_ZRO;                  //PSCR(分频)活动寄存器载入控制。活动寄存器在配置条件满足时，从影子寄存器载入更新值		
 	tPwmCfg.byDutyCycle 	 = 50;								 //pwm ouput duty cycle//PWM初始值(X%)			
 	tPwmCfg.wFreq 			 = 1000;							 //pwm ouput frequency	
@@ -250,7 +250,7 @@ int gpta_pwm_waveform_demo(void)
 	tPwmCfg.byWorkmod        = GPTA_WAVE;                        //WAVE  波形模式
 	tPwmCfg.byCountingMode   = GPTA_UPDNCNT;                     //CNYMD  //计数方向
 	tPwmCfg.byOneshotMode    = GPTA_OP_CONT;                     //OPM    //单次或连续(工作方式)
-	tPwmCfg.byStartSrc       = GPTA_SYNC_START;					 //软件使能同步触发使能控制（RSSR中START控制位）//启动方式
+	tPwmCfg.byStartSrc       = GPTA_SYNC;					 //软件使能同步触发使能控制（RSSR中START控制位）//启动方式
 	tPwmCfg.byPscld          = GPTA_LDPSCR_ZRO;                  //PSCR(分频)活动寄存器载入控制。活动寄存器在配置条件满足时，从影子寄存器载入更新值		
 	tPwmCfg.byDutyCycle 	 = 50;								 //pwm ouput duty cycle//PWM初始值(X%)			
 	tPwmCfg.wFreq 			 = 1000;							 //pwm ouput frequency	
@@ -320,11 +320,11 @@ int gpta_reglk_demo(void)
 	tPwmCfg.byWorkmod        = GPTA_WAVE;                        //WAVE  波形模式
 	tPwmCfg.byCountingMode   = GPTA_UPCNT;                     //CNYMD  //计数方向
 	tPwmCfg.byOneshotMode    = GPTA_OP_CONT;                     //OPM    //单次或连续(工作方式)
-	tPwmCfg.byStartSrc       = GPTA_SYNC_START;					 //软件使能同步触发使能控制（RSSR中START控制位）//启动方式
+	tPwmCfg.byStartSrc       = GPTA_SYNC;					 //软件使能同步触发使能控制（RSSR中START控制位）//启动方式
 	tPwmCfg.byPscld          = GPTA_LDPSCR_ZRO;                  //PSCR(分频)活动寄存器载入控制。活动寄存器在配置条件满足时，从影子寄存器载入更新值		
 	tPwmCfg.byDutyCycle 	 = 50;								 //pwm ouput duty cycle//PWM初始值(X%)			
 	tPwmCfg.wFreq 			 = 1000;							 //pwm ouput frequency	
-	tPwmCfg.wInt 		 	 = GPTA_INT_CBU;                     //interrupt
+	tPwmCfg.wInt 		 	 = GPTA_INTSRC_CBU;                     //interrupt
 	csi_gpta_wave_init(GPTA0, &tPwmCfg);
 	
 
@@ -370,7 +370,7 @@ int gpta_reglk_demo(void)
 	tPwmCfg.byWorkmod        = GPTA_WAVE;                        //WAVE  波形模式
 	tPwmCfg.byCountingMode   = GPTA_UPCNT;                       //CNYMD  //计数方向
 	tPwmCfg.byOneshotMode    = GPTA_OP_CONT;                     //OPM    //单次或连续(工作方式)
-	tPwmCfg.byStartSrc       = GPTA_SYNC_START;					 //软件使能同步触发使能控制（RSSR中START控制位）//启动方式
+	tPwmCfg.byStartSrc       = GPTA_SYNC;					 //软件使能同步触发使能控制（RSSR中START控制位）//启动方式
 	tPwmCfg.byPscld          = GPTA_LDPSCR_ZRO;                  //PSCR(分频)活动寄存器载入控制。活动寄存器在配置条件满足时，从影子寄存器载入更新值		
 	tPwmCfg.byDutyCycle 	 = 50;								 //pwm ouput duty cycle//PWM初始值(X%)			
 	tPwmCfg.wFreq 			 = 1000;							 //pwm ouput frequency	

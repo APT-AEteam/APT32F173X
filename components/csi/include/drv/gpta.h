@@ -241,6 +241,17 @@ typedef enum {
 	GPTA_SYNC
 }csi_gpta_stmd_e;
 
+typedef enum{
+	GPTA_LDPSCR_ZRO = 0,
+	GPTA_LDPSCR_PRD,
+	GPTA_LDPSCR_ZROPRD
+}csi_gpta_ldpscr_e;
+
+typedef enum{
+	GPTA_CMPMD_SEL_NODIFF = 0,
+	GPTA_CMPMD_SEL_DIFF
+}csi_gpta_cmpmd_sel_e;
+
 typedef enum {
 	GPTA_POLARITY_HIGH = 0,
 	GPTA_POLARITY_LOW
@@ -262,6 +273,11 @@ typedef enum {
 	GPTA_HI,
 	GPTA_TG	
 }csi_gpta_action_e;
+
+typedef enum {
+	GPTA_CMPA= 0,
+	GPTA_CMPB,
+}csi_gpta_csrc_sel_e;
 
 typedef enum{
 	GPTA_INTSRC_NONE   = 0x0,
