@@ -28,8 +28,8 @@ int main()
 {
     system_init();
 	board_init();	
-	csi_pin_set_mux(PA6, PA6_OUTPUT);		//PA06 output
-	csi_pin_set_high(PA6);					//PA06 output high;
+	csi_pin_set_mux(PA6, PA6_OUTPUT);		//PA6 output
+	csi_pin_set_high(PA6);					//PA6 output high;
 	
 	my_printf("Hello World~~~~~~~\n");		//print message
 	user_demo();							//demo
@@ -37,7 +37,7 @@ int main()
 	while(1)
 	{	
 		mdelay(100);
-		csi_pin_toggle(PA6);				//PA06 toggle
+		csi_pin_toggle(PA6);				//PA6 toggle
 	}
 	
     return 0;

@@ -118,7 +118,7 @@ void osc_sleep_imosc_test(void)
 	SYSCON->PWRCR = (SYSCON->PWRCR & (~(0x0f<<16))) | 0x40002;
 	
 	csi_pm_mode_e ePmMode = PM_MODE_SLEEP;		  //PM_MODE_DEEPSLEEP  PM_MODE_SLEEP
-	csi_pin_set_mux(PA5,PA5_OUTPUT);			  //PA05 OUTPUT
+	csi_pin_set_mux(PA5,PA5_OUTPUT);			  //PA5 OUTPUT
 	csi_bt_stop(BT3);                             //关闭BT3,BT3中断会唤醒sleep
 	switch(ePmMode)
 	{
@@ -160,7 +160,7 @@ void osc_sleep_hfosc_test(void)
 	SYSCON->PWRCR = (SYSCON->PWRCR & (~(0x0f<<16))) | 0x40002;
 	
 	csi_pm_mode_e ePmMode = PM_MODE_SLEEP;		  //PM_MODE_DEEPSLEEP  PM_MODE_SLEEP
-	csi_pin_set_mux(PA5,PA5_OUTPUT);			  //PA05 OUTPUT
+	csi_pin_set_mux(PA5,PA5_OUTPUT);			  //PA5 OUTPUT
 	csi_bt_stop(BT3);                             //关闭BT3,BT3中断会唤醒sleep
 	switch(ePmMode)
 	{
@@ -201,7 +201,7 @@ void osc_sleep_isosc_test(void)
 	SYSCON->PWRCR = (SYSCON->PWRCR & (~(0x0f<<16))) | 0x40002;
 	
 	csi_pm_mode_e ePmMode = PM_MODE_SLEEP;		  //PM_MODE_DEEPSLEEP  PM_MODE_SLEEP
-	csi_pin_set_mux(PA5,PA5_OUTPUT);			  //PA05 OUTPUT
+	csi_pin_set_mux(PA5,PA5_OUTPUT);			  //PA5 OUTPUT
 	csi_bt_stop(BT3);                             //关闭BT3,BT3中断会唤醒sleep
 	switch(ePmMode)
 	{
@@ -242,7 +242,7 @@ void osc_sleep_pll_test(void)
 	SYSCON->PWRCR = (SYSCON->PWRCR & (~(0x0f<<16))) | 0x40002;
 	
 	csi_pm_mode_e ePmMode = PM_MODE_SLEEP;		  //PM_MODE_DEEPSLEEP  PM_MODE_SLEEP
-	csi_pin_set_mux(PA5,PA5_OUTPUT);			  //PA05 OUTPUT
+	csi_pin_set_mux(PA5,PA5_OUTPUT);			  //PA5 OUTPUT
 	csi_bt_stop(BT3);                             //关闭BT3,BT3中断会唤醒sleep
 	switch(ePmMode)
 	{

@@ -31,7 +31,7 @@
  */
 void csi_cmp_int_enable(csp_cmp_t *ptCmpBase, csi_cmp_intsrc_e eIntSrc,bool bEnable)
 {
-	csp_cmp_int_enable(ptCmpBase, eIntSrc,bEnable);
+	csp_cmp_int_enable(ptCmpBase, (cmp_int_e)eIntSrc,bEnable);
 	if (bEnable) 
 	{
 		csi_irq_enable((uint32_t *)ptCmpBase);
@@ -154,7 +154,7 @@ csi_error_t csi_cmp_wfcr_config(csp_cmp_t *ptCmpBase,csi_cmp_wfcr_config_t *ptCm
  */
 void csi_cmp_set_evtrg(csp_cmp_t *ptCmpBase,csi_eve_sel_e eEveSel, bool bEnable)
 {
-	csp_cmp_evtrg(ptCmpBase , bEnable,eEveSel);
+	csp_cmp_evtrg(ptCmpBase , bEnable,(cmp_eve_sel_e)eEveSel);
 }
 
 /** \brief cmp out status
@@ -183,7 +183,7 @@ uint8_t csi_cmp_get_out(csp_cmp_t *ptCmpBase,uint8_t byOutCh)
  */
 void csi_cmp_int_clear(csp_cmp_t *ptCmpBase,csi_cmp_intsrc_e eIntMode)
 {
-	csp_cmp_int_clear(ptCmpBase,eIntMode);
+	csp_cmp_int_clear(ptCmpBase,(cmp_int_e)eIntMode);
 }
 
 /** \brief get cmp status
