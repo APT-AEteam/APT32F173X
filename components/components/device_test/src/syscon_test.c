@@ -41,10 +41,10 @@ void syscon_nmi_int_test(void)
 {
 	csp_nmi_int_enable(SYSCON, NMI_EXI0_INT);
 	
-	csi_pin_set_mux(PA0, PA0_INPUT);                          //PB02 配置为输入
-	csi_pin_pull_mode(PA0, GPIO_PULLUP);                       //PB02 上拉
-	csi_pin_irq_mode(PA0, EXI_GRP0, GPIO_IRQ_FALLING_EDGE);    //PB02 下降沿产生中断，选择中断组2
-	csi_pin_irq_enable(PA0, ENABLE);                           //PB02 中断使能        
+	csi_pin_set_mux(PA0, PA0_INPUT);                          //PA0 配置为输入
+	csi_pin_pull_mode(PA0, GPIO_PULLUP);                       //PA0 上拉
+	csi_pin_irq_mode(PA0, EXI_GRP0, GPIO_IRQ_FALLING_EDGE);    //PA0 下降沿产生中断，选择中断组2
+	csi_pin_irq_enable(PA0, ENABLE);                           //PA0 中断使能        
 	csi_pin_vic_irq_enable(EXI_GRP0, ENABLE);                   //VIC中断使能，选择中断组2
 	__disable_excp_irq();                                     //在enable的情况下，也会进入NMI处理函数
 
@@ -59,19 +59,19 @@ void syscon_nmi_int_test(void)
  */
 void syscon_eft_led_test(void)
 {
-	csi_pin_set_mux(PA6, PA6_OUTPUT);		//PA06 output
-	csi_pin_set_high(PA6);					//PA06 output high;
+	csi_pin_set_mux(PA6, PA6_OUTPUT);		//PA6 output
+	csi_pin_set_high(PA6);					//PA6 output high;
 	
-	csi_pin_set_mux(PA1, PA1_OUTPUT);		//PA06 output
-	csi_pin_set_low(PA1);					//PA06 output high;
+	csi_pin_set_mux(PA1, PA1_OUTPUT);		//PA1 output
+	csi_pin_set_low(PA1);					//PA1 output high;
 	
-	csi_pin_set_mux(PA2, PA2_OUTPUT);		//PA06 output
-	csi_pin_set_high(PA2);					//PA06 output high;	
+	csi_pin_set_mux(PA2, PA2_OUTPUT);		//PA2 output
+	csi_pin_set_high(PA2);					//PA2 output high;	
 	while(1)
 	{
 		mdelay(200);						//delay 100ms
-		csi_pin_toggle(PA1);				//PA06 toggle
-		csi_pin_toggle(PA2);				//PA06 toggle				
+		csi_pin_toggle(PA1);				//PA1 toggle
+		csi_pin_toggle(PA2);				//PA2 toggle				
 	}		
 }
 
@@ -234,8 +234,8 @@ __attribute__((section("func")))void sram_isram_testing(void)
 	    mdelay(100);
 		csi_pin_set_mux(PA2, PA2_CLO);
 		csi_clo_config(CLO_HCLK, CLO_DIV2);
-		csi_pin_set_mux(PA6, PA6_OUTPUT);		//PA06 output
-		csi_pin_set_high(PA6);					//PA06 output high;
+		csi_pin_set_mux(PA6, PA6_OUTPUT);		//PA6 output
+		csi_pin_set_high(PA6);					//PA6 output high;
 		NOP;
 		NOP;
 	}	
@@ -508,7 +508,7 @@ void syscon_lpt_wakeup_deepsleep_test(void)
 	csi_cmos_autotrim();
 	csi_pm_mode_e ePmMode = PM_MODE_DEEPSLEEP;		  //PM_MODE_DEEPSLEEP  PM_MODE_SLEEP
 	
-	csi_pin_set_mux(PA5,PA5_OUTPUT);				//PA05 OUTPUT
+	csi_pin_set_mux(PA5,PA5_OUTPUT);				//PA5 OUTPUT
 	mdelay(1000);
 	
 	csi_pin_toggle(PA5);
@@ -586,7 +586,7 @@ void syscon_lpt_wakeup_sleep_test(void)
 	
 	csi_pm_mode_e ePmMode = PM_MODE_SLEEP;		  //PM_MODE_DEEPSLEEP  PM_MODE_SLEEP
 	
-	csi_pin_set_mux(PA5,PA5_OUTPUT);				//PA05 OUTPUT
+	csi_pin_set_mux(PA5,PA5_OUTPUT);				//PA5 OUTPUT
 //	mdelay(2000);
 	
 	csi_pin_toggle(PA5);
@@ -667,7 +667,7 @@ void syscon_io_wakeup_sleep_test(void)
 		csi_clr_rst_reason(hwRstSrc);				//清除复位信息
 	}
 	
-	csi_pin_set_mux(PB2,PB2_OUTPUT);				//PB02 OUTPUT
+	csi_pin_set_mux(PB2,PB2_OUTPUT);				//PB2 OUTPUT
 	
 	csi_pin_toggle(PB2);
 	mdelay(200);
@@ -906,8 +906,8 @@ int syscon_evtrg_int_test(void)
 	csi_etb_config_t tEtbConfig;				                //ETB 参数配置结构体	
 	
 	csi_pin_set_mux(PA1,PA1_INPUT);		
-	csi_pin_pull_mode(PA1, GPIO_PULLUP);						//PA01 上拉
-	csi_pin_irq_mode(PA1,EXI_GRP1, GPIO_IRQ_FALLING_EDGE);		//PA01 下降沿产生中断	
+	csi_pin_pull_mode(PA1, GPIO_PULLUP);						//PA1 上拉
+	csi_pin_irq_mode(PA1,EXI_GRP1, GPIO_IRQ_FALLING_EDGE);		//PA1 下降沿产生中断	
 	csi_pin_irq_enable(PA1, ENABLE);
 	csi_exi_set_evtrg(1, TRGSRC_EXI1, 3);                        //三次产生一次触发
 
