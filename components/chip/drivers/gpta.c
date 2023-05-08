@@ -625,7 +625,7 @@ csi_error_t csi_gpta_set_sync_filter(csp_gpta_t *ptGptaBase, csi_gpta_filter_con
  */
 void csi_gpta_rearm_sync(csp_gpta_t *ptGptaBase,csi_gpta_trgin_e eTrgin)
 {
-	csp_gpta_rearm_sync(ptGptaBase, eTrgin);
+	csp_gpta_rearm_sync(ptGptaBase, (uint8_t)eTrgin);
 }
 /** \brief gpta evtrg output config
  * 

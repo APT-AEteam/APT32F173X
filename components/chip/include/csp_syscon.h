@@ -922,7 +922,7 @@ static inline void csp_iwdt_set_ovt(csp_syscon_t *ptSysconBase, iwdt_ovt_e eLvl)
 	ptSysconBase -> IWDCR = (ptSysconBase -> IWDCR & (~IWDT_OVT_MSK)) | eLvl << IWDT_OVT_POS | IWDTCR_KEY;
 }
 
-static inline void csp_iwdt_set_intt(csp_syscon_t *ptSysconBase, iwdt_intv_e eLvl)
+static inline void csp_iwdt_set_int(csp_syscon_t *ptSysconBase, iwdt_intv_e eLvl)
 {
 	ptSysconBase -> IWDCR = (ptSysconBase -> IWDCR & (~IWDT_INTV_MSK)) | eLvl << IWDT_INTV_POS | IWDTCR_KEY;
 }
