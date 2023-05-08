@@ -117,7 +117,7 @@ ATTRIBUTE_ISR void adc0_int_handler(void)
 {	
 #if	ADC0_INT_HANDLE_EN
 	// ISR content ...
-	adc_irqhandler(ADC0);
+	adc_irqhandler(ADC0); //this is a weak function defined in adc_demo.c, for better efficiency, we recommand user directly implement IRQ handler here without any function call.
 #endif	
 }
 
@@ -380,7 +380,7 @@ ATTRIBUTE_ISR void cnta_int_handler(void)
 {
 #if	CNTA_INT_HANDLE_EN
 	// ISR content ...
-	cnta_irqhandler(CA0);
+	cnta_irqhandler(CA0);  
 #endif
 }
 
