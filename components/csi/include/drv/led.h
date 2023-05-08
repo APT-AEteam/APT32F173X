@@ -20,7 +20,10 @@
 extern "C" {
 #endif
 
-
+typedef enum {
+	LED_BLINK_ON,
+	LED_BLINK_OFF
+}csi_led_blk_e;
 
 typedef enum {
 	LED_100 = 0,
@@ -102,7 +105,7 @@ void csi_led_write_data(csp_led_t *ptLedBase, uint8_t byCom, uint8_t byData);
  * \param[in] hwOnMsk: on pattern
  * \return  None
  */
-void csi_led_blink_control(csp_led_t *ptLedBase, csp_led_blk_e eLedBlk, uint16_t hwOnMsk);
+void csi_led_blink_control(csp_led_t *ptLedBase, csi_led_blk_e eLedBlk, uint16_t hwOnMsk);
 
 /**
   \brief   	   led start

@@ -76,7 +76,7 @@ typedef enum {
 
 ///RISR/IMCR/MISR/ICR
 typedef enum {
-	LED_INT_ICEND = 0,
+	LED_INT_ICEND = 1,
 	LED_INT_IPEND
 }csp_led_int_e;
 

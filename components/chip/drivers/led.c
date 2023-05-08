@@ -19,22 +19,22 @@
 /** \brief   led init & configuration: clk, brightness, COM mask
  * 
  *  \param[in] ptLedBase: pointer of LED register structure
- *  \param[in] tLedCfg:	pointer of led parameter config structure
+ *  \param[in] ptLedCfg:	pointer of led parameter config structure
  *  \return  csi_error_t  
  */
-csi_error_t csi_led_init(csp_led_t *ptLedBase, csi_led_config_t *tLedCfg) 
+csi_error_t csi_led_init(csp_led_t *ptLedBase, csi_led_config_t *ptLedCfg) 
 {
 	csi_clk_enable((uint32_t *)ptLedBase);	
-	csi_led_set_bright(ptLedBase, tLedCfg->byBrt);
-	csp_led_set_clk(ptLedBase, tLedCfg->byClk);
-	csp_led_set_commask(ptLedBase, (tLedCfg->hwComMask) & 0x3ff);
-	if(tLedCfg->byOnTime > 2096 || tLedCfg->byBreakTime > 524)
+	csi_led_set_bright(ptLedBase, ptLedCfg->byBrt);
+	csp_led_set_clk(ptLedBase, ptLedCfg->byClk);
+	csp_led_set_commask(ptLedBase, (ptLedCfg->hwComMask) & 0x3ff);
+	if(ptLedCfg->byOnTime > 2096 || ptLedCfg->byBreakTime > 524)
 		return CSI_ERROR;
-	csp_led_set_dcomcnt(ptLedBase, (tLedCfg->byOnTime/8 - 7));
-	csp_led_set_novcnt(ptLedBase, (tLedCfg->byBreakTime/2 -7));
+	csp_led_set_dcomcnt(ptLedBase, (ptLedCfg->byOnTime/8 - 7));
+	csp_led_set_novcnt(ptLedBase, (ptLedCfg->byBreakTime/2 -7));
 	
-	if(tLedCfg->byInt) {
-		csp_led_int_enable(ptLedBase, tLedCfg->byInt, ENABLE);
+	if(ptLedCfg->byInt) {
+		csp_led_int_enable(ptLedBase, ptLedCfg->byInt, ENABLE);
 		csi_irq_enable((uint32_t *)ptLedBase);
 	}
 	return CSI_OK;
@@ -61,7 +61,7 @@ void csi_led_set_bright(csp_led_t *ptLedBase, csi_led_brt_e eBrt)
  */ 
 void csi_led_int_enable(csp_led_t *ptLedBase, csi_led_intsrc_e eIntSrc, bool bEnable)
 {
-	csp_led_int_enable(ptLedBase, eIntSrc, bEnable);
+	csp_led_int_enable(ptLedBase, (csp_led_int_e)eIntSrc, bEnable);
 	
 	if (bEnable) {
 		csi_irq_enable((uint32_t *)ptLedBase);
@@ -91,11 +91,11 @@ void csi_led_write_data(csp_led_t *ptLedBase, uint8_t byCom, uint8_t byData)
  * \param[in] hwOnMsk: on pattern
  * \return  None
  */
-void csi_led_blink_control(csp_led_t *ptLedBase, csp_led_blk_e eLedBlk, uint16_t hwOnMsk)
+void csi_led_blink_control(csp_led_t *ptLedBase, csi_led_blk_e eLedBlk, uint16_t hwOnMsk)
 {
-	if(eLedBlk == LED_BLK_ON)
+	if((csp_led_blk_e)eLedBlk == LED_BLK_ON)
 		csp_led_com_on(ptLedBase, (hwOnMsk & LED_BLK_MSK));
-	else if(eLedBlk == LED_BLK_OFF)
+	else if((csp_led_blk_e)eLedBlk == LED_BLK_OFF)
 		csp_led_com_off(ptLedBase, (hwOnMsk & LED_BLK_MSK));
 }
 /** \brief   led start

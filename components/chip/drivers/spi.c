@@ -6,6 +6,7 @@
  * <tr><th> Date  <th>Version  <th>Author  <th>Description
  * <tr><td> 2020-8-28 <td>V0.0  <td>ZJY   <td>initial
  * <tr><td> 2021-07-02 <td>V0.1 <td>LQ     <td>modify
+ * <tr><td> 2023-05-8  <td>V0.2 <td>WANGCH <td>modify
  * </table>
  * *********************************************************************
 */
@@ -13,12 +14,8 @@
 #include <drv/spi.h>
 #include <drv/irq.h>
 #include <drv/pin.h>
-#include <drv/porting.h>
-#include <drv/tick.h>
-#include <iostring.h>
-#include <uart.h>
-
 #include "csp_spi.h"
+
 /* Private macro------------------------------------------------------*/
 /* externs function---------------------------------------------------*/
 /* externs variablesr-------------------------------------------------*/
@@ -52,15 +49,15 @@ void csi_spi_nss_low(pin_name_e ePinName)
  *  \param[in] eSpiInt:spi interrupt source 
  *  \return none
  */ 
-static void apt_spi_int_set(csp_spi_t *ptSpiBase,spi_int_e eSpiInt)
+static void apt_spi_int_set(csp_spi_t *ptSpiBase,csi_spi_intsrc_e eSpiInt)
 {
-	if(eSpiInt != SPI_NONE_INT)//收发使用中断设置
+	if(eSpiInt != 0)//收发使用中断设置
 	{
 		csi_irq_enable((uint32_t *)ptSpiBase);
 		if(eSpiInt & SPI_RXIM_INT)
-			csp_spi_set_int(ptSpiBase, eSpiInt | SPI_RTIM_INT,true);
+			csp_spi_set_int(ptSpiBase, (spi_int_e)eSpiInt | SPI_RTIM_INT,true);
 		else
-		csp_spi_set_int(ptSpiBase, eSpiInt,true);
+		csp_spi_set_int(ptSpiBase, (spi_int_e)eSpiInt,true);
 	}
 	else//不使用中断则关闭
 	{
