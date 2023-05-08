@@ -26,7 +26,6 @@
 
 /* externs function--------------------------------------------------------*/
 extern void nmi_int_handler(void);
-extern void tick_irqhandler(void);
 extern void uart_irqhandler(csp_uart_t *ptUartBase,uint8_t byIdx);
 extern void usart_irqhandler(csp_usart_t *ptUsartBase,uint8_t byIdx);
 extern void can_irqhandler(csp_can_t *ptCanBase);
@@ -49,7 +48,6 @@ extern void i2c_irqhandler(csp_i2c_t *ptIicBase);
 extern void gptb_irqhandler(csp_gptb_t *ptGptbBase);
 extern void sio_irqhandler(csp_sio_t *ptSioBase);
 extern void rtc_irqhandler(csp_rtc_t *ptRtcBase);
-
 
 extern void lpt_irqhandler(csp_lpt_t *ptLptBase);
 
@@ -82,7 +80,6 @@ ATTRIBUTE_ISR void nmi_int_handler(void)
 ATTRIBUTE_ISR void coret_int_handler(void)
 {
 	// ISR content ...
-//	tick_irqhandler();
 }
 
 ATTRIBUTE_ISR void syscon_int_handler(void) 
@@ -108,7 +105,7 @@ ATTRIBUTE_ISR void ifc_int_handler(void)
 {
 #if	IFC_INT_HANDLE_EN
 	// ISR content ...
-	ifc_irqhandler();
+	ifc_irqhandler();      // ifc interrupt handle function,this is a weak function defined in ifc.c,mainly used for para mode PGM of DFLASH
 #endif
 	
 }
@@ -126,7 +123,7 @@ ATTRIBUTE_ISR void adc1_int_handler(void)
 #if	ADC1_INT_HANDLE_EN
 	// ISR content ...
 	#if	defined(IS_CHIP_1732) 	
-		adc_irqhandler(ADC1);
+		adc_irqhandler(ADC1);//this is a weak function defined in adc_demo.c, for better efficiency, we recommand user directly implement IRQ handler here without any function call.
 	#endif	
 #endif	
 }
@@ -135,7 +132,7 @@ ATTRIBUTE_ISR void dma0_int_handler(void)
 {
 #if DMA0_INT_HANDLE_EN	
 	// ISR content ...
-	dma_irqhandler(DMA0);
+	dma_irqhandler(DMA0);//this is a weak function defined in dma.c, for better efficiency, we recommand user directly implement IRQ handler here without any function call.
 #endif
 }
 
@@ -143,7 +140,7 @@ ATTRIBUTE_ISR void dma1_int_handler(void)
 {
 #if DMA1_INT_HANDLE_EN	
 	// ISR content ...
-	dma_irqhandler(DMA1);
+	dma_irqhandler(DMA1);//this is a weak function defined in dma.c, for better efficiency, we recommand user directly implement IRQ handler here without any function call.
 #endif	
 }
 
@@ -151,7 +148,7 @@ ATTRIBUTE_ISR void wwdt_int_handler(void)
 {
 #if WWDT_INT_HANDLE_EN
 	 // ISR content ...
-	wwdt_irqhandler();
+	wwdt_irqhandler();//this is a weak function defined in wwdt_demo.c, for better efficiency, we recommand user directly implement IRQ handler here without any function call.
 	
 #endif
 }
@@ -160,7 +157,7 @@ ATTRIBUTE_ISR void gpta0_int_handler(void)
 {
 #if GPTA0_INT_HANDLE_EN	
 	 // ISR content ...
-	gpta_irqhandler(GPTA0);
+	gpta_irqhandler(GPTA0);//this is a weak function defined in gpta_demo.c, for better efficiency, we recommand user directly implement IRQ handler here without any function call.
 #endif
 }
 
@@ -168,7 +165,7 @@ ATTRIBUTE_ISR void gpta1_int_handler(void)
 {
 #if GPTA1_INT_HANDLE_EN	
 	 // ISR content ...
-	gpta_irqhandler(GPTA1);
+	gpta_irqhandler(GPTA1);//this is a weak function defined in gpta_demo.c, for better efficiency, we recommand user directly implement IRQ handler here without any function call.
 #endif	
 }
 
@@ -177,14 +174,14 @@ ATTRIBUTE_ISR void gpta2_int_handler(void)
 {
 #if GPTA2_INT_HANDLE_EN	
 	 // ISR content ...
-	gpta_irqhandler(GPTA2);
+	gpta_irqhandler(GPTA2);//this is a weak function defined in gpta_demo.c, for better efficiency, we recommand user directly implement IRQ handler here without any function call.
 #endif
 }
 
 ATTRIBUTE_ISR void gpta3_int_handler(void) 
 {
 #if GPTA3_INT_HANDLE_EN	
-	gpta_irqhandler(GPTA3);
+	gpta_irqhandler(GPTA3);//this is a weak function defined in gpta_demo.c, for better efficiency, we recommand user directly implement IRQ handler here without any function call.
 	 // ISR content ...
 #endif
 }
@@ -193,7 +190,7 @@ ATTRIBUTE_ISR void gptb0_int_handler(void)
 {
 #if GPTB0_INT_HANDLE_EN		
     // ISR content ...	
-	gptb_irqhandler(GPTB0);
+	gptb_irqhandler(GPTB0);//this is a weak function defined in gptb_demo.c, for better efficiency, we recommand user directly implement IRQ handler here without any function call.
 #endif
 }
 
@@ -201,7 +198,7 @@ ATTRIBUTE_ISR void gptb1_int_handler(void)
 {
 #if GPTB1_INT_HANDLE_EN		
     // ISR content ...	
-	gptb_irqhandler(GPTB1);
+	gptb_irqhandler(GPTB1);//this is a weak function defined in gptb_demo.c, for better efficiency, we recommand user directly implement IRQ handler here without any function call.
 #endif	
 }
 
@@ -209,7 +206,7 @@ ATTRIBUTE_ISR void gptb2_int_handler(void)
 {
 #if GPTB2_INT_HANDLE_EN		
     // ISR content ...	
-	gptb_irqhandler(GPTB2);
+	gptb_irqhandler(GPTB2);//this is a weak function defined in gptb_demo.c, for better efficiency, we recommand user directly implement IRQ handler here without any function call.
 #endif	
 }
 
@@ -217,7 +214,7 @@ ATTRIBUTE_ISR void gptb3_int_handler(void)
 {
 #if GPTB3_INT_HANDLE_EN		
     // ISR content ...	
-	gptb_irqhandler(GPTB3);
+	gptb_irqhandler(GPTB3);//this is a weak function defined in gptb_demo.c, for better efficiency, we recommand user directly implement IRQ handler here without any function call.
 #endif
 }
 
@@ -225,7 +222,7 @@ ATTRIBUTE_ISR void gptb4_int_handler(void)
 {
 #if GPTB4_INT_HANDLE_EN		
     // ISR content ...	
-	gptb_irqhandler(GPTB4);
+	gptb_irqhandler(GPTB4);//this is a weak function defined in gptb_demo.c, for better efficiency, we recommand user directly implement IRQ handler here without any function call.
 #endif	
 }
 
@@ -233,7 +230,7 @@ ATTRIBUTE_ISR void gptb5_int_handler(void)
 {
 #if GPTB5_INT_HANDLE_EN		
     // ISR content ...	
-	gptb_irqhandler(GPTB5);
+	gptb_irqhandler(GPTB5);//this is a weak function defined in gptb_demo.c, for better efficiency, we recommand user directly implement IRQ handler here without any function call.
 #endif
 }
 
@@ -247,7 +244,7 @@ ATTRIBUTE_ISR void dac0_int_handler(void)
 ATTRIBUTE_ISR void usart0_int_handler(void) 
 {
 #if	USART0_INT_HANDLE_EN	
-	usart_irqhandler(USART0, 0);
+	usart_irqhandler(USART0, 0);//this is a weak function defined in usart_demo.c, for better efficiency, we recommand user directly implement IRQ handler here without any function call.
 #endif	
 }
 
@@ -255,7 +252,7 @@ ATTRIBUTE_ISR void usart1_int_handler(void)
 {
 #if	USART0_INT_HANDLE_EN	
     // ISR content ...
-	usart_irqhandler(USART1, 1);
+	usart_irqhandler(USART1, 1);//this is a weak function defined in usart_demo.c, for better efficiency, we recommand user directly implement IRQ handler here without any function call.
 #endif
 }
 
@@ -263,7 +260,7 @@ ATTRIBUTE_ISR void uart0_int_handler(void)
 {
 #if	UART0_INT_HANDLE_EN
     // ISR content ...
-	uart_irqhandler(UART0, 0);
+	uart_irqhandler(UART0, 0);//this is a weak function defined in uart_demo.c, for better efficiency, we recommand user directly implement IRQ handler here without any function call.
 
 #endif
 }
@@ -272,7 +269,7 @@ ATTRIBUTE_ISR void uart1_int_handler(void)
 {
 #if	UART1_INT_HANDLE_EN
     // ISR content ...
-	uart_irqhandler(UART1, 1);
+	uart_irqhandler(UART1, 1);//this is a weak function defined in uart_demo.c, for better efficiency, we recommand user directly implement IRQ handler here without any function call.
 
 #endif
 }
@@ -281,7 +278,7 @@ ATTRIBUTE_ISR void uart2_int_handler(void)
 {
 #if	UART2_INT_HANDLE_EN
     // ISR content ...
-	uart_irqhandler(UART2, 2);
+	uart_irqhandler(UART2, 2);//this is a weak function defined in uart_demo.c, for better efficiency, we recommand user directly implement IRQ handler here without any function call.
 
 #endif
 }
@@ -289,7 +286,7 @@ ATTRIBUTE_ISR void uart2_int_handler(void)
 ATTRIBUTE_ISR void sio0_int_handler(void) 
 {
 #if	SIO0_INT_HANDLE_EN
-	sio_irqhandler(SIO0);
+	sio_irqhandler(SIO0);//this is a weak function defined in sio_demo.c, for better efficiency, we recommand user directly implement IRQ handler here without any function call.
     // ISR content ...
 #endif
 }
@@ -297,7 +294,7 @@ ATTRIBUTE_ISR void sio0_int_handler(void)
 ATTRIBUTE_ISR void sio1_int_handler(void) 
 {
 #if	SIO1_INT_HANDLE_EN
-	sio_irqhandler(SIO1);
+	sio_irqhandler(SIO1);//this is a weak function defined in sio_demo.c, for better efficiency, we recommand user directly implement IRQ handler here without any function call.
     // ISR content ...
 #endif
 }
@@ -306,7 +303,7 @@ ATTRIBUTE_ISR void i2c_int_handler(void)
 {
 #if	I2C_INT_HANDLE_EN
     // ISR content ...
-	i2c_irqhandler(I2C0);
+	i2c_irqhandler(I2C0);//this is a weak function defined in iic_demo.c, for better efficiency, we recommand user directly implement IRQ handler here without any function call.
 	
 #endif
 }
@@ -315,7 +312,7 @@ ATTRIBUTE_ISR void spi0_int_handler(void)
 {
 #if	SPI0_INT_HANDLE_EN
    // ISR content ...
-   spi_irqhandler(SPI0);
+   spi_irqhandler(SPI0);//this is a weak function defined in spi_demo.c, for better efficiency, we recommand user directly implement IRQ handler here without any function call.
 #endif   
 }
 
@@ -323,7 +320,7 @@ ATTRIBUTE_ISR void spi1_int_handler(void)
 {
 #if	SPI1_INT_HANDLE_EN
    // ISR content ...
-   spi_irqhandler(SPI1);
+   spi_irqhandler(SPI1);//this is a weak function defined in spi_demo.c, for better efficiency, we recommand user directly implement IRQ handler here without any function call.
 #endif
 }
 
@@ -331,7 +328,7 @@ ATTRIBUTE_ISR void exi0_int_handler(void)
 {
 #if	EXI0_INT_HANDLE_EN
     // ISR content ...
-	gpio_irqhandler(0);
+	gpio_irqhandler(0);//this is a weak function defined in gpio_demo.c, for better efficiency, we recommand user directly implement IRQ handler here without any function call.
 	csi_pin_toggle(PD0);
 #endif
 }
@@ -340,7 +337,7 @@ ATTRIBUTE_ISR void exi1_int_handler(void)
 {
 #if	EXI1_INT_HANDLE_EN
     // ISR content ...
-	gpio_irqhandler(1);
+	gpio_irqhandler(1); //this is a weak function defined in gpio_demo.c, for better efficiency, we recommand user directly implement IRQ handler here without any function call.
 #endif
 }
 
@@ -348,7 +345,7 @@ ATTRIBUTE_ISR void exi2_3_int_handler(void)
 {
 #if	EXI2_3_INT_HANDLE_EN
     // ISR content ...
-	gpio_irqhandler(2);
+	gpio_irqhandler(2); //this is a weak function defined in gpio_demo.c, for better efficiency, we recommand user directly implement IRQ handler here without any function call.
 #endif
 }
 
@@ -356,7 +353,7 @@ ATTRIBUTE_ISR void exi4_9_int_handler(void)
 {
 #if	EXI4_9_INT_HANDLE_EN
     // ISR content ...
-	gpio_irqhandler(3);
+	gpio_irqhandler(3);  //this is a weak function defined in gpio_demo.c, for better efficiency, we recommand user directly implement IRQ handler here without any function call.
 #endif
 }
 
@@ -364,7 +361,7 @@ ATTRIBUTE_ISR void exi10_15_int_handler(void)
 {
 #if	EXI10_15_INT_HANDLE_EN
     // ISR content ...
-	gpio_irqhandler(4);
+	gpio_irqhandler(4); //this is a weak function defined in gpio_demo.c, for better efficiency, we recommand user directly implement IRQ handler here without any function call.
 #endif
 }
 
@@ -372,7 +369,7 @@ ATTRIBUTE_ISR void can_int_handler(void)
 {
 #if	CAN_INT_HANDLE_EN
     // ISR content ...
-	can_irqhandler(CAN0);
+	can_irqhandler(CAN0); //this is a weak function defined in can_demo.c, for better efficiency, we recommand user directly implement IRQ handler here without any function call.
 #endif
 }
 
@@ -380,7 +377,7 @@ ATTRIBUTE_ISR void cnta_int_handler(void)
 {
 #if	CNTA_INT_HANDLE_EN
 	// ISR content ...
-	cnta_irqhandler(CA0);  
+	cnta_irqhandler(CA0);  //this is a weak function defined in cnta_demo.c, for better efficiency, we recommand user directly implement IRQ handler here without any function call.
 #endif
 }
 
@@ -388,7 +385,7 @@ ATTRIBUTE_ISR void lpt_int_handler(void)
 {
 #if	LPT_INT_HANDLE_EN
     // ISR content ...
-	lpt_irqhandler(LPT);
+	lpt_irqhandler(LPT); //this is a weak function defined in lpt_demo.c, for better efficiency, we recommand user directly implement IRQ handler here without any function call.
 #endif
 }
 
@@ -396,7 +393,7 @@ ATTRIBUTE_ISR void rtc_int_handler(void)
 {
 #if	RTC_INT_HANDLE_EN
 	// ISR content ...
-	rtc_irqhandler(RTC);
+	rtc_irqhandler(RTC); //this is a weak function defined in rtc_demo.c, for better efficiency, we recommand user directly implement IRQ handler here without any function call.
 #endif
 }
 
@@ -404,7 +401,7 @@ ATTRIBUTE_ISR void cmp0_int_handler(void)
 {
 #if	CMP0_INT_HANDLE_EN
     // ISR content ...
-	cmp_irqhandler(CMP0);
+	cmp_irqhandler(CMP0); //this is a weak function defined in cmp_demo.c, for better efficiency, we recommand user directly implement IRQ handler here without any function call.
 #endif
 }
 
@@ -412,7 +409,7 @@ ATTRIBUTE_ISR void cmp1_int_handler(void)
 {
 #if	CMP1_INT_HANDLE_EN
     // ISR content ...
-	cmp_irqhandler(CMP1);
+	cmp_irqhandler(CMP1); //this is a weak function defined in cmp_demo.c, for better efficiency, we recommand user directly implement IRQ handler here without any function call.
 #endif
 }
 
@@ -420,7 +417,7 @@ ATTRIBUTE_ISR void cmp2_int_handler(void)
 {
 #if	CMP2_INT_HANDLE_EN
     // ISR content ...
-	cmp_irqhandler(CMP2);
+	cmp_irqhandler(CMP2); //this is a weak function defined in cmp_demo.c, for better efficiency, we recommand user directly implement IRQ handler here without any function call.
 #endif
 }
 
@@ -428,7 +425,7 @@ ATTRIBUTE_ISR void led_int_handler(void)
 {
 #if	LED_INT_HANDLE_EN
     // ISR content ...
-	led_irqhandler(LED);
+	led_irqhandler(LED); //this is a weak function defined in led_demo.c, for better efficiency, we recommand user directly implement IRQ handler here without any function call.
 #endif
 }
 
@@ -436,7 +433,7 @@ ATTRIBUTE_ISR void bt0_int_handler(void)
 {
 #if	BT0_INT_HANDLE_EN
     // ISR content ...
-	bt_irqhandler0(BT0);
+	bt_irqhandler0(BT0); //this is a weak function defined in bt_demo.c, for better efficiency, we recommand user directly implement IRQ handler here without any function call.
 #endif
 }
 
@@ -444,7 +441,7 @@ ATTRIBUTE_ISR void bt1_int_handler(void)
 {
 #if	BT1_INT_HANDLE_EN
     // ISR content ...
-	bt_irqhandler1(BT1);
+	bt_irqhandler1(BT1); //this is a weak function defined in bt_demo.c, for better efficiency, we recommand user directly implement IRQ handler here without any function call.
 #endif
 }
 
@@ -452,7 +449,7 @@ ATTRIBUTE_ISR void bt2_int_handler(void)
 {
 #if	BT2_INT_HANDLE_EN
     // ISR content ...
-	bt_irqhandler2(BT2);	
+	bt_irqhandler2(BT2); //this is a weak function defined in bt_demo.c, for better efficiency, we recommand user directly implement IRQ handler here without any function call. 
 #endif
 }
 
