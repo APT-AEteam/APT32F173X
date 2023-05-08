@@ -50,7 +50,7 @@ uint16_t fmul_test(void)
 	}
 	cnt2=csp_bt_get_cnt(BT3);
 	cnt3=cnt2-cnt1;		
-	
+	if(x1 != 0) x1 = 0;
 	return cnt3;
 	
 }
@@ -82,7 +82,7 @@ uint16_t mul16_32_test(void)
 	}
 	cnt2=csp_bt_get_cnt(BT3);
 	cnt3=cnt2-cnt1;		
-	
+	if(x7 != 0) x7 = 0;
 	return cnt3;
 	
 }
@@ -114,7 +114,7 @@ uint16_t mul32_32_test(void)
 	}
 	cnt2=csp_bt_get_cnt(BT3);
 	cnt3=cnt2-cnt1;		
-	
+	if(x7 != 0) x7 = 0;
 	return cnt3;
 	
 }
@@ -145,7 +145,7 @@ uint16_t mul64_64_test(void)
 	}
 	cnt2=csp_bt_get_cnt(BT3);
 	cnt3=cnt2-cnt1;		
-	
+	if(x4 != 0) x4 = 0;
 	return cnt3;
 	
 }
@@ -176,7 +176,7 @@ uint16_t fdiv_test(void)
 	}
 	cnt2=csp_bt_get_cnt(BT3);
 	cnt3=cnt2-cnt1;		
-	
+	if(x10 != 0) x10 = 0;
 	return cnt3;
 	
 }
@@ -208,7 +208,7 @@ uint16_t div16_32_test(void)
 	}
 	cnt2=csp_bt_get_cnt(BT3);
 	cnt3=cnt2-cnt1;		
-	
+	if(x16 != 0) x16 = 0;
 	return cnt3;
 	
 }
@@ -239,7 +239,7 @@ uint16_t div32_32_test(void)
 	}
 	cnt2=csp_bt_get_cnt(BT3);
 	cnt3=cnt2-cnt1;		
-	
+	if(x16 != 0) x16 = 0;
 	return cnt3;
 	
 }
