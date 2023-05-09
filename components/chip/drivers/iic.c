@@ -207,8 +207,6 @@ csi_error_t csi_iic_slave_init(csp_i2c_t *ptIicBase, csi_iic_slave_config_t *ptI
 	apt_iic_set_tx_flsel(ptIicBase,0x7);
 	apt_iic_set_timeout(ptIicBase,ptIicSlaveCfg->wSdaTimeout,ptIicSlaveCfg->wSclTimeout);
 	csp_i2c_set_imcr(ptIicBase,ptIicSlaveCfg->hwInt);
-//	ptIicBase->CR=ptIicBase->CR | 0x01<<7;   // 测试STOP_DET_CON用
-	ptIicBase->CR=ptIicBase->CR | 0x01<<8;   // 测试TX_EMPTY_CON用
 	csi_irq_enable((uint32_t *)ptIicBase);
 	csi_iic_enable(ptIicBase);
     return CSI_OK;

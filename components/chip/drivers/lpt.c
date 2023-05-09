@@ -118,7 +118,7 @@ static uint32_t apt_set_lpt_clk(csp_lpt_t *ptLptBase,csi_lpt_clksrc_e eClk,uint3
 		return ERR_LPT_CLK;	 		
 	}
 	wDiv = 1<<ePscDiv;
-	csp_lpt_set_clk(ptLptBase, eClk, ePscDiv);
+	csp_lpt_set_clk(ptLptBase, (lpt_css_e) eClk, ePscDiv);
 	hg_wLptPrd = wMult_t/wDiv;
 	return hg_wLptPrd;	
 }
@@ -131,9 +131,9 @@ static uint32_t apt_set_lpt_clk(csp_lpt_t *ptLptBase,csi_lpt_clksrc_e eClk,uint3
   \param[in]   eLptInt:irq mode
   \param[in]   bEnable:lpt irq enable or disable
 */
-void csi_lpt_int_enable(csp_lpt_t *ptLptBase, lpt_int_e eLptInt,bool bEnable)
+void csi_lpt_int_enable(csp_lpt_t *ptLptBase, csi_lpt_intsrc_e eLptInt,bool bEnable)
 {
-	csp_lpt_int_enable(ptLptBase, eLptInt, bEnable);
+	csp_lpt_int_enable(ptLptBase, (lpt_int_e)eLptInt, bEnable);
 	
 	if (bEnable) 
 	{
@@ -297,7 +297,7 @@ csi_error_t csi_lpt_set_evtrg(csp_lpt_t *ptLptBase, uint8_t byEvtrg, csi_lpt_trg
 	if(byEvtrg > 0)
 		return CSI_ERROR;
 	
-	csp_lpt_set_evtrg(ptLptBase, eTrgsrc);
+	csp_lpt_set_evtrg(ptLptBase,(lpt_trgsrc_e) eTrgsrc);
 	csp_lpt_set_trgprd(ptLptBase, byTrgprd-1);
 	csp_lpt_trg_enable(ptLptBase, DISABLE);      // DISABLE for test CR[SWSYNEN]
 	

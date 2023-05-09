@@ -247,6 +247,11 @@ int lpt_window_demo(void)
 }
 
 
+/** \brief lpt interrupt handle function
+ * 
+ *  \return none
+ */ 
+
 __attribute__((weak)) void lpt_irqhandler(csp_lpt_t *ptLptBase)
 {
 	csi_pin_toggle(PA1);

@@ -71,6 +71,14 @@ typedef enum
 
 typedef enum
 {
+	LPT_INTSRC_NONE   =	(0x00ul << 0), 	//NONE interrupt
+	LPT_INTSRC_TRGEV0 = (0x01ul << 0),
+	LPT_INTSRC_MATCH  = (0x01ul << 1),
+	LPT_INTSRC_PEND	  = (0x01ul << 2),
+}csi_lpt_intsrc_e;
+
+typedef enum
+{
     UPDATA_IM 			= 0,  	       
 	UPDATA_PEND		
 }csi_lpt_updata_e;
@@ -153,7 +161,7 @@ bool csi_lpt_is_running(csp_lpt_t *ptLptBase);
   \param[in]   eLptInt:irq mode
   \param[in]   bEnable:lpt irq enable or disable
 */
-void csi_lpt_int_enable(csp_lpt_t *ptLptBase, lpt_int_e eLptInt,bool bEnable);
+void csi_lpt_int_enable(csp_lpt_t *ptLptBase, csi_lpt_intsrc_e eLptInt,bool bEnable);
 
 /**
   \brief       Enable lpt power manage
