@@ -227,9 +227,9 @@ typedef enum{
 	GPTA_CHANNEL_2
 }csi_gpta_channel_e;
 typedef enum{
-    GPTA_CAMPA=1,
-	GPTA_CAMPB,
-}csi_gpta_camp_e;
+    GPTA_COMPA=1,
+	GPTA_COMPB,
+}csi_gpta_comp_e;
 
 typedef enum {
 	GPTA_CH_A = 0,
@@ -360,7 +360,7 @@ csi_error_t csi_gpta_burst_enable(csp_gpta_t *ptGptaBase,uint8_t byCgsrc,uint8_t
  *  \param[in] eChannel: refer to csi_gpta_camp_e
  *  \return error code \ref csi_error_t
  */
-csi_error_t csi_gpta_channel_cmpload_config(csp_gpta_t *ptGptaBase, csi_gpta_ldmd_e eLdmd, csi_gpta_showldmd_e eShowmdld ,csi_gpta_camp_e eChannel);
+csi_error_t csi_gpta_channel_cmpload_config(csp_gpta_t *ptGptaBase, csi_gpta_ldmd_e eLdmd, csi_gpta_showldmd_e eShowmdld ,csi_gpta_comp_e eChannel);
 
 
 /** \brief Channel configuration
@@ -458,14 +458,22 @@ void csi_gpta_set_stop_st(csp_gpta_t *ptGptaBase, csi_gpta_stopst_e eStopSt);
  */
 uint16_t csi_gpta_get_prdr(csp_gpta_t *ptGptaBase);
 
+/** \brief set gpta phsr  
+ * 
+ *  \param[in] ptGptaBase ：pointer of gpta register structure
+ *  \param[in] bwPhsr  :    phsr value
+*   \param[in] bEnable :    ENABLE/DISABLE
+ *  \return none
+ */
+void csi_gpta_set_phsr(csp_gpta_t *ptGptaBase, uint16_t bwPhsr,bool bEnable);
 /** \brief change gpta output dutycycle. 
  * 
  *  \param[in] ptGptaBase :    pointer of gpta register structure
  *  \param[in] eCh  :          refer to csi_gpta_camp_e
- *	\param[in] wActiveTime :   cmpx data to be set directly
+ *	\param[in] wDuty :         cmpx data to be set directly
  *  \return error code \ref csi_error_t
  */
-csi_error_t csi_gpta_change_ch_duty(csp_gpta_t *ptGptaBase, csi_gpta_camp_e eCh, uint32_t wActiveTime);
+csi_error_t csi_gpta_change_ch_duty(csp_gpta_t *ptGptaBase, csi_gpta_comp_e eCh, uint32_t wDuty);
 
 /** \brief enable/disable gpta in debug mode
  * 
@@ -495,10 +503,10 @@ csi_error_t csi_gpta_onetimesoftware_output(csp_gpta_t *ptGptaBase, uint16_t hwC
 
 /** \brief  Continuous software waveform loading control
  *  \param[in] ptGptaBase: pointer of gpta register structure
- *  \param[in] bEnable:    refer to csp_gpta_aqosf_e
+ *  \param[in] eAqosf:    refer to csp_gpta_aqosf_e
  *  \return  none
  */
-void csi_gpta_aqcsfload_config(csp_gpta_t *ptGptaBase, csi_gpta_aqosf_e bEnable);
+void csi_gpta_aqcsfload_config(csp_gpta_t *ptGptaBase, csi_gpta_aqosf_e eAqosf);
 
 /** \brief Continuous software waveform control
  *  \param[in] ptGptaBase: pointer of gpta register structure

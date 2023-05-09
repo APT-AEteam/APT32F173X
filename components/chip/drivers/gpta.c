@@ -12,7 +12,6 @@
 #include "sys_clk.h"
 #include <drv/common.h>
 #include <drv/gpta.h>
-#include <drv/pin.h>
 #include <drv/irq.h>
 
  /**
@@ -217,14 +216,14 @@ csi_error_t csi_gpta_burst_enable(csp_gpta_t *ptGptaBase,uint8_t byCgsrc,uint8_t
  *  \param[in] eChannel: refer to csi_gpta_camp_e
  *  \return error code \ref csi_error_t
  */
-csi_error_t csi_gpta_channel_cmpload_config(csp_gpta_t *ptGptaBase, csi_gpta_ldmd_e eLdmd, csi_gpta_showldmd_e eShowmdld ,csi_gpta_camp_e eChannel)
+csi_error_t csi_gpta_channel_cmpload_config(csp_gpta_t *ptGptaBase, csi_gpta_ldmd_e eLdmd, csi_gpta_showldmd_e eShowmdld ,csi_gpta_comp_e eChannel)
 {			  
 	switch (eChannel)
 	{	
-		case (GPTA_CAMPA):   ptGptaBase -> CMPLDR = (ptGptaBase -> CMPLDR &~(GPTA_CMPA_LD_MSK) )    |  (eLdmd    << GPTA_CMPA_LD_POS);
+		case (GPTA_COMPA):   ptGptaBase -> CMPLDR = (ptGptaBase -> CMPLDR &~(GPTA_CMPA_LD_MSK) )    |  (eLdmd    << GPTA_CMPA_LD_POS);
 		                     ptGptaBase -> CMPLDR = (ptGptaBase -> CMPLDR &~(GPTA_CMPA_LDTIME_MSK) )|  (eShowmdld <<GPTA_CMPA_LDTIME_POS);
 			break;
-		case (GPTA_CAMPB):   ptGptaBase -> CMPLDR = (ptGptaBase -> CMPLDR &~(GPTA_CMPB_LD_MSK) )    |  (eLdmd    << GPTA_CMPB_LD_POS);
+		case (GPTA_COMPB):   ptGptaBase -> CMPLDR = (ptGptaBase -> CMPLDR &~(GPTA_CMPB_LD_MSK) )    |  (eLdmd    << GPTA_CMPB_LD_POS);
 		                     ptGptaBase -> CMPLDR = (ptGptaBase -> CMPLDR &~(GPTA_CMPB_LDTIME_MSK) )|  (eShowmdld << GPTA_CMPB_LDTIME_POS);
 			break;
 		default:return CSI_ERROR;
@@ -426,6 +425,18 @@ uint16_t csi_gpta_get_prdr(csp_gpta_t *ptGptaBase)
 	return csp_gpta_get_prdr(ptGptaBase);
 }
 
+/** \brief set gpta phsr  
+ * 
+ *  \param[in] ptGptaBase ：pointer of gpta register structure
+ *  \param[in] bwPhsr  :    phsr value
+*   \param[in] bEnable :    ENABLE/DISABLE
+ *  \return none
+ */
+void csi_gpta_set_phsr(csp_gpta_t *ptGptaBase, uint16_t bwPhsr,bool bEnable)
+{
+	csp_gpta_set_phsr(ptGptaBase, bwPhsr);
+	csp_gpta_phsen_enable(ptGptaBase, bEnable);
+}
 /** \brief change gpta output dutycycle. 
  * 
  *  \param[in] ptGptaBase :    pointer of gpta register structure
@@ -433,7 +444,7 @@ uint16_t csi_gpta_get_prdr(csp_gpta_t *ptGptaBase)
  *	\param[in] wDuty :         cmpx data to be set directly
  *  \return error code \ref csi_error_t
  */
-csi_error_t csi_gpta_change_ch_duty(csp_gpta_t *ptGptaBase, csi_gpta_camp_e eCh, uint32_t wDuty)
+csi_error_t csi_gpta_change_ch_duty(csp_gpta_t *ptGptaBase, csi_gpta_comp_e eCh, uint32_t wDuty)
 { 
 	uint32_t  wCmpLoad;
     uint32_t  wPrd;
@@ -444,9 +455,9 @@ csi_error_t csi_gpta_change_ch_duty(csp_gpta_t *ptGptaBase, csi_gpta_camp_e eCh,
 
 	switch (eCh)
 	{	
-		case (GPTA_CAMPA):csp_gpta_set_cmpa(ptGptaBase, (uint16_t)wCmpLoad);
+		case (GPTA_COMPA):csp_gpta_set_cmpa(ptGptaBase, (uint16_t)wCmpLoad);
 			break;
-		case (GPTA_CAMPB):csp_gpta_set_cmpb(ptGptaBase, (uint16_t)wCmpLoad);
+		case (GPTA_COMPB):csp_gpta_set_cmpb(ptGptaBase, (uint16_t)wCmpLoad);
 			break;
 
 		default: return CSI_ERROR;
@@ -644,7 +655,7 @@ csi_error_t csi_gpta_set_evtrg(csp_gpta_t *ptGptaBase, csi_gpta_trgout_e eTrgOut
 					csp_gpta_trg_xoe_enable(ptGptaBase, eTrgOut, DISABLE);	//disable evtrg source out
 					return CSI_OK;
 				}
-				csp_gpta_set_trgsrc01(ptGptaBase, eTrgOut, (csp_gpta_trgsrc0_e)eTrgSrc);
+				csp_gpta_set_trgsrc01(ptGptaBase, eTrgOut, (csp_gpta_trgsrc_e)eTrgSrc);
 			break;
 		
 		case GPTA_TRGOUT1: 
@@ -653,7 +664,7 @@ csi_error_t csi_gpta_set_evtrg(csp_gpta_t *ptGptaBase, csi_gpta_trgout_e eTrgOut
 					csp_gpta_trg_xoe_enable(ptGptaBase, eTrgOut, DISABLE);	//disable evtrg source out
 					return CSI_OK;
 				}
-				csp_gpta_set_trgsrc01(ptGptaBase, eTrgOut, (csp_gpta_trgsrc0_e)eTrgSrc);
+				csp_gpta_set_trgsrc01(ptGptaBase, eTrgOut, (csp_gpta_trgsrc_e)eTrgSrc);
 			break;
 		default: 
 			return CSI_ERROR;
