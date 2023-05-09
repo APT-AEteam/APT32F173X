@@ -39,7 +39,7 @@ int lpt_pwm_test(void)
 	tLptPwmCfg.byIdlepol  = LPT_PWM_IDLE_LOW;                     //停止时highZ
 	tLptPwmCfg.byCycle = 30;                                     //PWM 输出占空比(0~100)	
 	tLptPwmCfg.wFreq = 1000;                                     //PWM 输出频率
-	tLptPwmCfg.byInter 	= LPT_NONE_INT;	                         //PWM 配置无中断
+	tLptPwmCfg.byInt 	= LPT_NONE_INT;	                         //PWM 配置无中断
 	
 	if(csi_lpt_pwm_init(LPT, &tLptPwmCfg) == CSI_OK){            //初始化lpt
 
@@ -66,7 +66,7 @@ int lpt_prdld_test(void)
 	tLptPwmCfg.byIdlepol  = LPT_PWM_IDLE_LOW;                     //停止时highZ
 	tLptPwmCfg.byCycle = 30;                                     //PWM 输出占空比(0~100)	
 	tLptPwmCfg.wFreq = 1000;                                     //PWM 输出频率
-	tLptPwmCfg.byInter 	= LPT_NONE_INT;	                         //PWM 配置无中断
+	tLptPwmCfg.byInt 	= LPT_NONE_INT;	                         //PWM 配置无中断
 	if(csi_lpt_pwm_init(LPT, &tLptPwmCfg) == CSI_OK){            //初始化lpt
 		LPT->CR = (LPT->CR &~(1<<4));
 		csi_lpt_start(LPT);                                      //启动lpt
@@ -105,7 +105,7 @@ int lpt_pscld_test(void)
 	tLptPwmCfg.byIdlepol  = LPT_PWM_IDLE_LOW;                     //停止时highZ
 	tLptPwmCfg.byCycle = 30;                                     //PWM 输出占空比(0~100)	
 	tLptPwmCfg.wFreq = 1000;                                     //PWM 输出频率
-	tLptPwmCfg.byInter 	= LPT_NONE_INT;	                         //PWM 配置无中断
+	tLptPwmCfg.byInt 	= LPT_NONE_INT;	                         //PWM 配置无中断
 	if(csi_lpt_pwm_init(LPT, &tLptPwmCfg) == CSI_OK){            //初始化lpt
 		LPT->CR = (LPT->CR &~(1<<16));  // CR[PSCLD]=0
 		csi_lpt_start(LPT);                                      //启动lpt
@@ -141,7 +141,7 @@ int lpt_cmpld_test(void)
 	tLptPwmCfg.byIdlepol  = LPT_PWM_IDLE_LOW;                     //停止时highZ
 	tLptPwmCfg.byCycle = 30;                                     //PWM 输出占空比(0~100)	
 	tLptPwmCfg.wFreq = 1000;                                     //PWM 输出频率
-	tLptPwmCfg.byInter 	= LPT_NONE_INT;	                         //PWM 配置无中断
+	tLptPwmCfg.byInt 	= LPT_NONE_INT;	                         //PWM 配置无中断
 	if(csi_lpt_pwm_init(LPT, &tLptPwmCfg) == CSI_OK){            //初始化lpt
 	
 		LPT->CR = (LPT->CR &~(1<<17));  // CR[CMPLD]=0
@@ -329,7 +329,7 @@ int lpt_window_test(void)
 	tLptPwmCfg.byIdlepol  = LPT_PWM_IDLE_LOW;                //停止时highZ
 	tLptPwmCfg.byCycle = 1;                            //PWM 输出占空比(0~100)	
 	tLptPwmCfg.wFreq = 100;                           //PWM 输出频率   10ms
-	tLptPwmCfg.byInter 	= LPT_NONE_INT;	   	
+	tLptPwmCfg.byInt 	= LPT_NONE_INT;	   	
 
 	csi_lpt_pwm_init(LPT, &tLptPwmCfg); 
 	csi_lpt_set_sync(LPT, 0, LPT_SYNC_CONT, ENABLE);
