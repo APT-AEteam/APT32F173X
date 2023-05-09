@@ -34,7 +34,7 @@ csi_uart_trans_t g_tUartTran[UART_IDX_NUM];
  *  \param[in] ptUartBase: pointer of uart register structure
  *  \return uart id number(0~2) or error(0xff)
  */ 
-static uint8_t apt_get_uart_idx(csp_uart_t *ptUartBase)
+static uint8_t csi_get_uart_idx(csp_uart_t *ptUartBase)
 {
 	switch((uint32_t)ptUartBase)
 	{
@@ -66,64 +66,7 @@ void csi_uart_recv_dynamic_scan(uint8_t byIdx)
 			g_tUartTran[byIdx].hwRxSize = g_tUartTran[byIdx].ptRingBuf->hwDataLen;
 	}
 }
-/** \brief uart interrupt handle function
- * 
- *  \param[in] ptUartBas: pointer of uart register structure
- *  \param[in] byIdx: uart id number(0~2)
- *  \return none
- */ 
-__attribute__((weak)) void uart_irqhandler(csp_uart_t *ptUartBase,uint8_t byIdx)
-{
-	switch(csp_uart_get_isr(ptUartBase) & 0x080240)			//get RXFIFO/TXDONE/RXTO interrupt
-	{
-		case UART_RXFIFO_INT_S:								//rx fifo interrupt; recommended use RXFIFO interrupt
-			//uint8_t byData = csp_uart_get_data(ptUartBase);
-			//ringbuffer_byte_in(g_tUartTran[byIdx].ptRingBuf, byData);
-			if(g_tUartTran[byIdx].ptRingBuf->hwDataLen < g_tUartTran[byIdx].ptRingBuf->hwSize)	//the same as previous line of code 
-			{
-				while(csp_uart_get_sr(ptUartBase) & UART_RNE)
-				{
-					g_tUartTran[byIdx].ptRingBuf->pbyBuf[g_tUartTran[byIdx].ptRingBuf->hwWrite] = csp_uart_get_data(ptUartBase);
-					g_tUartTran[byIdx].ptRingBuf->hwWrite = (g_tUartTran[byIdx].ptRingBuf->hwWrite + 1) % g_tUartTran[byIdx].ptRingBuf->hwSize;
-					g_tUartTran[byIdx].ptRingBuf->hwDataLen ++;
-				}
-			}
-			else
-				csp_uart_rxfifo_rst(ptUartBase);
-			
-			break;
-		case UART_TXDONE_INT_S:													//tx send complete; recommended use TXDONE interrupt
-			
-			csp_uart_clr_isr(ptUartBase,UART_TXDONE_INT_S);						//clear interrupt status
-			g_tUartTran[byIdx].hwTxSize --;
-			g_tUartTran[byIdx].pbyTxData ++;
-			
-			if(g_tUartTran[byIdx].hwTxSize == 0)		
-				g_tUartTran[byIdx].bySendStat = UART_STATE_DONE;				//send complete
-			else
-				csp_uart_set_data(ptUartBase, *g_tUartTran[byIdx].pbyTxData);	//send data
-				
-			break;
-		case UART_RXTO_INT_S:
-			if(g_tUartTran[byIdx].ptRingBuf->hwDataLen < g_tUartTran[byIdx].ptRingBuf->hwSize)	//the same as previous line of code 
-			{
-				while(csp_uart_get_sr(ptUartBase) & UART_RNE)
-				{
-					g_tUartTran[byIdx].ptRingBuf->pbyBuf[g_tUartTran[byIdx].ptRingBuf->hwWrite] = csp_uart_get_data(ptUartBase);
-					g_tUartTran[byIdx].ptRingBuf->hwWrite = (g_tUartTran[byIdx].ptRingBuf->hwWrite + 1) % g_tUartTran[byIdx].ptRingBuf->hwSize;
-					g_tUartTran[byIdx].ptRingBuf->hwDataLen ++;
-				}
-			}
-			else
-				csp_uart_rxfifo_rst(ptUartBase);
-	
-			g_tUartTran[byIdx].byRecvStat = UART_STATE_FULL;
-			csp_uart_clr_isr(ptUartBase, UART_RXTO_INT_S);	
-			csp_uart_rto_en(ptUartBase);					//enable  receive timeout
-		default:
-			break;
-	}
-}
+
 /** \brief initialize uart parameter structure
  * 
  *  \param[in] ptUartBase: pointer of uart register structure
@@ -160,7 +103,7 @@ csi_error_t csi_uart_init(csp_uart_t *ptUartBase, csi_uart_config_t *ptUartCfg)
 	}
 	
 	//get uart rx/tx mode 
-	byIdx = apt_get_uart_idx(ptUartBase);
+	byIdx = csi_get_uart_idx(ptUartBase);
 	g_tUartTran[byIdx].byRecvMode = ptUartCfg->byRxMode;			
 	g_tUartTran[byIdx].bySendMode = ptUartCfg->byTxMode;
 	g_tUartTran[byIdx].byRecvStat = UART_STATE_IDLE;
@@ -218,7 +161,7 @@ void csi_uart_recv_timeout(csp_uart_t *ptUartBase, uint16_t hwTimeOut, bool bEna
  */
 void csi_uart_int_enable(csp_uart_t *ptUartBase, csi_uart_intsrc_e eIntSrc, bool bEnable)
 {
-	csp_uart_int_enable(ptUartBase, eIntSrc, bEnable);
+	csp_uart_int_enable(ptUartBase, (uart_int_e)eIntSrc, bEnable);
 	
 	if(bEnable)
 		csi_irq_enable((uint32_t *)ptUartBase);
@@ -283,7 +226,7 @@ csi_error_t csi_uart_stop(csp_uart_t *ptUartBase, csi_uart_func_e eFunc)
  */ 
 void csi_uart_set_buffer(csp_uart_t *ptUartBase, ringbuffer_t *ptRingbuf, uint8_t *pbyRdBuf,  uint16_t hwLen)
 {
-	uint8_t byIdx = apt_get_uart_idx(ptUartBase);
+	uint8_t byIdx = csi_get_uart_idx(ptUartBase);
 	
 	ptRingbuf->pbyBuf = pbyRdBuf;					//assignment ringbuf = pbyRdBuf  
 	ptRingbuf->hwSize = hwLen;						//assignment ringbuf size = hwLen 
@@ -322,7 +265,7 @@ int16_t csi_uart_send(csp_uart_t *ptUartBase, const void *pData, uint16_t hwSize
 {
 	int32_t i; 
 	uint8_t *pbySend = (uint8_t *)pData;
-	uint8_t byIdx = apt_get_uart_idx(ptUartBase);
+	uint8_t byIdx = csi_get_uart_idx(ptUartBase);
 	
 	if(NULL == pData || 0 == hwSize)
 		return 0;
@@ -369,7 +312,7 @@ int16_t csi_uart_send(csp_uart_t *ptUartBase, const void *pData, uint16_t hwSize
 //csi_error_t csi_uart_send_async(csp_uart_t *ptUartBase, const void *pData, uint16_t hwSize)
 //{
 //	csi_error_t ret = CSI_ERROR;
-//	uint8_t byIdx = apt_get_uart_idx(ptUartBase);
+//	uint8_t byIdx = csi_get_uart_idx(ptUartBase);
 //
 //	if(hwSize == 0 || NULL == pData) 
 //		return CSI_ERROR;
@@ -399,7 +342,7 @@ csi_error_t csi_uart_dma_rx_init(csp_uart_t *ptUartBase, csi_dma_ch_e eDmaCh, cs
 	csi_error_t ret = CSI_OK;
 	csi_dma_ch_config_t tDmaConfig;				
 	csi_etb_config_t 	tEtbConfig;				
-	uint8_t byUartIdx = apt_get_uart_idx(ptUartBase);	
+	uint8_t byUartIdx = csi_get_uart_idx(ptUartBase);	
 	
 	//dma config
 	tDmaConfig.bySrcLinc 	= DMA_ADDR_CONSTANT;		//低位传输原地址固定不变
@@ -443,7 +386,7 @@ csi_error_t csi_uart_dma_tx_init(csp_uart_t *ptUartBase, csi_dma_ch_e eDmaCh, cs
 	csi_error_t ret = CSI_OK;
 	csi_dma_ch_config_t tDmaConfig;				
 	csi_etb_config_t 	tEtbConfig;	
-	uint8_t byUartIdx = apt_get_uart_idx(ptUartBase);				
+	uint8_t byUartIdx = csi_get_uart_idx(ptUartBase);				
 
 	//dma config
 	tDmaConfig.bySrcLinc 	= DMA_ADDR_CONSTANT;		//低位传输原地址固定不变
@@ -514,7 +457,7 @@ void csi_uart_recv_dma(csp_uart_t *ptUartBase, csi_dma_ch_e eDmaCh, void *pData,
 int16_t csi_uart_receive(csp_uart_t *ptUartBase, void *pData, uint16_t hwSize, uint32_t wTimeOut)
 {
 	uint8_t *pbyRecv = (uint8_t *)pData;
-	uint8_t byIdx = apt_get_uart_idx(ptUartBase);
+	uint8_t byIdx = csi_get_uart_idx(ptUartBase);
 	int16_t hwRecvNum = 0;
 	
 	if(NULL == pData)
@@ -606,7 +549,7 @@ int16_t csi_uart_receive(csp_uart_t *ptUartBase, void *pData, uint16_t hwSize, u
  */
 //int16_t csi_uart_recv_async(csp_uart_t *ptUartBase, void *pData, uint16_t hwSize)
 //{
-//	uint8_t  byIdx = apt_get_uart_idx(ptUartBase);
+//	uint8_t  byIdx = csi_get_uart_idx(ptUartBase);
 //	uint16_t hwRecvNum = ringbuffer_len(g_tUartTran[byIdx].ptRingBuf);
 //	
 //	if(NULL == pData)
@@ -647,7 +590,7 @@ int16_t csi_uart_receive(csp_uart_t *ptUartBase, void *pData, uint16_t hwSize, u
 //int16_t csi_uart_recv_dynamic(csp_uart_t *ptUartBase, void *pData)
 //{
 //	
-//	uint8_t  byIdx = apt_get_uart_idx(ptUartBase);
+//	uint8_t  byIdx = csi_get_uart_idx(ptUartBase);
 //	uint16_t hwRecvNum = ringbuffer_len(g_tUartTran[byIdx].ptRingBuf);
 //	
 //	if(hwRecvNum)
@@ -669,7 +612,7 @@ int16_t csi_uart_receive(csp_uart_t *ptUartBase, void *pData, uint16_t hwSize, u
  */ 
 bool csi_uart_get_msg(csp_uart_t *ptUartBase, csi_uart_wkmode_e eWkMode, bool bClrEn)
 {
-	uint8_t byIdx = apt_get_uart_idx(ptUartBase);
+	uint8_t byIdx = csi_get_uart_idx(ptUartBase);
 	bool bRet = false;
 	
 	switch(eWkMode)
@@ -704,7 +647,7 @@ bool csi_uart_get_msg(csp_uart_t *ptUartBase, csi_uart_wkmode_e eWkMode, bool bC
  */ 
 void csi_uart_clr_msg(csp_uart_t *ptUartBase, csi_uart_wkmode_e eWkMode)
 {
-	uint8_t byIdx = apt_get_uart_idx(ptUartBase);
+	uint8_t byIdx = csi_get_uart_idx(ptUartBase);
 	
 	if(eWkMode == UART_SEND)
 		g_tUartTran[byIdx].bySendStat = UART_STATE_IDLE;		//clear send status

@@ -32,7 +32,7 @@ csi_usart_trans_t g_tUsartTran[USART_IDX_NUM];
  *  \param[in] ptUsartBase: pointer of usart register structure
  *  \return usart id number(0~1) or error(0xff)
  */ 
-static uint8_t apt_get_usart_idx(csp_usart_t *ptUsartBase)
+static uint8_t csi_get_usart_idx(csp_usart_t *ptUsartBase)
 {
 	switch((uint32_t)ptUsartBase)
 	{
@@ -45,76 +45,6 @@ static uint8_t apt_get_usart_idx(csp_usart_t *ptUsartBase)
 	}
 }
 
-/** \brief usart interrupt handle function
- * 
- *  \param[in] ptUsartBase: pointer of usart register structure
- *  \param[in] byIdx: usart id number(0)
- *  \return none
- */ 
-__attribute__((weak)) void usart_irqhandler(csp_usart_t *ptUsartBase,uint8_t byIdx)
-{
-	switch(csp_usart_get_isr(ptUsartBase) & 0x5100)			//rxfifo/txfifo/rxtimeout interrupt	
-	{
-		case US_RXRIS_INT:					//rx fifo interrupt
-			if(g_tUsartTran[byIdx].ptRingBuf->hwDataLen < g_tUsartTran[byIdx].ptRingBuf->hwSize)	
-			{
-				while(csp_usart_get_sr(ptUsartBase) & US_RNE)		//Rxfifo non empty 
-				{
-					g_tUsartTran[byIdx].ptRingBuf->pbyBuf[g_tUsartTran[byIdx].ptRingBuf->hwWrite] = csp_usart_get_data(ptUsartBase);
-					g_tUsartTran[byIdx].ptRingBuf->hwWrite = (g_tUsartTran[byIdx].ptRingBuf->hwWrite + 1) % g_tUsartTran[byIdx].ptRingBuf->hwSize;
-					g_tUsartTran[byIdx].ptRingBuf->hwDataLen ++;
-				}
-			}
-			else
-			{
-				//csp_usart_rxfifo_rst(ptUsartBase);  			// reset rxfifo 
-				csp_usart_cr_cmd(USART0, US_RSTRX );	//reset rx 
-				csp_usart_set_fifo(USART0, US_FIFO_EN , US_RXFIFO_1_2);
-				g_tUsartTran[byIdx].ptRingBuf->hwDataLen = 0;						//clear hwDataLen			
-			}
-			break;
-		case US_TXRIS_INT:			//tx fifo interrupt								
-			csp_usart_set_data(ptUsartBase, *g_tUsartTran[byIdx].pbyTxData);		//send data
-			g_tUsartTran[byIdx].hwTxSize --;
-			g_tUsartTran[byIdx].pbyTxData ++;
-			
-			if(g_tUsartTran[byIdx].hwTxSize == 0)
-			{	
-				//disable usart tx interrupt
-				csp_usart_int_enable(ptUsartBase, US_TXRIS_INT, DISABLE);		
-				g_tUsartTran[byIdx].bySendStat = USART_STATE_DONE;					//send complete
-				
-			}
-			break;
-		case US_TIMEOUT_INT:				//receive timeout interrupt
-		
-			if(g_tUsartTran[byIdx].ptRingBuf->hwDataLen < g_tUsartTran[byIdx].ptRingBuf->hwSize)	
-			{
-				while(csp_usart_get_sr(ptUsartBase) & US_RNE)	
-				{
-					g_tUsartTran[byIdx].ptRingBuf->pbyBuf[g_tUsartTran[byIdx].ptRingBuf->hwWrite] = csp_usart_get_data(ptUsartBase);
-					g_tUsartTran[byIdx].ptRingBuf->hwWrite = (g_tUsartTran[byIdx].ptRingBuf->hwWrite + 1) % g_tUsartTran[byIdx].ptRingBuf->hwSize;
-					g_tUsartTran[byIdx].ptRingBuf->hwDataLen ++;
-				}
-			}
-			else
-			{
-				csp_usart_cr_cmd(USART0, US_RSTRX );	//reset rx 
-				csp_usart_set_fifo(USART0, US_FIFO_EN , US_RXFIFO_1_2);
-			}
-				//csp_usart_rxfifo_rst(ptUsartBase);
-			
-			g_tUsartTran[byIdx].byRecvStat = USART_STATE_FULL;						//receive complete
-			csp_usart_clr_isr(USART0,US_TIMEOUT_INT);								//clear interrupt status
-			csp_usart_cr_cmd(USART0, US_STTTO); // | US_FIFO_EN | US_RXFIFO_1_2);		//enable receive timeover
-			csp_usart_set_fifo(USART0,  US_FIFO_EN , US_RXFIFO_1_2);
-			break;
-			
-		default:
-			csp_usart_clr_isr(USART0, 0x7fff);										//clear all interrupt 
-			break;
-	}
-}
 /** \brief initialize usart parameter structure
  * 
  *  \param[in] ptUsartBase: pointer of usart register structure
@@ -193,7 +123,7 @@ csi_error_t csi_usart_init(csp_usart_t *ptUsartBase, csi_usart_config_t *ptUsart
 	csp_usart_set_fifo(ptUsartBase, US_FIFO_EN, US_RXFIFO_1_2);		//set fifo
 	
 	//get usart rx/tx mode 
-	byIdx = apt_get_usart_idx(ptUsartBase);
+	byIdx = csi_get_usart_idx(ptUsartBase);
 	g_tUsartTran[byIdx].byRecvMode = ptUsartCfg->byRxMode;			
 	g_tUsartTran[byIdx].bySendMode = ptUsartCfg->byTxMode;
 	g_tUsartTran[byIdx].byRecvStat = USART_STATE_IDLE;
@@ -228,7 +158,7 @@ csi_error_t csi_usart_init(csp_usart_t *ptUsartBase, csi_usart_config_t *ptUsart
  */
 void csi_usart_int_enable(csp_usart_t *ptUsartBase, csi_usart_intsrc_e eIntSrc, bool bEnable)
 {
-	csp_usart_int_enable(ptUsartBase, eIntSrc, bEnable);
+	csp_usart_int_enable(ptUsartBase, (usart_int_e)eIntSrc, bEnable);
 	
 	if(bEnable)
 		csi_irq_enable((uint32_t *)ptUsartBase);
@@ -300,7 +230,7 @@ csi_error_t csi_usart_stop(csp_usart_t *ptUsartBase, csi_usart_func_e eFunc)
  */ 
 void csi_usart_set_buffer(csp_usart_t *ptUsartBase, ringbuffer_t *ptRingbuf, uint8_t *pbyRdBuf,  uint16_t hwLen)
 {
-	uint8_t byIdx = apt_get_usart_idx(ptUsartBase);
+	uint8_t byIdx = csi_get_usart_idx(ptUsartBase);
 	
 	ptRingbuf->pbyBuf = pbyRdBuf;						//assignment ringbuf = pbyRdBuf  
 	ptRingbuf->hwSize = hwLen;							//assignment ringbuf size = hwLen 
@@ -341,7 +271,7 @@ int16_t csi_usart_send(csp_usart_t *ptUsartBase, const void *pData, uint16_t hwS
 {
 	int32_t i; 
 	uint8_t *pbySend = (uint8_t *)pData;
-	uint8_t byIdx = apt_get_usart_idx(ptUsartBase);
+	uint8_t byIdx = csi_get_usart_idx(ptUsartBase);
 	
 	if(NULL == pData || 0 == hwSize)
 		return 0;
@@ -387,7 +317,7 @@ int16_t csi_usart_send(csp_usart_t *ptUsartBase, const void *pData, uint16_t hwS
 int32_t csi_usart_receive(csp_usart_t *ptUsartBase, void *pData, uint16_t hwSize, uint32_t wTimeOut)
 {
 	uint8_t *pbyRecv = (uint8_t *)pData;
-	uint8_t byIdx = apt_get_usart_idx(ptUsartBase);
+	uint8_t byIdx = csi_get_usart_idx(ptUsartBase);
  	volatile uint16_t hwRecvNum = 0;
 	
 	if(NULL == pData)
@@ -591,7 +521,7 @@ csi_error_t csi_usart_recv_dma(csp_usart_t *ptUsartBase, csp_dma_t *ptDmaBase, v
  */ 
 //csi_usart_state_e csi_usart_get_send_status(csp_usart_t *ptUsartBase)
 //{
-//	uint8_t byIdx = apt_get_usart_idx(ptUsartBase);
+//	uint8_t byIdx = csi_get_usart_idx(ptUsartBase);
 //    
 //	return g_tUsartTran[byIdx].bySendStat;
 //}
@@ -602,7 +532,7 @@ csi_error_t csi_usart_recv_dma(csp_usart_t *ptUsartBase, csp_dma_t *ptDmaBase, v
  */ 
 //void csi_usart_clr_send_status(csp_usart_t *ptUsartBase)
 //{
-//	uint8_t byIdx = apt_get_usart_idx(ptUsartBase);
+//	uint8_t byIdx = csi_get_usart_idx(ptUsartBase);
 //    
 //	g_tUsartTran[byIdx].bySendStat = USART_STATE_IDLE;
 //}
@@ -613,7 +543,7 @@ csi_error_t csi_usart_recv_dma(csp_usart_t *ptUsartBase, csp_dma_t *ptDmaBase, v
  */ 
 //csi_usart_state_e csi_usart_get_recv_status(csp_usart_t *ptUsartBase)
 //{
-//	uint8_t byIdx = apt_get_usart_idx(ptUsartBase);
+//	uint8_t byIdx = csi_get_usart_idx(ptUsartBase);
 //	return g_tUsartTran[byIdx].byRecvStat;
 //}
 /** \brief clr the status of usart receive 
@@ -623,7 +553,7 @@ csi_error_t csi_usart_recv_dma(csp_usart_t *ptUsartBase, csp_dma_t *ptDmaBase, v
  */ 
 //void csi_usart_clr_recv_status(csp_usart_t *ptUsartBase)
 //{
-//	uint8_t byIdx = apt_get_usart_idx(ptUsartBase);
+//	uint8_t byIdx = csi_get_usart_idx(ptUsartBase);
 //	g_tUsartTran[byIdx].byRecvStat= USART_STATE_IDLE;
 //}
 /** \brief get usart receive/send complete message and (Do not) clear message
@@ -635,7 +565,7 @@ csi_error_t csi_usart_recv_dma(csp_usart_t *ptUsartBase, csp_dma_t *ptDmaBase, v
  */ 
 bool csi_usart_get_msg(csp_usart_t *ptUsartBase, csi_usart_wkmode_e eWkMode, bool bClrEn)
 {
-	uint8_t byIdx = apt_get_usart_idx(ptUsartBase);
+	uint8_t byIdx = csi_get_usart_idx(ptUsartBase);
 	bool bRet = false;
 	
 	switch(eWkMode)
@@ -670,7 +600,7 @@ bool csi_usart_get_msg(csp_usart_t *ptUsartBase, csi_usart_wkmode_e eWkMode, boo
  */ 
 void csi_usart_clr_msg(csp_usart_t *ptUsartBase, csi_usart_wkmode_e eMode)
 {
-	uint8_t byIdx = apt_get_usart_idx(ptUsartBase);
+	uint8_t byIdx = csi_get_usart_idx(ptUsartBase);
 	
 	if(eMode == USART_SEND)
 		g_tUsartTran[byIdx].bySendStat = USART_STATE_IDLE;		//clear send status

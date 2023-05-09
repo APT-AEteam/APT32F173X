@@ -129,7 +129,7 @@ void csi_rtc_rb_enable(csp_rtc_t *ptRtc, bool bEnable)
 */
 void csi_rtc_change_fmt(csp_rtc_t *ptRtc,  rtc_fmt_e eFmt)
 {
-	csp_rtc_set_fmt(ptRtc, eFmt);
+	csp_rtc_set_fmt(ptRtc, (rtc_fmt_e)eFmt);
 }
 
 /**
@@ -320,7 +320,7 @@ void csi_rtc_cancel_alarm(csp_rtc_t *ptRtc, uint8_t byAlm)
 */
 void csi_rtc_set_alarm_out(csp_rtc_t *ptRtc, csi_rtc_osel_e eOut)
 {	
-	csp_rtc_set_osel(ptRtc, eOut);
+	csp_rtc_set_osel(ptRtc, (rtc_osel_e)eOut);
 }
 
 
@@ -334,7 +334,7 @@ void csi_rtc_set_alarm_out(csp_rtc_t *ptRtc, csi_rtc_osel_e eOut)
 void csi_rtc_start_as_timer(csp_rtc_t *ptRtc, csi_rtc_timer_e ePrd)
 {	
 	
-	csp_rtc_set_cprd(ptRtc, ePrd);
+	csp_rtc_set_cprd(ptRtc, (rtc_cprd_e)ePrd);
 	csi_rtc_int_enable(ptRtc, RTC_INT_CPRD , ENABLE);
 	//csp_rtc_run(ptRtc);
 }
@@ -348,7 +348,7 @@ void csi_rtc_start_as_timer(csp_rtc_t *ptRtc, csi_rtc_timer_e ePrd)
 */
 void csi_rtc_int_enable(csp_rtc_t *ptRtc, rtc_int_e eIntSrc, bool bEnable)
 {
-	csp_rtc_int_enable(ptRtc, eIntSrc, bEnable);	
+	csp_rtc_int_enable(ptRtc, (rtc_int_e)eIntSrc, bEnable);	
 	
 	if (bEnable) {
 		csi_irq_enable((uint32_t *)ptRtc);
@@ -448,7 +448,7 @@ csi_error_t csi_rtc_set_evtrg(csp_rtc_t *ptRtc, uint8_t byEvtrg, csi_rtc_trgsrc_
 	
 	csi_error_t ret = CSI_OK;
 	
-	if (apt_rtc_set_trgsrc(ptRtc, byEvtrg, eTrgSrc)<0)
+	if (apt_rtc_set_trgsrc(ptRtc, byEvtrg, (csp_rtc_trgsel_e)eTrgSrc)<0)
 		return CSI_ERROR;
 	if (apt_rtc_set_trgprd(ptRtc, byEvtrg, byTrgPrd)<0)
 		return CSI_ERROR;
