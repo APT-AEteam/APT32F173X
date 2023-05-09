@@ -73,7 +73,7 @@ void csi_dac_dis(csp_dac_t *ptDacBase)
 */
 void csi_dac_irq_enable(csp_dac_t *ptDacBase, csi_dac_irq_e eVal,bool eEnable)
 {
-	csp_dac_irq_enable(ptDacBase,eVal,eEnable);
+	csp_dac_irq_enable(ptDacBase,(dac_irq_e)eVal,eEnable);
 }
 
 /**
@@ -83,7 +83,7 @@ void csi_dac_irq_enable(csp_dac_t *ptDacBase, csi_dac_irq_e eVal,bool eEnable)
 */
 void csi_dac_syncr_enable(csp_dac_t *ptDacBase, csi_dac_syncr_e eVal,bool eEnable)
 {
-	csp_dac_syncr_enable(ptDacBase,eVal,eEnable);
+	csp_dac_syncr_enable(ptDacBase,(dac_syncr_e)eVal,eEnable);
 }
 
 /**

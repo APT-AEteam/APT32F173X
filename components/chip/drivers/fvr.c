@@ -18,7 +18,7 @@
 */
 void csi_fvr_lvl_set(csp_fvr_t *ptFvrBase, csi_fvr_lvl_e eLvl)
 {
-	csp_fvr_set_lvl(ptFvrBase,eLvl);
+	csp_fvr_set_lvl(ptFvrBase,(fvr_lvl_e)eLvl);
 
 }
 /**
@@ -28,7 +28,7 @@ void csi_fvr_lvl_set(csp_fvr_t *ptFvrBase, csi_fvr_lvl_e eLvl)
 */
 void csi_fvr_cmpref_set(csp_fvr_t *ptFvrBase, csi_fvr_cmpref_e eOpacmpref)
 {
-	csp_fvr_cmpref_set(ptFvrBase,eOpacmpref);
+	csp_fvr_cmpref_set(ptFvrBase,(fvr_cmpref_e)eOpacmpref);
 }
 
 /**
@@ -64,13 +64,13 @@ void csi_fvr_buf_init(csp_fvr_t *ptFvrBase,csi_fvr_buflvl_e eBuflvl)
 	csp_fvr_bufen_en(ptFvrBase);
 	if(eBuflvl == BUFLVL_INPUT)
 	{	
-		csp_fvr_set_buflvl(ptFvrBase, eBuflvl);
+		csp_fvr_set_buflvl(ptFvrBase, (fvr_buflvl_e)eBuflvl);
 		csp_fvr_bufin_en(ptFvrBase);
 	}
 	else 
 	{
 		csp_fvr_bufin_dis(ptFvrBase);
-		csp_fvr_set_buflvl(ptFvrBase, eBuflvl);
+		csp_fvr_set_buflvl(ptFvrBase, (fvr_buflvl_e)eBuflvl);
 	}
 }
 
