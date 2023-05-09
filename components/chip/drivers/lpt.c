@@ -386,9 +386,9 @@ csi_error_t csi_lpt_pwm_init(csp_lpt_t *ptLptBase, csi_lpt_pwm_config_t *ptLptPa
 		}
 		csp_lpt_set_cmp(ptLptBase, (uint16_t)hwCmp);
 		
-		if(ptLptPara->byInter != LPT_NONE_INT)
+		if(ptLptPara->byInt != LPT_NONE_INT)
 		{
-			csi_lpt_int_enable(ptLptBase,ptLptPara->byInter,ENABLE);	 //enable interrupt
+			csi_lpt_int_enable(ptLptBase,ptLptPara->byInt,ENABLE);	 //enable interrupt
 		}
 	}
 	return tRet;	

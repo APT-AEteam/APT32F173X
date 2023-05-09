@@ -88,7 +88,7 @@ typedef struct
 	uint8_t            byIdlepol;
 	uint8_t            byClksrc;
 	uint8_t            byCycle;
-	uint8_t            byInter;
+	uint8_t            byInt;
 	uint8_t            byRev1;
 	uint8_t            byRev2;	
 	uint8_t            byRev3;	
