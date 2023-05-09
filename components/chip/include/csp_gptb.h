@@ -302,9 +302,9 @@ typedef enum {
 
 
 typedef enum{
-	GPTB_LDMD_ANYTIME = 0,
-	GPTB_LDMD_OS,
-}csp_gptb_ldmd_e;
+	GPTB_OSTMD_ANYTIME = 0,
+	GPTB_OSTMD_ONESHOT,
+}csp_gptb_ostmd_e;
 
 #define GPTB_GLDPRD_POS	(7)
 #define GPTB_GLDPRD_MSK	(0x7 << GPTB_GLDPRD_POS)
@@ -367,9 +367,9 @@ typedef enum{
 #define GPTB_CMPB_LD_MSK    (0x1 << GPTB_CMPB_LD_POS)
 
 typedef enum {
-	GPTB_CMPLD_SHDW = 0,
-	GPTB_CMPLD_IMM
-}csp_gptb_cmpdata_ldmd_e;
+	GPTB_LDMD_SHDW = 0,
+	GPTB_LDMD_IMM
+}csp_gptb_ldmd_e;
 
 #define GPTB_CMP_LDTIME_POS(n)	(4+ ((n)*3))
 #define GPTB_CMP_LDTIME_MSK(n)	(0x7 << GPTB_CMP_LDTIME_POS(n))
@@ -385,7 +385,7 @@ typedef enum{
 	GPTB_LDCMP_PRD,
 
 	GPTB_LDCMP_LD_SYNC=4,
-}csp_gptb_ldtcmp_e;
+}csp_gptb_shdwldmd_e;
 
 #define GPTB_SHDWAFULL 	(0x1 <<20)
 #define GPTB_SHDWBFULL 	(0x1 <<21)
@@ -489,16 +489,16 @@ typedef enum{
 }csp_gptb_dbldr_e;
 
 typedef enum{
-	GPTB_SHDW_IMMEDIATE =0,
-	GPTB_SHDW_SHADOW      
-}csp_gptb_shdw_e;
+	GPTB_DB_SHDW_IMMEDIATE =0,
+	GPTB_DB_SHDW_SHADOW      
+}csp_gptb_dbldmd_e;
 
 typedef enum{
-	GPTB_LD_NEVER = 0,
-	GPTB_LD_ZRO,
-	GPTB_LD_PRD,
-	GPTB_LD_ZRO_PRD	
-}csp_gptb_lddb_e;
+	GPTB_DB_LDMD_NEVER = 0,
+	GPTB_DB_LDMD_ZRO,
+	GPTB_DB_LDMD_PRD,
+	GPTB_DB_LDMD_ZRO_PRD	
+}csp_gptb_shdwdbldmd_e;
 
 //DBCR
 #define DB_CHA_OUTSEL_POS	(0)
@@ -1149,9 +1149,9 @@ static inline void csp_gptb_set_clksrc(csp_gptb_t *ptGptbBase, uint8_t byVal)
 	ptGptbBase -> CEDR = (ptGptbBase -> CEDR & (~GPTB_CKSRC_MSK)) | (byVal << GPTB_CKSRC_POS);
 }
 
-static inline void csp_gptb_set_pscr(csp_gptb_t *ptGptbBase, uint16_t wVal)
+static inline void csp_gptb_set_pscr(csp_gptb_t *ptGptbBase, uint16_t hwVal)
 {
-	ptGptbBase -> PSCR = wVal;
+	ptGptbBase -> PSCR = hwVal;
 }
 
 static inline uint16_t csp_gptb_get_prdr(csp_gptb_t *ptGptbBase)
@@ -1159,29 +1159,29 @@ static inline uint16_t csp_gptb_get_prdr(csp_gptb_t *ptGptbBase)
 	return (ptGptbBase -> PRDR);
 }
 
-static inline void csp_gptb_set_src(csp_gptb_t *ptGptbBase,uint32_t byVal )
+static inline void csp_gptb_set_src(csp_gptb_t *ptGptbBase,uint32_t wVal )
 {
 	ptGptbBase -> REGPROT = GPTB_REGPROT;
-	ptGptbBase -> EMSRC = byVal;
+	ptGptbBase -> EMSRC = wVal;
 }
 static inline uint32_t csp_gptb_get_src(csp_gptb_t *ptGptbBase )
 {	
 	return ( ptGptbBase -> EMSRC );
 }
 
-static inline void csp_gptb_set_src2(csp_gptb_t *ptGptbBase,uint32_t byVal)
+static inline void csp_gptb_set_src2(csp_gptb_t *ptGptbBase,uint32_t wVal)
 {
 	ptGptbBase -> REGPROT = GPTB_REGPROT;
-	ptGptbBase -> EMSRC2  =byVal;
+	ptGptbBase -> EMSRC2  =wVal;
 }
 static inline uint32_t csp_gptb_get_src2(csp_gptb_t *ptGptbBase )
 {	
 	return ( ptGptbBase -> EMSRC2 );
 }
-static inline void csp_gptb_set_empol(csp_gptb_t *ptGptbBase, uint32_t byVal)
+static inline void csp_gptb_set_empol(csp_gptb_t *ptGptbBase, uint32_t wVal)
 {
 	ptGptbBase -> REGPROT = GPTB_REGPROT;
-	ptGptbBase -> EMPOL = byVal;
+	ptGptbBase -> EMPOL = wVal;
 }
 static inline uint32_t csp_gptb_get_empol(csp_gptb_t *ptGptbBase )
 {	
@@ -1192,25 +1192,25 @@ static inline  uint32_t csp_gptb_get_emecr(csp_gptb_t *ptGptbBase)
 	return (ptGptbBase->EMECR);
 }
 
-static inline void csp_gptb_set_emecr(csp_gptb_t *ptGptbBase,uint32_t byVal)
+static inline void csp_gptb_set_emecr(csp_gptb_t *ptGptbBase,uint32_t wVal)
 {
 	ptGptbBase -> REGPROT = GPTB_REGPROT;
-	ptGptbBase -> EMECR = byVal;
+	ptGptbBase -> EMECR = wVal;
 }
 
-static inline void csp_gptb_set_emosr(csp_gptb_t *ptGptbBase,uint32_t byVal)
+static inline void csp_gptb_set_emosr(csp_gptb_t *ptGptbBase,uint32_t wVal)
 {
 	ptGptbBase -> REGPROT = GPTB_REGPROT;
-	ptGptbBase -> EMOSR = byVal;
+	ptGptbBase -> EMOSR = wVal;
 }
 static inline  uint32_t csp_gptb_get_emosr(csp_gptb_t *ptGptbBase)				
 {
 	return (ptGptbBase->EMOSR);
 }
 
-static inline void csp_gptb_Emergency_emimcr(csp_gptb_t *ptGptbBase, csp_gptb_emint_e bwVal)
+static inline void csp_gptb_Emergency_emimcr(csp_gptb_t *ptGptbBase, csp_gptb_emint_e eEmint)
 {
-	ptGptbBase -> EMIMCR  |=  bwVal;
+	ptGptbBase -> EMIMCR  |=  eEmint;
 }
 
 static inline uint16_t csp_gptb_get_emHdlck(csp_gptb_t *ptGptbBase)				
@@ -1259,9 +1259,9 @@ static inline void csp_gptb_set_sync_mode(csp_gptb_t *ptGptbBase, uint8_t byCh, 
 	ptGptbBase -> SYNCR = (ptGptbBase -> SYNCR & ~(GPTB_OSTMD_MSK(byCh)) ) | eMode << GPTB_OSTMD_POS(byCh);
 }
 
-static inline void csp_gptb_set_auto_rearm(csp_gptb_t *ptGptbBase,  csp_gptb_arearm_e eHWMode)
+static inline void csp_gptb_set_auto_rearm(csp_gptb_t *ptGptbBase,  csp_gptb_arearm_e eMode)
 {   ptGptbBase -> REGPROT = GPTB_REGPROT;
-	ptGptbBase -> SYNCR = (ptGptbBase -> SYNCR & ~(GPTB_AREARM_MSK)) | eHWMode << GPTB_AREARM_POS;
+	ptGptbBase -> SYNCR = (ptGptbBase -> SYNCR & ~(GPTB_AREARM_MSK)) | eMode << GPTB_AREARM_POS;
 }
 
 static inline void csp_gptb_sync_trg0sel(csp_gptb_t *ptGptbBase, uint8_t byTrgin)
@@ -1279,22 +1279,22 @@ static inline void csp_gptb_rearm_sync(csp_gptb_t *ptGptbBase, uint8_t byCh)
 	ptGptbBase -> SYNCR  = ptGptbBase -> SYNCR | GPTB_REARM(byCh);
 }
 
-static inline void csp_gptb_set_gldcr(csp_gptb_t *ptGptbBase, uint32_t byCh)
+static inline void csp_gptb_set_gldcr(csp_gptb_t *ptGptbBase, uint32_t wCh)
 {
-	ptGptbBase -> GLDCR   =  byCh ;
+	ptGptbBase -> GLDCR   =  wCh ;
 }
-static inline void csp_gptb_set_gldcr2(csp_gptb_t *ptGptbBase, uint32_t byCh)
+static inline void csp_gptb_set_gldcr2(csp_gptb_t *ptGptbBase, uint32_t wCh)
 {    ptGptbBase -> REGPROT = GPTB_REGPROT;
-	 ptGptbBase -> GLDCR2   |=  byCh ;
+	 ptGptbBase -> GLDCR2   |=  wCh ;
 }
 
-static inline void csp_gptb_set_trgftcr(csp_gptb_t *ptGptbBase, uint32_t byPrd)
+static inline void csp_gptb_set_trgftcr(csp_gptb_t *ptGptbBase, uint32_t wPrd)
 {
-	ptGptbBase ->  TRGFTCR = byPrd;
+	ptGptbBase ->  TRGFTCR = wPrd;
 }
-static inline void csp_gptb_set_trgftwr(csp_gptb_t *ptGptbBase, uint32_t byPrd)
+static inline void csp_gptb_set_trgftwr(csp_gptb_t *ptGptbBase, uint32_t wPrd)
 {
-	ptGptbBase ->  TRGFTWR = byPrd;
+	ptGptbBase ->  TRGFTWR = wPrd;
 }
 
 static inline void csp_gptb_trg_cntxiniten_enable(csp_gptb_t *ptGptbBase, uint8_t byCh, bool bEnable)
@@ -1343,7 +1343,7 @@ static inline uint8_t csp_gptb_get_cntmd(csp_gptb_t *ptGptbBase)
 {
 	return (ptGptbBase->CR & GPTB_CNTMD_MSK);
 }
-static inline void csp_gptb_set_capmd(csp_gptb_t *ptGptbBase, csp_gptb_capmd_e eMode)//csp_gpta_capmd_e
+static inline void csp_gptb_set_capmd(csp_gptb_t *ptGptbBase, csp_gptb_capmd_e eMode)
 {
 	ptGptbBase -> CR = (ptGptbBase->CR & (~GPTB_CAPMD_MSK)) | (eMode << GPTB_CAPMD_POS);
 }
@@ -1371,24 +1371,24 @@ static inline void csp_gptb_flt_init(csp_gptb_t *ptGptbBase, csp_gptb_cnflt_e eC
 	}
 }
 
-static inline void csp_gptb_set_prdr(csp_gptb_t *ptGptbBase, uint16_t bwVal)
+static inline void csp_gptb_set_prdr(csp_gptb_t *ptGptbBase, uint16_t hwVal)
 {
-	ptGptbBase -> PRDR = bwVal;
+	ptGptbBase -> PRDR = hwVal;
 }
 
-static inline void csp_gptb_set_start_src(csp_gptb_t *ptGptbBase, csp_gptb_startsrc_e eVal)
+static inline void csp_gptb_set_start_src(csp_gptb_t *ptGptbBase, csp_gptb_startsrc_e eStartsrc)
 {
-	ptGptbBase -> CR = (ptGptbBase->CR & (~GPTB_STARTSRC_MSK))| (eVal <<GPTB_STARTSRC_POS);
+	ptGptbBase -> CR = (ptGptbBase->CR & (~GPTB_STARTSRC_MSK))| (eStartsrc <<GPTB_STARTSRC_POS);
 }
 
-static inline void csp_gptb_set_stop_st(csp_gptb_t *ptGptbBase, csp_gptb_stpst_e eVal)
+static inline void csp_gptb_set_stop_st(csp_gptb_t *ptGptbBase, csp_gptb_stpst_e eStpst)
 {
-	ptGptbBase -> CR = (ptGptbBase->CR & (~GPTB_STPST_MSK))| (eVal <<GPTB_STPST_POS);
+	ptGptbBase -> CR = (ptGptbBase->CR & (~GPTB_STPST_MSK))| (eStpst <<GPTB_STPST_POS);
 }
 
-static inline void csp_gptb_set_opmd(csp_gptb_t *ptGptbBase, csp_gptb_opmd_e eVal)
+static inline void csp_gptb_set_opmd(csp_gptb_t *ptGptbBase, csp_gptb_opmd_e eOpmd)
 {
-	ptGptbBase -> CR = (ptGptbBase->CR & (~GPTB_OPMD_MSK))| (eVal <<GPTB_OPMD_POS);
+	ptGptbBase -> CR = (ptGptbBase->CR & (~GPTB_OPMD_MSK))| (eOpmd <<GPTB_OPMD_POS);
 }
 
 static inline void csp_gptb_capld_enable(csp_gptb_t *ptGptbBase, bool bEnable)
@@ -1396,9 +1396,9 @@ static inline void csp_gptb_capld_enable(csp_gptb_t *ptGptbBase, bool bEnable)
 	ptGptbBase -> CR = (ptGptbBase->CR & ~(GPTB_CAPLD_MSK)) | (bEnable << GPTB_CAPLD_POS);
 }
 //
-static inline void csp_gptb_prdld_mod(csp_gptb_t *ptGptbBase, csp_gptb_ldprdr_e Val)
+static inline void csp_gptb_prdld_mod(csp_gptb_t *ptGptbBase, csp_gptb_ldprdr_e ePrdrld)
 {
-	ptGptbBase -> CR = (ptGptbBase->CR & ~(GPTB_PRDLD_MSK)) | (Val << GPTB_PRDLD_POS);
+	ptGptbBase -> CR = (ptGptbBase->CR & ~(GPTB_PRDLD_MSK)) | (ePrdrld << GPTB_PRDLD_POS);
 }
 
 static inline void csp_gptb_phsen_enable(csp_gptb_t *ptGptbBase, bool bEnable)
@@ -1406,44 +1406,44 @@ static inline void csp_gptb_phsen_enable(csp_gptb_t *ptGptbBase, bool bEnable)
 	ptGptbBase -> CR = (ptGptbBase->CR & ~(GPTB_PHSEN_MSK)) | (bEnable << GPTB_PHSEN_POS);
 }
 
-static inline void csp_gptb_set_aqcra(csp_gptb_t *ptGptbBase, uint32_t bwVal)
+static inline void csp_gptb_set_aqcra(csp_gptb_t *ptGptbBase, uint32_t hwVal)
 {
-	ptGptbBase -> AQCR1 = bwVal;
+	ptGptbBase -> AQCR1 = hwVal;
 }
-static inline void csp_gptb_set_aqcrb(csp_gptb_t *ptGptbBase, uint32_t bwVal)
+static inline void csp_gptb_set_aqcrb(csp_gptb_t *ptGptbBase, uint32_t hwVal)
 {
-	ptGptbBase -> AQCR2 = bwVal;
+	ptGptbBase -> AQCR2 = hwVal;
 }
 static inline uint32_t csp_gptb_get_dbldr(csp_gptb_t *ptGptbBase)
 {
  return ( ptGptbBase -> DBLDR);
 }
 
-static inline void csp_gptb_set_dbldr(csp_gptb_t *ptGptbBase, uint32_t w_Val)
+static inline void csp_gptb_set_dbldr(csp_gptb_t *ptGptbBase, uint32_t wVal)
 {
-  ptGptbBase -> DBLDR = w_Val;
+  ptGptbBase -> DBLDR = wVal;
 }
 
-static inline void csp_gptb_set_dbcr(csp_gptb_t *ptGptbBase, uint32_t w_VAL)
+static inline void csp_gptb_set_dbcr(csp_gptb_t *ptGptbBase, uint32_t wVal)
 {
-	ptGptbBase -> DBCR = w_VAL;
+	ptGptbBase -> DBCR = wVal;
 }
 
 static inline uint32_t csp_gptb_get_dbcr(csp_gptb_t *ptGptbBase)
 {
 	return ( ptGptbBase -> DBCR);	
 }
-static inline void csp_gptb_set_dpscr(csp_gptb_t *ptGptbBase, uint16_t wVal)
+static inline void csp_gptb_set_dpscr(csp_gptb_t *ptGptbBase, uint16_t hwVal)
 {
-	ptGptbBase ->DPSCR = wVal;
+	ptGptbBase ->DPSCR = hwVal;
 }
-static inline void csp_gptb_set_dbdtr(csp_gptb_t *ptGptbBase, uint16_t wVal)
+static inline void csp_gptb_set_dbdtr(csp_gptb_t *ptGptbBase, uint16_t hwVal)
 {
-	ptGptbBase ->DBDTR = wVal;
+	ptGptbBase ->DBDTR = hwVal;
 }
-static inline void csp_gptb_set_dbdtf(csp_gptb_t *ptGptbBase, uint16_t wVal)
+static inline void csp_gptb_set_dbdtf(csp_gptb_t *ptGptbBase, uint16_t hwVal)
 {
-	ptGptbBase ->DBDTF = wVal;
+	ptGptbBase ->DBDTF = hwVal;
 }
 
 //static inline void csp_gptb_set_cpcr(csp_gptb_t *ptGptbBase, uint32_t byVal)
@@ -1455,9 +1455,9 @@ static inline void csp_gptb_set_dbdtf(csp_gptb_t *ptGptbBase, uint16_t wVal)
 //	return ( ptGptbBase ->CPCR );
 //}
 
-static inline void csp_gptb_set_cmpa(csp_gptb_t *ptGptbBase, uint16_t bwVal)
+static inline void csp_gptb_set_cmpa(csp_gptb_t *ptGptbBase, uint16_t hwVal)
 {
-	ptGptbBase -> CMPA = bwVal;
+	ptGptbBase -> CMPA = hwVal;
 }
 static inline uint16_t csp_gptb_get_cmpa(csp_gptb_t *ptGptbBase)
 {
@@ -1467,9 +1467,9 @@ static inline uint16_t csp_gptb_get_cmpaa(csp_gptb_t *ptGptbBase)
 {
 	return (ptGptbBase -> CMPAA);
 }
-static inline void csp_gptb_set_cmpb(csp_gptb_t *ptGptbBase, uint16_t bwVal)
+static inline void csp_gptb_set_cmpb(csp_gptb_t *ptGptbBase, uint16_t hwVal)
 {
-	ptGptbBase -> CMPB = bwVal;
+	ptGptbBase -> CMPB = hwVal;
 }
 static inline uint16_t csp_gptb_get_cmpb(csp_gptb_t *ptGptbBase)
 {
@@ -1479,33 +1479,33 @@ static inline uint16_t csp_gptb_get_cmpba(csp_gptb_t *ptGptbBase)
 {
 	return (ptGptbBase -> CMPBA);
 }
-static inline void csp_gptb_set_prd(csp_gptb_t *ptGptbBase, uint16_t bwVal)
+static inline void csp_gptb_set_prd(csp_gptb_t *ptGptbBase, uint16_t hwVal)
 {
-	ptGptbBase -> PRDR = bwVal;
+	ptGptbBase -> PRDR = hwVal;
 }
 static inline uint16_t csp_gptb_get_prd(csp_gptb_t *ptGptbBase)
 {
 	return (ptGptbBase -> PRDR);
 }
-static inline void csp_gptb_set_phsr(csp_gptb_t *ptGptbBase, uint16_t bwVal)
+static inline void csp_gptb_set_phsr(csp_gptb_t *ptGptbBase, uint16_t hwVal)
 {
-	ptGptbBase -> PHSR = bwVal;
+	ptGptbBase -> PHSR = hwVal;
 }
 static inline uint16_t csp_gptb_get_phsr(csp_gptb_t *ptGptbBase)
 {
 	return (ptGptbBase -> PHSR);
 }
 
-static inline void csp_gptb_set_phsdir(csp_gptb_t *ptGptbBase, csp_gptb_phsdir_e phsdir)
+static inline void csp_gptb_set_phsdir(csp_gptb_t *ptGptbBase, csp_gptb_phsdir_e ePhsdir)
 {
-	ptGptbBase -> PHSR = (ptGptbBase->PHSR & ~(GPTB_PHSDIR_MSK)) | (phsdir << GPTB_PHSDIR_POS);
+	ptGptbBase -> PHSR = (ptGptbBase->PHSR & ~(GPTB_PHSDIR_MSK)) | (ePhsdir << GPTB_PHSDIR_POS);
 }
 
-static inline void csp_gptb_int_enable(csp_gptb_t *ptGptbBase, csp_gptb_int_e byInt, bool bEnable)
+static inline void csp_gptb_int_enable(csp_gptb_t *ptGptbBase, csp_gptb_int_e eInt, bool bEnable)
 {
-	ptGptbBase -> IMCR = ptGptbBase -> IMCR & ( ~byInt);
+	ptGptbBase -> IMCR = ptGptbBase -> IMCR & ( ~eInt);
 	if (bEnable)
-		ptGptbBase ->IMCR |= byInt;
+		ptGptbBase ->IMCR |= eInt;
 }
 
 static inline uint32_t csp_gptb_get_risr(csp_gptb_t *ptGptbBase)
@@ -1517,13 +1517,13 @@ static inline uint32_t csp_gptb_get_misr(csp_gptb_t *ptGptbBase)
 {
 	return (ptGptbBase -> MISR);
 }
-static inline void csp_gptb_clr_int(csp_gptb_t *ptGptbBase, csp_gptb_int_e byInt)
+static inline void csp_gptb_clr_int(csp_gptb_t *ptGptbBase, csp_gptb_int_e eInt)
 {
-	ptGptbBase -> ICR = byInt;
+	ptGptbBase -> ICR = eInt;
 }
-static inline void csp_gptb_set_aqosf(csp_gptb_t *ptGptbBase, uint32_t bwVal)
+static inline void csp_gptb_set_aqosf(csp_gptb_t *ptGptbBase, uint32_t wVal)
 {
-	ptGptbBase -> AQOSF = bwVal;
+	ptGptbBase -> AQOSF = wVal;
 }
 
 
@@ -1537,13 +1537,13 @@ static inline void csp_gptb_set_trgsel01(csp_gptb_t *ptGptbBase, uint8_t byCh, c
 	ptGptbBase -> EVTRG = (ptGptbBase -> EVTRG & (~GPTB_SEL_MSK_TRG(byCh))) | (eSrc << GPTB_SEL_POS_TRG(byCh));
 }
 
-static inline void csp_gptb_set_feglk(csp_gptb_t *ptGptbBase, uint32_t byCh)
+static inline void csp_gptb_set_reglk(csp_gptb_t *ptGptbBase, uint32_t wRegLk)
 {
-	ptGptbBase -> REGLK = byCh;
+	ptGptbBase -> REGLK = wRegLk;
 }
-static inline void csp_gptb_set_feglk2(csp_gptb_t *ptGptbBase, uint32_t byCh)
+static inline void csp_gptb_set_reglk2(csp_gptb_t *ptGptbBase, uint32_t wRegLk)
 {
-	ptGptbBase -> REGLK2 = byCh;
+	ptGptbBase -> REGLK2 = wRegLk;
 }
 
 
@@ -1561,7 +1561,7 @@ void csp_gptb_aqcrb_config(csp_gptb_t *ptGptbBase, csp_gptb_csrc_sel_e eCaSel, c
 csp_error_t csp_gptb_set_sync_enable(csp_gptb_t *ptGptbBase, uint8_t bySync, bool bEnable);
 uint32_t csp_gptb_get_cap_tick(csp_gptb_t *ptGptbBase);
 csp_error_t csp_gptb_ldrst_enable(csp_gptb_t *ptGptbBase, uint8_t cmp, bool bEnable);
-csp_error_t csp_gptb_set_cmp_ldmd(csp_gptb_t *ptGptbBase, uint8_t cmp, csp_gptb_cmpdata_ldmd_e eLdmd, csp_gptb_ldtcmp_e eLdT);
+csp_error_t csp_gptb_set_cmp_ldmd(csp_gptb_t *ptGptbBase, uint8_t cmp, csp_gptb_ldmd_e eLdmd, csp_gptb_shdwldmd_e eShdwldmd);
 void csp_gptb_aqosf_config(csp_gptb_t *ptGptbBase, csp_gptb_ldosf_e acta,csp_gptb_ldosf_e actb, csp_gptb_ldaqcr_e  rldcsf);
 void csp_gptb_ostsfa_sw(csp_gptb_t *ptGptbBase);
 void csp_gptb_ostsfb_sw(csp_gptb_t *ptGptbBase);

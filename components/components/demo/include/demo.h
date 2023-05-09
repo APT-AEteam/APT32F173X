@@ -142,6 +142,7 @@ extern int gpta_pwm_waveform_demo(void);
 extern int gpta_reglk_demo(void);
 
 //gptb demo
+extern int gptb_timer_demo(void);
 extern int gptb_capture_demo(void);
 extern int gptb_pwm_demo(void);
 extern int gptb_pwm_dz_demo(void);

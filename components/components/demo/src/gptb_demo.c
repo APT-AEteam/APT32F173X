@@ -20,6 +20,21 @@
 /* Private macro-----------------------------------------------------------*/
 /* Private variablesr------------------------------------------------------*/
 
+/** \brief GPTB基本定时功能
+ * 
+ *  \param[in] none
+ *  \return error code
+ */
+int gptb_timer_demo(void)
+{
+	int iRet = 0;
+	
+	csi_gptb_timer_init(GPTB0, 10000);		//初始化GPTB0, 定时10000us； GPTB定时，默认采用向上计数，PEND中断
+	
+	csi_gptb_start(GPTB0);                  //启动定时器
+
+	return iRet;	
+}
 
 /** \brief GPTB捕获示例代码
  *   		- 捕获2次产生一次捕获中断
@@ -309,10 +324,10 @@ int gptb_pwm_dz_em_demo(void)
 	}
 	
     csi_gptb_emergency_cfg(GPTB0,&tGptbEmergencyCfg); 
-	csi_gptb_emergency_pinxout(GPTB0,GPTB_EMCOAX,GPTB_EM_OUT_L);       //紧急状态下输出状态设置（注意mos/igbt的驱动电平）
-	csi_gptb_emergency_pinxout(GPTB0,GPTB_EMCOAY,GPTB_EM_OUT_L);
-	csi_gptb_emergency_pinxout(GPTB0,GPTB_EMCOBX,GPTB_EM_OUT_L);
-	csi_gptb_emergency_interruption_en(GPTB0,GPTB_EM_INT_EP0);      //紧急状态输入中断使能
+	csi_gptb_emergency_pinxout(GPTB0,GPTB_EMCOAX,GPTB_EMOUT_L);       //紧急状态下输出状态设置（注意mos/igbt的驱动电平）
+	csi_gptb_emergency_pinxout(GPTB0,GPTB_EMCOAY,GPTB_EMOUT_L);
+	csi_gptb_emergency_pinxout(GPTB0,GPTB_EMCOBX,GPTB_EMOUT_L);
+	csi_gptb_emint_en(GPTB0,GPTB_EMINT_EP0);      //紧急状态输入中断使能
 
 	csi_gptb_start(GPTB0);//start  timer
 
@@ -408,6 +423,14 @@ __attribute__((weak)) void gptb_irqhandler(csp_gptb_t *ptGptbBase)
 		if((wMisr & GPTB_INT_CBU) == GPTB_INT_CBU)
 		{
 			csp_gptb_clr_int(ptGptbBase, GPTB_INT_CBU);
+		}
+		if((wMisr & GPTB_INT_CBD) == GPTB_INT_CBD)
+		{
+			csp_gptb_clr_int(ptGptbBase, GPTB_INT_CBD);
+		}
+		if((wMisr & GPTB_INT_PEND) == GPTB_INT_PEND)
+		{	
+			csp_gptb_clr_int(ptGptbBase, GPTB_INT_PEND);
 		}
 		if((wMisr & GPTB_INT_PRDMA) == GPTB_INT_PRDMA)
 		{

@@ -133,16 +133,16 @@ int gptb_pwm_test(void)
 //	csp_gptb_prdld_mod(GPTB0,GPTB_LDPRDR_LOAD_SYNC);
 
 // REGLINK Test
-//	csi_gptb_feglk_config_t  FEGLKcfg; 
-//	FEGLKcfg.byGld2    = 5;			
-//	FEGLKcfg.byEmslclr = 5;			//0x5  GPTB0
-//	FEGLKcfg.byEmhlclr = 5;			//0x6  GPTB1
-//	FEGLKcfg.byEmicr   = 5;			//0x7  GPTB2
-//	FEGLKcfg.byEmfrcr  = 5;			//0x8  GPTB3
-//	FEGLKcfg.byAqosf   = 5;			//0x9  GPTB4
-//	FEGLKcfg.byAqcsf   = 5;  
-//	csi_gptb_feglk_config(GPTB1,&FEGLKcfg);
-//	csi_gptb_feglk_config(GPTB2,&FEGLKcfg); 
+//	csi_gptb_reglk_config_t  REGLKcfg; 
+//	REGLKcfg.byGld2    = 5;			
+//	REGLKcfg.byEmslclr = 5;			//0x5  GPTB0
+//	REGLKcfg.byEmhlclr = 5;			//0x6  GPTB1
+//	REGLKcfg.byEmicr   = 5;			//0x7  GPTB2
+//	REGLKcfg.byEmfrcr  = 5;			//0x8  GPTB3
+//	REGLKcfg.byAqosf   = 5;			//0x9  GPTB4
+//	REGLKcfg.byAqcsf   = 5;  
+//	csi_gptb_reglk_config(GPTB1,&REGLKcfg);
+//	csi_gptb_reglk_config(GPTB2,&REGLKcfg); 
 
 	csi_gptb_start(GPTB0);//start  timer
 
@@ -340,10 +340,10 @@ int gptb_pwm_dz_em_test(void)
 	}
 	
     csi_gptb_emergency_cfg(GPTB0,&tGptbEmergencyCfg); 
-	csi_gptb_emergency_pinxout(GPTB0,GPTB_EMCOAX,GPTB_EM_OUT_L);       //紧急状态下输出状态设置（注意mos/igbt的驱动电平）
-	csi_gptb_emergency_pinxout(GPTB0,GPTB_EMCOAY,GPTB_EM_OUT_L);
-	csi_gptb_emergency_pinxout(GPTB0,GPTB_EMCOBX,GPTB_EM_OUT_L);
-	csi_gptb_emergency_interruption_en(GPTB0,GPTB_EM_INT_EP0);      //紧急状态输入中断使能
+	csi_gptb_emergency_pinxout(GPTB0,GPTB_EMCOAX,GPTB_EMOUT_L);       //紧急状态下输出状态设置（注意mos/igbt的驱动电平）
+	csi_gptb_emergency_pinxout(GPTB0,GPTB_EMCOAY,GPTB_EMOUT_L);
+	csi_gptb_emergency_pinxout(GPTB0,GPTB_EMCOBX,GPTB_EMOUT_L);
+	csi_gptb_emint_en(GPTB0,GPTB_EMINT_EP0);      //紧急状态输入中断使能
 
 	csi_gptb_start(GPTB0);//start  timer
 
@@ -439,6 +439,14 @@ __attribute__((weak)) void gptb_irqhandler(csp_gptb_t *ptGptbBase)
 		if((wMisr & GPTB_INT_CBU) == GPTB_INT_CBU)
 		{
 			csp_gptb_clr_int(ptGptbBase, GPTB_INT_CBU);
+		}
+		if((wMisr & GPTB_INT_CBD) == GPTB_INT_CBD)
+		{
+			csp_gptb_clr_int(ptGptbBase, GPTB_INT_CBD);
+		}
+		if((wMisr & GPTB_INT_PEND) == GPTB_INT_PEND)
+		{	
+			csp_gptb_clr_int(ptGptbBase, GPTB_INT_PEND);
 		}
 		if((wMisr & GPTB_INT_PRDMA) == GPTB_INT_PRDMA)
 		{
