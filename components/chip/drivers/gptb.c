@@ -570,9 +570,9 @@ csi_error_t csi_gptb_global_config(csp_gptb_t *ptGptbBase,csi_gptb_Global_load_c
  *  \param[in] bEnable ENABLE or DISABLE
  *  \return CSI_OK
  */
-csi_error_t csi_gptb_gldcfg(csp_gptb_t *ptGptbBase ,csi_gptb_Global_load_gldcfg_e Glo,bool bEnable)
+csi_error_t csi_gptb_gldcfg(csp_gptb_t *ptGptbBase ,csi_gptb_Global_load_gldcfg_e eGlo,bool bEnable)
 {
-   	switch (Glo)
+   	switch (eGlo)
 	{	
 		case (GPTB_GLO_PRDR): ptGptbBase  -> GLDCFG   = (ptGptbBase -> GLDCFG  & ~(GPTB_LD_PRDR_MSK))   |(bEnable << GPTB_LD_PRDR_POS) ;
 			break;

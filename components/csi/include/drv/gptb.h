@@ -367,8 +367,8 @@ typedef enum{
 }csi_gptb_capsrcmd_e;
 
 typedef enum{
-	GPTB_SHDW_SHADOW    = 0,    
-	GPTB_SHDW_IMMEDIATE 
+	GPTB_SHADOW    = 0,    
+	GPTB_IMMEDIATE 
 }csi_gptb_ldmd_e;
 
 typedef enum{
@@ -379,8 +379,8 @@ typedef enum{
 }csi_gptb_shdwldmd_e;
 
 typedef enum{
-	GPTB_DBSHDW_IMMEDIATE =0,
-	GPTB_DBSHDW_SHADOW      
+	GPTB_DB_IMMEDIATE =0,
+	GPTB_DB_SHADOW      
 }csi_gptb_dbldmd_e;
 
 typedef enum{
