@@ -80,9 +80,9 @@ csi_error_t csi_gptb_config_init(csp_gptb_t *ptGptbBase, csi_gptb_config_t *ptGp
 //	csp_gptb_set_cmpd(ptGptbBase, (uint16_t)wCmpLoad);
 	}
 	
-	if(ptGptbPwmCfg->byInter)
+	if(ptGptbPwmCfg->wInt)
 	{
-		csp_gptb_int_enable(ptGptbBase, ptGptbPwmCfg->byInter, true);		//enable interrupt
+		csp_gptb_int_enable(ptGptbBase, ptGptbPwmCfg->wInt, true);		//enable interrupt
 		csi_irq_enable((uint32_t *)ptGptbBase);							//enable  irq
 	}
 	
@@ -129,9 +129,9 @@ csi_error_t csi_gptb_capture_init(csp_gptb_t *ptGptbBase, csi_gptb_captureconfig
 	csp_gptb_set_pscr(ptGptbBase, (uint16_t)wClkDiv - 1);				// clk div
 	csp_gptb_set_prdr(ptGptbBase, (uint16_t)wPrdrLoad);				    // prdr load value
 	
-	if(ptGptbPwmCfg->byInter)
+	if(ptGptbPwmCfg->wInt)
 	{
-		csp_gptb_int_enable(ptGptbBase, ptGptbPwmCfg->byInter, true);   //enable interrupt
+		csp_gptb_int_enable(ptGptbBase, ptGptbPwmCfg->wInt, true);   //enable interrupt
 		csi_irq_enable((uint32_t *)ptGptbBase);							//enable  irq
 	}
 	
@@ -185,9 +185,9 @@ csi_error_t  csi_gptb_wave_init(csp_gptb_t *ptGptbBase, csi_gptb_pwmconfig_t *pt
 	csp_gptb_set_cmpa(ptGptbBase, (uint16_t)wCmpLoad);					// cmp load value
 	csp_gptb_set_cmpb(ptGptbBase, (uint16_t)wCmpLoad);
 	
-	if(ptGptbPwmCfg->byInter)
+	if(ptGptbPwmCfg->wInt)
 	{
-		csp_gptb_int_enable(ptGptbBase, ptGptbPwmCfg->byInter, true);		//enable interrupt
+		csp_gptb_int_enable(ptGptbBase, ptGptbPwmCfg->wInt, true);		//enable interrupt
 		csi_irq_enable((uint32_t *)ptGptbBase);							//enable  irq
 	}
 	
@@ -359,8 +359,8 @@ csi_error_t csi_gptb_dz_config(csp_gptb_t *ptGptbBase, csi_gptb_deadzone_config_
 	
 	w_Val=csi_get_pclk_freq();
 	w_Val=(1000000000/(w_Val/(ptCfg->hwDpsc+1)));    //NS/(1/(48000000/(DPSC+1))*10^9) // 500NS/(1000/48) = 24;	
-	csp_gptb_set_dbdtr(ptGptbBase	,ptCfg-> hwRisingEdgereGister /w_Val);
-	csp_gptb_set_dbdtf(ptGptbBase	,ptCfg-> hwFallingEdgereGister/w_Val);
+	csp_gptb_set_dbdtr(ptGptbBase	,ptCfg-> wRisingEdgeTime /w_Val);
+	csp_gptb_set_dbdtf(ptGptbBase	,ptCfg-> wFallingEdgeTime/w_Val);
 	
 	return CSI_OK;	
 }
@@ -409,8 +409,8 @@ csi_error_t csi_gptb_dbcr_config(csp_gptb_t *ptGptbBase, csi_gptb_deadzone_confi
 	w_Val=(w_Val&~(GPTB_CHA_DEDB_MSK))|(ptCfg-> byChaDedb<<GPTB_CHA_DEDB_POS);
 	csp_gptb_set_dbcr( ptGptbBase, w_Val);	 
 	csp_gptb_set_dpscr(ptGptbBase	,ptCfg-> hwDpsc);
-	csp_gptb_set_dbdtr(ptGptbBase	,ptCfg-> hwRisingEdgereGister);
-	csp_gptb_set_dbdtf(ptGptbBase	,ptCfg-> hwFallingEdgereGister);
+	csp_gptb_set_dbdtr(ptGptbBase	,ptCfg-> wRisingEdgeTime);
+	csp_gptb_set_dbdtf(ptGptbBase	,ptCfg-> wFallingEdgeTime);
 	return CSI_OK;	
 }
  /**
@@ -453,7 +453,7 @@ csi_error_t csi_gptb_emergency_cfg(csp_gptb_t *ptGptbBase, csi_gptb_emergency_co
 	if(ptCfg -> byEpxInt==GPTB_ORL0)
 	{
 		wEmsrc2=csp_gptb_get_src2(ptGptbBase);
-		wEmsrc2=(wEmsrc2 & (~GPTB_EMSRC2_FLT_PACE0_MSK)) | (ptCfg -> byFltpace0  << GPTB_EMSRC2_FLT_PACE0_POS);
+		wEmsrc2=(wEmsrc2 & (~GPTB_EPPACE0_MSK)) | (ptCfg -> byFltpace0  << GPTB_EPPACE0_POS);
 		wEmsrc2=(wEmsrc2 &~0xff)     |  ptCfg ->byOrl0 ;
 		csp_gptb_set_src2(ptGptbBase,wEmsrc2);
 	}
@@ -461,7 +461,7 @@ csi_error_t csi_gptb_emergency_cfg(csp_gptb_t *ptGptbBase, csi_gptb_emergency_co
 	if(ptCfg -> byEpxInt==GPTB_ORL1)	
 	{
 		wEmsrc2=csp_gptb_get_src2(ptGptbBase);
-		wEmsrc2=(wEmsrc2  & (~GPTB_EMSRC2_FLT_PACE1_MSK) ) | (ptCfg -> byFltpace1 << GPTB_EMSRC2_FLT_PACE1_POS);
+		wEmsrc2=(wEmsrc2  & (~GPTB_EPPACE1_MSK) ) | (ptCfg -> byFltpace1 << GPTB_EPPACE1_POS);
 		wEmsrc2=(wEmsrc2 &~0xff0000) |  ptCfg ->byOrl1 <<16;
 		csp_gptb_set_src2(ptGptbBase,wEmsrc2);
 	}
@@ -558,7 +558,7 @@ csi_error_t csi_gptb_global_config(csp_gptb_t *ptGptbBase,csi_gptb_Global_load_c
     wGLDCR = (wGLDCR &~GPTB_GLDEN_MSK)       | ((ptGlobal->bGlden & 0x01)<<GPTB_GLDEN_POS);
 	wGLDCR = (wGLDCR &~GPTB_GLDMD_MSK)       | ((ptGlobal->byGldmd & 0x0f)<<GPTB_GLDMD_POS);
 	wGLDCR = (wGLDCR &~GPTB_GLDCR_OSTMD_MSK) | ((ptGlobal->bOstmd & 0x01)<<GPTB_GLDCR_OSTMD_POS);
-	wGLDCR = (wGLDCR &~GPTB_GLDPRD_MSK)      | ((ptGlobal->bGldprd & 0x07)<<GPTB_GLDPRD_POS);
+	wGLDCR = (wGLDCR &~GPTB_GLDPRD_MSK)      | ((ptGlobal->byGldprd & 0x07)<<GPTB_GLDPRD_POS);
 	csp_gptb_set_gldcr(ptGptbBase,wGLDCR);	
 	return CSI_OK;
 }
@@ -574,25 +574,25 @@ csi_error_t csi_gptb_gldcfg(csp_gptb_t *ptGptbBase ,csi_gptb_Global_load_gldcfg_
 {
    	switch (Glo)
 	{	
-		case (byPrdr): ptGptbBase  -> GLDCFG   = (ptGptbBase -> GLDCFG  & ~(GPTB_LD_PRDR_MSK))   |(bEnable << GPTB_LD_PRDR_POS) ;
+		case (GPTB_GLO_PRDR): ptGptbBase  -> GLDCFG   = (ptGptbBase -> GLDCFG  & ~(GPTB_LD_PRDR_MSK))   |(bEnable << GPTB_LD_PRDR_POS) ;
 			break;
-		case (byCmpa): ptGptbBase  -> GLDCFG   = (ptGptbBase -> GLDCFG  & ~(GPTB_LD_CMPA_MSK))   |(bEnable << GPTB_LD_CMPA_POS) ;
+		case (GPTB_GLO_CMPA): ptGptbBase  -> GLDCFG   = (ptGptbBase -> GLDCFG  & ~(GPTB_LD_CMPA_MSK))   |(bEnable << GPTB_LD_CMPA_POS) ;
 			break;
-		case (byCmpb): ptGptbBase  -> GLDCFG   = (ptGptbBase -> GLDCFG  & ~(GPTB_LD_CMPB_MSK))   |(bEnable << GPTB_LD_CMPB_POS) ;
+		case (GPTB_GLO_CMPB): ptGptbBase  -> GLDCFG   = (ptGptbBase -> GLDCFG  & ~(GPTB_LD_CMPB_MSK))   |(bEnable << GPTB_LD_CMPB_POS) ;
 		    break;
-		case (byDbdtr): ptGptbBase -> GLDCFG   = (ptGptbBase -> GLDCFG  & ~(GPTB_LD_DBDTR_MSK))  |(bEnable << GPTB_LD_DBDTR_POS) ;
+		case (GPTB_GLO_DBDTR): ptGptbBase -> GLDCFG   = (ptGptbBase -> GLDCFG  & ~(GPTB_LD_DBDTR_MSK))  |(bEnable << GPTB_LD_DBDTR_POS) ;
 			break;
-		case (byDbdtf): ptGptbBase -> GLDCFG   = (ptGptbBase -> GLDCFG  & ~(GPTB_LD_DBDTF_MSK))  |(bEnable << GPTB_LD_DBDTF_POS) ;
+		case (GPTB_GLO_DBDTF): ptGptbBase -> GLDCFG   = (ptGptbBase -> GLDCFG  & ~(GPTB_LD_DBDTF_MSK))  |(bEnable << GPTB_LD_DBDTF_POS) ;
 			break;
-		case (byDbcr): ptGptbBase  -> GLDCFG   = (ptGptbBase -> GLDCFG  & ~(GPTB_LD_DBCR_MSK))   |(bEnable << GPTB_LD_DBCR_POS) ;
+		case (GPTB_GLO_DBCR): ptGptbBase  -> GLDCFG   = (ptGptbBase -> GLDCFG  & ~(GPTB_LD_DBCR_MSK))   |(bEnable << GPTB_LD_DBCR_POS) ;
 		    break;
-		case (byAqcra):ptGptbBase  -> GLDCFG   = (ptGptbBase -> GLDCFG  & ~(GPTB_LD_AQCRA_MSK))  |(bEnable << GPTB_LD_AQCRA_POS );
+		case (GPTB_GLO_AQCR1):ptGptbBase  -> GLDCFG   = (ptGptbBase -> GLDCFG  & ~(GPTB_LD_AQCR1_MSK))  |(bEnable << GPTB_LD_AQCR1_POS );
 		    break;
-		case (byAqcrb):ptGptbBase  -> GLDCFG   = (ptGptbBase -> GLDCFG  & ~(GPTB_LD_AQCRB_MSK))  |(bEnable << GPTB_LD_AQCRB_POS );
+		case (GPTB_GLO_AQCR2):ptGptbBase  -> GLDCFG   = (ptGptbBase -> GLDCFG  & ~(GPTB_LD_AQCR2_MSK))  |(bEnable << GPTB_LD_AQCR2_POS );
 		    break;
-	    case (byAqcsf):ptGptbBase  -> GLDCFG   = (ptGptbBase -> GLDCFG  & ~(GPTB_LD_AQCSF_MSK))  |(bEnable << GPTB_LD_AQCSF_POS );
+	    case (GPTB_GLO_AQCSF):ptGptbBase  -> GLDCFG   = (ptGptbBase -> GLDCFG  & ~(GPTB_LD_AQCSF_MSK))  |(bEnable << GPTB_LD_AQCSF_POS );
 			 break;
-		case (byEmosr):ptGptbBase  -> GLDCFG   = (ptGptbBase -> GLDCFG  & ~(GPTB_LD_EMOSR_MSK))  |(bEnable << GPTB_LD_EMOSR_POS );
+		case (GPTB_GLO_EMOSR):ptGptbBase  -> GLDCFG   = (ptGptbBase -> GLDCFG  & ~(GPTB_LD_EMOSR_MSK))  |(bEnable << GPTB_LD_EMOSR_POS );
 			 break;
 		default: return CSI_ERROR;
 			break;
@@ -952,7 +952,7 @@ csi_error_t csi_gptb_set_sync_filter(csp_gptb_t *ptGptbBase, csi_gptb_filter_con
 		return CSI_ERROR;
 	wFiltCr = ptFilter->byFiltSrc | (ptFilter->byWinInv << GPTB_FLTBLKINV_POS) | 
 			(ptFilter->byWinAlign << GPTB_ALIGNMD_POS) | (ptFilter->byWinCross << GPTB_CROSSMD_POS);
-	wWindow = ptFilter->byWinOffset | (ptFilter->byWinWidth << GPTB_FLT_WDW_POS);
+	wWindow = ptFilter->hwWinOffset | (ptFilter->hwWinWidth << GPTB_FLT_WDW_POS);
 	
 	csp_gptb_set_trgftcr(ptGptbBase, wFiltCr);
 	csp_gptb_set_trgftwr(ptGptbBase, wWindow);

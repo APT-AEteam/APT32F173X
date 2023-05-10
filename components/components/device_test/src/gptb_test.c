@@ -68,7 +68,7 @@ int gptb_capture_test(void)
 	tPwmCfg.byCaptureLdbret   = 0;  
 	tPwmCfg.byCaptureLdcret   = 0;
 	tPwmCfg.byCaptureLddret   = 0;                            
-	tPwmCfg.byInter 		  = GPTB_INT_CAPLD0;                  //interrupt
+	tPwmCfg.wInt 		      = GPTB_INT_CAPLD0;                  //interrupt
 	csi_gptb_capture_init(GPTB0, &tPwmCfg);
 	
 	csi_gptb_set_sync (GPTB0, GPTB_TRGIN_SYNCEN2, GPTB_TRG_CONTINU,GPTB_AUTO_REARM_ZRO);
@@ -103,7 +103,7 @@ int gptb_pwm_test(void)
 	tPwmCfg.byPscld          = GPTB_LDPSCR_ZRO;                 //PSCR(分频)活动寄存器载入控制。活动寄存器在配置条件满足时，从影子寄存器载入更新值		
 	tPwmCfg.byDutyCycle 	 = 50;								//pwm ouput duty cycle//PWM初始值			
 	tPwmCfg.wFreq 			 = 50000;							//pwm ouput frequency	
-	tPwmCfg.byInter 		 = GPTB_INT_NONE;                       //interrupt
+	tPwmCfg.wInt 		 = GPTB_INT_NONE;                       //interrupt
 	csi_gptb_wave_init(GPTB0, &tPwmCfg);
 
 ////------------------------------------------------------------------------------------------------------------------------	
@@ -197,11 +197,11 @@ int gptb_pwm_dz_test(void)
 	tPwmCfg.byWorkmod        = GPTB_WAVE;                       //WAVE  波形模式
 	tPwmCfg.byCountingMode   = GPTB_UPDNCNT;                    //CNYMD  //计数方向
 	tPwmCfg.byOneshotMode    = GPTB_OP_CONT;                    //OPM    //单次或连续(工作方式)
-	tPwmCfg.byStartSrc       = GPTB_SW_START;   				//软件使能同步触发使能控制（RSSR中START控制位）//启动方式
+	tPwmCfg.byStartSrc       = GPTB_SW;   				//软件使能同步触发使能控制（RSSR中START控制位）//启动方式
 	tPwmCfg.byPscld          = GPTB_LDPSCR_ZRO;                 //PSCR(分频)活动寄存器载入控制。活动寄存器在配置条件满足时，从影子寄存器载入更新值		
 	tPwmCfg.byDutyCycle 	 = 50;								//pwm ouput duty cycle//PWM初始值			
 	tPwmCfg.wFreq 			 = 10000;							//pwm ouput frequency	
-	tPwmCfg.byInter 		 = GPTBINT_N;                       //interrupt
+	tPwmCfg.wInt 		 	= GPTBINT_NONE;                       //interrupt
 	csi_gptb_wave_init(GPTB0, &tPwmCfg);
 //------------------------------------------------------------------------------------------------------------------------	
 	csi_gptb_pwmchannel_config_t  channel;
@@ -224,8 +224,8 @@ int gptb_pwm_dz_test(void)
     csi_gptb_deadzone_config_t  tGptbDeadZoneTime;
 	tGptbDeadZoneTime.byDcksel               = GPTB_DB_DPSC;
 	tGptbDeadZoneTime.hwDpsc                 = 0;              //FDBCLK = FHCLK / (DPSC+1)
-	tGptbDeadZoneTime.hwRisingEdgereGister   = 500;             //上升沿-ns
-	tGptbDeadZoneTime.hwFallingEdgereGister  = 200;             //下降沿-ns
+	tGptbDeadZoneTime.wRisingEdgeTime   = 500;             //上升沿-ns
+	tGptbDeadZoneTime.wFallingEdgeTime  = 200;             //下降沿-ns
 	tGptbDeadZoneTime.byChaDedb              = GPTB_DBOUT_AR_BF;       //不使用死区双沿
 	csi_gptb_dz_config(GPTB0,&tGptbDeadZoneTime);
 	
@@ -272,11 +272,11 @@ int gptb_pwm_dz_em_test(void)
 	tPwmCfg.byWorkmod        = GPTB_WAVE;                       //WAVE  波形模式
 	tPwmCfg.byCountingMode   = GPTB_UPDNCNT;                    //CNYMD  //计数方向
 	tPwmCfg.byOneshotMode    = GPTB_OP_CONT;                    //OPM    //单次或连续(工作方式)
-	tPwmCfg.byStartSrc       = GPTB_SYNC_START;					//软件使能同步触发使能控制（RSSR中START控制位）//启动方式
+	tPwmCfg.byStartSrc       = GPTB_SYNC;					//软件使能同步触发使能控制（RSSR中START控制位）//启动方式
 	tPwmCfg.byPscld          = GPTB_LDPSCR_ZRO;                 //PSCR(分频)活动寄存器载入控制。活动寄存器在配置条件满足时，从影子寄存器载入更新值		
 	tPwmCfg.byDutyCycle 	 = 50;								//pwm ouput duty cycle//PWM初始值			
 	tPwmCfg.wFreq 			 = 10000;							//pwm ouput frequency	
-	tPwmCfg.byInter 		 = GPTB_INT_NONE;                       //interrupt
+	tPwmCfg.wInt     		 = GPTB_INT_NONE;                       //interrupt
 	csi_gptb_wave_init(GPTB0, &tPwmCfg);	
 ////------------------------------------------------------------------------------------------------------------------------	
 	csi_gptb_pwmchannel_config_t  channel;
@@ -299,8 +299,8 @@ int gptb_pwm_dz_em_test(void)
 	csi_gptb_deadzone_config_t  tGptbDeadZoneTime;
 	tGptbDeadZoneTime.byDcksel               = GPTB_DB_DPSC;
 	tGptbDeadZoneTime.hwDpsc                 = 0;              //FDBCLK = FHCLK / (DPSC+1)
-	tGptbDeadZoneTime.hwRisingEdgereGister   = 500;             //上升沿-ns
-	tGptbDeadZoneTime.hwFallingEdgereGister  = 200;             //下降沿-ns
+	tGptbDeadZoneTime.wRisingEdgeTime        = 500;             //上升沿-ns
+	tGptbDeadZoneTime.wFallingEdgeTime       = 200;             //下降沿-ns
 	tGptbDeadZoneTime.byChaDedb              = GPTB_DBOUT_AR_BF;       //不使用死区双沿
 	csi_gptb_dz_config(GPTB0,&tGptbDeadZoneTime);
 	
@@ -316,9 +316,9 @@ int gptb_pwm_dz_em_test(void)
     tGptbEmergencyCfg.byPolEbix   = GPTB_EBI_POL_L;      //EBIx的输入有效极性选择控制
 	tGptbEmergencyCfg.byEpx       = GPTB_EP0;            //使能EPx
 	tGptbEmergencyCfg.byEpxLckmd  = GPTB_EP_SLCK;        //使能 锁
-    tGptbEmergencyCfg.byFltpace0  = GPTB_EPFLT0_4P;      //EP0、EP1、EP2和EP3的数字去抖滤波检查周期数
-	tGptbEmergencyCfg.byFltpace1  = GPTB_EPFLT1_2P;      //EP4、EP5、EP6和EP7的数字去抖滤波检查周期数
-	tGptbEmergencyCfg.byOsrshdw   = GPTB_SHADOW;       	 //锁止端口状态载入方式
+    tGptbEmergencyCfg.byFltpace0  = GPTB_EP_FLT0_4P;      //EP0、EP1、EP2和EP3的数字去抖滤波检查周期数
+	tGptbEmergencyCfg.byFltpace1  = GPTB_EP_FLT1_2P;      //EP4、EP5、EP6和EP7的数字去抖滤波检查周期数
+	tGptbEmergencyCfg.byOsrshdw   = GPTB_OSR_SHADOW;       	 //锁止端口状态载入方式
 	
 	if(tGptbEmergencyCfg.byEpxInt == GPTB_ORL1)
 	{
@@ -332,11 +332,11 @@ int gptb_pwm_dz_em_test(void)
 	}	
 	if(tGptbEmergencyCfg.byEpxLckmd == GPTB_EP_SLCK)
 	{
-		tGptbEmergencyCfg.bySlclrmd = GPTB_SLCLRMD_CLR_ZRO;           //软锁自动清除状态
+		tGptbEmergencyCfg.bySlclrmd = GPTB_SLCLRMD_ZRO;           //软锁自动清除状态
 	}
-	if(tGptbEmergencyCfg.byOsrshdw == GPTB_SHADOW)
+	if(tGptbEmergencyCfg.byOsrshdw == GPTB_OSR_SHADOW)
     {  
-		tGptbEmergencyCfg.byOsrldmd = GPTB_LDEMOSR_PRD;
+		tGptbEmergencyCfg.byOsrldmd = GPTB_LD_EMOSR_PRD;
 	}
 	
     csi_gptb_emergency_cfg(GPTB0,&tGptbEmergencyCfg); 

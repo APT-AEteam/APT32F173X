@@ -191,21 +191,17 @@ typedef enum {
 //	GPTB_CGFLT_BP = 1,
     GPTB_CGFLT_BP = 0,
 	GPTB_CGFLT_2,
-	GPTB_CGFLT_3,
 	GPTB_CGFLT_4,
 	GPTB_CGFLT_6,
 	GPTB_CGFLT_8,
 	GPTB_CGFLT_16,
-	GPTB_CGFLT_32
+	GPTB_CGFLT_32,
+	GPTB_CGFLT_64
 }csp_gptb_cnflt_e;
 
 #define GPTB_PSCLD_POS	(16)
 #define GPTB_PSCLD_MSK	(0x3 << GPTB_PSCLD_POS)
-typedef enum{
-	GPTB_LDPSCR_ZRO = 0,
-	GPTB_LDPSCR_PRD,
-	GPTB_LDPSCR_ZROPRD
-}csp_gptb_ldpscr_e;
+
 
 #define GPTB_MODE_POS	(18)
 #define GPTB_MODE_MSK     (1ul << GPTB_MODE_POS)
@@ -325,10 +321,10 @@ typedef enum{
 #define GPTB_LD_DBDTF_MSK	(0x1 << GPTB_LD_DBDTF_POS)
 #define GPTB_LD_DBCR_POS 	(7)
 #define GPTB_LD_DBCR_MSK	(0x1 << GPTB_LD_DBCR_POS)
-#define GPTB_LD_AQCRA_POS 	(8)
-#define GPTB_LD_AQCRA_MSK	(0x1 << GPTB_LD_AQCRA_POS)
-#define GPTB_LD_AQCRB_POS 	(9)
-#define GPTB_LD_AQCRB_MSK	(0x1 << GPTB_LD_AQCRB_POS)
+#define GPTB_LD_AQCR1_POS 	(8)
+#define GPTB_LD_AQCR1_MSK	(0x1 << GPTB_LD_AQCR1_POS)
+#define GPTB_LD_AQCR2_POS 	(9)
+#define GPTB_LD_AQCR2_MSK	(0x1 << GPTB_LD_AQCR2_POS)
 #define GPTB_LD_AQCSF_POS 	(12)
 #define GPTB_LD_AQCSF_MSK	(0x1 << GPTB_LD_AQCSF_POS)
 #define GPTB_LD_EMOSR_POS 	(13)
@@ -514,51 +510,20 @@ typedef enum{
 #define DB_CHC_POL_POS	(18)
 #define DB_CHC_POL_MSK	(0x3 << DB_CHC_POL_POS)
 
-typedef enum {
-	GPTB_NA = 0,
-	GPTB_LO,
-	GPTB_HI,
-	GPTB_TG	
-}csp_gptb_action_e;
-
 #define GPTB_DBCR_CHA_OUTSEL_POS           0                                              /*!< GPTB DBCR: CHA_OUTSEL Position */
 #define GPTB_DBCR_CHA_OUTSEL_MSK           (0x3UL << GPTB_DBCR_CHA_OUTSEL_POS)            /*!< GPTB DBCR: CHA_OUTSEL Mask */
-typedef enum {
-	GPTB_DBOUT_DIS = 0,
-	GPTB_DBOUT_BF,
-	GPTB_DBOUT_AR,
-	GPTB_DBOUT_AR_BF
-}csp_gptb_db_outsel_e;
 
 #define GPTB_DBCR_CHA_POLARITY_POS         2                                              /*!< GPTB DBCR: CHA_POLARITY Position */
 #define GPTB_DBCR_CHA_POLARITY_MSK         (0x3UL << GPTB_DBCR_CHA_POLARITY_POS)          /*!< GPTB DBCR: CHA_POLARITY Mask */
-typedef enum {
-	GPTB_DB_POL_DIS = 0,
-	GPTB_DB_POL_A,
-	GPTB_DB_POL_B,
-	GPTB_DB_POL_AB
-}csp_gptb_db_pol_e;
 
 #define GPTB_DBCR_CHA_INSEL_POS            4                                              /*!< GPTB DBCR: CHA_INSEL Position */
 #define GPTB_DBCR_CHA_INSEL_MSK            (0x3UL << GPTB_DBCR_CHA_INSEL_POS)             /*!< GPTB DBCR: CHA_INSEL Mask */
-typedef enum {
-	GPTB_DBCHAIN_AR_AF = 0,
-	GPTB_DBCHAIN_BR_AF,
-	GPTB_DBCHAIN_AR_BF,
-	GPTB_DBCHAIN_BR_BF
-}csp_gptb_dbcha_insel_e;
+
 #define DB_CHA_INSEL_POS	(4)
 #define DB_CHA_INSEL_MSK	(0x3 << DB_CHA_INSEL_POS)
 
 #define GPTB_DBCR_CHA_OUTSWAP_POS          6                                              /*!< GPTB DBCR: CHA_OUTSWAP Position */
-#define GPTB_DBCR_CHA_OUTSWAP_MSK          (0x3UL << GPTB_DBCR_CHA_OUTSWAP_POS)           /*!< GPTB DBCR: CHA_OUTSWAP Mask */                                           /*!< GPTB DBCR: CHA_OUTSWAP Position */
-typedef enum {
-	GPTB_DBCHAOUT_OUTA_A_OUTB_B = 0,
-	GPTB_DBCHAOUT_OUTA_B_OUTB_B,
-	GPTB_DBCHAOUT_OUTA_A_OUTB_A,
-	GPTB_DBCHAOUT_OUTA_B_OUTB_A
-}csp_gptb_dbcha_outswap_e;
-
+#define GPTB_DBCR_CHA_OUTSWAP_MSK          (0x3UL << GPTB_DBCR_CHA_OUTSWAP_POS)           /*!< GPTB DBCR: CHA_OUTSWAP Mask */                                         
 #define DB_CHA_OUTSWAP_POS	(6)
 #define DB_CHA_OUTSWAP_MSK	(0x3 << DB_CHA_OUTSWAP_POS)
 
@@ -574,21 +539,12 @@ typedef enum {
 
 #define GPTB_DCKSEL_POS               24                                             /*!< GPTB DBCR: DCKSEL Position */
 #define GPTB_DCKSEL_MSK               (0x1UL << GPTB_DCKSEL_POS)                /*!< GPTB DBCR: DCKSEL Mask */
-typedef enum {
-	GPTB_DB_TCLK = 0,
-	GPTB_DB_DPSC
-}csp_gptb_dbclksrc_e;
 
 #define GPTB_CHA_DEDB_POS	(25)
 #define GPTB_CHA_DEDB_MSK	(0x1 << GPTB_CHA_DEDB_POS)
 
 #define GPTB_DBCR_CHA_EDEB_POS             25                                             /*!< GPTB DBCR: CHA_EDEB Position */
 #define GPTB_DBCR_CHA_EDEB_MSK             (0x1UL << GPTB_DBCR_CHA_EDEB_POS)              /*!< GPTB DBCR: CHA_EDEB Mask */
-
-typedef enum {
-	B_DB_AR_BF = 0,
-	B_DB_BR_BF
-}csp_gptb_dedb_e;
 
 //DPSCR
 #define GPTB_DPSCR_DPSC_POS                0                                              /*!< GPTB DPSCR: DPSC Position */
@@ -603,82 +559,17 @@ typedef enum {
 #define GPTB_DBDTF_DTF_MSK                 (0xFFFFUL << GPTB_DBDTF_DTF_POS)               /*!< GPTB DBDTF: DTF Mask */
 
 //EMSRC
-
-#define GPTB_EMSRC_EP5_SEL_POS             20                                             /*!< GPTB EMSRC: EP5_SEL Position */
-#define GPTB_EMSRC_EP5_SEL_MSK             (0xFUL << GPTB_EMSRC_EP5_SEL_POS)              /*!< GPTB EMSRC: EP5_SEL Mask */
-#define GPTB_EMSRC_EP4_SEL_POS             16                                             /*!< GPTB EMSRC: EP4_SEL Position */
-#define GPTB_EMSRC_EP4_SEL_MSK             (0xFUL << GPTB_EMSRC_EP4_SEL_POS)              /*!< GPTB EMSRC: EP4_SEL Mask */
-#define GPTB_EMSRC_EP3_SEL_POS             12                                             /*!< GPTB EMSRC: EP3_SEL Position */
-#define GPTB_EMSRC_EP3_SEL_MSK             (0xFUL << GPTB_EMSRC_EP3_SEL_POS)              /*!< GPTB EMSRC: EP3_SEL Mask */
-#define GPTB_EMSRC_EP2_SEL_POS             8                                              /*!< GPTB EMSRC: EP2_SEL Position */
-#define GPTB_EMSRC_EP2_SEL_MSK             (0xFUL << GPTB_EMSRC_EP2_SEL_POS)              /*!< GPTB EMSRC: EP2_SEL Mask */
-#define GPTB_EMSRC_EP1_SEL_POS             4                                              /*!< GPTB EMSRC: EP1_SEL Position */
-#define GPTB_EMSRC_EP1_SEL_MSK             (0xFUL << GPTB_EMSRC_EP1_SEL_POS)              /*!< GPTB EMSRC: EP1_SEL Mask */
-#define GPTB_EMSRC_EP0_SEL_POS             0                                              /*!< GPTB EMSRC: EP0_SEL Position */
-#define GPTB_EMSRC_EP0_SEL_MSK             (0xFUL << GPTB_EMSRC_EP0_SEL_POS)              /*!< GPTB EMSRC: EP0_SEL Mask */
-
-///EMSRC
 #define GPTB_SEL_POS_EP(n)	((n) << 2)
 #define GPTB_SEL_MSK_EP(n)	(0xf << GPTB_SEL_POS_EP(n))
 typedef enum{
-	GPTB_EP0 = 0,
-	GPTB_EP1,
-	GPTB_EP2,
-	GPTB_EP3,
+	GPTB_EP_0 = 0,
+	GPTB_EP_1,
+	GPTB_EP_2,
+	GPTB_EP_3,
 }csp_gptb_ep_e;
-typedef enum {
-	GPTB_EBI0 = 1,
-	GPTB_EBI1,
-	GPTB_EBI2,
-	GPTB_EBI3,
-	GPTB_CMP0,
-	GPTB_CMP1,
-	GPTB_CMP2,
-	GPTB_LVD,
-	GPTB_ORL0 = 0xe,
-	GPTB_ORL1,
-}csp_gptb_ebi_e;
-
-#define GPTB_ORLx_EBI0  1<<0
-#define GPTB_ORLx_EBI1  1<<1
-#define	GPTB_ORLx_EBI2  1<<2
-#define	GPTB_ORLx_EBI3  1<<3
-#define	GPTB_ORLx_CMP0  1<<4
-#define	GPTB_ORLx_CMP1  1<<5
-#define	GPTB_ORLx_CMP2  1<<6
 
 
 //EMSRC2
-#define GPTB_EMSRC2_ORL1_EPI5_POS          21                                             /*!< GPTB EMSRC2: ORL1_EPI5 Position */
-#define GPTB_EMSRC2_ORL1_EPI5_MSK          (0x1UL << GPTB_EMSRC2_ORL1_EPI5_POS)           /*!< GPTB EMSRC2: ORL1_EPI5 Mask */
-#define GPTB_EMSRC2_ORL1_EPI4_POS          20                                             /*!< GPTB EMSRC2: ORL1_EPI4 Position */
-#define GPTB_EMSRC2_ORL1_EPI4_MSK          (0x1UL << GPTB_EMSRC2_ORL1_EPI4_POS)           /*!< GPTB EMSRC2: ORL1_EPI4 Mask */
-#define GPTB_EMSRC2_ORL1_EPI3_POS          19                                             /*!< GPTB EMSRC2: ORL1_EPI3 Position */
-#define GPTB_EMSRC2_ORL1_EPI3_MSK          (0x1UL << GPTB_EMSRC2_ORL1_EPI3_POS)           /*!< GPTB EMSRC2: ORL1_EPI3 Mask */
-#define GPTB_EMSRC2_ORL1_EPI2_POS          18                                             /*!< GPTB EMSRC2: ORL1_EPI2 Position */
-#define GPTB_EMSRC2_ORL1_EPI2_MSK          (0x1UL << GPTB_EMSRC2_ORL1_EPI2_POS)           /*!< GPTB EMSRC2: ORL1_EPI2 Mask */
-#define GPTB_EMSRC2_ORL1_EPI1_POS          17                                             /*!< GPTB EMSRC2: ORL1_EPI1 Position */
-#define GPTB_EMSRC2_ORL1_EPI1_MSK          (0x1UL << GPTB_EMSRC2_ORL1_EPI1_POS)           /*!< GPTB EMSRC2: ORL1_EPI1 Mask */
-#define GPTB_EMSRC2_ORL1_EPI0_POS          16                                             /*!< GPTB EMSRC2: ORL1_EPI0 Position */
-#define GPTB_EMSRC2_ORL1_EPI0_MSK          (0x1UL << GPTB_EMSRC2_ORL1_EPI0_POS)           /*!< GPTB EMSRC2: ORL1_EPI0 Mask */
-#define GPTB_EMSRC2_FLT_PACE1_POS          12                                             /*!< GPTB EMSRC2: FLT_PACE1 Position */
-#define GPTB_EMSRC2_FLT_PACE1_MSK          (0xFUL << GPTB_EMSRC2_FLT_PACE1_POS)           /*!< GPTB EMSRC2: FLT_PACE1 Mask */
-#define GPTB_EMSRC2_FLT_PACE0_POS          8                                              /*!< GPTB EMSRC2: FLT_PACE0 Position */
-#define GPTB_EMSRC2_FLT_PACE0_MSK          (0xFUL << GPTB_EMSRC2_FLT_PACE0_POS)           /*!< GPTB EMSRC2: FLT_PACE0 Mask */
-#define GPTB_EMSRC2_ORL0_EPI5_POS          5                                              /*!< GPTB EMSRC2: ORL0_EPI5 Position */
-#define GPTB_EMSRC2_ORL0_EPI5_MSK          (0x1UL << GPTB_EMSRC2_ORL0_EPI5_POS)           /*!< GPTB EMSRC2: ORL0_EPI5 Mask */
-#define GPTB_EMSRC2_ORL0_EPI4_POS          4                                              /*!< GPTB EMSRC2: ORL0_EPI4 Position */
-#define GPTB_EMSRC2_ORL0_EPI4_MSK          (0x1UL << GPTB_EMSRC2_ORL0_EPI4_POS)           /*!< GPTB EMSRC2: ORL0_EPI4 Mask */
-#define GPTB_EMSRC2_ORL0_EPI3_POS          3                                              /*!< GPTB EMSRC2: ORL0_EPI3 Position */
-#define GPTB_EMSRC2_ORL0_EPI3_MSK          (0x1UL << GPTB_EMSRC2_ORL0_EPI3_POS)           /*!< GPTB EMSRC2: ORL0_EPI3 Mask */
-#define GPTB_EMSRC2_ORL0_EPI2_POS          2                                              /*!< GPTB EMSRC2: ORL0_EPI2 Position */
-#define GPTB_EMSRC2_ORL0_EPI2_MSK          (0x1UL << GPTB_EMSRC2_ORL0_EPI2_POS)           /*!< GPTB EMSRC2: ORL0_EPI2 Mask */
-#define GPTB_EMSRC2_ORL0_EPI1_POS          1                                              /*!< GPTB EMSRC2: ORL0_EPI1 Position */
-#define GPTB_EMSRC2_ORL0_EPI1_MSK          (0x1UL << GPTB_EMSRC2_ORL0_EPI1_POS)           /*!< GPTB EMSRC2: ORL0_EPI1 Mask */
-#define GPTB_EMSRC2_ORL0_EPI0_POS          0                                              /*!< GPTB EMSRC2: ORL0_EPI0 Position */
-#define GPTB_EMSRC2_ORL0_EPI0_MSK          (0x1UL << GPTB_EMSRC2_ORL0_EPI0_POS)           /*!< GPTB EMSRC2: ORL0_EPI0 Mask */
-
-///EMSRC2 config ORL0, ORL1 and input Filters
 #define GPTB_ORL0_POS	(0)
 #define GPTB_ORL0_MSK	(0xff)
 #define GPTB_ORL1_POS	(16)
@@ -693,26 +584,6 @@ typedef enum {
 ///EMPOL
 #define GPTB_POL_POS_EBI(n)	(n)
 #define GPTB_POL_MSK_EBI(n)	(0x1 << GPTB_POL_POS_EBI(n))
-
-typedef enum {
-	GPTB_EBI_POL_H = 0,
-	GPTB_EBI_POL_L
-}csp_gptb_ebipol_e;
-
-//_EMPOL
-#define GPTB_EMPOL_EPI5_POL_POS            5                                              /*!< GPTB EMPOL: EPI5_POL Position */
-#define GPTB_EMPOL_EPI5_POL_MSK            (0x1UL << GPTB_EMPOL_EPI5_POL_POS)             /*!< GPTB EMPOL: EPI5_POL Mask */
-#define GPTB_EMPOL_EPI4_POL_POS            4                                              /*!< GPTB EMPOL: EPI4_POL Position */
-#define GPTB_EMPOL_EPI4_POL_MSK            (0x1UL << GPTB_EMPOL_EPI4_POL_POS)             /*!< GPTB EMPOL: EPI4_POL Mask */
-#define GPTB_EMPOL_EPI3_POL_POS            3                                              /*!< GPTB EMPOL: EPI3_POL Position */
-#define GPTB_EMPOL_EPI3_POL_MSK            (0x1UL << GPTB_EMPOL_EPI3_POL_POS)             /*!< GPTB EMPOL: EPI3_POL Mask */
-#define GPTB_EMPOL_EPI2_POL_POS            2                                              /*!< GPTB EMPOL: EPI2_POL Position */
-#define GPTB_EMPOL_EPI2_POL_MSK            (0x1UL << GPTB_EMPOL_EPI2_POL_POS)             /*!< GPTB EMPOL: EPI2_POL Mask */
-#define GPTB_EMPOL_EPI1_POL_POS            1                                              /*!< GPTB EMPOL: EPI1_POL Position */
-#define GPTB_EMPOL_EPI1_POL_MSK            (0x1UL << GPTB_EMPOL_EPI1_POL_POS)             /*!< GPTB EMPOL: EPI1_POL Mask */
-#define GPTB_EMPOL_EPI0_POL_POS            0                                              /*!< GPTB EMPOL: EPI0_POL Position */
-#define GPTB_EMPOL_EPI0_POL_MSK            (0x1UL << GPTB_EMPOL_EPI0_POL_POS)             /*!< GPTB EMPOL: EPI0_POL Mask */
-
 
 //EMECR
 #define GPTB_EMECR_MEM_FAULT_POS           30                                             /*!< GPTB EMECR: MEM_FAULT Position */
@@ -729,14 +600,7 @@ typedef enum {
 #define GPTB_EMECR_OSRLDMD_MSK             (0x3UL << GPTB_EMECR_OSRLDMD_POS)              /*!< GPTB EMECR: OSRLDMD Mask */
 #define GPTB_EMECR_OSRSHDW_POS             21                                             /*!< GPTB EMECR: OSRSHDW Position */
 #define GPTB_EMECR_OSRSHDW_MSK             (0x1UL << GPTB_EMECR_OSRSHDW_POS)              /*!< GPTB EMECR: OSRSHDW Mask */
-#define GPTB_EMECR_EP3_LCKMD_POS           6                                              /*!< GPTB EMECR: EP3_LCKMD Position */
-#define GPTB_EMECR_EP3_LCKMD_MSK           (0x3UL << GPTB_EMECR_EP3_LCKMD_POS)            /*!< GPTB EMECR: EP3_LCKMD Mask */
-#define GPTB_EMECR_EP2_LCKMD_POS           4                                              /*!< GPTB EMECR: EP2_LCKMD Position */
-#define GPTB_EMECR_EP2_LCKMD_MSK           (0x3UL << GPTB_EMECR_EP2_LCKMD_POS)            /*!< GPTB EMECR: EP2_LCKMD Mask */
-#define GPTB_EMECR_EP1_LCKMD_POS           2                                              /*!< GPTB EMECR: EP1_LCKMD Position */
-#define GPTB_EMECR_EP1_LCKMD_MSK           (0x3UL << GPTB_EMECR_EP1_LCKMD_POS)            /*!< GPTB EMECR: EP1_LCKMD Mask */
-#define GPTB_EMECR_EP0_LCKMD_POS           0                                              /*!< GPTB EMECR: EP0_LCKMD Position */
-#define GPTB_EMECR_EP0_LCKMD_MSK           (0x3UL << GPTB_EMECR_EP0_LCKMD_POS)            /*!< GPTB EMECR: EP0_LCKMD Mask */
+
 
 #define GPTB_LCKMD_POS_EP(n)	((n) << 1)
 #define GPTB_LCKMD_MSK_EP(n)	(0x3 << GPTB_LCKMD_POS_EP(n))
@@ -752,53 +616,14 @@ typedef enum {
 	GPTB_EM_INT_EOMF= 0x1 << 10
 }csp_gptb_emint_e;
 
-
-typedef enum{
-	GPTB_EPFLT0_DIS = 0,
-	GPTB_EPFLT0_2P,
-	GPTB_EPFLT0_3P,
-	GPTB_EPFLT0_4P
-}csp_gptb_epflt0_e;
-typedef enum{
-	GPTB_EPFLT1_1P = 0,
-	GPTB_EPFLT1_2P,
-	GPTB_EPFLT1_3P,
-	GPTB_EPFLT1_4P
-}csp_gptb_epflt1_e;
-
-typedef enum{
-	GPTB_EP_DIS = 0,
-	GPTB_EP_SLCK,
-	GPTB_EP_HLCK,
-	GPTB_EP_DISABLE
-}csp_gptb_ep_lckmd_e;
-
-typedef enum
-{
-	GPTB_IMMEDIATE=0,
-	GPTB_SHADOW
-}csp_gptb_Osrshdw_e;
-
 #define GPTB_EMOSR_SHDWEN_POS (21)
 #define GPTB_EMSOR_SHDWEN_MSK  (0x1 << GPTB_EMOSR_SHDWEN_POS)
 
 #define GPTB_OSRLDMD_POS      22                                            
 #define GPTB_OSRLDMD_MSK     (0x3UL << GPTB_OSRLDMD_POS)              
-typedef enum{
-	GPTB_LDEMOSR_NEVER = 0,
-	GPTB_LDEMOSR_ZRO,
-	GPTB_LDEMOSR_PRD,
-	GPTB_LDEMOSR_ZRO_PRD	
-}csp_gptb_ldemosr_e;
 
 #define GPTB_SLCK_CLRMD_POS	(24)
 #define GPTB_SLCK_CLRMD_MSK	(0x3 << GPTB_SLCK_CLRMD_POS)
-typedef enum{	
-	GPTB_SLCLRMD_CLR_ZRO =0,
-	GPTB_SLCLRMD_CLR_PRD,
-	GPTB_SLCLRMD_CLR_ZRO_PRD,
-	GPTB_SLCLRMD_CLR_SW 
-}csp_gptb_slclrmd_e;
 
 //EMOSR
 #define GPTB_EMOSR_EM_COAY_POS             8                                              /*!< GPTB EMOSR: EM_COAY Position */
@@ -808,22 +633,7 @@ typedef enum{
 #define GPTB_EMOSR_EM_COAX_POS             0                                              /*!< GPTB EMOSR: EM_COAX Position */
 #define GPTB_EMOSR_EM_COAX_MSK             (0x3UL << GPTB_EMOSR_EM_COAX_POS)              /*!< GPTB EMOSR: EM_COAX Mask */
 
-typedef enum {
-	GPTB_EM_OUT_HZ,
-	GPTB_EM_OUT_H,
-	GPTB_EM_OUT_L,
-	GPTB_EM_OUT_NONE
-}csp_gptb_emout_e;
-
 //EMSLSR
-#define GPTB_EMSLSR_EP7_POS                7                                              /*!< GPTB EMSLSR: EP7 Position */
-#define GPTB_EMSLSR_EP7_MSK                (0x1UL << GPTB_EMSLSR_EP7_POS)                 /*!< GPTB EMSLSR: EP7 Mask */
-#define GPTB_EMSLSR_EP6_POS                6                                              /*!< GPTB EMSLSR: EP6 Position */
-#define GPTB_EMSLSR_EP6_MSK                (0x1UL << GPTB_EMSLSR_EP6_POS)                 /*!< GPTB EMSLSR: EP6 Mask */
-#define GPTB_EMSLSR_EP5_POS                5                                              /*!< GPTB EMSLSR: EP5 Position */
-#define GPTB_EMSLSR_EP5_MSK                (0x1UL << GPTB_EMSLSR_EP5_POS)                 /*!< GPTB EMSLSR: EP5 Mask */
-#define GPTB_EMSLSR_EP4_POS                4                                              /*!< GPTB EMSLSR: EP4 Position */
-#define GPTB_EMSLSR_EP4_MSK                (0x1UL << GPTB_EMSLSR_EP4_POS)                 /*!< GPTB EMSLSR: EP4 Mask */
 #define GPTB_EMSLSR_EP3_POS                3                                              /*!< GPTB EMSLSR: EP3 Position */
 #define GPTB_EMSLSR_EP3_MSK                (0x1UL << GPTB_EMSLSR_EP3_POS)                 /*!< GPTB EMSLSR: EP3 Mask */
 #define GPTB_EMSLSR_EP2_POS                2                                              /*!< GPTB EMSLSR: EP2 Position */
@@ -833,14 +643,6 @@ typedef enum {
 #define GPTB_EMSLSR_EP0_POS                0                                              /*!< GPTB EMSLSR: EP0 Position */
 #define GPTB_EMSLSR_EP0_MSK                (0x1UL << GPTB_EMSLSR_EP0_POS)                 /*!< GPTB EMSLSR: EP0 Mask */
 //EMSLCLR
-#define GPTB_EMSLCLR_EP7_POS               7                                              /*!< GPTB EMSLCLR: EP7 Position */
-#define GPTB_EMSLCLR_EP7_MSK               (0x1UL << GPTB_EMSLCLR_EP7_POS)                /*!< GPTB EMSLCLR: EP7 Mask */
-#define GPTB_EMSLCLR_EP6_POS               6                                              /*!< GPTB EMSLCLR: EP6 Position */
-#define GPTB_EMSLCLR_EP6_MSK               (0x1UL << GPTB_EMSLCLR_EP6_POS)                /*!< GPTB EMSLCLR: EP6 Mask */
-#define GPTB_EMSLCLR_EP5_POS               5                                              /*!< GPTB EMSLCLR: EP5 Position */
-#define GPTB_EMSLCLR_EP5_MSK               (0x1UL << GPTB_EMSLCLR_EP5_POS)                /*!< GPTB EMSLCLR: EP5 Mask */
-#define GPTB_EMSLCLR_EP4_POS               4                                              /*!< GPTB EMSLCLR: EP4 Position */
-#define GPTB_EMSLCLR_EP4_MSK               (0x1UL << GPTB_EMSLCLR_EP4_POS)                /*!< GPTB EMSLCLR: EP4 Mask */
 #define GPTB_EMSLCLR_EP3_POS               3                                              /*!< GPTB EMSLCLR: EP3 Position */
 #define GPTB_EMSLCLR_EP3_MSK               (0x1UL << GPTB_EMSLCLR_EP3_POS)                /*!< GPTB EMSLCLR: EP3 Mask */
 #define GPTB_EMSLCLR_EP2_POS               2                                              /*!< GPTB EMSLCLR: EP2 Position */
@@ -856,14 +658,6 @@ typedef enum {
 #define GPTB_EMHLSR_MEM_FAULT_MSK          (0x1UL << GPTB_EMHLSR_MEM_FAULT_POS)           /*!< GPTB EMHLSR: MEM_FAULT Mask */
 #define GPTB_EMHLSR_CPU_FAULT_POS          8                                              /*!< GPTB EMHLSR: CPU_FAULT Position */
 #define GPTB_EMHLSR_CPU_FAULT_MSK          (0x1UL << GPTB_EMHLSR_CPU_FAULT_POS)           /*!< GPTB EMHLSR: CPU_FAULT Mask */
-#define GPTB_EMHLSR_EP7_POS                7                                              /*!< GPTB EMHLSR: EP7 Position */
-#define GPTB_EMHLSR_EP7_MSK                (0x1UL << GPTB_EMHLSR_EP7_POS)                 /*!< GPTB EMHLSR: EP7 Mask */
-#define GPTB_EMHLSR_EP6_POS                6                                              /*!< GPTB EMHLSR: EP6 Position */
-#define GPTB_EMHLSR_EP6_MSK                (0x1UL << GPTB_EMHLSR_EP6_POS)                 /*!< GPTB EMHLSR: EP6 Mask */
-#define GPTB_EMHLSR_EP5_POS                5                                              /*!< GPTB EMHLSR: EP5 Position */
-#define GPTB_EMHLSR_EP5_MSK                (0x1UL << GPTB_EMHLSR_EP5_POS)                 /*!< GPTB EMHLSR: EP5 Mask */
-#define GPTB_EMHLSR_EP4_POS                4                                              /*!< GPTB EMHLSR: EP4 Position */
-#define GPTB_EMHLSR_EP4_MSK                (0x1UL << GPTB_EMHLSR_EP4_POS)                 /*!< GPTB EMHLSR: EP4 Mask */
 #define GPTB_EMHLSR_EP3_POS                3                                              /*!< GPTB EMHLSR: EP3 Position */
 #define GPTB_EMHLSR_EP3_MSK                (0x1UL << GPTB_EMHLSR_EP3_POS)                 /*!< GPTB EMHLSR: EP3 Mask */
 #define GPTB_EMHLSR_EP2_POS                2                                              /*!< GPTB EMHLSR: EP2 Position */
@@ -879,14 +673,6 @@ typedef enum {
 #define GPTB_EMHLCLR_EOM_FAULT_MSK         (0x1UL << GPTB_EMHLCLR_EOM_FAULT_POS)          /*!< GPTB EMHLCLR: EOM_FAULT Mask */
 #define GPTB_EMHLCLR_CPU_FAULT_POS         8                                              /*!< GPTB EMHLCLR: CPU_FAULT Position */
 #define GPTB_EMHLCLR_CPU_FAULT_MSK         (0x1UL << GPTB_EMHLCLR_CPU_FAULT_POS)          /*!< GPTB EMHLCLR: CPU_FAULT Mask */
-#define GPTB_EMHLCLR_EP7_POS               7                                              /*!< GPTB EMHLCLR: EP7 Position */
-#define GPTB_EMHLCLR_EP7_MSK               (0x1UL << GPTB_EMHLCLR_EP7_POS)                /*!< GPTB EMHLCLR: EP7 Mask */
-#define GPTB_EMHLCLR_EP6_POS               6                                              /*!< GPTB EMHLCLR: EP6 Position */
-#define GPTB_EMHLCLR_EP6_MSK               (0x1UL << GPTB_EMHLCLR_EP6_POS)                /*!< GPTB EMHLCLR: EP6 Mask */
-#define GPTB_EMHLCLR_EP5_POS               5                                              /*!< GPTB EMHLCLR: EP5 Position */
-#define GPTB_EMHLCLR_EP5_MSK               (0x1UL << GPTB_EMHLCLR_EP5_POS)                /*!< GPTB EMHLCLR: EP5 Mask */
-#define GPTB_EMHLCLR_EP4_POS               4                                              /*!< GPTB EMHLCLR: EP4 Position */
-#define GPTB_EMHLCLR_EP4_MSK               (0x1UL << GPTB_EMHLCLR_EP4_POS)                /*!< GPTB EMHLCLR: EP4 Mask */
 #define GPTB_EMHLCLR_EP3_POS               3                                              /*!< GPTB EMHLCLR: EP3 Position */
 #define GPTB_EMHLCLR_EP3_MSK               (0x1UL << GPTB_EMHLCLR_EP3_POS)                /*!< GPTB EMHLCLR: EP3 Mask */
 #define GPTB_EMHLCLR_EP2_POS               2                                              /*!< GPTB EMHLCLR: EP2 Position */
@@ -902,14 +688,6 @@ typedef enum {
 #define GPTB_EMRISR_EOM_FAULT_MSK          (0x1UL << GPTB_EMRISR_EOM_FAULT_POS)           /*!< GPTB EMRISR: EOM_FAULT Mask */
 #define GPTB_EMRISR_CPU_FAULT_POS          8                                              /*!< GPTB EMRISR: CPU_FAULT Position */
 #define GPTB_EMRISR_CPU_FAULT_MSK          (0x1UL << GPTB_EMRISR_CPU_FAULT_POS)           /*!< GPTB EMRISR: CPU_FAULT Mask */
-#define GPTB_EMRISR_EP7_POS                7                                              /*!< GPTB EMRISR: EP7 Position */
-#define GPTB_EMRISR_EP7_MSK                (0x1UL << GPTB_EMRISR_EP7_POS)                 /*!< GPTB EMRISR: EP7 Mask */
-#define GPTB_EMRISR_EP6_POS                6                                              /*!< GPTB EMRISR: EP6 Position */
-#define GPTB_EMRISR_EP6_MSK                (0x1UL << GPTB_EMRISR_EP6_POS)                 /*!< GPTB EMRISR: EP6 Mask */
-#define GPTB_EMRISR_EP5_POS                5                                              /*!< GPTB EMRISR: EP5 Position */
-#define GPTB_EMRISR_EP5_MSK                (0x1UL << GPTB_EMRISR_EP5_POS)                 /*!< GPTB EMRISR: EP5 Mask */
-#define GPTB_EMRISR_EP4_POS                4                                              /*!< GPTB EMRISR: EP4 Position */
-#define GPTB_EMRISR_EP4_MSK                (0x1UL << GPTB_EMRISR_EP4_POS)                 /*!< GPTB EMRISR: EP4 Mask */
 #define GPTB_EMRISR_EP3_POS                3                                              /*!< GPTB EMRISR: EP3 Position */
 #define GPTB_EMRISR_EP3_MSK                (0x1UL << GPTB_EMRISR_EP3_POS)                 /*!< GPTB EMRISR: EP3 Mask */
 #define GPTB_EMRISR_EP2_POS                2                                              /*!< GPTB EMRISR: EP2 Position */
@@ -925,14 +703,6 @@ typedef enum {
 #define GPTB_EMMISR_MEM_FAULT_MSK          (0x1UL << GPTB_EMMISR_MEM_FAULT_POS)           /*!< GPTB EMMISR: MEM_FAULT Mask */
 #define GPTB_EMMISR_CPU_FAULT_POS          8                                              /*!< GPTB EMMISR: CPU_FAULT Position */
 #define GPTB_EMMISR_CPU_FAULT_MSK          (0x1UL << GPTB_EMMISR_CPU_FAULT_POS)           /*!< GPTB EMMISR: CPU_FAULT Mask */
-#define GPTB_EMMISR_EP7_POS                7                                              /*!< GPTB EMMISR: EP7 Position */
-#define GPTB_EMMISR_EP7_MSK                (0x1UL << GPTB_EMMISR_EP7_POS)                 /*!< GPTB EMMISR: EP7 Mask */
-#define GPTB_EMMISR_EP6_POS                6                                              /*!< GPTB EMMISR: EP6 Position */
-#define GPTB_EMMISR_EP6_MSK                (0x1UL << GPTB_EMMISR_EP6_POS)                 /*!< GPTB EMMISR: EP6 Mask */
-#define GPTB_EMMISR_EP5_POS                5                                              /*!< GPTB EMMISR: EP5 Position */
-#define GPTB_EMMISR_EP5_MSK                (0x1UL << GPTB_EMMISR_EP5_POS)                 /*!< GPTB EMMISR: EP5 Mask */
-#define GPTB_EMMISR_EP4_POS                4                                              /*!< GPTB EMMISR: EP4 Position */
-#define GPTB_EMMISR_EP4_MSK                (0x1UL << GPTB_EMMISR_EP4_POS)                 /*!< GPTB EMMISR: EP4 Mask */
 #define GPTB_EMMISR_EP3_POS                3                                              /*!< GPTB EMMISR: EP3 Position */
 #define GPTB_EMMISR_EP3_MSK                (0x1UL << GPTB_EMMISR_EP3_POS)                 /*!< GPTB EMMISR: EP3 Mask */
 #define GPTB_EMMISR_EP2_POS                2                                              /*!< GPTB EMMISR: EP2 Position */
@@ -948,14 +718,6 @@ typedef enum {
 #define GPTB_EMIMCR_EOM_MSK                (0x1UL << GPTB_EMIMCR_EOM_POS)                 /*!< GPTB EMIMCR: EOM Mask */
 #define GPTB_EMIMCR_CPU_FAULT_POS          8                                              /*!< GPTB EMIMCR: CPU_FAULT Position */
 #define GPTB_EMIMCR_CPU_FAULT_MSK          (0x1UL << GPTB_EMIMCR_CPU_FAULT_POS)           /*!< GPTB EMIMCR: CPU_FAULT Mask */
-#define GPTB_EMIMCR_EP7_POS                7                                              /*!< GPTB EMIMCR: EP7 Position */
-#define GPTB_EMIMCR_EP7_MSK                (0x1UL << GPTB_EMIMCR_EP7_POS)                 /*!< GPTB EMIMCR: EP7 Mask */
-#define GPTB_EMIMCR_EP6_POS                6                                              /*!< GPTB EMIMCR: EP6 Position */
-#define GPTB_EMIMCR_EP6_MSK                (0x1UL << GPTB_EMIMCR_EP6_POS)                 /*!< GPTB EMIMCR: EP6 Mask */
-#define GPTB_EMIMCR_EP5_POS                5                                              /*!< GPTB EMIMCR: EP5 Position */
-#define GPTB_EMIMCR_EP5_MSK                (0x1UL << GPTB_EMIMCR_EP5_POS)                 /*!< GPTB EMIMCR: EP5 Mask */
-#define GPTB_EMIMCR_EP4_POS                4                                              /*!< GPTB EMIMCR: EP4 Position */
-#define GPTB_EMIMCR_EP4_MSK                (0x1UL << GPTB_EMIMCR_EP4_POS)                 /*!< GPTB EMIMCR: EP4 Mask */
 #define GPTB_EMIMCR_EP3_POS                3                                              /*!< GPTB EMIMCR: EP3 Position */
 #define GPTB_EMIMCR_EP3_MSK                (0x1UL << GPTB_EMIMCR_EP3_POS)                 /*!< GPTB EMIMCR: EP3 Mask */
 #define GPTB_EMIMCR_EP2_POS                2                                              /*!< GPTB EMIMCR: EP2 Position */
@@ -971,14 +733,6 @@ typedef enum {
 #define GPTB_EMICR_EOM_FAULT_MSK           (0x1UL << GPTB_EMICR_EOM_FAULT_POS)            /*!< GPTB EMICR: EOM_FAULT Mask */
 #define GPTB_EMICR_CPU_FAULT_POS           8                                              /*!< GPTB EMICR: CPU_FAULT Position */
 #define GPTB_EMICR_CPU_FAULT_MSK           (0x1UL << GPTB_EMICR_CPU_FAULT_POS)            /*!< GPTB EMICR: CPU_FAULT Mask */
-#define GPTB_EMICR_EP7_POS                 7                                              /*!< GPTB EMICR: EP7 Position */
-#define GPTB_EMICR_EP7_MSK                 (0x1UL << GPTB_EMICR_EP7_POS)                  /*!< GPTB EMICR: EP7 Mask */
-#define GPTB_EMICR_EP6_POS                 6                                              /*!< GPTB EMICR: EP6 Position */
-#define GPTB_EMICR_EP6_MSK                 (0x1UL << GPTB_EMICR_EP6_POS)                  /*!< GPTB EMICR: EP6 Mask */
-#define GPTB_EMICR_EP5_POS                 5                                              /*!< GPTB EMICR: EP5 Position */
-#define GPTB_EMICR_EP5_MSK                 (0x1UL << GPTB_EMICR_EP5_POS)                  /*!< GPTB EMICR: EP5 Mask */
-#define GPTB_EMICR_EP4_POS                 4                                              /*!< GPTB EMICR: EP4 Position */
-#define GPTB_EMICR_EP4_MSK                 (0x1UL << GPTB_EMICR_EP4_POS)                  /*!< GPTB EMICR: EP4 Mask */
 #define GPTB_EMICR_EP3_POS                 3                                              /*!< GPTB EMICR: EP3 Position */
 #define GPTB_EMICR_EP3_MSK                 (0x1UL << GPTB_EMICR_EP3_POS)                  /*!< GPTB EMICR: EP3 Mask */
 #define GPTB_EMICR_EP2_POS                 2                                              /*!< GPTB EMICR: EP2 Position */
@@ -1104,19 +858,14 @@ typedef enum{
 #define GPTB_INT_EV(n)		(0x1 << n)
 #define GPTB_INT_CAPLD(n)	(0x1 << (n+4))
 
-
 ///REGPROT
 #define GPTB_REGPROT			(0xa55a << 16 | 0xc73a)
-
-
-
 
 static inline void csp_gptb_wr_key(csp_gptb_t *ptGptbBase)
 {
 	ptGptbBase -> REGPROT = GPTB_REGPROT;
 }
 
- 
 static inline void csp_gptb_clken(csp_gptb_t *ptGptbBase)
  {
 	ptGptbBase -> CEDR |=  GPTB_CLKEN;
@@ -1545,33 +1294,6 @@ static inline void csp_gptb_set_reglk2(csp_gptb_t *ptGptbBase, uint32_t wRegLk)
 {
 	ptGptbBase -> REGLK2 = wRegLk;
 }
-
-
-///function declaration 
-
-csp_error_t csp_gptb_set_outfreq(csp_gptb_t *ptGptbBase, uint32_t wHz);
-csp_error_t csp_gptb_set_dualout(csp_gptb_t *ptGptbBase,  uint32_t wDutyCycle, uint32_t wTns);
-
-csp_error_t csp_gptb_set_ch_duty(csp_gptb_t *ptGptbBase, csp_gptb_chtype_e eCh, uint32_t wActiveTime);
-csp_error_t csp_gptb_set_ch_singleout(csp_gptb_t *ptGptbBase, csp_gptb_chtype_e eCh, uint32_t wDutyCycle);
-void csp_gptb_sw_start(csp_gptb_t *ptGptbBase);
-void csp_gptb_sw_stop(csp_gptb_t *ptGptbBase);
-void csp_gptb_aqcra_config(csp_gptb_t *ptGptbBase, csp_gptb_csrc_sel_e eCaSel, csp_gptb_action_e eZro, csp_gptb_action_e eCau, csp_gptb_action_e ePrd, csp_gptb_action_e eCad);
-void csp_gptb_aqcrb_config(csp_gptb_t *ptGptbBase, csp_gptb_csrc_sel_e eCaSel, csp_gptb_action_e eZro, csp_gptb_action_e eCau, csp_gptb_action_e ePrd, csp_gptb_action_e eCad);
-csp_error_t csp_gptb_set_sync_enable(csp_gptb_t *ptGptbBase, uint8_t bySync, bool bEnable);
-uint32_t csp_gptb_get_cap_tick(csp_gptb_t *ptGptbBase);
-csp_error_t csp_gptb_ldrst_enable(csp_gptb_t *ptGptbBase, uint8_t cmp, bool bEnable);
-csp_error_t csp_gptb_set_cmp_ldmd(csp_gptb_t *ptGptbBase, uint8_t cmp, csp_gptb_ldmd_e eLdmd, csp_gptb_shdwldmd_e eShdwldmd);
-void csp_gptb_aqosf_config(csp_gptb_t *ptGptbBase, csp_gptb_ldosf_e acta,csp_gptb_ldosf_e actb, csp_gptb_ldaqcr_e  rldcsf);
-void csp_gptb_ostsfa_sw(csp_gptb_t *ptGptbBase);
-void csp_gptb_ostsfb_sw(csp_gptb_t *ptGptbBase);
-void csp_gptb_cont_software_a_sw(csp_gptb_t *ptGptbBase);
-csp_error_t csp_gptb_set_sync_ostmd_enable(csp_gptb_t *ptGptbBase, uint8_t bySync, bool bEnable);
-csp_error_t csp_gptb_set_sync_ostmd_rearm(csp_gptb_t *ptGptbBase, uint8_t bySync);
-void csp_gptb_phs_enable(csp_gptb_t *ptGptbBase, csp_gptb_phsdir_e val,uint16_t hwVal);
-
-
-
 #endif   /* csp_gptb_H */
 
 

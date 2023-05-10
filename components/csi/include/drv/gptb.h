@@ -35,7 +35,7 @@ struct csi_gptb_config {
     uint8_t     byCgsrc;
 	uint8_t     byCgflt;
 	uint32_t	wFreq;				 //TIMER PWM OUTPUT frequency 
-	uint32_t    byInter;
+	uint32_t    wInt;
 };
 
 typedef struct csi_gptb_pwmconfig  csi_gptb_pwmconfig_t;
@@ -47,7 +47,7 @@ struct csi_gptb_pwmconfig {
 	uint8_t     byPscld;
 	uint8_t		byDutyCycle;		 //TIMER PWM OUTPUT duty cycle	
 	uint32_t	wFreq;				 //TIMER PWM OUTPUT frequency 
-	uint32_t    byInter;
+	uint32_t    wInt;
 };
 
 typedef struct csi_gptb_captureconfig  csi_gptb_captureconfig_t;
@@ -67,7 +67,7 @@ struct csi_gptb_captureconfig {
 	uint8_t     byCaptureLdbret;
 	uint8_t     byCaptureLdcret;
 	uint8_t     byCaptureLddret;
-	uint32_t    byInter;
+	uint32_t    wInt;
 };
 
 typedef struct csi_gptb_pwmchannel_config      csi_gptb_pwmchannel_config_t;
@@ -94,34 +94,19 @@ struct  csi_gptb_deadzone_config
 	uint8_t       byChxPolarityS3S2   ;   //
 	uint8_t       byChxInselS5S4      ;   //
 	uint8_t       byChxOutSwapS8S7    ;   //		
-	uint8_t      byDcksel;
-	uint8_t      byChaDedb;
-	uint8_t      byChbDedb;
-	uint8_t      byChcDedb;
+	uint8_t       byDcksel;
+	uint8_t       byChaDedb;
+	uint8_t       byChbDedb;
+	uint8_t       byChcDedb;
 	uint16_t      hwDpsc;                 //
-	uint32_t      hwRisingEdgereGister ;  //
-	uint32_t      hwFallingEdgereGister;  //
+	uint32_t      wRisingEdgeTime ;  //
+	uint32_t      wFallingEdgeTime;  //
 };
 
-
-
-typedef struct csi_gptb_Chopper_config   csi_gptb_Chopper_config_t;
-struct csi_gptb_Chopper_config
-{
-    uint8_t  byOspwth             ;                
-	uint8_t  byCdiv               ;                
-	uint8_t  byCduty              ;              
-	uint8_t  byCasel              ;              
-	uint8_t  chen            ;              
-
-};
 typedef enum{
-	GPTBCHAX = 0x1,
-	GPTBCHAY,
-	GPTBCHBX,
-//	GPTBCHBY,
-//	GPTBCHCX,
-//	GPTBCHCY
+	GPTB_CHAX = 0x1,
+	GPTB_CHAY,
+	GPTB_CHBX,
 }csi_gptb_chx_e;
 
 typedef enum{
@@ -146,41 +131,29 @@ struct csi_gptb_emergency_config
 	uint8_t  bySlclrmd;
 };
 
-typedef struct  csi_gptb_Event_trigger_config   csi_gptb_Event_trigger_config_t;
-struct  csi_gptb_Event_trigger_config{
-	uint8_t   trg0sel  ;
-	uint8_t   trg1sel  ;
-	uint8_t   trg2sel  ;
-	uint8_t   trg3sel  ;	
-	uint8_t   trg0en   ;
-	uint8_t   trg1en   ;
-	uint8_t   trg2en   ;
-	uint8_t   trg3en   ;	
-	uint8_t   cnt0initfrc;
-	uint8_t   cnt1initfrc;
-	uint8_t   cnt2initfrc;
-	uint8_t   cnt3initfrc;
-	uint8_t   cnt0initen;
-	uint8_t   cnt1initen;
-	uint8_t   cnt2initen;
-	uint8_t   cnt3initen;
-	uint8_t   trg0prd ;
-	uint8_t   trg1prd ;
-	uint8_t   trg2prd ;
-	uint8_t   trg3prd ;
-	uint8_t   cnt0init;
-	uint8_t   cnt1init;
-	uint8_t   cnt2init;
-	uint8_t   cnt3init;
+typedef struct  csi_gptb_event_trigger_config   csi_gptb_event_trigger_config_t;
+struct  csi_gptb_event_trigger_config{
+	uint8_t   byTrg0sel  ;
+	uint8_t   byTrg1sel  ;
+	uint8_t   byTrg0en   ;
+	uint8_t   byTrg1en   ;
+	uint8_t   byCnt0initfrc;
+	uint8_t   byCnt1initfrc;
+	uint8_t   byCnt0initen;
+	uint8_t   byCnt1initen;
+	uint8_t   byTrg0prd ;
+	uint8_t   byTrg1prd ;
+	uint8_t   byCnt0init;
+	uint8_t   byCnt1init;
 	
-	uint8_t fltipscld;
-	uint8_t fltckprs;
-	uint8_t srcsel;
-	uint8_t blkinv;
-	uint8_t alignmd;
-	uint8_t crossmd;
-	uint16_t offset;
-	uint16_t window;
+	uint8_t   byFltipscld;
+	uint8_t   byFltckprs;
+	uint8_t   bySrcsel;
+	uint8_t   byBlkinv;
+	uint8_t   byAlignmd;
+	uint8_t   byCrossmd;
+	uint16_t  hwOffset;
+	uint16_t  hwWindow;
 	
 };
 
@@ -189,22 +162,22 @@ struct csi_gptb_Global_load_control_config{
 	
 	bool bGlden;
 	bool bOstmd;
-	uint8_t bGldprd;	
+	uint8_t byGldprd;	
     uint8_t byGldmd;
 	uint8_t byGldcnt;
 };
 
 typedef enum {	
-	byPrdr  = 0,
-	byCmpa  ,
-	byCmpb  ,
-	byDbdtr = 5,
-	byDbdtf,
-	byDbcr,
-	byAqcra,
-	byAqcrb ,
-	byAqcsf = 12,
-	byEmosr
+	GPTB_GLO_PRDR  = 0,
+	GPTB_GLO_CMPA  ,
+	GPTB_GLO_CMPB  ,
+	GPTB_GLO_DBDTR = 5,
+	GPTB_GLO_DBDTF,
+	GPTB_GLO_DBCR,
+	GPTB_GLO_AQCR1,
+	GPTB_GLO_AQCR2,
+	GPTB_GLO_AQCSF = 12,
+	GPTB_GLO_EMOSR
 }csi_gptb_Global_load_gldcfg_e;
 
 /// \struct csi_gptb_filter_config_t
@@ -214,8 +187,8 @@ typedef struct {
 	uint8_t		byWinInv;			//window inversion 
 	uint8_t		byWinAlign;			//window alignment 
 	uint8_t		byWinCross;			//window cross
-	uint16_t	byWinOffset;		//window offset
-	uint16_t 	byWinWidth;			//window width		
+	uint16_t	hwWinOffset;		//window offset
+	uint16_t 	hwWinWidth;			//window width		
 } csi_gptb_filter_config_t;
 
 typedef struct {
@@ -238,7 +211,6 @@ typedef enum
     GPTB_WAVE 	= 1		
 }csi_gptb_wave_e;
 
-
 typedef enum {
 	GPTB_UPCNT = 0,
 	GPTB_DNCNT,
@@ -252,7 +224,7 @@ typedef enum{
 }csi_gptb_opmd_e;
 
 typedef enum{
-    GPTB_COMPA=1,
+    GPTB_COMPA=0,
 	GPTB_COMPB,
 }csi_gptb_comp_e;
 
@@ -296,23 +268,23 @@ typedef enum{
 }csi_gptb_capmd_e;
 
 typedef enum{
-	GPTBINT_N      = 0x0,
-	GPTBINT_TRGEV0 = 0x1,
-	GPTBINT_TRGEV1 = 0x2,
-	GPTBINT_TRGEV2 = 0x4,
-	GPTBINT_TRGEV3 = 0x8,
-	GPTBINT_CAPLD0 = 0x1 << 4,
-	GPTBINT_CAPLD1 = 0x1 << 5,
-	GPTBINT_CAPLD2 = 0x1 << 6,
-	GPTBINT_CAPLD3 = 0x1 << 7,
-	GPTBINT_CAU = 0x1 << 8,
-	GPTBINT_CAD = 0x1 << 9,
-	GPTBINT_CBU = 0x1 << 10,
-	GPTBINT_CBD = 0x1 << 11,
+	GPTBINT_NONE        = 0x0,
+	GPTBINT_TRGEV0 		= 0x1 << 0,
+	GPTBINT_TRGEV1 		= 0x1 << 1,
+	GPTBINT_TRGEV2 		= 0x1 << 2,
+	GPTBINT_TRGEV3 		= 0x1 << 3,
+	GPTBINT_CAPLD0 		= 0x1 << 4,
+	GPTBINT_CAPLD1 		= 0x1 << 5,
+	GPTBINT_CAPLD2 		= 0x1 << 6,
+	GPTBINT_CAPLD3 		= 0x1 << 7,
+	GPTBINT_CAU 		= 0x1 << 8,
+	GPTBINT_CAD 		= 0x1 << 9,
+	GPTBINT_CBU 		= 0x1 << 10,
+	GPTBINT_CBD 		= 0x1 << 11,
 	
-	GPTBINT_PEND   = 0x1 << 16,	
-	GPTBINT_PRDMA  = 0x1 << 17,
-	GPTBINT_ZROMA  = 0x1 << 18
+	GPTBINT_PEND   		= 0x1 << 16,	
+	GPTBINT_PRDMA  		= 0x1 << 17,
+	GPTBINT_ZROMA  		= 0x1 << 18
 }csi_gptb_int_e;
 
 typedef enum{
@@ -341,7 +313,6 @@ typedef enum{
 typedef enum{
 	GPTB_TRG_OUT0		= 0,	
 	GPTB_TRG_OUT1,				
-				
 }csi_gptb_trgout_e;
 
 typedef enum{
@@ -385,6 +356,17 @@ typedef enum{
 
 //------------------------------------------------------------------------------------------------------------------------
 typedef enum{
+	GPTB_LDPSCR_ZRO = 0,
+	GPTB_LDPSCR_PRD,
+	GPTB_LDPSCR_ZROPRD
+}csp_gptb_ldpscr_e;
+
+typedef enum{
+	GPTB_CAP_MERGE = 0,
+	GPTB_CAP_SEPARATE
+}csi_gptb_capsrcmd_e;
+
+typedef enum{
 	GPTB_SHDW_SHADOW    = 0,    
 	GPTB_SHDW_IMMEDIATE 
 }csi_gptb_ldmd_e;
@@ -409,11 +391,75 @@ typedef enum{
 }csi_gptb_shdwdbldmd_e;
 
 typedef enum {
+	GPTB_DB_TCLK = 0,
+	GPTB_DB_DPSC
+}csi_gptb_dbclksrc_e;
+
+typedef enum {
+	GPTB_DB_AR_BF = 0,
+	GPTB_DB_BR_BF
+}csi_gptb_dedb_e;
+
+typedef enum {
+	GPTB_DBOUT_DIS = 0,
+	GPTB_DBOUT_BF,
+	GPTB_DBOUT_AR,
+	GPTB_DBOUT_AR_BF
+}csi_gptb_db_outsel_e;
+
+typedef enum {
+	GPTB_DB_POL_DIS = 0,
+	GPTB_DB_POL_A,
+	GPTB_DB_POL_B,
+	GPTB_DB_POL_AB
+}csi_gptb_db_pol_e;
+
+typedef enum {
+	GPTB_DBCHAIN_AR_AF = 0,
+	GPTB_DBCHAIN_BR_AF,
+	GPTB_DBCHAIN_AR_BF,
+	GPTB_DBCHAIN_BR_BF
+}csi_gptb_dbcha_insel_e;
+
+typedef enum {
+	GPTB_DBCHAOUT_OUTA_A_OUTB_B = 0,
+	GPTB_DBCHAOUT_OUTA_B_OUTB_B,
+	GPTB_DBCHAOUT_OUTA_A_OUTB_A,
+	GPTB_DBCHAOUT_OUTA_B_OUTB_A
+}csi_gptb_dbcha_outswap_e;
+
+typedef enum {
 	GPTB_EMOUT_HZ,
 	GPTB_EMOUT_H,
 	GPTB_EMOUT_L,
 	GPTB_EMOUT_NONE
 }csi_gptb_emout_e;
+
+typedef enum {
+	GPTB_EBI0 = 1,
+	GPTB_EBI1,
+	GPTB_EBI2,
+	GPTB_EBI3,
+	GPTB_CMP0,
+	GPTB_CMP1,
+	GPTB_CMP2,
+	GPTB_LVD,
+	GPTB_ORL0 = 0xe,
+	GPTB_ORL1,
+}csi_gptb_ebi_e;
+
+#define GPTB_ORLx_EBI0  1<<0
+#define GPTB_ORLx_EBI1  1<<1
+#define	GPTB_ORLx_EBI2  1<<2
+#define	GPTB_ORLx_EBI3  1<<3
+#define	GPTB_ORLx_CMP0  1<<4
+#define	GPTB_ORLx_CMP1  1<<5
+#define	GPTB_ORLx_CMP2  1<<6
+
+typedef enum {
+	GPTB_EBI_POL_H = 0,
+	GPTB_EBI_POL_L
+}csi_gptb_ebipol_e;
 
 typedef enum{
 	GPTB_STP_ST_HZ = 0,
@@ -421,11 +467,59 @@ typedef enum{
 }csi_gptb_stpst_e;
 
 typedef enum{
-	GPTB_EP_0 = 0,
-	GPTB_EP_1,
-	GPTB_EP_2,
-	GPTB_EP_3,
+	GPTB_EP0 = 0,
+	GPTB_EP1,
+	GPTB_EP2,
+	GPTB_EP3,
 }csi_gptb_ep_e;
+
+typedef enum{
+	GPTB_EP_DIS = 0,
+	GPTB_EP_SLCK,
+	GPTB_EP_HLCK,
+	GPTB_EP_DISABLE
+}csi_gptb_ep_lckmd_e;
+
+typedef enum{	
+	GPTB_SLCLRMD_ZRO =0,
+	GPTB_SLCLRMD_PRD,
+	GPTB_SLCLRMD_ZRO_PRD,
+	GPTB_SLCLRMD_SW 
+}csi_gptb_slclrmd_e;
+
+typedef enum{
+	GPTB_LD_EMOSR_NEVER = 0,
+	GPTB_LD_EMOSR_ZRO,
+	GPTB_LD_EMOSR_PRD,
+	GPTB_LD_EMOSR_ZRO_PRD	
+}csi_gptb_ldemosr_e;
+
+typedef enum{
+	GPTB_EP_FLT0_DIS = 0,
+	GPTB_EP_FLT0_2P,
+	GPTB_EP_FLT0_4P,
+	GPTB_EP_FLT0_6P,
+	GPTB_EP_FLT0_8P,
+	GPTB_EP_FLT0_16P,
+	GPTB_EP_FLT0_32P,
+	GPTB_EP_FLT0_64P
+}csi_gptb_epflt0_e;
+typedef enum{
+	GPTB_EP_FLT1_DIS = 0,
+	GPTB_EP_FLT1_2P,
+	GPTB_EP_FLT1_4P,
+	GPTB_EP_FLT1_6P,
+	GPTB_EP_FLT1_8P,
+	GPTB_EP_FLT1_16P,
+	GPTB_EP_FLT1_32P,
+	GPTB_EP_FLT1_64P
+}csi_gptb_epflt1_e;
+
+typedef enum
+{
+	GPTB_OSR_IMMEDIATE=0,
+	GPTB_OSR_SHADOW
+}csi_gptb_Osrshdw_e;
 
 typedef enum {
 	GPTB_EMINT_EP0 = 0x1,
@@ -438,10 +532,10 @@ typedef enum {
 }csi_gptb_emint_e;
 
 typedef enum {
-	GPTB_ACT_NA = 0,
-	GPTB_ACT_LO,
-	GPTB_ACT_HI,
-	GPTB_ACT_TG	
+	GPTB_NA = 0,
+	GPTB_LO,
+	GPTB_HI,
+	GPTB_TG	
 }csi_gptb_action_e;
 
 typedef enum{
