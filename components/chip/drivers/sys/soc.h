@@ -203,9 +203,6 @@ typedef enum {
 	PD3		    = 51U,
 	PD4		    = 52U,
 	PD5		    = 53U,
-	PD6		    = 54U,
-	PD7		    = 55U,
-	PD8		    = 56U,
 	
 } pin_name_e;
 
