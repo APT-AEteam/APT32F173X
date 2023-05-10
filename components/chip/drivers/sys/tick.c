@@ -43,16 +43,12 @@ void bt_irqhandler3(csp_bt_t *ptBtBase)
 	{
 		csp_bt_clr_isr(ptBtBase, BT_PEND_INT);			//PA06 toggle	
 	}
-
 }
-
 
 void csi_tick_increase(void)
 {
     s_wTick++;
 }
-
-
 
 csi_error_t csi_tick_init(void)
 {
@@ -112,7 +108,6 @@ static void _500usdelay(void)
         }
     }
 }
-
 
 void _10udelay(void)
 {
