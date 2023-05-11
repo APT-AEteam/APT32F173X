@@ -341,29 +341,14 @@ void csi_cqcr_enable(void);
  */
 void csi_cqcr_disable(void);
 
-
 /** \brief cqcr ref sel
  * 
  *  \param[in] eRefSel csi_cqcr_refsel_e
- *  \return none
- */
-void  csi_set_cqcr_ref_sel(csi_cqcr_refsel_e eRefSel);
-
-
-/** \brief cqcr src sel
- * 
  *  \param[in] eSrcSel csi_cqcr_srcsel_e
- *  \return none
- */
-void  csi_set_cqcr_src_sel(csi_cqcr_srcsel_e eSrcSel);
-
-
-/** \brief cqcr value
- * 
  *  \param[in] wVal 
  *  \return none
  */
-void csi_set_cqcr_value(uint32_t wVal);
+void csi_set_cqcr(csi_cqcr_refsel_e eRefSel,csi_cqcr_srcsel_e eSrcSel,uint32_t wVal);
 
 /** \brief get cqcr 
  * 

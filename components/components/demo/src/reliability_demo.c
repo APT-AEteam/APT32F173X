@@ -128,10 +128,7 @@ void escm_demo(void)
 void syscon_cqcr_demo(void)
 {
 	uint32_t wCqsrValue = 0;
-	csi_set_cqcr_ref_sel(CQCR_REFSEL_EM);   // 参考时钟选择 EM 
-	csi_set_cqcr_src_sel(CQCR_SRCSEL_IM);   // 源时钟选择控 IM
-	csi_set_cqcr_value(0x3ff);              // 参考时钟计数值设置
-	csi_cqcr_enable();
+	csi_set_cqcr(CQCR_REFSEL_EM,CQCR_SRCSEL_IM,0x3ff);   // 参考时钟选择 EM,  源时钟选择控 IM
 	mdelay(1000);
 	
 	wCqsrValue = csi_get_cqsr();
