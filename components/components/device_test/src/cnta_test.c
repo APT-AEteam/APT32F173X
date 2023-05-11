@@ -32,7 +32,7 @@ void cnta_timer_test(void)
 	tTimerCfg.eClkDiv  = CNTA_CK_DIV8;
 	tTimerCfg.wTime    = 2000;                     //1000us,if cnta clk is 3M,the timeout for timer((0.333us * 1) ->(0.333us * 65535): 0.3333us -> 21.845ms)
 	tTimerCfg.eRunMode = CNTA_REPEAT_MODE;
-	tTimerCfg.byInter  = CNTA_PENDL_INT;
+	tTimerCfg.byInt    = CNTA_PENDL_INT;
 	
 	csi_cnta_timer_init(CA0,&tTimerCfg);
 	csi_cnta_start(CA0);
@@ -58,7 +58,7 @@ void cnta_pwm_test(void)
 	tPwmCfg.byStopLevel  = CNTA_STOP_LOW;       //结束极性低
 	tPwmCfg.byDutyCycle  = 60;             //占空比
 	tPwmCfg.wFreq        = 38000;          //频率(hz)
-	tPwmCfg.byInter      = CNTA_NONE_INT;  //无中断源
+	tPwmCfg.byInt        = CNTA_NONE_INT;  //无中断源
 	
 	//cnta作为pwm输出口
 	csi_pin_set_mux(PA10,PA10_CNTA_BUZ);//set counter output pin	
@@ -95,8 +95,8 @@ void cnta_envelope_test(void)
 	tBTPwmCfg.byStartLevel= BT_PWM_START_HIGH;				//PWM 输出起始电平
 	tBTPwmCfg.byDutyCycle = 50;								//PWM 输出占空比(0 < DutyCycle < 100)		
 	tBTPwmCfg.wFreq 		= 50;								//PWM 输出频率
-	//tPwmCfg.byInter 	= BT_INTSRC_PEND | BT_INTSRC_CMP;	//PWM 中断配置(PEND and CMP)
-	tBTPwmCfg.byInter		= BT_INTSRC_NONE;
+	//tPwmCfg.byInt   	= BT_INTSRC_PEND | BT_INTSRC_CMP;	//PWM 中断配置(PEND and CMP)
+	tBTPwmCfg.byInt  		= BT_INTSRC_NONE;
 	
 	csi_bt_pwm_init(BT1, &tBTPwmCfg);							//初始化BT1 PWM输出
 	csi_bt_start(BT1);										//启动BT1
@@ -120,7 +120,7 @@ void cnta_envelope_test(void)
 	tPwmCfg.byStopLevel  = CNTA_STOP_LOW;       //结束极性低
 	tPwmCfg.byDutyCycle  = 60;             //占空比
 	tPwmCfg.wFreq        = 380000;          //频率(hz)
-	tPwmCfg.byInter      = CNTA_NONE_INT;  //无中断源
+	tPwmCfg.byInt        = CNTA_NONE_INT;  //无中断源
 	
 	//cnta作为pwm输出口
 	csi_pin_set_mux(PA10,PA10_CNTA_BUZ);//set counter output pin	

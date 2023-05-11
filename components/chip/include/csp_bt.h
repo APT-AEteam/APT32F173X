@@ -166,7 +166,8 @@ typedef enum
 
 typedef enum{
 	BT_SYNCEN0		= 0,
-	BT_SYNCEN1		
+	BT_SYNCEN1,
+	BT_SYNCEN2		
 }bt_evtrg_in_e;
 /******************************************************************************
 * EVTRG : BT EVTRG Register

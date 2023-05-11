@@ -25,7 +25,7 @@ extern "C" {
 typedef struct {
 	cnta_ckdiv_e eClkDiv;  //时钟分频
 	cnta_mode_e  eRunMode; //单次还是重复
-	uint8_t     byInter;   //int source
+	uint8_t     byInt;     //int source
 	uint32_t	wTime;	   //周期（us）
 } csi_cnta_timer_config_t;
 
@@ -35,7 +35,7 @@ typedef struct {
 	cnta_ckdiv_e eClkDiv;    //时钟分频选择
 	uint8_t		byStartLevel;//计数器pwm初始电平
 	uint8_t		byStopLevel; //计数器pwm结束电平
-	uint8_t     byInter;     //int source
+	uint8_t     byInt;       //int source
 	uint8_t		byDutyCycle; //占空比(0-100)
 	uint32_t	wFreq;	     //频率（hz）	
 } csi_cnta_pwm_config_t;

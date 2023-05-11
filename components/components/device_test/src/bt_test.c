@@ -99,8 +99,8 @@ void bt_pwm_test(void)
 	tPwmCfg.byStartLevel= BT_PWM_START_HIGH;				//PWM 输出起始电平
 	tPwmCfg.byDutyCycle = 50;								//PWM 输出占空比(0 < DutyCycle < 100)		
 	tPwmCfg.wFreq 		= 50;								//PWM 输出频率
-	//tPwmCfg.byInter 	= BT_INTSRC_PEND | BT_INTSRC_CMP;	//PWM 中断配置(PEND and CMP)
-	tPwmCfg.byInter		= BT_INTSRC_NONE;
+	//tPwmCfg.byInt   	= BT_INTSRC_PEND | BT_INTSRC_CMP;	//PWM 中断配置(PEND and CMP)
+	tPwmCfg.byInt  		= BT_INTSRC_NONE;
 	
 //	csi_bt_pwm_init(BT0, &tPwmCfg);							//初始化BT0 PWM输出
 //	csi_bt_start(BT0);										//启动BT0
@@ -280,8 +280,8 @@ int bt_sync_count_test(void)
 	tPwmCfg.byStartLevel= BT_PWM_START_HIGH;				//PWM 输出起始电平
 	tPwmCfg.byDutyCycle = 50;								//PWM 输出占空比(0 < DutyCycle < 100)		
 	tPwmCfg.wFreq 		= 50;								//PWM 输出频率
-	//tPwmCfg.byInter 	= BT_INTSRC_PEND | BT_INTSRC_CMP;	//PWM 中断配置(PEND and CMP)
-	tPwmCfg.byInter		= BT_INTSRC_NONE;	
+	//tPwmCfg.byInt   	= BT_INTSRC_PEND | BT_INTSRC_CMP;	//PWM 中断配置(PEND and CMP)
+	tPwmCfg.byInt  		= BT_INTSRC_NONE;	
 	csi_bt_pwm_init(BT0, &tPwmCfg);							//初始化BT0 PWM输出
 	csi_bt_start(BT0);						
 	
@@ -291,8 +291,8 @@ int bt_sync_count_test(void)
 //	tPwmCfg.byStartLevel= BT_PWM_START_HIGH;				//PWM 输出起始电平
 //	tPwmCfg.byDutyCycle = 50;								//PWM 输出占空比(0 < DutyCycle < 100)		
 //	tPwmCfg.wFreq 		= 50;								//PWM 输出频率
-//	//tPwmCfg.byInter 	= BT_INTSRC_PEND | BT_INTSRC_CMP;	//PWM 中断配置(PEND and CMP)
-//	tPwmCfg.byInter		= BT_INTSRC_NONE;	
+//	//tPwmCfg.byInt   	= BT_INTSRC_PEND | BT_INTSRC_CMP;	//PWM 中断配置(PEND and CMP)
+//	tPwmCfg.byInt  		= BT_INTSRC_NONE;	
 //	csi_bt_pwm_init(BT1, &tPwmCfg);							//初始化BT1 PWM输出
 //	csi_bt_start(BT1);										//启动BT1
 	
@@ -601,8 +601,8 @@ int bt_syncmd_start_test(void)
 	tPwmCfg.byStartLevel= BT_PWM_START_HIGH;				//PWM 输出起始电平
 	tPwmCfg.byDutyCycle = 50;								//PWM 输出占空比(0 < DutyCycle < 100)		
 	tPwmCfg.wFreq 		= 50;								//PWM 输出频率
-	//tPwmCfg.byInter 	= BT_INTSRC_PEND | BT_INTSRC_CMP;	//PWM 中断配置(PEND and CMP)
-	tPwmCfg.byInter		= BT_INTSRC_NONE;
+	//tPwmCfg.byInt   	= BT_INTSRC_PEND | BT_INTSRC_CMP;	//PWM 中断配置(PEND and CMP)
+	tPwmCfg.byInt  		= BT_INTSRC_NONE;
 	
 	csi_bt_pwm_init(BT1, &tPwmCfg);							//初始化BT1 PWM输出
 	csi_bt_set_sync(BT1, BT_TRGIN_SYNCEN0, BT_TRG_CONTINU, BT_TRG_SYCAREARM);	//外部触发bt启动(SYNCIN0)

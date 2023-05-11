@@ -49,7 +49,7 @@ csi_error_t csi_cnta_timer_init(csp_cnta_t *ptCntaBase,csi_cnta_timer_config_t *
 	
 	apt_cnta_int_arrt_set(CLIC_INTATTR_TRIG_UP); 
 	csp_cnta_soft_updata(ptCntaBase);	                    //updata CADATAH CADATAL value 
-	csp_cnta_set_int(ptCntaBase, ptContaTimerCfg->byInter, true);//set intrrupt
+	csp_cnta_set_int(ptCntaBase, ptContaTimerCfg->byInt, true);//set intrrupt
 	csi_irq_enable((uint32_t *)ptCntaBase);					//enable cnta irq
 	
 	return CSI_OK;
@@ -140,13 +140,15 @@ csi_error_t csi_cnta_pwm_init(csp_cnta_t *ptCntaBase,csi_cnta_pwm_config_t *ptCo
 	else if(ptContaPwmCfg->byStopLevel == CNTA_STOP_HIGH)
 		eRemStat = CNTA_REMSTAT_HIGH;
 			
-	csp_cnta_set_ckdiv(ptCntaBase, ptContaPwmCfg->eClkDiv, CNTA_REPEAT_MODE);		//cnta clk = pclk/eClkDiv
-	csp_cnta_set_carrier(ptCntaBase, CNTA_CARRIER_EN, CNTA_PWM_CARRIER, eRemStat, eOsp);
+	csp_cnta_set_ckdiv(ptCntaBase, ptContaPwmCfg->eClkDiv, CNTA_REPEAT_MODE);		//cnta clk = pclk/eClkDiv	
+	csp_cnta_set_carrier(ptCntaBase, CNTA_CARRIER_EN, CNTA_PWM_CARRIER, eRemStat, eOsp);  //载波输出	
+	//csp_cnta_set_carrier(ptCntaBase, CNTA_CARRIER_EN, PWM_ENVELOPE, eRemStat, eOsp); //包络输出
+
 	csp_cnta_set_datah(ptCntaBase, wDatahLoad);
 	csp_cnta_set_datal(ptCntaBase, wDatalLoad);	
 	apt_cnta_int_arrt_set(CLIC_INTATTR_TRIG_UP); 
 	csp_cnta_soft_updata(ptCntaBase);
-	csp_cnta_set_int(ptCntaBase, ptContaPwmCfg->byInter, true);
+	csp_cnta_set_int(ptCntaBase, ptContaPwmCfg->byInt  , true);
 	csi_irq_enable((uint32_t *)ptCntaBase);					    //enable cnta irq
 	
 	return ret;
@@ -179,9 +181,9 @@ void csi_cnta_pwm_para_updata(csp_cnta_t *ptCntaBase, uint16_t hwDatah, uint16_t
  *  \param[in] hw_updata: cadata reg auto updata control
  *  \return error code \ref csi_error_t
  */
-csi_error_t csi_cnta_bt0_sync(csp_cnta_t *ptCntaBase, csi_cnta_tcpend_e tcpend_rem, csi_cnta_tcmatch_e tcmatch_rem,csi_cnta_hw_updata_e hw_updata)
+csi_error_t csi_cnta_bt0_sync(csp_cnta_t *ptCntaBase, csi_cnta_tcpend_e eTcpendRem, csi_cnta_tcmatch_e eTcmatchRem,csi_cnta_hw_updata_e eHwUpdata)
 {
-	csp_cnta_set_sync(ptCntaBase, tcpend_rem, tcmatch_rem, hw_updata);	
+	csp_cnta_set_sync(ptCntaBase, (cnta_pendrem_e) eTcpendRem, (cnta_matchrem_e)eTcmatchRem, (cnta_hwstrobe_e)eHwUpdata);	
 	return CSI_OK;
 }
 

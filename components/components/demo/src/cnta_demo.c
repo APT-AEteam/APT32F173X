@@ -42,7 +42,7 @@ int cnta_timer_demo(void)
 	tTimerCfg.eClkDiv = CNTA_CK_DIV8;
 	tTimerCfg.wTime = 1000;                     //1000us,if cnta clk is 3M,the timeout for timer((0.333us * 1) ->(0.333us * 65535): 0.3333us -> 21.845ms)
 	tTimerCfg.eRunMode = CNTA_REPEAT_MODE;
-	tTimerCfg.byInter = CNTA_PENDL_INT;
+	tTimerCfg.byInt    = CNTA_PENDL_INT;
 	csi_cnta_timer_init(CA0,&tTimerCfg);        //初始化CountA
 	csi_cnta_start(CA0);  //启动CountA
 	while(1)
@@ -66,7 +66,7 @@ int cnta_pwm_demo(void)
 	tPwmCfg.byStopLevel = CNTA_STOP_LOW;     //结束极性低
 	tPwmCfg.byDutyCycle = 33;           //占空比
 	tPwmCfg.wFreq = 38000;              //频率(hz)
-	tPwmCfg.byInter = CNTA_NONE_INT;    //无中断源
+	tPwmCfg.byInt   = CNTA_NONE_INT;    //无中断源
 	
 	//cnta作为pwm输出口
 	csi_pin_set_mux(PA10,PA10_CNTA_BUZ);//set counter output pin	
@@ -99,8 +99,8 @@ int cnta_envelope_demo(void)
 	tBTPwmCfg.byStartLevel= BT_PWM_START_HIGH;				//PWM 输出起始电平
 	tBTPwmCfg.byDutyCycle = 50;								//PWM 输出占空比(0 < DutyCycle < 100)		
 	tBTPwmCfg.wFreq 	  = 100;							//PWM 输出频率
-//	tPwmCfg.byInter 	= BT_INTSRC_PEND | BT_INTSRC_CMP;	//PWM 中断配置(PEND and CMP)
-	tBTPwmCfg.byInter		= BT_INTSRC_NONE;
+//	tPwmCfg.byInt   	= BT_INTSRC_PEND | BT_INTSRC_CMP;	//PWM 中断配置(PEND and CMP)
+	tBTPwmCfg.byInt  		= BT_INTSRC_NONE;
 	
 	csi_bt_pwm_init(BT0, &tBTPwmCfg);						//初始化BT0 PWM输出
 	csi_bt_start(BT0);										//启动BT0	
@@ -111,19 +111,16 @@ int cnta_envelope_demo(void)
 	tPwmCfg.byStopLevel  = CNTA_STOP_LOW;       //结束极性低
 	tPwmCfg.byDutyCycle  = 60;             //占空比
 	tPwmCfg.wFreq        = 380000;         //频率(hz)
-	tPwmCfg.byInter      = CNTA_NONE_INT;  //无中断源
+	tPwmCfg.byInt        = CNTA_NONE_INT;  //无中断源
 	
 	csi_pin_set_mux(PA10,PA10_CNTA_BUZ);//set counter output pin	
 	//csi_pin_set_mux(PD3,PD3_CNTA_BUZ);//set counter output pin	
 	//csi_pin_set_mux(PD5,PD5_CNTA_BUZ);//set counter output pin
 	csi_cnta_pwm_init(CA0,&tPwmCfg);
-	
-	csp_cnta_set_carrier(CA0, CNTA_CARRIER_EN, CNTA_PWM_CARRIER, CNTA_STOP_LOW, CNTA_POLAR_LOW);  //载波输出	
-//	csp_cnta_set_carrier(CA0, CNTA_CARRIER_EN, PWM_ENVELOPE, CNTA_STOP_LOW, CNTA_POLAR_LOW); //包络输出
 
-//	csp_cnta_set_sync(CA0, PEND_CARRIERON_CLR, MATCH_CARRIERON_SET,CNTA_HW_TCPEND);//BT脉冲匹配中断发生时，CARRIERON位会被硬件自动置位
-	csp_cnta_set_sync(CA0, CNTA_PEND_CARRIERON_SET, CNTA_MATCH_CARRIERON_CLR,CNTA_HW_TCPEND);//BT周期结束中断发生时，CARRIERON位会被硬件自动置位
-//	csp_cnta_set_sync(CA0, PEND_CARRIERON_DIS, MATCH_CARRIERON_DIS,CNTA_HW_TCPEND);//禁止CARRIERON的硬件自动触发
+//	csi_cnta_bt0_sync(CA0, PEND_CARRIERON_CLR, MATCH_CARRIERON_SET,CNTA_HW_TCPEND);//BT脉冲匹配中断发生时，CARRIERON位会被硬件自动置位
+	csi_cnta_bt0_sync(CA0, CNTA_PEND_CARRIERON_SET, CNTA_MATCH_CARRIERON_CLR,CNTA_HW_TCPEND);//BT周期结束中断发生时，CARRIERON位会被硬件自动置位
+//	csi_cnta_bt0_sync(CA0, PEND_CARRIERON_DIS, MATCH_CARRIERON_DIS,CNTA_HW_TCPEND);//禁止CARRIERON的硬件自动触发
 	
 	csi_cnta_start(CA0);  //启动CountA
 	while(1)

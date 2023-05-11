@@ -26,7 +26,7 @@ extern "C" {
 typedef struct {
 	uint8_t		byIdleLevel;		//TIMER PWM OUTPUT idel level
 	uint8_t		byStartLevel;		//TIMER PWM OUTPUT start Level
-	uint8_t		byInter;			//TIMER PWM interrupt source select
+	uint8_t		byInt;			    //TIMER PWM interrupt source select
 	uint8_t		byDutyCycle;		//TIMER PWM OUTPUT duty cycle
 	uint32_t	wFreq;				//TIMER PWM OUTPUT frequency
 } csi_bt_pwm_config_t;
@@ -105,6 +105,7 @@ typedef enum
 	BT_INTSRC_OVF    =	(0x01ul << 2), 		//OVF interrupt
 	BT_INTSRC_EVTRG  =	(0x01ul << 3)		//EVTRG interrupt
 }csi_bt_intsrc_e;
+
 
 /**
   \brief       BT irq 
