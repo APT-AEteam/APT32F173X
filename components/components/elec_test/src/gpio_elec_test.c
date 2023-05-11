@@ -249,7 +249,7 @@ void gpio_iofin_test(void)
 	tPwmCfg.byCaptureLdbret   = 0;  
 	tPwmCfg.byCaptureLdcret   = 0;
 	tPwmCfg.byCaptureLddret   = 0;                            
-	tPwmCfg.byInter 		  = GPTB_INT_CAPLD1;                  //interrupt
+	tPwmCfg.wInt 		  = GPTB_INT_CAPLD1;                  //interrupt
 	csi_gptb_capture_init(GPTB0, &tPwmCfg);
 	
 	csi_gptb_set_sync (GPTB0, GPTB_TRGIN_SYNCEN2, GPTB_TRG_CONTINU,GPTB_AUTO_REARM_ZRO);
