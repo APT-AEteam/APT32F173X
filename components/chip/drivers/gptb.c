@@ -714,28 +714,28 @@ csi_error_t csi_gptb_prdr_cmp_update(csp_gptb_t *ptGptbBase,csi_gptb_comp_e eCom
 */
 csi_error_t csi_gptb_change_ch_duty(csp_gptb_t *ptGptbBase, csi_gptb_comp_e eCh, uint32_t wDuty)
 { 
-	uint16_t  wCmpLoad;
+	uint16_t  hwCmpLoad;
 	
-	uint16_t  wPrd;
-    wPrd = csp_gptb_get_prd(ptGptbBase);
+	uint16_t  hwPrd;
+    hwPrd = csp_gptb_get_prd(ptGptbBase);
 	if(wDuty >= 100)
 	{
-		wCmpLoad = 0;
+		hwCmpLoad = 0;
 	}
 	else if(wDuty == 0)
 	{
-		wCmpLoad = wPrd+1;
+		hwCmpLoad = hwPrd+1;
 	}
 	else
 	{
-		wCmpLoad = wPrd - ( wPrd * wDuty / 100 );
+		hwCmpLoad = hwPrd - ( hwPrd * wDuty / 100 );
 	}
     
 	switch (eCh)
 	{	
-		case (GPTB_COMPA):csp_gptb_set_cmpa(ptGptbBase, (uint16_t)wCmpLoad);
+		case (GPTB_COMPA):csp_gptb_set_cmpa(ptGptbBase, (uint16_t)hwCmpLoad);
 			break;
-		case (GPTB_COMPB):csp_gptb_set_cmpb(ptGptbBase, (uint16_t)wCmpLoad);
+		case (GPTB_COMPB):csp_gptb_set_cmpb(ptGptbBase, (uint16_t)hwCmpLoad);
 			break;
 
 		default: return (CSI_ERROR);
