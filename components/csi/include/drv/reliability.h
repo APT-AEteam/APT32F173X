@@ -59,6 +59,17 @@ typedef enum{
 	CQCR_SRCSEL_HF
 }csi_cqcr_srcsel_e;
 
+
+typedef enum {
+	SRAM1_DSARM_CTRL = 0,
+	SRAM1_ISRAM_CTRL
+}csi_sram1_func_e;
+
+typedef enum {
+	SRAM_24KRAM0_8KRAM1_CTRL = 0,
+	SRAM_16KRAM0_16KRAM1_CTRL
+}csi_sram_blk_e;
+
 #define AUTOTRIM_KEY_UREG   (*(unsigned int *)(0x400111FC)) 
 #define AUTOTRIM_TRIM_UREG  (*(unsigned int *)(0x40011204))
 #define AUTOTRIM_KEY         0x00006996 
@@ -356,5 +367,12 @@ void csi_set_cqcr(csi_cqcr_refsel_e eRefSel,csi_cqcr_srcsel_e eSrcSel,uint32_t w
  */
 uint32_t csi_get_cqsr(void);
 
+/** \brief sram set
+ * 
+ *  \param[in] eSramBlk csi_sram1_func_e    SRAM_24KRAM0_8KRAM1_CTRL or SRAM_16KRAM0_16KRAM1_CTRL
+ *  \param[in] eSram1Func csi_sram1_func_e  SRAM1_DSARM_CTRL or SRAM1_ISRAM_CTRL
+ *  \return none
+ */
+void csi_set_sram(csi_sram_blk_e eSramBlk,csi_sram1_func_e eSram1Func);
 
 #endif /* _DRV_RLBLTY_H_ */

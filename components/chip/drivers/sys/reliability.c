@@ -489,3 +489,15 @@ uint32_t csi_get_cqsr(void)
 {
 	return csp_get_cqsr(SYSCON);
 }
+
+/** \brief sram set
+ * 
+ *  \param[in] eSramBlk csi_sram1_func_e    SRAM_24KRAM0_8KRAM1_CTRL or SRAM_16KRAM0_16KRAM1_CTRL
+ *  \param[in] eSram1Func csi_sram1_func_e  SRAM1_DSARM_CTRL or SRAM1_ISRAM_CTRL
+ *  \return none
+ */
+void csi_set_sram(csi_sram_blk_e eSramBlk,csi_sram1_func_e eSram1Func)
+{
+	csp_sram_blk_ctrl(SYSCON, (sram_blk_e)eSramBlk);	
+	csp_sram1_func_ctrl(SYSCON, (sram1_func_e)eSram1Func);
+}
