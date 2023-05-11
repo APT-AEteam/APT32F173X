@@ -117,3 +117,24 @@ void escm_demo(void)
 	csi_escm_disable();					//取消对外部晶振的检测。
 	
 }
+
+/** \brief cqcr测试demo 必须外接晶振。
+ *   参考时钟选择 EM,主时钟选择EM  {SRC_EMOSC, EMOSC_VALUE, SCLK_DIV2, PCLK_DIV2, EMOSC_VALUE/2, EMOSC_VALUE/4};
+ *   注意EM管脚需要配置  参考时钟配置为0x3ff，即EM 24M的计数值
+ *   如果源时钟选择IM 5.556M 获取到的csi_get_cqsr()值大概为0x1149.	
+ *  \param[in] none
+ *  \return error code
+ */
+void syscon_cqcr_demo(void)
+{
+	uint32_t wCqsrValue = 0;
+	csi_set_cqcr_ref_sel(CQCR_REFSEL_EM);   // 参考时钟选择 EM 
+	csi_set_cqcr_src_sel(CQCR_SRCSEL_IM);   // 源时钟选择控 IM
+	csi_set_cqcr_value(0x3ff);              // 参考时钟计数值设置
+	csi_cqcr_enable();
+	mdelay(1000);
+	
+	wCqsrValue = csi_get_cqsr();
+	my_printf("cqsr value =%d",wCqsrValue);
+		
+}

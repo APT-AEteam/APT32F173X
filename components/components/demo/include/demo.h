@@ -87,6 +87,7 @@ extern void lvd_demo(void);
 extern void lvr_demo(void);
 extern void memorycheck_demo(void);
 extern void emcm_demo(void);
+extern void syscon_cqcr_demo(void);
 
 //wwdt demo
 extern csi_error_t wwdt_demo(void);

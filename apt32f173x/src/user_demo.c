@@ -41,6 +41,7 @@ void user_demo(void)
 //	lvr_demo();
 //	memorycheck_demo();
 //	emcm_demo();
+//  syscon_cqcr_demo();
 
 /// ***************************************************
 /// IWDT相关的示例代码

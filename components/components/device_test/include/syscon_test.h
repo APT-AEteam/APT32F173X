@@ -55,6 +55,7 @@ extern int syscon_low_temp_mclk_switch_test(void);
 extern void syscon_deepsleep_lowtemp_test(void);
 extern int syscon_evtrg_int_test(void);
 extern int syscon_evswf_test(void);
+extern int syscon_cqcr_test(void);
 
 
 
