@@ -446,3 +446,63 @@ csi_error_t csi_cmos_autotrim(void)
 	
 	return CSI_OK;
 }
+
+/** \brief cqcr enable
+ * 
+ *  \param none
+ *  \return none
+ */
+void csi_cqcr_enable(void)
+{
+	csp_cqcr_enable(SYSCON, ENABLE);
+}
+
+/** \brief cqcr disable
+ * 
+ *  \param none
+ *  \return none
+ */
+void csi_cqcr_disable(void)
+{
+	csp_cqcr_enable(SYSCON, DISABLE);
+}
+
+/** \brief cqcr ref sel
+ * 
+ *  \param[in] eRefSel csi_cqcr_refsel_e
+ *  \return none
+ */
+void  csi_set_cqcr_ref_sel(csi_cqcr_refsel_e eRefSel)
+{
+	csp_set_cqcr_ref_sel(SYSCON,(cqcr_refsel_e)eRefSel);
+}
+
+/** \brief cqcr src sel
+ * 
+ *  \param[in] eSrcSel csi_cqcr_srcsel_e
+ *  \return none
+ */
+void  csi_set_cqcr_src_sel(csi_cqcr_srcsel_e eSrcSel)
+{
+	csp_set_cqcr_src_sel(SYSCON,(cqcr_srcsel_e)eSrcSel);
+	
+}
+
+/** \brief cqcr value
+ * 
+ *  \param[in] wVal 
+ *  \return none
+ */
+void csi_set_cqcr_value(uint32_t wVal)
+{
+	csp_set_cqcr_value(SYSCON,wVal);
+}
+
+/** \brief get cqcr 
+ * 
+ *  \return cqcr value
+ */
+uint32_t csi_get_cqsr(void)
+{
+	return csp_get_cqsr(SYSCON);
+}

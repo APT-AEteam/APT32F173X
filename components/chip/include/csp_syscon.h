@@ -658,6 +658,30 @@ typedef enum{
 #define CMRTRIML_CTL_MSK              (1 << 11)
 
 
+//CQCR
+#define CQCR_EN_POS                   (0) 
+#define CQCR_EN_MSK                   (0x1 << CQCR_EN_POS)  
+
+#define CQCR_REFSEL_POS               (4) 
+#define CQCR_REFSEL_MSK               (0x3 << CQCR_REFSEL_POS)  
+
+typedef enum{
+	CQCR_REFSEL_EMOSC,
+	CQCR_REFSEL_ESOSC,	
+}cqcr_refsel_e;
+
+#define CQCR_SRCSEL_POS               (6) 
+#define CQCR_SRCSEL_MSK               (0x3 << CQCR_SRCSEL_POS)  
+typedef enum{
+	CQCR_SRCSEL_IMOSC,
+	CQCR_SRCSEL_ESOSC,
+	CQCR_SRCSEL_ISOSC,
+	CQCR_SRCSEL_HFOSC
+}cqcr_srcsel_e;
+
+#define CQCR_CQRVAL_POS               (8) 
+#define CQCR_CQRVAL_MSK               (0x3FFFF << CQCR_CQRVAL_POS)  
+
 ///API to access setup of SYSCON
 static inline uint32_t csp_get_ckst(csp_syscon_t *ptSysconBase)
 {
@@ -1109,6 +1133,35 @@ static inline void csp_set_swd_lock(csp_syscon_t *ptSysconBase)
 static inline void csp_set_swd_unlock(csp_syscon_t *ptSysconBase)
 {
 	ptSysconBase->DBGCR = 0x5a;
+}
+
+static inline void csp_cqcr_enable(csp_syscon_t *ptSysconBase, bool bEnable)
+{
+
+	if(bEnable)
+		ptSysconBase->CQCR |=  CQCR_EN_MSK;	
+	else
+		ptSysconBase->CQCR &= (~CQCR_EN_MSK); 	
+}
+
+static inline void csp_set_cqcr_ref_sel(csp_syscon_t *ptSysconBase,cqcr_refsel_e eRefSel)
+{
+	ptSysconBase->CQCR = (ptSysconBase->CQCR & (~CQCR_REFSEL_MSK)) | (eRefSel  << CQCR_REFSEL_POS);
+}
+
+static inline void csp_set_cqcr_src_sel(csp_syscon_t *ptSysconBase,cqcr_srcsel_e eSrcSel)
+{
+	ptSysconBase->CQCR = (ptSysconBase->CQCR & (~CQCR_SRCSEL_MSK)) | (eSrcSel  << CQCR_SRCSEL_POS);
+}
+
+static inline void csp_set_cqcr_value(csp_syscon_t *ptSysconBase,uint32_t wVal)
+{
+	ptSysconBase->CQCR = (wVal  << CQCR_CQRVAL_POS);
+}
+
+static inline uint32_t csp_get_cqsr(csp_syscon_t *ptSysconBase)
+{
+	return (uint32_t) ((ptSysconBase->CQSR) & 0xFFFFF);
 }
 
 #endif  /* _CSP_SYSCON_H*/

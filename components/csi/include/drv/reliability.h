@@ -47,6 +47,18 @@ typedef enum {
 	LVD_INTFR
 }csi_lvd_pol_e;
 
+typedef enum{
+	CQCR_REFSEL_EM,
+	CQCR_REFSEL_ES,	
+}csi_cqcr_refsel_e;
+
+typedef enum{
+	CQCR_SRCSEL_IM,
+	CQCR_SRCSEL_ES,
+	CQCR_SRCSEL_IS,
+	CQCR_SRCSEL_HF
+}csi_cqcr_srcsel_e;
+
 #define AUTOTRIM_KEY_UREG   (*(unsigned int *)(0x400111FC)) 
 #define AUTOTRIM_TRIM_UREG  (*(unsigned int *)(0x40011204))
 #define AUTOTRIM_KEY         0x00006996 
@@ -313,5 +325,51 @@ void csi_swd_unlock(void);
  *  \return csi_error_t.
  */
 csi_error_t csi_cmos_autotrim(void);
+
+/** \brief cqcr enable
+ * 
+ *  \param none
+ *  \return none
+ */
+void csi_cqcr_enable(void);
+
+
+/** \brief cqcr disable
+ * 
+ *  \param none
+ *  \return none
+ */
+void csi_cqcr_disable(void);
+
+
+/** \brief cqcr ref sel
+ * 
+ *  \param[in] eRefSel csi_cqcr_refsel_e
+ *  \return none
+ */
+void  csi_set_cqcr_ref_sel(csi_cqcr_refsel_e eRefSel);
+
+
+/** \brief cqcr src sel
+ * 
+ *  \param[in] eSrcSel csi_cqcr_srcsel_e
+ *  \return none
+ */
+void  csi_set_cqcr_src_sel(csi_cqcr_srcsel_e eSrcSel);
+
+
+/** \brief cqcr value
+ * 
+ *  \param[in] wVal 
+ *  \return none
+ */
+void csi_set_cqcr_value(uint32_t wVal);
+
+/** \brief get cqcr 
+ * 
+ *  \return cqcr value
+ */
+uint32_t csi_get_cqsr(void);
+
 
 #endif /* _DRV_RLBLTY_H_ */
