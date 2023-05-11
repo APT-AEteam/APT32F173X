@@ -41,7 +41,7 @@ csi_error_t csi_cnta_timer_init(csp_cnta_t *ptCntaBase,csi_cnta_timer_config_t *
 	
 	csi_clk_enable((uint32_t *)ptCntaBase);		//cnta clk enable
     csp_cnta_soft_rst(ptCntaBase);				//default init valu
-	csp_cnta_set_ckdiv(ptCntaBase, ptContaTimerCfg->eClkDiv,ptContaTimerCfg->eRunMode);	//cnta clk = pclk/eClkDiv
+	csp_cnta_set_ckdiv(ptCntaBase,(cnta_ckdiv_e)ptContaTimerCfg->eClkDiv,(cnta_mode_e)ptContaTimerCfg->eRunMode);	//cnta clk = pclk/eClkDiv
 	
 	csp_cnta_set_datal(ptCntaBase, wTempLoad);				//set CADATAL data
 //    csp_cnta_set_datah(ptCntaBase, wTempLoad);			    //set CADATAH data
@@ -49,7 +49,7 @@ csi_error_t csi_cnta_timer_init(csp_cnta_t *ptCntaBase,csi_cnta_timer_config_t *
 	
 	apt_cnta_int_arrt_set(CLIC_INTATTR_TRIG_UP); 
 	csp_cnta_soft_updata(ptCntaBase);	                    //updata CADATAH CADATAL value 
-	csp_cnta_set_int(ptCntaBase, ptContaTimerCfg->byInt, true);//set intrrupt
+	csp_cnta_set_int(ptCntaBase,(cnta_int_e)ptContaTimerCfg->byInt, true);//set intrrupt
 	csi_irq_enable((uint32_t *)ptCntaBase);					//enable cnta irq
 	
 	return CSI_OK;
@@ -140,15 +140,15 @@ csi_error_t csi_cnta_pwm_init(csp_cnta_t *ptCntaBase,csi_cnta_pwm_config_t *ptCo
 	else if(ptContaPwmCfg->byStopLevel == CNTA_STOP_HIGH)
 		eRemStat = CNTA_REMSTAT_HIGH;
 			
-	csp_cnta_set_ckdiv(ptCntaBase, ptContaPwmCfg->eClkDiv, CNTA_REPEAT_MODE);		//cnta clk = pclk/eClkDiv	
-	csp_cnta_set_carrier(ptCntaBase, CNTA_CARRIER_EN, CNTA_PWM_CARRIER, eRemStat, eOsp);  //载波输出	
-	//csp_cnta_set_carrier(ptCntaBase, CNTA_CARRIER_EN, PWM_ENVELOPE, eRemStat, eOsp); //包络输出
+	csp_cnta_set_ckdiv(ptCntaBase, (cnta_ckdiv_e)ptContaPwmCfg->eClkDiv,(cnta_mode_e)CNTA_REPEAT_MODE);		//cnta clk = pclk/eClkDiv	
+	csp_cnta_set_carrier(ptCntaBase, (cnta_carrier_e)CNTA_CARRIER_EN, (cnta_envelope_e)CNTA_PWM_CARRIER, (cnta_remstat_e)eRemStat,(cnta_osp_e) eOsp); //载波输出	
+	//csp_cnta_set_carrier(ptCntaBase, (cnta_carrier_e)CNTA_CARRIER_EN, (cnta_envelope_e)PWM_ENVELOPE,(cnta_remstat_e) eRemStat, (cnta_osp_e)eOsp);  //包络输出
 
 	csp_cnta_set_datah(ptCntaBase, wDatahLoad);
 	csp_cnta_set_datal(ptCntaBase, wDatalLoad);	
 	apt_cnta_int_arrt_set(CLIC_INTATTR_TRIG_UP); 
 	csp_cnta_soft_updata(ptCntaBase);
-	csp_cnta_set_int(ptCntaBase, ptContaPwmCfg->byInt  , true);
+	csp_cnta_set_int(ptCntaBase, (cnta_int_e)ptContaPwmCfg->byInt  , true);
 	csi_irq_enable((uint32_t *)ptCntaBase);					    //enable cnta irq
 	
 	return ret;
