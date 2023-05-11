@@ -20,17 +20,6 @@
 /* Private macro-----------------------------------------------------------*/
 /* Private variablesr------------------------------------------------------*/
 
-/** \brief dac interrupt handle function
- * 
- *  \param[in] ptDacBase: pointer of dac register structure
- *  \return none
- */ 
-__attribute__((weak)) void dac_irqhandler(csp_dac_t *ptDacBase)
-{
-	volatile uint32_t wVal = csp_dac_get_misr(ptDacBase);	
-	csp_dac_irq_clr(ptDacBase,wVal);
-}
-
 /** \brief 配置DAC的初始电平码值，设置时钟分频，配置DAC中断及触发模式
  * 
  *  \param[in] none
@@ -59,4 +48,15 @@ void dac_demo(void)
 	csi_dac_step_val(DAC0, 409);//设置触发增减值
 	
 	csi_dac_start(DAC0);
+}
+
+/** \brief dac interrupt handle function
+ * 
+ *  \param[in] ptDacBase: pointer of dac register structure
+ *  \return none
+ */ 
+__attribute__((weak)) void dac_irqhandler(csp_dac_t *ptDacBase)
+{
+	volatile uint32_t wVal = csp_dac_get_misr(ptDacBase);	
+	csp_dac_irq_clr(ptDacBase,wVal);
 }
