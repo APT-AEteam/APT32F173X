@@ -356,7 +356,7 @@ csi_error_t csi_gpio_port_irq_mode(csp_gpio_t *ptGpioBase, uint32_t wPinMask, cs
 		if(wPinMask & 0x01)
 		{
 			apt_gpio_intgroup_set(ptGpioBase,i, i);				//interrupt group
-			apt_exi_trg_edge_set(SYSCON, i, eTrgEdge);			//interrupt edge
+			apt_exi_trg_edge_set(SYSCON, i, (exi_trigger_e)eTrgEdge);			//interrupt edge
 		}
 		wPinMask = (wPinMask >> 1);
 	}

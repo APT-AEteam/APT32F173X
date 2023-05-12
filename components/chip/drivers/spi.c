@@ -257,7 +257,7 @@ int32_t csi_spi_send(csp_spi_t *ptSpiBase, void *pData, uint32_t wSize)
 	
 	if(NULL == pData || 0 == wSize)
 		return CSI_ERROR;
-	if((g_tSpiTransmit.byWriteable == SPI_STATE_BUSY))						
+	if(g_tSpiTransmit.byWriteable == SPI_STATE_BUSY)						
 		return CSI_BUSY;
 	
 	g_tSpiTransmit.byWriteable = SPI_STATE_BUSY;
@@ -315,7 +315,7 @@ csi_error_t csi_spi_send_async(csp_spi_t *ptSpiBase, void *pData, uint32_t wSize
 	
 	if(NULL == pData || 0 == wSize)
 		tRet = CSI_ERROR;
-	if((g_tSpiTransmit.byWriteable == SPI_STATE_BUSY))						
+	if(g_tSpiTransmit.byWriteable == SPI_STATE_BUSY)						
         tRet = CSI_BUSY;
 		
 	if(tRet == CSI_OK)
@@ -349,7 +349,7 @@ int32_t csi_spi_receive(csp_spi_t *ptSpiBase, void *pData, uint32_t wSize)
 	if(NULL == pData || 0 == wSize)
 		return CSI_ERROR;
 		
-	if((g_tSpiTransmit.byReadable == SPI_STATE_BUSY))						
+	if(g_tSpiTransmit.byReadable == SPI_STATE_BUSY)						
 		return CSI_BUSY;
 	g_tSpiTransmit.byReadable = SPI_STATE_BUSY;
 	g_tSpiTransmit.byRxSize = wSize;
@@ -401,7 +401,7 @@ csi_error_t csi_spi_receive_async(csp_spi_t *ptSpiBase, void *pData, uint32_t wS
 	
 	if(NULL == pData || 0 == wSize)
 		tRet = CSI_ERROR;
-	if((g_tSpiTransmit.byReadable == SPI_STATE_BUSY))						
+	if(g_tSpiTransmit.byReadable == SPI_STATE_BUSY)						
 		tRet = CSI_BUSY;
 	
 	if(tRet == CSI_OK)

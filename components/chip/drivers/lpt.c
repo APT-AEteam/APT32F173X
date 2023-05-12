@@ -511,7 +511,7 @@ csi_error_t csi_lpt_start_sync(csp_lpt_t *ptLptBase, csi_lpt_clksrc_e eClk, uint
 		csp_lpt_prdr_ldmode(ptLptBase, LPT_PRDLD_IM);
 		csp_lpt_set_prdr(ptLptBase, (uint16_t)g_wLptPrd);
 	}
-	csi_lpt_int_enable(ptLptBase,LPT_PEND_INT,ENABLE);	 //enable PEND interrupt
+	csi_lpt_int_enable(ptLptBase,LPT_INTSRC_PEND,ENABLE);	 //enable PEND interrupt
 	return tRet;
 }
 
@@ -527,7 +527,7 @@ csi_error_t csi_lpt_set_sync(csp_lpt_t *ptLptBase, uint8_t bySync, csi_lpt_syncm
 {
 	if(bySync > 0)
 		return CSI_ERROR;		
-	csp_lpt_set_sync_mode(ptLptBase, eSyncMode);
+	csp_lpt_set_sync_mode(ptLptBase, (lpt_syncmd_e)eSyncMode);
 	csp_lpt_auto_rearm_enable(ptLptBase, bARearmEnable);
 	csp_lpt_sync_enable(ptLptBase, ENABLE);
 	return CSI_OK;
