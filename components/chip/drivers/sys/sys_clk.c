@@ -32,7 +32,7 @@ static const uint32_t s_wHclkDiv[] = {
 static uint32_t apt_get_hclk(void)
 {
 	uint32_t wRslt;
-	wRslt = tClkConfig.wSclk;
+	wRslt = g_tClkConfig.wSclk;
 	return (wRslt);
 }
 
@@ -51,7 +51,7 @@ static csi_error_t apt_auto_pll_cfg(uint32_t wPllFreq)
 		wNulFreq = wPllFreq * byStep;
 		if((wNulFreq >= 150000000)&&(wNulFreq <= 300000000))
 		{
-			tPllClkConfig.byCkp_Div = byStep-1;
+			g_tPllClkConfig.byCkp_Div = byStep-1;
 			break;
 		}
 	}
@@ -59,11 +59,11 @@ static csi_error_t apt_auto_pll_cfg(uint32_t wPllFreq)
 	byStep = (wNulFreq + 24000000)/48000000;
 	if((byStep%2) == 0)
 	{
-		tPllClkConfig.byCkq_Div = byStep/2 - 1;
+		g_tPllClkConfig.byCkq_Div = byStep/2 - 1;
 	}
 	else 
 	{
-		tPllClkConfig.byCkq_Div = byStep/2;
+		g_tPllClkConfig.byCkq_Div = byStep/2;
 	}
 	for(byStep=3;byStep < 7;byStep ++)
 	{
@@ -83,9 +83,9 @@ static csi_error_t apt_auto_pll_cfg(uint32_t wPllFreq)
 	{
 		if(wValue == wValue1[byStep])
 		{
-			tPllClkConfig.byDivM = byStep + 2;         //byStep + 3 -1;
+			g_tPllClkConfig.byDivM = byStep + 2;         //byStep + 3 -1;
 			wFreqCkp = 24000000/(byStep+3);
-			tPllClkConfig.byNul = wNulFreq/wFreqCkp;	
+			g_tPllClkConfig.byNul = wNulFreq/wFreqCkp;	
 			return CSI_OK;	
 		}
 	}	
@@ -94,7 +94,7 @@ static csi_error_t apt_auto_pll_cfg(uint32_t wPllFreq)
 
 /** \brief sysctem clock (HCLK) configuration
  * 
- *  To set CPU frequence according to tClkConfig
+ *  To set CPU frequence according to g_tClkConfig
  * 
  *  \param[in] none.
  *  \return csi_error_t.
@@ -170,10 +170,10 @@ csi_error_t csi_sysclk_config(csi_clk_config_t tClkCfg)
 			csi_hfosc_enable(0);   
 			csp_pll_clk_sel(SYSCON, PLL_CLK_SEL_HFOSC);
 			
-			csp_pll_set_div_m(SYSCON, tPllClkConfig.byDivM);
-			csp_pll_set_nul(SYSCON, tPllClkConfig.byNul);
-			csp_pll_set_ckp_div(SYSCON, tPllClkConfig.byCkp_Div);
-			csp_pll_set_ckq_div(SYSCON, tPllClkConfig.byCkq_Div);
+			csp_pll_set_div_m(SYSCON, g_tPllClkConfig.byDivM);
+			csp_pll_set_nul(SYSCON, g_tPllClkConfig.byNul);
+			csp_pll_set_ckp_div(SYSCON, g_tPllClkConfig.byCkp_Div);
+			csp_pll_set_ckq_div(SYSCON, g_tPllClkConfig.byCkq_Div);
 			csp_pll_clk_enable(SYSCON, ENABLE);
 			csi_pll_enable();			
 			break;
@@ -187,16 +187,16 @@ csi_error_t csi_sysclk_config(csi_clk_config_t tClkCfg)
 			csi_emosc_enable(EMOSC_VALUE);         //EMOSC_VALUE
 			csp_pll_clk_sel(SYSCON, PLL_CLK_SEL_EMOSC);	
 
-			csp_pll_set_div_m(SYSCON, tPllClkConfig.byDivM);
-			csp_pll_set_nul(SYSCON, tPllClkConfig.byNul);
-			csp_pll_set_ckp_div(SYSCON, tPllClkConfig.byCkp_Div);
-			csp_pll_set_ckq_div(SYSCON, tPllClkConfig.byCkq_Div);
+			csp_pll_set_div_m(SYSCON, g_tPllClkConfig.byDivM);
+			csp_pll_set_nul(SYSCON, g_tPllClkConfig.byNul);
+			csp_pll_set_ckp_div(SYSCON, g_tPllClkConfig.byCkp_Div);
+			csp_pll_set_ckq_div(SYSCON, g_tPllClkConfig.byCkq_Div);
 			csp_pll_clk_enable(SYSCON, ENABLE);
 			csi_pll_enable();					
 			break;			
 		case (SRC_MANUAL_PLL):	
 			csi_pll_disable();
-			if(tPllClkConfig.eClkSel == PLL_SEL_EMOSC_24M)
+			if(g_tPllClkConfig.eClkSel == PLL_SEL_EMOSC_24M)
 			{
 				csp_em_flt_sel(SYSCON,EM_FLT_10NS);
 				csp_em_flt_enable(SYSCON,ENABLE);
@@ -205,7 +205,7 @@ csi_error_t csi_sysclk_config(csi_clk_config_t tClkCfg)
 			}			
 			else
 			{
-				switch(tPllClkConfig.eClkSel)
+				switch(g_tPllClkConfig.eClkSel)
 				{
 					break;
 					case (PLL_SEL_HFOSC_24M):	byFreqIdx = 0;
@@ -221,10 +221,10 @@ csi_error_t csi_sysclk_config(csi_clk_config_t tClkCfg)
 				csp_pll_clk_sel(SYSCON, PLL_CLK_SEL_HFOSC);
 				
 			}
-			csp_pll_set_div_m(SYSCON, tPllClkConfig.byDivM);
-			csp_pll_set_nul(SYSCON, tPllClkConfig.byNul);
-			csp_pll_set_ckp_div(SYSCON, tPllClkConfig.byCkp_Div);
-			csp_pll_set_ckq_div(SYSCON, tPllClkConfig.byCkq_Div);
+			csp_pll_set_div_m(SYSCON, g_tPllClkConfig.byDivM);
+			csp_pll_set_nul(SYSCON, g_tPllClkConfig.byNul);
+			csp_pll_set_ckp_div(SYSCON, g_tPllClkConfig.byCkp_Div);
+			csp_pll_set_ckq_div(SYSCON, g_tPllClkConfig.byCkq_Div);
 			csp_pll_clk_enable(SYSCON, ENABLE);
 			csi_pll_enable();	
 			break;
@@ -262,9 +262,9 @@ csi_error_t csi_sysclk_config(csi_clk_config_t tClkCfg)
 	
 	csp_set_pdiv(SYSCON, tClkCfg.ePdiv);
 	
-	//update wSclk and wPclk in tClkConfig
-	tClkConfig.wSclk = wTargetSclk;
-	tClkConfig.wPclk = tClkConfig.wSclk/(0x1<<tClkCfg.ePdiv);
+	//update wSclk and wPclk in g_tClkConfig
+	g_tClkConfig.wSclk = wTargetSclk;
+	g_tClkConfig.wPclk = g_tClkConfig.wSclk/(0x1<<tClkCfg.ePdiv);
 	return ret;
 }
 
@@ -286,9 +286,9 @@ csi_error_t csi_sysclk_config(csi_clk_config_t tClkCfg)
 		csp_em_flt_enable(SYSCON,ENABLE);
 		csi_emosc_enable(EMOSC_VALUE);         //EMOSC_VALUE
 		csp_pll_clk_sel(SYSCON, PLL_CLK_SEL_EMOSC);	
-		tPllClkConfig.byDivM = tPllCfg.byDivM;
-		tPllClkConfig.byNul = tPllCfg.byNul;
-		tPllClkConfig.byCkp_Div = tPllCfg.byCkp_Div;
+		g_tPllClkConfig.byDivM = tPllCfg.byDivM;
+		g_tPllClkConfig.byNul = tPllCfg.byNul;
+		g_tPllClkConfig.byCkp_Div = tPllCfg.byCkp_Div;
 	}
 	else
 	{
@@ -307,14 +307,14 @@ csi_error_t csi_sysclk_config(csi_clk_config_t tClkCfg)
 		csi_hfosc_enable(byFreqIdx);   
 		csp_pll_clk_sel(SYSCON, PLL_CLK_SEL_HFOSC);
 		
-		tPllClkConfig.byDivM = tPllCfg.byDivM;
-		tPllClkConfig.byNul = tPllCfg.byNul;
-		tPllClkConfig.byCkp_Div = tPllCfg.byCkp_Div;
+		g_tPllClkConfig.byDivM = tPllCfg.byDivM;
+		g_tPllClkConfig.byNul = tPllCfg.byNul;
+		g_tPllClkConfig.byCkp_Div = tPllCfg.byCkp_Div;
 	}
-	csp_pll_set_div_m(SYSCON, tPllClkConfig.byDivM);
-	csp_pll_set_nul(SYSCON, tPllClkConfig.byNul);
-	csp_pll_set_ckp_div(SYSCON, tPllClkConfig.byCkp_Div);
-	csp_pll_set_ckq_div(SYSCON, tPllClkConfig.byCkq_Div);
+	csp_pll_set_div_m(SYSCON, g_tPllClkConfig.byDivM);
+	csp_pll_set_nul(SYSCON, g_tPllClkConfig.byNul);
+	csp_pll_set_ckp_div(SYSCON, g_tPllClkConfig.byCkp_Div);
+	csp_pll_set_ckq_div(SYSCON, g_tPllClkConfig.byCkq_Div);
 	csp_pll_clk_enable(SYSCON, ENABLE);
 	csi_pll_enable();
 
@@ -355,10 +355,10 @@ csi_error_t csi_sysclk_config(csi_clk_config_t tClkCfg)
 	{
 		return CSI_ERROR;
 	}
-	csp_pll_set_div_m(SYSCON, tPllClkConfig.byDivM);
-	csp_pll_set_nul(SYSCON, tPllClkConfig.byNul);
-	csp_pll_set_ckp_div(SYSCON, tPllClkConfig.byCkp_Div);
-	csp_pll_set_ckq_div(SYSCON, tPllClkConfig.byCkq_Div);
+	csp_pll_set_div_m(SYSCON, g_tPllClkConfig.byDivM);
+	csp_pll_set_nul(SYSCON, g_tPllClkConfig.byNul);
+	csp_pll_set_ckp_div(SYSCON, g_tPllClkConfig.byCkp_Div);
+	csp_pll_set_ckq_div(SYSCON, g_tPllClkConfig.byCkq_Div);
 	csp_pll_clk_enable(SYSCON, ENABLE);
 	csi_pll_enable();
 
@@ -408,7 +408,7 @@ void soc_clk_disable(clk_module_e wModule)
 }
 
 /** \brief to calculate SCLK and PCLK frequence according to the current reg content
- *  tClkConfig.wSclk and tClkConfig.wPclk will be updated after excuting this function
+ *  g_tClkConfig.wSclk and g_tClkConfig.wPclk will be updated after excuting this function
  *  \param[in] none.
  *  \return csi_error_t.
  */
@@ -424,26 +424,26 @@ csi_error_t csi_calc_clk_freq(void)
 		eClkSrc = ((sclk_sel_e) csp_get_clksrc(SYSCON));
 		switch(eClkSrc)
 		{ 	case (SEL_ISOSC): 	
-				tClkConfig.wSclk = ISOSC_VALUE;
+				g_tClkConfig.wSclk = ISOSC_VALUE;
 				break;
 			case (SEL_EMOSC): 	
-				tClkConfig.wSclk = EMOSC_VALUE;
+				g_tClkConfig.wSclk = EMOSC_VALUE;
 				break;
 			case (SEL_IMOSC):	
 				wImoFreq = csp_get_imosc_fre(SYSCON);
 				switch (wImoFreq)
 				{
 					case (0): 
-						tClkConfig.wSclk = IMOSC_5M_VALUE;
+						g_tClkConfig.wSclk = IMOSC_5M_VALUE;
 						break;
 					case (1): 
-						tClkConfig.wSclk = IMOSC_4M_VALUE;
+						g_tClkConfig.wSclk = IMOSC_4M_VALUE;
 						break;
 					case (2): 
-						tClkConfig.wSclk = IMOSC_2M_VALUE;	
+						g_tClkConfig.wSclk = IMOSC_2M_VALUE;	
 						break;
 					case (3): 
-						tClkConfig.wSclk = IMOSC_131K_VALUE;	
+						g_tClkConfig.wSclk = IMOSC_131K_VALUE;	
 						break;
 					default: 
 						return CSI_ERROR;	
@@ -455,13 +455,13 @@ csi_error_t csi_calc_clk_freq(void)
 				switch (wHfoFreq)
 				{
 					case (0): 
-						tClkConfig.wSclk = HFOSC_24M_VALUE;
+						g_tClkConfig.wSclk = HFOSC_24M_VALUE;
 						break;
 					case (1): 
-						tClkConfig.wSclk = HFOSC_12M_VALUE;	
+						g_tClkConfig.wSclk = HFOSC_12M_VALUE;	
 						break;
 					case (2): 
-						tClkConfig.wSclk = HFOSC_6M_VALUE;	
+						g_tClkConfig.wSclk = HFOSC_6M_VALUE;	
 						break;
 					default:  
 						return CSI_ERROR;	
@@ -469,17 +469,17 @@ csi_error_t csi_calc_clk_freq(void)
 				}
 				break;
 			case (SEL_PLL): 
-				tClkConfig.wSclk = PLL_VALUE;
+				g_tClkConfig.wSclk = PLL_VALUE;
 				break;
 			case (SEL_ESOSC): 	
-				tClkConfig.wSclk = ESOSC_VALUE;
+				g_tClkConfig.wSclk = ESOSC_VALUE;
 				break;
 			default:
 				return CSI_ERROR;
 				break;
 		}
 		byHclkDiv = csp_get_hclk_div(SYSCON);
-		tClkConfig.wSclk = tClkConfig.wSclk/s_wHclkDiv[byHclkDiv];
+		g_tClkConfig.wSclk = g_tClkConfig.wSclk/s_wHclkDiv[byHclkDiv];
 	}
 
 	//calculate pclk 
@@ -497,7 +497,7 @@ csi_error_t csi_calc_clk_freq(void)
 		else if(wDiv & 0x02)
 			wPdiv = 4;
 		
-		tClkConfig.wPclk = tClkConfig.wSclk / wPdiv;
+		g_tClkConfig.wPclk = g_tClkConfig.wSclk / wPdiv;
 	}
 
 	return CSI_OK;
@@ -509,7 +509,7 @@ csi_error_t csi_calc_clk_freq(void)
  */ 
 uint32_t csi_get_sclk_freq(void)
 {	
-	return tClkConfig.wSclk;
+	return g_tClkConfig.wSclk;
 }
 
 /** \brief To get PCLK frequence 
@@ -518,7 +518,7 @@ uint32_t csi_get_sclk_freq(void)
  */ 
 uint32_t csi_get_pclk_freq(void)
 {
-	return tClkConfig.wPclk;
+	return g_tClkConfig.wPclk;
 }
 
 /** \brief To get CORET frequence.
@@ -528,7 +528,7 @@ uint32_t csi_get_pclk_freq(void)
  */ 
 uint32_t soc_get_coret_freq(void)
 {
-	return tClkConfig.wSclk;
+	return g_tClkConfig.wSclk;
 }
 /** \brief to set clock status in PM mode 
  *  when IWDT is enabled, trying to stop ISOSC in stop mode would be invalid

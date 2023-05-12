@@ -19,7 +19,7 @@
 /* Private macro-----------------------------------------------------------*/
 /* externs function--------------------------------------------------------*/
 /* externs variablesr------------------------------------------------------*/
-extern 	csi_can_bittime_t  tBitTime[];
+extern 	csi_can_bittime_t  g_tBitTime[];
 
 /* Private variablesr------------------------------------------------------*/
 csi_can_trans_t 	g_tCanTran;	
@@ -55,7 +55,7 @@ uint8_t apt_can_post_msg(uint32_t wMsg, csi_can_msg_mode_e eMsgMode)
  */ 
 static csi_can_bittime_t *apt_can_get_bittime(csi_can_baudRate_e eBaudRate)
 {
-	csi_can_bittime_t *ptBitTm = (csi_can_bittime_t *)tBitTime;
+	csi_can_bittime_t *ptBitTm = (csi_can_bittime_t *)g_tBitTime;
 
     while(ptBitTm->wBaudRate) 
 	{

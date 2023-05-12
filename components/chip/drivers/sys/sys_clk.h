@@ -83,7 +83,7 @@ typedef struct {
 	uint32_t		wPclk;
 }csi_clk_config_t;
 
-extern csi_clk_config_t tClkConfig;
+extern csi_clk_config_t g_tClkConfig;
 
 typedef enum{
 	PLL_SEL_HFOSC_24M,	
@@ -112,7 +112,7 @@ typedef struct {
 	pll_ckqdiv_e      byCkq_Div;
 }csi_pll_manual_config_t;
 
-extern csi_pll_manual_config_t tPllClkConfig;
+extern csi_pll_manual_config_t g_tPllClkConfig;
 
 //typedef struct {
 //    cclk_src_e	eSysClkSrc;      /* select sysclk source clock */
@@ -183,7 +183,7 @@ extern uint32_t g_wSystemClk;
 
 /** 
   \brief sysctem clock (HCLK) configuration
-   To set CPU frequence according to tClkConfig
+   To set CPU frequence according to g_tClkConfig
   \param[in] none.
   \return csi_error_t.
  */ 
@@ -227,7 +227,7 @@ void csi_clk_pm_enable(clk_pm_e eClk, bool bEnable);
 
 /** 
   \brief to calculate SCLK and PCLK frequence according to the current reg content
-   tClkConfig.wSclk and tClkConfig.wPclk will be updated after excuting this function
+   g_tClkConfig.wSclk and g_tClkConfig.wPclk will be updated after excuting this function
   \param[in] none.
   \return csi_error_t.
  */

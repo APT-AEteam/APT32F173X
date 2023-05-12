@@ -25,11 +25,11 @@ sys_console_t g_tConsole;
 
 /* system clock configuration parameters to define source, source freq(if selectable), sdiv and pdiv
  * 
- * such as: tClkConfig.eSdiv = SCLK_DIV1, tClkConfig.wSclk = tClkConfig.wFreq / 1
- *          tClkConfig.ePdiv = SCLK_DIV4, tClkConfig.wPclk = tClkConfig.wSclk / 4 
+ * such as: g_tClkConfig.eSdiv = SCLK_DIV1, g_tClkConfig.wSclk = g_tClkConfig.wFreq / 1
+ *          g_tClkConfig.ePdiv = SCLK_DIV4, g_tClkConfig.wPclk = g_tClkConfig.wSclk / 4 
  * 
  */
-csi_clk_config_t tClkConfig = 
+csi_clk_config_t g_tClkConfig = 
 	//{SRC_HFOSC, HFOSC_24M_VALUE, SCLK_DIV1, PCLK_DIV1, HFOSC_24M_VALUE, HFOSC_24M_VALUE};
 	//{SRC_HFOSC, HFOSC_12M_VALUE, SCLK_DIV1, PCLK_DIV1,HFOSC_12M_VALUE, HFOSC_12M_VALUE};
 	//{SRC_HFOSC, HFOSC_6M_VALUE, SCLK_DIV1, PCLK_DIV1,HFOSC_6M_VALUE, HFOSC_6M_VALUE};
@@ -46,18 +46,18 @@ csi_clk_config_t tClkConfig =
 
 /*  PLL MANUAL CONFIG
  * 
- * PLLPCLK = 24 /(tPllClkConfig.byDivM+1) * tPllClkConfig.byNul / (tPllClkConfig.byCkp_Div+1)
- * tPllClkConfig.byCkq_Div= CKQ_DIV4, PLLQCLK = 24 /(tPllClkConfig.byDivM+1) * tPllClkConfig.byNul / 4  
+ * PLLPCLK = 24 /(g_tPllClkConfig.byDivM+1) * g_tPllClkConfig.byNul / (g_tPllClkConfig.byCkp_Div+1)
+ * g_tPllClkConfig.byCkq_Div= CKQ_DIV4, PLLQCLK = 24 /(g_tPllClkConfig.byDivM+1) * g_tPllClkConfig.byNul / 4  
  * 
  */  
-csi_pll_manual_config_t tPllClkConfig = 
+csi_pll_manual_config_t g_tPllClkConfig = 
 	{PLL_SEL_HFOSC_24M, 3, 35, 1,CKQ_DIV4};       //PLLPCLK = 24 /(3+1) *35 / (1+1)  PLLQCLK = 24 /(3+1) *35 / 4 
 	//{PLL_SEL_HFOSC_12M, 1, 35, 1,CKQ_DIV4};
 	//{PLL_SEL_HFOSC_6M,  1, 70, 1,CKQ_DIV4};
 	//{PLL_SEL_EMOSC_24M, 3, 35, 1,CKQ_DIV4};	
 	
 /// can bit timer parameters config, Standard baud rate
-const csi_can_bittime_t  tBitTime[] = {
+const csi_can_bittime_t  g_tBitTime[] = {
 	
 	
 	//CAN clk source = pclk = 6MHz
