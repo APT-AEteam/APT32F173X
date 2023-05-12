@@ -50,8 +50,8 @@ typedef enum
  */
 typedef enum
 {
-	CAN_MSG_RECV	= 0,	//CAN message dir receive
-	CAN_MSG_SEND			//CAN message dir send
+	CAN_DIR_RECV	= 0,	//CAN message dir receive
+	CAN_DIR_SEND			//CAN message dir send
 }csi_can_dir_e;
 
 /**
@@ -65,8 +65,8 @@ typedef enum
 }csi_can_id_e;
 
 /**
- * \enum	csi_can_id_e
- * \brief   can id mode std/exi
+ * \enum	csi_can_msg_e
+ * \brief   can message valid/invalid
  */
 typedef enum
 {
@@ -249,8 +249,9 @@ typedef enum
  */
 typedef enum
 {
-	CAN_MSG_STATUS		= 0,				//Status Interrupt Msg
-	CAN_MSG_SOURCE		= 1					//Source(channel) Interrupt Msg
+	CAN_MSG_STATUS		= 0,					//Status Interrupt Msg
+	CAN_MSG_RECV		= 1,					//Receive Source(channel) Interrupt Msg
+	CAN_MSG_SEND		= 2						//Send Source(channel) Interrupt Msg
 }csi_can_msg_mode_e;
 
 /**
@@ -264,7 +265,7 @@ typedef enum
 	CAN_MSG_BUSOFFTR	= (0x01uL << 3),		//总线关闭
 	CAN_MSG_ACTVT		= (0x01uL << 4),		//RX接收活动状态
 	CAN_MSG_RXOK		= (0x01uL << 8),		//接收OK
-	CAN_MSG_CTXOK		= (0x01uL << 9),		//发送OK
+	CAN_MSG_TXOK		= (0x01uL << 9),		//发送OK
 	CAN_MSG_STUFF		= (0x01uL << 10),		//报文填充错误
 	CAN_MSG_FORM		= (0x01uL << 11),		//报文形式错误			
 	CAN_MSG_ACK			= (0x01uL << 12),		//报文应答错误
@@ -573,22 +574,53 @@ csi_error_t csi_can_set_ifx(csp_can_t *ptCanBase, csi_can_chnl_e eChNum, csi_can
   \param[in]   eChNum		number of message
   \return 	   mcr reg value
  */
-uint32_t csi_can_get_clr_recv_flg(csp_can_t *ptCanBase, csi_can_chnl_e eChNum);
-
+uint32_t csi_can_get_clr_recvflg(csp_can_t *ptCanBase, csi_can_chnl_e eChNum);
 
 /** 
-  \brief  get msg of receive channel receive message
+  \brief can post(set) Receive/Send and Status msg 
+  \param[in] eMsgMode: can msg mode, \ref csi_can_msg_mode_e
+  \param[in] wMsg: status and channel msg
+  \return true/false
+ */ 
+bool csi_can_post_msg(csi_can_msg_mode_e eMsgMode, uint32_t wMsg);
+
+/** 
+  \brief  get msg of receive/send channel receive/send message
+  \param[in] eMsgMode: can msg mode(recv and send chnl), \ref csi_can_msg_mode_e 
+  \param[in] eChNum: number of channel 
+  \return true/false
+ */
+bool csi_can_get_msg(csi_can_msg_mode_e eMsgMode, csi_can_chnl_e eChNum);
+
+/** 
+  \brief  clr msg of can receive/send message channel 
+  \param[in] eMsgMode: can msg mode(recv and send chnl), \ref csi_can_msg_mode_e
+  \param[in] eChNum: number of channel 
+  \return none
+ */
+void csi_can_clr_msg(csi_can_msg_mode_e eMsgMode, csi_can_chnl_e eChNum);
+
+/** 
+  \brief  get msg of receive channel message
   \param[in] none
   \return message channel mask
  */
 uint32_t csi_can_get_recv_msg(void);
 
 /** 
-  \brief  clr msg of can receive message channel 
-  \param[in] eChNum: number of channel 
+  \brief  clr msg of can status msg
+  \param[in] none
+  \return message status mask
+ */
+uint32_t csi_can_get_status_msg(void);
+
+/** 
+  \brief  clr msg of can status msg
+  \param[in] wStaMsg：status message
   \return none
  */
-void csi_can_clr_recv_msg(csi_can_chnl_e eChNum);
+void csi_can_clr_status_msg(csi_can_status_msg_e eStaMsg);
+
 
 #ifdef __cplusplus
 }

@@ -19,34 +19,15 @@
 /* Private macro-----------------------------------------------------------*/
 /* externs function--------------------------------------------------------*/
 /* externs variablesr------------------------------------------------------*/
-extern 	csi_can_bittime_t  g_tBitTime[];
+extern 	csi_can_bittime_t  tBitTime[];
 
 /* Private variablesr------------------------------------------------------*/
 csi_can_trans_t 	g_tCanTran;	
 
 static uint32_t s_wCanStaMsg	= 0;			//Status Interrupt Msg
-static uint32_t s_wCanChnlMsg	= 0;			//Source Channel Interrupt Msg
+static uint32_t s_wCanRecvMsg	= 0;			//Receive Source Channel Interrupt Msg
+static uint32_t s_wCanSendMsg	= 0;			//Receive Source Channel Interrupt Msg
 
-/** \brief get can bit time config
- * 
- *  \param[in] eBaudRate: can transfer baud rate
- *  \return pointer of can bit time structure
- */ 
-uint8_t apt_can_post_msg(uint32_t wMsg, csi_can_msg_mode_e eMsgMode)
-{
-	switch(eMsgMode)
-	{
-		case CAN_MSG_STATUS:
-			s_wCanStaMsg |= wMsg;			//Status Msg
-			break;
-		case CAN_MSG_SOURCE:
-			s_wCanChnlMsg |= wMsg;			//Source Msg
-			break;
-		default:
-			return false;
-	}
-	return true;
-}
 
 /** \brief get can bit time config
  * 
@@ -55,7 +36,7 @@ uint8_t apt_can_post_msg(uint32_t wMsg, csi_can_msg_mode_e eMsgMode)
  */ 
 static csi_can_bittime_t *apt_can_get_bittime(csi_can_baudRate_e eBaudRate)
 {
-	csi_can_bittime_t *ptBitTm = (csi_can_bittime_t *)g_tBitTime;
+	csi_can_bittime_t *ptBitTm = (csi_can_bittime_t *)tBitTime;
 
     while(ptBitTm->wBaudRate) 
 	{
@@ -414,12 +395,13 @@ uint8_t csi_can_chnl_read(csp_can_t *ptCanBase, uint8_t *pRecvBuf, csi_can_chnl_
 	uint8_t byRet = 0;
 	
 	csi_irq_disable(ptCanBase);
-	if(g_tCanTran.ptCanRecv[byBufNum].wRecvId & (0x01ul << 31))		
+	if(g_tCanTran.ptCanRecv[byBufNum].wRecvId != 0)		
 	{
-		g_tCanTran.ptCanRecv[byBufNum].wRecvId &= ~(0x01ul << 31);
+		
 		pRecvBuf[0] = g_tCanTran.ptCanRecv[byBufNum].byDataLen;
 		memcpy((pRecvBuf+1), (uint8_t *)&g_tCanTran.ptCanRecv[byBufNum].wRecvId, byMsgLen);
-		s_wCanChnlMsg &= ~(0x01ul << (eChNum - 1));							//clear receive channel msg
+		g_tCanTran.ptCanRecv[byBufNum].wRecvId = 0;							//clear id
+		s_wCanRecvMsg &= ~(0x01ul << (eChNum - 1));							//clear receive channel msg
 		
 		byRet =  g_tCanTran.ptCanRecv[byBufNum].byDataLen;
 	}
@@ -688,32 +670,117 @@ csi_error_t csi_can_set_ifx(csp_can_t *ptCanBase, csi_can_chnl_e eChNum, csi_can
 /** \brief  get receive message NEWDAT and clear NEWDAT and ITPND 
  * 
  *  \param[in] ptCanBase: pointer of can register structure
- *  \param[in] eChNum: number of message
+ *  \param[in] eChNum: number of message channel
  *  \return error code \ref csi_error_t
  */
-uint32_t csi_can_get_clr_recv_flg(csp_can_t *ptCanBase, csi_can_chnl_e eChNum)
+uint32_t csi_can_get_clr_recvflg(csp_can_t *ptCanBase, csi_can_chnl_e eChNum)
 {
-	while(csp_can_get_sr(ptCanBase) & CAN_BUSY1_S);											//If1 Busy?												
 	csp_can_set_tmr(ptCanBase, eChNum, 1, CAN_AMCR_MSK | CAN_CLRIT_MSK | CAN_TRND_MSK);		//Write If1 command request, clear NAWDATA and ITPND flag
+	while(csp_can_get_sr(ptCanBase) & CAN_BUSY1_S);											//If1 Busy?												
 	return csp_can_get_mcr(ptCanBase);	
 }
 
-/** \brief  get msg of receive channel receive message
+/** \brief can post(set) Receive/Send and Status msg 
+ * 
+ *  \param[in] eMsgMode: can msg mode, \ref csi_can_msg_mode_e
+ *  \param[in] wMsg: status and channel msg
+ *  \return true/false
+ */ 
+bool csi_can_post_msg(csi_can_msg_mode_e eMsgMode, uint32_t wMsg)
+{
+	switch(eMsgMode)
+	{
+		case CAN_MSG_STATUS:
+			s_wCanStaMsg |= wMsg;			//Status Msg
+			break;
+		case CAN_MSG_RECV:
+			s_wCanRecvMsg |= wMsg;			//Receive Source Msg
+			break;
+		case CAN_MSG_SEND:
+			s_wCanSendMsg |= wMsg;			//Send Source Msg
+			break;
+		default:
+			return false;
+	}
+	return true;
+}
+
+/** \brief  get msg of receive/send channel receive/send message
+ *
+ *  \param[in] eMsgMode: can msg mode(recv and send chnl), \ref csi_can_msg_mode_e 
+ *  \param[in] eChNum: number of channel 
+ *  \return true/false
+ */
+bool csi_can_get_msg(csi_can_msg_mode_e eMsgMode, csi_can_chnl_e eChNum)
+{
+	uint32_t wStatus = 0;
+	
+	switch(eMsgMode)
+	{
+		case CAN_MSG_RECV:						//Receive Channel
+			wStatus = s_wCanRecvMsg;
+			break;
+		case CAN_MSG_SEND:						//Send Channel
+			wStatus = s_wCanSendMsg;
+			break;
+		default:
+			return false;
+	}
+		
+	if(wStatus & (0x01ul << (eChNum -1)))
+		return true;
+	else
+		 return false;
+}
+
+/** \brief  clr msg of can receive/send message channel 
+ * 
+ *  \param[in] eMsgMode: can msg mode(recv and send chnl), \ref csi_can_msg_mode_e
+ *  \param[in] eChNum: number of channel 
+ *  \return none
+ */
+void csi_can_clr_msg(csi_can_msg_mode_e eMsgMode, csi_can_chnl_e eChNum)
+{
+	
+	switch(eMsgMode)
+	{
+		case CAN_MSG_RECV:								//Receive Channel
+			s_wCanRecvMsg &= ~(0x01ul << (eChNum -1));
+			break;
+		case CAN_MSG_SEND:								//Send Channel
+			s_wCanSendMsg &= ~(0x01ul << (eChNum -1));
+			break;
+		default:
+			break;
+	}
+}
+
+/** \brief  get msg of receive channel message
  * 
  *  \param[in] none
  *  \return message channel mask
  */
 uint32_t csi_can_get_recv_msg(void)
 {
-	return s_wCanChnlMsg;
+	return s_wCanRecvMsg;
 }
 
-/** \brief  clr msg of can receive message channel 
+/** \brief  clr msg of can status msg
  * 
- *  \param[in] eChNum: number of channel 
+ *  \param[in] none
+ *  \return message status mask
+ */
+uint32_t csi_can_get_status_msg(void)
+{
+	return s_wCanStaMsg;
+}
+
+/** \brief  clr msg of can status msg
+ * 
+ *  \param[in] eStaMsg：status message,\ref csi_can_status_msg_e
  *  \return none
  */
-void csi_can_clr_recv_msg(csi_can_chnl_e eChNum)
+void csi_can_clr_status_msg(csi_can_status_msg_e eStaMsg)
 {
-	s_wCanChnlMsg &= (0x01ul << (eChNum -1));
+	s_wCanStaMsg &= ~eStaMsg;
 }
