@@ -33,7 +33,7 @@ void csi_clk_enable(uint32_t *pIpBase)
 	{
         if((uint32_t)pIpBase == ptMap->wRegBase) 
 		{
-            soc_clk_enable((clk_module_t)ptMap->wModule);
+            soc_clk_enable((clk_module_e)ptMap->wModule);
             break;
         }
 		
@@ -56,7 +56,7 @@ void csi_clk_disable(uint32_t *pIpBase)
 	{
         if((uint32_t)pIpBase == ptMap->wRegBase) 
 		{
-            soc_clk_disable((clk_module_t)ptMap->wModule);
+            soc_clk_disable((clk_module_e)ptMap->wModule);
             break;
         }
         ptMap++;

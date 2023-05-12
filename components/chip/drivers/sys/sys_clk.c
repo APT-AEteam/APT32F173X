@@ -384,7 +384,7 @@ csi_error_t csi_clo_config(clo_src_e eCloSrc, clo_div_e eCloDiv)
  *  \param[in] wModule: module name
  *  \return none
  */
-void soc_clk_enable(int32_t wModule)
+void soc_clk_enable(clk_module_e wModule)
 {
     //TODO
 	if(wModule < 32U)
@@ -398,7 +398,7 @@ void soc_clk_enable(int32_t wModule)
  *  \param[in] wModule: module name
  *  \return none
  */
-void soc_clk_disable(int32_t wModule)
+void soc_clk_disable(clk_module_e wModule)
 {
     //TODO
 	if(wModule < 32U)

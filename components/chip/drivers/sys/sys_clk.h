@@ -121,9 +121,9 @@ extern csi_pll_manual_config_t tPllClkConfig;
 //    pclk_div_e 	ePclkDivider;    /* ratio between mclk clock and apb0 clock */
 //} system_clk_config_t;
 
-/// \enum clk_module_t
+/// \enum clk_module_e
 /// \brief all the peri clock enable bits in SYSCON level
-/// \todo  clk_module_t or clk_module_e
+/// \todo  clk_module_e or clk_module_e
 
 typedef enum {
     IFC_SYS_CLK		= 0U,
@@ -174,7 +174,7 @@ typedef enum {
 	BT2_SYS_CLK		= 62U,
 	BT3_SYS_CLK		= 63U,
 
-} clk_module_t;
+} clk_module_e;
 
 
 //global variable: sysclkclk 
@@ -263,17 +263,17 @@ uint32_t soc_get_bt_freq(uint8_t byIdx);
 
 /*
   \brief       Soc enable device clock
-  \param[in]   module   clock module, defined in sys_clk.h, \ref clk_module_t
+  \param[in]   module   clock module, defined in sys_clk.h, \ref clk_module_e
   \return      none
 */
-void soc_clk_enable(int32_t module);
+void soc_clk_enable(clk_module_e module);
 
 /*
   \brief       Soc disable device clock
-  \param[in]   module   clock module, defined in sys_clk.h, \ref clk_module_t
+  \param[in]   module   clock module, defined in sys_clk.h, \ref clk_module_e
   \return      none
 */
-void soc_clk_disable(int32_t module);
+void soc_clk_disable(clk_module_e module);
 
 /**
   \brief       Soc get device frequence.
