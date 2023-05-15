@@ -27,7 +27,7 @@ typedef enum {
 	SRC_MANUAL_PLL,
 	SRC_ISOSC,
 	SRC_ESOSC	
-} cclk_src_e;
+} csi_clk_src_e;
 
 typedef enum {
     SEL_IMOSC = 0,
@@ -36,7 +36,7 @@ typedef enum {
 	SEL_PLL,
 	SEL_ISOSC,
 	SEL_ESOSC	
-} sclk_sel_e;
+} csi_sclk_sel_e;
 
 typedef enum{
 	PCLK_PM = 8,
@@ -44,20 +44,20 @@ typedef enum{
 	ISOSC_PM = 12, 
 	IMOSC_PM,
 	EMOSC_PM = 15
-}cclk_pm_e;
+}csi_clk_pm_e;
 
 typedef enum {
 	IM_5M = IMOSC_5M_VALUE,
 	IM_4M = IMOSC_4M_VALUE,
 	IM_2M = IMOSC_2M_VALUE, 
 	IM_131K = IMOSC_131K_VALUE
-}imo_freq_e;
+}csi_imo_freq_e;
 
 typedef enum{
 	HF_24M  = HFOSC_24M_VALUE,
 	HF_12M  = HFOSC_12M_VALUE,
 	HF_6M   = HFOSC_6M_VALUE
-}hfo_freq_e;
+}csi_hfo_freq_e;
 
 typedef enum{
 	PCLK_DIV1	= 0,
@@ -65,22 +65,22 @@ typedef enum{
 	PCLK_DIV4,
 	PCLK_DIV8 	= 4,
 	PCLK_DIV16 	= 8
-}pclk_div_e;
+}csi_pclk_div_e;
 
 typedef enum{
 	SCLK_DIV1	= 1,
 	SCLK_DIV2,
-}hclk_div_e;
+}csi_hclk_div_e;
 
 /// \struct system_clk_config_t
 /// members to be used in system clock management, including osc src, osc freq(if seletable), HCLK and PCLK divider
 typedef struct {
-	cclk_src_e		eClkSrc;	//clock source
-	uint32_t		wFreq;		//clock frequency
-	hclk_div_e		eSdiv;		//SDIV
-	pclk_div_e		ePdiv;		//PDIV
-	uint32_t		wSclk;		//SCLK
-	uint32_t		wPclk;
+	csi_clk_src_e		eClkSrc;	//clock source
+	uint32_t		    wFreq;		//clock frequency
+	csi_hclk_div_e		eSdiv;		//SDIV
+	csi_pclk_div_e		ePdiv;		//PDIV
+	uint32_t		    wSclk;		//SCLK
+	uint32_t		    wPclk;
 }csi_clk_config_t;
 
 extern csi_clk_config_t g_tClkConfig;
@@ -90,40 +90,40 @@ typedef enum{
 	PLL_SEL_HFOSC_12M,	
 	PLL_SEL_HFOSC_6M,	
 	PLL_SEL_EMOSC_24M
-}pll_manual_sel_e;
+}csi_pll_manual_sel_e;
 
 typedef enum{
 	PLL_HFOSC_24M_AUTO,
 	PLL_EMOSC_24M_AUTO
-}pll_auto_sel_e;
+}csi_pll_auto_sel_e;
 
 typedef enum{
 	CKQ_DIV2,	
 	CKQ_DIV4,	
 	CKQ_DIV6,
 	CKQ_DIV8,
-}pll_ckqdiv_e;
+}csi_pll_ckqdiv_e;
 
 typedef struct {
-	pll_manual_sel_e  eClkSel;	//clock frequency
-	uint8_t           byDivM;
-	uint8_t           byNul;
-	uint8_t           byCkp_Div;
-	pll_ckqdiv_e      byCkq_Div;
+	csi_pll_manual_sel_e  eClkSel;	//clock frequency
+	uint8_t               byDivM;
+	uint8_t               byNul;
+	uint8_t               byCkp_Div;
+	uint8_t               byCkq_Div;
 }csi_pll_manual_config_t;
 
 extern csi_pll_manual_config_t g_tPllClkConfig;
 
 //typedef struct {
-//    cclk_src_e	eSysClkSrc;      /* select sysclk source clock */
-//	uint32_t 	wOscFreq;        /* select frequence */
-//    hclk_div_e 	eHclkDivider;    /* ratio between fs_mclk clock and mclk clock */
-//    pclk_div_e 	ePclkDivider;    /* ratio between mclk clock and apb0 clock */
+//    csi_clk_src_e	    eSysClkSrc;      /* select sysclk source clock */
+//	  uint32_t 	        wOscFreq;        /* select frequence */
+//    csi_hclk_div_e 	eHclkDivider;    /* ratio between fs_mclk clock and mclk clock */
+//    csi_pclk_div_e 	ePclkDivider;    /* ratio between mclk clock and apb0 clock */
 //} system_clk_config_t;
 
-/// \enum clk_module_e
+/// \enum csi_clk_module_e
 /// \brief all the peri clock enable bits in SYSCON level
-/// \todo  clk_module_e or clk_module_e
+/// \todo  csi_clk_module_e 
 
 typedef enum {
     IFC_SYS_CLK		= 0U,
@@ -174,7 +174,7 @@ typedef enum {
 	BT2_SYS_CLK		= 62U,
 	BT3_SYS_CLK		= 63U,
 
-} clk_module_e;
+} csi_clk_module_e;
 
 
 //global variable: sysclkclk 
@@ -203,7 +203,7 @@ csi_error_t csi_sysclk_config(csi_clk_config_t tClkCfg);
  *  \param[in] wFreq: pll clk freq 
  *  \return csi_error_t.
  */
- csi_error_t csi_pll_auto_config(pll_auto_sel_e ePllAutoSel,uint32_t wFreq);
+ csi_error_t csi_pll_auto_config(csi_pll_auto_sel_e ePllAutoSel,uint32_t wFreq);
  
 /** 
   \brief Clock output configuration
@@ -263,17 +263,17 @@ uint32_t soc_get_bt_freq(uint8_t byIdx);
 
 /*
   \brief       Soc enable device clock
-  \param[in]   module   clock module, defined in sys_clk.h, \ref clk_module_e
+  \param[in]   eModule   clock module, defined in sys_clk.h, \ref csi_clk_module_e
   \return      none
 */
-void soc_clk_enable(clk_module_e module);
+void soc_clk_enable(csi_clk_module_e eModule);
 
 /*
   \brief       Soc disable device clock
-  \param[in]   module   clock module, defined in sys_clk.h, \ref clk_module_e
+  \param[in]   eModule   clock module, defined in sys_clk.h, \ref csi_clk_module_e
   \return      none
 */
-void soc_clk_disable(clk_module_e module);
+void soc_clk_disable(csi_clk_module_e eModule);
 
 /**
   \brief       Soc get device frequence.
