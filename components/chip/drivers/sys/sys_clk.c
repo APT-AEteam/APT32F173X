@@ -367,15 +367,15 @@ csi_error_t csi_sysclk_config(csi_clk_config_t tClkCfg)
 
 /** \brief Clock output configuration
  * 
- *  \param[in] eCloSrc: source to output
- *  \param[in] eCloDiv: clo divider 
+ *  \param[in] eCloSrc: source to output csi_clo_src_e
+ *  \param[in] eCloDiv: clo divider csi_clo_div_e
  *  \return csi_error_t.
  */
-csi_error_t csi_clo_config(clo_src_e eCloSrc, clo_div_e eCloDiv)
+csi_error_t csi_clo_config(csi_clo_src_e eCloSrc, csi_clo_div_e eCloDiv)
 { 	
 	csi_error_t ret = CSI_OK;
-	csp_set_clo_src(SYSCON, eCloSrc);
-	csp_set_clo_div(SYSCON, eCloDiv);
+	csp_set_clo_src(SYSCON, (clo_src_e)eCloSrc);
+	csp_set_clo_div(SYSCON, (clo_div_e)eCloDiv);
 	return ret;
 }
 
@@ -537,9 +537,9 @@ uint32_t soc_get_coret_freq(void)
  *  \param[in] bEnable: enable or disable
  *  \return none.
  */ 
-void csi_clk_pm_enable(clk_pm_e eClk, bool bEnable)
+void csi_clk_pm_enable(csi_clk_pm_e eClk, bool bEnable)
 {
-	csp_clk_pm_enable(SYSCON, eClk, bEnable);
+	csp_clk_pm_enable(SYSCON, (clk_pm_e)eClk, bEnable);
 }
 /** \brief       Soc get bt frequence.
  *  \param[in]   byIdx: id of bt
