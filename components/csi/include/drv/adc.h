@@ -163,7 +163,7 @@ typedef enum{
 	OPA2X,
 	OPA3X,
 	ADCIN_INTVREF	= 0x7Dul,
-	ADCIN_1_4VDD,
+	ADCIN_1_5VDD,
 	ADCIN_VSS
 }csi_adc_ch_e;
 
