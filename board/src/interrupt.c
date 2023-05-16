@@ -50,7 +50,7 @@ extern void sio_irqhandler(csp_sio_t *ptSioBase);
 extern void rtc_irqhandler(csp_rtc_t *ptRtcBase);
 
 extern void lpt_irqhandler(csp_lpt_t *ptLptBase);
-
+extern void dac_irqhandler(csp_dac_t *ptDacBase);
 /* Private macro-----------------------------------------------------------*/
 #define  ATTRIBUTE_ISR __attribute__ ((interrupt ("machine")))
 
@@ -238,6 +238,7 @@ ATTRIBUTE_ISR void dac0_int_handler(void)
 {
 #if DAC0_INT_HANDLE_EN		
     // ISR content ...
+	dac_irqhandler(DAC0);//this is a weak function defined in dac_demo.c, for better efficiency, we recommand user directly implement IRQ handler here without any function call.
 #endif
 }
 
