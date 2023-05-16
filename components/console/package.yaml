@@ -10,7 +10,8 @@ type: common
 yoc_version:
   - v7.2
   - v7.3
-depends: ~
+depends: 
+  - apt_csi: v1.0.0
 build_config:
   include:
     - include
@@ -37,3 +38,5 @@ field: ~
 suitableChip: ~
 homepage: ~
 soc_config: ~
+depends_forward:
+  - apt_csi: v1.0.0
