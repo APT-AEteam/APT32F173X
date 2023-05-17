@@ -37,7 +37,13 @@ extern "C" {
 #endif
 
 #ifndef PLL_VALUE
+
+#if	defined(IS_CHIP_1732) 
 #define PLL_VALUE               105000000U
+#else
+#define PLL_VALUE               72000000U
+#endif
+
 #endif
 
 /* example pin manager */
