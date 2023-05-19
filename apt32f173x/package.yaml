@@ -30,8 +30,10 @@ build_config:
   cxxflag: -Og  -g
   asmflag: -Wa,--gdwarf2
   define: 
-  libs: 
-  libpath: 
+  libs:
+    - libcsi_xt900p32f_dsp.a
+  libpath:
+    - ../components/csi/dsp/lib/
 source_file:
   - src/main.c
   - src/user_demo.c
