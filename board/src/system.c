@@ -46,7 +46,7 @@ void csi_iram_init(void)
 }
 #endif
 
-void system_init(void)		//__attribute__((weak))
+__attribute__((weak)) void system_init(void)		
 {
 	uint32_t i;
 
@@ -63,7 +63,6 @@ void system_init(void)		//__attribute__((weak))
     mstatus |= (1 << 13);
     __set_MSTATUS(mstatus);
 
-	
 	/* get interrupt level from info */
     CLIC->CLICCFG = (((CLIC->CLICINFO & CLIC_INFO_CLICINTCTLBITS_Msk) >> CLIC_INFO_CLICINTCTLBITS_Pos) << CLIC_CLICCFG_NLBIT_Pos);
 
@@ -71,18 +70,14 @@ void system_init(void)		//__attribute__((weak))
         CLIC->CLICINT[i].IP = 0;
         CLIC->CLICINT[i].ATTR = 1; /* use vector interrupt */
     }
-
-    /* tspend use positive interrupt */
-    //CLIC->CLICINT[SOFTWARE_IRQn].ATTR = 0x3;
-	
 	
 #ifdef	CONFIG_IRQ_LOOKUP		//Table lookup method for interrupt processing 
 	irq_vectors_init();
 #endif
 	
-	csi_iwdt_close();				//close iwdt
-	csi_sysclk_config(g_tClkConfig);			//sysclk config	
-	csi_calc_clk_freq();			//calculate(updata) sclk and pclk
+	csi_iwdt_close();				  //close iwdt
+	csi_sysclk_config(g_tClkConfig);  //sysclk config	
+	csi_calc_clk_freq();			  //calculate(updata) sclk and pclk
 	csi_tick_init();
 	
 	__enable_excp_irq();
