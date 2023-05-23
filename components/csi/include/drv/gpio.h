@@ -180,6 +180,19 @@ typedef enum {
 }csi_exi_trgsrc_e;
 
 /**
+ * \enum     csi_exi_trgout_e
+ * \brief    GPIO exi trigger out
+ */
+typedef enum {
+	EXI_TRGOUT0 = 0,
+	EXI_TRGOUT1,
+	EXI_TRGOUT2,
+	EXI_TRGOUT3,
+	EXI_TRGOUT4,
+	EXI_TRGOUT5,
+}csi_exi_trgout_e;
+
+/**
  * \enum     csi_exi_status_e
  * \brief    GPIO exi status bit
  */

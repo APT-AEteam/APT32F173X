@@ -137,8 +137,8 @@ int gptb_pwm_demo(void)
 	channel.byChoiceC1sel  =   GPTB_COMPA;
 	channel.byChoiceC2sel  =   GPTB_COMPA;
 
-	csi_gptb_channel_config(GPTB0, &channel,  GPTB_CHANNEL_A);//channel
-	csi_gptb_channel_config(GPTB0, &channel,  GPTB_CHANNEL_B);
+	csi_gptb_channel_config(GPTB0, &channel,  GPTB_CHANNEL_1);//channel
+	csi_gptb_channel_config(GPTB0, &channel,  GPTB_CHANNEL_2);
 
 	csi_gptb_start(GPTB0);//start  timer
 
@@ -202,8 +202,8 @@ int gptb_pwm_dz_demo(void)
 	channel.byChoiceC1sel  =   GPTB_COMPA;
 	channel.byChoiceC2sel  =   GPTB_COMPB;
 
-	csi_gptb_channel_config(GPTB0, &channel,  GPTB_CHANNEL_A);
-	csi_gptb_channel_config(GPTB0, &channel,  GPTB_CHANNEL_B);
+	csi_gptb_channel_config(GPTB0, &channel,  GPTB_CHANNEL_1);
+	csi_gptb_channel_config(GPTB0, &channel,  GPTB_CHANNEL_2);
 //------------------------------------------------------------------------------------------------------------------------	
     csi_gptb_deadzone_config_t  tGptbDeadZoneTime;
 	tGptbDeadZoneTime.byDcksel               = GPTB_DB_DPSC;
@@ -217,7 +217,7 @@ int gptb_pwm_dz_demo(void)
 	tGptbDeadZoneTime.byChxPolarityS3S2   = GPTB_DB_POL_B;                 //通道A和通道B延时输出电平是否反向
 	tGptbDeadZoneTime.byChxInselS5S4      = GPTB_DBCHAIN_AR_AF;            //PWMA作为上升沿和下降沿延时处理的输入信号
 	tGptbDeadZoneTime.byChxOutSwapS8S7    = GPTB_DBCHAOUT_OUTA_A_OUTB_B;   //OUTA=通道A输出，OUTB=通道B输出
-    csi_gptb_channelmode_config(GPTB0,&tGptbDeadZoneTime,GPTB_CHANNEL_A);
+    csi_gptb_channelmode_config(GPTB0,&tGptbDeadZoneTime,GPTB_CHANNEL_1);
 //------------------------------------------------------------------------------------------------------------------------
 	csi_gptb_start(GPTB0);//start  timer	
 	while(1)
@@ -277,8 +277,8 @@ int gptb_pwm_dz_em_demo(void)
 	channel.byChoiceC1sel  =   GPTB_COMPA;
 	channel.byChoiceC2sel  =   GPTB_COMPA;
 
-	csi_gptb_channel_config(GPTB0, &channel,  GPTB_CHANNEL_A);//channel
-	csi_gptb_channel_config(GPTB0, &channel,  GPTB_CHANNEL_B);
+	csi_gptb_channel_config(GPTB0, &channel,  GPTB_CHANNEL_1);//channel
+	csi_gptb_channel_config(GPTB0, &channel,  GPTB_CHANNEL_2);
 ////------------------------------------------------------------------------------------------------------------------------	
 	csi_gptb_deadzone_config_t  tGptbDeadZoneTime;
 	tGptbDeadZoneTime.byDcksel               = GPTB_DB_DPSC;
@@ -292,7 +292,7 @@ int gptb_pwm_dz_em_demo(void)
 	tGptbDeadZoneTime.byChxPolarityS3S2   = GPTB_DB_POL_B;                 //通道A和通道B延时输出电平是否反向
 	tGptbDeadZoneTime.byChxInselS5S4      = GPTB_DBCHAIN_AR_AF;            //PWMA作为上升沿和下降沿延时处理的输入信号
 	tGptbDeadZoneTime.byChxOutSwapS8S7    = GPTB_DBCHAOUT_OUTA_A_OUTB_B;   //OUTA=通道A输出，OUTB=通道B输出
-    csi_gptb_channelmode_config(GPTB0,&tGptbDeadZoneTime,GPTB_CHANNEL_A);
+    csi_gptb_channelmode_config(GPTB0,&tGptbDeadZoneTime,GPTB_CHANNEL_1);
 //------------------------------------------------------------------------------------------------------------------------
     csi_gptb_emergency_config_t   tGptbEmergencyCfg;           
     tGptbEmergencyCfg.byEpxInt    = GPTB_EBI0;              //EPx选择外部IO端口（EBI0~EBI4）

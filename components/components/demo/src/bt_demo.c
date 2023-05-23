@@ -91,7 +91,7 @@ int bt_sync_trg_start_demo(void)
 	csi_pin_pull_mode(PB1, GPIO_PULLUP);								//PB1 上拉
 	csi_pin_irq_mode(PB1, EXI_GRP1, GPIO_IRQ_FALLING_EDGE);			    //PB1 下降沿产生中断，选择中断组1
 	csi_pin_irq_enable(PB1,ENABLE);										//PB1 中断使能	
-	csi_exi_set_evtrg(1, TRGSRC_EXI1, 0);						        //EXI1 触发EXI_TRGOUT0
+	csi_exi_set_evtrg(1, TRGSRC_EXI1, 0);						        //EXI1 触发EXI_TRGOUT1
 	
 //	csi_pin_set_mux(PA6, PA6_OUTPUT);									//PA6 output ，并在BT0中断里面翻转IO
 //	csi_pin_set_high(PA6);												//PA6 output high;		
@@ -249,7 +249,7 @@ int bt_sync_trg_stop_demo(void)
  *  \param[in] none
  *  \return error code
  */
-int bt_trgev_demo(void)
+int bt_trg_out_demo(void)  
 {
 	bool byFlag = 0;
 	int iRet = 0;

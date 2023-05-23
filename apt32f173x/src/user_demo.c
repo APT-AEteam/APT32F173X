@@ -84,7 +84,7 @@ void user_demo(void)
 //	bt_sync_trg_start_demo();
 //	bt_sync_trg_count_demo();
 //	bt_sync_trg_stop_demo();
-//	bt_trgev_demo();
+//	bt_trg_out_demo();
 
 /// ***************************************************
 ///  LPT相关的示例代码

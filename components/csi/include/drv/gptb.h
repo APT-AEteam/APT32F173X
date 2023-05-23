@@ -229,8 +229,8 @@ typedef enum{
 }csi_gptb_comp_e;
 
 typedef enum{
-    GPTB_CHANNEL_A=1,
-	GPTB_CHANNEL_B,
+    GPTB_CHANNEL_1=1,
+	GPTB_CHANNEL_2,
 }csi_gptb_channel_e;
 
 typedef enum{

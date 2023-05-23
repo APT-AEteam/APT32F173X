@@ -306,9 +306,9 @@ csi_error_t csi_gptb_channel_config(csp_gptb_t *ptGptbBase, csi_gptb_pwmchannel_
 				  
 	switch (eChannel)
 	{	
-		case (GPTB_CHANNEL_A):csp_gptb_set_aqcra(ptGptbBase,w_AQCRx_Val);
+		case (GPTB_CHANNEL_1):csp_gptb_set_aqcra(ptGptbBase,w_AQCRx_Val);
 			break;
-		case (GPTB_CHANNEL_B):csp_gptb_set_aqcrb(ptGptbBase,w_AQCRx_Val);
+		case (GPTB_CHANNEL_2):csp_gptb_set_aqcrb(ptGptbBase,w_AQCRx_Val);
 			break;
 
 		default:return CSI_ERROR;
@@ -425,7 +425,7 @@ csi_error_t csi_gptb_channelmode_config(csp_gptb_t *ptGptbBase,csi_gptb_deadzone
      w_Val=csp_gptb_get_dbcr(ptGptbBase);	
 	 switch (eChannel)
 	{	
-		case (GPTB_CHANNEL_A): w_Val=(w_Val&~(DB_CHA_OUTSEL_MSK)) |(ptCfg-> byChxOuselS1S0   <<DB_CHA_OUTSEL_POS);
+		case (GPTB_CHANNEL_1): w_Val=(w_Val&~(DB_CHA_OUTSEL_MSK)) |(ptCfg-> byChxOuselS1S0   <<DB_CHA_OUTSEL_POS);
 		                      w_Val=(w_Val&~(DB_CHA_POL_MSK))    |(ptCfg-> byChxPolarityS3S2<<DB_CHA_POL_POS);
 							  w_Val=(w_Val&~(DB_CHA_INSEL_MSK))  |(ptCfg-> byChxInselS5S4   <<DB_CHA_INSEL_POS);
 							  w_Val=(w_Val&~(DB_CHA_OUTSWAP_MSK))|(ptCfg-> byChxOutSwapS8S7 <<DB_CHA_OUTSWAP_POS);
@@ -533,10 +533,10 @@ csi_error_t csi_gptb_channel_aqload_config(csp_gptb_t *ptGptbBase, csi_gptb_ldmd
 {			  
 	switch (eChannel)
 	{	
-		case (GPTB_CHANNEL_A):ptGptbBase -> AQLDR = (ptGptbBase -> AQLDR &~(GPTB_AQCR1_SHDWEN_MSK) )|  (eLdmd << GPTB_AQCR1_SHDWEN_POS);
+		case (GPTB_CHANNEL_1):ptGptbBase -> AQLDR = (ptGptbBase -> AQLDR &~(GPTB_AQCR1_SHDWEN_MSK) )|  (eLdmd << GPTB_AQCR1_SHDWEN_POS);
 		                      ptGptbBase -> AQLDR = (ptGptbBase -> AQLDR &~(GPTB_LDAMD_MSK) )|  (eShdwldmd << GPTB_LDAMD_POS);
 			break;
-		case (GPTB_CHANNEL_B):ptGptbBase -> AQLDR = (ptGptbBase -> AQLDR &~(GPTB_AQCR2_SHDWEN_MSK) )|  (eLdmd << GPTB_AQCR2_SHDWEN_POS);
+		case (GPTB_CHANNEL_2):ptGptbBase -> AQLDR = (ptGptbBase -> AQLDR &~(GPTB_AQCR2_SHDWEN_MSK) )|  (eLdmd << GPTB_AQCR2_SHDWEN_POS);
 		                      ptGptbBase -> AQLDR = (ptGptbBase -> AQLDR &~(GPTB_LDBMD_MSK) )|  (eShdwldmd << GPTB_LDBMD_POS);
 			break;
 
@@ -840,12 +840,12 @@ csi_error_t csi_gptb_onetimesoftwareforce_output(csp_gptb_t *ptGptbBase, csi_gpt
 {	
 	switch (eChannel)
 	{
-	case GPTB_CHANNEL_A: 
+	case GPTB_CHANNEL_1: 
 		ptGptbBase ->AQOSF |= GPTB_OSTSFA;
 		ptGptbBase ->AQOSF = (ptGptbBase ->AQOSF &~(GPTB_ACTA_MSK))|((eAction&0x03)<<GPTB_ACTA_POS);
 		break;
 	
-	case GPTB_CHANNEL_B:
+	case GPTB_CHANNEL_2:
 		ptGptbBase ->AQOSF |= GPTB_OSTSFB;
 		ptGptbBase ->AQOSF = (ptGptbBase ->AQOSF &~(GPTB_ACTB_MSK))|((eAction&0x03)<<GPTB_ACTB_POS);
 		break;	
@@ -875,9 +875,9 @@ csi_error_t csi_gptb_continuoussoftwareforce_output(csp_gptb_t *ptGptbBase, csi_
 {
 	
 	switch (eChannel){
-	case GPTB_CHANNEL_A:  ptGptbBase ->AQCSF = (ptGptbBase ->AQCSF &~(0x03))|(eAction&0x03);            
+	case GPTB_CHANNEL_1:  ptGptbBase ->AQCSF = (ptGptbBase ->AQCSF &~(0x03))|(eAction&0x03);            
 	     break;
-	case GPTB_CHANNEL_B:  ptGptbBase ->AQCSF = (ptGptbBase ->AQCSF &~(0x0c))|(eAction&0x03)<<2;
+	case GPTB_CHANNEL_2:  ptGptbBase ->AQCSF = (ptGptbBase ->AQCSF &~(0x0c))|(eAction&0x03)<<2;
 	     break;	
 
 	default: return CSI_ERROR;
