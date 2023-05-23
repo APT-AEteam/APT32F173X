@@ -41,7 +41,7 @@ void bt_irqhandler3(csp_bt_t *ptBtBase)
 	
 	if(wMisr & BT_PEND_INT)					//PEND interrupt
 	{
-		csp_bt_clr_isr(ptBtBase, BT_PEND_INT);			//PA06 toggle	
+		csp_bt_clr_isr(ptBtBase, BT_PEND_INT);			
 	}
 }
 
