@@ -122,7 +122,7 @@ void lp_lpt_wakeup_deepsleep_demo(void)
  *  \param  none
  *  \return none
  */
-void lp_wakeup_demo(void)
+void lp_exi_wakeup_demo(void)
 {
 	csi_pm_mode_e ePmMode = PM_MODE_SLEEP;			//PM_MODE_SLEEP/PM_MODE_DEEPSLEEP/PM_MODE_SNOOZE/PM_MODE_SHUTDOWN
 	uint16_t hwRstSrc = csi_get_rst_reason();

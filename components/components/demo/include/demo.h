@@ -107,7 +107,7 @@ extern void rtc_trgev_demo(void);
 
 //low power demo
 extern void lp_lpt_wakeup_deepsleep_demo(void);
-extern void lp_wakeup_demo(void);
+extern void lp_exi_wakeup_demo(void);
 
 //iic demo
 extern void iic_master_demo(void);
