@@ -33,11 +33,30 @@ void rtc_set_time_demo(void)
 	
 	wSec = 0xff;
 
-	
-	tRtcConfig.byClkSrc = RTC_CLKSRC_ISOSC;		//选择时钟源
-	tRtcConfig.byFmt = RTC_12FMT;				//选择时间模式
-	csi_rtc_init(RTC, &tRtcConfig);				//初始化设置
-	
+/**********    RTC_CLKSRC_EMOSC_DIV4     ****************/	
+//	csi_pin_set_mux(PD0, PD0_XIN);			//设置PD0为SXIN，如果使用外部主晶振作为RTC时钟源，必须先对管脚进行配置
+//	csi_pin_set_mux(PD1, PD1_XOUT);         //设置PD1为SXOUT，如果使用外部主晶振作为RTC时钟源，必须先对管脚进行配置
+//	
+//	tRtcConfig.byClkSrc = RTC_CLKSRC_EMOSC_DIV4;		//选择时钟源
+//	tRtcConfig.byFmt = RTC_12FMT;				//选择时间模式
+//	csi_rtc_init(RTC, &tRtcConfig);				//初始化设置
+/***********************************************************/	
+
+
+/**********    RTC_CLKSRC_ESOSC     ****************/		
+//	csi_pin_set_mux(PC14, PC14_SXIN);        //设置PC14为XIN，如果使用外部副晶振作为RTC时钟源，必须先对管脚进行配置
+//	csi_pin_set_mux(PC15, PC15_SXOUT);        //设置PC15为XOUT，如果使用外部副晶振作为RTC时钟源，必须先对管脚进行配置
+
+//	tRtcConfig.byClkSrc = RTC_CLKSRC_ESOSC;		//选择时钟源
+//	tRtcConfig.byFmt = RTC_12FMT;				//选择时间模式
+//	csi_rtc_init(RTC, &tRtcConfig);				//初始化设置
+/***********************************************************/	
+
+/**********    RTC_CLKSRC_IMOSC_DIV4 /RTC_CLKSRC_ISOSC    ****************/	
+	tRtcConfig.byClkSrc = RTC_CLKSRC_IMOSC_DIV4;  //选择时钟源
+	tRtcConfig.byFmt = RTC_24FMT;				  //选择时间模式
+	csi_rtc_init(RTC, &tRtcConfig);				  //初始化RTC
+/***********************************************************/	
 	
 	tRtcTime.iYear = 13;
 	tRtcTime.iMon = 11;
@@ -91,15 +110,30 @@ void rtc_alarm_demo(void)
 	uint32_t wSec = 0;
 	csi_rtc_time_t tRtcTime, tAlmTime, tRtcTimeRdbk;
 	csi_rtc_config_t tRtcConfig;
-	
-	//csi_pin_set_mux(PB2,PB2_RTC_ALM);
-	csi_pin_set_mux(PC13, PC13_RTC_ALM);
-	csi_rtc_set_alarm_out(RTC, RTC_ALMA_H);
-	
+/**********    RTC_CLKSRC_EMOSC_DIV4     ****************/	
+//	csi_pin_set_mux(PD0, PD0_XIN);			//设置PD0为SXIN，如果使用外部主晶振作为RTC时钟源，必须先对管脚进行配置
+//	csi_pin_set_mux(PD1, PD1_XOUT);         //设置PD1为SXOUT，如果使用外部主晶振作为RTC时钟源，必须先对管脚进行配置
+//	
+//	tRtcConfig.byClkSrc = RTC_CLKSRC_EMOSC_DIV4;		//选择时钟源
+//	tRtcConfig.byFmt = RTC_12FMT;				//选择时间模式
+//	csi_rtc_init(RTC, &tRtcConfig);				//初始化设置
+/***********************************************************/	
+
+
+/**********    RTC_CLKSRC_ESOSC     ****************/		
+//	csi_pin_set_mux(PC14, PC14_SXIN);        //设置PC14为XIN，如果使用外部副晶振作为RTC时钟源，必须先对管脚进行配置
+//	csi_pin_set_mux(PC15, PC15_SXOUT);        //设置PC15为XOUT，如果使用外部副晶振作为RTC时钟源，必须先对管脚进行配置
+
+//	tRtcConfig.byClkSrc = RTC_CLKSRC_ESOSC;		//选择时钟源
+//	tRtcConfig.byFmt = RTC_12FMT;				//选择时间模式
+//	csi_rtc_init(RTC, &tRtcConfig);				//初始化设置
+/***********************************************************/	
+
+/**********    RTC_CLKSRC_IMOSC_DIV4 /RTC_CLKSRC_ISOSC    ****************/	
 	tRtcConfig.byClkSrc = RTC_CLKSRC_IMOSC_DIV4;  //选择时钟源
 	tRtcConfig.byFmt = RTC_24FMT;				  //选择时间模式
 	csi_rtc_init(RTC, &tRtcConfig);				  //初始化RTC
-	
+/***********************************************************/	
 	tRtcTime.iYear = 13;
 	tRtcTime.iMon = 11;
 	tRtcTime.iMday = 25;
@@ -141,12 +175,30 @@ void rtc_timer_demo(void)
 {
 	csi_rtc_config_t tRtcConfig;
 	
-	//csi_pin_set_mux(PA3, PA3 PA3_OSC_XI);
-	//csi_pin_set_mux(PA4, PA4_OSC_XO);
-	
-	tRtcConfig.byClkSrc = RTC_CLKSRC_IMOSC_DIV4;  	//选择时钟源
-	tRtcConfig.byFmt = RTC_24FMT;				  	//选择时间模式
-	csi_rtc_init(RTC, &tRtcConfig);				  	//初始化RTC
+	/**********    RTC_CLKSRC_EMOSC_DIV4     ****************/	
+//	csi_pin_set_mux(PD0, PD0_XIN);			//设置PD0为SXIN，如果使用外部主晶振作为RTC时钟源，必须先对管脚进行配置
+//	csi_pin_set_mux(PD1, PD1_XOUT);         //设置PD1为SXOUT，如果使用外部主晶振作为RTC时钟源，必须先对管脚进行配置
+//	
+//	tRtcConfig.byClkSrc = RTC_CLKSRC_EMOSC_DIV4;		//选择时钟源
+//	tRtcConfig.byFmt = RTC_12FMT;				//选择时间模式
+//	csi_rtc_init(RTC, &tRtcConfig);				//初始化设置
+/***********************************************************/	
+
+
+/**********    RTC_CLKSRC_ESOSC     ****************/		
+//	csi_pin_set_mux(PC14, PC14_SXIN);        //设置PC14为XIN，如果使用外部副晶振作为RTC时钟源，必须先对管脚进行配置
+//	csi_pin_set_mux(PC15, PC15_SXOUT);        //设置PC15为XOUT，如果使用外部副晶振作为RTC时钟源，必须先对管脚进行配置
+
+//	tRtcConfig.byClkSrc = RTC_CLKSRC_ESOSC;		//选择时钟源
+//	tRtcConfig.byFmt = RTC_12FMT;				//选择时间模式
+//	csi_rtc_init(RTC, &tRtcConfig);				//初始化设置
+/***********************************************************/	
+
+/**********    RTC_CLKSRC_IMOSC_DIV4 /RTC_CLKSRC_ISOSC    ****************/	
+	tRtcConfig.byClkSrc = RTC_CLKSRC_IMOSC_DIV4;  //选择时钟源
+	tRtcConfig.byFmt = RTC_24FMT;				  //选择时间模式
+	csi_rtc_init(RTC, &tRtcConfig);				  //初始化RTC
+/***********************************************************/	
 	
 	csi_rtc_start_as_timer(RTC, RTC_TIMER_1MIN);	  	//每1s进一次中断
 	csi_rtc_start(RTC);	

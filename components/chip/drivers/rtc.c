@@ -53,40 +53,41 @@ void csi_rtc_init(csp_rtc_t *ptRtc, csi_rtc_config_t *tConfig)
 		case (RTC_ISOSC):
 			csi_isosc_enable();
 			byDiva = 49;
-			hwDivs = 134;
+			hwDivs = 269;
 			break;
 		case (RTC_ESOSC):
-			csi_emosc_enable(EMOSC_VALUE);
+			csi_esosc_enable(ESOSC_VALUE);
 			byDiva = 3;
-			hwDivs = 2047;
+			hwDivs = 4095;
+//			hwDivs = 1;
 			break;
 		case (RTC_IMOSC_DIV4):
 			switch(csp_get_imosc_fre(SYSCON))
 			{
 				case (0):	//5.556MHz
 					byDiva = 124;
-					hwDivs = 2777;
+					hwDivs = 5555;
 					break;
 				case (1):	//4.194MHz
 					byDiva = 124;
-					hwDivs = 2096;
+					hwDivs = 4193;
 					break;
 				case (2):	//2.097MHz
 					byDiva = 124;
-					hwDivs = 1047;
+					hwDivs = 2096;
 					break;
 				case (3):	//131.072KHz
-					byDiva = 124;
-					hwDivs = 127;
+					byDiva = 3;
+					hwDivs = 4095;
 					break;
 				default:
 					break;
 			}			
 			break;
 		case (RTC_EMOSC_DIV4):
-			csi_emosc_enable(EMOSC_VALUE);
-			byDiva = 63;
-			hwDivs = 31;
+			csi_emosc_enable(EMOSC_VALUE); //EMOSC_VALUE 值在board_config.h 文件定义
+			byDiva = 99;                   //外部主晶振16MHz，如果不为12MHz请根据实际晶振大小再计算
+			hwDivs = 29999;                //外部主晶振16MHz，如果不为12MHz请根据实际晶振大小再计算
 			break;
 		default:
 			break;
