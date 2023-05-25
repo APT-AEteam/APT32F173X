@@ -176,4 +176,9 @@ extern void sram_dsram24k_dsram8k_test0(void);
 extern void sram_dsram24k_dsram8k_test1(void);
 extern void sram_dsram24k_iram8k_test(void);
 
+
+///  wizard相关的示例代码
+extern void lvr_wizard_demo(void);
+extern int cqcr_wizard_demo(void);
+
 #endif

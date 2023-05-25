@@ -235,5 +235,12 @@ void user_demo(void)
 //	sram_dsram24k_dsram8k_test0();
 //	sram_dsram24k_dsram8k_test1();
 //	sram_dsram24k_iram8k_test();
+
+/// ***************************************************
+///  wizard相关的示例代码
+/// ***************************************************
+//  lvr_wizard_demo();
+//  cqcr_wizard_demo();
+
 }
 
