@@ -428,19 +428,23 @@ void csi_swd_unlock(void)
  *  \param none
  *  \return csi_error_t.
  */
+
 csi_error_t csi_cmos_autotrim(void)
 {
 	uint32_t wTrimValue;
+	
 	SYSCON->TRIMUREG = CMRTRIM_CTL_MSK;
 	while((SYSCON->TRIMUREG & CMRTRIM_CTL_MSK) == CMRTRIM_CTL_MSK);
 	wTrimValue = SYSCON->TRIMUREG & CMRTRIM_VULUE_MSK;
 	AUTOTRIM_KEY_UREG = AUTOTRIM_KEY;
+	__ISB();	
 	AUTOTRIM_TRIM_UREG = (AUTOTRIM_TRIM_UREG &0xff00ffff)|(wTrimValue<<16);
-	
+
 	SYSCON->TRIMUREG = CMRTRIML_CTL_MSK;
 	while((SYSCON->TRIMUREG & CMRTRIML_CTL_MSK) == CMRTRIML_CTL_MSK);
 	wTrimValue = ((SYSCON->TRIMUREG & CMRTRIML_VULUE_MSK)>> CMRTRIML_VULUE_POS);
-	AUTOTRIM_KEY_UREG = AUTOTRIM_KEY;
+	AUTOTRIM_KEY_UREG = AUTOTRIM_KEY; 
+	__ISB();
 	AUTOTRIM_TRIM_UREG = (AUTOTRIM_TRIM_UREG &0x00ffffff)|(wTrimValue<<24);	
 	
 	return CSI_OK;
