@@ -77,7 +77,6 @@ __attribute__((weak)) void system_init(void)
 	
 	csi_iwdt_close();				  //close iwdt
 	csi_sysclk_config(g_tClkConfig);  //sysclk config	
-	csi_calc_clk_freq();			  //calculate(updata) sclk and pclk
 	csi_tick_init();
 	
 	__enable_excp_irq();
