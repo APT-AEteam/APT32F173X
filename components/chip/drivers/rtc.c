@@ -86,8 +86,8 @@ void csi_rtc_init(csp_rtc_t *ptRtc, csi_rtc_config_t *tConfig)
 			break;
 		case (RTC_EMOSC_DIV4):
 			csi_emosc_enable(EMOSC_VALUE); //EMOSC_VALUE 值在board_config.h 文件定义
-			byDiva = 99;                   //外部主晶振16MHz，如果不为12MHz请根据实际晶振大小再计算
-			hwDivs = 29999;                //外部主晶振16MHz，如果不为12MHz请根据实际晶振大小再计算
+			byDiva = 99;                   //外部主晶振24MHz，如果不为12MHz请根据实际晶振大小再计算
+			hwDivs = 29999;                //外部主晶振24MHz，如果不为12MHz请根据实际晶振大小再计算
 			break;
 		default:
 			break;
