@@ -22,7 +22,7 @@
 /* Private variablesr------------------------------------------------------*/
 /* device instance ------------------------------------------------------*/
 /* Private variablesr-----------------------------------------------------*/ 
-uint8_t g_byLedData[4] = {0x86,0xdb,0xcf,0xe6};//display code of 1,2,3,4 
+uint8_t g_byLedData[4] = {0x06,0x5b,0x4f,0x66};//display code of 1,2,3,4 
 
 void io_config(void)
 {
@@ -95,9 +95,9 @@ csi_error_t led_demo(void)
 	
 	ptLedCfg.byClk = LED_PCLK_DIV8;
 	ptLedCfg.hwComMask = 0x0f;			//COM0~3打开
-	ptLedCfg.byBrt = LED_50;			//LED显示亮度50%
-	ptLedCfg.byOnTime = 120;			//显示周期时间
-	ptLedCfg.byBreakTime = 50;			//Non-Overlap时间
+	ptLedCfg.byBrt = LED_100;			//LED显示亮度50%
+	ptLedCfg.byOnTime = 120;			//显示周期时间(单位：Tledclk)
+	ptLedCfg.byBreakTime = 50;			//Non-Overlap时间(单位：Tledclk)
 	ptLedCfg.byInt = LED_INTSRC_NONE;
 	csi_led_init(LED, &ptLedCfg);			
 
