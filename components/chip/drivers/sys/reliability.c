@@ -428,7 +428,6 @@ void csi_swd_unlock(void)
  *  \param none
  *  \return csi_error_t.
  */
-
 csi_error_t csi_cmos_autotrim(void)
 {
 	uint32_t wTrimValue;
@@ -491,6 +490,7 @@ void csi_set_cqcr(csi_cqcr_refsel_e eRefSel,csi_cqcr_srcsel_e eSrcSel,uint32_t w
  */
 uint32_t csi_get_cqsr(void)
 {
+	while((SYSCON->CQCR&0x01) == 0x01);
 	return csp_get_cqsr(SYSCON);
 }
 
