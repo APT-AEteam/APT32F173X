@@ -14,7 +14,7 @@
 // <i> Config LVR Level for the application
 #define		LVR_LEVEL		LVR_31
 
-// <q> SRC Freq (in Bytes)<2>[CQCR_SRCSEL_IM//CQCR_SRCSEL_IM//CQCR_SRCSEL_IS//CQCR_SRCSEL_HF] 
+// <q> SRC Freq (in Bytes)<2>[CQCR_SRCSEL_IM//CQCR_SRCSEL_ES//CQCR_SRCSEL_IS//CQCR_SRCSEL_HF] 
 // <i> Config SRC Freq for the application
 #define		SRC_FREQ		CQCR_SRCSEL_IM
 
@@ -66,8 +66,7 @@ int cqcr_wizard_demo(void)
 	csi_set_cqcr(REF_FREQ,SRC_FREQ,REF_VALUE);   // 参考时钟选择 EM,  源时钟选择控 IM
 
 	csi_cqcr_enable();
-	mdelay(1000);
-	
+
 	wCqsrValue = csi_get_cqsr();                //读取源时钟计数值
 	my_printf("cqsr value =%d",wCqsrValue);
 	
