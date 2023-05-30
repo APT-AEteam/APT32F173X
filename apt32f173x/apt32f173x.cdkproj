@@ -176,7 +176,7 @@
         <AutoRun>yes</AutoRun>
         <ResetType>Hard Reset</ResetType>
         <SoftResetVal>2</SoftResetVal>
-        <ResetAfterLoad>no</ResetAfterLoad>
+        <ResetAfterLoad>yes</ResetAfterLoad>
         <AfterResetFile/>
         <Dumpcore>no</Dumpcore>
         <DumpcoreText>$(ProjectPath)/$(ProjectName).cdkcore</DumpcoreText>
@@ -184,7 +184,7 @@
           <IP>localhost</IP>
           <PORT>1025</PORT>
           <CPUNumber>0</CPUNumber>
-          <Clock>300</Clock>
+          <Clock>1000</Clock>
           <Delay>10</Delay>
           <NResetDelay>100</NResetDelay>
           <WaitReset>50</WaitReset>
@@ -193,7 +193,7 @@
           <PreReset>no</PreReset>
           <DebugPrint>no</DebugPrint>
           <Connect>Normal</Connect>
-          <ResetType>Soft Reset</ResetType>
+          <ResetType>Hard Reset</ResetType>
           <SoftResetVal>2</SoftResetVal>
           <RTOSType>Bare Metal</RTOSType>
           <DownloadToFlash>yes</DownloadToFlash>
@@ -236,7 +236,7 @@
         <Program>yes</Program>
         <Verify>yes</Verify>
         <ResetAndRun>yes</ResetAndRun>
-        <ResetType>Soft Reset</ResetType>
+        <ResetType>Hard Reset</ResetType>
         <SoftResetVal>2</SoftResetVal>
         <External>no</External>
         <Command/>
