@@ -179,7 +179,7 @@ void user_demo(void)
 ///  IIC相关的示例代码
 /// ***************************************************
 //	iic_master_demo();
-//	iic_master_slave_demo();
+//	iic_master_eeprom_demo( );
 //	iic_slave_demo();
 //  iic_multi_slave_address_demo( );
 //  iic_dma_tx_demo();

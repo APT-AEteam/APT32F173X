@@ -110,8 +110,8 @@ extern void lp_lpt_wakeup_deepsleep_demo(void);
 extern void lp_exi_wakeup_demo(void);
 
 //iic demo
+extern void iic_master_eeprom_demo(void);
 extern void iic_master_demo(void);
-extern void iic_master_slave_demo(void);
 extern void iic_slave_demo(void);
 
 //cnta demo

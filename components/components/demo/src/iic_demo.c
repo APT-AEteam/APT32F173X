@@ -26,12 +26,12 @@ volatile uint8_t g_byWriteBuffer[32];
 volatile uint32_t g_wTxBuff[32] = {0,1,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20};// 前两个为wWriteAddrs
 volatile uint8_t g_bRxBuff[32] = {0};
 
-/** \brief IIC master demo
- * 
+/** \brief IIC master eeprom demo
+ * IIC主机像eeprom中写数据，并且读取eeprom中的数据
  *  \param[in] none
  *  \return error code
  */
-void iic_master_demo(void)
+void iic_master_eeprom_demo(void)
 {
 	volatile uint8_t data[9] = {1,2,3,4,5,6,7,8,9};
 	volatile uint8_t data1[9] = {0};
@@ -63,12 +63,12 @@ void iic_master_demo(void)
 	}
 }
 
-/** \brief IIC master slave demo
- * 
+/** \brief IIC master demo
+ * IIC主机程序，读取从机中的数据
  *  \param[in] none
  *  \return error code
  */
-void iic_master_slave_demo(void)
+void iic_master_demo(void)
 {
 	
 	volatile uint8_t data1[19] = {4,4,4,4,4,4,4,4,4};
