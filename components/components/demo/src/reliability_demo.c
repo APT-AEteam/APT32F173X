@@ -129,8 +129,7 @@ void syscon_cqcr_demo(void)
 {
 	uint32_t wCqsrValue = 0;
 	csi_set_cqcr(CQCR_REFSEL_EM,CQCR_SRCSEL_IM,0x3ff);   // 参考时钟选择 EM,  源时钟选择控 IM
-	mdelay(1000);
-	
+
 	wCqsrValue = csi_get_cqsr();
 	my_printf("cqsr value =%d",wCqsrValue);
 		
