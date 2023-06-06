@@ -515,7 +515,7 @@ static inline void csp_adc_set_resolution(csp_adc_t *ptAdcBase, adc_resolution_e
 }
 static inline void csp_adc_set_clk_div(csp_adc_t *ptAdcBase, uint8_t byDiv)
 {
-	ptAdcBase->MR = (ptAdcBase->MR & (~ADC12_PRLVAL_MASK)) | (byDiv >> 1);
+	ptAdcBase->MR = (ptAdcBase->MR & (~ADC12_PRLVAL_MASK)) | byDiv;
 }
 static inline uint8_t csp_adc_get_clk_div(csp_adc_t *ptAdcBase)
 {
