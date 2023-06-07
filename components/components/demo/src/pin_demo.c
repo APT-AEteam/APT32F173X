@@ -96,7 +96,7 @@ int pin_irq_demo(void)
 {
 	int iRet = 0;
 	
-	csi_pin_set_mux(PA9, PC5_INPUT);							//PA9 配置为输入
+	csi_pin_set_mux(PA9, PA9_INPUT);							//PA9 配置为输入
 	csi_pin_pull_mode(PA9, GPIO_PULLUP);						//PA9 上拉
 	csi_pin_irq_enable(PA9, ENABLE);							//PA9 中断使能	
 	csi_pin_irq_mode(PA9, EXI_GRP16, GPIO_IRQ_FALLING_EDGE);	//PA9 下降沿产生中断,选择中断组16
