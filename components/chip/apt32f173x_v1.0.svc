@@ -978,7 +978,7 @@
         <Bit Name="CLKEN" Authority="RO" Bits="1" Description="ADC : ADC时钟状态&#xD;&#xA;0: ADC时钟被禁止&#xD;&#xA;1: ADC时钟被使能" />
       </Register>
       <Register Name="ADC_CR" Authority="RW" Address="0x40030010" Width="32" Description="控制寄存器">
-        <Bit Name="ACCURACY" Authority="RW" Bits="31" Description="ACCURACY: ADC转换精度选择位&#xD;&#xA;0: 保留&#xD;&#xA;1: 12位&#xD;&#xA;注意：该位请保持为1." />
+        <Bit Name="ACCURACY" Authority="RW" Bits="31" Description="ACCURACY: ADC转换精度选择位&#xD;&#xA;0: 12位&#xD;&#xA;1: 10位&#xD;&#xA;注意：该位请保持为0." />
         <Bit Name="VREF_SEL" Authority="RW" Bits="7-6" Description="VREF: ADC电压参考电源选择&#xD;&#xA; 00: 内部VDD&#xD;&#xA; 01: 内部VDD&#xD;&#xA; 10: FVR&#xD;&#xA; 11: INTVREF&#xD;&#xA;注意：使用FVR做参考时，外部需要接100nF的电容。" />
         <Bit Name="SWTRG" Authority="RW" Bits="5" Description="SWTRG : 软件触发&#xD;&#xA; 0: 无效&#xD;&#xA; 1: 触发转换序列" />
         <Bit Name="STOP" Authority="RW" Bits="4" Description="STOP: 在连续转换模式下停止转换&#xD;&#xA;0: 无效&#xD;&#xA;1: 停止连续转换" />
@@ -1303,7 +1303,7 @@
         <Bit Name="CLKEN" Authority="RO" Bits="1" Description="ADC : ADC时钟状态&#xD;&#xA;0: ADC时钟被禁止&#xD;&#xA;1: ADC时钟被使能" />
       </Register>
       <Register Name="ADC_CR" Authority="RW" Address="0x40031010" Width="32" Description="控制寄存器">
-        <Bit Name="ACCURACY" Authority="RW" Bits="31" Description="ACCURACY: ADC转换精度选择位&#xD;&#xA;0: 保留&#xD;&#xA;1: 12位&#xD;&#xA;注意：该位请保持为1." />
+        <Bit Name="ACCURACY" Authority="RW" Bits="31" Description="ACCURACY: ADC转换精度选择位&#xD;&#xA;0: 12位&#xD;&#xA;1: 10位&#xD;&#xA;注意：该位请保持为0." />
         <Bit Name="VREF_SEL" Authority="RW" Bits="7-6" Description="VREF: ADC电压参考电源选择&#xD;&#xA; 00: 内部VDD&#xD;&#xA; 01: 内部VDD&#xD;&#xA; 10: FVR&#xD;&#xA; 11: INTVREF&#xD;&#xA;注意：使用FVR做参考时，外部需要接100nF的电容。" />
         <Bit Name="SWTRG" Authority="RW" Bits="5" Description="SWTRG : 软件触发&#xD;&#xA; 0: 无效&#xD;&#xA; 1: 触发转换序列" />
         <Bit Name="STOP" Authority="RW" Bits="4" Description="STOP: 在连续转换模式下停止转换&#xD;&#xA;0: 无效&#xD;&#xA;1: 停止连续转换" />
