@@ -138,6 +138,7 @@ extern int cmp_wfcr_demo(void);
 extern int gpta_timer_demo(void);
 extern int gpta_capture_sync_demo0(void);
 extern int gpta_capture_sync_demo1(void);
+extern int gpta_capture_sync_demo2(void);
 extern int gpta_pwm_demo(void);
 extern int gpta_pwm_waveform_demo(void);
 extern int gpta_reglk_demo(void);
