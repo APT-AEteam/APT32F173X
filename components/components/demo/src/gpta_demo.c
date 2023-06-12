@@ -46,17 +46,24 @@ int gpta_timer_demo(void)
  *          - CMPA捕获的是第一次周期值，CMPB捕获的是第二次周期值，CMPAA捕获的是第三次周期值,CMPBA捕获的是第四次周期值
  *  \param[in] none
  *  \return error code
- */
+ 
+ ——          —————          —————           —————          —————
+    |          |        |          |        |           |         |         |        |
+	|          |        |          |        |           |         |         |        |
+    ——————        ——————         ——————          —————        ————
+   CMPA                CMPB                 CMPAA                CMPBA               CMPA   
+
+*/
 
 int gpta_capture_sync_demo0(void)
 {
-	int iRet = 0;	
+	int iRet = 0;
     volatile uint8_t ch;
 
 
 	csi_pin_set_mux(PA1,PA1_INPUT);		
 	csi_pin_pull_mode(PA1, GPIO_PULLUP);						//PA1 上拉
-	csi_pin_irq_mode(PA1, EXI_GRP16, GPIO_IRQ_FALLING_EDGE);     //PA1 上升沿产生中断，选择中断组16
+	csi_pin_irq_mode(PA1, EXI_GRP16, GPIO_IRQ_FALLING_EDGE);     //PA1 下升沿产生中断，选择中断组16
 	csi_pin_irq_enable(PA1, ENABLE);                            //PA1 中断使能                                    
 	csi_exi_set_evtrg(5, TRGSRC_EXI16, 1);	 
 	
@@ -109,7 +116,15 @@ int gpta_capture_sync_demo0(void)
  *          - CMPA捕获的是下降沿时间
  *  \param[in] none
  *  \return error code
- */
+ * 
+ ——          —————          —————           ———
+    |          |        |          |        |           |        
+	|          |        |          |        |           |        
+    ——————        ——————         ——————          
+   RESET       CMPA     RESET     CMPA      RESET       CMPA               
+
+*/
+
 int gpta_capture_sync_demo1(void)
 {
 	int iRet = 0;	
@@ -186,11 +201,18 @@ int gpta_capture_sync_demo1(void)
  *   		- 捕获2次产生一次捕获中断，ldbrst捕获后，计数器进行重置
  *     		- 由PA3产生外部事件3，经过ETCB  触发sync2 上升沿捕获，上升沿捕获值存放在CMPA中
  *          - 由PA3外部扩展口产生外部事件5，经过ETCB  触发sync3 下降沿捕获，下降沿捕获值存放在CMPB中
- * 			- 信号由PA01的高低电平切换产生（一直高或低电平意味着没有触发）
+ * 			- 信号由PA3的高低电平切换产生（一直高或低电平意味着没有触发）
  *          - 下降沿时间为CMPA，周期时间为CMPB，上升沿时间为 CMPB - CMPA。  
  *  \param[in] none
  *  \return error code
- */
+ * 
+          —————          —————           —————         
+          |        |          |        |           |        |    
+          |        |          |        |           |        |        
+ —————        ——————         ——————         ———
+		CMPA      CMPB      CMPA      CMPB       CMPA      CMPB  
+
+*/
 
 int gpta_capture_sync_demo2(void)
 {
@@ -200,11 +222,11 @@ int gpta_capture_sync_demo2(void)
 	csi_pin_set_mux(PA3,PA3_INPUT);		
 	csi_pin_pull_mode(PA3, GPIO_PULLUP);						//PA3 上拉
 	
-	csi_pin_irq_mode(PA3,EXI_GRP3, GPIO_IRQ_RISING_EDGE);		//PA3 下降沿产生中断  GPIO_IRQ_FALLING_EDGE  GPIO_IRQ_RISING_EDGE
+	csi_pin_irq_mode(PA3,EXI_GRP3, GPIO_IRQ_RISING_EDGE);		//PA3 上升沿产生中断  GPIO_IRQ_FALLING_EDGE  GPIO_IRQ_RISING_EDGE
 	csi_pin_irq_enable(PA3, ENABLE);	
 	csi_exi_set_evtrg(0, TRGSRC_EXI3, 1);	
 
-	csi_pin_irq_mode(PA3, EXI_GRP16, GPIO_IRQ_FALLING_EDGE);     //PA3 上升沿产生中断，选择中断组16
+	csi_pin_irq_mode(PA3, EXI_GRP16, GPIO_IRQ_FALLING_EDGE);     //PA3 下降沿沿产生中断，选择中断组16
 	csi_pin_irq_enable(PA3, ENABLE);                            //PA3 中断使能                                   
 	csi_exi_set_evtrg(5, TRGSRC_EXI16, 1);	   
 	
@@ -260,7 +282,7 @@ int gpta_capture_sync_demo2(void)
 };
 
 /** \brief GPTA基本的波形输出示例代码
- *          PWMA在50%和20%之间切换
+ *          PWM在50%和20%之间切换
  *  \param[in] none
  *  \return error code
  */
