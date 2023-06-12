@@ -104,7 +104,7 @@ int gpta_capture_sync_demo0(void)
  *          //sync2 sync3不区分，实现1次捕获
  *   		- 捕获1次产生一次捕获中断，ldarst捕获后，计数器进行重置
  *     		- 由PA1下降沿产生外部事件1，经过ETCB  触发sync0，重置和启动计数器
- *          - 由PA1外部扩展口，上升沿产生外部事件5，经过ETCB  触发sync3 捕获，上升沿捕获值存放在CMPBA中
+ *          - 由PA1外部扩展口，上升沿产生外部事件5，经过ETCB  触发sync3 捕获，上升沿捕获值存放在CMPA中
  * 			- 信号由PA1的高低电平切换产生（一直高或低电平意味着没有触发）
  *          - CMPA捕获的是下降沿时间
  *  \param[in] none
