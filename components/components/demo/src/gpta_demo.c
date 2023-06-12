@@ -47,11 +47,11 @@ int gpta_timer_demo(void)
  *  \param[in] none
  *  \return error code
  
- ——          —————          —————           —————          —————
-    |          |        |          |        |           |         |         |        |
-	|          |        |          |        |           |         |         |        |
-    ——————        ——————         ——————          —————        ————
-   CMPA                CMPB                 CMPAA                CMPBA               CMPA   
+ PA1输入波形 ——          —————          —————           —————          —————
+				|          |        |          |        |           |         |         |        |
+				|          |        |          |        |           |         |         |        |
+				——————        ——————         ——————          —————        ————
+				CMPA                CMPB                 CMPAA                CMPBA               CMPA   
 
 */
 
@@ -62,8 +62,8 @@ int gpta_capture_sync_demo0(void)
 
 
 	csi_pin_set_mux(PA1,PA1_INPUT);		
-	csi_pin_pull_mode(PA1, GPIO_PULLUP);						//PA1 上拉
-	csi_pin_irq_mode(PA1, EXI_GRP16, GPIO_IRQ_FALLING_EDGE);     //PA1 下升沿产生中断，选择中断组16
+	csi_pin_pull_mode(PA1, GPIO_PULLUP);						 //PA1 上拉
+	csi_pin_irq_mode(PA1, EXI_GRP16, GPIO_IRQ_FALLING_EDGE);     //PA1 下降沿产生中断，选择中断组16
 	csi_pin_irq_enable(PA1, ENABLE);                            //PA1 中断使能                                    
 	csi_exi_set_evtrg(5, TRGSRC_EXI16, 1);	 
 	
@@ -117,11 +117,11 @@ int gpta_capture_sync_demo0(void)
  *  \param[in] none
  *  \return error code
  * 
- ——          —————          —————           ———
-    |          |        |          |        |           |        
-	|          |        |          |        |           |        
-    ——————        ——————         ——————          
-   RESET       CMPA     RESET     CMPA      RESET       CMPA               
+ PA1输入波形——          —————          —————           ———
+               |          |        |          |        |           |        
+	           |          |        |          |        |           |        
+               ——————        ——————         ——————          
+               RESET      CMPA     RESET     CMPA      RESET       CMPA               
 
 */
 
@@ -206,11 +206,11 @@ int gpta_capture_sync_demo1(void)
  *  \param[in] none
  *  \return error code
  * 
-          —————          —————           —————         
-          |        |          |        |           |        |    
-          |        |          |        |           |        |        
- —————        ——————         ——————         ———
-		CMPA      CMPB      CMPA      CMPB       CMPA      CMPB  
+				 —————          —————           —————         
+				 |        |          |        |           |        |    
+				 |        |          |        |           |        |        
+ PA3输入波形———        ——————         ——————         ———
+			    CMPA      CMPB      CMPA      CMPB       CMPA      CMPB  
 
 */
 
@@ -226,7 +226,7 @@ int gpta_capture_sync_demo2(void)
 	csi_pin_irq_enable(PA3, ENABLE);	
 	csi_exi_set_evtrg(0, TRGSRC_EXI3, 1);	
 
-	csi_pin_irq_mode(PA3, EXI_GRP16, GPIO_IRQ_FALLING_EDGE);     //PA3 下降沿沿产生中断，选择中断组16
+	csi_pin_irq_mode(PA3, EXI_GRP16, GPIO_IRQ_FALLING_EDGE);     //PA3 下降沿产生中断，选择中断组16
 	csi_pin_irq_enable(PA3, ENABLE);                            //PA3 中断使能                                   
 	csi_exi_set_evtrg(5, TRGSRC_EXI16, 1);	   
 	
