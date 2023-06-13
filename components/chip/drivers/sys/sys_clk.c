@@ -104,7 +104,8 @@ csi_error_t csi_sysclk_config(csi_clk_config_t tClkCfg)
 	csi_error_t ret = CSI_OK;
 	uint8_t byFreqIdx = 0;
 	uint32_t wFreq,wTargetSclk;
-	csi_clk_src_e eSrc;
+	csi_clk_src_e  eSrc;
+	csi_sclk_sel_e eSckSel;
 	uint8_t byFlashLp = 0;
 	wFreq = tClkCfg.wFreq;
 	
@@ -115,7 +116,8 @@ csi_error_t csi_sysclk_config(csi_clk_config_t tClkCfg)
 	
 	switch (eSrc)
 	{
-		case (SRC_ISOSC): 	
+		case (SRC_ISOSC): 
+			eSckSel = SEL_ISOSC;	
 			csi_isosc_enable();
 			byFlashLp = 1;
 			break;
@@ -133,12 +135,13 @@ csi_error_t csi_sysclk_config(csi_clk_config_t tClkCfg)
 				default: ret = CSI_ERROR;	
 					break;
 			}
+			eSckSel = SEL_IMOSC;
 			csi_imosc_enable(byFreqIdx);
-		
 			if (wFreq == IM_131K)
 				byFlashLp = 1;
 			break;
 		case (SRC_EMOSC):
+			eSckSel = SEL_EMOSC;
 			csp_em_flt_sel(SYSCON,EM_FLT_10NS);
 			csp_em_flt_enable(SYSCON,ENABLE);
 			if (wFreq == EMOSC_32K_VALUE)
@@ -160,9 +163,11 @@ csi_error_t csi_sysclk_config(csi_clk_config_t tClkCfg)
 					return ret;
 					break;
 			}
+			eSckSel = SEL_HFOSC;
 			csi_hfosc_enable(byFreqIdx);
 			break;
 		case (SRC_AUTO_HF_PLL):	
+			eSckSel = SEL_PLL;
 			csi_pll_disable();
 			if((wFreq < 2000000UL)||(wFreq > 120000000UL))
 				return CSI_ERROR;
@@ -178,6 +183,7 @@ csi_error_t csi_sysclk_config(csi_clk_config_t tClkCfg)
 			csi_pll_enable();			
 			break;
 		case (SRC_AUTO_EM_PLL):	
+			eSckSel = SEL_PLL;
 			csi_pll_disable();
 			if((wFreq < 2000000UL)||(wFreq > 120000000UL))
 				return CSI_ERROR;
@@ -195,6 +201,7 @@ csi_error_t csi_sysclk_config(csi_clk_config_t tClkCfg)
 			csi_pll_enable();					
 			break;			
 		case (SRC_MANUAL_PLL):	
+			eSckSel = SEL_PLL;
 			csi_pll_disable();
 			if(g_tPllClkConfig.eClkSel == PLL_SEL_EMOSC_24M)
 			{
@@ -249,6 +256,7 @@ csi_error_t csi_sysclk_config(csi_clk_config_t tClkCfg)
 			
 			break;
 		case(SRC_ESOSC):
+			eSckSel = SEL_ESOSC;
 			csi_esosc_enable(wFreq);
 			byFlashLp = 1;
 			break;
@@ -275,7 +283,7 @@ csi_error_t csi_sysclk_config(csi_clk_config_t tClkCfg)
 		IFC->MR = (IFC->MR & (~PF_SPEED_MSK) & (~PF_WAIT_MSK)) | LOW_SPEED | PF_WAIT0;
 	}
 	csp_set_sdiv(SYSCON, tClkCfg.eSdiv);
-	csp_set_clksrc(SYSCON, eSrc);
+	csp_set_clksrc(SYSCON, eSckSel);
 	
 	
 	csp_eflash_lpmd_enable(SYSCON, (bool)byFlashLp);
