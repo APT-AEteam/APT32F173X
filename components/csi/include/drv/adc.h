@@ -39,9 +39,9 @@ typedef enum
  */
 typedef enum
 {
-	ADC_HFOSC		= 0,		//one shot mode
-	ADC_PLLQ,			        //continuous mode	
-    ADC_PCLK                       //wait for syc
+	ADC_HFOSC		= 0,		//HFOSC
+	ADC_PLLQ,			        //PLLQ	
+    ADC_PCLK                    //PCLK
 }csi_adc_clksel_e;
 /**
  * \enum	csi_adc_state_e
