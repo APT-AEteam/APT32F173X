@@ -261,7 +261,7 @@ csi_error_t csi_usart_send_async(csp_usart_t *ptUsartBase, const void *pData, ui
   \param[in]   eEtbCh		channel id number of etb, eEtbCh >= ETB_CH20_ID
   \return      error code \ref csi_error_t
  */
-csi_error_t csi_usart_dma_rx_init(csp_usart_t *ptUsartBase, csp_dma_t *ptDmaBase, csi_dma_ch_e eDmaCh, csi_etb_ch_e eEtbCh);
+csi_error_t csi_usart_dma_rx_init(csp_usart_t *ptUsartBase, csi_dma_reload_e eReload, csp_dma_t *ptDmaBase, csi_dma_ch_e eDmaCh, csi_etb_ch_e eEtbCh);
 
 /** \brief usart dma send mode init
  * 

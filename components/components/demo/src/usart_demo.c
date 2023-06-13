@@ -72,7 +72,7 @@ int usart_send_dma_demo(void)
 	
 	csi_etb_init();										//使能ETB模块
 
-		csi_usart_dma_tx_init(USART1,DMA0, DMA_CH0, ETB_CH20);	//发送DMA初始化，选择DMA通道和ETB触发通道，DMA_CH: 0~3; ETB_CH: 8~11
+	csi_usart_dma_tx_init(USART1,DMA0, DMA_CH0, ETB_CH20);	//发送DMA初始化，选择DMA通道和ETB触发通道，DMA_CH: 0~3; ETB_CH: 8~11
 	
 	while(1)
 	{
@@ -139,7 +139,7 @@ int usart_recv_dma_demo(void)
 	
 	csi_etb_init();										//使能ETB模块
 
-	csi_usart_dma_rx_init(USART0,DMA0, DMA_CH3, ETB_CH20);			//DMA接收初始化，选择DMA通道和ETB触发通道，DMA_CH: 0~3; ETB_CH: 8~11
+	csi_usart_dma_rx_init(USART0,DMA_RELOAD_ENABLE,DMA0, DMA_CH3, ETB_CH20);			//DMA接收初始化，选择DMA通道和ETB触发通道，DMA_CH: 0~3; ETB_CH: 8~11
 	csi_usart_recv_dma(USART0,DMA0,(void*)s_byRecvBuf, DMA_CH3, 25);	//DMA接收	
 	
 	while(1)

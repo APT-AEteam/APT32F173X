@@ -227,7 +227,7 @@ int16_t csi_uart_send(csp_uart_t *ptUartBase, const void *pData, uint16_t hwSize
   \param[in]   eEtbCh		channel id number of etb, eEtbCh >= ETB_CH8
   \return      error code \ref csi_error_t
  */
-csi_error_t csi_uart_dma_rx_init(csp_uart_t *ptUartBase, csi_dma_ch_e eDmaCh, csi_etb_ch_e eEtbCh);
+csi_error_t csi_uart_dma_rx_init(csp_uart_t *ptUartBase, csi_dma_reload_e eReload, csp_dma_t *ptDmaBase, csi_dma_ch_e eDmaCh, csi_etb_ch_e eEtbCh);
 
 /** 
   \brief 	   uart dma send mode init
