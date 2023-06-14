@@ -46,10 +46,34 @@ void csi_iram_init(void)
 }
 #endif
 
+
+/**
+  * @brief  initialize system map
+  * @param  None
+  * @return None
+  */
+void system_map_config(void)
+{
+	csi_sysmap_config_region(0, 0x00000000, SYSMAP_SYSMAPCFG_SO_Msk);
+	csi_sysmap_config_region(1, 0x40000,    SYSMAP_SYSMAPCFG_B_Msk | SYSMAP_SYSMAPCFG_C_Msk);
+	csi_sysmap_config_region(2, 0x10000000, SYSMAP_SYSMAPCFG_B_Msk | SYSMAP_SYSMAPCFG_C_Msk);
+	csi_sysmap_config_region(3, 0x10002000, SYSMAP_SYSMAPCFG_B_Msk | SYSMAP_SYSMAPCFG_C_Msk);
+	csi_sysmap_config_region(4, 0x20000000, SYSMAP_SYSMAPCFG_B_Msk | SYSMAP_SYSMAPCFG_C_Msk);
+	csi_sysmap_config_region(5, 0x40000000, SYSMAP_SYSMAPCFG_B_Msk | SYSMAP_SYSMAPCFG_C_Msk);
+	csi_sysmap_config_region(6, 0xeffff000, SYSMAP_SYSMAPCFG_SO_Msk);
+	csi_sysmap_config_region(7, 0xfffff000, SYSMAP_SYSMAPCFG_SO_Msk);
+}
+
+/**
+  * @brief  initialize system 
+  * @param  None
+  * @return None
+  */
 __attribute__((weak)) void system_init(void)		
 {
 	uint32_t i;
-
+	
+	system_map_config();
 	csi_icache_enable ();
 	
 #ifdef CODE_REMAP_TO_IRAM
