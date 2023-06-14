@@ -105,7 +105,7 @@ csi_error_t csi_sysclk_config(csi_clk_config_t tClkCfg)
 	uint8_t byFreqIdx = 0;
 	uint32_t wFreq,wTargetSclk;
 	csi_clk_src_e  eSrc;
-	csi_sclk_sel_e eSckSel;
+	csi_sclk_sel_e eSckSel = SEL_IMOSC;
 	uint8_t byFlashLp = 0;
 	wFreq = tClkCfg.wFreq;
 	

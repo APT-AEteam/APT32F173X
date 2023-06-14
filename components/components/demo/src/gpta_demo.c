@@ -41,7 +41,7 @@ int gpta_timer_demo(void)
 /** \brief GPTA sync2 sync3合并捕获示例代码，测试周期时间
  *          //sync2 sync3不区分，实现4次捕获
  *   		- 捕获4次产生一次捕获中断，ldbarst捕获后，计数器进行重置
- *     		- 由PA1下降沿触发外部事件1，经过ETCB  触发sync3 捕获
+ *     		- 由PA1外部扩展口,下降沿触发外部事件5，经过ETCB  触发sync3 捕获
  * 			- 信号由PA1的高低电平切换产生（一直高或低电平意味着没有触发）
  *          - CMPA捕获的是第一次周期值，CMPB捕获的是第二次周期值，CMPAA捕获的是第三次周期值,CMPBA捕获的是第四次周期值
  *  \param[in] none
@@ -110,7 +110,7 @@ int gpta_capture_sync_demo0(void)
 /** \brief GPTA sync2 sync3合并捕获示例代码，测试低电平时间
  *          //sync2 sync3不区分，实现1次捕获
  *   		- 捕获1次产生一次捕获中断，ldarst捕获后，计数器进行重置
- *     		- 由PA1下降沿产生外部事件1，经过ETCB  触发sync0，重置和启动计数器
+ *     		- 由PA1下降沿产生外部事件0，经过ETCB  触发sync0，重置和启动计数器
  *          - 由PA1外部扩展口，上升沿产生外部事件5，经过ETCB  触发sync3 捕获，上升沿捕获值存放在CMPA中
  * 			- 信号由PA1的高低电平切换产生（一直高或低电平意味着没有触发）
  *          - CMPA捕获的是下降沿时间
@@ -199,8 +199,8 @@ int gpta_capture_sync_demo1(void)
 /** \brief GPTA sync2 sync3区分捕获示例代码，测试低电平和周期时间，同时可计算出高电平时间
  *          //sync2 sync3区分，实现2次捕获
  *   		- 捕获2次产生一次捕获中断，ldbrst捕获后，计数器进行重置
- *     		- 由PA3产生外部事件3，经过ETCB  触发sync2 上升沿捕获，上升沿捕获值存放在CMPA中
- *          - 由PA3外部扩展口产生外部事件5，经过ETCB  触发sync3 下降沿捕获，下降沿捕获值存放在CMPB中
+ *     		- 由PA3产生外部事件0，经过ETCB  触发sync2 上升沿捕获，上升沿捕获值存放在CMPA中
+ *          - 由PA3外部扩展口,产生外部事件5，经过ETCB  触发sync3 下降沿捕获，下降沿捕获值存放在CMPB中
  * 			- 信号由PA3的高低电平切换产生（一直高或低电平意味着没有触发）
  *          - 下降沿时间为CMPA，周期时间为CMPB，上升沿时间为 CMPB - CMPA。  
  *  \param[in] none
