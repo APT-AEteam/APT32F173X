@@ -167,14 +167,9 @@ static inline void csp_ifc_dflash_paramode_enable(csp_ifc_t *ptIfcBase, bool bEn
 	ptIfcBase->MR = (ptIfcBase->MR &(~DFLASH_PMODE_MSK)) | (bEnable << DFLASH_PMODE_POS);
 }
 
-static inline void csp_ifc_dflash_speed(csp_ifc_t *ptIfcBase, uint8_t bySpeed)
+static inline void csp_ifc_flash_speed_wait(csp_ifc_t *ptIfcBase, uint8_t bySpeed,uint8_t byWait)
 {
-	ptIfcBase->MR = (ptIfcBase->MR &(~PF_SPEED_MSK)) | (bySpeed << PF_SPEED_POS);
-}
-
-static inline void csp_ifc_dflash_wait(csp_ifc_t *ptIfcBase, uint8_t byWait)
-{
-	ptIfcBase->MR = (ptIfcBase->MR &(~PF_WAIT_MSK)) | byWait;
+	ptIfcBase->MR = (ptIfcBase->MR &(~PF_SPEED_MSK)&(~PF_WAIT_MSK)) | (bySpeed << PF_SPEED_POS)| byWait;
 }
 
 
