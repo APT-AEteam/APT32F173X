@@ -91,8 +91,8 @@ typedef enum{
 
 #define  PF_SPEED_POS (16)
 #define  PF_SPEED_MSK (0x1<<PF_SPEED_POS)
-#define  HIGH_SPEED ((0x1ul)<<16) 
-#define  LOW_SPEED ((0x0ul)<<16) 
+#define  HIGH_SPEED ((0x1ul)) 
+#define  LOW_SPEED ((0x0ul)) 
 
 ///KR: ISP key
 #define  IFC_USER_KEY (0x5A5A5A5Aul)
@@ -167,9 +167,9 @@ static inline void csp_ifc_dflash_paramode_enable(csp_ifc_t *ptIfcBase, bool bEn
 	ptIfcBase->MR = (ptIfcBase->MR &(~DFLASH_PMODE_MSK)) | (bEnable << DFLASH_PMODE_POS);
 }
 
-static inline void csp_ifc_flash_speed_wait(csp_ifc_t *ptIfcBase, uint8_t bySpeed,uint8_t byWait)
+static inline void csp_ifc_flash_set_speed_wait(csp_ifc_t *ptIfcBase, uint8_t bySpeed,uint8_t byWait)
 {
-	ptIfcBase->MR = (ptIfcBase->MR &(~PF_SPEED_MSK)&(~PF_WAIT_MSK)) | (bySpeed << PF_SPEED_POS)| byWait;
+	ptIfcBase->MR = (ptIfcBase->MR &(~PF_SPEED_MSK)&(~PF_WAIT_MSK)) | (bySpeed << PF_SPEED_POS)| (byWait << PF_WAIT_POS);
 }
 
 
