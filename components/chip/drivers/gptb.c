@@ -607,7 +607,7 @@ csi_error_t csi_gptb_gldcfg(csp_gptb_t *ptGptbBase ,csi_gptb_Global_load_gldcfg_
 */
 csi_error_t csi_gptb_global_sw(csp_gptb_t *ptGptbBase)
 {
-	csp_gptb_set_gldcr2(ptGptbBase,GPTB_OSREARM_EN);
+	csp_gptb_set_gldcr2(ptGptbBase,GPTB_SW_GLD);
 	return CSI_OK;
 }
 /**
@@ -617,7 +617,7 @@ csi_error_t csi_gptb_global_sw(csp_gptb_t *ptGptbBase)
 */
 csi_error_t csi_gptb_global_rearm(csp_gptb_t *ptGptbBase)
 {
-	csp_gptb_set_gldcr2(ptGptbBase,GPTB_SW_GLD);
+	csp_gptb_set_gldcr2(ptGptbBase,GPTB_OSREARM_EN);
 	return CSI_OK;
 }
 /** \brief start gptb
@@ -894,6 +894,7 @@ csi_error_t csi_gptb_continuoussoftwareforce_output(csp_gptb_t *ptGptbBase, csi_
  */
 csi_error_t csi_gptb_int_enable(csp_gptb_t *ptGptbBase, csi_gptb_int_e eInt, bool bEnable)
 {  
+	csi_irq_enable((uint32_t *)ptGptbBase);							//enable  irq
 	csp_gptb_int_enable(ptGptbBase,(csp_gptb_int_e)eInt,bEnable);
 	return CSI_OK;
 }

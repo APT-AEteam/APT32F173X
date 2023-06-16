@@ -292,6 +292,17 @@ typedef enum{
 	GPTB_TRGO_1_SEL
 }csi_gptb_syncrout_e;
 
+typedef enum{
+	GPTB_FILT_DIS		= 0,	//filter disable
+	GPTB_FILT_SYNCIN0,			//filter input syncin0
+	GPTB_FILT_SYNCIN1,			//filter input syncin1	
+	GPTB_FILT_SYNCIN2,			//filter input syncin2
+	GPTB_FILT_SYNCIN3,			//filter input syncin3	
+	GPTB_FILT_SYNCIN4,			//filter input syncin4
+	GPTB_FILT_SYNCIN5,			//filter input syncin5	
+	GPTB_FILT_SYNCIN6,			//filter input syncin6	
+}csi_gptb_filter_insrc_e;
+
 /**
  * \enum     csi_ept_trgin_e
  * \brief    GPTB sync trigger input 
