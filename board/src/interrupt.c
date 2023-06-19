@@ -160,7 +160,7 @@ ATTRIBUTE_ISR void gpta0_int_handler(void)
 {
 #if GPTA0_INT_HANDLE_EN	
 	 // ISR content ...
-	gpta_irqhandler(GPTA0);//this is a weak function defined in gpta_demo.c, for better efficiency, we recommand user directly implement IRQ handler here without any function call.
+	gpta_irqhandler0(GPTA0);//this is a weak function defined in gpta_demo.c, for better efficiency, we recommand user directly implement IRQ handler here without any function call.
 #endif
 }
 
@@ -168,7 +168,7 @@ ATTRIBUTE_ISR void gpta1_int_handler(void)
 {
 #if GPTA1_INT_HANDLE_EN	
 	 // ISR content ...
-	gpta_irqhandler(GPTA1);//this is a weak function defined in gpta_demo.c, for better efficiency, we recommand user directly implement IRQ handler here without any function call.
+	gpta_irqhandler1(GPTA1);//this is a weak function defined in gpta_demo.c, for better efficiency, we recommand user directly implement IRQ handler here without any function call.
 #endif	
 }
 
@@ -177,14 +177,14 @@ ATTRIBUTE_ISR void gpta2_int_handler(void)
 {
 #if GPTA2_INT_HANDLE_EN	
 	 // ISR content ...
-	gpta_irqhandler(GPTA2);//this is a weak function defined in gpta_demo.c, for better efficiency, we recommand user directly implement IRQ handler here without any function call.
+	gpta_irqhandler2(GPTA2);//this is a weak function defined in gpta_demo.c, for better efficiency, we recommand user directly implement IRQ handler here without any function call.
 #endif
 }
 
 ATTRIBUTE_ISR void gpta3_int_handler(void) 
 {
 #if GPTA3_INT_HANDLE_EN	
-	gpta_irqhandler(GPTA3);//this is a weak function defined in gpta_demo.c, for better efficiency, we recommand user directly implement IRQ handler here without any function call.
+	gpta_irqhandler3(GPTA3);//this is a weak function defined in gpta_demo.c, for better efficiency, we recommand user directly implement IRQ handler here without any function call.
 	 // ISR content ...
 #endif
 }
