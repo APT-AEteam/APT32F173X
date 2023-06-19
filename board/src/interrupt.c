@@ -30,7 +30,10 @@ extern void uart_irqhandler(csp_uart_t *ptUartBase,uint8_t byIdx);
 extern void usart_irqhandler(csp_usart_t *ptUsartBase,uint8_t byIdx);
 extern void can_irqhandler(csp_can_t *ptCanBase);
 extern void dma_irqhandler(csp_dma_t *ptDmaBase);						//DMA
-extern void gpta_irqhandler(csp_gpta_t *ptGptaBase);
+extern void gpta_irqhandler0(csp_gpta_t *ptGptaBase);
+extern void gpta_irqhandler1(csp_gpta_t *ptGptaBase);
+extern void gpta_irqhandler2(csp_gpta_t *ptGptaBase);
+extern void gpta_irqhandler3(csp_gpta_t *ptGptaBase);
 extern void gpio_irqhandler(uint8_t byExiNum);
 extern void ifc_irqhandler(void);
 extern void bt_irqhandler0(csp_bt_t *ptBtBase);
