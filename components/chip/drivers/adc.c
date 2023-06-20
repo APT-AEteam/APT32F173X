@@ -426,6 +426,28 @@ csi_error_t csi_adc_set_evtrg(csp_adc_t *ptAdcBase, csi_adc_trgout_e eTrgOut, cs
 	}
 	return CSI_OK;
 }
+/** \brief set adc epvs 
+ * 
+ *  \param[in] ptAdcBase: pointer of adc register structure
+ *  \param[in] byTrgOut: adc evtrg out port (0~1)
+ *  \param[in] adc_trgsrc: The event triggers the count 
+ *  \return error code \ref csi_error_t
+ */
+csi_error_t csi_adc_set_epvs(csp_adc_t *ptAdcBase, csi_adc_trgout_e eTrgOut, uint8_t byPeriod)
+{
+	switch(eTrgOut)
+	{
+		case ADC_TRGOUT0:		//event trigger out0
+			ptAdcBase->EPVS = (ptAdcBase->EPVS & (~ADC12_EV0PRD_MSK)) | ADC12_TRGEV0PRD(byPeriod);
+			break;
+		case ADC_TRGOUT1:		//event trigger out1
+			ptAdcBase->EPVS = (ptAdcBase->EPVS & (~ADC12_EV1PRD_MSK)) | ADC12_TRGEV1PRD(byPeriod);
+			break;
+		default:
+			return CSI_ERROR;
+	}
+	return CSI_OK;
+}
 /** \brief enable/disable adc INT status
  * 
  *  \param[in] adc: ADC handle to operate

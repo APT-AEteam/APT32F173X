@@ -41,7 +41,7 @@
     __IOM  uint32_t  SYNCR;     //0x007C Sync Control Register             
     __IM   uint32_t  RSVD1[2];         
     __IOM  uint32_t  EVTRG;     //0x0088 Event Trigger Control  Register   
-    __IOM  uint32_t  EVPS;      //0x008C Event Prescale Register           
+    __IOM  uint32_t  EPVS;      //0x008C Event Prescale Register           
     __IOM  uint32_t  EVSWF;     //0x0090 Event Softtrig Register           
     __IOM  uint32_t  RSVD2[27];
     __IM   uint32_t  DR[16];    //0x0100 Convert Data Register             
@@ -68,19 +68,6 @@ typedef enum
 /******************************************************************************
 * CR : ADC12 Control Register
 ******************************************************************************/
-//#define ADC12_BUFEN_POS		16
-//#define ADC12_BUFEN_MSK		(0x01ul << ADC12_BUFEN_POS)
-//
-//#define ADC12_FVRSEL_POS	25
-//#define ADC12_FVRSEL_MSK	(0x01ul << ADC12_FVRSEL_POS)
-//#define ADC12_FVREN_POS		24
-//#define ADC12_FVREN_MSK		(0x01ul << ADC12_FVREN_POS)
-//
-//typedef enum {	
-//	ADC12_FVR_2048 		= 0,
-//	ADC12_FVR_4096
-//}adc_fvrsel_e;
-
 typedef enum
 {
 	ADC12_SWRST			= ( 0),            
@@ -100,13 +87,6 @@ typedef enum{
 	VREF_VREFP_VSS		= (0x02ul),
 	VREF_INTVREF_VSS	= (0x03ul)
 }adc_vref_e;
-
-#define ADC12_BUFSEL_POS	17
-#define ADC12_BUFSEL_MSK	(0x03ul << ADC12_BUFSEL_POS)
-typedef enum{
-	ADC12_BUFSEL_1V0 	= (2),
-	ADC12_BUFSEL_TEMP	= (3),
-}adc_bufsel_e;
 
 #define ADC12_BIT_POS 	(31) 
 #define ADC12_BIT_MSK 	(0x01ul << ADC12_BIT_POS) 
@@ -268,6 +248,11 @@ typedef enum{
 	TRG_SOC5		
 }adc_trg_src_e;
 
+#define ADC12_DRMASKEN_POS		(20)
+#define ADC12_DRMASKEN_MSK		(0x0Ful << ADC12_DRMASKEN_POS)
+#define ADC12_DRMASKOFF_POS		(24)
+#define ADC12_DRMASKOFF_MSK		(0x0Ful << ADC12_DRMASKOFF_POS)
+
 /******************************************************************************
 * CSR, SR, IER, IDR, IMR : ADC12 Status Registers and Interrupt Registers
 ******************************************************************************/
@@ -372,7 +357,7 @@ typedef enum{
 	ADC12_SYNCEN2,	
 	ADC12_SYNCEN3,	
 	ADC12_SYNCEN4,		
-	ADC12_SYNCEN5  	
+	ADC12_SYNCEN5,
 
 }adc_sync_e;
 
@@ -435,7 +420,7 @@ typedef enum{
 #define ADC12_TRG1OE       (0x01ul <<21)       /**< ADC out TRG En          */
 
 /******************************************************************************
-* EVPS  
+* EPVS  
 ******************************************************************************/
 #define ADC12_EV0PRD_MSK	(0xf)
 #define ADC12_EV1PRD_MSK	(0xf0)
@@ -504,6 +489,14 @@ static inline void csp_adc_clk_sel(csp_adc_t *ptAdcBase,adc_clksel_e eClksel)
 {
 	ptAdcBase->ECR = (ptAdcBase->ECR & (~ ADC12_CLKSEL_MSK)) | ((eClksel << ADC12_CLKSEL_POS));	
 }
+static inline void csp_adc_dbg_en(csp_adc_t *ptAdcBase)
+{
+	ptAdcBase->ECR = ADC12_DBGEN;
+}
+static inline void csp_adc_dbg_dis(csp_adc_t *ptAdcBase)
+{
+	ptAdcBase->DCR = ADC12_DBGEN;
+}
 //
 static inline void csp_adc_set_conv_mode(csp_adc_t *ptAdcBase, adc_conv_mode_e eConvMode)
 {
@@ -526,24 +519,6 @@ static inline void csp_adc_set_vref(csp_adc_t *ptAdcBase, adc_vref_e eVrefSel)
 	ptAdcBase->CR =  (ptAdcBase->CR & (~ADC12_VREF_MSK)) | (eVrefSel<<ADC12_VREF_POS);
 
 }
-//
-//static inline void csp_adc_bufout_enable(csp_adc_t *ptAdcBase, bool bEnable)
-//{
-//	ptAdcBase -> CR = (ptAdcBase->CR & ~ADC12_BUFEN_MSK)| (bEnable << ADC12_BUFEN_POS);
-//}
-//static inline void csp_adc_bufsel_set(csp_adc_t *ptAdcBase, adc_bufsel_e eBufSel)
-//{
-//	ptAdcBase -> CR = (ptAdcBase->CR & ~ADC12_BUFSEL_MSK)| (eBufSel << ADC12_BUFSEL_POS);
-//}
-//static inline void csp_adc_set_fvrout_lvl(csp_adc_t *ptAdcBase, adc_fvrsel_e eLvl)
-//{
-//	ptAdcBase -> CR = (ptAdcBase->CR & ~ADC12_FVRSEL_MSK)| (eLvl << ADC12_FVRSEL_POS);
-//}
-//static inline void csp_adc_fvrout_enable(csp_adc_t *ptAdcBase, bool bEnable)
-//{
-//	ptAdcBase -> CR = (ptAdcBase->CR & ~ADC12_FVREN_MSK)| (bEnable << ADC12_FVREN_POS);
-//}
-//
 static inline void csp_adc_set_seq_num(csp_adc_t *ptAdcBase, uint8_t bySeqNum)
 {
 	ptAdcBase->MR = (ptAdcBase->MR & (~ADC12_NBRCH_MSK)) |  ADC12_NBRCH(bySeqNum);
@@ -638,15 +613,6 @@ static inline void csp_adc_soft_rst(csp_adc_t *ptAdcBase)
 /*************************************************************************
  * @brief  adc vic irq 
 ****************************************************************************/
-//static inline void csp_adc_vic_irq_en(void)
-//{
-//	NVIC_EnableIRQ(ADC_IRQn);
-//}
-//static inline void csp_adc_vic_irq_dis(void)
-//{
-//	NVIC_DisableIRQ(ADC_IRQn);
-//}
-//
 static inline void csp_adc_wait_ready(csp_adc_t *ptAdcBase)
 {
 	while(!((ptAdcBase->SR) & ADC12_READY));

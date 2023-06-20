@@ -516,6 +516,15 @@ void csi_adc_bufout_enable(csp_adc_t *ptAdcBase, csi_adc_bufsel_e eBufSel, bool 
  */
 void csi_adc_set_clk(csp_adc_t *ptAdcBase,csi_adc_clksel_e eClksel);
 
+/** \brief set adc epvs 
+ * 
+ *  \param[in] ptAdcBase: pointer of adc register structure
+ *  \param[in] byTrgOut: adc evtrg out port (0~1)
+ *  \param[in] adc_trgsrc: The event triggers the count 
+ *  \return error code \ref csi_error_t
+ */
+csi_error_t csi_adc_set_epvs(csp_adc_t *ptAdcBase, csi_adc_trgout_e eTrgOut, uint8_t byPeriod);
+
 #ifdef __cplusplus
 }
 #endif
