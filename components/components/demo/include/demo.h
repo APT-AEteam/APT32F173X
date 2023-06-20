@@ -176,9 +176,9 @@ extern void dac_demo(void);
 
 
 ///  sram相关的示例代码
-extern void sram_dsram24k_dsram8k_test0(void);
-extern void sram_dsram24k_dsram8k_test1(void);
-extern void sram_dsram24k_iram8k_test(void);
+extern void sram_dsram24k_dsram8k_demo0(void);
+extern void sram_dsram24k_dsram8k_demo1(void);
+extern void sram_dsram24k_iram8k_demo(void);
 
 
 ///  wizard相关的示例代码
