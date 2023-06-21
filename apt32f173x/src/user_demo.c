@@ -118,6 +118,9 @@ void user_demo(void)
 ///  GPTB相关的示例代码
 /// ***************************************************
 //	gptb_capture_demo();
+//	gptb_capture_sync_demo0();
+//	gptb_capture_sync_demo1();
+//	gptb_capture_sync_demo2();
 //	gptb_pwm_demo();
 //	gptb_pwm_dz_demo();
 //	gptb_pwm_dz_em_demo();

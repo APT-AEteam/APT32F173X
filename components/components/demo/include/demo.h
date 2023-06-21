@@ -122,12 +122,12 @@ extern int cnta_envelope_demo(void);
 //spi demo
 extern int spi_master_send_demo(void);
 extern int spi_master_send_int_demo(void);
-extern void spi_master_send_receive_demo(void); 
-extern void spi_slave_send_receive_demo(void);  
-extern void spi_slave_receive_int_demo(void);
+extern int spi_master_send_receive_demo(void); 
+extern int spi_slave_send_receive_demo(void);  
+extern int spi_slave_receive_int_demo(void);
 extern int spi_flash_read_write_demo(void);
-extern void spi_etcb_dma_send_demo(void);
-extern void spi_etcb_dma_send_receive_demo(void);
+extern int spi_etcb_dma_send_demo(void);
+extern int spi_etcb_dma_send_receive_demo(void);
 
 //cmp demo
 extern int cmp_base_demo(void);
@@ -146,9 +146,9 @@ extern int gpta_reglk_demo(void);
 //gptb demo
 extern int gptb_timer_demo(void);
 extern int gptb_capture_demo(void);
-extern void gptb_capture_sync_demo0(void);
-extern void gptb_capture_sync_demo1(void);
-extern void gptb_capture_sync_demo2(void);
+extern int gptb_capture_sync_demo0(void);
+extern int gptb_capture_sync_demo1(void);
+extern int gptb_capture_sync_demo2(void);
 extern int gptb_pwm_demo(void);
 extern int gptb_pwm_dz_demo(void);
 extern int gptb_pwm_dz_em_demo(void);

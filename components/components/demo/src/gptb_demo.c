@@ -109,7 +109,7 @@ int gptb_capture_demo(void)
 				——————        ——————         ——————          —————        ————
 				CMPA                CMPB                 CMPAA                CMPBA               CMPA   
 */
-void gptb_capture_sync_demo0(void)
+int gptb_capture_sync_demo0(void)
 {
 	int iRet = 0;
     volatile uint8_t ch;
@@ -149,7 +149,11 @@ void gptb_capture_sync_demo0(void)
 //------------------------------------------------------------------------------------------------------------------------
     csi_gptb_set_sync(GPTB0, GPTB_TRGIN_SYNCEN3, GPTB_TRG_CONTINU, GPTB_AUTO_REARM_ZRO);//使能SYNCIN3外部触发
 	csi_gptb_start(GPTB0);//start  timer
-    while(1);
+    while(1)
+	{
+		mdelay(1);
+	}
+	return iRet;
 }
 
 /** \brief GPTB sync2 sync3合并捕获示例代码，测试低电平时间
@@ -168,7 +172,7 @@ void gptb_capture_sync_demo0(void)
                ——————        ——————         ——————          
                RESET      CMPA     RESET     CMPA      RESET       CMPA               
 */
-void gptb_capture_sync_demo1(void)
+int gptb_capture_sync_demo1(void)
 {
 	int iRet = 0;	
     volatile uint8_t ch;
@@ -223,7 +227,11 @@ void gptb_capture_sync_demo1(void)
 	csi_gptb_set_sync(GPTB0, GPTB_TRGIN_SYNCEN0, GPTB_TRG_CONTINU, GPTB_AUTO_REARM_ZRO);//使能SYNCIN0外部触发
     csi_gptb_set_sync(GPTB0, GPTB_TRGIN_SYNCEN3, GPTB_TRG_CONTINU, GPTB_AUTO_REARM_ZRO);//使能SYNCIN3外部触发
 	csi_gptb_start(GPTB0);//start  timer
-    while(1);
+    while(1)
+	{
+		mdelay(1);
+	}
+	return iRet;
 }
 
 /** \brief GPTB sync2 sync3区分捕获示例代码，测试低电平和周期时间，同时可计算出高电平时间
@@ -242,7 +250,7 @@ void gptb_capture_sync_demo1(void)
  PA3输入波形———        ——————         ——————         ———
 			    CMPA      CMPB      CMPA      CMPB       CMPA      CMPB  
 */
-void gptb_capture_sync_demo2(void)
+int gptb_capture_sync_demo2(void)
 {
 	int iRet = 0;	
     volatile uint8_t ch;
@@ -296,7 +304,11 @@ void gptb_capture_sync_demo2(void)
     csi_gptb_set_sync(GPTB0, GPTB_TRGIN_SYNCEN2, GPTB_TRG_CONTINU, GPTB_AUTO_REARM_ZRO);//使能SYNCIN2外部触发
 	csi_gptb_set_sync(GPTB0, GPTB_TRGIN_SYNCEN3, GPTB_TRG_CONTINU, GPTB_AUTO_REARM_ZRO);//使能SYNCIN3外部触发
 	csi_gptb_start(GPTB0);//start  timer
-    while(1);		
+    while(1)
+	{
+		mdelay(1);
+	}
+	return iRet;	
 }
 
 /** \brief GPTB 波形输出示例代码

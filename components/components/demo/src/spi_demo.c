@@ -93,10 +93,11 @@ int spi_master_send_demo(void)
 /** \brief spi master send and receive demo,polling mode
  * 	\brief spi 主机收发一串数据，收发使用轮询
  *  \param[in] none
- *  \return none
+ *  \return error code
  */
-void spi_master_send_receive_demo(void)
+int spi_master_send_receive_demo(void)
 {
+	int iRet = 0;
 	uint8_t bySendData[16] = {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16};
 	uint8_t byRecvData[16] = {0};
 	
@@ -120,15 +121,17 @@ void spi_master_send_receive_demo(void)
 		csi_spi_send_receive(SPI0, bySendData, byRecvData, 16);
 		mdelay(100);
 	}	
+	return iRet;
 }
 
 /*  \brief spi slave receive a bunch of data; interrupt(async) mode
  *  \brief spi 从机接收一串数据，RX使用中断
  *  \param[in] none
- *  \return none
+ *  \return error code
  */
-void spi_slave_receive_int_demo(void)
+int spi_slave_receive_int_demo(void)
 {
+	int iRet = 0;
 	uint8_t byRecvData[16] = {};
 	uint8_t byIndex = 0;
 	csi_spi_config_t tSpiConfig;  //spi初始化参数配置结构体
@@ -157,15 +160,17 @@ void spi_slave_receive_int_demo(void)
 			my_printf(" %d", byRecvData[byIndex]);
 		}
 	}
+	return iRet;
 }
 
 /** \brief spi slave send and receive demo,polling mode
  * 	\brief spi 从机收发一串数据，收发使用轮询
  *  \param[in] none
- *  \return none
+ *  \return error code
  */
-void spi_slave_send_receive_demo(void)//从机同步发，同步收
+int spi_slave_send_receive_demo(void)//从机同步发，同步收
 {
+	int iRet = 0;
 	uint8_t byReceData;
 	csi_spi_config_t tSpiConfig;  //spi初始化参数配置结构体
 	
@@ -191,14 +196,16 @@ void spi_slave_send_receive_demo(void)//从机同步发，同步收
 		}
 		nop;
 	}
+	return iRet;
 }
 
 /** \brief spi DMA发送示例代码，使用DMA循环发送20字节数据
  *  \param[in] none
  *  \return error code
  */
-void spi_etcb_dma_send_demo(void)
+int spi_etcb_dma_send_demo(void)
 {
+	int iRet = 0;
 	uint8_t bySdData[20]={0};
 
 	for(uint8_t i = 0; i < sizeof(bySdData); i++)
@@ -251,6 +258,7 @@ void spi_etcb_dma_send_demo(void)
 		while(csp_dma_get_curr_htc(ptDmaChBase));//等待直到dma传输完成
 		mdelay(10);
 	}
+	return iRet;
 }
 
 /** \brief spi DMA发送接收示例代码，使用DMA循环发送20字节数据
@@ -259,8 +267,9 @@ void spi_etcb_dma_send_demo(void)
  *	\param[in] none
  *  \return error code
  */
-void spi_etcb_dma_send_receive_demo(void)
+int spi_etcb_dma_send_receive_demo(void)
 {	
+	int iRet = 0;
 	uint8_t byDMAChnlSend = 0;
 	uint8_t byDMAChnlRecv = 1;
 	
@@ -360,6 +369,7 @@ void spi_etcb_dma_send_receive_demo(void)
 		csi_spi_nss_high(PB12);
 		mdelay(10);
 	}
+	return iRet;
 }
 
 //----------------------------------------------------------------------------------------------
