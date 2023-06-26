@@ -117,6 +117,10 @@ csi_error_t csi_uart_init(csp_uart_t *ptUartBase, csi_uart_config_t *ptUartCfg)
 	
 	if(ptUartCfg->wInt)
 	{
+		if(ptUartCfg->wInt&UART_INTSRC_RX)
+		{
+			csp_uart_set_fifo(ptUartBase, UART_RXFIFO_1_2, DISABLE);			//set /fx fifo = 1_2/fifo enable
+		}
 		if((ptUartCfg->byRxMode) || (ptUartCfg->byTxMode))
 		{
 			if(ptUartCfg->byRxMode)
@@ -333,6 +337,7 @@ int16_t csi_uart_send(csp_uart_t *ptUartBase, const void *pData, uint16_t hwSize
 /** \brief uart dma receive mode init
  * 
  *  \param[in] ptUartBase: pointer of uart register structure
+ *  \param[in] eReload:dma reload mode \ref csi_dma_reload_e
  *  \param[in] eDmaCh: channel number of dma, eDmaCh: DMA_CH0` DMA_CH3
  *  \param[in] eEtbCh: channel id number of etb, eEtbCh >= ETB_CH8
  *  \return  error code \ref csi_error_t
