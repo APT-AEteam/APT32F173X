@@ -58,10 +58,10 @@ void io_config(void)
 //	csi_pin_set_mux(PA14,  PD2_LED_C9);
 	
 	//开启COM口强驱
-	csi_pin_drive(PB3, GPIO_DRIVE_LV1);
-	csi_pin_drive(PB4, GPIO_DRIVE_LV1);
-	csi_pin_drive(PB6, GPIO_DRIVE_LV1);
-	csi_pin_drive(PB7, GPIO_DRIVE_LV1);
+	csi_pin_drive(PB3, GPIO_DRIVE_STRONG);
+	csi_pin_drive(PB4, GPIO_DRIVE_STRONG);
+	csi_pin_drive(PB6, GPIO_DRIVE_STRONG);
+	csi_pin_drive(PB7, GPIO_DRIVE_STRONG);
 }
 
 /**
