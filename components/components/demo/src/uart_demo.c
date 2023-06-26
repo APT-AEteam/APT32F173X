@@ -59,7 +59,7 @@ int uart_send_dma_demo(void)
 	{
 		byRecv = csi_uart_getc(UART1);
 		if(byRecv)
-			csi_uart_send_dma(UART1, DMA_CH1, (void *)bySdData, 26);	
+			csi_uart_send_dma(UART1, DMA0,DMA_CH1, (void *)bySdData, 26);	
 		mdelay(10);
 		if(csi_dma_get_msg(DMA0,DMA_CH1, ENABLE))	//获取发送完成消息，并清除消息
 		{
@@ -105,14 +105,14 @@ int uart_recv_dma_demo(void)
 //	csi_uart_dma_rx_init(UART0,DMA_RELOAD_ENABLE, DMA0, DMA_CH3, ETB_CH20);		//DMA接收初始化，选择DMA通道和ETB触发通道，DMA_CH: 0~3; ETB_CH: 20~31
 //	while(1)
 //	{
-//		csi_uart_recv_dma(UART1, DMA_CH3, (void*)s_byRecvBuf,22);				//采用DMA方式接收
+//		csi_uart_recv_dma(UART1, DMA0,DMA_CH1, (void *)s_byRecvBuf, 22);				//采用DMA方式接收
 //		while(1)
 //		{
-//			if(csi_dma_get_msg(DMA_CH3, ENABLE))								//获取接收完成消息，并清除消息
+//			if(csi_dma_get_msg(DMA0,DMA_CH3, ENABLE))								//获取接收完成消息，并清除消息
 //			{
 //				//添加用户代码
 //				//csi_uart_send(UART1, (void*)s_byRecvBuf, 22);
-//				csi_uart_send_dma(UART1, DMA_CH1, (void *)s_byRecvBuf, 22);		//采用DMA方式发送
+//				csi_uart_send_dma(UART1,DMA0, DMA_CH1, (void *)s_byRecvBuf, 22);		//采用DMA方式发送
 //				break;
 //			}	
 //			nop;
@@ -123,15 +123,15 @@ int uart_recv_dma_demo(void)
 	//每次接收数据使用相同的传配置, DMA接收reload模式禁止
 //	csi_uart_dma_tx_init(UART1, DMA0,DMA_CH1, ETB_CH21);								//DMA发送初始化，选择DMA通道和ETB触发通道，DMA_CH: 0~3; ETB_CH: 20~31
 //	csi_uart_dma_rx_init(UART0,DMA_RELOAD_ENABLE, DMA0, DMA_CH3, ETB_CH20);			//DMA接收初始化，选择DMA通道和ETB触发通道，DMA_CH: 0~3; ETB_CH: 20~31
-//	csi_uart_recv_dma(UART1, DMA_CH3, (void*)s_byRecvBuf,22);					//采用DMA方式接收
+//	csi_uart_recv_dma(UART1, DMA0,DMA_CH1, (void *)s_byRecvBuf, 22);					//采用DMA方式接收
 //	while(1)
 //	{
-//		if(csi_dma_get_msg(DMA_CH3, ENABLE))									//获取接收完成消息，并清除消息
+//		if(csi_dma_get_msg(DMA0,DMA_CH3, ENABLE))									//获取接收完成消息，并清除消息
 //		{
 //			//添加用户代码
-//			csi_dma_ch_restart(DMA, DMA_CH3);									//重新使能接收通道
+//			csi_dma_ch_restart(DMA0, DMA_CH3);									//重新使能接收通道
 //			//csi_uart_send(UART1, (void*)s_byRecvBuf, 22);
-//			csi_uart_send_dma(UART1, DMA_CH1, (void *)s_byRecvBuf, 22);			//采用DMA方式发送
+//			csi_uart_send_dma(UART1,DMA0, DMA_CH1, (void *)s_byRecvBuf, 22);			//采用DMA方式发送
 //		}	
 //		nop;
 //	}
@@ -141,14 +141,14 @@ int uart_recv_dma_demo(void)
 	
 	
 	csi_uart_dma_rx_init(UART0,DMA_RELOAD_ENABLE, DMA0, DMA_CH3, ETB_CH20); //DMA接收初始化，选择DMA通道和ETB触发通道，DMA_CH: 0~3; ETB_CH: 20~31
-	csi_uart_recv_dma(UART1, DMA_CH3, (void*)s_byRecvBuf,22);					//采用DMA方式接收
+	csi_uart_recv_dma(UART1, DMA0,DMA_CH1, (void *)s_byRecvBuf, 22);					//采用DMA方式接收
 	while(1)
 	{
 		if(csi_dma_get_msg(DMA0,DMA_CH3, ENABLE))									//获取接收完成消息，并清除消息
 		{
 			//添加用户代码
 			//csi_uart_send(UART1, (void*)s_byRecvBuf, 22);
-			csi_uart_send_dma(UART1, DMA_CH1, (void *)s_byRecvBuf, 22);			//采用DMA方式发送
+			csi_uart_send_dma(UART1,DMA0, DMA_CH1, (void *)s_byRecvBuf, 22);			//采用DMA方式发送
 		}	
 		nop;
 	}
