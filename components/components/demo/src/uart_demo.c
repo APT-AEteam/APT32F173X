@@ -53,12 +53,12 @@ int uart_send_dma_demo(void)
 	
 	csi_etb_init();								//使能ETB模块
 	
-	csi_uart_dma_tx_init(UART1, DMA_CH1, ETB_CH20);	
+	csi_uart_dma_tx_init(UART1, DMA0,DMA_CH1, ETB_CH20);	
 	
 	while(1)
 	{
 		byRecv = csi_uart_getc(UART1);
-		if(byRecv == 0x06)
+		if(byRecv)
 			csi_uart_send_dma(UART1, DMA_CH1, (void *)bySdData, 26);	
 		mdelay(10);
 		if(csi_dma_get_msg(DMA0,DMA_CH1, ENABLE))	//获取发送完成消息，并清除消息
@@ -101,7 +101,7 @@ int uart_recv_dma_demo(void)
 	csi_etb_init();								//使能ETB模块
 
 	//使用不同的接收传输配置, DMA接收reload模式禁止
-//	csi_uart_dma_tx_init(UART1, DMA_CH1, ETB_CH10);								//DMA发送初始化，选择DMA通道和ETB触发通道，DMA_CH: 0~3; ETB_CH: 20~31
+//	csi_uart_dma_tx_init(UART1, DMA0,DMA_CH1, ETB_CH21);								//DMA发送初始化，选择DMA通道和ETB触发通道，DMA_CH: 0~3; ETB_CH: 20~31
 //	csi_uart_dma_rx_init(UART0,DMA_RELOAD_ENABLE, DMA0, DMA_CH3, ETB_CH20);		//DMA接收初始化，选择DMA通道和ETB触发通道，DMA_CH: 0~3; ETB_CH: 20~31
 //	while(1)
 //	{
@@ -121,7 +121,7 @@ int uart_recv_dma_demo(void)
 //	}
 	
 	//每次接收数据使用相同的传配置, DMA接收reload模式禁止
-//	csi_uart_dma_tx_init(UART1, DMA_CH1, ETB_CH10);								//DMA发送初始化，选择DMA通道和ETB触发通道，DMA_CH: 0~3; ETB_CH: 20~31
+//	csi_uart_dma_tx_init(UART1, DMA0,DMA_CH1, ETB_CH21);								//DMA发送初始化，选择DMA通道和ETB触发通道，DMA_CH: 0~3; ETB_CH: 20~31
 //	csi_uart_dma_rx_init(UART0,DMA_RELOAD_ENABLE, DMA0, DMA_CH3, ETB_CH20);			//DMA接收初始化，选择DMA通道和ETB触发通道，DMA_CH: 0~3; ETB_CH: 20~31
 //	csi_uart_recv_dma(UART1, DMA_CH3, (void*)s_byRecvBuf,22);					//采用DMA方式接收
 //	while(1)
@@ -137,7 +137,7 @@ int uart_recv_dma_demo(void)
 //	}
 	
 	//每次接收数据使用相同的传配置, DMA接收reload模式使能
-	csi_uart_dma_tx_init(UART1, DMA_CH1, ETB_CH10);								//DMA发送初始化，选择DMA通道和ETB触发通道，DMA_CH: 0~3; ETB_CH: 20~31
+	csi_uart_dma_tx_init(UART1, DMA0,DMA_CH1, ETB_CH21);								//DMA发送初始化，选择DMA通道和ETB触发通道，DMA_CH: 0~3; ETB_CH: 20~31
 	
 	
 	csi_uart_dma_rx_init(UART0,DMA_RELOAD_ENABLE, DMA0, DMA_CH3, ETB_CH20); //DMA接收初始化，选择DMA通道和ETB触发通道，DMA_CH: 0~3; ETB_CH: 20~31
