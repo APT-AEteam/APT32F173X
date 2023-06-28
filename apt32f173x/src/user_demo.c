@@ -236,9 +236,9 @@ void user_demo(void)
 /// ***************************************************
 ///  sram相关的示例代码
 /// ***************************************************
-//	sram_dsram24k_dsram8k_test0();
-//	sram_dsram24k_dsram8k_test1();
-//	sram_dsram24k_iram8k_test();
+//	sram_dsram24k_dsram8k_demo0();
+//	sram_dsram24k_dsram8k_demo1();
+//	sram_dsram24k_iram8k_demo();
 
 /// ***************************************************
 ///  wizard相关的示例代码

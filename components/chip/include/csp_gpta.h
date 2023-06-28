@@ -174,12 +174,12 @@ typedef enum {
 typedef enum {
 	GPTA_CGFLT_BP = 0,
 	GPTA_CGFLT_2,
-	GPTA_CGFLT_3,
 	GPTA_CGFLT_4,
 	GPTA_CGFLT_6,
 	GPTA_CGFLT_8,
 	GPTA_CGFLT_16,
-	GPTA_CGFLT_32
+	GPTA_CGFLT_32,
+	GPTA_CGFLT_64
 }csp_gpta_cnflt_e;
 
 #define GPTA_PSCLD_POS	(16)

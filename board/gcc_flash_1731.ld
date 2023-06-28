@@ -47,6 +47,7 @@ SECTIONS {
     {
 		. = ALIGN(0x4) ;						/* Align the start of the section */
         *startup.o (.text)						/* The file linked to the start position is startup.o */
+		. = 0x108;		
 		KEEP(*startup.o(*.vectors*))
         *(.text)
 		*(.text.*)
