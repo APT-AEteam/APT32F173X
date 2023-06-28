@@ -18,7 +18,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-
+#define ETB_CH_ALLOC_LEN		32
 /**
  * \enum     csi_etb_trig_mode_e
  * \brief    ETB channel trigger mode

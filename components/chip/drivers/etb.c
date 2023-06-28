@@ -18,7 +18,9 @@
 /* externs function---------------------------------------------------*/
 /* externs variablesr-------------------------------------------------*/
 /* Private variablesr-------------------------------------------------*/
-static uint32_t csi_etb_alloc_status[1];
+
+#define ETB_BUF_LEN        ((ETB_CH_MAX_NUM-1)/ETB_CH_ALLOC_LEN +1)
+static uint32_t s_wEtbAllocStatus[ETB_BUF_LEN] = {0};
 
 
 /** \brief etb channel[0->7] check
@@ -28,17 +30,16 @@ static uint32_t csi_etb_alloc_status[1];
  */ 
 static int32_t check_is_alloced(csi_etb_ch_e eEtbCh)
 {
-    uint32_t ch_offset, ch_group;
+    uint8_t byChOffset, byChGroup;
+	uint32_t wStatus = 0U;
     int32_t ret = 0;
-    uint8_t status = 0U;
+    byChGroup =   (uint8_t)(eEtbCh / ETB_CH_ALLOC_LEN);
+    byChOffset =  (uint8_t)(eEtbCh % ETB_CH_ALLOC_LEN);
 
-    ch_group = (uint32_t)((uint32_t)eEtbCh / 8U);
-    ch_offset = (uint32_t)((uint32_t)eEtbCh % 8U);
+    wStatus = s_wEtbAllocStatus[byChGroup];
+    wStatus &= (uint32_t)(1U << byChOffset);
 
-    status = csi_etb_alloc_status[ch_group];
-    status &= (uint8_t)(1U << (uint8_t)ch_offset);
-
-    if (status != 0U)
+    if (wStatus != 0U)
         ret = -1;
 
     return ret;
@@ -49,17 +50,17 @@ static int32_t check_is_alloced(csi_etb_ch_e eEtbCh)
  *  \param[in] status: status
  *  \return none
  */ 
-static void set_ch_alloc_status(csi_etb_ch_e eEtbCh, uint32_t status)
+static void set_ch_alloc_status(csi_etb_ch_e eEtbCh, uint32_t wStatus)
 {
-    uint32_t ch_offset, ch_group;
+    uint8_t byChOffset, byChGroup;
 
-    ch_group = (uint32_t)((uint32_t)eEtbCh / 8U);
-    ch_offset = (uint32_t)((uint32_t)eEtbCh % 8U);
+    byChGroup =  (uint8_t)(eEtbCh / ETB_CH_ALLOC_LEN);
+    byChOffset = (uint8_t)(eEtbCh % ETB_CH_ALLOC_LEN);
 
-    if (status == 1U) 
-        csi_etb_alloc_status[ch_group] |= (uint8_t)(1U << (uint8_t)ch_offset);
-	else if (status == 0U) 
-        csi_etb_alloc_status[ch_group] &= ~(uint8_t)(1U << (uint8_t)ch_offset);
+    if (wStatus == 1U) 
+        s_wEtbAllocStatus[byChGroup] |= (uint32_t)(1U << byChOffset);
+	else if (wStatus == 0U) 
+        s_wEtbAllocStatus[byChGroup] &= ~(uint32_t)(1U << byChOffset);
 		
 }
 /** \brief etb channel[0->7] enable/disable 
