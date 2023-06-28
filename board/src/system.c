@@ -19,7 +19,8 @@
 #include "drv/pin.h" 
 #include "csp.h"
 #include "board_config.h"
-
+#include <irq.h>
+#include <csi_config.h>
 
 /**
   \brief       initialize the system
@@ -46,6 +47,45 @@ void csi_iram_init(void)
 }
 #endif
 
+
+#ifndef CONFIG_KERNEL_FREERTOS
+static void _system_init_for_baremetal(void)
+{
+    /* enable mexstatus SPUSHEN */
+#if ((CONFIG_CPU_E902 != 1) && (CONFIG_CPU_E902M != 1))
+    uint32_t mexstatus = __get_MEXSTATUS();
+    mexstatus |= (1 << 16);
+    __set_MEXSTATUS(mexstatus);
+#endif
+    __enable_excp_irq();
+
+    //csi_coret_config(drv_get_sys_freq() / CONFIG_SYSTICK_HZ, CORET_IRQn);    //10ms
+
+    //mm_heap_initialize();
+}
+#endif
+
+
+#ifdef CONFIG_KERNEL_FREERTOS
+static void _system_init_for_kernel(void)
+{
+     /* enable mexstatus SPUSHEN and SPSWAPEN */
+
+    uint32_t mexstatus = __get_MEXSTATUS();
+    mexstatus |= (0x3 << 16);
+    __set_MEXSTATUS(mexstatus);
+
+    irq_vectors_init();
+
+    csi_tick_init();
+
+//#ifndef CONFIG_KERNEL_RHINO
+//#ifndef CONFIG_NUTTXMM_NONE
+//    mm_heap_initialize();
+//#endif
+//#endif
+}
+#endif
 
 /**
   * @brief  initialize system map
@@ -95,14 +135,24 @@ __attribute__((weak)) void system_init(void)
         CLIC->CLICINT[i].ATTR = 1; /* use vector interrupt */
     }
 	
+	/* tspend use positive interrupt */
+    CLIC->CLICINT[SOFTWARE_IRQn].ATTR = 0x3;
+	csi_vic_enable_irq(SOFTWARE_IRQn);
+	
 #ifdef	CONFIG_IRQ_LOOKUP		//Table lookup method for interrupt processing 
 	irq_vectors_init();
 #endif
 	
 	csi_iwdt_close();				  //close iwdt
 	csi_sysclk_config(g_tClkConfig);  //sysclk config	
-	csi_tick_init();
 	
+#ifdef CONFIG_KERNEL_FREERTOS
+    _system_init_for_kernel();
+#else
+	//_system_init_for_baremetal();
+	csi_tick_init();
+#endif
+
 	__enable_excp_irq();
 	
 }

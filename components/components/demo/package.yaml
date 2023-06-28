@@ -30,6 +30,17 @@ build_config:
   libpath: 
 source_file:
   - src/*.c
+  - csi_kernel/freertosv10.3.1/adapter/csi_freertos.c
+  - csi_kernel/freertosv10.3.1/FreeRTOS/Source/croutine.c
+  - csi_kernel/freertosv10.3.1/FreeRTOS/Source/event_groups.c
+  - csi_kernel/freertosv10.3.1/FreeRTOS/Source/list.c
+  - csi_kernel/freertosv10.3.1/FreeRTOS/Source/queue.c
+  - csi_kernel/freertosv10.3.1/FreeRTOS/Source/stream_buffer.c
+  - csi_kernel/freertosv10.3.1/FreeRTOS/Source/tasks.c
+  - csi_kernel/freertosv10.3.1/FreeRTOS/Source/timers.c
+  - csi_kernel/freertosv10.3.1/FreeRTOS/Source/portable/MemMang/heap_4.c
+  - csi_kernel/freertosv10.3.1/FreeRTOS/Source/portable/GCC/riscv/port.c
+  - csi_kernel/freertosv10.3.1/FreeRTOS/Source/portable/GCC/riscv/portASM.S
 def_config: 
 install: 
 depends_forward: 

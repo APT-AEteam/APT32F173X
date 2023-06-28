@@ -185,4 +185,7 @@ extern void sram_dsram24k_iram8k_test(void);
 extern void lvr_wizard_demo(void);
 extern int cqcr_wizard_demo(void);
 
+
+extern void freertos_demo(void);
+
 #endif

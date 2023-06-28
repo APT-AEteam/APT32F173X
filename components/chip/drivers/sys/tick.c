@@ -9,7 +9,7 @@
  * </table>
  * *********************************************************************
 */
-//#include <csi_config.h>
+#include <csi_config.h>
 #include <sys_clk.h>
 #include <drv/tick.h>
 #include <drv/pin.h>
@@ -21,7 +21,9 @@
 #define __WEAK	__attribute__((weak))
 
 /* externs function---------------------------------------------------*/
-
+extern void systick_handler(void);
+extern void xPortSysTickHandler(void);
+extern void OSTimeTick(void);
 /* externs variablesr-------------------------------------------------*/
 /* Private variablesr-------------------------------------------------*/
 
@@ -41,6 +43,16 @@ void bt_irqhandler3(csp_bt_t *ptBtBase)
 	
 	if(wMisr & BT_PEND_INT)					//PEND interrupt
 	{
+
+		
+#if defined(CONFIG_KERNEL_RHINO)
+        systick_handler();
+#elif defined(CONFIG_KERNEL_FREERTOS)
+		xPortSysTickHandler();
+#elif defined(CONFIG_KERNEL_UCOS)
+		OSTimeTick();
+#endif
+
 		csp_bt_clr_isr(ptBtBase, BT_PEND_INT);			
 	}
 }
