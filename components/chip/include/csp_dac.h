@@ -53,86 +53,90 @@ typedef enum{
 /******************************************************************************
 * ECR, 
 ******************************************************************************/
-#define DAC_DACEN			(0)                 				/**< DAC            */
-#define DAC_IPIDCODE_POS    (6)
-#define DAC_IPIDCODE_MSK  	(0x3FFFFFFul << DAC_IPIDCODE_POS)   /**< DAC IPIDCODE mask   */
+#define DAC_DACEN_POS			(0)                 				/**< DAC            */
+#define DAC_DACEN_MSK			(0x01ul <<DAC_DACEN_POS)            /**< DAC            */
+#define DAC_IPIDCODE_POS    	(6)
+#define DAC_IPIDCODE_MSK  		(0x3FFFFFFul << DAC_IPIDCODE_POS)   /**< DAC IPIDCODE mask   */
 
 
 /******************************************************************************
 * DACR, 
 ******************************************************************************/
-#define DAC_CLRB			(0x01ul << 0)       /**< DAC            */
-#define DAC_BUFFEN			(0x01ul << 1)       /**< DAC            */
-#define DAC_REFSEL          (0x01ul << 2)       /**< DAC            */
-#define DAC_PD              (0x01ul << 3)       /**< DAC            */
-#define DAC_SEL             (0x01ul << 4)       /**< DAC            */
-#define DAC_TREN            (0x01ul << 5)       /**< DAC            */
-#define DAC_DACR_KEY_WORD   (0x33ul << 24)       /**< DAC          */
+#define DAC_CLRB_POS			(0)      						 /**< DAC            */
+#define DAC_CLRB_MSK			(0x01ul << DAC_CLRB_POS)    	 /**< DAC            */
+#define DAC_BUFFEN_POS			(1)       						 /**< DAC            */
+#define DAC_BUFFEN_MSK			(0x01ul << DAC_BUFFEN_POS)       /**< DAC            */
+#define DAC_REFSEL_POS          (2)       						 /**< DAC            */
+#define DAC_REFSEL_MSK          (0x01ul << DAC_REFSEL_POS)       /**< DAC            */
+#define DAC_PD_POS              (3)       						 /**< DAC            */
+#define DAC_PD_MSK              (0x01ul << DAC_PD_POS)      	 /**< DAC            */
+#define DAC_BST_POS             (6)      						 /**< DAC            */
+#define DAC_BST_MSK             (0x01ul << DAC_BST_POS)       	 /**< DAC            */
 /******************************************************************************
  DAC_HSCR
 ******************************************************************************/
-#define DAC_HSC			    (0)       /**< DAC            */
-#define DAC_HSC_MSK			(0xFF <<  DAC_HSC         )       /**< DAC            */
+#define DAC_HSC_POS			    (0)       /**< DAC            */
+#define DAC_HSC_MSK				(0xFF <<  DAC_HSC_POS         )       /**< DAC            */
 /******************************************************************************
 DATAIN_L
 ******************************************************************************/
-#define DAC_DATAINL			(0)       /**< DAC            */
-#define DAC_DATAINL_MSK		(0xFFFF<< DAC_DATAINL      )       /**< DAC            */
+#define DAC_DATAINL_POS			(0)       /**< DAC            */
+#define DAC_DATAINL_MSK			(0xFFFF<< DAC_DATAINL_POS      )       /**< DAC            */
 /******************************************************************************
 DATAIN_R
 ******************************************************************************/
-#define DAC_DATAINR			( 0)       /**< DAC            */
-#define DAC_DATAINR_MSK		(0xFFFF<<  DAC_DATAINR     )       /**< DAC            */
+#define DAC_DATAINR_POS			( 0)       /**< DAC            */
+#define DAC_DATAINR_MSK			(0xFFFF<<  DAC_DATAINR_POS     )       /**< DAC            */
 /******************************************************************************
  DAT_SYNC
 ******************************************************************************/
-#define DAC_SYNCEN0         0 
-#define DAC_SYNCEN0_MSK     (0x01ul<<  DAC_SYNCEN0   )
-#define DAC_SYNCEN1         1
-#define DAC_SYNCEN1_MSK     (0x01ul<<  DAC_SYNCEN1   )
-#define DAC_SYNCEN2         2
-#define DAC_SYNCEN2_MSK     (0x01ul<<  DAC_SYNCEN2   )
+#define DAC_SYNCEN0_POS         (0) 
+#define DAC_SYNCEN0_MSK     	(0x01ul<<  DAC_SYNCEN0_POS   )
+#define DAC_SYNCEN1_POS         (1)
+#define DAC_SYNCEN1_MSK     	(0x01ul<<  DAC_SYNCEN1_POS   )
+#define DAC_SYNCEN2_POS         (2)
+#define DAC_SYNCEN2_MSK     	(0x01ul<<  DAC_SYNCEN2_POS   )
 /******************************************************************************
 DAC_STEP
 ******************************************************************************/
-#define DAC_STEP_POS             0 
-#define DAC_STEP_MSK        (0xFFFul   )
+#define DAC_STEP_POS            (0)
+#define DAC_STEP_MSK        	(0xFFFul   )
 
 /******************************************************************************
 DAC_SR
 ******************************************************************************/
-#define DAC_SR_POS              0 
-#define DAC_SR_MSK          (0x01ul<<  DAC_SR   )
+#define DAC_SR_POS          	(0)
+#define DAC_SR_MSK          	(0x01ul<<  DAC_SR_POS   )
 
 /******************************************************************************
  DAT_IMCR
 ******************************************************************************/
-#define DAC_IMCR_ECO             0 
-#define DAC_IMCR_ECO_MSK          (0x01ul<<  DAC_IMCR_ECO   )
-#define DAC_IMCR_WRERR           1
-#define DAC_IMCR_WRERR_MSK        (0x01ul<<  DAC_IMCR_WRERR   )
-#define DAC_IMCR_SYNCERR         2
-#define DAC_IMCR_SYNCERR_MSK      (0x01ul<<  DAC_IMCR_SYNCERR   )
+#define DAC_IMCR_ECO_POS             0 
+#define DAC_IMCR_ECO_MSK          (0x01ul<<  DAC_IMCR_ECO_POS   )
+#define DAC_IMCR_WRERR_POS           1
+#define DAC_IMCR_WRERR_MSK        (0x01ul<<  DAC_IMCR_WRERR_POS   )
+#define DAC_IMCR_SYNCERR_POS         2
+#define DAC_IMCR_SYNCERR_MSK      (0x01ul<<  DAC_IMCR_SYNCERR_POS   )
 
 /******************************************************************************
  DAT_IMSR
 ******************************************************************************/
-#define DAC_IMSR_ECO             0 
-#define DAC_IMSR_ECO_MSK          (0x01ul<<  DAC_IMSR_ECO   )
-#define DAC_IMSR_WRERR           1
-#define DAC_IMSR_WRERR_MSK        (0x01ul<<  DAC_IMSR_WRERR   )
-#define DAC_IMSR_SYNCERR         2
-#define DAC_IMSR_SYNCERR_MSK      (0x01ul<<  DAC_IMSR_SYNCERR   )
+#define DAC_IMSR_ECO_POS             (0) 
+#define DAC_IMSR_ECO_MSK          (0x01ul<<  DAC_IMSR_ECO_POS   )
+#define DAC_IMSR_WRERR_POS           (1)
+#define DAC_IMSR_WRERR_MSK        (0x01ul<<  DAC_IMSR_WRERR_POS   )
+#define DAC_IMSR_SYNCERR_POS         (2)
+#define DAC_IMSR_SYNCERR_MSK      (0x01ul<<  DAC_IMSR_SYNCERR_POS   )
 
 /******************************************************************************
  DAT_ICR
 ******************************************************************************/
-#define DAC_ICR_ECO             0 
-#define DAC_ICR_ECO_MSK          (0x01ul<<  DAC_ICR_ECO   )
-#define DAC_ICR_WRERR           1
-#define DAC_ICR_WRERR_MSK        (0x01ul<<  DAC_ICR_WRERR   )
-#define DAC_ICR_SYNCERR         2
-#define DAC_ICR_SYNCERR_MSK      (0x01ul<<  DAC_ICR_SYNCERR   )
+#define DAC_ICR_ECO_POS             0 
+#define DAC_ICR_ECO_MSK          	(0x01ul<<  DAC_ICR_ECO_POS   )
+#define DAC_ICR_WRERR_POS           1
+#define DAC_ICR_WRERR_MSK        	(0x01ul<<  DAC_ICR_WRERR_POS   )
+#define DAC_ICR_SYNCERR_POS         2
+#define DAC_ICR_SYNCERR_MSK      	(0x01ul<<  DAC_ICR_SYNCERR_POS   )
 
 
 
@@ -149,11 +153,11 @@ static inline void csp_dac_vic_irq_dis(void)
 
 static inline void csp_dac_start(csp_dac_t *ptDacBase)
 {
-	ptDacBase -> DAC_ECR |= 0x1 << DAC_DACEN;
+	ptDacBase -> DAC_ECR |= 0x1 << DAC_DACEN_POS;
 }
 static inline void csp_dac_stop(csp_dac_t *ptDacBase)
 {
-	ptDacBase -> DAC_ECR &= ~(0x1 << DAC_DACEN);
+	ptDacBase -> DAC_ECR &= ~(0x1 << DAC_DACEN_POS);
 }
 static inline void csp_dac_set_clk_div(csp_dac_t *ptDacBase, uint8_t byDiv)
 {
@@ -163,26 +167,26 @@ static inline void csp_dac_set_clk_div(csp_dac_t *ptDacBase, uint8_t byDiv)
 
 static inline void csp_dac_clr_da(csp_dac_t *ptDacBase)
 {
-	ptDacBase -> DAC_DACR |=  DAC_CLRB ;
+	ptDacBase -> DAC_DACR |=  DAC_CLRB_MSK ;
 }
 
 static inline void csp_dac_buff_enable(csp_dac_t *ptDacBase,bool bEnable)
 {
-	if(bEnable)ptDacBase -> DAC_DACR |=   DAC_BUFFEN ;
-	else{      ptDacBase -> DAC_DACR  =   ptDacBase -> DAC_DACR &(~DAC_BUFFEN) ;}
+	if(bEnable)ptDacBase -> DAC_DACR |=   DAC_BUFFEN_MSK ;
+	else{      ptDacBase -> DAC_DACR  =   ptDacBase -> DAC_DACR &(~DAC_BUFFEN_MSK) ;}
 }
 
 static inline void csp_dac_refsel_enable(csp_dac_t *ptDacBase, bool bEnable)
 {
-	if(bEnable)ptDacBase -> DAC_DACR |=   DAC_REFSEL ;
-	else{      ptDacBase -> DAC_DACR  =   ptDacBase -> DAC_DACR &(~DAC_REFSEL) ;}
+	if(bEnable)ptDacBase -> DAC_DACR |=   DAC_REFSEL_MSK ;
+	else{      ptDacBase -> DAC_DACR  =   ptDacBase -> DAC_DACR &(~DAC_REFSEL_MSK) ;}
 
 }
 
 static inline void csp_dac_powerdown_enable(csp_dac_t *ptDacBase, bool bEnable)
 {
-	if(bEnable)ptDacBase -> DAC_DACR |=   DAC_PD ;
-	else{         ptDacBase -> DAC_DACR  =   ptDacBase -> DAC_DACR &(~DAC_PD) ;}
+	if(bEnable)ptDacBase -> DAC_DACR |=   DAC_PD_MSK ;
+	else{         ptDacBase -> DAC_DACR  =   ptDacBase -> DAC_DACR &(~DAC_PD_MSK) ;}
 
 }
 
