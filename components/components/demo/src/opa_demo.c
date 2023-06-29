@@ -93,7 +93,7 @@ void opa_external_gain_mode_demo(void)
 	csi_pin_set_mux(PA5,PA5_OPA3X); //PIN21 输出
 	//OPA 参数配置
 	tOpaConfig.byMode = OPA_EXTERNAL_MODE;
-	tOpaConfig.byOpaNegativeInput = ENABLE;
+	tOpaConfig.byOpaNegativeInput = DISABLE;
 	tOpaConfig.byOpaOutput = ENABLE;
 	
 	csi_opa_init(OPA0,&tOpaConfig);
