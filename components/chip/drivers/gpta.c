@@ -563,7 +563,9 @@ void csi_gpta_swf_trg(csp_gpta_t *ptGptaBase, csi_gpta_trgout_e eTgrOut)
  *  \return CSI_OK;
  */
 void csi_gpta_int_enable(csp_gpta_t *ptGptaBase, csi_gpta_intsrc_e eInt, bool bEnable)
-{   csi_irq_enable((uint32_t *)ptGptaBase);
+{ 
+	csp_gpta_clr_int(ptGptaBase, (csp_gpta_int_e)eInt);	
+	csi_irq_enable((uint32_t *)ptGptaBase);
 	csp_gpta_int_enable(ptGptaBase,(csp_gpta_int_e)eInt,bEnable);
 }
 

@@ -206,16 +206,13 @@ typedef enum{
  */
 typedef enum{
 	GPTA_TRGOUT0		= 0,	//trigger out0
-	GPTA_TRGOUT1,				//trigger out1	
-//	GPTA_TRGOUT2,				//trigger out2
-//	GPTA_TRGOUT3				//trigger out3		
+	GPTA_TRGOUT1,				//trigger out1		
 }csi_gpta_trgout_e;
 
 typedef enum{
 	GPTA_CNT0INIT		= 0,	//filter input syncin0
 	GPTA_CNT1INIT,				//filter input syncin1		
 }csi_gpta_cntinit_e;
-
 
 typedef enum
 {
@@ -283,8 +280,6 @@ typedef enum{
 	GPTA_INTSRC_NONE   = 0x0,
 	GPTA_INTSRC_TRGEV0 = 0x1,
 	GPTA_INTSRC_TRGEV1 = 0x2,
-	GPTA_INTSRC_TRGEV2 = 0x4,
-	GPTA_INTSRC_TRGEV3 = 0x8,
 	GPTA_INTSRC_CAPLD0 = 0x1 << 4,
 	GPTA_INTSRC_CAPLD1 = 0x1 << 5,
 	GPTA_INTSRC_CAPLD2 = 0x1 << 6,

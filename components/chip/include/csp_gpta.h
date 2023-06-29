@@ -543,8 +543,6 @@ typedef enum{
 typedef enum{
 	GPTA_INT_TRGEV0 = 0x1,
 	GPTA_INT_TRGEV1 = 0x2,
-//	GPTA_INT_TRGEV2 = 0x4,
-//	GPTA_INT_TRGEV3 = 0x8,
 	GPTA_INT_CAPLD0 = 0x1 << 4,
 	GPTA_INT_CAPLD1 = 0x1 << 5,
 	GPTA_INT_CAPLD2 = 0x1 << 6,
@@ -633,6 +631,12 @@ static inline void csp_gpta_set_burst(csp_gpta_t *ptGptaBase,csp_gpta_cgsrc_e eC
 		ptGptaBase -> CR =(ptGptaBase -> CR & ~(GPTA_CGSRC_MSK))|(eCgsrc<<GPTA_CGSRC_POS);
 	}
 }
+
+static inline void csp_gpta_prdld_mod(csp_gpta_t *ptGptaBase, csp_gpta_ldprdr_e ePrdrld)
+{
+	ptGptaBase -> CR = (ptGptaBase->CR & ~(GPTA_PRDLD_MSK)) | (ePrdrld << GPTA_PRDLD_POS);
+}
+
 
 static inline void csp_gpta_flt_init(csp_gpta_t *ptGptaBase, csp_gpta_cnflt_e eCgflt,bool bEnable)
 {
