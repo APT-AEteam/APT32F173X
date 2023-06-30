@@ -672,12 +672,6 @@ void csi_iic_slave_receive_send(csp_i2c_t *ptIicBase)
 				}else{
 					csp_i2c_set_data_cmd(ptIicBase, 0xFF);
 				}
-				
-				for(int i=0;i<20;i++){
-					
-					csp_i2c_set_data_cmd(ptIicBase, 0x21);
-				}
-				
 				g_byWriteIndex++;
 			}
 
