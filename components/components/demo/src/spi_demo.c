@@ -23,6 +23,8 @@
 #include "pin.h"
 #include <iostring.h> 
 
+#define SPI_NSS_PIN PB12   //define spi nss pin here.!!!!!only used in NSS SOFTWARE controled demo!!!!!users can change to other pins
+
 /** \brief spi master send demo,polling mode
  * 	\brief spi 主机发送一串数据,TX使用轮询
  *  \param[in] none
@@ -334,9 +336,9 @@ int spi_etcb_dma_send_receive_demo(void)
 	csi_etb_ch_config(ETB_CH21, &tEtbConfigRecv);			//初始化ETB，DMA ETB CHANNEL 大于 ETB_CH19_ID
 	
 	//SPI端口配置		
-	csi_pin_set_mux(PB12, PB12_OUTPUT);                       //gpio_port as output
-	csi_pin_output_mode(PB12, GPIO_PUSH_PULL);                //push pull mode
-	csi_spi_nss_high(PB12);						    
+	csi_pin_set_mux(SPI_NSS_PIN, PIN_OUTPUT);                       //gpio_port as output
+	csi_pin_output_mode(SPI_NSS_PIN, GPIO_PUSH_PULL);                //push pull mode
+	csi_spi_nss_high(SPI_NSS_PIN);						    
 	csi_pin_set_mux(PB13,PB13_SPI0_SCK);
 	csi_pin_set_mux(PB14,PB14_SPI0_MISO);
 	csi_pin_set_mux(PB15,PB15_SPI0_MOSI);
@@ -350,23 +352,23 @@ int spi_etcb_dma_send_receive_demo(void)
 	tSpiConfig.byInt 				= (uint8_t)SPI_INTSRC_NONE; //初始配置无中断	  
 	csi_spi_init(SPI0,&tSpiConfig);						//初始化并启动spi
 
-	csi_spi_nss_low(PB12);
+	csi_spi_nss_low(SPI_NSS_PIN);
 	csi_spi_recv_dma(SPI0, (void *)byDesBuf, sizeof(byDesBuf), DMA0, 1);
 	csi_spi_send_dma(SPI0, (void *)bySrcBuf, sizeof(bySrcBuf), DMA0, 0);
 	while(csp_dma_get_curr_htc(ptDmaChBaseCh0));		//等待直到dma发送完成
 	while(csp_dma_get_curr_htc(ptDmaChBaseCh1));		//等待直到dma接收完成
 	while( (SPI0->SR & SPI_BSY) );						//等到spi传输完成
-	csi_spi_nss_high(PB12);
+	csi_spi_nss_high(SPI_NSS_PIN);
 
 	while(1)
 	{
-		csi_spi_nss_low(PB12);
+		csi_spi_nss_low(SPI_NSS_PIN);
 		csi_spi_recv_dma(SPI0, (void *)byDesBuf, sizeof(byDesBuf), DMA0, 1);
 		csi_spi_send_dma(SPI0, (void *)bySrcBuf, sizeof(bySrcBuf), DMA0, 0);
 		while(csp_dma_get_curr_htc(ptDmaChBaseCh0));		//等待直到dma发送完成
 		while(csp_dma_get_curr_htc(ptDmaChBaseCh1));		//等待直到dma接收完成
 		while( (SPI0->SR & SPI_BSY) );						//等到spi传输完成
-		csi_spi_nss_high(PB12);
+		csi_spi_nss_high(SPI_NSS_PIN);
 		mdelay(10);
 	}
 	return iRet;
@@ -422,9 +424,9 @@ static void spi_flash_write_enable(void)
 {
 	uint8_t byCmd = WREN_CMD;		//write enable cmd = 0x06
 	
-	csi_spi_nss_low(PB12);
+	csi_spi_nss_low(SPI_NSS_PIN);
 	csi_spi_send_receive(SPI0,(void *)&byCmd, NULL, 1);	
-	csi_spi_nss_high(PB12);
+	csi_spi_nss_high(SPI_NSS_PIN);
 }
 
 /** \brief flash read status reg
@@ -447,9 +449,9 @@ uint8_t spi_flash_read_status(void)
 	uint8_t bySend[2] = {RDSR0_CMD, 0x00};		//read status cmd0 = 0x05
 	uint8_t byRecv[2];
 
-	csi_spi_nss_low(PB12);
+	csi_spi_nss_low(SPI_NSS_PIN);
 	csi_spi_send_receive(SPI0, (void *)bySend, (void *)byRecv, 2);
-	csi_spi_nss_high(PB12);
+	csi_spi_nss_high(SPI_NSS_PIN);
 	
 	return byRecv[1];
 }
@@ -474,9 +476,9 @@ void spi_flash_write_Status(uint8_t byStatus)
 	uint8_t bySend[2] = {WRSR_CMD, byStatus};		//write status cmd = 0x01
 
 	spi_flash_write_enable();		//write enable cmd
-	csi_spi_nss_low(PB12);
+	csi_spi_nss_low(SPI_NSS_PIN);
 	csi_spi_send_receive(SPI0, (void *)bySend, NULL, 2);
-	csi_spi_nss_high(PB12);
+	csi_spi_nss_high(SPI_NSS_PIN);
 	spi_flash_wait_busy();
 }
 
@@ -491,11 +493,11 @@ uint32_t spi_flash_read_id(void)
 	uint8_t bySend[6] = {RDDEVICEID_CMD, 0, 0, 0};
 	uint8_t byRecv[2];
 	
-	csi_spi_nss_low(PB12); 
+	csi_spi_nss_low(SPI_NSS_PIN); 
 	csi_spi_send_receive(SPI0, (void *)bySend, NULL, 4);	//send read id cmd and three bytes addr	
 	csi_spi_send_receive(SPI0, NULL, (void *)byRecv, 2);	//read id value; id value = 0xef14
 	hwId = ((byRecv[0] << 8) |  byRecv[1]);
-	csi_spi_nss_high(PB12);
+	csi_spi_nss_high(SPI_NSS_PIN);
    
 	return hwId;
 }
@@ -510,9 +512,9 @@ void spi_flash_chip_erase(void)
 	uint8_t byCmd = CHIPERASE_CMD;
 	
 	spi_flash_write_enable();		//write enable
-	csi_spi_nss_low(PB12);
+	csi_spi_nss_low(SPI_NSS_PIN);
 	csi_spi_send_receive(SPI0, (void *)&byCmd, NULL, 1);		//send chip erase cmd
-	csi_spi_nss_high(PB12);
+	csi_spi_nss_high(SPI_NSS_PIN);
 	spi_flash_wait_busy();
 }
 
@@ -527,9 +529,9 @@ void spi_flash_sector_erase(uint32_t wAddr)
 	uint8_t bySend[4] = {SECTORERASE_CMD, (wAddr >> 16), (wAddr >> 8), wAddr};
 	
 	spi_flash_write_enable();		//write enable
-	csi_spi_nss_low(PB12);
+	csi_spi_nss_low(SPI_NSS_PIN);
 	csi_spi_send_receive(SPI0, (void *)bySend, NULL, 4);		//send sector erase cmd and data three bytes addr 
-	csi_spi_nss_high(PB12);
+	csi_spi_nss_high(SPI_NSS_PIN);
 	spi_flash_wait_busy();
 }
 
@@ -544,10 +546,10 @@ void spi_flash_read_bytes(uint8_t *pbyBuf, uint32_t wAddr, uint16_t hwNum)
 {
 	uint8_t bySend[4] = {READ_CMD, (wAddr >> 16), (wAddr >> 8), wAddr};
 	
-	csi_spi_nss_low(PB12); 
+	csi_spi_nss_low(SPI_NSS_PIN); 
 	csi_spi_send_receive(SPI0, (void *)bySend, NULL, 4);		//send read bytes cmd and data three bytes addr 
 	csi_spi_send_receive(SPI0, NULL,(void *)pbyBuf, hwNum);		//read hwNum bytes 
-	csi_spi_nss_high(PB12);
+	csi_spi_nss_high(SPI_NSS_PIN);
 }
 
 /** \brief flash write bytes 
@@ -562,10 +564,10 @@ void spi_flash_write_bytes(uint8_t *pbyBuf, uint32_t wAddr, uint16_t hwNum)
 	uint8_t bySend[4] = {PGPRO_CMD, (wAddr >> 16), (wAddr >> 8), wAddr};
 
 	spi_flash_write_enable();		//write enable
-	csi_spi_nss_low(PB12);
+	csi_spi_nss_low(SPI_NSS_PIN);
 	csi_spi_send_receive(SPI0, (void *)bySend, NULL, 4);		//send write bytes cmd and data three bytes addr 
 	csi_spi_send_receive(SPI0, (void *)pbyBuf, NULL, hwNum);	//write hwNum bytes
-	csi_spi_nss_high(PB12);
+	csi_spi_nss_high(SPI_NSS_PIN);
 	spi_flash_wait_busy();
 }
 
@@ -586,9 +588,9 @@ int spi_flash_read_write_demo(void)
 	}
 	
 	//主机端口配置
-	csi_pin_set_mux(PB12, PB12_OUTPUT);                       //gpio_port as output
-	csi_pin_output_mode(PB12, GPIO_PUSH_PULL);                //push pull mode
-	csi_spi_nss_high(PB12);									  //NSS init high			    
+	csi_pin_set_mux(SPI_NSS_PIN, PIN_OUTPUT);                       //gpio_port as output
+	csi_pin_output_mode(SPI_NSS_PIN, GPIO_PUSH_PULL);                //push pull mode
+	csi_spi_nss_high(SPI_NSS_PIN);									  //NSS init high			    
 	csi_pin_set_mux(PB13,PB13_SPI0_SCK);
 	csi_pin_set_mux(PB14,PB14_SPI0_MISO);
 	csi_pin_set_mux(PB15,PB15_SPI0_MOSI);
