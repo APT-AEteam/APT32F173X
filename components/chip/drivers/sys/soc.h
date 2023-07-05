@@ -896,6 +896,11 @@ typedef enum {
 	PD5_CPIN2N              =  12U,
 	PD5_ADC_INA5            =  13U,
 	
+	PIN_GPD				    =  0U,
+	PIN_INPUT				=  1U,		//input
+	PIN_OUTPUT				=  2U,		//output
+	PIN_OUTPUT_MONI			=  3U,		//output with monitor
+	
 	IOMAP					=  10U
 } pin_func_e;
 
