@@ -27,7 +27,7 @@
     __IOM  uint32_t  DAC_HSCR;      //0x0008  Frequency division control of a clock used for conversion Register   
     __IOM  uint32_t  DATAINL;       //0x000C  DAC 12-bit left-aligned data holding Register
     __IOM  uint32_t  DATAINR;       //0x0010  DAC 12-bit right-aligned data holding Register               
-    __IOM  uint32_t  DAT_SYNCR;     //0x0014  Synchronization Control Register                   
+    __IOM  uint32_t  DAC_SYNCR;     //0x0014  Synchronization Control Register                   
     __IOM  uint32_t  DAC_STEP;	    //0x0018  Incremental control Register
     __IM   uint32_t  DAC_SR;        //0x001C  Status Register                             
     __IOM  uint32_t  DAC_IMCR;      //0x0020  Interrupt Masking Control Register                 
@@ -205,13 +205,13 @@ static inline void csp_dac_syncr_enable(csp_dac_t *ptDacBase, dac_syncr_e byVal,
 	switch(byVal)
 	{
 		case DAC_SYNCIN0:						//
-		     ptDacBase->DAT_SYNCR = (ptDacBase->DAT_SYNCR & (~DAC_SYNCIN0)) | (bEnable<<0 );
+		     ptDacBase->DAC_SYNCR = (ptDacBase->DAC_SYNCR & (~DAC_SYNCIN0)) | (bEnable<<0 );
 			break;
 		case DAC_SYNCIN1:						//
-		     ptDacBase->DAT_SYNCR = (ptDacBase->DAT_SYNCR & (~DAC_SYNCIN1)) | (bEnable<<1 );
+		     ptDacBase->DAC_SYNCR = (ptDacBase->DAC_SYNCR & (~DAC_SYNCIN1)) | (bEnable<<1 );
 			break;
 		case DAC_SYNCIN2:						//
-		     ptDacBase->DAT_SYNCR = (ptDacBase->DAT_SYNCR & (~DAC_SYNCIN2)) | (bEnable<<2 );
+		     ptDacBase->DAC_SYNCR = (ptDacBase->DAC_SYNCR & (~DAC_SYNCIN2)) | (bEnable<<2 );
 			break;
 		default:
 					
