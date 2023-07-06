@@ -56,6 +56,12 @@ typedef enum
 
 typedef enum
 {
+	CNTA_REM_STAT_LOW		= 0,
+    CNTA_REM_STAT_HIGH    
+}csi_cnta_remstat_t;
+
+typedef enum
+{
 	CNTA_MATCH_CARRIERON_DIS	= 0,
 	CNTA_MATCH_CARRIERON_CLR, 
 	CNTA_MATCH_CARRIERON_SET       
