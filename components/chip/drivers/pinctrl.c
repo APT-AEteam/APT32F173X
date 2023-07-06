@@ -206,17 +206,17 @@ static void apt_iomap_handle(pin_name_e ePinName, csi_gpio_iomap_e eIoMap, uint8
 					case IOMAP0_USART0_RX:
 						wFlag |= (0x01 << IOMAP0_USART0_RX);
 						break;
-					case IOMAP0_SPI_NSS:
-						wFlag |= (0x01 << IOMAP0_SPI_NSS);
+					case IOMAP0_SPI0_NSS:
+						wFlag |= (0x01 << IOMAP0_SPI0_NSS);
 						break;
-					case IOMAP0_SPI_SCK:
-						wFlag |= (0x01 << IOMAP0_SPI_SCK);
+					case IOMAP0_SPI0_SCK:
+						wFlag |= (0x01 << IOMAP0_SPI0_SCK);
 						break;
-					case IOMAP0_SPI_MISO:
-						wFlag |= (0x01 << IOMAP0_SPI_MISO);
+					case IOMAP0_SPI0_MISO:
+						wFlag |= (0x01 << IOMAP0_SPI0_MISO);
 						break;
-					case IOMAP0_SPI_MOSI:
-						wFlag |= (0x01 << IOMAP0_SPI_MOSI);
+					case IOMAP0_SPI0_MOSI:
+						wFlag |= (0x01 << IOMAP0_SPI0_MOSI);
 						break;
 				}
 			}
@@ -304,7 +304,7 @@ csi_error_t csi_pin_set_iomap(pin_name_e ePinName, csi_gpio_iomap_e eIoMap)
 	else 																	//iomap group0
 	{
 		
-		if(eIoMap > IOMAP0_SPI_MOSI)
+		if(eIoMap > IOMAP0_SPI0_MOSI)
 			return CSI_ERROR;	
 		
 		byIoMap = 0x0a;
