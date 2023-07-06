@@ -78,7 +78,7 @@ int usart_send_dma_demo(void)
 	{
 		byRecv = csi_usart_getc(USART1);
 		if(byRecv)
-			csi_usart_send_dma(USART0,DMA0,(void *)bySdData, DMA_CH0, 26);	
+			csi_usart_send_dma(USART0,DMA0, DMA_CH0,(void *)bySdData,26);	
 		mdelay(10);
 		if(csi_dma_get_msg(DMA0,DMA_CH1, ENABLE))	//获取发送完成消息，并清除消息
 		{
@@ -88,6 +88,7 @@ int usart_send_dma_demo(void)
 		nop;
 		nop;
 	}
+	return iRet;
 }
 
 /** \brief usart dma receive data
