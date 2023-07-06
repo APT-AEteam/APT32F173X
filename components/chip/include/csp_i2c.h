@@ -36,8 +36,8 @@ typedef struct
     __IOM  uint32_t  RSVD3;     //0x0028          	 
     __IOM  uint32_t  RX_FLSEL;  //0x002C 	I2C Receive FIFO Threshold            	 
     __IOM  uint32_t  TX_FLSEL;  //0x0030	I2C Transmit FIFO Threshold            	 
-    __IOM  uint32_t  RX_FL;     //0x0034	I2C Receive  FIFO Level               	 
-    __IOM  uint32_t  TX_FL;     //0x0038	I2C Transmit FIFO Level                	 
+    __IM  uint32_t  RX_FL;     //0x0034	I2C Receive  FIFO Level               	 
+    __IM  uint32_t  TX_FL;     //0x0038	I2C Transmit FIFO Level                	 
     __IOM  uint32_t  I2CENABLE; //0x003C 	I2C Enable                            	 
     __IM   uint32_t  STATUS;    //0x0040 	I2C Status                            	 
     __IOM  uint32_t  RSVD4;     //0x0044              	 
@@ -60,7 +60,7 @@ typedef struct
     __IOM  uint32_t  RSVD8;		//0x0088	
     __IOM  uint32_t  SRR; 		//0x008C 	Soft Reset Control   
     __IOM  uint32_t  SADDRQUAL; //0x0090 	I2C Slave Address Qualifier
-    __IOM  uint32_t  ADDRMON; 	//0x0094 	I2C Slave Address Monitor
+    __IM  uint32_t  ADDRMON; 	//0x0094 	I2C Slave Address Monitor
 	
 } csp_i2c_t;
 
