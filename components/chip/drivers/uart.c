@@ -117,10 +117,12 @@ csi_error_t csi_uart_init(csp_uart_t *ptUartBase, csi_uart_config_t *ptUartCfg)
 	
 	if(ptUartCfg->wInt)
 	{
-		if(ptUartCfg->wInt&UART_INTSRC_RX)
+		if(ptUartCfg->wInt ==UART_INTSRC_RX||ptUartCfg->wInt ==UART_INTSRC_TX_OV||ptUartCfg->wInt==UART_INTSRC_TX_OV)
 		{
 			csp_uart_set_fifo(ptUartBase, UART_RXFIFO_1_2, DISABLE);			//set /fx fifo = 1_2/fifo enable
 		}
+	
+		
 		if((ptUartCfg->byRxMode) || (ptUartCfg->byTxMode))
 		{
 			if(ptUartCfg->byRxMode)
@@ -337,12 +339,12 @@ int16_t csi_uart_send(csp_uart_t *ptUartBase, const void *pData, uint16_t hwSize
 /** \brief uart dma receive mode init
  * 
  *  \param[in] ptUartBase: pointer of uart register structure
- *  \param[in] eReload:dma reload mode \ref csi_dma_reload_e
  *  \param[in] eDmaCh: channel number of dma, eDmaCh: DMA_CH0` DMA_CH3
  *  \param[in] eEtbCh: channel id number of etb, eEtbCh >= ETB_CH8
  *  \return  error code \ref csi_error_t
  */
-csi_error_t csi_uart_dma_rx_init(csp_uart_t *ptUartBase, csi_dma_reload_e eReload, csp_dma_t *ptDmaBase, csi_dma_ch_e eDmaCh, csi_etb_ch_e eEtbCh)
+//csi_error_t csi_uart_dma_rx_init(csp_uart_t *ptUartBase, csi_dma_reload_e eReload, csp_dma_t *ptDmaBase, csi_dma_ch_e eDmaCh, csi_etb_ch_e eEtbCh)
+	csi_error_t csi_uart_dma_rx_init(csp_uart_t *ptUartBase, csi_dma_ch_e eDmaCh, csi_etb_ch_e eEtbCh)
 {
 	csi_error_t ret = CSI_OK;
 	csi_dma_ch_config_t tDmaConfig;				
@@ -355,26 +357,22 @@ csi_error_t csi_uart_dma_rx_init(csp_uart_t *ptUartBase, csi_dma_reload_e eReloa
 	tDmaConfig.byDetLinc 	= DMA_ADDR_CONSTANT;		//低位传输目标地址固定不变
 	tDmaConfig.byDetHinc 	= DMA_ADDR_INC;				//高位传输目标地址自增
 	tDmaConfig.byDataWidth 	= DMA_DSIZE_8_BITS;			//传输数据宽度8bit
-	tDmaConfig.byReload 	= eReload;					//自动重载
-	tDmaConfig.byTransMode 	= DMA_TRANS_ONCE;			//DMA服务模式(传输模式)，连续服务
+	tDmaConfig.byReload 	= DMA_RELOAD_ENABLE;		//禁止自动重载
+	tDmaConfig.byTransMode 	= DMA_TRANS_CONTINU;			//DMA服务模式(传输模式)，连续服务
 	tDmaConfig.byTsizeMode  = DMA_TSIZE_ONE_DSIZE;		//传输数据大小，一个 DSIZE , 即DSIZE定义大小
 	tDmaConfig.byReqMode	= DMA_REQ_HARDWARE;			//DMA请求模式，硬件请求
-	tDmaConfig.wInt		=	 DMA_INTSRC_TCIT;			//使用TCIT中断
+	tDmaConfig.wInt			= DMA_INTSRC_TCIT;			//使用TCIT中断
 	
 	//etb config
 	tEtbConfig.byChType = ETB_ONE_TRG_ONE_DMA;					//单个源触发单个目标，DMA方式
 	tEtbConfig.bySrcIp 	= ETB_UART0_RXSRC + (byUartIdx << 1);	//UART TXSRC作为触发源
-	tEtbConfig.bySrcIp1 = 0xff;						
-	tEtbConfig.bySrcIp2 = 0xff;
 	tEtbConfig.byDstIp 	= ETB_DMA0_CH0 + eDmaCh;					//ETB DMA通道 作为目标实际
-	tEtbConfig.byDstIp1 = 0xff;
-	tEtbConfig.byDstIp2 = 0xff;
 	tEtbConfig.byTrgMode = ETB_HARDWARE_TRG;					//通道触发模式采样硬件触发
 	
 	ret = csi_etb_ch_config(eEtbCh, &tEtbConfig);				//初始化ETB，DMA ETB CHANNEL > ETB_CH19_ID
 	if(ret < CSI_OK)
 		return CSI_ERROR;
-	ret = csi_dma_ch_init(ptDmaBase, eDmaCh, &tDmaConfig);			//初始化DMA
+	ret = csi_dma_ch_init(DMA0, eDmaCh, &tDmaConfig);			//初始化DMA
 	csp_uart_set_rxdma(ptUartBase, UART_RDMA_EN, UART_RDMA_FIFO_NSPACE);
 	return ret;
 }
@@ -386,7 +384,7 @@ csi_error_t csi_uart_dma_rx_init(csp_uart_t *ptUartBase, csi_dma_reload_e eReloa
  *  \param[in] eEtbCh: channel id number of etb, eEtbCh >= ETB_CH8
  *  \return  error code \ref csi_error_t
  */
-csi_error_t csi_uart_dma_tx_init(csp_uart_t *ptUartBase,csp_dma_t *ptDmaBase, csi_dma_ch_e eDmaCh, csi_etb_ch_e eEtbCh)
+csi_error_t csi_uart_dma_tx_init(csp_uart_t *ptUartBase, csi_dma_ch_e eDmaCh, csi_etb_ch_e eEtbCh)
 {
 	csi_error_t ret = CSI_OK;
 	csi_dma_ch_config_t tDmaConfig;				
@@ -400,7 +398,7 @@ csi_error_t csi_uart_dma_tx_init(csp_uart_t *ptUartBase,csp_dma_t *ptDmaBase, cs
 	tDmaConfig.byDetHinc 	= DMA_ADDR_CONSTANT;		//高位传输目标地址固定不变
 	tDmaConfig.byDataWidth 	= DMA_DSIZE_8_BITS;			//传输数据宽度8bit
 	tDmaConfig.byReload 	= DMA_RELOAD_DISABLE;		//禁止自动重载
-	tDmaConfig.byTransMode 	= DMA_TRANS_ONCE;			//DMA服务模式(传输模式)，连续服务
+	tDmaConfig.byTransMode 	= DMA_TRANS_CONTINU;			//DMA服务模式(传输模式)，连续服务
 	tDmaConfig.byTsizeMode  = DMA_TSIZE_ONE_DSIZE;		//传输数据大小，一个 DSIZE , 即DSIZE定义大小
 	tDmaConfig.byReqMode	= DMA_REQ_HARDWARE;			//DMA请求模式，软件请求（软件触发）
 	tDmaConfig.wInt			= DMA_INTSRC_TCIT;		//使用TCIT中断
@@ -418,7 +416,7 @@ csi_error_t csi_uart_dma_tx_init(csp_uart_t *ptUartBase,csp_dma_t *ptDmaBase, cs
 	ret = csi_etb_ch_config(eEtbCh, &tEtbConfig);				//初始化ETB，DMA ETB CHANNEL > ETB_CH19_ID
 	if(ret < CSI_OK)
 		return CSI_ERROR;
-	ret = csi_dma_ch_init(ptDmaBase, eDmaCh, &tDmaConfig);		//初始化DMA
+	ret = csi_dma_ch_init(DMA0, eDmaCh, &tDmaConfig);		//初始化DMA
 	csp_uart_set_txdma(ptUartBase, UART_TDMA_EN, UART_TDMA_FIFO_NFULL);
 	return ret;
 }
@@ -431,7 +429,7 @@ csi_error_t csi_uart_dma_tx_init(csp_uart_t *ptUartBase,csp_dma_t *ptDmaBase, cs
  *  \param[in] hwSize: number of data to send (byte).
  *  \return  none
  */
-void csi_uart_send_dma(csp_uart_t *ptUartBase, csp_dma_t *ptDmaBase,csi_dma_ch_e eDmaCh, const void *pData, uint16_t hwSize)
+void csi_uart_send_dma(csp_uart_t *ptUartBase, csi_dma_ch_e eDmaCh, const void *pData, uint16_t hwSize)
 {
 	csi_dma_ch_start(DMA0, eDmaCh, (void *)pData, (void *)&(ptUartBase->DATA), hwSize,1);
 	
@@ -445,10 +443,10 @@ void csi_uart_send_dma(csp_uart_t *ptUartBase, csp_dma_t *ptDmaBase,csi_dma_ch_e
  *  \param[in] hwSize: number of data to receive (byte).
  *  \return  none
  */
-void csi_uart_recv_dma(csp_uart_t *ptUartBase, csp_dma_t *ptDmaBase,csi_dma_ch_e eDmaCh, void *pData, uint16_t hwSize)
+void csi_uart_recv_dma(csp_uart_t *ptUartBase, csi_dma_ch_e eDmaCh, void *pData, uint16_t hwSize)
 {
 	
-	csi_dma_ch_start(ptDmaBase, eDmaCh, (void *)&(ptUartBase->DATA), (void *)pData, hwSize,1);
+	csi_dma_ch_start(DMA0, eDmaCh, (void *)&(ptUartBase->DATA), (void *)pData, hwSize,1);
 }
 /** \brief receive data from uart, this function is polling(sync).
  * 

@@ -261,7 +261,7 @@ csi_error_t csi_usart_send_async(csp_usart_t *ptUsartBase, const void *pData, ui
   \param[in]   eEtbCh		channel id number of etb, eEtbCh >= ETB_CH20_ID
   \return      error code \ref csi_error_t
  */
-csi_error_t csi_usart_dma_rx_init(csp_usart_t *ptUsartBase, csi_dma_reload_e eReload, csp_dma_t *ptDmaBase, csi_dma_ch_e eDmaCh, csi_etb_ch_e eEtbCh);
+csi_error_t csi_usart_dma_rx_init(csp_usart_t *ptUsartBase,  csi_dma_ch_e eDmaCh, csi_etb_ch_e eEtbCh);
 
 /** \brief usart dma send mode init
  * 
@@ -271,7 +271,7 @@ csi_error_t csi_usart_dma_rx_init(csp_usart_t *ptUsartBase, csi_dma_reload_e eRe
  *  \param[in] eEtbCh: channel id number of etb, eEtbCh >= ETB_CH8_ID
  *  \return  error code \ref csi_error_t
  */
-csi_error_t csi_usart_dma_tx_init(csp_usart_t *ptUsartBase,csp_dma_t *ptDmaBase, csi_dma_ch_e eDmaCh, csi_etb_ch_e eEtbCh);
+csi_error_t csi_usart_dma_tx_init(csp_usart_t *ptUsartBase, csi_dma_ch_e eDmaCh, csi_etb_ch_e eEtbCh);
 
 /** \brief send data from usart, this function is dma transfer
  * 
@@ -281,7 +281,7 @@ csi_error_t csi_usart_dma_tx_init(csp_usart_t *ptUsartBase,csp_dma_t *ptDmaBase,
  *  \param[in] hwSize: number of data to send (byte), hwSize <= 0xfff.
  *  \return  error code \ref csi_error_t
  */
-csi_error_t csi_usart_send_dma(csp_usart_t *ptUsartBase, csp_dma_t *ptDmaBase,  uint8_t byDmaCh,const void *pData, uint16_t hwSize);
+csi_error_t csi_usart_send_dma(csp_usart_t *ptUsartBase,  const void *pData, uint8_t byDmaCh, uint16_t hwSize);
 
 /** 
   \brief 	   receive data to usart transmitter, this function is dma mode
@@ -291,7 +291,7 @@ csi_error_t csi_usart_send_dma(csp_usart_t *ptUsartBase, csp_dma_t *ptDmaBase,  
   \param[in]   wSize		number of data to send (byte), hwSize <= 0xfff.
   \return      error code \ref csi_error_t
  */
-csi_error_t csi_usart_recv_dma(csp_usart_t *ptUsartBase, csp_dma_t *ptDmaBase,  uint8_t byDmaCh,void *pData, uint16_t hwSize);
+csi_error_t csi_usart_recv_dma(csp_usart_t *ptUsartBase, void *pData, uint8_t byDmaCh, uint16_t hwSize);
 
 /**
   \brief       Query data from USART receiver FIFO, this function is blocking.

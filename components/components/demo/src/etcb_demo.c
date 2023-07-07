@@ -33,11 +33,12 @@ int etcb_one_trg_one_demo(void)
 	volatile uint8_t ch;
 	csi_etb_config_t tEtbConfig;				                //ETB 参数配置结构体		
 	
-	csi_pin_set_mux(PA1,PA1_INPUT);		
-	csi_pin_pull_mode(PA1, GPIO_PULLUP);						//PA01 上拉
-	csi_pin_irq_mode(PA1,EXI_GRP1, GPIO_IRQ_FALLING_EDGE);		//PA01 下降沿产生中断	
-	csi_exi_set_evtrg(1, TRGSRC_EXI1, 1);
-	csi_pin_irq_enable(PA1, ENABLE);							//使能GPIO中断	
+	csi_pin_set_mux(PB0, PB0_INPUT);									//PB0 配置为输入
+	csi_pin_pull_mode(PB0, GPIO_PULLUP);								//PB0 上拉
+	csi_pin_irq_mode(PB0, EXI_GRP0, GPIO_IRQ_FALLING_EDGE);			//PB0 下降沿产生中断，选择中断组16
+	csi_pin_irq_enable(PB0,ENABLE);									//PB0 中断使能
+ 
+	csi_exi_set_evtrg(0, TRGSRC_EXI0, 0);						//EXI0(PB00) 触发EXI_TRGOUT0(PB00用EXI0触发输出)
 	
 	csi_bt_start_sync(BT0, 200);
 	csi_bt_set_sync(BT0,BT_TRGIN_SYNCEN0, BT_TRG_ONCE, BT_TRG_AUTOAREARM);  
@@ -47,7 +48,7 @@ int etcb_one_trg_one_demo(void)
 	csi_lpt_set_sync(LPT, LPT_TRG_SYNCIN0, LPT_SYNC_ONCE, ENABLE);
 	
 	tEtbConfig.byChType = ETB_ONE_TRG_ONE;  		//单个源触发单个目标
-	tEtbConfig.bySrcIp  = ETB_EXI_TRGOUT1 ;  	    //EXI1 触发输出0作为触发源
+	tEtbConfig.bySrcIp  = ETB_EXI_TRGOUT0 ;  	    //EXI1 触发输出0作为触发源
 	tEtbConfig.bySrcIp1 = ETB_SRC_NOT_USE;          //无触发源2      
 	tEtbConfig.bySrcIp2 = ETB_SRC_NOT_USE;          //无触发源3
 	tEtbConfig.byDstIp =  ETB_BT0_SYNCIN0;   	    //BT0 同步输入作为目标事件
@@ -75,8 +76,8 @@ int etcb_one_trg_one_demo(void)
 	if(ch < 0)
 		return -1;								    //ch < 0,则获取通道号失败
 	iRet = csi_etb_ch_config(ch, &tEtbConfig);	
-	
-	return iRet;
+
+	return iRet;  
 }
 
 
@@ -91,11 +92,12 @@ int etcb_one_trg_more_demo(void)
 	volatile uint8_t ch;
 	csi_etb_config_t tEtbConfig;				                //ETB 参数配置结构体		
 	
-	csi_pin_set_mux(PA1,PA1_INPUT);		
-	csi_pin_pull_mode(PA1, GPIO_PULLUP);						//PA01 上拉
-	csi_pin_irq_mode(PA1,EXI_GRP1, GPIO_IRQ_FALLING_EDGE);		//PA01 下降沿产生中断	
-	csi_exi_set_evtrg(1, TRGSRC_EXI1, 1);
-	csi_pin_irq_enable(PA1, ENABLE);							//使能GPIO中断	
+	csi_pin_set_mux(PB0, PB0_INPUT);									//PB0 配置为输入
+	csi_pin_pull_mode(PB0, GPIO_PULLUP);								//PB0 上拉
+	csi_pin_irq_mode(PB0, EXI_GRP0, GPIO_IRQ_FALLING_EDGE);			//PB0 下降沿产生中断，选择中断组16
+	csi_pin_irq_enable(PB0,ENABLE);									//PB0 中断使能
+ 
+	csi_exi_set_evtrg(0, TRGSRC_EXI0, 0);						//EXI0(PB00) 触发EXI_TRGOUT0(PB00用EXI0触发输出)
 	
 	
 	csi_bt_start_sync(BT0, 200);
@@ -110,7 +112,7 @@ int etcb_one_trg_more_demo(void)
 	
 	
 	tEtbConfig.byChType = ETB_ONE_TRG_MORE;  		//单个源触发单个目标
-	tEtbConfig.bySrcIp  = ETB_EXI_TRGOUT1 ;  	    //EXI1 触发输出0作为触发源
+	tEtbConfig.bySrcIp  = ETB_EXI_TRGOUT0 ;  	    //EXI1 触发输出0作为触发源
 	tEtbConfig.bySrcIp1 = ETB_SRC_NOT_USE;          //无触发源2      
 	tEtbConfig.bySrcIp2 = ETB_SRC_NOT_USE;          //无触发源3
 	tEtbConfig.byDstIp =  ETB_BT0_SYNCIN0;   	    //BT0 同步输入作为目标事件

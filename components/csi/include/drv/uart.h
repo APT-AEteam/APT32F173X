@@ -227,7 +227,8 @@ int16_t csi_uart_send(csp_uart_t *ptUartBase, const void *pData, uint16_t hwSize
   \param[in]   eEtbCh		channel id number of etb, eEtbCh >= ETB_CH8
   \return      error code \ref csi_error_t
  */
-csi_error_t csi_uart_dma_rx_init(csp_uart_t *ptUartBase, csi_dma_reload_e eReload, csp_dma_t *ptDmaBase, csi_dma_ch_e eDmaCh, csi_etb_ch_e eEtbCh);
+//csi_error_t csi_uart_dma_rx_init(csp_uart_t *ptUartBase, csi_dma_reload_e eReload, csi_dma_ch_e eDmaCh, csi_etb_ch_e eEtbCh);
+csi_error_t csi_uart_dma_rx_init(csp_uart_t *ptUartBase, csi_dma_ch_e eDmaCh, csi_etb_ch_e eEtbCh);
 
 /** 
   \brief 	   uart dma send mode init
@@ -237,7 +238,7 @@ csi_error_t csi_uart_dma_rx_init(csp_uart_t *ptUartBase, csi_dma_reload_e eReloa
   \param[in]   eEtbCh		channel id number of etb, eEtbCh >= ETB_CH8
   \return  	   error code \ref csi_error_t
  */
-csi_error_t csi_uart_dma_tx_init(csp_uart_t *ptUartBase, csp_dma_t *ptDmaBase,csi_dma_ch_e eDmaCh, csi_etb_ch_e eEtbCh);
+csi_error_t csi_uart_dma_tx_init(csp_uart_t *ptUartBase, csi_dma_ch_e eDmaCh, csi_etb_ch_e eEtbCh);
 
 /** 
   \brief 	   send data from uart, this function is dma mode
@@ -247,7 +248,7 @@ csi_error_t csi_uart_dma_tx_init(csp_uart_t *ptUartBase, csp_dma_t *ptDmaBase,cs
   \param[in]   hwSize		number of data to send (byte).
   \return  	   none
  */
-void csi_uart_send_dma(csp_uart_t *ptUartBase, csp_dma_t *ptDmaBase,csi_dma_ch_e eDmaCh, const void *pData, uint16_t hwSize);
+void csi_uart_send_dma(csp_uart_t *ptUartBase, csi_dma_ch_e eDmaCh, const void *pData, uint16_t hwSize);
 
 /** 
   \brief 	   receive data from uart, this function is dma mode
@@ -257,7 +258,7 @@ void csi_uart_send_dma(csp_uart_t *ptUartBase, csp_dma_t *ptDmaBase,csi_dma_ch_e
   \param[in]   hwSize		number of data to receive (byte).
   \return  	   none
  */
-void csi_uart_recv_dma(csp_uart_t *ptUartBase, csp_dma_t *ptDmaBase, csi_dma_ch_e eDmaCh, void *pData, uint16_t hwSize);
+void csi_uart_recv_dma(csp_uart_t *ptUartBase, csi_dma_ch_e eDmaCh, void *pData, uint16_t hwSize);
 
 /**
   \brief       Query data from UART receiver FIFO, this function is blocking.
