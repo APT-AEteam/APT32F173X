@@ -19,7 +19,8 @@
 /* externs variablesr------------------------------------------------------*/
 /* Private variablesr------------------------------------------------------*/
 static uint8_t s_hwRtcMsg = 0;
-
+csi_rtc_alm_t  tAlmA;
+csi_rtc_alm_t  tAlmB;
 /** \brief 设置rtc时间的示例代码：包括时钟源、时间模式、时间设置，当前时间回读函数
  * 
  *  \param[in] none
@@ -103,7 +104,7 @@ void rtc_set_time_demo(void)
  *  \param[in] none
  *  \return    none
  */
-csi_rtc_alm_t  tAlmA;
+
 void rtc_alarm_demo(void)	
 {	
 	uint32_t wTemp0;
