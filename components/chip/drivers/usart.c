@@ -133,7 +133,7 @@ csi_error_t csi_usart_init(csp_usart_t *ptUsartBase, csi_usart_config_t *ptUsart
 	{
 		if(ptUsartCfg->wInt ==USART_INTSRC_RXRDY)
 		{
-			csp_uart_set_fifo(ptUsartBase, UART_RXFIFO_1_2, DISABLE);			//set /fx fifo = 1_2/fifo enable
+			csp_usart_set_fifo(ptUsartBase, UART_RXFIFO_1_2, DISABLE);			//set /fx fifo = 1_2/fifo enable
 		}
 		ptUsartCfg->wInt &= 0xbdfd;													//clear tx all interrupt
 		if((ptUsartCfg->wInt) && (ptUsartCfg->byRxMode))							//receive iterrupt mode

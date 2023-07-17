@@ -348,7 +348,7 @@ int uart_recv_rxfifo_int_demo(void)
  *  \param[in] ptUartBase: pointer of uart register structure
  *  \param[in] byIdx: uart id number(0~2)
  */
-/*__attribute__((weak)) void uart_irqhandler(csp_uart_t *ptUartBase,uint8_t byIdx)
+__attribute__((weak)) void uart_irqhandler(csp_uart_t *ptUartBase,uint8_t byIdx)
 {
 	//此中断例程支持RXFIFO/RX/TXDONE/RXTO四种中断，基本满足UART的各种处理
 	switch(csp_uart_get_isr(ptUartBase) & 0x080242)							//获取RXFIFO/TXDONE/RXTO/RX 中断状态
@@ -404,4 +404,4 @@ int uart_recv_rxfifo_int_demo(void)
 		default:
 			break;
 	}
-}*/
+}
