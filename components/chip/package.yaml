@@ -1,6 +1,6 @@
 ## 第一部分： 基础信息
 name: apt32f173x_chip
-version: v1.0.1
+version: v1.0.2
 description: apt32f173 chip CSI driver SDK.
 type: chip
 tag: 核心模块
