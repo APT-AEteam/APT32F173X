@@ -4,6 +4,15 @@
 # Release Notes
 
 ======================================================
+Version: V1.0.2
+Release Date: 2023.7.18
+
+完善linker文件使用说明
+	  
+======================================================	  
+
+
+======================================================
 Version: V1.0.1
 Release Date: 2023.7.17
 
@@ -28,5 +37,6 @@ Release Notes
       gcc_sram_1732.ld，代码和数据都在RAM中运行,RAM使用SRAM0加上SRAM1，SRAM0和SRAM1均配置为DSRAM，大小合计为32K。
       gcc_flash_dram24k_iram8k_1732.ld，ROM代码区为128K,RAM数据区使用SRAM0，大小为16k，SRAM1配置为ISRAM，大小为16K。
       gcc_flash_dram16k_iram16k_1732.ld，ROM代码区为128K,RAM数据区使用SRAM0，大小为24k， SRAM1配置为ISRAM，大小为8K。
+	  
 	  
 ======================================================	  
