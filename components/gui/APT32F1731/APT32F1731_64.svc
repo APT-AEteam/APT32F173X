@@ -2833,12 +2833,12 @@
         </Pin>
         <Pin pinNum="12" group="Others" displayName="VSSA"/>
         <Pin pinNum="13" group="Others" displayName="VDDA"/>
-        <Pin pinNum="18" group="Others" displayName="VSS"/>
-        <Pin pinNum="19" group="Others" displayName="VDD"/>
-        <Pin pinNum="31" group="Others" displayName="VSS"/>
-        <Pin pinNum="32" group="Others" displayName="VDD"/>
-        <Pin pinNum="47" group="Others" displayName="VSS"/>
-        <Pin pinNum="48" group="Others" displayName="VDD"/>
+        <Pin pinNum="18" group="Others" displayName="VSS "/>
+        <Pin pinNum="19" group="Others" displayName="VDD "/>
+        <Pin pinNum="31" group="Others" displayName="VSS  "/>
+        <Pin pinNum="32" group="Others" displayName="VDD  "/>
+        <Pin pinNum="47" group="Others" displayName="VSS   "/>
+        <Pin pinNum="48" group="Others" displayName="VDD   "/>
         <Pin pinNum="63" group="Others" displayName="VSS"/>
         <Pin pinNum="64" group="Others" displayName="VDD"/>
       </Pins>
@@ -2847,7 +2847,7 @@
       <Category>
         <label>System</label>
         <Category>
-          <label>System Clock</label>
+          <label>System Clock </label>
           <Device deviceId="SystemClock">
             <GenCodeFuncName>SysClockInitFunc</GenCodeFuncName>
             <UseOrNot>1</UseOrNot>
@@ -2862,7 +2862,7 @@
                 <sel notAvailable="SystemClockFreqHFOSC,SystemClockFreqIMOSC,SystemClockFreqText,SystemClockFreqManualPLL">ISOSC</sel>
                 <sel notAvailable="SystemClockFreqHFOSC,SystemClockFreqIMOSC,SystemClockISOSCFreqText,SystemClockFreqManualPLL">AUTO_HF_PLL</sel>
                 <sel notAvailable="SystemClockFreqHFOSC,SystemClockFreqIMOSC,SystemClockISOSCFreqText,SystemClockFreqManualPLL">AUTO_EM_PLL</sel>
-                <sel notAvailable="SystemClockFreqHFOSC,SystemClockFreqIMOSC,SystemClockISOSCFreqText">MANUAL_PLL</sel>
+                <sel notAvailable="SystemClockFreqHFOSC,SystemClockFreqIMOSC,SystemClockISOSCFreqText,SystemClockFreqText">MANUAL_PLL</sel>
               </Selections>
               <Comment>系统时钟源</Comment>
             </Property>
@@ -2928,7 +2928,7 @@
               <label>Freq</label>
               <value>36000000</value>
               <!-- <validReg>^([1-9]|[1-3][0-9]|[4][0-8])$</validReg> -->
-              <Comment>时钟源频率 频率范围:1~48M</Comment>
+              <Comment>时钟源频率 频率范围:1~48M (时钟源为PLL时 频率范围:1~72M)</Comment>
             </Property>
             <Property class="Text" property_class="SystemClockISOSCFreqText">
               <label>Freq(CONST)</label>
@@ -2973,7 +2973,7 @@
           </Device>
         </Category>
         <Category>
-          <label>LVD_R</label>
+          <label>LVD_R </label>
           <Device deviceId="LVR">
             <GenCodeFuncName>SysLVRInitFunc</GenCodeFuncName>
             <UseOrNot>0</UseOrNot>
@@ -3027,7 +3027,7 @@
           </Device>
         </Category>
         <Category>
-          <label>SRAM Check</label>
+          <label>SRAM Check </label>
           <Device deviceId="SRAM Check">
             <Comment>SRAM实时校验功能</Comment>
             <GenCodeFuncName>SysSRAMCheckInitFunc</GenCodeFuncName>
@@ -3051,7 +3051,7 @@
           </Device>
         </Category>
         <Category>
-          <label>Flash Check</label>
+          <label>Flash Check </label>
           <Device deviceId="Flash check">
             <GenCodeFuncName>SysFlashCheckInitFunc</GenCodeFuncName>
             <UseOrNot>0</UseOrNot>
@@ -3065,7 +3065,7 @@
           </Device>
         </Category>
         <Category>
-          <label>EM Clock Monitor</label>
+          <label>EM Clock Monitor </label>
           <Device deviceId="EM clock monitor">
             <Comment>External Main OSC monitor</Comment>
             <GenCodeFuncName>SysEMClockMonitorInitFunc</GenCodeFuncName>
@@ -3083,7 +3083,7 @@
           </Device>
         </Category>
         <Category>
-          <label>IWDT</label>
+          <label>IWDT </label>
           <Device deviceId="IWDT">
             <Comment>Independent WatchDog Timer</Comment>
             <GenCodeFuncName>SysIWDTInitFunc</GenCodeFuncName>
@@ -3130,7 +3130,7 @@
           </Device>
         </Category>
         <Category>
-          <label>CoreTick</label>
+          <label>CoreTick </label>
           <Device deviceId="CoreTick">
             <GenCodeFuncName>SysTickInitFunc</GenCodeFuncName>
             <UseOrNot>0</UseOrNot>
