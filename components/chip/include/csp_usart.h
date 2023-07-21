@@ -269,14 +269,14 @@ typedef enum{
 	US_TIMEOUT_INT		= (0x01ul << 8),
 	US_TXEMPTY_INT		= (0x01ul << 9),
 	US_IDLE_INT			= (0x01ul << 10),
-	US_IDLEFLAG			= (0x01ul << 11),		//STATUS
+	US_IDLEFLAG			= (0x01ul << 11),		//STATUS only,can not trigger interrupt
 	US_RXRIS_INT		= (0x01ul << 12),
 	US_RORRIS_INT		= (0x01ul << 13),
 	US_TXRIS_INT		= (0x01ul << 14),
-	US_RFF				= (0x01ul << 15),		//STATUS
-	US_RNE				= (0x01ul << 16),		//STATUS
-	US_TNF				= (0x01ul << 17),		//STATUS
-	US_TFE				= (0x01ul << 18),		//STATUS
+	US_RFF				= (0x01ul << 15),		//STATUS only,can not trigger interrupt
+	US_RNE				= (0x01ul << 16),		//STATUS only,can not trigger interrupt
+	US_TNF				= (0x01ul << 17),		//STATUS only,can not trigger interrupt
+	US_TFE				= (0x01ul << 18),		//STATUS only,can not trigger interrupt
 	
 	LIN_ENDHEADER_INT	= (0x01ul << 24),		//Ended header Interrupt
 	LIN_ENDMESS_INT		= (0x01ul << 25),		//Ended message Interrupt
@@ -285,7 +285,7 @@ typedef enum{
 	LIN_IPERROR_INT		= (0x01ul << 28),		//Identity parity error Interrupt
 	LIN_CHECKSUM_INT	= (0x01ul << 29),		//Checksum error Interrupt
 	LIN_WAKEUP_INT		= (0x01ul << 30),		//Wake up Interrupt	
-	LIN_BUSY			= (0x01ul << 31),		//LIN STATUS	
+	LIN_BUSY			= (0x01ul << 31),		//LIN STATUS only,can not trigger interrupt	
 	LIN_ALL_INT			= (0x7Ful << 24),		//LIN all int
 	LIN_ERR_INT			= (0x3Cul << 24)		//LIN all int
 }usart_int_e; 
