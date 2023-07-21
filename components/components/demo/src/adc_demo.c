@@ -463,8 +463,8 @@ int adc_samp_continuous_int_demo(void)
  */ 
 __attribute__((weak)) void adc_irqhandler(csp_adc_t *ptAdcBase)
 {
-	uint32_t wIntStat = csp_adc_get_sr(ptAdcBase) & csp_adc_get_imr(ptAdcBase);//ADC_SR & ADC_IMR
-	while (wIntStat != 0) 
+	uint32_t wIntStat = csp_adc_get_misr(ptAdcBase);//ADC_MISR
+	if (wIntStat != 0) 
 	{
 		csp_adc_clr_sr(ptAdcBase,wIntStat);
 	}
