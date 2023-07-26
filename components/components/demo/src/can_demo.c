@@ -39,13 +39,15 @@ int can_send_demo(void)
 	csi_can_config_t 	 tCanConfig;					//CAN init config
 	csi_can_tx_config_t  tCanTxCfg;						//CAN TX config
 	
+#if !defined(USE_GUI)									//用户未选择图形化编程			
 //	csi_pin_set_mux(PC4, PC4_CAN_RX);					//CAN RX管脚配置
 //	csi_pin_set_mux(PC5, PC5_CAN_TX);					//CAN TX管脚配置
 //	csi_pin_set_mux(PA11, PA11_CAN_RX);					//CAN RX管脚配置
 //	csi_pin_set_mux(PA12, PA12_CAN_TX);					//CAN TX管脚配置
 	csi_pin_set_mux(PB8, PB8_CAN_RX);					//CAN RX管脚配置
 	csi_pin_set_mux(PB9, PB9_CAN_TX);					//CAN TX管脚配置
-	
+#endif
+
 	//CAN MR 寄存器配置,即初始化配置
 	tCanConfig.byClkSrc 	= CAN_CLKSRC_PCLK;			//CAN CLK = PCLK		
 	tCanConfig.wBaudRate 	= CAN_BDR_500K;				//500k
@@ -193,13 +195,15 @@ int can_send_int_demo(void)
 	//volatile uint32_t wData = 0;
 	csi_can_config_t 	 tCanConfig;					//CAN init config
 	csi_can_tx_config_t  tCanTxCfg;						//CAN TX config
-	
+
+#if !defined(USE_GUI)									//用户未选择图形化编程		
 //	csi_pin_set_mux(PC4, PC4_CAN_RX);					//CAN RX管脚配置
 //	csi_pin_set_mux(PC5, PC5_CAN_TX);					//CAN TX管脚配置
 //	csi_pin_set_mux(PA11, PA11_CAN_RX);					//CAN RX管脚配置
 //	csi_pin_set_mux(PA12, PA12_CAN_TX);					//CAN TX管脚配置
 	csi_pin_set_mux(PB8, PB8_CAN_RX);					//CAN RX管脚配置
 	csi_pin_set_mux(PB9, PB9_CAN_TX);					//CAN TX管脚配置
+#endif
 	
 	//CAN MR 寄存器配置,即初始化配置
 	tCanConfig.byClkSrc 	= CAN_CLKSRC_PCLK;			//CAN CLK = PCLK		
@@ -307,13 +311,15 @@ int can_recv_demo(void)
 	csi_can_recv_t		 tCanRecv[3];					//接收数据结构体缓存，用户定义大小
 	csi_can_config_t 	 tCanConfig;					//CAN init config
 	csi_can_rx_config_t  tCanRxCfg;						//CAN RX config	
-	
+
+#if !defined(USE_GUI)									//用户未选择图形化编程		
 //	csi_pin_set_mux(PC4, PC4_CAN_RX);					//CAN RX管脚配置
 //	csi_pin_set_mux(PC5, PC5_CAN_TX);					//CAN TX管脚配置
 //	csi_pin_set_mux(PA11, PA11_CAN_RX);					//CAN RX管脚配置
 //	csi_pin_set_mux(PA12, PA12_CAN_TX);					//CAN TX管脚配置
 	csi_pin_set_mux(PB8, PB8_CAN_RX);					//CAN RX管脚配置
 	csi_pin_set_mux(PB9, PB9_CAN_TX);					//CAN TX管脚配置
+#endif
 	
 	//CAN MR 寄存器配置,即初始化配置
 	tCanConfig.byClkSrc 	= CAN_CLKSRC_PCLK;			//CAN CLK = PCLK		
@@ -380,12 +386,14 @@ int can_recv_fifo_demo(void)
 	csi_can_config_t 	 tCanConfig;					//CAN init config
 	csi_can_rx_config_t  tCanRxCfg;						//CAN RX config	
 	
+#if !defined(USE_GUI)									//用户未选择图形化编程		
 //	csi_pin_set_mux(PC4, PC4_CAN_RX);					//CAN RX管脚配置
 //	csi_pin_set_mux(PC5, PC5_CAN_TX);					//CAN TX管脚配置
 //	csi_pin_set_mux(PA11, PA11_CAN_RX);					//CAN RX管脚配置
 //	csi_pin_set_mux(PA12, PA12_CAN_TX);					//CAN TX管脚配置
 	csi_pin_set_mux(PB8, PB8_CAN_RX);					//CAN RX管脚配置
 	csi_pin_set_mux(PB9, PB9_CAN_TX);					//CAN TX管脚配置
+#endif
 	
 	//CAN MR 寄存器配置,即初始化配置
 	tCanConfig.byClkSrc 	= CAN_CLKSRC_PCLK;			//CAN CLK = PCLK		
