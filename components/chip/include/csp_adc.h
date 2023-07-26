@@ -485,7 +485,7 @@ static inline void csp_adc_clk_dis(csp_adc_t *ptAdcBase)
 }
 static inline void csp_adc_clk_sel(csp_adc_t *ptAdcBase,adc_clksel_e eClksel)
 {
-	ptAdcBase->ECR = (ptAdcBase->ECR & (~ ADC12_CLKSEL_MSK)) | ((eClksel << ADC12_CLKSEL_POS));	
+	ptAdcBase->ECR = (ptAdcBase->ECR & (~ ADC12_CLKSEL_MSK)) | ((eClksel<<ADC12_CLKSEL_POS));	
 }
 static inline void csp_adc_dbg_en(csp_adc_t *ptAdcBase)
 {

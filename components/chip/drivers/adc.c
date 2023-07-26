@@ -54,6 +54,7 @@ csi_error_t csi_adc_init(csp_adc_t *ptAdcBase, csi_adc_config_t *ptAdcCfg)
 	
 	//general configuration 
 	csp_adc_set_clk_div(ptAdcBase, ptAdcCfg->byClkDiv);		//adc clk div, clk = pclk/div
+	csp_adc_clk_sel(ptAdcBase,ptAdcCfg->byClksel);		//adc clk sel
 	csp_adc_hold_cycle(ptAdcBase, ptAdcCfg->bySampHold);	//adc sample hold period, sample time = (bySampHold + 16) clk period
 	csp_adc_set_conv_mode(ptAdcBase, ptAdcCfg->byConvMode);	//adc conversion mode, continuous/one shot
 	csp_adc_set_vref(ptAdcBase,ptAdcCfg->byVrefSrc);		//adc vref
