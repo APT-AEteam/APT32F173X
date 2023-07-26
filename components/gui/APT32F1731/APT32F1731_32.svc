@@ -1565,13 +1565,13 @@
               <label>Clock Source</label>
               <value>MANUAL_PLL</value>
               <Selections>
-                <sel notAvailable="SystemClockFreqHFOSC,SystemClockFreqText,SystemClockISOSCFreqText,SystemClockFreqManualPLL">IMOSC</sel>
-                <sel notAvailable="SystemClockFreqHFOSC,SystemClockFreqIMOSC,SystemClockISOSCFreqText,SystemClockFreqManualPLL">EMOSC</sel>
-                <sel notAvailable="SystemClockFreqIMOSC,SystemClockFreqText,SystemClockISOSCFreqText,SystemClockFreqManualPLL">HFOSC</sel>
-                <sel notAvailable="SystemClockFreqHFOSC,SystemClockFreqIMOSC,SystemClockFreqText,SystemClockFreqManualPLL">ISOSC</sel>
-                <sel notAvailable="SystemClockFreqHFOSC,SystemClockFreqIMOSC,SystemClockISOSCFreqText,SystemClockFreqManualPLL">AUTO_HF_PLL</sel>
-                <sel notAvailable="SystemClockFreqHFOSC,SystemClockFreqIMOSC,SystemClockISOSCFreqText,SystemClockFreqManualPLL">AUTO_EM_PLL</sel>
-                <sel notAvailable="SystemClockFreqHFOSC,SystemClockFreqIMOSC,SystemClockISOSCFreqText,SystemClockFreqText">MANUAL_PLL</sel>
+                <sel notAvailable="SystemClockFreqHFOSC,SystemClockFreqText,SystemClockISOSCFreqText,SystemClockFreqManualPLL,SystemClockPLLFreqText">IMOSC</sel>
+                <sel notAvailable="SystemClockFreqHFOSC,SystemClockFreqIMOSC,SystemClockISOSCFreqText,SystemClockFreqManualPLL,SystemClockPLLFreqText">EMOSC</sel>
+                <sel notAvailable="SystemClockFreqIMOSC,SystemClockFreqText,SystemClockISOSCFreqText,SystemClockFreqManualPLL,SystemClockPLLFreqText">HFOSC</sel>
+                <sel notAvailable="SystemClockFreqHFOSC,SystemClockFreqIMOSC,SystemClockFreqText,SystemClockFreqManualPLL,SystemClockPLLFreqText">ISOSC</sel>
+                <sel notAvailable="SystemClockFreqHFOSC,SystemClockFreqIMOSC,SystemClockISOSCFreqText,SystemClockFreqManualPLL,SystemClockFreqText">AUTO_HF_PLL</sel>
+                <sel notAvailable="SystemClockFreqHFOSC,SystemClockFreqIMOSC,SystemClockISOSCFreqText,SystemClockFreqManualPLL,SystemClockFreqText">AUTO_EM_PLL</sel>
+                <sel notAvailable="SystemClockFreqHFOSC,SystemClockFreqIMOSC,SystemClockISOSCFreqText,SystemClockFreqText,SystemClockPLLFreqText">MANUAL_PLL</sel>
               </Selections>
               <Comment>系统时钟源</Comment>
             </Property>
@@ -1634,13 +1634,19 @@
               <Comment>时钟源频率</Comment>
             </Property>
             <Property class="Text" property_class="SystemClockFreqText">
-              <label>Freq</label>
-              <value>36000000</value>
+              <label>Freq(EMOSC)</label>
+              <value>24000000</value>
               <!-- <validReg>^([1-9]|[1-3][0-9]|[4][0-8])$</validReg> -->
-              <Comment>时钟源频率 频率范围:1~48M (时钟源为PLL时 频率范围:1~72M)</Comment>
+              <Comment>EM时钟源频率 频率范围:1~24M</Comment>
+            </Property>
+            <Property class="Text" property_class="SystemClockPLLFreqText">
+              <label>Freq(PLL)</label>
+              <value>72000000</value>
+              <!-- <validReg>^([1-9]|[1-3][0-9]|[4][0-8])$</validReg> -->
+              <Comment>PLL时钟源频率 频率范围:1~72M</Comment>
             </Property>
             <Property class="Text" property_class="SystemClockISOSCFreqText">
-              <label>Freq(CONST)</label>
+              <label>Freq(ISOSC)</label>
               <value>27000</value>
               <validReg>^(27000)$</validReg>
               <Comment>固定频率27k</Comment>
@@ -1651,19 +1657,6 @@
               <Selections>
                 <sel>SCLK_DIV1</sel>
                 <sel>SCLK_DIV2</sel>
-                <sel>SCLK_DIV3</sel>
-                <sel>SCLK_DIV4</sel>
-                <sel>SCLK_DIV5</sel>
-                <sel>SCLK_DIV6</sel>
-                <sel>SCLK_DIV9</sel>
-                <sel>SCLK_DIV12</sel>
-                <sel>SCLK_DIV16</sel>
-                <sel>SCLK_DIV24</sel>
-                <sel>SCLK_DIV32</sel>
-                <sel>SCLK_DIV36</sel>
-                <sel>SCLK_DIV64</sel>
-                <sel>SCLK_DIV128</sel>
-                <sel>SCLK_DIV256</sel>
               </Selections>
               <Comment>系统时钟分频系数,SCLK = Freq/SCLK_DIV</Comment>
             </Property>
