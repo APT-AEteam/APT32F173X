@@ -35,14 +35,15 @@ void iic_master_eeprom_demo(void)
 {
 	volatile uint8_t data[9] = {1,2,3,4,5,6,7,8,9};
 	volatile uint8_t data1[9] = {0};
-
+	
+#if !defined (USEGUI)
 	csi_pin_output_mode(PC4,GPIO_OPEN_DRAIN);
 	csi_pin_output_mode(PA14,GPIO_OPEN_DRAIN);
 	csi_pin_pull_mode(PC4, GPIO_PULLUP);
 	csi_pin_pull_mode(PA14, GPIO_PULLUP);
 	csi_pin_set_mux(PC4,PC4_I2C_SCL);//PIN2 ->	I2C_SCL
 	csi_pin_set_mux(PA14,PA14_I2C_SDA);//PIN3 -> 	I2C_SDA
-
+#endif	
 	g_tIicMasterCfg.byAddrMode = IIC_ADDRESS_7BIT;			//设置主机地址模式 7/10 bit
 	g_tIicMasterCfg.byReStart = ENABLE;						//使能重复起始位
 	g_tIicMasterCfg.bySpeedMode = IIC_BUS_SPEED_STANDARD;	//设置主机速度模式	IIC_BUS_SPEED_STANDARD <=100kHz   IIC_BUS_SPEED_FAST <=400kHz    IIC_BUS_SPEED_FAST_PLUS <=  1MHz
@@ -72,14 +73,15 @@ void iic_master_demo(void)
 {
 	
 	volatile uint8_t data1[19] = {4,4,4,4,4,4,4,4,4};
-	
+
+#if !defined (USEGUI)
 	csi_pin_output_mode(PC4,GPIO_OPEN_DRAIN);
 	csi_pin_output_mode(PC5,GPIO_OPEN_DRAIN);
 	csi_pin_pull_mode(PC4, GPIO_PULLUP);
 	csi_pin_pull_mode(PC5, GPIO_PULLUP);
 	csi_pin_set_mux(PC4,PC4_I2C_SCL);//PIN2 ->	I2C_SCL
 	csi_pin_set_mux(PC5,PC5_I2C_SDA);//PIN3 -> 	I2C_SDA
-
+#endif	
 	g_tIicMasterCfg.byAddrMode = IIC_ADDRESS_7BIT;			//设置主机地址模式 7/10 bit
 	g_tIicMasterCfg.byReStart = ENABLE;						//使能重复起始位
 	g_tIicMasterCfg.bySpeedMode = IIC_BUS_SPEED_FAST_PLUS;	//设置主机速度模式	IIC_BUS_SPEED_STANDARD <=100kHz   IIC_BUS_SPEED_FAST <=400kHz    IIC_BUS_SPEED_FAST_PLUS <=  1MHz
@@ -117,13 +119,14 @@ void iic_master_demo(void)
  */
 void iic_slave_demo(void)
 {
+#if !defined (USEGUI)
 	csi_pin_output_mode(PC4,GPIO_OPEN_DRAIN);
 	csi_pin_output_mode(PC5,GPIO_OPEN_DRAIN);
 	csi_pin_pull_mode(PC4, GPIO_PULLUP);
 	csi_pin_pull_mode(PC5, GPIO_PULLUP);
 	csi_pin_set_mux(PC4,PC4_I2C_SCL);//PIN2 ->	I2C_SCL
 	csi_pin_set_mux(PC5,PC5_I2C_SDA);//PIN3 -> 	I2C_SDA
-	
+#endif		
 	g_tIicSlaveCfg.byAddrMode = IIC_ADDRESS_7BIT;		//设置从机地址模式 
 	g_tIicSlaveCfg.bySpeedMode = IIC_BUS_SPEED_STANDARD;	//设置从机速度	IIC_BUS_SPEED_STANDARD <=100kHz   IIC_BUS_SPEED_FAST <=400kHz    IIC_BUS_SPEED_FAST_PLUS <=  1MHz
 	g_tIicSlaveCfg.hwSlaveAddr = 0xa0;				//设置从机地址
@@ -155,13 +158,14 @@ void iic_slave_demo(void)
 
 void iic_multi_slave_address_demo(void)
 {
+#if !defined (USEGUI)	
 	csi_pin_output_mode(PC4,GPIO_OPEN_DRAIN);
 	csi_pin_output_mode(PC5,GPIO_OPEN_DRAIN);
 	csi_pin_set_mux(PC4,PC4_I2C_SCL);//PIN2 ->	I2C_SCL
 	csi_pin_set_mux(PC5,PC5_I2C_SDA);//PIN3 -> 	I2C_SDA
 	csi_pin_pull_mode(PC4, GPIO_PULLUP);
 	csi_pin_pull_mode(PC5, GPIO_PULLUP);
-	
+#endif		
 	g_tIicSlaveCfg.byAddrMode = IIC_ADDRESS_7BIT;		//设置从机地址模式 
 	g_tIicSlaveCfg.bySpeedMode = IIC_BUS_SPEED_STANDARD;	//设置从机速度	IIC_BUS_SPEED_STANDARD <=100kHz   IIC_BUS_SPEED_FAST <=400kHz    IIC_BUS_SPEED_FAST_PLUS <=  1MHz
 	g_tIicSlaveCfg.hwSlaveAddr = 0x30;				//设置从机地址,SADDR>>1
@@ -196,14 +200,14 @@ void iic_multi_slave_address_demo(void)
 	
 	csi_dma_ch_config_t tDmaConfig;    
 	csi_etb_config_t  tEtbConfig;
-	
+#if !defined (USEGUI)	
 	csi_pin_output_mode(PC4,GPIO_OPEN_DRAIN);
 	csi_pin_output_mode(PC5,GPIO_OPEN_DRAIN);
 	csi_pin_set_mux(PC4,PC4_I2C_SCL);//PIN2 ->	I2C_SCL
 	csi_pin_set_mux(PC5,PC5_I2C_SDA);//PIN3 -> 	I2C_SDA
 	csi_pin_pull_mode(PC4, GPIO_PULLUP);
 	csi_pin_pull_mode(PC5, GPIO_PULLUP);
-	
+#endif		
 	// tx etcb config
 	csi_etb_init();      //使能ETB模块
 	tEtbConfig.byChType = ETB_ONE_TRG_ONE_DMA;     //单个源触发单个目标，DMA方式
@@ -262,14 +266,14 @@ void iic_multi_slave_address_demo(void)
 	
 	csi_dma_ch_config_t tDmaConfig;    
 	csi_etb_config_t  tEtbConfig;
-	
+#if !defined (USEGUI)	
 	csi_pin_output_mode(PC4,GPIO_OPEN_DRAIN);
 	csi_pin_output_mode(PC5,GPIO_OPEN_DRAIN);
 	csi_pin_set_mux(PC4,PC4_I2C_SCL);   //PIN4 ->	I2C_SCL
 	csi_pin_set_mux(PC5,PC5_I2C_SDA);   //PIN5 -> 	I2C_SDA
 	csi_pin_pull_mode(PC4, GPIO_PULLUP);
 	csi_pin_pull_mode(PC5, GPIO_PULLUP);
-
+#endif
 	// rx etcb config
 	csi_etb_init();      //使能ETB模块
 	tEtbConfig.byChType = ETB_ONE_TRG_ONE_DMA;     //单个源触发单个目标，DMA方式
