@@ -60,7 +60,8 @@ int sio_led_rgb_demo(void)
 	int iRet = 0;
 	volatile uint8_t byRecv;
 	csi_sio_tx_config_t tSioTxCfg;
-
+	
+#if !defined(USE_GUI)							//用户未选择图形化编程	
 	//配置为SIO模式
 	csi_pin_set_mux(PB0, PB0_SIO0);	
 //	csi_pin_set_mux(PC0, PC0_SIO0);	
@@ -69,6 +70,7 @@ int sio_led_rgb_demo(void)
 //	
 //	csi_pin_set_mux(PB1, PB1_SIO1);
 //	csi_pin_set_mux(PD3, PD3_SIO1);
+#endif
 	
 	//SIO TX 参数配置
 	tSioTxCfg.byD0Len 		= 1;				//D0 对象序列长度(bit个数)，这里不用D0								
@@ -116,10 +118,12 @@ int sio_led_rgb_int_demo(void)
 	uint8_t byRecv;
 	csi_sio_tx_config_t tSioTxCfg;
 
+#if !defined(USE_GUI)							//用户未选择图形化编程	
 	csi_pin_set_mux(PC0, PC0_SIO0);	
 //	csi_pin_set_mux(PD3, PD3_SIO0);
 //	csi_pin_set_mux(PD4, PD4_SIO0);
-	
+#endif
+
 	//SIO TX 参数配置
 	tSioTxCfg.byD0Len 		= 1;					//D0 对象序列长度(bit个数)，这里不用D0								
 	tSioTxCfg.byD1Len 		= 1;					//D1 对象序列长度(bit个数)，这里不用D1
@@ -173,12 +177,13 @@ int sio_led_rgb_send_dma_demo(void)
 	csi_dma_ch_config_t tDmaConfig;				
 	csi_etb_config_t 	tEtbConfig;	
 	csi_sio_tx_config_t tSioTxCfg;
-	
+
+#if !defined(USE_GUI)									//用户未选择图形化编程		
 //	csi_pin_set_mux(PC0, PC0_SIO0);	
 	csi_pin_set_mux(PD3, PD3_SIO0);
 //	csi_pin_set_mux(PD4, PD4_SIO0);	
+#endif
 	
-	//dma config
 	//dma config
 	tDmaConfig.bySrcLinc 	= DMA_ADDR_CONSTANT;		//低位传输原地址固定不变
 	tDmaConfig.bySrcHinc 	= DMA_ADDR_INC;				//高位传输原地址自增
@@ -260,8 +265,10 @@ int sio_led_rgb_recv_dma_demo(void)
 	csi_dma_ch_config_t tDmaConfig;				
 	csi_etb_config_t 	tEtbConfig;	
 	csi_sio_rx_config_t tSioRxCfg;
-	
+
+#if !defined(USE_GUI)									//用户未选择图形化编程			
 	csi_pin_set_mux(PD4, PD4_SIO0);
+#endif
 	
 	//dma config
 	tDmaConfig.bySrcLinc 	= DMA_ADDR_CONSTANT;		//低位传输原地址固定不变
@@ -334,7 +341,9 @@ int sio_led_rgb_recv_rxfull_demo(void)
 	csi_sio_rx_config_t tSioRxCfg;
 	uint32_t wLedRxBuf[24];
 	
+#if !defined(USE_GUI)								//用户未选择图形化编程	
 	csi_pin_set_mux(PD4, PD4_SIO0);
+#endif
 	
 	//SIO RX 参数配置
 	tSioRxCfg.byDebPerLen 	= 3;					//接收滤波周期	
@@ -381,8 +390,10 @@ int sio_led_rgb_recv_rxdone_demo(void)
 	volatile int iRet = 0;
 	csi_sio_rx_config_t tSioRxCfg;
 	uint32_t wRxBuf[8];
-	
+
+#if !defined(USE_GUI)								//用户未选择图形化编程	
 	csi_pin_set_mux(PD4, PD4_SIO0);
+#endif
 	
 	//SIO RX 参数配置
 	tSioRxCfg.byDebPerLen 	= 3;					//接收滤波周期	
@@ -430,7 +441,9 @@ int sio_hdq_send_demo(void)
 	uint32_t wSendBuf[2];		
 	uint8_t byHdqData[2] = {0x68, 0x55};
 	
-	csi_pin_set_mux(PB0, PB0_SIO0);				//配置为SIO模式		
+#if !defined(USE_GUI)							//用户未选择图形化编程	
+	csi_pin_set_mux(PB0, PB0_SIO0);				//配置为SIO模式	
+#endif	
 	
 	//SIO TX 参数配置
 	tHdqTxCfg.byD0Len 		= 5;				//D0 对象序列长度(bit个数)，5个， break: 		__							
@@ -479,8 +492,10 @@ int sio_hdq_recv_wrcmd_demo(void)
 	int iRet = 0;
 	csi_sio_rx_config_t tHdqRxCfg;
 	uint32_t wHdqRxBuf[1];
-	
-	csi_pin_set_mux(PB0, PB0_SIO0);				//配置为SIO模式	
+
+#if !defined(USE_GUI)								//用户未选择图形化编程		
+	csi_pin_set_mux(PB0, PB0_SIO0);					//配置为SIO模式	
+#endif
 	
 	//SIO RX 参数配置
 	tHdqRxCfg.byDebPerLen 	= 3;					//接收滤波周期	
@@ -529,10 +544,11 @@ int sio_hdq_send_recv_demo(void)
 	
 	uint32_t wSendBuf[2];		
 	uint8_t byHdqData[2] = {0x68, 0x55};
-	
 	uint32_t wHdqRx1Buf[2] ={0,0};
 	
+#if !defined(USE_GUI)								//用户未选择图形化编程	
 	csi_pin_set_mux(PB0, PB0_SIO0);					//配置为SIO模式	
+#endif
 	
 	//SIO RX 参数配置
 	tHdqRxCfg.byDebPerLen 	= 3;					//接收滤波周期	
@@ -626,7 +642,9 @@ int sio_hdq_recv_rdcmd_demo(void)
 	uint32_t wTxData = 0;
 	uint32_t wRxBuf[2] = {0,0};
 	
+#if !defined(USE_GUI)							//用户未选择图形化编程	
 	csi_pin_set_mux(PB0, PB0_SIO0);				//配置为SIO模式	
+#endif
 	
 	//SIO TX 参数配置
 	tHdqTxCfg.byD0Len 		= 5;				//D0 对象序列长度(bit个数)，5个， break: 		__							

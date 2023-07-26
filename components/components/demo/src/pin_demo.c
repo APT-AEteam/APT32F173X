@@ -29,7 +29,8 @@
 int pin_output_demo(void)
 {
 	int iRet = 0;
-	
+
+#if !defined(USE_GUI)							//用户未选择图形化编程	
 	csi_pin_set_mux(PB0,PB0_OUTPUT);			//PB00 配置为输出
 	csi_pin_set_high(PB0);						//PB00 输出高
 	mdelay(100);								//延时100ms
@@ -53,7 +54,8 @@ int pin_output_demo(void)
 	mdelay(100);
 	csi_pin_set_high(PB0);						
 	mdelay(100);
-	
+#endif	
+
 	return iRet;
 }
 
@@ -66,6 +68,7 @@ int pin_input_demo(void)
 {
 	int iRet = 0;
 	
+#if !defined(USE_GUI)							//用户未选择图形化编程	
 	uint32_t wStatus;
 	
 	csi_pin_set_mux(PA8,PA8_INPUT);				//PA08 配置为输入
@@ -83,6 +86,7 @@ int pin_input_demo(void)
 	mdelay(100);
 	wStatus = csi_pin_read(PA8);
 	while(wStatus != 0);
+#endif
 	
 	return iRet;
 }
@@ -96,11 +100,13 @@ int pin_irq_demo(void)
 {
 	int iRet = 0;
 	
+#if !defined(USE_GUI)											//用户未选择图形化编程	
 	csi_pin_set_mux(PA9, PA9_INPUT);							//PA9 配置为输入
 	csi_pin_pull_mode(PA9, GPIO_PULLUP);						//PA9 上拉
 	csi_pin_irq_enable(PA9, ENABLE);							//PA9 中断使能	
 	csi_pin_irq_mode(PA9, EXI_GRP16, GPIO_IRQ_FALLING_EDGE);	//PA9 下降沿产生中断,选择中断组16
 	csi_pin_vic_irq_enable(EXI_GRP16, ENABLE);					//PA9 VIC中断使能，选择中断组16
-	
+#endif
+
 	return iRet;
 }
