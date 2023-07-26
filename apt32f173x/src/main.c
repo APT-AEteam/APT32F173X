@@ -28,6 +28,7 @@ extern void user_demo(void);
 
 int main()
 {
+	
 #if !defined(USE_GUI)
 	//不使用图形化编程需调用system_init函数
     system_init();							//系统时钟、TICK等配置	
@@ -37,11 +38,12 @@ int main()
 	//图形化编程支持SYSTEM(包括系统时钟、LVD/R、IWDT、TICK等)、I/O PORT和EXI
 	//使用图形化编程请务必配置System Clk，否则系统的时钟默认选择IM_5.556M
 	__ChipInitHandler();
-	
 #endif	
+
 	board_init();	
-	my_printf("Hello World~~~~~~~\n");		//print message
 	user_demo();							//demo
+
+	my_printf("Hello World~~~~~~~\n");		//print message
 
 	while(1)
 	{	
