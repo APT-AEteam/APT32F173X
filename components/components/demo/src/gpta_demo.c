@@ -60,7 +60,6 @@ int gpta_capture_sync_demo0(void)
 	int iRet = 0;
     volatile uint8_t ch;
 
-
 	csi_pin_set_mux(PA1,PA1_INPUT);		
 	csi_pin_pull_mode(PA1, GPIO_PULLUP);						 //PA1 上拉
 	csi_pin_irq_mode(PA1, EXI_GRP16, GPIO_IRQ_FALLING_EDGE);     //PA1 下降沿产生中断，选择中断组16
@@ -129,7 +128,6 @@ int gpta_capture_sync_demo1(void)
 {
 	int iRet = 0;	
     volatile uint8_t ch;
-
 
 	csi_pin_set_mux(PA1,PA1_INPUT);		
 	csi_pin_pull_mode(PA1, GPIO_PULLUP);						//PA1 上拉
@@ -290,8 +288,10 @@ int gpta_pwm_demo(void)
 {
 	int iRet = 0;	
 //------------------------------------------------------------------------------------------------------------------------	
+#if !defined(USE_GUI)
 	csi_pin_set_mux(PA0, PA0_GPTA0_CHA);						//
 	csi_pin_set_mux(PA1, PA1_GPTA0_CHB);						//
+#endif
 //------------------------------------------------------------------------------------------------------------------------	
 	csi_gpta_pwmconfig_t tPwmCfg;								  
 	tPwmCfg.byWorkmod        = GPTA_WAVE;                        //WAVE  波形模式
@@ -347,9 +347,10 @@ int gpta_pwm_waveform_demo(void)
 {
 	int iRet = 0;	
 //------------------------------------------------------------------------------------------------------------------------	
+#if !defined(USE_GUI)
 	csi_pin_set_mux(PA0, PA0_GPTA0_CHA);						//
 	csi_pin_set_mux(PA1, PA1_GPTA0_CHB);						//
-	
+#endif	
 //------------------------------------------------------------------------------------------------------------------------	
 	csi_gpta_pwmconfig_t tPwmCfg;								  
 	tPwmCfg.byWorkmod        = GPTA_WAVE;                        //WAVE  波形模式
@@ -415,9 +416,10 @@ int gpta_reglk_demo(void)
 {
 	int iRet = 0;	
 //------------------------------------------------------------------------------------------------------------------------	
+#if !defined(USE_GUI)	
 	csi_pin_set_mux(PA0, PA0_GPTA0_CHA);						//
 	csi_pin_set_mux(PA1, PA1_GPTA0_CHB);						//
-	
+#endif	
 //------------------------------------------------------------------------------------------------------------------------	
     csi_gpta_channel_cmpload_config(GPTA0, GPTA_SHDW_SHADOW, GPTA_LDMD_ZRO ,GPTA_COMPA);
 	csi_gpta_channel_cmpload_config(GPTA0, GPTA_SHDW_SHADOW, GPTA_LDMD_ZRO ,GPTA_COMPB);
