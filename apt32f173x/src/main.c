@@ -19,6 +19,8 @@
 /* externs function--------------------------------------------------------*/
 extern void system_init(void);
 extern void board_init(void);
+
+extern void __ChipInitHandler(void);		//gui
 extern void user_demo(void);
 
 /* externs variablesr------------------------------------------------------*/
@@ -26,18 +28,24 @@ extern void user_demo(void);
 
 int main()
 {
-    system_init();
-	board_init();	
-	csi_pin_set_mux(PA6, PA6_OUTPUT);		//PA6 output
-	csi_pin_set_high(PA6);					//PA6 output high;
+#if !defined(USE_GUI)
+	//不使用图形化编程需调用system_init函数
+    system_init();							//系统时钟、TICK等配置	
+						
+#else
+	//使用图形化编程，用户需要在工程设置里Compiler的Define选项里面添加USE_GUI的编译开关
+	//图形化编程支持SYSTEM(包括系统时钟、LVD/R、IWDT、TICK等)、I/O PORT和EXI
+	//使用图形化编程请务必配置System Clk，否则系统的时钟默认选择IM_5.556M
+	__ChipInitHandler();
 	
+#endif	
+	board_init();	
 	my_printf("Hello World~~~~~~~\n");		//print message
 	user_demo();							//demo
 
 	while(1)
 	{	
 		mdelay(100);
-		csi_pin_toggle(PA6);				//PA6 toggle
 	}
 	
     return 0;
