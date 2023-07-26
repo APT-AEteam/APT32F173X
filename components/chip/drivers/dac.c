@@ -34,14 +34,11 @@ void csi_dac_init(csp_dac_t *ptDacBase, csi_dac_config_t *ptDacCfg)
 	
 	if(ptDacCfg->byBufsel == ENABLE)
 	{	
-	csi_pin_set_mux(PA4,PA4_DAC0_OUT);	
 	csp_dac_buff_enable(DAC0,1);
 	}
 	if(ptDacCfg->byBufsel == DISABLE)
 	{
-		csi_pin_set_mux(PA8,PA8_DAC0_OUT);
-		csi_pin_output_mode(PA8,GPIO_OPEN_DRAIN);
-		csp_dac_buff_enable(DAC0,0);
+	csp_dac_buff_enable(DAC0,0);
 	}
 }
 

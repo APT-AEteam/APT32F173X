@@ -27,7 +27,9 @@
  */
 void fvr_output_demo(void)
 {
+#if !defined(USE_GUI)	
 	csi_pin_set_mux(PB7, PB7_FVROUT);//设置PB7为FVR输出
+#endif	
 	soc_clk_enable(FVR_SYS_CLK);//配置FVR时钟
 	csi_fvr_lvl_set(FVR, LVL_4V);//设置FVR电平为4V
 //	csi_fvr_cmpref_set(FVR,FVR_CMPREF_FVR);//设置CMP参考电平为FVR
@@ -43,8 +45,10 @@ void fvr_output_demo(void)
 void fvr_buf_demo(void)
 {
 	soc_clk_enable(FVR_SYS_CLK);//配置FVR时钟
+#if !defined(USE_GUI)
 	csi_pin_set_mux(PD4, PD4_INPUT);//设置BUF输入管脚PD4
 	csi_pin_set_mux(PB8, PB8_BUF);//设置BUF输出管脚PB8
+#endif
 	csi_fvr_buf_init(FVR,BUFLVL_INPUT);//设置buf的输入源
 	csi_fvr_start(FVR);		
 }

@@ -31,7 +31,7 @@
 void opa_internal_gain_mode_demo(void)
 {
 	csi_opa_config_t tOpaConfig;
-	
+#if !defined(USE_GUI)	
 	csi_pin_set_mux(PA0,PA0_OPA0P); //PIN14 输入正端
 	csi_pin_set_mux(PA1,PA1_OPA0N); //PIN15 输入负端
 	csi_pin_set_mux(PA2,PA2_OPA0X); //PIN16 输出
@@ -44,7 +44,7 @@ void opa_internal_gain_mode_demo(void)
 	csi_pin_set_mux(PA3,PA3_OPA3P); //PIN17 输入正端
 	csi_pin_set_mux(PA4,PA4_OPA3N); //PIN20 输入负端
 	csi_pin_set_mux(PA5,PA5_OPA3X); //PIN21 输出
-	
+#endif	
 	//OPA 参数配置
 	tOpaConfig.byMode = OPA_INTERNAL_MODE;//内部增益模式
 	tOpaConfig.byInternalGain = OPA_PGAC_X2;//两倍增益
@@ -78,7 +78,7 @@ void opa_external_gain_mode_demo(void)
 {
 	csi_opa_config_t tOpaConfig;
 	
-
+#if !defined(USE_GUI)	
 	csi_pin_set_mux(PA0,PA0_OPA0P); //PIN14 输入正端
 	csi_pin_set_mux(PA1,PA1_OPA0N); //PIN15 输入负端
 	csi_pin_set_mux(PA2,PA2_OPA0X); //PIN16 输出
@@ -91,6 +91,7 @@ void opa_external_gain_mode_demo(void)
 	csi_pin_set_mux(PA3,PA3_OPA3P); //PIN17 输入正端
 	csi_pin_set_mux(PA4,PA4_OPA3N); //PIN20 输入负端
 	csi_pin_set_mux(PA5,PA5_OPA3X); //PIN21 输出
+#endif	
 	//OPA 参数配置
 	tOpaConfig.byMode = OPA_EXTERNAL_MODE;
 	tOpaConfig.byOpaNegativeInput = DISABLE;

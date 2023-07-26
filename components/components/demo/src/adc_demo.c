@@ -61,12 +61,12 @@ int adc_samp_oneshot_demo(void)
 	int iRet = 0;
 	uint8_t i;
 	csi_adc_config_t tAdcConfig;
-	
+#if !defined(USE_GUI)	
 	//adc 输入管脚配置
 	csi_pin_set_mux(PC13, PC13_ADC_INA0);				//ADC GPIO作为输入通道
 //	csi_pin_set_mux(PA010, PA010_ADC_AIN11);
 //	csi_pin_set_mux(PA011, PA011_ADC_AIN12);
-	
+#endif		
 	//adc 参数配置初始化
 	tAdcConfig.byClkDiv = 0x02;							//ADC clk两分频：clk = pclk/2
 	tAdcConfig.byClksel = ADC_PCLK;						//ADC clk选择：PCLK
@@ -133,11 +133,12 @@ int adc_samp_continuous_demo(void)
 	
 	csi_adc_config_t tAdcConfig;
 	
+#if !defined(USE_GUI)	
 	//adc 输入管脚配置
 	csi_pin_set_mux(PC13, PC13_ADC_INA0);				//ADC GPIO作为输入通道
 //	csi_pin_set_mux(PA010, PA010_ADC_AIN11);
 //	csi_pin_set_mux(PA011, PA011_ADC_AIN12);
-	
+#endif	
 	//adc 参数配置初始化
 	tAdcConfig.byClkDiv = 0x02;							//ADC clk两分频：clk = pclk/2
 	tAdcConfig.byClksel = ADC_PCLK;						//ADC clk选择：PCLK
@@ -297,11 +298,12 @@ int adc_samp_oneshot_int_demo(void)
 	int iRet = 0;
 	uint8_t i;
 	csi_adc_config_t tAdcConfig;
+#if !defined(USE_GUI)	
 	//adc 输入管脚配置
 	csi_pin_set_mux(PC13, PC13_ADC_INA0);				//ADC GPIO作为输入通道
-//	csi_pin_set_mux(PC14,  PC14_ADC_INA1);
-//	csi_pin_set_mux(PC15,  PC15_ADC_INA2);
-//	csi_pin_set_mux(PD0,   PD0_ADC_INA3);
+//	csi_pin_set_mux(PA010, PA010_ADC_AIN11);
+//	csi_pin_set_mux(PA011, PA011_ADC_AIN12);
+#endif	
 	//adc 参数配置初始化
 	tAdcConfig.byClkDiv = 48;									//ADC clk两分频：clk = pclk/2
 	tAdcConfig.byClksel = ADC_PCLK;								//ADC clk选择：PCLK
@@ -365,11 +367,12 @@ int adc_samp_continuous_int_demo(void)
 	uint8_t i;
 	csi_adc_config_t tAdcConfig;
 	
+#if !defined(USE_GUI)	
 	//adc 输入管脚配置
 	csi_pin_set_mux(PC13, PC13_ADC_INA0);				//ADC GPIO作为输入通道
 //	csi_pin_set_mux(PA010, PA010_ADC_AIN11);
 //	csi_pin_set_mux(PA011, PA011_ADC_AIN12);
-	
+#endif	
 	//adc 参数配置初始化
 	tAdcConfig.byClkDiv = 8;									//ADC clk两分频：clk = pclk/2
 	tAdcConfig.byClksel = ADC_PCLK;								//ADC clk选择：PCLK

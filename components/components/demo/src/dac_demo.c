@@ -28,7 +28,13 @@
 void dac_demo(void)	
 {
 	csi_dac_config_t tDacConfig;
-
+	
+#if !defined(USE_GUI)	
+	//dac 输入管脚配置
+	csi_pin_set_mux(PA4,PA4_DAC0_OUT);	
+	csi_pin_set_mux(PA8,PA8_DAC0_OUT);
+	csi_pin_output_mode(PA8,GPIO_OPEN_DRAIN);
+#endif	
 	//dac 参数配置初始化
 	tDacConfig.byClkDiv 	= 0x02;				//DAC clk两分频：FCK = FHCLK / 2
 	tDacConfig.byRefsel	 	= DISABLE;			//DAC 参考电平选择
