@@ -76,7 +76,6 @@ int adc_samp_oneshot_demo(void)
 	tAdcConfig.wInt = ADC_INTSRC_NONE;				//ADC 中断配置： 无中断
 	tAdcConfig.ptSeqCfg = (csi_adc_seq_t *)tSeqCfg;		//ADC 采样序列： 具体参考结构体变量 tSeqCfg
 	
-	csi_adc_set_clk(ADC0,tAdcConfig.byClksel);		//配置ADC采样序列
 	csi_adc_init(ADC0, &tAdcConfig);							//初始化ADC参数配置	
 	csi_adc_set_seqx(ADC0, tAdcConfig.ptSeqCfg, byChnlNum);		//配置ADC采样序列
 	csi_adc_set_buffer((uint16_t *)g_hwAdcBuf, 1);				//传递ADC采样buffer，ADC采样值存放于此buffer中
