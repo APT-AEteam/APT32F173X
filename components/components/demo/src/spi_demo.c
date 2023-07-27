@@ -35,12 +35,14 @@ int spi_master_send_demo(void)
 	int iRet = 0;
 	uint8_t byData[8] = {1,2,3,4,5,6,7,8};
 	csi_spi_config_t tSpiConfig;  //spi初始化参数配置结构体
-
+	
+#if !defined(USE_GUI)
 	//端口配置
 	csi_pin_set_mux(PB12,PB12_SPI0_NSS);
 	csi_pin_set_mux(PB13,PB13_SPI0_SCK);
 	csi_pin_set_mux(PB14,PB14_SPI0_MISO);
 	csi_pin_set_mux(PB15,PB15_SPI0_MOSI);
+#endif
 	
 	tSpiConfig.bySpiMode 			= SPI_MASTER;				//作为主机
 	tSpiConfig.bySpiPolarityPhase 	= SPI_FORMAT_CPOL0_CPHA0; 	//clk空闲电平为0，相位为在第一个边沿采集数据
@@ -68,12 +70,14 @@ int spi_master_send_demo(void)
 	int iRet = 0;
 	uint8_t bySendData[8] = {1,2,3,4,5,6,7,8};
 	csi_spi_config_t tSpiConfig;  //spi初始化参数配置结构体
-	
+
+#if !defined(USE_GUI)	
 	//端口配置
 	csi_pin_set_mux(PB12,PB12_SPI0_NSS);
 	csi_pin_set_mux(PB13,PB13_SPI0_SCK);
 	csi_pin_set_mux(PB14,PB14_SPI0_MISO);
 	csi_pin_set_mux(PB15,PB15_SPI0_MOSI);
+#endif
 	
 	tSpiConfig.bySpiMode 			= SPI_MASTER;				//作为主机
 	tSpiConfig.bySpiPolarityPhase 	= SPI_FORMAT_CPOL0_CPHA0; 	//clk空闲电平为0，相位为在第一个边沿采集数据
@@ -102,13 +106,15 @@ int spi_master_send_receive_demo(void)
 	int iRet = 0;
 	uint8_t bySendData[16] = {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16};
 	uint8_t byRecvData[16] = {0};
-	
+
+#if !defined(USE_GUI)	
 	//端口配置
 	csi_pin_set_mux(PB12,PB12_SPI0_NSS);
 	csi_pin_set_mux(PB13,PB13_SPI0_SCK);
 	csi_pin_set_mux(PB14,PB14_SPI0_MISO);
 	csi_pin_set_mux(PB15,PB15_SPI0_MOSI);
-	
+#endif
+
 	csi_spi_config_t tSpiConfig;  //spi初始化参数配置结构体
 	tSpiConfig.bySpiMode 			= SPI_MASTER;				//作为主机
 	tSpiConfig.bySpiPolarityPhase 	= SPI_FORMAT_CPOL0_CPHA0; 	//clk空闲电平为0，相位为在第一个边沿采集数据
@@ -137,12 +143,14 @@ int spi_slave_receive_int_demo(void)
 	uint8_t byRecvData[16] = {};
 	uint8_t byIndex = 0;
 	csi_spi_config_t tSpiConfig;  //spi初始化参数配置结构体
-	
+
+#if !defined(USE_GUI)
 	//端口配置
 	csi_pin_set_mux(PB12,PB12_SPI0_NSS);
 	csi_pin_set_mux(PB13,PB13_SPI0_SCK);
 	csi_pin_set_mux(PB14,PB14_SPI0_MISO);
 	csi_pin_set_mux(PB15,PB15_SPI0_MOSI);
+#endif
 	
 	tSpiConfig.bySpiMode 			= SPI_SLAVE;				//作为从机	
 	tSpiConfig.bySpiPolarityPhase 	= SPI_FORMAT_CPOL0_CPHA1; 	//clk空闲电平为0，相位为在第二个边沿采集数据
@@ -175,12 +183,14 @@ int spi_slave_send_receive_demo(void)//从机同步发，同步收
 	int iRet = 0;
 	uint8_t byReceData;
 	csi_spi_config_t tSpiConfig;  //spi初始化参数配置结构体
-	
+
+#if !defined(USE_GUI)	
 	//端口配置
 	csi_pin_set_mux(PB12,PB12_SPI0_NSS);
 	csi_pin_set_mux(PB13,PB13_SPI0_SCK);
 	csi_pin_set_mux(PB14,PB14_SPI0_MISO);
 	csi_pin_set_mux(PB15,PB15_SPI0_MOSI);
+#endif
 	
 	tSpiConfig.bySpiMode 			= SPI_SLAVE;				//作为从机
 	tSpiConfig.bySpiPolarityPhase 	= SPI_FORMAT_CPOL0_CPHA0; 	//clk空闲电平为0，相位为在第一个边沿采集数据
@@ -238,12 +248,14 @@ int spi_etcb_dma_send_demo(void)
 	tEtbConfig.byTrgMode = ETB_HARDWARE_TRG;		//通道触发模式采样硬件触发
 	csi_etb_init();									//使能ETB模块
 	csi_etb_ch_config(ETB_CH20, &tEtbConfig);		//初始化ETB，DMA ETB CHANNEL > ETB_CH19_ID
-	
+
+#if !defined(USE_GUI)	
 	//SPI端口配置	
 	csi_pin_set_mux(PB12,PB12_SPI0_NSS);						    
 	csi_pin_set_mux(PB13,PB13_SPI0_SCK);
 	csi_pin_set_mux(PB14,PB14_SPI0_MISO);
 	csi_pin_set_mux(PB15,PB15_SPI0_MOSI);
+#endif
 	
 	//SPI para config
 	csi_spi_config_t tSpiConfig; //spi初始化参数配置结构体
@@ -336,13 +348,17 @@ int spi_etcb_dma_send_receive_demo(void)
 	csi_etb_ch_config(ETB_CH21, &tEtbConfigRecv);			//初始化ETB，DMA ETB CHANNEL 大于 ETB_CH19_ID
 	
 	//SPI端口配置		
-	csi_pin_set_mux(SPI_NSS_PIN, PIN_OUTPUT);                       //gpio_port as output
-	csi_pin_output_mode(SPI_NSS_PIN, GPIO_PUSH_PULL);                //push pull mode
-	csi_spi_nss_high(SPI_NSS_PIN);						    
+//	csi_pin_set_mux(SPI_NSS_PIN, PIN_OUTPUT);                       //gpio_port as output
+//	csi_pin_output_mode(SPI_NSS_PIN, GPIO_PUSH_PULL);                //push pull mode
+//	csi_spi_nss_high(SPI_NSS_PIN);		
+	
+#if !defined(USE_GUI)
+	csi_pin_set_mux(PB12,PB12_SPI0_NSS);			    
 	csi_pin_set_mux(PB13,PB13_SPI0_SCK);
 	csi_pin_set_mux(PB14,PB14_SPI0_MISO);
 	csi_pin_set_mux(PB15,PB15_SPI0_MOSI);
-	
+#endif
+
 	//spi para config
 	csi_spi_config_t tSpiConfig;//spi初始化参数配置结构体
 	tSpiConfig.bySpiMode 			= SPI_MASTER;				//作为主机
@@ -352,23 +368,23 @@ int spi_etcb_dma_send_receive_demo(void)
 	tSpiConfig.byInt 				= (uint8_t)SPI_INTSRC_NONE; //初始配置无中断	  
 	csi_spi_init(SPI0,&tSpiConfig);						//初始化并启动spi
 
-	csi_spi_nss_low(SPI_NSS_PIN);
+//	csi_spi_nss_low(SPI_NSS_PIN);
 	csi_spi_recv_dma(SPI0, (void *)byDesBuf, sizeof(byDesBuf), DMA0, 1);
 	csi_spi_send_dma(SPI0, (void *)bySrcBuf, sizeof(bySrcBuf), DMA0, 0);
 	while(csp_dma_get_curr_htc(ptDmaChBaseCh0));		//等待直到dma发送完成
 	while(csp_dma_get_curr_htc(ptDmaChBaseCh1));		//等待直到dma接收完成
 	while( (SPI0->SR & SPI_BSY) );						//等到spi传输完成
-	csi_spi_nss_high(SPI_NSS_PIN);
+//	csi_spi_nss_high(SPI_NSS_PIN);
 
 	while(1)
 	{
-		csi_spi_nss_low(SPI_NSS_PIN);
+//		csi_spi_nss_low(SPI_NSS_PIN);
 		csi_spi_recv_dma(SPI0, (void *)byDesBuf, sizeof(byDesBuf), DMA0, 1);
 		csi_spi_send_dma(SPI0, (void *)bySrcBuf, sizeof(bySrcBuf), DMA0, 0);
 		while(csp_dma_get_curr_htc(ptDmaChBaseCh0));		//等待直到dma发送完成
 		while(csp_dma_get_curr_htc(ptDmaChBaseCh1));		//等待直到dma接收完成
 		while( (SPI0->SR & SPI_BSY) );						//等到spi传输完成
-		csi_spi_nss_high(SPI_NSS_PIN);
+//		csi_spi_nss_high(SPI_NSS_PIN);
 		mdelay(10);
 	}
 	return iRet;

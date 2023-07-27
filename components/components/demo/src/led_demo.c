@@ -26,6 +26,7 @@ uint8_t g_byLedData[4] = {0x06,0x5b,0x4f,0x66};//display code of 1,2,3,4
 
 void io_config(void)
 {
+#if !defined(USE_GUI)
 	//SEG0~SEG7
 	csi_pin_set_mux(PD0, PD0_LED_S0);
 	csi_pin_set_mux(PD1, PD1_LED_S1);
@@ -49,9 +50,12 @@ void io_config(void)
 	csi_pin_set_mux(PC11, PC11_LED_C7);
 	csi_pin_set_mux(PC12, PC12_LED_C8);
 	csi_pin_set_mux(PD2,  PD2_LED_C9);
+#endif
 	
 //	mdelay(3000);
 //	csi_swd_unlock();//如果要使用SWD口(PA13/PA14)，前面一定要加delay函数，否则复位后将很难连上芯片。
+
+#if !defined(USE_GUI)
 //	csi_pin_set_mux(PA11, PA11_LED_C6);
 //	csi_pin_set_mux(PA12, PA12_LED_C7);
 //	csi_pin_set_mux(PA13, PA13_LED_C8);
@@ -62,6 +66,7 @@ void io_config(void)
 	csi_pin_drive(PB4, GPIO_DRIVE_STRONG);
 	csi_pin_drive(PB6, GPIO_DRIVE_STRONG);
 	csi_pin_drive(PB7, GPIO_DRIVE_STRONG);
+#endif
 }
 
 /**
