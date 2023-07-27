@@ -36,7 +36,7 @@ void iic_master_eeprom_demo(void)
 	volatile uint8_t data[9] = {1,2,3,4,5,6,7,8,9};
 	volatile uint8_t data1[9] = {0};
 	
-#if !defined (USEGUI)
+#if !defined (USE_GUI)
 	csi_pin_output_mode(PC4,GPIO_OPEN_DRAIN);
 	csi_pin_output_mode(PA14,GPIO_OPEN_DRAIN);
 	csi_pin_pull_mode(PC4, GPIO_PULLUP);
@@ -74,7 +74,7 @@ void iic_master_demo(void)
 	
 	volatile uint8_t data1[19] = {4,4,4,4,4,4,4,4,4};
 
-#if !defined (USEGUI)
+#if !defined (USE_GUI)
 	csi_pin_output_mode(PC4,GPIO_OPEN_DRAIN);
 	csi_pin_output_mode(PC5,GPIO_OPEN_DRAIN);
 	csi_pin_pull_mode(PC4, GPIO_PULLUP);
@@ -119,7 +119,7 @@ void iic_master_demo(void)
  */
 void iic_slave_demo(void)
 {
-#if !defined (USEGUI)
+#if !defined (USE_GUI)
 	csi_pin_output_mode(PC4,GPIO_OPEN_DRAIN);
 	csi_pin_output_mode(PC5,GPIO_OPEN_DRAIN);
 	csi_pin_pull_mode(PC4, GPIO_PULLUP);
@@ -158,7 +158,7 @@ void iic_slave_demo(void)
 
 void iic_multi_slave_address_demo(void)
 {
-#if !defined (USEGUI)	
+#if !defined (USE_GUI)	
 	csi_pin_output_mode(PC4,GPIO_OPEN_DRAIN);
 	csi_pin_output_mode(PC5,GPIO_OPEN_DRAIN);
 	csi_pin_set_mux(PC4,PC4_I2C_SCL);//PIN2 ->	I2C_SCL
@@ -200,7 +200,7 @@ void iic_multi_slave_address_demo(void)
 	
 	csi_dma_ch_config_t tDmaConfig;    
 	csi_etb_config_t  tEtbConfig;
-#if !defined (USEGUI)	
+#if !defined (USE_GUI)	
 	csi_pin_output_mode(PC4,GPIO_OPEN_DRAIN);
 	csi_pin_output_mode(PC5,GPIO_OPEN_DRAIN);
 	csi_pin_set_mux(PC4,PC4_I2C_SCL);//PIN2 ->	I2C_SCL
@@ -266,7 +266,7 @@ void iic_multi_slave_address_demo(void)
 	
 	csi_dma_ch_config_t tDmaConfig;    
 	csi_etb_config_t  tEtbConfig;
-#if !defined (USEGUI)	
+#if !defined (USE_GUI)	
 	csi_pin_output_mode(PC4,GPIO_OPEN_DRAIN);
 	csi_pin_output_mode(PC5,GPIO_OPEN_DRAIN);
 	csi_pin_set_mux(PC4,PC4_I2C_SCL);   //PIN4 ->	I2C_SCL

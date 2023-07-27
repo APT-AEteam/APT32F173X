@@ -28,7 +28,7 @@
 int lpt_timer_demo(void)
 {
 	int iRet = 0;
-#if !defined (USEGUI) 	
+#if !defined (USE_GUI) 	
 	csi_pin_set_mux(PC0, PC0_LPT_IN);	                           //将PC0设为LPT_IN
 #endif
 	csi_lpt_timer_init(LPT,LPT_CLK_IN_RISE,200);       //初始化lpt,选用内部超低功耗时钟,定时200ms,默认采用PEND中断
@@ -47,7 +47,7 @@ int lpt_pwm_demo(void)
 	int iRet = 0;
 	
 	csi_lpt_pwm_config_t tLptPwmCfg;  	
-#if !defined (USEGUI) 	
+#if !defined (USE_GUI) 	
 	csi_pin_set_mux(PB6, PB6_LPT_OUT);	                           //将PB6设为LPT_OUT
 #endif
 	tLptPwmCfg.byClksrc = LPT_CLK_PCLK_DIV4;                          //PWM 时钟选择
@@ -75,7 +75,7 @@ int lpt_sync_trg_start_demo(void)
 	int iRet = 0;
 	volatile uint8_t ch;
 	csi_etb_config_t tEtbConfig;				               			//ETB 参数配置结构体
-#if !defined (USEGUI)
+#if !defined (USE_GUI)
 	csi_pin_set_mux(PB0, PB0_INPUT);									//PB0 配置为输入
 	csi_pin_pull_mode(PB0, GPIO_PULLUP);								//PB0 上拉
 	csi_pin_irq_mode(PB0, EXI_GRP0, GPIO_IRQ_FALLING_EDGE);			//PB0 下降沿产生中断，选择中断组16
@@ -188,7 +188,9 @@ int lpt_soft_trg_out_demo(void)
 int lpt_filter_demo(void)
 {
 	int iRet = 0;
+#if !defined (USE_GUI)
 	csi_pin_set_mux(PA5, PA5_LPT_IN);                              //将PB5设为LPT_IN
+#endif
 	csi_lpt_timer_init(LPT,LPT_CLK_IN_FALL,1);       //初始化lpt,选用内部超低功耗时钟,默认采用PEND中断
 	csp_lpt_flt_init(LPT);    // CR[FLTIPSCLD]=1,数字滤波器计数器初始化，计数器值被初始化为CEDR[FLTCKPRS]中的设置值
 	csp_lpt_set_filter(LPT, 3, LPT_FLTDEB_02);     // CEDR[FLTCKPRS]=3、CR[FLTDEB] =LPT_FLTDEB_02
@@ -209,10 +211,10 @@ int lpt_window_demo(void)
 	volatile uint8_t ch;
 	csi_etb_config_t tEtbConfig;				                //ETB 参数配置结构体	
 	csi_lpt_pwm_config_t tLptPwmCfg;  	
-
+#if !defined (USE_GUI)
 	csi_pin_set_mux(PA5,PA5_OUTPUT);	
 	csi_pin_set_mux(PA2,PA2_OUTPUT);	
-
+#endif
 	csi_bt_timer_init(BT0, 1000);	//初始化BT0, 定时2000us； BT定时，默认采用PEND中断
 	csi_bt_start(BT0);					//启动定时器  
 	csi_bt_set_evtrg(BT0, 0, BT_TRGSRC_PEND);   
