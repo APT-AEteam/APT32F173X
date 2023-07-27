@@ -34,10 +34,12 @@ int cnta_timer_demo(void)
 {	
 	int iRet = 0;
 	csi_cnta_timer_config_t tTimerCfg;
-	
+
+#if !defined(USE_GUI)		
 	csi_pin_set_mux(PA10, PA10_OUTPUT);         //配置输出
 	csi_pin_output_mode(PA10,GPIO_PUSH_PULL);   //推挽
 	csi_pin_set_high(PA10);					    //初始为高，在cnta的中断中翻转
+#endif
 	
 	tTimerCfg.eClkDiv = CNTA_CK_DIV8;
 	tTimerCfg.wTime = 1000;                     //1000us,if cnta clk is 3M,the timeout for timer((0.333us * 1) ->(0.333us * 65535): 0.3333us -> 21.845ms)
@@ -69,9 +71,11 @@ int cnta_pwm_demo(void)
 	tPwmCfg.byInt   = CNTA_NONE_INT;    //无中断源
 	
 	//cnta作为pwm输出口
+#if !defined(USE_GUI)	
 	csi_pin_set_mux(PA10,PA10_CNTA_BUZ);//set counter output pin	
 	//csi_pin_set_mux(PD3,PD3_CNTA_BUZ);//set counter output pin	
 	//csi_pin_set_mux(PD5,PD5_CNTA_BUZ);//set counter output pin
+#endif
 	
 	csi_cnta_pwm_init(CA0,&tPwmCfg);    //初始化CountA  
 	csi_cnta_start(CA0);  //启动CountA
@@ -93,7 +97,10 @@ int cnta_envelope_demo(void)
 	csi_bt_pwm_config_t tBTPwmCfg;							//BT PWM输出参数初始化配置结构体
 	
 	//BT0 初始化
+#if !defined(USE_GUI)	
 	csi_pin_set_mux(PA0,  PA0_BT0_OUT);					    //PA0  作为BT0 PWM输出引脚
+#endif
+
 	//init timer pwm para config
 	tBTPwmCfg.byIdleLevel = BT_PWM_IDLE_HIGH;				//PWM 输出空闲电平
 	tBTPwmCfg.byStartLevel= BT_PWM_START_HIGH;				//PWM 输出起始电平
@@ -112,10 +119,13 @@ int cnta_envelope_demo(void)
 	tPwmCfg.byDutyCycle  = 60;             //占空比
 	tPwmCfg.wFreq        = 380000;         //频率(hz)
 	tPwmCfg.byInt        = CNTA_NONE_INT;  //无中断源
-	
+
+#if !defined(USE_GUI)		
 	csi_pin_set_mux(PA10,PA10_CNTA_BUZ);//set counter output pin	
 	//csi_pin_set_mux(PD3,PD3_CNTA_BUZ);//set counter output pin	
 	//csi_pin_set_mux(PD5,PD5_CNTA_BUZ);//set counter output pin
+#endif
+
 	csi_cnta_pwm_init(CA0,&tPwmCfg);
 
 //	csi_cnta_bt0_sync(CA0, PEND_CARRIERON_CLR, MATCH_CARRIERON_SET,CNTA_HW_TCPEND);//BT脉冲匹配中断发生时，CARRIERON位会被硬件自动置位

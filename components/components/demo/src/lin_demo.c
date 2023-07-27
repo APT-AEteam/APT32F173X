@@ -36,11 +36,11 @@ int lin_send_test(void)
 	uint8_t bySdBuf[8] = {0x45,0x46,3,4,5,6,7,8};
 	csi_lin_config_t tLinCfg;							//lin 初始化参数配置结构体
 
+#if !defined(USE_GUI)	
 	csi_pin_set_mux(PB10, PB10_USART0_TX);				//USART0 TX管脚配置	
 	csi_pin_set_mux(PB11, PB11_USART0_RX);				//USART0 RX管脚配置
 	csi_pin_pull_mode(PB11,GPIO_PULLUP);				//RX管脚上拉使能, 建议配置
 	
-
 //	csi_pin_set_mux(PA9, PA9_USART0_TX);				//USART0 TX管脚配置	
 //	csi_pin_set_mux(PA10, PA10_USART0_RX);				//USART0 RX管脚配置
 //	csi_pin_pull_mode(PA10,GPIO_PULLUP);				//RX管脚上拉使能, 建议配置
@@ -48,6 +48,7 @@ int lin_send_test(void)
 //	csi_pin_set_mux(PC10, PC10_USART0_TX);				//USART0 TX管脚配置	
 //	csi_pin_set_mux(PC11, PC11_USART0_RX);				//USART0 RX管脚配置
 //	csi_pin_pull_mode(PC11,GPIO_PULLUP);				//RX管脚上拉使能, 建议配置
+#endif
 	
 	tLinCfg.byClkSrc	= LIN_CLKSRC_DIV8;				//时钟源clk = pclk
 	tLinCfg.byLinVer	= LIN_VER1_2;					//LIN总线版本 支持lin1.2/lin2.0
@@ -106,7 +107,7 @@ int lin_send_recv_test(void)
 	
 	csi_lin_config_t tLinCfg;							//lin 初始化参数配置结构体
 	
-	
+#if !defined(USE_GUI)		
 	csi_pin_set_mux(PB10, PB10_USART0_TX);				//USART0 TX管脚配置	
 	csi_pin_set_mux(PB11, PB11_USART0_RX);				//USART0 RX管脚配置
 	csi_pin_pull_mode(PB11,GPIO_PULLUP);				//RX管脚上拉使能, 建议配置
@@ -118,6 +119,7 @@ int lin_send_recv_test(void)
 //	csi_pin_set_mux(PC10, PC10_USART0_TX);				//USART0 TX管脚配置	
 //	csi_pin_set_mux(PC11, PC11_USART0_RX);				//USART0 RX管脚配置
 //	csi_pin_pull_mode(PC11,GPIO_PULLUP);				//RX管脚上拉使能, 建议配置
+#endif
 	
 	tLinCfg.byClkSrc	= LIN_CLKSRC_DIV1;				//时钟源clk = pclk
 	tLinCfg.byLinVer	= LIN_VER2_0;					//LIN总线版本 支持lin1.2/lin2.0

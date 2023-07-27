@@ -52,10 +52,12 @@ int bt_pwm_demo(void)
 {
 	int iRet = 0;
 	csi_bt_pwm_config_t tPwmCfg;							//BT PWM输出参数初始化配置结构体
-	
+
+#if !defined(USE_GUI)		
 //	csi_pin_set_mux(PA1,  PA1_BT1_OUT);					    //PA1  作为BT1 PWM输出引脚
 //	csi_pin_set_mux(PB14, PB14_BT1_OUT);					//PB14 作为BT1 PWM输出引脚
 	csi_pin_set_mux(PC11, PC11_BT1_OUT);					//PC11 作为BT1 PWM输出引脚
+#endif
 	
 	//init timer pwm para config
 	tPwmCfg.byIdleLevel = BT_PWM_IDLE_HIGH;					//PWM 输出空闲电平
@@ -86,12 +88,14 @@ int bt_sync_trg_start_demo(void)
 	int iRet = 0;
 	volatile uint8_t ch;
 	csi_etb_config_t tEtbConfig;				               			//ETB 参数配置结构体		
-	
+
+#if !defined(USE_GUI)		
 	csi_pin_set_mux(PB1, PB1_INPUT);									//PB1 配置为输入
 	csi_pin_pull_mode(PB1, GPIO_PULLUP);								//PB1 上拉
 	csi_pin_irq_mode(PB1, EXI_GRP1, GPIO_IRQ_FALLING_EDGE);			    //PB1 下降沿产生中断，选择中断组1
 	csi_pin_irq_enable(PB1,ENABLE);										//PB1 中断使能	
 	csi_exi_set_evtrg(1, TRGSRC_EXI1, 0);						        //EXI1 触发EXI_TRGOUT1
+#endif
 	
 //	csi_pin_set_mux(PA6, PA6_OUTPUT);									//PA6 output ，并在BT0中断里面翻转IO
 //	csi_pin_set_high(PA6);												//PA6 output high;		
@@ -140,12 +144,14 @@ int bt_sync_trg_count_demo(void)
 	volatile uint8_t ch;
 	csi_etb_config_t tEtbConfig;				            //ETB 参数配置结构体
 	csi_bt_pwm_config_t tPwmCfg;							//BT PWM输出参数初始化配置结构体
-	
+
+#if !defined(USE_GUI)		
 	csi_pin_set_mux(PB1, PB1_INPUT);						//PB1 配置为输入
 	csi_pin_pull_mode(PB1, GPIO_PULLUP);					//PB1 上拉
 	csi_pin_irq_mode(PB1, EXI_GRP1, GPIO_IRQ_FALLING_EDGE);	//PB1 下降沿产生中断，选择中断组1
 	csi_pin_irq_enable(PB1,ENABLE);				//PB1 中断使能
 	csi_exi_set_evtrg(1, TRGSRC_EXI1, 1);					//EXI1(PB1) 触发EXI_TRGOUT1(PB1用EXI1触发输出)
+#endif
 	
 //	csi_pin_set_mux(PA6, PA6_OUTPUT);		                //PA6 output ，并在BT中断里面翻转IO
 //	csi_pin_set_high(PA6);					                //PA6 output high;		
@@ -197,13 +203,14 @@ int bt_sync_trg_stop_demo(void)
 	int iRet = 0;
 	volatile uint8_t ch;
 	csi_etb_config_t tEtbConfig;				               			//ETB 参数配置结构体		
-	
+
+#if !defined(USE_GUI)		
 	csi_pin_set_mux(PB1, PB1_INPUT);									//PB1 配置为输入
 	csi_pin_pull_mode(PB1, GPIO_PULLUP);								//PB1 上拉
 	csi_pin_irq_mode(PB1, EXI_GRP1, GPIO_IRQ_FALLING_EDGE);			    //PB1 下降沿产生中断，选择中断组1
 	csi_pin_irq_enable(PB1,ENABLE);							            //PB1 中断使能	
 	csi_exi_set_evtrg(1, TRGSRC_EXI1, 0);						        //EXI1 触发EXI_TRGOUT0
-	
+#endif	
 	
 //	csi_pin_set_mux(PA6, PA6_OUTPUT);		//PA6 output ，并在BT中断里面翻转IO
 //	csi_pin_set_high(PA6);					//PA6 output high;		
