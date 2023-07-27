@@ -7,7 +7,9 @@ Version: V1.0.2
 Release Date: 2023.7.19
 
 Release Notes
-完善版本信息
+1、ADC int函数中时钟源选择代码更新
+2、增加GPIO的输入滤波接口函数
+3、ADC IER,IDR,IMR寄存器更新位IMCR,MISR寄存器
 ======================================================
 
 
