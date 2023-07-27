@@ -32,12 +32,12 @@ int etcb_one_trg_one_demo(void)
 	int iRet = 0;
 	volatile uint8_t ch;
 	csi_etb_config_t tEtbConfig;				                //ETB 参数配置结构体		
-	
+	#if !defined(USE_GUI)
 	csi_pin_set_mux(PB0, PB0_INPUT);									//PB0 配置为输入
 	csi_pin_pull_mode(PB0, GPIO_PULLUP);								//PB0 上拉
 	csi_pin_irq_mode(PB0, EXI_GRP0, GPIO_IRQ_FALLING_EDGE);			//PB0 下降沿产生中断，选择中断组16
 	csi_pin_irq_enable(PB0,ENABLE);									//PB0 中断使能
- 
+    #endif
 	csi_exi_set_evtrg(0, TRGSRC_EXI0, 0);						//EXI0(PB00) 触发EXI_TRGOUT0(PB00用EXI0触发输出)
 	
 	csi_bt_start_sync(BT0, 200);
@@ -91,14 +91,14 @@ int etcb_one_trg_more_demo(void)
 	int iRet = 0;
 	volatile uint8_t ch;
 	csi_etb_config_t tEtbConfig;				                //ETB 参数配置结构体		
-	
+	#if !defined(USE_GUI)
 	csi_pin_set_mux(PB0, PB0_INPUT);									//PB0 配置为输入
 	csi_pin_pull_mode(PB0, GPIO_PULLUP);								//PB0 上拉
 	csi_pin_irq_mode(PB0, EXI_GRP0, GPIO_IRQ_FALLING_EDGE);			//PB0 下降沿产生中断，选择中断组16
 	csi_pin_irq_enable(PB0,ENABLE);									//PB0 中断使能
  
 	csi_exi_set_evtrg(0, TRGSRC_EXI0, 0);						//EXI0(PB00) 触发EXI_TRGOUT0(PB00用EXI0触发输出)
-	
+	#endif
 	
 	csi_bt_start_sync(BT0, 200);
 	csi_bt_set_sync(BT0,BT_TRGIN_SYNCEN0, BT_TRG_ONCE, BT_TRG_AUTOAREARM);  

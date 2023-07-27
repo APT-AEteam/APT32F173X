@@ -33,7 +33,7 @@ void rtc_set_time_demo(void)
 	uint32_t wSec;
 	
 	wSec = 0xff;
-
+#if !defined(USE_GUI)
 /**********    RTC_CLKSRC_EMOSC_DIV4     ****************/	
 //	csi_pin_set_mux(PD0, PD0_XIN);			//设置PD0为SXIN，如果使用外部主晶振作为RTC时钟源，必须先对管脚进行配置
 //	csi_pin_set_mux(PD1, PD1_XOUT);         //设置PD1为SXOUT，如果使用外部主晶振作为RTC时钟源，必须先对管脚进行配置
@@ -52,7 +52,7 @@ void rtc_set_time_demo(void)
 //	tRtcConfig.byFmt = RTC_12FMT;				//选择时间模式
 //	csi_rtc_init(RTC, &tRtcConfig);				//初始化设置
 /***********************************************************/	
-
+#endif
 /**********    RTC_CLKSRC_IMOSC_DIV4 /RTC_CLKSRC_ISOSC    ****************/	
 	tRtcConfig.byClkSrc = RTC_CLKSRC_IMOSC_DIV4;  //选择时钟源
 	tRtcConfig.byFmt = RTC_24FMT;				  //选择时间模式
@@ -111,6 +111,7 @@ void rtc_alarm_demo(void)
 	uint32_t wSec = 0;
 	csi_rtc_time_t tRtcTime, tAlmTime, tRtcTimeRdbk;
 	csi_rtc_config_t tRtcConfig;
+#if !defined(USE_GUI)
 /**********    RTC_CLKSRC_EMOSC_DIV4     ****************/	
 //	csi_pin_set_mux(PD0, PD0_XIN);			//设置PD0为SXIN，如果使用外部主晶振作为RTC时钟源，必须先对管脚进行配置
 //	csi_pin_set_mux(PD1, PD1_XOUT);         //设置PD1为SXOUT，如果使用外部主晶振作为RTC时钟源，必须先对管脚进行配置
@@ -129,7 +130,7 @@ void rtc_alarm_demo(void)
 //	tRtcConfig.byFmt = RTC_12FMT;				//选择时间模式
 //	csi_rtc_init(RTC, &tRtcConfig);				//初始化设置
 /***********************************************************/	
-
+#endif
 /**********    RTC_CLKSRC_IMOSC_DIV4 /RTC_CLKSRC_ISOSC    ****************/	
 	tRtcConfig.byClkSrc = RTC_CLKSRC_IMOSC_DIV4;  //选择时钟源
 	tRtcConfig.byFmt = RTC_24FMT;				  //选择时间模式
@@ -175,7 +176,7 @@ void rtc_alarm_demo(void)
 void rtc_timer_demo(void)
 {
 	csi_rtc_config_t tRtcConfig;
-	
+#if !defined(USE_GUI)	
 	/**********    RTC_CLKSRC_EMOSC_DIV4     ****************/	
 //	csi_pin_set_mux(PD0, PD0_XIN);			//设置PD0为SXIN，如果使用外部主晶振作为RTC时钟源，必须先对管脚进行配置
 //	csi_pin_set_mux(PD1, PD1_XOUT);         //设置PD1为SXOUT，如果使用外部主晶振作为RTC时钟源，必须先对管脚进行配置
@@ -194,7 +195,7 @@ void rtc_timer_demo(void)
 //	tRtcConfig.byFmt = RTC_12FMT;				//选择时间模式
 //	csi_rtc_init(RTC, &tRtcConfig);				//初始化设置
 /***********************************************************/	
-
+#endif
 /**********    RTC_CLKSRC_IMOSC_DIV4 /RTC_CLKSRC_ISOSC    ****************/	
 	tRtcConfig.byClkSrc = RTC_CLKSRC_IMOSC_DIV4;  //选择时钟源
 	tRtcConfig.byFmt = RTC_24FMT;				  //选择时间模式
