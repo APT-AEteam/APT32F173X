@@ -48,9 +48,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice">
             <label>Driving Slew-Rate</label>
@@ -101,9 +100,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice">
             <label>Driving Slew-Rate</label>
@@ -155,9 +153,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice">
             <label>Driving Slew-Rate</label>
@@ -209,9 +206,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice">
             <label>Driving Slew-Rate</label>
@@ -261,9 +257,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice">
             <label>Driving Slew-Rate</label>
@@ -314,9 +309,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice">
             <label>Driving Slew-Rate</label>
@@ -366,9 +360,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice">
             <label>Driving Slew-Rate</label>
@@ -418,9 +411,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice">
             <label>Driving Slew-Rate</label>
@@ -470,9 +462,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice">
             <label>Driving Slew-Rate</label>
@@ -523,9 +514,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice">
             <label>Driving Slew-Rate</label>
@@ -576,9 +566,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice">
             <label>Driving Slew-Rate</label>
@@ -629,9 +618,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice">
             <label>Driving Slew-Rate</label>
@@ -683,9 +671,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice">
             <label>Driving Slew-Rate</label>
@@ -733,9 +720,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice">
             <label>Driving Slew-Rate</label>
@@ -783,9 +769,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice">
             <label>Driving Slew-Rate</label>
@@ -835,9 +820,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice">
             <label>Driving Slew-Rate</label>
@@ -888,9 +872,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice">
             <label>Driving Slew-Rate</label>
@@ -941,9 +924,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice">
             <label>Driving Slew-Rate</label>
@@ -994,9 +976,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice">
             <label>Driving Slew-Rate</label>
@@ -1047,9 +1028,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice">
             <label>Driving Slew-Rate</label>
@@ -1099,9 +1079,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice">
             <label>Driving Slew-Rate</label>
@@ -1153,9 +1132,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice">
             <label>Driving Slew-Rate</label>
@@ -1205,9 +1183,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice">
             <label>Driving Slew-Rate</label>
@@ -1259,9 +1236,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice">
             <label>Driving Slew-Rate</label>
@@ -1313,9 +1289,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice">
             <label>Driving Slew-Rate</label>
@@ -1366,9 +1341,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice">
             <label>Driving Slew-Rate</label>
@@ -1420,9 +1394,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice">
             <label>Driving Slew-Rate</label>
@@ -1470,9 +1443,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice">
             <label>Driving Slew-Rate</label>
@@ -1522,9 +1494,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice">
             <label>Driving Slew-Rate</label>
