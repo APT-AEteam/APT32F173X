@@ -199,15 +199,15 @@ int can_send_int_demo(void)
 #if !defined(USE_GUI)									//用户未选择图形化编程		
 //	csi_pin_set_mux(PC4, PC4_CAN_RX);					//CAN RX管脚配置
 //	csi_pin_set_mux(PC5, PC5_CAN_TX);					//CAN TX管脚配置
-//	csi_pin_set_mux(PA11, PA11_CAN_RX);					//CAN RX管脚配置
-//	csi_pin_set_mux(PA12, PA12_CAN_TX);					//CAN TX管脚配置
-	csi_pin_set_mux(PB8, PB8_CAN_RX);					//CAN RX管脚配置
-	csi_pin_set_mux(PB9, PB9_CAN_TX);					//CAN TX管脚配置
+	csi_pin_set_mux(PA11, PA11_CAN_RX);					//CAN RX管脚配置
+	csi_pin_set_mux(PA12, PA12_CAN_TX);					//CAN TX管脚配置
+//	csi_pin_set_mux(PB8, PB8_CAN_RX);					//CAN RX管脚配置
+//	csi_pin_set_mux(PB9, PB9_CAN_TX);					//CAN TX管脚配置
 #endif
 	
 	//CAN MR 寄存器配置,即初始化配置
 	tCanConfig.byClkSrc 	= CAN_CLKSRC_PCLK;			//CAN CLK = PCLK		
-	tCanConfig.wBaudRate 	= CAN_BDR_500K;				//500k
+	tCanConfig.wBaudRate 	= CAN_BDR_1000K;			//1000k
 	tCanConfig.hwStaInter 	= 0xff1e;					//状态中断全部使能	
 	tCanConfig.wChnlInter	= 0xffffffff;				//报文通道中断,Chnl1~32
 	csi_can_init(CAN0, &tCanConfig);
