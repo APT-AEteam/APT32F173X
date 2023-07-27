@@ -51,9 +51,11 @@ int gptb_capture_demo(void)
 {
 	int iRet = 0;	
 //------------------------------------------------------------------------------------------------------------------------	
+#if !defined(USE_GUI)
 	csi_pin_set_mux(PC13, PC13_GPTB0_CHAX);	
 	csi_pin_set_mux(PA7,  PA7_GPTB0_CHAY);	
 	csi_pin_set_mux(PA2,  PA2_OUTPUT);	
+#endif	
 //------------------------------------------------------------------------------------------------------------------------	
 	csi_pin_set_mux(PA1,PA1_INPUT);		
 	csi_pin_pull_mode(PA1, GPIO_PULLUP);						//PA01 上拉
@@ -323,9 +325,11 @@ int gptb_pwm_demo(void)
 {
 	int iRet = 0;	
 ////------------------------------------------------------------------------------------------------------------------------	
+#if !defined(USE_GUI)
 	csi_pin_set_mux(PC13, PC13_GPTB0_CHAX);	
 	csi_pin_set_mux(PA7, PA7_GPTB0_CHAY); 
 	csi_pin_set_mux(PD0, PD0_GPTB0_CHB);	
+#endif
 //------------------------------------------------------------------------------------------------------------------------		
     csi_gptb_pwmconfig_t tPwmCfg;								  
 	tPwmCfg.byWorkmod        = GPTB_WAVE;                       //WAVE  波形模式
@@ -389,9 +393,11 @@ int gptb_pwm_demo(void)
 int gptb_pwm_dz_demo(void)
 {
 //------------------------------------------------------------------------------------------------------------------------	
+#if !defined(USE_GUI)
 	csi_pin_set_mux(PC13, PC13_GPTB0_CHAX);	
 	csi_pin_set_mux(PA7, PA7_GPTB0_CHAY); 
-	csi_pin_set_mux(PD0, PD0_GPTB0_CHB);	
+	csi_pin_set_mux(PD0, PD0_GPTB0_CHB);
+#endif	
 //------------------------------------------------------------------------------------------------------------------------		
     csi_gptb_pwmconfig_t tPwmCfg;								  
 	tPwmCfg.byWorkmod        = GPTB_WAVE;                       //WAVE  波形模式
@@ -459,6 +465,7 @@ int gptb_pwm_dz_em_demo(void)
 {
 	int iRet = 0;	
 ////------------------------------------------------------------------------------------------------------------------------	
+#if !defined(USE_GUI)
 	csi_pin_set_mux(PC13, PC13_GPTB0_CHAX);	
 	csi_pin_set_mux(PA7, PA7_GPTB0_CHAY);
 	csi_pin_set_mux(PD0, PD0_GPTB0_CHB);	
@@ -467,6 +474,7 @@ int gptb_pwm_dz_em_demo(void)
 	csi_pin_set_mux(PA9,PA9_EBI1);csi_pin_pull_mode(PA9, GPIO_PULLUP);
 	csi_pin_set_mux(PB2,PB2_EBI2);csi_pin_pull_mode(PB2, GPIO_PULLUP);
 	csi_pin_set_mux(PA0,PA0_EBI3);csi_pin_pull_mode(PA0, GPIO_PULLUP);
+#endif
 //------------------------------------------------------------------------------------------------------------------------		
     csi_gptb_pwmconfig_t tPwmCfg;								  
 	tPwmCfg.byWorkmod        = GPTB_WAVE;                       //WAVE  波形模式
