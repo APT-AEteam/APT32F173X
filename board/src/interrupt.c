@@ -396,8 +396,7 @@ ATTRIBUTE_ISR void exi0_int_handler(void)
 #if	EXI0_INT_HANDLE_EN
     // ISR content ...
 	CSI_INTRPT_ENTER();
-	gpio_irqhandler(0);//this is a weak function defined in gpio_demo.c, for better efficiency, we recommand user directly implement IRQ handler here without any function call.
-	csi_pin_toggle(PD0);
+	gpio_irqhandler(0);	//this is a weak function defined in gpio_demo.c, for better efficiency, we recommand user directly implement IRQ handler here without any function call.
 	CSI_INTRPT_EXIT();
 #endif
 }
