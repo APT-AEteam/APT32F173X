@@ -274,9 +274,12 @@ static inline void csp_exi_port_int_enable(csp_syscon_t *ptSysconBase,uint32_t w
 /*************************************************************************
  * @brief  gpio filtering
 ****************************************************************************/
-static inline void csp_gpio_flt_en(csp_gpio_t *ptGpioBase,uint8_t byPinNum)
+static inline void csp_gpio_flt_en(csp_gpio_t *ptGpioBase,uint8_t byPinNum, bool bEnable)
 {
-	ptGpioBase->FLTEN  = (ptGpioBase->FLTEN) | (0x01 << byPinNum);
+	if(bEnable)
+		ptGpioBase->FLTEN  |= (0x01 << byPinNum);
+	else
+		ptGpioBase->FLTEN  &=  ~(0x01 << byPinNum);
 }
 /*************************************************************************
  * @brief  gpio output mode set 
