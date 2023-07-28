@@ -9,7 +9,6 @@ hw_info:
 def_config:
   CONFIG_ARCH_INTERRUPTSTACK: 1024
   IS_CHIP_1732: 1
-  USE_GUI: 1
 name: apt32f173x
 version: v1.0.2
 description: 我的第一个方案工程
