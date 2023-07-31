@@ -10,7 +10,7 @@ def_config:
   CONFIG_ARCH_INTERRUPTSTACK: 1024
   IS_CHIP_1732: 1
 name: apt32f173x
-version: v1.0.2
+version: v1.1.0
 description: 我的第一个方案工程
 tag: ""
 keywords: 
@@ -19,8 +19,8 @@ author:
 license: ""
 type: solution
 depends:
-  - apt32f173x_demo: v1.0.2
-  - sdk_173x: v1.0.2
+  - apt32f173x_demo: v1.1.0
+  - sdk_173x: v1.1.0
 build_config:
   include:
     - include
@@ -42,7 +42,7 @@ build_config:
 source_file:
   - src/*.c
 depends_forward:
-  - apt32f173x_demo: v1.0.2
-  - sdk_173x: v1.0.2
+  - apt32f173x_demo: v1.1.0
+  - sdk_173x: v1.1.0
 install: 
 homepage: 

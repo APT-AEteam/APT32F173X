@@ -1,5 +1,5 @@
 name: sdk_173x
-version: v1.0.2
+version: v1.1.0
 description: ""
 tag: ""
 keywords: 
@@ -9,9 +9,9 @@ license: ""
 homepage: 
 type: sdk
 depends:
-  - apt32f173x_evb: v1.0.2
+  - apt32f173x_evb: v1.1.0
   - apt32f173x_gui: v1.0.0
-  - apt_console: v1.0.2
+  - apt_console: v1.1.0
 hw_info:
   cpu_id: ""
   cpu_name: ""
@@ -33,6 +33,6 @@ source_file:
 def_config: 
 install: 
 depends_forward:
-  - apt32f173x_evb: v1.0.2
+  - apt32f173x_evb: v1.1.0
   - apt32f173x_gui: v1.0.0
-  - apt_console: v1.0.2
+  - apt_console: v1.1.0

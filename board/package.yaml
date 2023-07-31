@@ -1,6 +1,6 @@
 ## 第一部分： 基础信息
 name: apt32f173x_evb
-version: v1.0.2
+version: v1.1.0
 description: apt32f173 board configure
 type: board
 yoc_version: V7.2.2
@@ -124,8 +124,8 @@ export:
 keywords: ~
 author: ""
 depends: 
-  - apt32f173x_chip: v1.0.2
-  - apt_csi: v1.0.2
+  - apt32f173x_chip: v1.1.0
+  - apt_csi: v1.1.0
 defconfig: ~
 source_file:
   - src/*.c
@@ -138,5 +138,5 @@ hidden: ~
 homepage: ~
 soc_config: ~
 depends_forward:
-  - apt32f173x_chip: v1.0.2
-  - apt_csi: v1.0.2
+  - apt32f173x_chip: v1.1.0
+  - apt_csi: v1.1.0
