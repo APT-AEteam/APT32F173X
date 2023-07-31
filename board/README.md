@@ -4,7 +4,7 @@
 # Release Notes
 
 ======================================================
-Version: V1.0.2
+Version: V1.1.0
 Release Date: 2023.7.18
 
 完善linker文件使用说明

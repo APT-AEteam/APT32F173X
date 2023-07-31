@@ -4,7 +4,7 @@ UART调试代码。依赖于CSI组件
 # Release Notes
 
 ======================================================
-Version: V1.0.2
+Version: V1.1.0
 Release Date: 2023.7.19
 
 Release Notes
