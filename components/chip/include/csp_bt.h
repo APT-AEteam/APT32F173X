@@ -136,10 +136,6 @@ typedef enum
     BT_OSTMD_ONCE            
 }bt_ostmd_e;
 
-#define BT_REARM_POS	(12)
-#define BT_REARM_MSK 	(0x03 << BT_REARM_POS)
-#define BT_REARM_EN		(0x01ul)
-
 #define BT_AREARM_POS(n)	(18 +  (2 * n))
 #define BT_AREARM_MSK(n)	(0x01ul << BT_AREARM_POS(n))
 typedef enum
@@ -158,6 +154,11 @@ typedef enum
 
 #define BT_CNTRLD_POS	(16)
 #define BT_CNTRLD_MSK	(0x01ul << BT_CNTRLD_POS)
+
+#define BT_REARM_POS(n)	(28 + n)
+#define BT_REARM_MSK(n) (0x01 << BT_REARM_POS(n))
+#define BT_REARM_EN		(0x01ul)
+
 typedef enum
 {
 	BT_CNTRLD_EN 	= 0,
@@ -319,7 +320,7 @@ static inline void csp_bt_int_set(csp_bt_t *ptBtBase, bt_int_e eBtInt,bool bEnab
 //
 static inline void csp_bt_rearm_sync(csp_bt_t *ptBtBase, bt_evtrg_in_e eTrgIn)
 {
-	ptBtBase->CR |= (0x01 << (BT_REARM_POS + eTrgIn));
+	ptBtBase->CR |= (0x01 << (BT_REARM_POS(eTrgIn)));
 }
 static inline void csp_bt_evtrg_soft(csp_bt_t *ptBtBase)
 {
