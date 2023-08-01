@@ -246,5 +246,11 @@ void user_demo(void)
 //  lvr_wizard_demo();
 //  cqcr_wizard_demo();
 
+/// ***************************************************
+///  freertos相关的示例代码，
+///  使用前打开csi_config.h里面的CONFIG_KERNEL_FREERTOS宏
+/// ***************************************************
+//	freertos_demo();
+
 }
 

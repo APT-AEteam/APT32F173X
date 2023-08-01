@@ -79,6 +79,13 @@ void task1(void)
 
 void task2(void)
 {
+	
+	while(1)
+	{
+		my_printf("\r\ntask2 now!!!\r\n");
+		csi_kernel_delay_ms(500);
+	}
+
 //	uint32_t TotalRunTime;
 //	uint32_t ArraySize,x;
 //	TaskStatus_t *StatusArray;
@@ -128,11 +135,6 @@ void task2(void)
 //		printf("the rest of usable satck:   %d\r\n",TaskStatus.usStackHighWaterMark);
 //		printf("the rest of usable heap :   %d\r\n",xPortGetMinimumEverFreeHeapSize());
 //		printf("/**************************end***************************/\r\n");
-	while(1)
-	{
-		my_printf("\r\ntask2 now!!!\r\n");
-		csi_kernel_delay_ms(500);
-	}
 }
 
 void start_task(void)
@@ -147,7 +149,7 @@ void start_task(void)
 	{
         csi_kernel_sched_resume(0);
 
-        printf("Fail to create task1 !\r\n");
+        my_printf("Fail to create task1 !\r\n");
     }
 
 	//创建任务2
@@ -157,7 +159,7 @@ void start_task(void)
 	{
         csi_kernel_sched_resume(0);
 
-        printf("Fail to create task2!\r\n");
+        my_printf("Fail to create task2!\r\n");
     }
 
 	//删除开始任务

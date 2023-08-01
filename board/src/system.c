@@ -120,9 +120,9 @@ __attribute__((weak)) void system_init(void)
 	csi_iram_init();  //Need to work with gcc_flash_dram16k_iram16k.ld or gcc_flash_dram24k_iram8k.ld
 #endif	
 	
-#ifdef CONFIG_KERNEL_FREERTOS
+
 	__disable_excp_irq();
-#endif
+
 	
     /* enable mstatus FS */
     uint32_t mstatus = __get_MSTATUS();
