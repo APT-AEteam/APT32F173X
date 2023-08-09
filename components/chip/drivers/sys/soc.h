@@ -534,6 +534,7 @@ typedef enum {
 	PB7_LED_C3              =  10U,
 	PB7_CPIN8N              =  12U,
 	PB7_FVROUT              =  13U,
+	PB7_VREFP               =  13U,
 	
 	
 	

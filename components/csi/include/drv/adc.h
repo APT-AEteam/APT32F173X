@@ -60,6 +60,7 @@ typedef enum{
 typedef enum{
 	ADCVERF_VDD_VSS 		= (0x00ul),
 	ADCVREF_FVR_VSS			= (0x02ul),
+	ADCVREF_VREFP_VSS		= (0x02ul),
 	ADCVREF_INTVREF_VSS		= (0x03ul)
 }csi_adc_vref_e;
 

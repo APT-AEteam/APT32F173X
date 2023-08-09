@@ -20,7 +20,7 @@
 /* Private macro-----------------------------------------------------------*/
 /* Private variablesr------------------------------------------------------*/
 
-/** \brief 配置DAC的初始电平码值，设置时钟分频，配置DAC中断及触发模式
+/** \brief 配置DAC的初始电平码值，设置时钟分频
  * 
  *  \param[in] none
  *  \return none
@@ -30,7 +30,32 @@ void dac_demo(void)
 	csi_dac_config_t tDacConfig;
 	
 #if !defined(USE_GUI)	
-	//dac 输入管脚配置
+	//dac 输出管脚配置
+	csi_pin_set_mux(PA4,PA4_DAC0_OUT);	
+	csi_pin_set_mux(PA8,PA8_DAC0_OUT);
+	csi_pin_output_mode(PA8,GPIO_OPEN_DRAIN);
+#endif	
+	//dac 参数配置初始化
+	tDacConfig.byClkDiv 	= 0x02;				//DAC clk两分频：FCK = FHCLK / 2
+	tDacConfig.byRefsel	 	= DISABLE;			//DAC 参考电平选择
+	tDacConfig.byDatarset 	= 0x00;				//DAC 电平码值设置
+	tDacConfig.byBufsel 	= ENABLE;			//DAC BUF enable时，PA4输出，BUF disable时，PA8输出
+	
+	csi_dac_init(DAC0, &tDacConfig);	
+	csi_dac_en(DAC0);
+	csi_dac_start(DAC0);
+}
+/** \brief 配置DAC的中断及触发模式
+ * 
+ *  \param[in] none
+ *  \return none
+ */
+void dac_sync_demo(void)	
+{
+	csi_dac_config_t tDacConfig;
+	
+#if !defined(USE_GUI)	
+	//dac 输出管脚配置
 	csi_pin_set_mux(PA4,PA4_DAC0_OUT);	
 	csi_pin_set_mux(PA8,PA8_DAC0_OUT);
 	csi_pin_output_mode(PA8,GPIO_OPEN_DRAIN);
