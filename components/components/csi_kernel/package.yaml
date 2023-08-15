@@ -1,0 +1,44 @@
+name: csi_kernel
+version: v1.0.0
+description: ""
+tag: ""
+keywords: 
+author:
+  name: ""
+license: ""
+homepage: 
+type: common
+depends: 
+depends_forward: 
+yoc_version: 
+hw_info:
+  cpu_id: ""
+  cpu_name: ""
+  vendor_name: ""
+  chip_name: ""
+  board_name: ""
+  ld_script: ""
+  flash_program: ""
+build_config:
+  include: 
+  internal_include: 
+  cflag: ""
+  cxxflag: ""
+  asmflag: ""
+  define: 
+  libs: 
+  libpath: 
+source_file:
+  - freertosv10.3.1/adapter/csi_freertos.c
+  - freertosv10.3.1/FreeRTOS/Source/croutine.c
+  - freertosv10.3.1/FreeRTOS/Source/event_groups.c
+  - freertosv10.3.1/FreeRTOS/Source/list.c
+  - freertosv10.3.1/FreeRTOS/Source/queue.c
+  - freertosv10.3.1/FreeRTOS/Source/stream_buffer.c
+  - freertosv10.3.1/FreeRTOS/Source/tasks.c
+  - freertosv10.3.1/FreeRTOS/Source/timers.c
+  - freertosv10.3.1/FreeRTOS/Source/portable/MemMang/heap_4.c
+  - freertosv10.3.1/FreeRTOS/Source/portable/GCC/riscv/port.c
+  - freertosv10.3.1/FreeRTOS/Source/portable/GCC/riscv/portASM.S
+def_config: 
+install: 

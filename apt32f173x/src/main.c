@@ -47,7 +47,7 @@ int main()
 
 	while(1)
 	{	
-		mdelay(100);
+
 	}
 	
     return 0;

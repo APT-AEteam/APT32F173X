@@ -12,6 +12,7 @@ depends:
   - apt32f173x_evb: v1.1.0
   - apt32f173x_gui: v1.0.0
   - apt_console: v1.1.0
+  - csi_kernel: v1.0.0
 hw_info:
   cpu_id: ""
   cpu_name: ""
@@ -36,3 +37,4 @@ depends_forward:
   - apt32f173x_evb: v1.1.0
   - apt32f173x_gui: v1.0.0
   - apt_console: v1.1.0
+  - csi_kernel: v1.0.0

@@ -8,7 +8,7 @@ hw_info:
   flash_program: ""
 def_config:
   CONFIG_ARCH_INTERRUPTSTACK: 1024
-  IS_CHIP_1732: 1
+  DBG_PRINT2PC: 1
 name: apt32f173x
 version: v1.1.0
 description: 我的第一个方案工程
@@ -25,11 +25,11 @@ build_config:
   include:
     - include
     - ./
-    - ../components/components/demo/csi_kernel/include/
-    - ../components/components/demo/csi_kernel/freertosv10.3.1/include/
-    - ../components/components/demo/csi_kernel/freertosv10.3.1/FreeRTOS/Source/include/
-    - ../components/components/demo/csi_kernel/freertosv10.3.1/FreeRTOS/Source/portable/GCC/riscv/
-    - ../components/components/demo/csi_kernel/freertosv10.3.1/FreeRTOS/Source/portable/GCC/riscv/chip_specific_extensions/thead_rv32/
+    - ../components/components/csi_kernel/include/
+    - ../components/components/csi_kernel/freertosv10.3.1/include/
+    - ../components/components/csi_kernel/freertosv10.3.1/FreeRTOS/Source/include/
+    - ../components/components/csi_kernel/freertosv10.3.1/FreeRTOS/Source/portable/GCC/riscv/
+    - ../components/components/csi_kernel/freertosv10.3.1/FreeRTOS/Source/portable/GCC/riscv/chip_specific_extensions/thead_rv32/
   internal_include: 
   cflag: -O1  -g1
   cxxflag: -O1  -g1
