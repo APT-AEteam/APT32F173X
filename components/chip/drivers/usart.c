@@ -64,8 +64,8 @@ csi_error_t csi_usart_init(csp_usart_t *ptUsartBase, csi_usart_config_t *ptUsart
 	csi_clk_enable((uint32_t *)ptUsartBase);						//usart peripheral clk enable
 	csp_usart_clk_en(ptUsartBase);						//usart clk enable
 	csp_usart_soft_rst(ptUsartBase);
-//	csp_usart_rxfifo_rst(ptUsartBase);
-//	csp_usart_txfifo_rst(ptUsartBase);
+	csp_usart_rxfifo_rst(ptUsartBase);
+	csp_usart_txfifo_rst(ptUsartBase);
 	
 	csp_usart_set_ckdiv(ptUsartBase, ptUsartCfg->byClkSrc);			//clk source
 	csp_usart_set_mode(ptUsartBase, ptUsartCfg->byMode, US_NORMAL);	//work mode sync/async

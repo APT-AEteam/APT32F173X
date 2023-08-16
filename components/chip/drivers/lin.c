@@ -152,8 +152,8 @@ csi_error_t csi_lin_init(csp_lin_t *ptLinBase, csi_lin_config_t *ptLinCfg)
 	csp_usart_clk_en(ptLinBase);						//usart clk enable
 	csp_usart_soft_rst(ptLinBase);
 	csp_usart_lin_rst(ptLinBase);
-//	csp_usart_rxfifo_rst(ptLinBase);
-//	csp_usart_txfifo_rst(ptLinBase);
+	csp_usart_rxfifo_rst(ptLinBase);
+	csp_usart_txfifo_rst(ptLinBase);
 	
 	if(ptLinCfg->byClkSrc > LIN_CLKSRC_DIV8)
 		return CSI_ERROR;

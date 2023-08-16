@@ -44,7 +44,9 @@ typedef struct
     __IOM uint32_t  LCP1;       //0x0054    Limit counter protocol 1        
     __IOM uint32_t  LCP2;       //0x0058    Limit counter protocol 2        
     __IOM uint32_t  DMACR;		//0x005C    DMA control register    
-	__IM  uint32_t  RSVD[12];	//0x0060~0x008C    
+	__IM  uint32_t  RSVD1[8];	//0x0060~0x007C  
+	__IOM uint32_t  IRDA;       //0X0080
+	__IM  uint32_t  RSVD2[3];   //0X0084~0X008C  
 //	__IM  uint32_t  RXFL;		//0x0090    Recieve FIFO status register  
 //	__IM  uint32_t  TXFL;		//0x0094    Transmit FIFO status register          
 } csp_usart_t; 
@@ -78,11 +80,11 @@ typedef struct
 #define	US_SWRST_POS			(0)			 
 #define	US_SWRST_MSK			(0x01ul << US_SWRST_POS)
 
-//#define	US_RXFIFO_RST_POS		(8)			 
-//#define US_RXFIFO_RST_MSK		(0x01ul << US_RXFIFO_RST_POS)
-//
-//#define	US_TXFIFO_RST_POS		(16)			 
-//#define US_TXFIFO_RST_MSK		(0x01ul << US_TXFIFO_RST_POS)
+#define	US_RXFIFO_RST_POS		(8)			 
+#define US_RXFIFO_RST_MSK		(0x01ul << US_RXFIFO_RST_POS)
+
+#define	US_TXFIFO_RST_POS		(16)			 
+#define US_TXFIFO_RST_MSK		(0x01ul << US_TXFIFO_RST_POS)
 
 /******************************************************************************
 * CR: USART Control Registers
@@ -451,15 +453,15 @@ static inline void csp_usart_soft_rst(csp_usart_t *ptUsartBase)
 {
 	ptUsartBase->SRR  = US_SWRST_MSK; 			//SWRST 
 }
-//static inline void csp_usart_rxfifo_rst(csp_usart_t *ptUsartBase)
-//{
-//	ptUsartBase->SRR  = US_RXFIFO_RST_MSK; 		//rxfifo
-//}
-//static inline void csp_usart_txfifo_rst(csp_usart_t *ptUsartBase)
-//{
-//	ptUsartBase->SRR  = US_TXFIFO_RST_MSK; 		//txfifo
-//}
-//
+static inline void csp_usart_rxfifo_rst(csp_usart_t *ptUsartBase)
+{
+	ptUsartBase->SRR  = US_RXFIFO_RST_MSK; 		//rxfifo
+}
+static inline void csp_usart_txfifo_rst(csp_usart_t *ptUsartBase)
+{
+	ptUsartBase->SRR  = US_TXFIFO_RST_MSK; 		//txfifo
+}
+
 static inline void csp_usart_cr_cmd(csp_usart_t *ptUsartBase, usart_cr_e eCrCmd)
 {
 	ptUsartBase->CR |= eCrCmd;
