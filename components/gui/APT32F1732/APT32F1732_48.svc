@@ -15,7 +15,7 @@
       </DLLConfig>
     </CodeGenerateConfig>
     <ChipView>
-      <ChipName>LQFP48</ChipName>
+      <ChipName>48Pin</ChipName>
       <ChipShape>CVS_LOOK_SQUARE</ChipShape>
       <PinCount>48</PinCount>
       <Pins>
@@ -24,35 +24,61 @@
             <label>PinFunctions</label>
             <value>Undefined</value>
             <Selections>
-              <sel>High_Z</sel>
-              <sel>GPIO_INPUT</sel>
-              <sel>GPIO_INPUT with Filter</sel>
-              <sel>GPIO_OUTPUT_Push-Pull</sel>
-              <sel>GPIO_OUTPUT_Open-Drain</sel>
-              <sel>GPIO_OUTPUT_Push-Pull with Monitor</sel>
-              <sel>GPIO_OUTPUT_Open-Drain with Monitor</sel>
-              <sel>SPI1_MISO</sel>
-              <sel>GPTA0_CHA</sel>
-              <sel>GPTB3_CHAX</sel>
-              <sel>EBI3</sel>
-              <sel>BT0_OUT</sel>
-              <sel>LED_S2</sel>
-              <sel>CPIN0P</sel>
-              <sel>OPA0P</sel>
-              <sel>ADC_INA21</sel>
+              <sel notAvailable="Pin10TTL,Pin10Fltr,Pin10DA,Pin10DSR,Pin10OM,Pin10PM">High_Z</sel>
+              <sel notAvailable="Pin10DA,Pin10DSR,Pin10OM">GPIO_INPUT</sel>
+              <sel notAvailable="Pin10TTL,Pin10Fltr">GPIO_OUTPUT</sel>
+              <sel notAvailable="Pin10TTL,Pin10Fltr">GPIO_OUTPUT with Monitor</sel>
+              <sel notAvailable="Pin10TTL,Pin10Fltr,Pin10DA,Pin10DSR,Pin10OM">SPI1_MISO</sel>
+              <sel notAvailable="Pin10TTL,Pin10Fltr,Pin10DA,Pin10DSR,Pin10OM">GPTA0_CHA</sel>
+              <sel notAvailable="Pin10TTL,Pin10Fltr,Pin10DA,Pin10DSR,Pin10OM">GPTB3_CHAX</sel>
+              <sel notAvailable="Pin10TTL,Pin10Fltr,Pin10DA,Pin10DSR,Pin10OM">EBI3</sel>
+              <sel notAvailable="Pin10TTL,Pin10Fltr,Pin10DA,Pin10DSR,Pin10OM">BT0_OUT</sel>
+              <sel notAvailable="Pin10TTL,Pin10Fltr,Pin10DA,Pin10DSR,Pin10OM">LED_S2</sel>
+              <sel notAvailable="Pin10TTL,Pin10Fltr,Pin10DA,Pin10DSR,Pin10OM">CPin100P</sel>
+              <sel notAvailable="Pin10TTL,Pin10Fltr,Pin10DA,Pin10DSR,Pin10OM">OPA0P</sel>
+              <sel notAvailable="Pin10TTL,Pin10Fltr,Pin10DA,Pin10DSR,Pin10OM">ADC_INA21</sel>
             </Selections>
-            <Comment>管脚功能&#xD;High_Z:高阻&#xD;GPIO_INPUT:输入&#xD;GPIO_INPUT with Filter:带30ns滤波输入&#xD;GPIO_OUTPUT_Push-Pull:推挽输出&#xD;GPIO_OUTPUT_Open-Drain:开漏输出&#xD;GPIO_OUTPUT_Push-Pull with Monitor:带输出监测的推挽输出&#xD;GPIO_OUTPUT_Open-Drain with Monitor:带输出监测的开漏输出&#xD;Other:复用功能</Comment>
+            <Comment>管脚功能&#xD;High_Z:高阻&#xD;GPIO_INPUT:输入&#xD;GPIO_OUTPUT:输出&#xD;GPIO_OUTPUT with Monitor:带监测输出&#xD;Other:复用功能</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin10TTL">
+            <label>Logic Level</label>
+            <value>TTL1</value>
+            <Selections>
+              <sel>TTL1</sel>
+              <sel>TTL2</sel>
+              <sel>CMOS</sel>
+            </Selections>
+            <Comment>逻辑电平</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin10Fltr">
+            <label>Input Filter</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>滤波输入</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin10OM">
+            <label>GPIO OutMode</label>
+            <value>Push-Pull</value>
+            <Selections>
+              <sel>Push-Pull</sel>
+              <sel>Open-Drain</sel>
+            </Selections>
+            <Comment>输出模式</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin10DA">
             <label>Driving Ability</label>
             <value>Normal</value>
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
+              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin10DSR">
             <label>Driving Slew-Rate</label>
             <value>Normal</value>
             <Selections>
@@ -61,7 +87,7 @@
             </Selections>
             <Comment>斜率:仅输出有效&#xD;Normal:标准&#xD;Fast:快速</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin10PM">
             <label>Pull Mode</label>
             <value>Pull_None</value>
             <Selections>
@@ -77,34 +103,60 @@
             <label>PinFunctions</label>
             <value>Undefined</value>
             <Selections>
-              <sel>High_Z</sel>
-              <sel>GPIO_INPUT</sel>
-              <sel>GPIO_INPUT with Filter</sel>
-              <sel>GPIO_OUTPUT_Push-Pull</sel>
-              <sel>GPIO_OUTPUT_Open-Drain</sel>
-              <sel>GPIO_OUTPUT_Push-Pull with Monitor</sel>
-              <sel>GPIO_OUTPUT_Open-Drain with Monitor</sel>
-              <sel>SPI1_MOSI</sel>
-              <sel>GPTA0_CHB</sel>
-              <sel>GPTB4_CHAX</sel>
-              <sel>BT1_OUT</sel>
-              <sel>LED_S3</sel>
-              <sel>CPIN0N</sel>
-              <sel>OPA0N</sel>
-              <sel>ADC_INA22</sel>
+              <sel notAvailable="Pin11TTL,Pin11Fltr,Pin11DA,Pin11DSR,Pin11OM,Pin11PM">High_Z</sel>
+              <sel notAvailable="Pin11DA,Pin11DSR,Pin11OM">GPIO_INPUT</sel>
+              <sel notAvailable="Pin11TTL,Pin11Fltr">GPIO_OUTPUT</sel>
+              <sel notAvailable="Pin11TTL,Pin11Fltr">GPIO_OUTPUT with Monitor</sel>
+              <sel notAvailable="Pin11TTL,Pin11Fltr,Pin11DA,Pin11DSR,Pin11OM">SPI1_MOSI</sel>
+              <sel notAvailable="Pin11TTL,Pin11Fltr,Pin11DA,Pin11DSR,Pin11OM">GPTA0_CHB</sel>
+              <sel notAvailable="Pin11TTL,Pin11Fltr,Pin11DA,Pin11DSR,Pin11OM">GPTB4_CHAX</sel>
+              <sel notAvailable="Pin11TTL,Pin11Fltr,Pin11DA,Pin11DSR,Pin11OM">BT1_OUT</sel>
+              <sel notAvailable="Pin11TTL,Pin11Fltr,Pin11DA,Pin11DSR,Pin11OM">LED_S3</sel>
+              <sel notAvailable="Pin11TTL,Pin11Fltr,Pin11DA,Pin11DSR,Pin11OM">CPin110N</sel>
+              <sel notAvailable="Pin11TTL,Pin11Fltr,Pin11DA,Pin11DSR,Pin11OM">OPA0N</sel>
+              <sel notAvailable="Pin11TTL,Pin11Fltr,Pin11DA,Pin11DSR,Pin11OM">ADC_INA22</sel>
             </Selections>
-            <Comment>管脚功能&#xD;High_Z:高阻&#xD;GPIO_INPUT:输入&#xD;GPIO_INPUT with Filter:带30ns滤波输入&#xD;GPIO_OUTPUT_Push-Pull:推挽输出&#xD;GPIO_OUTPUT_Open-Drain:开漏输出&#xD;GPIO_OUTPUT_Push-Pull with Monitor:带输出监测的推挽输出&#xD;GPIO_OUTPUT_Open-Drain with Monitor:带输出监测的开漏输出&#xD;Other:复用功能</Comment>
+            <Comment>管脚功能&#xD;High_Z:高阻&#xD;GPIO_INPUT:输入&#xD;GPIO_OUTPUT:输出&#xD;GPIO_OUTPUT with Monitor:带监测输出&#xD;Other:复用功能</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin11TTL">
+            <label>Logic Level</label>
+            <value>TTL1</value>
+            <Selections>
+              <sel>TTL1</sel>
+              <sel>TTL2</sel>
+              <sel>CMOS</sel>
+            </Selections>
+            <Comment>逻辑电平</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin11Fltr">
+            <label>Input Filter</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>滤波输入</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin11OM">
+            <label>GPIO OutMode</label>
+            <value>Push-Pull</value>
+            <Selections>
+              <sel>Push-Pull</sel>
+              <sel>Open-Drain</sel>
+            </Selections>
+            <Comment>输出模式</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin11DA">
             <label>Driving Ability</label>
             <value>Normal</value>
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
+              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin11DSR">
             <label>Driving Slew-Rate</label>
             <value>Normal</value>
             <Selections>
@@ -113,7 +165,7 @@
             </Selections>
             <Comment>斜率:仅输出有效&#xD;Normal:标准&#xD;Fast:快速</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin11PM">
             <label>Pull Mode</label>
             <value>Pull_None</value>
             <Selections>
@@ -129,35 +181,61 @@
             <label>PinFunctions</label>
             <value>Undefined</value>
             <Selections>
-              <sel>High_Z</sel>
-              <sel>GPIO_INPUT</sel>
-              <sel>GPIO_INPUT with Filter</sel>
-              <sel>GPIO_OUTPUT_Push-Pull</sel>
-              <sel>GPIO_OUTPUT_Open-Drain</sel>
-              <sel>GPIO_OUTPUT_Push-Pull with Monitor</sel>
-              <sel>GPIO_OUTPUT_Open-Drain with Monitor</sel>
-              <sel>USART1_TX</sel>
-              <sel>GPTA1_CHA</sel>
-              <sel>CLO</sel>
-              <sel>USART1_TX</sel>
-              <sel>BT2_OUT</sel>
-              <sel>LED_S4</sel>
-              <sel>UART0_TX</sel>
-              <sel>OPA0X</sel>
-              <sel>ADC_INA23</sel>
+              <sel notAvailable="Pin12TTL,Pin12Fltr,Pin12DA,Pin12DSR,Pin12OM,Pin12PM">High_Z</sel>
+              <sel notAvailable="Pin12DA,Pin12DSR,Pin12OM">GPIO_INPUT</sel>
+              <sel notAvailable="Pin12TTL,Pin12Fltr">GPIO_OUTPUT</sel>
+              <sel notAvailable="Pin12TTL,Pin12Fltr">GPIO_OUTPUT with Monitor</sel>
+              <sel notAvailable="Pin12TTL,Pin12Fltr,Pin12DA,Pin12DSR,Pin12OM">USART1_TX</sel>
+              <sel notAvailable="Pin12TTL,Pin12Fltr,Pin12DA,Pin12DSR,Pin12OM">GPTA1_CHA</sel>
+              <sel notAvailable="Pin12TTL,Pin12Fltr,Pin12DA,Pin12DSR,Pin12OM">CLO</sel>
+              <sel notAvailable="Pin12TTL,Pin12Fltr,Pin12DA,Pin12DSR,Pin12OM">USART1_TX</sel>
+              <sel notAvailable="Pin12TTL,Pin12Fltr,Pin12DA,Pin12DSR,Pin12OM">BT2_OUT</sel>
+              <sel notAvailable="Pin12TTL,Pin12Fltr,Pin12DA,Pin12DSR,Pin12OM">LED_S4</sel>
+              <sel notAvailable="Pin12TTL,Pin12Fltr,Pin12DA,Pin12DSR,Pin12OM">UART0_TX</sel>
+              <sel notAvailable="Pin12TTL,Pin12Fltr,Pin12DA,Pin12DSR,Pin12OM">OPA0X</sel>
+              <sel notAvailable="Pin12TTL,Pin12Fltr,Pin12DA,Pin12DSR,Pin12OM">ADC_INA23</sel>
             </Selections>
-            <Comment>管脚功能&#xD;High_Z:高阻&#xD;GPIO_INPUT:输入&#xD;GPIO_INPUT with Filter:带30ns滤波输入&#xD;GPIO_OUTPUT_Push-Pull:推挽输出&#xD;GPIO_OUTPUT_Open-Drain:开漏输出&#xD;GPIO_OUTPUT_Push-Pull with Monitor:带输出监测的推挽输出&#xD;GPIO_OUTPUT_Open-Drain with Monitor:带输出监测的开漏输出&#xD;Other:复用功能</Comment>
+            <Comment>管脚功能&#xD;High_Z:高阻&#xD;GPIO_INPUT:输入&#xD;GPIO_OUTPUT:输出&#xD;GPIO_OUTPUT with Monitor:带监测输出&#xD;Other:复用功能</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin12TTL">
+            <label>Logic Level</label>
+            <value>TTL1</value>
+            <Selections>
+              <sel>TTL1</sel>
+              <sel>TTL2</sel>
+              <sel>CMOS</sel>
+            </Selections>
+            <Comment>逻辑电平</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin12Fltr">
+            <label>Input Filter</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>滤波输入</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin12OM">
+            <label>GPIO OutMode</label>
+            <value>Push-Pull</value>
+            <Selections>
+              <sel>Push-Pull</sel>
+              <sel>Open-Drain</sel>
+            </Selections>
+            <Comment>输出模式</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin12DA">
             <label>Driving Ability</label>
             <value>Normal</value>
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
+              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin12DSR">
             <label>Driving Slew-Rate</label>
             <value>Normal</value>
             <Selections>
@@ -166,7 +244,7 @@
             </Selections>
             <Comment>斜率:仅输出有效&#xD;Normal:标准&#xD;Fast:快速</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin12PM">
             <label>Pull Mode</label>
             <value>Pull_None</value>
             <Selections>
@@ -182,35 +260,61 @@
             <label>PinFunctions</label>
             <value>Undefined</value>
             <Selections>
-              <sel>High_Z</sel>
-              <sel>GPIO_INPUT</sel>
-              <sel>GPIO_INPUT with Filter</sel>
-              <sel>GPIO_OUTPUT_Push-Pull</sel>
-              <sel>GPIO_OUTPUT_Open-Drain</sel>
-              <sel>GPIO_OUTPUT_Push-Pull with Monitor</sel>
-              <sel>GPIO_OUTPUT_Open-Drain with Monitor</sel>
-              <sel>USART1_RX</sel>
-              <sel>GPTA1_CHB</sel>
-              <sel>GPTB5_CHAX</sel>
-              <sel>UART1_RX</sel>
-              <sel>BT3_OUT</sel>
-              <sel>LED_S5</sel>
-              <sel>UART0_RX</sel>
-              <sel>OPA3P</sel>
-              <sel>ADC_INB20</sel>
+              <sel notAvailable="Pin13TTL,Pin13Fltr,Pin13DA,Pin13DSR,Pin13OM,Pin13PM">High_Z</sel>
+              <sel notAvailable="Pin13DA,Pin13DSR,Pin13OM">GPIO_INPUT</sel>
+              <sel notAvailable="Pin13TTL,Pin13Fltr">GPIO_OUTPUT</sel>
+              <sel notAvailable="Pin13TTL,Pin13Fltr">GPIO_OUTPUT with Monitor</sel>
+              <sel notAvailable="Pin13TTL,Pin13Fltr,Pin13DA,Pin13DSR,Pin13OM">USART1_RX</sel>
+              <sel notAvailable="Pin13TTL,Pin13Fltr,Pin13DA,Pin13DSR,Pin13OM">GPTA1_CHB</sel>
+              <sel notAvailable="Pin13TTL,Pin13Fltr,Pin13DA,Pin13DSR,Pin13OM">GPTB5_CHAX</sel>
+              <sel notAvailable="Pin13TTL,Pin13Fltr,Pin13DA,Pin13DSR,Pin13OM">UART1_RX</sel>
+              <sel notAvailable="Pin13TTL,Pin13Fltr,Pin13DA,Pin13DSR,Pin13OM">BT3_OUT</sel>
+              <sel notAvailable="Pin13TTL,Pin13Fltr,Pin13DA,Pin13DSR,Pin13OM">LED_S5</sel>
+              <sel notAvailable="Pin13TTL,Pin13Fltr,Pin13DA,Pin13DSR,Pin13OM">UART0_RX</sel>
+              <sel notAvailable="Pin13TTL,Pin13Fltr,Pin13DA,Pin13DSR,Pin13OM">OPA3P</sel>
+              <sel notAvailable="Pin13TTL,Pin13Fltr,Pin13DA,Pin13DSR,Pin13OM">ADC_INB20</sel>
             </Selections>
-            <Comment>管脚功能&#xD;High_Z:高阻&#xD;GPIO_INPUT:输入&#xD;GPIO_INPUT with Filter:带30ns滤波输入&#xD;GPIO_OUTPUT_Push-Pull:推挽输出&#xD;GPIO_OUTPUT_Open-Drain:开漏输出&#xD;GPIO_OUTPUT_Push-Pull with Monitor:带输出监测的推挽输出&#xD;GPIO_OUTPUT_Open-Drain with Monitor:带输出监测的开漏输出&#xD;Other:复用功能</Comment>
+            <Comment>管脚功能&#xD;High_Z:高阻&#xD;GPIO_INPUT:输入&#xD;GPIO_OUTPUT:输出&#xD;GPIO_OUTPUT with Monitor:带监测输出&#xD;Other:复用功能</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin13TTL">
+            <label>Logic Level</label>
+            <value>TTL1</value>
+            <Selections>
+              <sel>TTL1</sel>
+              <sel>TTL2</sel>
+              <sel>CMOS</sel>
+            </Selections>
+            <Comment>逻辑电平</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin13Fltr">
+            <label>Input Filter</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>滤波输入</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin13OM">
+            <label>GPIO OutMode</label>
+            <value>Push-Pull</value>
+            <Selections>
+              <sel>Push-Pull</sel>
+              <sel>Open-Drain</sel>
+            </Selections>
+            <Comment>输出模式</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin13DA">
             <label>Driving Ability</label>
             <value>Normal</value>
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
+              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin13DSR">
             <label>Driving Slew-Rate</label>
             <value>Normal</value>
             <Selections>
@@ -219,7 +323,7 @@
             </Selections>
             <Comment>斜率:仅输出有效&#xD;Normal:标准&#xD;Fast:快速</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin13PM">
             <label>Pull Mode</label>
             <value>Pull_None</value>
             <Selections>
@@ -235,33 +339,59 @@
             <label>PinFunctions</label>
             <value>Undefined</value>
             <Selections>
-              <sel>High_Z</sel>
-              <sel>GPIO_INPUT</sel>
-              <sel>GPIO_INPUT with Filter</sel>
-              <sel>GPIO_OUTPUT_Push-Pull</sel>
-              <sel>GPIO_OUTPUT_Open-Drain</sel>
-              <sel>GPIO_OUTPUT_Push-Pull with Monitor</sel>
-              <sel>GPIO_OUTPUT_Open-Drain with Monitor</sel>
-              <sel>SPI0_NSS</sel>
-              <sel>USART1_CK</sel>
-              <sel>DAC0_OUT</sel>
-              <sel>LPT_OUT</sel>
-              <sel>UART1_TX</sel>
-              <sel>UART0_TX</sel>
-              <sel>OPA3N</sel>
+              <sel notAvailable="Pin14TTL,Pin14Fltr,Pin14DA,Pin14DSR,Pin14OM,Pin14PM">High_Z</sel>
+              <sel notAvailable="Pin14DA,Pin14DSR,Pin14OM">GPIO_INPUT</sel>
+              <sel notAvailable="Pin14TTL,Pin14Fltr">GPIO_OUTPUT</sel>
+              <sel notAvailable="Pin14TTL,Pin14Fltr">GPIO_OUTPUT with Monitor</sel>
+              <sel notAvailable="Pin14TTL,Pin14Fltr,Pin14DA,Pin14DSR,Pin14OM">SPI0_NSS</sel>
+              <sel notAvailable="Pin14TTL,Pin14Fltr,Pin14DA,Pin14DSR,Pin14OM">USART1_CK</sel>
+              <sel notAvailable="Pin14TTL,Pin14Fltr,Pin14DA,Pin14DSR,Pin14OM">DAC0_OUT</sel>
+              <sel notAvailable="Pin14TTL,Pin14Fltr,Pin14DA,Pin14DSR,Pin14OM">LPT_OUT</sel>
+              <sel notAvailable="Pin14TTL,Pin14Fltr,Pin14DA,Pin14DSR,Pin14OM">UART1_TX</sel>
+              <sel notAvailable="Pin14TTL,Pin14Fltr,Pin14DA,Pin14DSR,Pin14OM">UART0_TX</sel>
+              <sel notAvailable="Pin14TTL,Pin14Fltr,Pin14DA,Pin14DSR,Pin14OM">OPA3N</sel>
             </Selections>
-            <Comment>管脚功能&#xD;High_Z:高阻&#xD;GPIO_INPUT:输入&#xD;GPIO_INPUT with Filter:带30ns滤波输入&#xD;GPIO_OUTPUT_Push-Pull:推挽输出&#xD;GPIO_OUTPUT_Open-Drain:开漏输出&#xD;GPIO_OUTPUT_Push-Pull with Monitor:带输出监测的推挽输出&#xD;GPIO_OUTPUT_Open-Drain with Monitor:带输出监测的开漏输出&#xD;Other:复用功能</Comment>
+            <Comment>管脚功能&#xD;High_Z:高阻&#xD;GPIO_INPUT:输入&#xD;GPIO_OUTPUT:输出&#xD;GPIO_OUTPUT with Monitor:带监测输出&#xD;Other:复用功能</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin14TTL">
+            <label>Logic Level</label>
+            <value>TTL1</value>
+            <Selections>
+              <sel>TTL1</sel>
+              <sel>TTL2</sel>
+              <sel>CMOS</sel>
+            </Selections>
+            <Comment>逻辑电平</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin14Fltr">
+            <label>Input Filter</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>滤波输入</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin14OM">
+            <label>GPIO OutMode</label>
+            <value>Push-Pull</value>
+            <Selections>
+              <sel>Push-Pull</sel>
+              <sel>Open-Drain</sel>
+            </Selections>
+            <Comment>输出模式</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin14DA">
             <label>Driving Ability</label>
             <value>Normal</value>
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
+              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin14DSR">
             <label>Driving Slew-Rate</label>
             <value>Normal</value>
             <Selections>
@@ -270,7 +400,7 @@
             </Selections>
             <Comment>斜率:仅输出有效&#xD;Normal:标准&#xD;Fast:快速</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin14PM">
             <label>Pull Mode</label>
             <value>Pull_None</value>
             <Selections>
@@ -286,34 +416,60 @@
             <label>PinFunctions</label>
             <value>Undefined</value>
             <Selections>
-              <sel>High_Z</sel>
-              <sel>GPIO_INPUT</sel>
-              <sel>GPIO_INPUT with Filter</sel>
-              <sel>GPIO_OUTPUT_Push-Pull</sel>
-              <sel>GPIO_OUTPUT_Open-Drain</sel>
-              <sel>GPIO_OUTPUT_Push-Pull with Monitor</sel>
-              <sel>GPIO_OUTPUT_Open-Drain with Monitor</sel>
-              <sel>SPI0_SCK</sel>
-              <sel>EBI3</sel>
-              <sel>LPT_IN</sel>
-              <sel>UART1_RX</sel>
-              <sel>UART0_RX</sel>
-              <sel>LED_S6</sel>
-              <sel>OPA3X</sel>
-              <sel>ADC_INB8</sel>
+              <sel notAvailable="Pin15TTL,Pin15Fltr,Pin15DA,Pin15DSR,Pin15OM,Pin15PM">High_Z</sel>
+              <sel notAvailable="Pin15DA,Pin15DSR,Pin15OM">GPIO_INPUT</sel>
+              <sel notAvailable="Pin15TTL,Pin15Fltr">GPIO_OUTPUT</sel>
+              <sel notAvailable="Pin15TTL,Pin15Fltr">GPIO_OUTPUT with Monitor</sel>
+              <sel notAvailable="Pin15TTL,Pin15Fltr,Pin15DA,Pin15DSR,Pin15OM">SPI0_SCK</sel>
+              <sel notAvailable="Pin15TTL,Pin15Fltr,Pin15DA,Pin15DSR,Pin15OM">EBI3</sel>
+              <sel notAvailable="Pin15TTL,Pin15Fltr,Pin15DA,Pin15DSR,Pin15OM">LPT_IN</sel>
+              <sel notAvailable="Pin15TTL,Pin15Fltr,Pin15DA,Pin15DSR,Pin15OM">UART1_RX</sel>
+              <sel notAvailable="Pin15TTL,Pin15Fltr,Pin15DA,Pin15DSR,Pin15OM">UART0_RX</sel>
+              <sel notAvailable="Pin15TTL,Pin15Fltr,Pin15DA,Pin15DSR,Pin15OM">LED_S6</sel>
+              <sel notAvailable="Pin15TTL,Pin15Fltr,Pin15DA,Pin15DSR,Pin15OM">OPA3X</sel>
+              <sel notAvailable="Pin15TTL,Pin15Fltr,Pin15DA,Pin15DSR,Pin15OM">ADC_INB8</sel>
             </Selections>
-            <Comment>管脚功能&#xD;High_Z:高阻&#xD;GPIO_INPUT:输入&#xD;GPIO_INPUT with Filter:带30ns滤波输入&#xD;GPIO_OUTPUT_Push-Pull:推挽输出&#xD;GPIO_OUTPUT_Open-Drain:开漏输出&#xD;GPIO_OUTPUT_Push-Pull with Monitor:带输出监测的推挽输出&#xD;GPIO_OUTPUT_Open-Drain with Monitor:带输出监测的开漏输出&#xD;Other:复用功能</Comment>
+            <Comment>管脚功能&#xD;High_Z:高阻&#xD;GPIO_INPUT:输入&#xD;GPIO_OUTPUT:输出&#xD;GPIO_OUTPUT with Monitor:带监测输出&#xD;Other:复用功能</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin15TTL">
+            <label>Logic Level</label>
+            <value>TTL1</value>
+            <Selections>
+              <sel>TTL1</sel>
+              <sel>TTL2</sel>
+              <sel>CMOS</sel>
+            </Selections>
+            <Comment>逻辑电平</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin15Fltr">
+            <label>Input Filter</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>滤波输入</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin15OM">
+            <label>GPIO OutMode</label>
+            <value>Push-Pull</value>
+            <Selections>
+              <sel>Push-Pull</sel>
+              <sel>Open-Drain</sel>
+            </Selections>
+            <Comment>输出模式</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin15DA">
             <label>Driving Ability</label>
             <value>Normal</value>
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
+              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin15DSR">
             <label>Driving Slew-Rate</label>
             <value>Normal</value>
             <Selections>
@@ -322,7 +478,7 @@
             </Selections>
             <Comment>斜率:仅输出有效&#xD;Normal:标准&#xD;Fast:快速</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin15PM">
             <label>Pull Mode</label>
             <value>Pull_None</value>
             <Selections>
@@ -338,33 +494,59 @@
             <label>PinFunctions</label>
             <value>Undefined</value>
             <Selections>
-              <sel>High_Z</sel>
-              <sel>GPIO_INPUT</sel>
-              <sel>GPIO_INPUT with Filter</sel>
-              <sel>GPIO_OUTPUT_Push-Pull</sel>
-              <sel>GPIO_OUTPUT_Open-Drain</sel>
-              <sel>GPIO_OUTPUT_Push-Pull with Monitor</sel>
-              <sel>GPIO_OUTPUT_Open-Drain with Monitor</sel>
-              <sel>SPI0_MISO</sel>
-              <sel>GPTA2_CHA</sel>
-              <sel>EBI0</sel>
-              <sel>GPTB3_CHAX</sel>
-              <sel>LED_S7</sel>
-              <sel>OPA2X</sel>
-              <sel>ADC_INB9</sel>
+              <sel notAvailable="Pin16TTL,Pin16Fltr,Pin16DA,Pin16DSR,Pin16OM,Pin16PM">High_Z</sel>
+              <sel notAvailable="Pin16DA,Pin16DSR,Pin16OM">GPIO_INPUT</sel>
+              <sel notAvailable="Pin16TTL,Pin16Fltr">GPIO_OUTPUT</sel>
+              <sel notAvailable="Pin16TTL,Pin16Fltr">GPIO_OUTPUT with Monitor</sel>
+              <sel notAvailable="Pin16TTL,Pin16Fltr,Pin16DA,Pin16DSR,Pin16OM">SPI0_MISO</sel>
+              <sel notAvailable="Pin16TTL,Pin16Fltr,Pin16DA,Pin16DSR,Pin16OM">GPTA2_CHA</sel>
+              <sel notAvailable="Pin16TTL,Pin16Fltr,Pin16DA,Pin16DSR,Pin16OM">EBI0</sel>
+              <sel notAvailable="Pin16TTL,Pin16Fltr,Pin16DA,Pin16DSR,Pin16OM">GPTB3_CHAX</sel>
+              <sel notAvailable="Pin16TTL,Pin16Fltr,Pin16DA,Pin16DSR,Pin16OM">LED_S7</sel>
+              <sel notAvailable="Pin16TTL,Pin16Fltr,Pin16DA,Pin16DSR,Pin16OM">OPA2X</sel>
+              <sel notAvailable="Pin16TTL,Pin16Fltr,Pin16DA,Pin16DSR,Pin16OM">ADC_INB9</sel>
             </Selections>
-            <Comment>管脚功能&#xD;High_Z:高阻&#xD;GPIO_INPUT:输入&#xD;GPIO_INPUT with Filter:带30ns滤波输入&#xD;GPIO_OUTPUT_Push-Pull:推挽输出&#xD;GPIO_OUTPUT_Open-Drain:开漏输出&#xD;GPIO_OUTPUT_Push-Pull with Monitor:带输出监测的推挽输出&#xD;GPIO_OUTPUT_Open-Drain with Monitor:带输出监测的开漏输出&#xD;Other:复用功能</Comment>
+            <Comment>管脚功能&#xD;High_Z:高阻&#xD;GPIO_INPUT:输入&#xD;GPIO_OUTPUT:输出&#xD;GPIO_OUTPUT with Monitor:带监测输出&#xD;Other:复用功能</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin16TTL">
+            <label>Logic Level</label>
+            <value>TTL1</value>
+            <Selections>
+              <sel>TTL1</sel>
+              <sel>TTL2</sel>
+              <sel>CMOS</sel>
+            </Selections>
+            <Comment>逻辑电平</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin16Fltr">
+            <label>Input Filter</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>滤波输入</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin16OM">
+            <label>GPIO OutMode</label>
+            <value>Push-Pull</value>
+            <Selections>
+              <sel>Push-Pull</sel>
+              <sel>Open-Drain</sel>
+            </Selections>
+            <Comment>输出模式</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin16DA">
             <label>Driving Ability</label>
             <value>Normal</value>
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
+              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin16DSR">
             <label>Driving Slew-Rate</label>
             <value>Normal</value>
             <Selections>
@@ -373,7 +555,7 @@
             </Selections>
             <Comment>斜率:仅输出有效&#xD;Normal:标准&#xD;Fast:快速</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin16PM">
             <label>Pull Mode</label>
             <value>Pull_None</value>
             <Selections>
@@ -389,33 +571,60 @@
             <label>PinFunctions</label>
             <value>Undefined</value>
             <Selections>
-              <sel>High_Z</sel>
-              <sel>GPIO_INPUT</sel>
-              <sel>GPIO_INPUT with Filter</sel>
-              <sel>GPIO_OUTPUT_Push-Pull</sel>
-              <sel>GPIO_OUTPUT_Open-Drain</sel>
-              <sel>GPIO_OUTPUT_Push-Pull with Monitor</sel>
-              <sel>GPIO_OUTPUT_Open-Drain with Monitor</sel>
-              <sel>SPI0_MOSI</sel>
-              <sel>GPTA2_CHB</sel>
-              <sel>GPTB3_CHAY</sel>
-              <sel>GPTB4_CHAX</sel>
-              <sel>GPTB0_CHAY</sel>
-              <sel>OPA2N</sel>
-              <sel>ADC_INB10</sel>
+              <sel notAvailable="Pin17TTL,Pin17Fltr,Pin17DA,Pin17DSR,Pin17OM,Pin17PM">High_Z</sel>
+              <sel notAvailable="Pin17DA,Pin17DSR,Pin17OM">GPIO_INPUT</sel>
+              <sel notAvailable="Pin17TTL,Pin17Fltr">GPIO_OUTPUT</sel>
+              <sel notAvailable="Pin17TTL,Pin17Fltr">GPIO_OUTPUT with Monitor</sel>
+              <sel notAvailable="Pin17TTL,Pin17Fltr,Pin17DA,Pin17DSR,Pin17OM"></sel>
+              <sel notAvailable="Pin17TTL,Pin17Fltr,Pin17DA,Pin17DSR,Pin17OM">SPI0_MOSI</sel>
+              <sel notAvailable="Pin17TTL,Pin17Fltr,Pin17DA,Pin17DSR,Pin17OM">GPTA2_CHB</sel>
+              <sel notAvailable="Pin17TTL,Pin17Fltr,Pin17DA,Pin17DSR,Pin17OM">GPTB3_CHAY</sel>
+              <sel notAvailable="Pin17TTL,Pin17Fltr,Pin17DA,Pin17DSR,Pin17OM">GPTB4_CHAX</sel>
+              <sel notAvailable="Pin17TTL,Pin17Fltr,Pin17DA,Pin17DSR,Pin17OM">GPTB0_CHAY</sel>
+              <sel notAvailable="Pin17TTL,Pin17Fltr,Pin17DA,Pin17DSR,Pin17OM">OPA2N</sel>
+              <sel notAvailable="Pin17TTL,Pin17Fltr,Pin17DA,Pin17DSR,Pin17OM">ADC_INB10</sel>
             </Selections>
-            <Comment>管脚功能&#xD;High_Z:高阻&#xD;GPIO_INPUT:输入&#xD;GPIO_INPUT with Filter:带30ns滤波输入&#xD;GPIO_OUTPUT_Push-Pull:推挽输出&#xD;GPIO_OUTPUT_Open-Drain:开漏输出&#xD;GPIO_OUTPUT_Push-Pull with Monitor:带输出监测的推挽输出&#xD;GPIO_OUTPUT_Open-Drain with Monitor:带输出监测的开漏输出&#xD;Other:复用功能</Comment>
+            <Comment>管脚功能&#xD;High_Z:高阻&#xD;GPIO_INPUT:输入&#xD;GPIO_OUTPUT:输出&#xD;GPIO_OUTPUT with Monitor:带监测输出&#xD;Other:复用功能</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin17TTL">
+            <label>Logic Level</label>
+            <value>TTL1</value>
+            <Selections>
+              <sel>TTL1</sel>
+              <sel>TTL2</sel>
+              <sel>CMOS</sel>
+            </Selections>
+            <Comment>逻辑电平</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin17Fltr">
+            <label>Input Filter</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>滤波输入</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin17OM">
+            <label>GPIO OutMode</label>
+            <value>Push-Pull</value>
+            <Selections>
+              <sel>Push-Pull</sel>
+              <sel>Open-Drain</sel>
+            </Selections>
+            <Comment>输出模式</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin17DA">
             <label>Driving Ability</label>
             <value>Normal</value>
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
+              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin17DSR">
             <label>Driving Slew-Rate</label>
             <value>Normal</value>
             <Selections>
@@ -424,7 +633,7 @@
             </Selections>
             <Comment>斜率:仅输出有效&#xD;Normal:标准&#xD;Fast:快速</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin17PM">
             <label>Pull Mode</label>
             <value>Pull_None</value>
             <Selections>
@@ -440,33 +649,59 @@
             <label>PinFunctions</label>
             <value>Undefined</value>
             <Selections>
-              <sel>High_Z</sel>
-              <sel>GPIO_INPUT</sel>
-              <sel>GPIO_INPUT with Filter</sel>
-              <sel>GPIO_OUTPUT_Push-Pull</sel>
-              <sel>GPIO_OUTPUT_Open-Drain</sel>
-              <sel>GPIO_OUTPUT_Push-Pull with Monitor</sel>
-              <sel>GPIO_OUTPUT_Open-Drain with Monitor</sel>
-              <sel>USART0_CK</sel>
-              <sel>GPTB3_CHAX</sel>
-              <sel>DAC0_OUT</sel>
-              <sel>GPTB0_CHAX</sel>
-              <sel>GPTB1_CHAX</sel>
-              <sel>CP0_OUT</sel>
-              <sel>CPIN1P</sel>
+              <sel notAvailable="Pin29TTL,Pin29Fltr,Pin29DA,Pin29DSR,Pin29OM,Pin29PM">High_Z</sel>
+              <sel notAvailable="Pin29DA,Pin29DSR,Pin29OM">GPIO_INPUT</sel>
+              <sel notAvailable="Pin29TTL,Pin29Fltr">GPIO_OUTPUT</sel>
+              <sel notAvailable="Pin29TTL,Pin29Fltr">GPIO_OUTPUT with Monitor</sel>
+              <sel notAvailable="Pin29TTL,Pin29Fltr,Pin29DA,Pin29DSR,Pin29OM">USART0_CK</sel>
+              <sel notAvailable="Pin29TTL,Pin29Fltr,Pin29DA,Pin29DSR,Pin29OM">GPTB3_CHAX</sel>
+              <sel notAvailable="Pin29TTL,Pin29Fltr,Pin29DA,Pin29DSR,Pin29OM">DAC0_OUT</sel>
+              <sel notAvailable="Pin29TTL,Pin29Fltr,Pin29DA,Pin29DSR,Pin29OM">GPTB0_CHAX</sel>
+              <sel notAvailable="Pin29TTL,Pin29Fltr,Pin29DA,Pin29DSR,Pin29OM">GPTB1_CHAX</sel>
+              <sel notAvailable="Pin29TTL,Pin29Fltr,Pin29DA,Pin29DSR,Pin29OM">CP0_OUT</sel>
+              <sel notAvailable="Pin29TTL,Pin29Fltr,Pin29DA,Pin29DSR,Pin29OM">CPin291P</sel>
             </Selections>
-            <Comment>管脚功能&#xD;High_Z:高阻&#xD;GPIO_INPUT:输入&#xD;GPIO_INPUT with Filter:带30ns滤波输入&#xD;GPIO_OUTPUT_Push-Pull:推挽输出&#xD;GPIO_OUTPUT_Open-Drain:开漏输出&#xD;GPIO_OUTPUT_Push-Pull with Monitor:带输出监测的推挽输出&#xD;GPIO_OUTPUT_Open-Drain with Monitor:带输出监测的开漏输出&#xD;Other:复用功能</Comment>
+            <Comment>管脚功能&#xD;High_Z:高阻&#xD;GPIO_INPUT:输入&#xD;GPIO_OUTPUT:输出&#xD;GPIO_OUTPUT with Monitor:带监测输出&#xD;Other:复用功能</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin29TTL">
+            <label>Logic Level</label>
+            <value>TTL1</value>
+            <Selections>
+              <sel>TTL1</sel>
+              <sel>TTL2</sel>
+              <sel>CMOS</sel>
+            </Selections>
+            <Comment>逻辑电平</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin29Fltr">
+            <label>Input Filter</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>滤波输入</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin29OM">
+            <label>GPIO OutMode</label>
+            <value>Push-Pull</value>
+            <Selections>
+              <sel>Push-Pull</sel>
+              <sel>Open-Drain</sel>
+            </Selections>
+            <Comment>输出模式</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin29DA">
             <label>Driving Ability</label>
             <value>Normal</value>
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
+              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin29DSR">
             <label>Driving Slew-Rate</label>
             <value>Normal</value>
             <Selections>
@@ -475,7 +710,7 @@
             </Selections>
             <Comment>斜率:仅输出有效&#xD;Normal:标准&#xD;Fast:快速</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin29PM">
             <label>Pull Mode</label>
             <value>Pull_None</value>
             <Selections>
@@ -491,34 +726,60 @@
             <label>PinFunctions</label>
             <value>Undefined</value>
             <Selections>
-              <sel>High_Z</sel>
-              <sel>GPIO_INPUT</sel>
-              <sel>GPIO_INPUT with Filter</sel>
-              <sel>GPIO_OUTPUT_Push-Pull</sel>
-              <sel>GPIO_OUTPUT_Open-Drain</sel>
-              <sel>GPIO_OUTPUT_Push-Pull with Monitor</sel>
-              <sel>GPIO_OUTPUT_Open-Drain with Monitor</sel>
-              <sel>EBI1</sel>
-              <sel>USART0_TX</sel>
-              <sel>GPTB4_CHAX</sel>
-              <sel>GPTB1_CHAX</sel>
-              <sel>GPTB2_CHAY</sel>
-              <sel>CP1_OUT</sel>
-              <sel>CPIN1N</sel>
-              <sel>ADC_INB4</sel>
+              <sel notAvailable="Pin30TTL,Pin30Fltr,Pin30DA,Pin30DSR,Pin30OM,Pin30PM">High_Z</sel>
+              <sel notAvailable="Pin30DA,Pin30DSR,Pin30OM">GPIO_INPUT</sel>
+              <sel notAvailable="Pin30TTL,Pin30Fltr">GPIO_OUTPUT</sel>
+              <sel notAvailable="Pin30TTL,Pin30Fltr">GPIO_OUTPUT with Monitor</sel>
+              <sel notAvailable="Pin30TTL,Pin30Fltr,Pin30DA,Pin30DSR,Pin30OM">EBI1</sel>
+              <sel notAvailable="Pin30TTL,Pin30Fltr,Pin30DA,Pin30DSR,Pin30OM">USART0_TX</sel>
+              <sel notAvailable="Pin30TTL,Pin30Fltr,Pin30DA,Pin30DSR,Pin30OM">GPTB4_CHAX</sel>
+              <sel notAvailable="Pin30TTL,Pin30Fltr,Pin30DA,Pin30DSR,Pin30OM">GPTB1_CHAX</sel>
+              <sel notAvailable="Pin30TTL,Pin30Fltr,Pin30DA,Pin30DSR,Pin30OM">GPTB2_CHAY</sel>
+              <sel notAvailable="Pin30TTL,Pin30Fltr,Pin30DA,Pin30DSR,Pin30OM">CP1_OUT</sel>
+              <sel notAvailable="Pin30TTL,Pin30Fltr,Pin30DA,Pin30DSR,Pin30OM">CPin301N</sel>
+              <sel notAvailable="Pin30TTL,Pin30Fltr,Pin30DA,Pin30DSR,Pin30OM">ADC_INB4</sel>
             </Selections>
-            <Comment>管脚功能&#xD;High_Z:高阻&#xD;GPIO_INPUT:输入&#xD;GPIO_INPUT with Filter:带30ns滤波输入&#xD;GPIO_OUTPUT_Push-Pull:推挽输出&#xD;GPIO_OUTPUT_Open-Drain:开漏输出&#xD;GPIO_OUTPUT_Push-Pull with Monitor:带输出监测的推挽输出&#xD;GPIO_OUTPUT_Open-Drain with Monitor:带输出监测的开漏输出&#xD;Other:复用功能</Comment>
+            <Comment>管脚功能&#xD;High_Z:高阻&#xD;GPIO_INPUT:输入&#xD;GPIO_OUTPUT:输出&#xD;GPIO_OUTPUT with Monitor:带监测输出&#xD;Other:复用功能</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin30TTL">
+            <label>Logic Level</label>
+            <value>TTL1</value>
+            <Selections>
+              <sel>TTL1</sel>
+              <sel>TTL2</sel>
+              <sel>CMOS</sel>
+            </Selections>
+            <Comment>逻辑电平</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin30Fltr">
+            <label>Input Filter</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>滤波输入</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin30OM">
+            <label>GPIO OutMode</label>
+            <value>Push-Pull</value>
+            <Selections>
+              <sel>Push-Pull</sel>
+              <sel>Open-Drain</sel>
+            </Selections>
+            <Comment>输出模式</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin30DA">
             <label>Driving Ability</label>
             <value>Normal</value>
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
+              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin30DSR">
             <label>Driving Slew-Rate</label>
             <value>Normal</value>
             <Selections>
@@ -527,7 +788,7 @@
             </Selections>
             <Comment>斜率:仅输出有效&#xD;Normal:标准&#xD;Fast:快速</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin30PM">
             <label>Pull Mode</label>
             <value>Pull_None</value>
             <Selections>
@@ -543,34 +804,60 @@
             <label>PinFunctions</label>
             <value>Undefined</value>
             <Selections>
-              <sel>High_Z</sel>
-              <sel>GPIO_INPUT</sel>
-              <sel>GPIO_INPUT with Filter</sel>
-              <sel>GPIO_OUTPUT_Push-Pull</sel>
-              <sel>GPIO_OUTPUT_Open-Drain</sel>
-              <sel>GPIO_OUTPUT_Push-Pull with Monitor</sel>
-              <sel>GPIO_OUTPUT_Open-Drain with Monitor</sel>
-              <sel>CNTA_BUZ</sel>
-              <sel>USART0_RX</sel>
-              <sel>GPTB5_CHAX</sel>
-              <sel>EBI0</sel>
-              <sel>GPTB2_CHAX</sel>
-              <sel>GPTB2_CHAX_1</sel>
-              <sel>CP2_OUT</sel>
-              <sel>ADC_INB5</sel>
+              <sel notAvailable="Pin31TTL,Pin31Fltr,Pin31DA,Pin31DSR,Pin31OM,Pin31PM">High_Z</sel>
+              <sel notAvailable="Pin31DA,Pin31DSR,Pin31OM">GPIO_INPUT</sel>
+              <sel notAvailable="Pin31TTL,Pin31Fltr">GPIO_OUTPUT</sel>
+              <sel notAvailable="Pin31TTL,Pin31Fltr">GPIO_OUTPUT with Monitor</sel>
+              <sel notAvailable="Pin31TTL,Pin31Fltr,Pin31DA,Pin31DSR,Pin31OM">CNTA_BUZ</sel>
+              <sel notAvailable="Pin31TTL,Pin31Fltr,Pin31DA,Pin31DSR,Pin31OM">USART0_RX</sel>
+              <sel notAvailable="Pin31TTL,Pin31Fltr,Pin31DA,Pin31DSR,Pin31OM">GPTB5_CHAX</sel>
+              <sel notAvailable="Pin31TTL,Pin31Fltr,Pin31DA,Pin31DSR,Pin31OM">EBI0</sel>
+              <sel notAvailable="Pin31TTL,Pin31Fltr,Pin31DA,Pin31DSR,Pin31OM">GPTB2_CHAX</sel>
+              <sel notAvailable="Pin31TTL,Pin31Fltr,Pin31DA,Pin31DSR,Pin31OM">GPTB2_CHAX_1</sel>
+              <sel notAvailable="Pin31TTL,Pin31Fltr,Pin31DA,Pin31DSR,Pin31OM">CP2_OUT</sel>
+              <sel notAvailable="Pin31TTL,Pin31Fltr,Pin31DA,Pin31DSR,Pin31OM">ADC_INB5</sel>
             </Selections>
-            <Comment>管脚功能&#xD;High_Z:高阻&#xD;GPIO_INPUT:输入&#xD;GPIO_INPUT with Filter:带30ns滤波输入&#xD;GPIO_OUTPUT_Push-Pull:推挽输出&#xD;GPIO_OUTPUT_Open-Drain:开漏输出&#xD;GPIO_OUTPUT_Push-Pull with Monitor:带输出监测的推挽输出&#xD;GPIO_OUTPUT_Open-Drain with Monitor:带输出监测的开漏输出&#xD;Other:复用功能</Comment>
+            <Comment>管脚功能&#xD;High_Z:高阻&#xD;GPIO_INPUT:输入&#xD;GPIO_OUTPUT:输出&#xD;GPIO_OUTPUT with Monitor:带监测输出&#xD;Other:复用功能</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin31TTL">
+            <label>Logic Level</label>
+            <value>TTL1</value>
+            <Selections>
+              <sel>TTL1</sel>
+              <sel>TTL2</sel>
+              <sel>CMOS</sel>
+            </Selections>
+            <Comment>逻辑电平</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin31Fltr">
+            <label>Input Filter</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>滤波输入</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin31OM">
+            <label>GPIO OutMode</label>
+            <value>Push-Pull</value>
+            <Selections>
+              <sel>Push-Pull</sel>
+              <sel>Open-Drain</sel>
+            </Selections>
+            <Comment>输出模式</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin31DA">
             <label>Driving Ability</label>
             <value>Normal</value>
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
+              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin31DSR">
             <label>Driving Slew-Rate</label>
             <value>Normal</value>
             <Selections>
@@ -579,7 +866,7 @@
             </Selections>
             <Comment>斜率:仅输出有效&#xD;Normal:标准&#xD;Fast:快速</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin31PM">
             <label>Pull Mode</label>
             <value>Pull_None</value>
             <Selections>
@@ -595,34 +882,60 @@
             <label>PinFunctions</label>
             <value>Undefined</value>
             <Selections>
-              <sel>High_Z</sel>
-              <sel>GPIO_INPUT</sel>
-              <sel>GPIO_INPUT with Filter</sel>
-              <sel>GPIO_OUTPUT_Push-Pull</sel>
-              <sel>GPIO_OUTPUT_Open-Drain</sel>
-              <sel>GPIO_OUTPUT_Push-Pull with Monitor</sel>
-              <sel>GPIO_OUTPUT_Open-Drain with Monitor</sel>
-              <sel>CAN_RX</sel>
-              <sel>EBI0</sel>
-              <sel>SPI0_NSS</sel>
-              <sel>GPTB3_CHAY</sel>
-              <sel>GPTB0_CHAY</sel>
-              <sel>LED_C6</sel>
-              <sel>GPTA1_CHA</sel>
-              <sel>ADC_INB6</sel>
+              <sel notAvailable="Pin32TTL,Pin32Fltr,Pin32DA,Pin32DSR,Pin32OM,Pin32PM">High_Z</sel>
+              <sel notAvailable="Pin32DA,Pin32DSR,Pin32OM">GPIO_INPUT</sel>
+              <sel notAvailable="Pin32TTL,Pin32Fltr">GPIO_OUTPUT</sel>
+              <sel notAvailable="Pin32TTL,Pin32Fltr">GPIO_OUTPUT with Monitor</sel>
+              <sel notAvailable="Pin32TTL,Pin32Fltr,Pin32DA,Pin32DSR,Pin32OM">CAN_RX</sel>
+              <sel notAvailable="Pin32TTL,Pin32Fltr,Pin32DA,Pin32DSR,Pin32OM">EBI0</sel>
+              <sel notAvailable="Pin32TTL,Pin32Fltr,Pin32DA,Pin32DSR,Pin32OM">SPI0_NSS</sel>
+              <sel notAvailable="Pin32TTL,Pin32Fltr,Pin32DA,Pin32DSR,Pin32OM">GPTB3_CHAY</sel>
+              <sel notAvailable="Pin32TTL,Pin32Fltr,Pin32DA,Pin32DSR,Pin32OM">GPTB0_CHAY</sel>
+              <sel notAvailable="Pin32TTL,Pin32Fltr,Pin32DA,Pin32DSR,Pin32OM">LED_C6</sel>
+              <sel notAvailable="Pin32TTL,Pin32Fltr,Pin32DA,Pin32DSR,Pin32OM">GPTA1_CHA</sel>
+              <sel notAvailable="Pin32TTL,Pin32Fltr,Pin32DA,Pin32DSR,Pin32OM">ADC_INB6</sel>
             </Selections>
-            <Comment>管脚功能&#xD;High_Z:高阻&#xD;GPIO_INPUT:输入&#xD;GPIO_INPUT with Filter:带30ns滤波输入&#xD;GPIO_OUTPUT_Push-Pull:推挽输出&#xD;GPIO_OUTPUT_Open-Drain:开漏输出&#xD;GPIO_OUTPUT_Push-Pull with Monitor:带输出监测的推挽输出&#xD;GPIO_OUTPUT_Open-Drain with Monitor:带输出监测的开漏输出&#xD;Other:复用功能</Comment>
+            <Comment>管脚功能&#xD;High_Z:高阻&#xD;GPIO_INPUT:输入&#xD;GPIO_OUTPUT:输出&#xD;GPIO_OUTPUT with Monitor:带监测输出&#xD;Other:复用功能</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin32TTL">
+            <label>Logic Level</label>
+            <value>TTL1</value>
+            <Selections>
+              <sel>TTL1</sel>
+              <sel>TTL2</sel>
+              <sel>CMOS</sel>
+            </Selections>
+            <Comment>逻辑电平</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin32Fltr">
+            <label>Input Filter</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>滤波输入</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin32OM">
+            <label>GPIO OutMode</label>
+            <value>Push-Pull</value>
+            <Selections>
+              <sel>Push-Pull</sel>
+              <sel>Open-Drain</sel>
+            </Selections>
+            <Comment>输出模式</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin32DA">
             <label>Driving Ability</label>
             <value>Normal</value>
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
+              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin32DSR">
             <label>Driving Slew-Rate</label>
             <value>Normal</value>
             <Selections>
@@ -631,7 +944,7 @@
             </Selections>
             <Comment>斜率:仅输出有效&#xD;Normal:标准&#xD;Fast:快速</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin32PM">
             <label>Pull Mode</label>
             <value>Pull_None</value>
             <Selections>
@@ -647,35 +960,61 @@
             <label>PinFunctions</label>
             <value>Undefined</value>
             <Selections>
-              <sel>High_Z</sel>
-              <sel>GPIO_INPUT</sel>
-              <sel>GPIO_INPUT with Filter</sel>
-              <sel>GPIO_OUTPUT_Push-Pull</sel>
-              <sel>GPIO_OUTPUT_Open-Drain</sel>
-              <sel>GPIO_OUTPUT_Push-Pull with Monitor</sel>
-              <sel>GPIO_OUTPUT_Open-Drain with Monitor</sel>
-              <sel>CAN_TX</sel>
-              <sel>UART1_TX</sel>
-              <sel>UART0_TX</sel>
-              <sel>SPI0_SCK</sel>
-              <sel>GPTB3_CHAX</sel>
-              <sel>GPTB0_CHAX</sel>
-              <sel>LED_C7</sel>
-              <sel>GPTA2_CHA</sel>
-              <sel>ADC_INB7</sel>
+              <sel notAvailable="Pin33TTL,Pin33Fltr,Pin33DA,Pin33DSR,Pin33OM,Pin33PM">High_Z</sel>
+              <sel notAvailable="Pin33DA,Pin33DSR,Pin33OM">GPIO_INPUT</sel>
+              <sel notAvailable="Pin33TTL,Pin33Fltr">GPIO_OUTPUT</sel>
+              <sel notAvailable="Pin33TTL,Pin33Fltr">GPIO_OUTPUT with Monitor</sel>
+              <sel notAvailable="Pin33TTL,Pin33Fltr,Pin33DA,Pin33DSR,Pin33OM">CAN_TX</sel>
+              <sel notAvailable="Pin33TTL,Pin33Fltr,Pin33DA,Pin33DSR,Pin33OM">UART1_TX</sel>
+              <sel notAvailable="Pin33TTL,Pin33Fltr,Pin33DA,Pin33DSR,Pin33OM">UART0_TX</sel>
+              <sel notAvailable="Pin33TTL,Pin33Fltr,Pin33DA,Pin33DSR,Pin33OM">SPI0_SCK</sel>
+              <sel notAvailable="Pin33TTL,Pin33Fltr,Pin33DA,Pin33DSR,Pin33OM">GPTB3_CHAX</sel>
+              <sel notAvailable="Pin33TTL,Pin33Fltr,Pin33DA,Pin33DSR,Pin33OM">GPTB0_CHAX</sel>
+              <sel notAvailable="Pin33TTL,Pin33Fltr,Pin33DA,Pin33DSR,Pin33OM">LED_C7</sel>
+              <sel notAvailable="Pin33TTL,Pin33Fltr,Pin33DA,Pin33DSR,Pin33OM">GPTA2_CHA</sel>
+              <sel notAvailable="Pin33TTL,Pin33Fltr,Pin33DA,Pin33DSR,Pin33OM">ADC_INB7</sel>
             </Selections>
-            <Comment>管脚功能&#xD;High_Z:高阻&#xD;GPIO_INPUT:输入&#xD;GPIO_INPUT with Filter:带30ns滤波输入&#xD;GPIO_OUTPUT_Push-Pull:推挽输出&#xD;GPIO_OUTPUT_Open-Drain:开漏输出&#xD;GPIO_OUTPUT_Push-Pull with Monitor:带输出监测的推挽输出&#xD;GPIO_OUTPUT_Open-Drain with Monitor:带输出监测的开漏输出&#xD;Other:复用功能</Comment>
+            <Comment>管脚功能&#xD;High_Z:高阻&#xD;GPIO_INPUT:输入&#xD;GPIO_OUTPUT:输出&#xD;GPIO_OUTPUT with Monitor:带监测输出&#xD;Other:复用功能</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin33TTL">
+            <label>Logic Level</label>
+            <value>TTL1</value>
+            <Selections>
+              <sel>TTL1</sel>
+              <sel>TTL2</sel>
+              <sel>CMOS</sel>
+            </Selections>
+            <Comment>逻辑电平</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin33Fltr">
+            <label>Input Filter</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>滤波输入</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin33OM">
+            <label>GPIO OutMode</label>
+            <value>Push-Pull</value>
+            <Selections>
+              <sel>Push-Pull</sel>
+              <sel>Open-Drain</sel>
+            </Selections>
+            <Comment>输出模式</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin33DA">
             <label>Driving Ability</label>
             <value>Normal</value>
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
+              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin33DSR">
             <label>Driving Slew-Rate</label>
             <value>Normal</value>
             <Selections>
@@ -684,7 +1023,7 @@
             </Selections>
             <Comment>斜率:仅输出有效&#xD;Normal:标准&#xD;Fast:快速</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin33PM">
             <label>Pull Mode</label>
             <value>Pull_None</value>
             <Selections>
@@ -700,31 +1039,57 @@
             <label>PinFunctions</label>
             <value>Undefined</value>
             <Selections>
-              <sel>High_Z</sel>
-              <sel>GPIO_INPUT</sel>
-              <sel>GPIO_INPUT with Filter</sel>
-              <sel>GPIO_OUTPUT_Push-Pull</sel>
-              <sel>GPIO_OUTPUT_Open-Drain</sel>
-              <sel>GPIO_OUTPUT_Push-Pull with Monitor</sel>
-              <sel>GPIO_OUTPUT_Open-Drain with Monitor</sel>
-              <sel>SWDIO</sel>
-              <sel>I2C_SCL</sel>
-              <sel>UART1_RX</sel>
-              <sel>UART0_RX</sel>
-              <sel>LED_C8</sel>
+              <sel notAvailable="Pin34TTL,Pin34Fltr,Pin34DA,Pin34DSR,Pin34OM,Pin34PM">High_Z</sel>
+              <sel notAvailable="Pin34DA,Pin34DSR,Pin34OM">GPIO_INPUT</sel>
+              <sel notAvailable="Pin34TTL,Pin34Fltr">GPIO_OUTPUT</sel>
+              <sel notAvailable="Pin34TTL,Pin34Fltr">GPIO_OUTPUT with Monitor</sel>
+              <sel notAvailable="Pin34TTL,Pin34Fltr,Pin34DA,Pin34DSR,Pin34OM">SWDIO</sel>
+              <sel notAvailable="Pin34TTL,Pin34Fltr,Pin34DA,Pin34DSR,Pin34OM">I2C_SCL</sel>
+              <sel notAvailable="Pin34TTL,Pin34Fltr,Pin34DA,Pin34DSR,Pin34OM">UART1_RX</sel>
+              <sel notAvailable="Pin34TTL,Pin34Fltr,Pin34DA,Pin34DSR,Pin34OM">UART0_RX</sel>
+              <sel notAvailable="Pin34TTL,Pin34Fltr,Pin34DA,Pin34DSR,Pin34OM">LED_C8</sel>
             </Selections>
-            <Comment>管脚功能&#xD;High_Z:高阻&#xD;GPIO_INPUT:输入&#xD;GPIO_INPUT with Filter:带30ns滤波输入&#xD;GPIO_OUTPUT_Push-Pull:推挽输出&#xD;GPIO_OUTPUT_Open-Drain:开漏输出&#xD;GPIO_OUTPUT_Push-Pull with Monitor:带输出监测的推挽输出&#xD;GPIO_OUTPUT_Open-Drain with Monitor:带输出监测的开漏输出&#xD;Other:复用功能</Comment>
+            <Comment>管脚功能&#xD;High_Z:高阻&#xD;GPIO_INPUT:输入&#xD;GPIO_OUTPUT:输出&#xD;GPIO_OUTPUT with Monitor:带监测输出&#xD;Other:复用功能</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin34TTL">
+            <label>Logic Level</label>
+            <value>TTL1</value>
+            <Selections>
+              <sel>TTL1</sel>
+              <sel>TTL2</sel>
+              <sel>CMOS</sel>
+            </Selections>
+            <Comment>逻辑电平</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin34Fltr">
+            <label>Input Filter</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>滤波输入</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin34OM">
+            <label>GPIO OutMode</label>
+            <value>Push-Pull</value>
+            <Selections>
+              <sel>Push-Pull</sel>
+              <sel>Open-Drain</sel>
+            </Selections>
+            <Comment>输出模式</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin34DA">
             <label>Driving Ability</label>
             <value>Normal</value>
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
+              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin34DSR">
             <label>Driving Slew-Rate</label>
             <value>Normal</value>
             <Selections>
@@ -733,7 +1098,7 @@
             </Selections>
             <Comment>斜率:仅输出有效&#xD;Normal:标准&#xD;Fast:快速</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin34PM">
             <label>Pull Mode</label>
             <value>Pull_None</value>
             <Selections>
@@ -749,31 +1114,58 @@
             <label>PinFunctions</label>
             <value>Undefined</value>
             <Selections>
-              <sel>High_Z</sel>
-              <sel>GPIO_INPUT</sel>
-              <sel>GPIO_INPUT with Filter</sel>
-              <sel>GPIO_OUTPUT_Push-Pull</sel>
-              <sel>GPIO_OUTPUT_Open-Drain</sel>
-              <sel>GPIO_OUTPUT_Push-Pull with Monitor</sel>
-              <sel>GPIO_OUTPUT_Open-Drain with Monitor</sel>
-              <sel>SWDCLK</sel>
-              <sel>I2C_SDA</sel>
-              <sel>UART1_TX</sel>
-              <sel>UART0_TX</sel>
-              <sel>LED_C9</sel>
+              <sel notAvailable="Pin37TTL,Pin37Fltr,Pin37DA,Pin37DSR,Pin37OM,Pin37PM">High_Z</sel>
+              <sel notAvailable="Pin37DA,Pin37DSR,Pin37OM">GPIO_INPUT</sel>
+              <sel notAvailable="Pin37TTL,Pin37Fltr">GPIO_OUTPUT</sel>
+              <sel notAvailable="Pin37TTL,Pin37Fltr">GPIO_OUTPUT with Monitor</sel>
+              <sel notAvailable="Pin37TTL,Pin37Fltr,Pin37DA,Pin37DSR,Pin37OM"></sel>
+              <sel notAvailable="Pin37TTL,Pin37Fltr,Pin37DA,Pin37DSR,Pin37OM">SWDCLK</sel>
+              <sel notAvailable="Pin37TTL,Pin37Fltr,Pin37DA,Pin37DSR,Pin37OM">I2C_SDA</sel>
+              <sel notAvailable="Pin37TTL,Pin37Fltr,Pin37DA,Pin37DSR,Pin37OM">UART1_TX</sel>
+              <sel notAvailable="Pin37TTL,Pin37Fltr,Pin37DA,Pin37DSR,Pin37OM">UART0_TX</sel>
+              <sel notAvailable="Pin37TTL,Pin37Fltr,Pin37DA,Pin37DSR,Pin37OM">LED_C9</sel>
             </Selections>
-            <Comment>管脚功能&#xD;High_Z:高阻&#xD;GPIO_INPUT:输入&#xD;GPIO_INPUT with Filter:带30ns滤波输入&#xD;GPIO_OUTPUT_Push-Pull:推挽输出&#xD;GPIO_OUTPUT_Open-Drain:开漏输出&#xD;GPIO_OUTPUT_Push-Pull with Monitor:带输出监测的推挽输出&#xD;GPIO_OUTPUT_Open-Drain with Monitor:带输出监测的开漏输出&#xD;Other:复用功能</Comment>
+            <Comment>管脚功能&#xD;High_Z:高阻&#xD;GPIO_INPUT:输入&#xD;GPIO_OUTPUT:输出&#xD;GPIO_OUTPUT with Monitor:带监测输出&#xD;Other:复用功能</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin37TTL">
+            <label>Logic Level</label>
+            <value>TTL1</value>
+            <Selections>
+              <sel>TTL1</sel>
+              <sel>TTL2</sel>
+              <sel>CMOS</sel>
+            </Selections>
+            <Comment>逻辑电平</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin37Fltr">
+            <label>Input Filter</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>滤波输入</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin37OM">
+            <label>GPIO OutMode</label>
+            <value>Push-Pull</value>
+            <Selections>
+              <sel>Push-Pull</sel>
+              <sel>Open-Drain</sel>
+            </Selections>
+            <Comment>输出模式</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin37DA">
             <label>Driving Ability</label>
             <value>Normal</value>
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
+              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin37DSR">
             <label>Driving Slew-Rate</label>
             <value>Normal</value>
             <Selections>
@@ -782,7 +1174,7 @@
             </Selections>
             <Comment>斜率:仅输出有效&#xD;Normal:标准&#xD;Fast:快速</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin37PM">
             <label>Pull Mode</label>
             <value>Pull_None</value>
             <Selections>
@@ -798,33 +1190,60 @@
             <label>PinFunctions</label>
             <value>Undefined</value>
             <Selections>
-              <sel>High_Z</sel>
-              <sel>GPIO_INPUT</sel>
-              <sel>GPIO_INPUT with Filter</sel>
-              <sel>GPIO_OUTPUT_Push-Pull</sel>
-              <sel>GPIO_OUTPUT_Open-Drain</sel>
-              <sel>GPIO_OUTPUT_Push-Pull with Monitor</sel>
-              <sel>GPIO_OUTPUT_Open-Drain with Monitor</sel>
-              <sel>SPI0_NSS</sel>
-              <sel>UART1_RX</sel>
-              <sel>UART0_RX</sel>
-              <sel>SPI1_NSS</sel>
-              <sel>EBI0</sel>
-              <sel>CPIN7N</sel>
-              <sel>ADC_INA6</sel>
+              <sel notAvailable="Pin38TTL,Pin38Fltr,Pin38DA,Pin38DSR,Pin38OM,Pin38PM">High_Z</sel>
+              <sel notAvailable="Pin38DA,Pin38DSR,Pin38OM">GPIO_INPUT</sel>
+              <sel notAvailable="Pin38TTL,Pin38Fltr">GPIO_OUTPUT</sel>
+              <sel notAvailable="Pin38TTL,Pin38Fltr">GPIO_OUTPUT with Monitor</sel>
+              <sel notAvailable="Pin38TTL,Pin38Fltr,Pin38DA,Pin38DSR,Pin38OM"></sel>
+              <sel notAvailable="Pin38TTL,Pin38Fltr,Pin38DA,Pin38DSR,Pin38OM">SPI0_NSS</sel>
+              <sel notAvailable="Pin38TTL,Pin38Fltr,Pin38DA,Pin38DSR,Pin38OM">UART1_RX</sel>
+              <sel notAvailable="Pin38TTL,Pin38Fltr,Pin38DA,Pin38DSR,Pin38OM">UART0_RX</sel>
+              <sel notAvailable="Pin38TTL,Pin38Fltr,Pin38DA,Pin38DSR,Pin38OM">SPI1_NSS</sel>
+              <sel notAvailable="Pin38TTL,Pin38Fltr,Pin38DA,Pin38DSR,Pin38OM">EBI0</sel>
+              <sel notAvailable="Pin38TTL,Pin38Fltr,Pin38DA,Pin38DSR,Pin38OM">CPin387N</sel>
+              <sel notAvailable="Pin38TTL,Pin38Fltr,Pin38DA,Pin38DSR,Pin38OM">ADC_INA6</sel>
             </Selections>
-            <Comment>管脚功能&#xD;High_Z:高阻&#xD;GPIO_INPUT:输入&#xD;GPIO_INPUT with Filter:带30ns滤波输入&#xD;GPIO_OUTPUT_Push-Pull:推挽输出&#xD;GPIO_OUTPUT_Open-Drain:开漏输出&#xD;GPIO_OUTPUT_Push-Pull with Monitor:带输出监测的推挽输出&#xD;GPIO_OUTPUT_Open-Drain with Monitor:带输出监测的开漏输出&#xD;Other:复用功能</Comment>
+            <Comment>管脚功能&#xD;High_Z:高阻&#xD;GPIO_INPUT:输入&#xD;GPIO_OUTPUT:输出&#xD;GPIO_OUTPUT with Monitor:带监测输出&#xD;Other:复用功能</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin38TTL">
+            <label>Logic Level</label>
+            <value>TTL1</value>
+            <Selections>
+              <sel>TTL1</sel>
+              <sel>TTL2</sel>
+              <sel>CMOS</sel>
+            </Selections>
+            <Comment>逻辑电平</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin38Fltr">
+            <label>Input Filter</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>滤波输入</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin38OM">
+            <label>GPIO OutMode</label>
+            <value>Push-Pull</value>
+            <Selections>
+              <sel>Push-Pull</sel>
+              <sel>Open-Drain</sel>
+            </Selections>
+            <Comment>输出模式</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin38DA">
             <label>Driving Ability</label>
             <value>Normal</value>
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
+              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin38DSR">
             <label>Driving Slew-Rate</label>
             <value>Normal</value>
             <Selections>
@@ -833,7 +1252,7 @@
             </Selections>
             <Comment>斜率:仅输出有效&#xD;Normal:标准&#xD;Fast:快速</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin38PM">
             <label>Pull Mode</label>
             <value>Pull_None</value>
             <Selections>
@@ -849,34 +1268,60 @@
             <label>PinFunctions</label>
             <value>Undefined</value>
             <Selections>
-              <sel>High_Z</sel>
-              <sel>GPIO_INPUT</sel>
-              <sel>GPIO_INPUT with Filter</sel>
-              <sel>GPIO_OUTPUT_Push-Pull</sel>
-              <sel>GPIO_OUTPUT_Open-Drain</sel>
-              <sel>GPIO_OUTPUT_Push-Pull with Monitor</sel>
-              <sel>GPIO_OUTPUT_Open-Drain with Monitor</sel>
-              <sel>SIO0</sel>
-              <sel>GPTA3_CHA</sel>
-              <sel>GPTB4_CHAY</sel>
-              <sel>GPTB5_CHAX</sel>
-              <sel>GPTB1_CHAY</sel>
-              <sel>GPTB0_CHAX</sel>
-              <sel>OPA2P</sel>
-              <sel>ADC_INB11</sel>
+              <sel notAvailable="Pin18TTL,Pin18Fltr,Pin18DA,Pin18DSR,Pin18OM,Pin18PM">High_Z</sel>
+              <sel notAvailable="Pin18DA,Pin18DSR,Pin18OM">GPIO_INPUT</sel>
+              <sel notAvailable="Pin18TTL,Pin18Fltr">GPIO_OUTPUT</sel>
+              <sel notAvailable="Pin18TTL,Pin18Fltr">GPIO_OUTPUT with Monitor</sel>
+              <sel notAvailable="Pin18TTL,Pin18Fltr,Pin18DA,Pin18DSR,Pin18OM">SIO0</sel>
+              <sel notAvailable="Pin18TTL,Pin18Fltr,Pin18DA,Pin18DSR,Pin18OM">GPTA3_CHA</sel>
+              <sel notAvailable="Pin18TTL,Pin18Fltr,Pin18DA,Pin18DSR,Pin18OM">GPTB4_CHAY</sel>
+              <sel notAvailable="Pin18TTL,Pin18Fltr,Pin18DA,Pin18DSR,Pin18OM">GPTB5_CHAX</sel>
+              <sel notAvailable="Pin18TTL,Pin18Fltr,Pin18DA,Pin18DSR,Pin18OM">GPTB1_CHAY</sel>
+              <sel notAvailable="Pin18TTL,Pin18Fltr,Pin18DA,Pin18DSR,Pin18OM">GPTB0_CHAX</sel>
+              <sel notAvailable="Pin18TTL,Pin18Fltr,Pin18DA,Pin18DSR,Pin18OM">OPA2P</sel>
+              <sel notAvailable="Pin18TTL,Pin18Fltr,Pin18DA,Pin18DSR,Pin18OM">ADC_INB11</sel>
             </Selections>
-            <Comment>管脚功能&#xD;High_Z:高阻&#xD;GPIO_INPUT:输入&#xD;GPIO_INPUT with Filter:带30ns滤波输入&#xD;GPIO_OUTPUT_Push-Pull:推挽输出&#xD;GPIO_OUTPUT_Open-Drain:开漏输出&#xD;GPIO_OUTPUT_Push-Pull with Monitor:带输出监测的推挽输出&#xD;GPIO_OUTPUT_Open-Drain with Monitor:带输出监测的开漏输出&#xD;Other:复用功能</Comment>
+            <Comment>管脚功能&#xD;High_Z:高阻&#xD;GPIO_INPUT:输入&#xD;GPIO_OUTPUT:输出&#xD;GPIO_OUTPUT with Monitor:带监测输出&#xD;Other:复用功能</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin18TTL">
+            <label>Logic Level</label>
+            <value>TTL1</value>
+            <Selections>
+              <sel>TTL1</sel>
+              <sel>TTL2</sel>
+              <sel>CMOS</sel>
+            </Selections>
+            <Comment>逻辑电平</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin18Fltr">
+            <label>Input Filter</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>滤波输入</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin18OM">
+            <label>GPIO OutMode</label>
+            <value>Push-Pull</value>
+            <Selections>
+              <sel>Push-Pull</sel>
+              <sel>Open-Drain</sel>
+            </Selections>
+            <Comment>输出模式</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin18DA">
             <label>Driving Ability</label>
             <value>Normal</value>
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
+              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin18DSR">
             <label>Driving Slew-Rate</label>
             <value>Normal</value>
             <Selections>
@@ -885,7 +1330,7 @@
             </Selections>
             <Comment>斜率:仅输出有效&#xD;Normal:标准&#xD;Fast:快速</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin18PM">
             <label>Pull Mode</label>
             <value>Pull_None</value>
             <Selections>
@@ -901,34 +1346,60 @@
             <label>PinFunctions</label>
             <value>Undefined</value>
             <Selections>
-              <sel>High_Z</sel>
-              <sel>GPIO_INPUT</sel>
-              <sel>GPIO_INPUT with Filter</sel>
-              <sel>GPIO_OUTPUT_Push-Pull</sel>
-              <sel>GPIO_OUTPUT_Open-Drain</sel>
-              <sel>GPIO_OUTPUT_Push-Pull with Monitor</sel>
-              <sel>GPIO_OUTPUT_Open-Drain with Monitor</sel>
-              <sel>SIO1</sel>
-              <sel>GPTA3_CHB</sel>
-              <sel>GPTB5_CHAY</sel>
-              <sel>LVDIN</sel>
-              <sel>GPTB2_CHAY</sel>
-              <sel>GPTB1_CHAY</sel>
-              <sel>CPIN3P</sel>
-              <sel>ADC_INB12</sel>
+              <sel notAvailable="Pin19TTL,Pin19Fltr,Pin19DA,Pin19DSR,Pin19OM,Pin19PM">High_Z</sel>
+              <sel notAvailable="Pin19DA,Pin19DSR,Pin19OM">GPIO_INPUT</sel>
+              <sel notAvailable="Pin19TTL,Pin19Fltr">GPIO_OUTPUT</sel>
+              <sel notAvailable="Pin19TTL,Pin19Fltr">GPIO_OUTPUT with Monitor</sel>
+              <sel notAvailable="Pin19TTL,Pin19Fltr,Pin19DA,Pin19DSR,Pin19OM">SIO1</sel>
+              <sel notAvailable="Pin19TTL,Pin19Fltr,Pin19DA,Pin19DSR,Pin19OM">GPTA3_CHB</sel>
+              <sel notAvailable="Pin19TTL,Pin19Fltr,Pin19DA,Pin19DSR,Pin19OM">GPTB5_CHAY</sel>
+              <sel notAvailable="Pin19TTL,Pin19Fltr,Pin19DA,Pin19DSR,Pin19OM">LVDIN</sel>
+              <sel notAvailable="Pin19TTL,Pin19Fltr,Pin19DA,Pin19DSR,Pin19OM">GPTB2_CHAY</sel>
+              <sel notAvailable="Pin19TTL,Pin19Fltr,Pin19DA,Pin19DSR,Pin19OM">GPTB1_CHAY</sel>
+              <sel notAvailable="Pin19TTL,Pin19Fltr,Pin19DA,Pin19DSR,Pin19OM">CPin193P</sel>
+              <sel notAvailable="Pin19TTL,Pin19Fltr,Pin19DA,Pin19DSR,Pin19OM">ADC_INB12</sel>
             </Selections>
-            <Comment>管脚功能&#xD;High_Z:高阻&#xD;GPIO_INPUT:输入&#xD;GPIO_INPUT with Filter:带30ns滤波输入&#xD;GPIO_OUTPUT_Push-Pull:推挽输出&#xD;GPIO_OUTPUT_Open-Drain:开漏输出&#xD;GPIO_OUTPUT_Push-Pull with Monitor:带输出监测的推挽输出&#xD;GPIO_OUTPUT_Open-Drain with Monitor:带输出监测的开漏输出&#xD;Other:复用功能</Comment>
+            <Comment>管脚功能&#xD;High_Z:高阻&#xD;GPIO_INPUT:输入&#xD;GPIO_OUTPUT:输出&#xD;GPIO_OUTPUT with Monitor:带监测输出&#xD;Other:复用功能</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin19TTL">
+            <label>Logic Level</label>
+            <value>TTL1</value>
+            <Selections>
+              <sel>TTL1</sel>
+              <sel>TTL2</sel>
+              <sel>CMOS</sel>
+            </Selections>
+            <Comment>逻辑电平</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin19Fltr">
+            <label>Input Filter</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>滤波输入</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin19OM">
+            <label>GPIO OutMode</label>
+            <value>Push-Pull</value>
+            <Selections>
+              <sel>Push-Pull</sel>
+              <sel>Open-Drain</sel>
+            </Selections>
+            <Comment>输出模式</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin19DA">
             <label>Driving Ability</label>
             <value>Normal</value>
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
+              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin19DSR">
             <label>Driving Slew-Rate</label>
             <value>Normal</value>
             <Selections>
@@ -937,7 +1408,7 @@
             </Selections>
             <Comment>斜率:仅输出有效&#xD;Normal:标准&#xD;Fast:快速</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin19PM">
             <label>Pull Mode</label>
             <value>Pull_None</value>
             <Selections>
@@ -953,32 +1424,58 @@
             <label>PinFunctions</label>
             <value>Undefined</value>
             <Selections>
-              <sel>High_Z</sel>
-              <sel>GPIO_INPUT</sel>
-              <sel>GPIO_INPUT with Filter</sel>
-              <sel>GPIO_OUTPUT_Push-Pull</sel>
-              <sel>GPIO_OUTPUT_Open-Drain</sel>
-              <sel>GPIO_OUTPUT_Push-Pull with Monitor</sel>
-              <sel>GPIO_OUTPUT_Open-Drain with Monitor</sel>
-              <sel>RTC_ALM</sel>
-              <sel>USART0_CK</sel>
-              <sel>EBI2</sel>
-              <sel>CP0_OUT</sel>
-              <sel>CPIN3N</sel>
-              <sel>ADC_INB13</sel>
+              <sel notAvailable="Pin20TTL,Pin20Fltr,Pin20DA,Pin20DSR,Pin20OM,Pin20PM">High_Z</sel>
+              <sel notAvailable="Pin20DA,Pin20DSR,Pin20OM">GPIO_INPUT</sel>
+              <sel notAvailable="Pin20TTL,Pin20Fltr">GPIO_OUTPUT</sel>
+              <sel notAvailable="Pin20TTL,Pin20Fltr">GPIO_OUTPUT with Monitor</sel>
+              <sel notAvailable="Pin20TTL,Pin20Fltr,Pin20DA,Pin20DSR,Pin20OM">RTC_ALM</sel>
+              <sel notAvailable="Pin20TTL,Pin20Fltr,Pin20DA,Pin20DSR,Pin20OM">USART0_CK</sel>
+              <sel notAvailable="Pin20TTL,Pin20Fltr,Pin20DA,Pin20DSR,Pin20OM">EBI2</sel>
+              <sel notAvailable="Pin20TTL,Pin20Fltr,Pin20DA,Pin20DSR,Pin20OM">CP0_OUT</sel>
+              <sel notAvailable="Pin20TTL,Pin20Fltr,Pin20DA,Pin20DSR,Pin20OM">CPin203N</sel>
+              <sel notAvailable="Pin20TTL,Pin20Fltr,Pin20DA,Pin20DSR,Pin20OM">ADC_INB13</sel>
             </Selections>
-            <Comment>管脚功能&#xD;High_Z:高阻&#xD;GPIO_INPUT:输入&#xD;GPIO_INPUT with Filter:带30ns滤波输入&#xD;GPIO_OUTPUT_Push-Pull:推挽输出&#xD;GPIO_OUTPUT_Open-Drain:开漏输出&#xD;GPIO_OUTPUT_Push-Pull with Monitor:带输出监测的推挽输出&#xD;GPIO_OUTPUT_Open-Drain with Monitor:带输出监测的开漏输出&#xD;Other:复用功能</Comment>
+            <Comment>管脚功能&#xD;High_Z:高阻&#xD;GPIO_INPUT:输入&#xD;GPIO_OUTPUT:输出&#xD;GPIO_OUTPUT with Monitor:带监测输出&#xD;Other:复用功能</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin20TTL">
+            <label>Logic Level</label>
+            <value>TTL1</value>
+            <Selections>
+              <sel>TTL1</sel>
+              <sel>TTL2</sel>
+              <sel>CMOS</sel>
+            </Selections>
+            <Comment>逻辑电平</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin20Fltr">
+            <label>Input Filter</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>滤波输入</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin20OM">
+            <label>GPIO OutMode</label>
+            <value>Push-Pull</value>
+            <Selections>
+              <sel>Push-Pull</sel>
+              <sel>Open-Drain</sel>
+            </Selections>
+            <Comment>输出模式</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin20DA">
             <label>Driving Ability</label>
             <value>Normal</value>
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
+              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin20DSR">
             <label>Driving Slew-Rate</label>
             <value>Normal</value>
             <Selections>
@@ -987,7 +1484,7 @@
             </Selections>
             <Comment>斜率:仅输出有效&#xD;Normal:标准&#xD;Fast:快速</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin20PM">
             <label>Pull Mode</label>
             <value>Pull_None</value>
             <Selections>
@@ -1003,34 +1500,60 @@
             <label>PinFunctions</label>
             <value>Undefined</value>
             <Selections>
-              <sel>High_Z</sel>
-              <sel>GPIO_INPUT</sel>
-              <sel>GPIO_INPUT with Filter</sel>
-              <sel>GPIO_OUTPUT_Push-Pull</sel>
-              <sel>GPIO_OUTPUT_Open-Drain</sel>
-              <sel>GPIO_OUTPUT_Push-Pull with Monitor</sel>
-              <sel>GPIO_OUTPUT_Open-Drain with Monitor</sel>
-              <sel>SPI0_SCK</sel>
-              <sel>GPTA2_CHB</sel>
-              <sel>SPI1_SCK</sel>
-              <sel>CLO</sel>
-              <sel>EBI1</sel>
-              <sel>LED_C0</sel>
-              <sel>OPA1P</sel>
-              <sel>ADC_INA11</sel>
+              <sel notAvailable="Pin39TTL,Pin39Fltr,Pin39DA,Pin39DSR,Pin39OM,Pin39PM">High_Z</sel>
+              <sel notAvailable="Pin39DA,Pin39DSR,Pin39OM">GPIO_INPUT</sel>
+              <sel notAvailable="Pin39TTL,Pin39Fltr">GPIO_OUTPUT</sel>
+              <sel notAvailable="Pin39TTL,Pin39Fltr">GPIO_OUTPUT with Monitor</sel>
+              <sel notAvailable="Pin39TTL,Pin39Fltr,Pin39DA,Pin39DSR,Pin39OM">SPI0_SCK</sel>
+              <sel notAvailable="Pin39TTL,Pin39Fltr,Pin39DA,Pin39DSR,Pin39OM">GPTA2_CHB</sel>
+              <sel notAvailable="Pin39TTL,Pin39Fltr,Pin39DA,Pin39DSR,Pin39OM">SPI1_SCK</sel>
+              <sel notAvailable="Pin39TTL,Pin39Fltr,Pin39DA,Pin39DSR,Pin39OM">CLO</sel>
+              <sel notAvailable="Pin39TTL,Pin39Fltr,Pin39DA,Pin39DSR,Pin39OM">EBI1</sel>
+              <sel notAvailable="Pin39TTL,Pin39Fltr,Pin39DA,Pin39DSR,Pin39OM">LED_C0</sel>
+              <sel notAvailable="Pin39TTL,Pin39Fltr,Pin39DA,Pin39DSR,Pin39OM">OPA1P</sel>
+              <sel notAvailable="Pin39TTL,Pin39Fltr,Pin39DA,Pin39DSR,Pin39OM">ADC_INA11</sel>
             </Selections>
-            <Comment>管脚功能&#xD;High_Z:高阻&#xD;GPIO_INPUT:输入&#xD;GPIO_INPUT with Filter:带30ns滤波输入&#xD;GPIO_OUTPUT_Push-Pull:推挽输出&#xD;GPIO_OUTPUT_Open-Drain:开漏输出&#xD;GPIO_OUTPUT_Push-Pull with Monitor:带输出监测的推挽输出&#xD;GPIO_OUTPUT_Open-Drain with Monitor:带输出监测的开漏输出&#xD;Other:复用功能</Comment>
+            <Comment>管脚功能&#xD;High_Z:高阻&#xD;GPIO_INPUT:输入&#xD;GPIO_OUTPUT:输出&#xD;GPIO_OUTPUT with Monitor:带监测输出&#xD;Other:复用功能</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin39TTL">
+            <label>Logic Level</label>
+            <value>TTL1</value>
+            <Selections>
+              <sel>TTL1</sel>
+              <sel>TTL2</sel>
+              <sel>CMOS</sel>
+            </Selections>
+            <Comment>逻辑电平</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin39Fltr">
+            <label>Input Filter</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>滤波输入</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin39OM">
+            <label>GPIO OutMode</label>
+            <value>Push-Pull</value>
+            <Selections>
+              <sel>Push-Pull</sel>
+              <sel>Open-Drain</sel>
+            </Selections>
+            <Comment>输出模式</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin39DA">
             <label>Driving Ability</label>
             <value>Normal</value>
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
+              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin39DSR">
             <label>Driving Slew-Rate</label>
             <value>Normal</value>
             <Selections>
@@ -1039,7 +1562,7 @@
             </Selections>
             <Comment>斜率:仅输出有效&#xD;Normal:标准&#xD;Fast:快速</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin39PM">
             <label>Pull Mode</label>
             <value>Pull_None</value>
             <Selections>
@@ -1055,34 +1578,60 @@
             <label>PinFunctions</label>
             <value>Undefined</value>
             <Selections>
-              <sel>High_Z</sel>
-              <sel>GPIO_INPUT</sel>
-              <sel>GPIO_INPUT with Filter</sel>
-              <sel>GPIO_OUTPUT_Push-Pull</sel>
-              <sel>GPIO_OUTPUT_Open-Drain</sel>
-              <sel>GPIO_OUTPUT_Push-Pull with Monitor</sel>
-              <sel>GPIO_OUTPUT_Open-Drain with Monitor</sel>
-              <sel>SPI0_MISO</sel>
-              <sel>GPTA3_CHA</sel>
-              <sel>EBI3</sel>
-              <sel>SPI1_MISO</sel>
-              <sel>GPTB3_CHAX</sel>
-              <sel>LED_C1</sel>
-              <sel>OPA1N</sel>
-              <sel>ADC_INA12</sel>
+              <sel notAvailable="Pin40TTL,Pin40Fltr,Pin40DA,Pin40DSR,Pin40OM,Pin40PM">High_Z</sel>
+              <sel notAvailable="Pin40DA,Pin40DSR,Pin40OM">GPIO_INPUT</sel>
+              <sel notAvailable="Pin40TTL,Pin40Fltr">GPIO_OUTPUT</sel>
+              <sel notAvailable="Pin40TTL,Pin40Fltr">GPIO_OUTPUT with Monitor</sel>
+              <sel notAvailable="Pin40TTL,Pin40Fltr,Pin40DA,Pin40DSR,Pin40OM">SPI0_MISO</sel>
+              <sel notAvailable="Pin40TTL,Pin40Fltr,Pin40DA,Pin40DSR,Pin40OM">GPTA3_CHA</sel>
+              <sel notAvailable="Pin40TTL,Pin40Fltr,Pin40DA,Pin40DSR,Pin40OM">EBI3</sel>
+              <sel notAvailable="Pin40TTL,Pin40Fltr,Pin40DA,Pin40DSR,Pin40OM">SPI1_MISO</sel>
+              <sel notAvailable="Pin40TTL,Pin40Fltr,Pin40DA,Pin40DSR,Pin40OM">GPTB3_CHAX</sel>
+              <sel notAvailable="Pin40TTL,Pin40Fltr,Pin40DA,Pin40DSR,Pin40OM">LED_C1</sel>
+              <sel notAvailable="Pin40TTL,Pin40Fltr,Pin40DA,Pin40DSR,Pin40OM">OPA1N</sel>
+              <sel notAvailable="Pin40TTL,Pin40Fltr,Pin40DA,Pin40DSR,Pin40OM">ADC_INA12</sel>
             </Selections>
-            <Comment>管脚功能&#xD;High_Z:高阻&#xD;GPIO_INPUT:输入&#xD;GPIO_INPUT with Filter:带30ns滤波输入&#xD;GPIO_OUTPUT_Push-Pull:推挽输出&#xD;GPIO_OUTPUT_Open-Drain:开漏输出&#xD;GPIO_OUTPUT_Push-Pull with Monitor:带输出监测的推挽输出&#xD;GPIO_OUTPUT_Open-Drain with Monitor:带输出监测的开漏输出&#xD;Other:复用功能</Comment>
+            <Comment>管脚功能&#xD;High_Z:高阻&#xD;GPIO_INPUT:输入&#xD;GPIO_OUTPUT:输出&#xD;GPIO_OUTPUT with Monitor:带监测输出&#xD;Other:复用功能</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin40TTL">
+            <label>Logic Level</label>
+            <value>TTL1</value>
+            <Selections>
+              <sel>TTL1</sel>
+              <sel>TTL2</sel>
+              <sel>CMOS</sel>
+            </Selections>
+            <Comment>逻辑电平</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin40Fltr">
+            <label>Input Filter</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>滤波输入</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin40OM">
+            <label>GPIO OutMode</label>
+            <value>Push-Pull</value>
+            <Selections>
+              <sel>Push-Pull</sel>
+              <sel>Open-Drain</sel>
+            </Selections>
+            <Comment>输出模式</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin40DA">
             <label>Driving Ability</label>
             <value>Normal</value>
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
+              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin40DSR">
             <label>Driving Slew-Rate</label>
             <value>Normal</value>
             <Selections>
@@ -1091,7 +1640,7 @@
             </Selections>
             <Comment>斜率:仅输出有效&#xD;Normal:标准&#xD;Fast:快速</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin40PM">
             <label>Pull Mode</label>
             <value>Pull_None</value>
             <Selections>
@@ -1107,33 +1656,59 @@
             <label>PinFunctions</label>
             <value>Undefined</value>
             <Selections>
-              <sel>High_Z</sel>
-              <sel>GPIO_INPUT</sel>
-              <sel>GPIO_INPUT with Filter</sel>
-              <sel>GPIO_OUTPUT_Push-Pull</sel>
-              <sel>GPIO_OUTPUT_Open-Drain</sel>
-              <sel>GPIO_OUTPUT_Push-Pull with Monitor</sel>
-              <sel>GPIO_OUTPUT_Open-Drain with Monitor</sel>
-              <sel>SPI0_MOSI</sel>
-              <sel>GPTA3_CHB</sel>
-              <sel>LPT_IN</sel>
-              <sel>SPI1_MOSI</sel>
-              <sel>GPTB4_CHAX</sel>
-              <sel>OPA1X</sel>
-              <sel>ADC_INA13</sel>
+              <sel notAvailable="Pin41TTL,Pin41Fltr,Pin41DA,Pin41DSR,Pin41OM,Pin41PM">High_Z</sel>
+              <sel notAvailable="Pin41DA,Pin41DSR,Pin41OM">GPIO_INPUT</sel>
+              <sel notAvailable="Pin41TTL,Pin41Fltr">GPIO_OUTPUT</sel>
+              <sel notAvailable="Pin41TTL,Pin41Fltr">GPIO_OUTPUT with Monitor</sel>
+              <sel notAvailable="Pin41TTL,Pin41Fltr,Pin41DA,Pin41DSR,Pin41OM">SPI0_MOSI</sel>
+              <sel notAvailable="Pin41TTL,Pin41Fltr,Pin41DA,Pin41DSR,Pin41OM">GPTA3_CHB</sel>
+              <sel notAvailable="Pin41TTL,Pin41Fltr,Pin41DA,Pin41DSR,Pin41OM">LPT_IN</sel>
+              <sel notAvailable="Pin41TTL,Pin41Fltr,Pin41DA,Pin41DSR,Pin41OM">SPI1_MOSI</sel>
+              <sel notAvailable="Pin41TTL,Pin41Fltr,Pin41DA,Pin41DSR,Pin41OM">GPTB4_CHAX</sel>
+              <sel notAvailable="Pin41TTL,Pin41Fltr,Pin41DA,Pin41DSR,Pin41OM">OPA1X</sel>
+              <sel notAvailable="Pin41TTL,Pin41Fltr,Pin41DA,Pin41DSR,Pin41OM">ADC_INA13</sel>
             </Selections>
-            <Comment>管脚功能&#xD;High_Z:高阻&#xD;GPIO_INPUT:输入&#xD;GPIO_INPUT with Filter:带30ns滤波输入&#xD;GPIO_OUTPUT_Push-Pull:推挽输出&#xD;GPIO_OUTPUT_Open-Drain:开漏输出&#xD;GPIO_OUTPUT_Push-Pull with Monitor:带输出监测的推挽输出&#xD;GPIO_OUTPUT_Open-Drain with Monitor:带输出监测的开漏输出&#xD;Other:复用功能</Comment>
+            <Comment>管脚功能&#xD;High_Z:高阻&#xD;GPIO_INPUT:输入&#xD;GPIO_OUTPUT:输出&#xD;GPIO_OUTPUT with Monitor:带监测输出&#xD;Other:复用功能</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin41TTL">
+            <label>Logic Level</label>
+            <value>TTL1</value>
+            <Selections>
+              <sel>TTL1</sel>
+              <sel>TTL2</sel>
+              <sel>CMOS</sel>
+            </Selections>
+            <Comment>逻辑电平</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin41Fltr">
+            <label>Input Filter</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>滤波输入</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin41OM">
+            <label>GPIO OutMode</label>
+            <value>Push-Pull</value>
+            <Selections>
+              <sel>Push-Pull</sel>
+              <sel>Open-Drain</sel>
+            </Selections>
+            <Comment>输出模式</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin41DA">
             <label>Driving Ability</label>
             <value>Normal</value>
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
+              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin41DSR">
             <label>Driving Slew-Rate</label>
             <value>Normal</value>
             <Selections>
@@ -1142,7 +1717,7 @@
             </Selections>
             <Comment>斜率:仅输出有效&#xD;Normal:标准&#xD;Fast:快速</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin41PM">
             <label>Pull Mode</label>
             <value>Pull_None</value>
             <Selections>
@@ -1158,35 +1733,61 @@
             <label>PinFunctions</label>
             <value>Undefined</value>
             <Selections>
-              <sel>High_Z</sel>
-              <sel>GPIO_INPUT</sel>
-              <sel>GPIO_INPUT with Filter</sel>
-              <sel>GPIO_OUTPUT_Push-Pull</sel>
-              <sel>GPIO_OUTPUT_Open-Drain</sel>
-              <sel>GPIO_OUTPUT_Push-Pull with Monitor</sel>
-              <sel>GPIO_OUTPUT_Open-Drain with Monitor</sel>
-              <sel>UART1_TX</sel>
-              <sel>GPTA1_CHA</sel>
-              <sel>I2C_SCL</sel>
-              <sel>LPT_OUT</sel>
-              <sel>GPTB5_CHAX</sel>
-              <sel>GPTB3_CHAX</sel>
-              <sel>LED_C2</sel>
-              <sel>CPIN7P</sel>
-              <sel>ADC_INA14</sel>
+              <sel notAvailable="Pin42TTL,Pin42Fltr,Pin42DA,Pin42DSR,Pin42OM,Pin42PM">High_Z</sel>
+              <sel notAvailable="Pin42DA,Pin42DSR,Pin42OM">GPIO_INPUT</sel>
+              <sel notAvailable="Pin42TTL,Pin42Fltr">GPIO_OUTPUT</sel>
+              <sel notAvailable="Pin42TTL,Pin42Fltr">GPIO_OUTPUT with Monitor</sel>
+              <sel notAvailable="Pin42TTL,Pin42Fltr,Pin42DA,Pin42DSR,Pin42OM">UART1_TX</sel>
+              <sel notAvailable="Pin42TTL,Pin42Fltr,Pin42DA,Pin42DSR,Pin42OM">GPTA1_CHA</sel>
+              <sel notAvailable="Pin42TTL,Pin42Fltr,Pin42DA,Pin42DSR,Pin42OM">I2C_SCL</sel>
+              <sel notAvailable="Pin42TTL,Pin42Fltr,Pin42DA,Pin42DSR,Pin42OM">LPT_OUT</sel>
+              <sel notAvailable="Pin42TTL,Pin42Fltr,Pin42DA,Pin42DSR,Pin42OM">GPTB5_CHAX</sel>
+              <sel notAvailable="Pin42TTL,Pin42Fltr,Pin42DA,Pin42DSR,Pin42OM">GPTB3_CHAX</sel>
+              <sel notAvailable="Pin42TTL,Pin42Fltr,Pin42DA,Pin42DSR,Pin42OM">LED_C2</sel>
+              <sel notAvailable="Pin42TTL,Pin42Fltr,Pin42DA,Pin42DSR,Pin42OM">CPin427P</sel>
+              <sel notAvailable="Pin42TTL,Pin42Fltr,Pin42DA,Pin42DSR,Pin42OM">ADC_INA14</sel>
             </Selections>
-            <Comment>管脚功能&#xD;High_Z:高阻&#xD;GPIO_INPUT:输入&#xD;GPIO_INPUT with Filter:带30ns滤波输入&#xD;GPIO_OUTPUT_Push-Pull:推挽输出&#xD;GPIO_OUTPUT_Open-Drain:开漏输出&#xD;GPIO_OUTPUT_Push-Pull with Monitor:带输出监测的推挽输出&#xD;GPIO_OUTPUT_Open-Drain with Monitor:带输出监测的开漏输出&#xD;Other:复用功能</Comment>
+            <Comment>管脚功能&#xD;High_Z:高阻&#xD;GPIO_INPUT:输入&#xD;GPIO_OUTPUT:输出&#xD;GPIO_OUTPUT with Monitor:带监测输出&#xD;Other:复用功能</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin42TTL">
+            <label>Logic Level</label>
+            <value>TTL1</value>
+            <Selections>
+              <sel>TTL1</sel>
+              <sel>TTL2</sel>
+              <sel>CMOS</sel>
+            </Selections>
+            <Comment>逻辑电平</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin42Fltr">
+            <label>Input Filter</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>滤波输入</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin42OM">
+            <label>GPIO OutMode</label>
+            <value>Push-Pull</value>
+            <Selections>
+              <sel>Push-Pull</sel>
+              <sel>Open-Drain</sel>
+            </Selections>
+            <Comment>输出模式</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin42DA">
             <label>Driving Ability</label>
             <value>Normal</value>
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
+              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin42DSR">
             <label>Driving Slew-Rate</label>
             <value>Normal</value>
             <Selections>
@@ -1195,7 +1796,7 @@
             </Selections>
             <Comment>斜率:仅输出有效&#xD;Normal:标准&#xD;Fast:快速</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin42PM">
             <label>Pull Mode</label>
             <value>Pull_None</value>
             <Selections>
@@ -1211,33 +1812,59 @@
             <label>PinFunctions</label>
             <value>Undefined</value>
             <Selections>
-              <sel>High_Z</sel>
-              <sel>GPIO_INPUT</sel>
-              <sel>GPIO_INPUT with Filter</sel>
-              <sel>GPIO_OUTPUT_Push-Pull</sel>
-              <sel>GPIO_OUTPUT_Open-Drain</sel>
-              <sel>GPIO_OUTPUT_Push-Pull with Monitor</sel>
-              <sel>GPIO_OUTPUT_Open-Drain with Monitor</sel>
-              <sel>UART1_RX</sel>
-              <sel>GPTA1_CHB</sel>
-              <sel>I2C_SDA</sel>
-              <sel>GPTB3_CHAY</sel>
-              <sel>LED_C3</sel>
-              <sel>CPIN8N</sel>
-              <sel>FVROUT</sel>
+              <sel notAvailable="Pin43TTL,Pin43Fltr,Pin43DA,Pin43DSR,Pin43OM,Pin43PM">High_Z</sel>
+              <sel notAvailable="Pin43DA,Pin43DSR,Pin43OM">GPIO_INPUT</sel>
+              <sel notAvailable="Pin43TTL,Pin43Fltr">GPIO_OUTPUT</sel>
+              <sel notAvailable="Pin43TTL,Pin43Fltr">GPIO_OUTPUT with Monitor</sel>
+              <sel notAvailable="Pin43TTL,Pin43Fltr,Pin43DA,Pin43DSR,Pin43OM">UART1_RX</sel>
+              <sel notAvailable="Pin43TTL,Pin43Fltr,Pin43DA,Pin43DSR,Pin43OM">GPTA1_CHB</sel>
+              <sel notAvailable="Pin43TTL,Pin43Fltr,Pin43DA,Pin43DSR,Pin43OM">I2C_SDA</sel>
+              <sel notAvailable="Pin43TTL,Pin43Fltr,Pin43DA,Pin43DSR,Pin43OM">GPTB3_CHAY</sel>
+              <sel notAvailable="Pin43TTL,Pin43Fltr,Pin43DA,Pin43DSR,Pin43OM">LED_C3</sel>
+              <sel notAvailable="Pin43TTL,Pin43Fltr,Pin43DA,Pin43DSR,Pin43OM">CPin438N</sel>
+              <sel notAvailable="Pin43TTL,Pin43Fltr,Pin43DA,Pin43DSR,Pin43OM">FVROUT</sel>
             </Selections>
-            <Comment>管脚功能&#xD;High_Z:高阻&#xD;GPIO_INPUT:输入&#xD;GPIO_INPUT with Filter:带30ns滤波输入&#xD;GPIO_OUTPUT_Push-Pull:推挽输出&#xD;GPIO_OUTPUT_Open-Drain:开漏输出&#xD;GPIO_OUTPUT_Push-Pull with Monitor:带输出监测的推挽输出&#xD;GPIO_OUTPUT_Open-Drain with Monitor:带输出监测的开漏输出&#xD;Other:复用功能</Comment>
+            <Comment>管脚功能&#xD;High_Z:高阻&#xD;GPIO_INPUT:输入&#xD;GPIO_OUTPUT:输出&#xD;GPIO_OUTPUT with Monitor:带监测输出&#xD;Other:复用功能</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin43TTL">
+            <label>Logic Level</label>
+            <value>TTL1</value>
+            <Selections>
+              <sel>TTL1</sel>
+              <sel>TTL2</sel>
+              <sel>CMOS</sel>
+            </Selections>
+            <Comment>逻辑电平</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin43Fltr">
+            <label>Input Filter</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>滤波输入</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin43OM">
+            <label>GPIO OutMode</label>
+            <value>Push-Pull</value>
+            <Selections>
+              <sel>Push-Pull</sel>
+              <sel>Open-Drain</sel>
+            </Selections>
+            <Comment>输出模式</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin43DA">
             <label>Driving Ability</label>
             <value>Normal</value>
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
+              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin43DSR">
             <label>Driving Slew-Rate</label>
             <value>Normal</value>
             <Selections>
@@ -1246,7 +1873,7 @@
             </Selections>
             <Comment>斜率:仅输出有效&#xD;Normal:标准&#xD;Fast:快速</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin43PM">
             <label>Pull Mode</label>
             <value>Pull_None</value>
             <Selections>
@@ -1262,35 +1889,61 @@
             <label>PinFunctions</label>
             <value>Undefined</value>
             <Selections>
-              <sel>High_Z</sel>
-              <sel>GPIO_INPUT</sel>
-              <sel>GPIO_INPUT with Filter</sel>
-              <sel>GPIO_OUTPUT_Push-Pull</sel>
-              <sel>GPIO_OUTPUT_Open-Drain</sel>
-              <sel>GPIO_OUTPUT_Push-Pull with Monitor</sel>
-              <sel>GPIO_OUTPUT_Open-Drain with Monitor</sel>
-              <sel>USART1_TX</sel>
-              <sel>GPTA0_CHA</sel>
-              <sel>I2C_SCL</sel>
-              <sel>CAN_RX</sel>
-              <sel>EBI1</sel>
-              <sel>GPTB4_CHAX</sel>
-              <sel>LED_C4</sel>
-              <sel>CPIN9P</sel>
-              <sel>BUF</sel>
+              <sel notAvailable="Pin45TTL,Pin45Fltr,Pin45DA,Pin45DSR,Pin45OM,Pin45PM">High_Z</sel>
+              <sel notAvailable="Pin45DA,Pin45DSR,Pin45OM">GPIO_INPUT</sel>
+              <sel notAvailable="Pin45TTL,Pin45Fltr">GPIO_OUTPUT</sel>
+              <sel notAvailable="Pin45TTL,Pin45Fltr">GPIO_OUTPUT with Monitor</sel>
+              <sel notAvailable="Pin45TTL,Pin45Fltr,Pin45DA,Pin45DSR,Pin45OM">USART1_TX</sel>
+              <sel notAvailable="Pin45TTL,Pin45Fltr,Pin45DA,Pin45DSR,Pin45OM">GPTA0_CHA</sel>
+              <sel notAvailable="Pin45TTL,Pin45Fltr,Pin45DA,Pin45DSR,Pin45OM">I2C_SCL</sel>
+              <sel notAvailable="Pin45TTL,Pin45Fltr,Pin45DA,Pin45DSR,Pin45OM">CAN_RX</sel>
+              <sel notAvailable="Pin45TTL,Pin45Fltr,Pin45DA,Pin45DSR,Pin45OM">EBI1</sel>
+              <sel notAvailable="Pin45TTL,Pin45Fltr,Pin45DA,Pin45DSR,Pin45OM">GPTB4_CHAX</sel>
+              <sel notAvailable="Pin45TTL,Pin45Fltr,Pin45DA,Pin45DSR,Pin45OM">LED_C4</sel>
+              <sel notAvailable="Pin45TTL,Pin45Fltr,Pin45DA,Pin45DSR,Pin45OM">CPin459P</sel>
+              <sel notAvailable="Pin45TTL,Pin45Fltr,Pin45DA,Pin45DSR,Pin45OM">BUF</sel>
             </Selections>
-            <Comment>管脚功能&#xD;High_Z:高阻&#xD;GPIO_INPUT:输入&#xD;GPIO_INPUT with Filter:带30ns滤波输入&#xD;GPIO_OUTPUT_Push-Pull:推挽输出&#xD;GPIO_OUTPUT_Open-Drain:开漏输出&#xD;GPIO_OUTPUT_Push-Pull with Monitor:带输出监测的推挽输出&#xD;GPIO_OUTPUT_Open-Drain with Monitor:带输出监测的开漏输出&#xD;Other:复用功能</Comment>
+            <Comment>管脚功能&#xD;High_Z:高阻&#xD;GPIO_INPUT:输入&#xD;GPIO_OUTPUT:输出&#xD;GPIO_OUTPUT with Monitor:带监测输出&#xD;Other:复用功能</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin45TTL">
+            <label>Logic Level</label>
+            <value>TTL1</value>
+            <Selections>
+              <sel>TTL1</sel>
+              <sel>TTL2</sel>
+              <sel>CMOS</sel>
+            </Selections>
+            <Comment>逻辑电平</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin45Fltr">
+            <label>Input Filter</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>滤波输入</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin45OM">
+            <label>GPIO OutMode</label>
+            <value>Push-Pull</value>
+            <Selections>
+              <sel>Push-Pull</sel>
+              <sel>Open-Drain</sel>
+            </Selections>
+            <Comment>输出模式</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin45DA">
             <label>Driving Ability</label>
             <value>Normal</value>
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
+              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin45DSR">
             <label>Driving Slew-Rate</label>
             <value>Normal</value>
             <Selections>
@@ -1299,7 +1952,7 @@
             </Selections>
             <Comment>斜率:仅输出有效&#xD;Normal:标准&#xD;Fast:快速</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin45PM">
             <label>Pull Mode</label>
             <value>Pull_None</value>
             <Selections>
@@ -1315,35 +1968,61 @@
             <label>PinFunctions</label>
             <value>Undefined</value>
             <Selections>
-              <sel>High_Z</sel>
-              <sel>GPIO_INPUT</sel>
-              <sel>GPIO_INPUT with Filter</sel>
-              <sel>GPIO_OUTPUT_Push-Pull</sel>
-              <sel>GPIO_OUTPUT_Open-Drain</sel>
-              <sel>GPIO_OUTPUT_Push-Pull with Monitor</sel>
-              <sel>GPIO_OUTPUT_Open-Drain with Monitor</sel>
-              <sel>USART1_RX</sel>
-              <sel>GPTA0_CHB</sel>
-              <sel>I2C_SDA</sel>
-              <sel>CAN_TX</sel>
-              <sel>EBI2</sel>
-              <sel>GPTB4_CHAY</sel>
-              <sel>LED_C5</sel>
-              <sel>CPIN9N</sel>
-              <sel>ADC_INA16</sel>
+              <sel notAvailable="Pin46TTL,Pin46Fltr,Pin46DA,Pin46DSR,Pin46OM,Pin46PM">High_Z</sel>
+              <sel notAvailable="Pin46DA,Pin46DSR,Pin46OM">GPIO_INPUT</sel>
+              <sel notAvailable="Pin46TTL,Pin46Fltr">GPIO_OUTPUT</sel>
+              <sel notAvailable="Pin46TTL,Pin46Fltr">GPIO_OUTPUT with Monitor</sel>
+              <sel notAvailable="Pin46TTL,Pin46Fltr,Pin46DA,Pin46DSR,Pin46OM">USART1_RX</sel>
+              <sel notAvailable="Pin46TTL,Pin46Fltr,Pin46DA,Pin46DSR,Pin46OM">GPTA0_CHB</sel>
+              <sel notAvailable="Pin46TTL,Pin46Fltr,Pin46DA,Pin46DSR,Pin46OM">I2C_SDA</sel>
+              <sel notAvailable="Pin46TTL,Pin46Fltr,Pin46DA,Pin46DSR,Pin46OM">CAN_TX</sel>
+              <sel notAvailable="Pin46TTL,Pin46Fltr,Pin46DA,Pin46DSR,Pin46OM">EBI2</sel>
+              <sel notAvailable="Pin46TTL,Pin46Fltr,Pin46DA,Pin46DSR,Pin46OM">GPTB4_CHAY</sel>
+              <sel notAvailable="Pin46TTL,Pin46Fltr,Pin46DA,Pin46DSR,Pin46OM">LED_C5</sel>
+              <sel notAvailable="Pin46TTL,Pin46Fltr,Pin46DA,Pin46DSR,Pin46OM">CPin469N</sel>
+              <sel notAvailable="Pin46TTL,Pin46Fltr,Pin46DA,Pin46DSR,Pin46OM">ADC_INA16</sel>
             </Selections>
-            <Comment>管脚功能&#xD;High_Z:高阻&#xD;GPIO_INPUT:输入&#xD;GPIO_INPUT with Filter:带30ns滤波输入&#xD;GPIO_OUTPUT_Push-Pull:推挽输出&#xD;GPIO_OUTPUT_Open-Drain:开漏输出&#xD;GPIO_OUTPUT_Push-Pull with Monitor:带输出监测的推挽输出&#xD;GPIO_OUTPUT_Open-Drain with Monitor:带输出监测的开漏输出&#xD;Other:复用功能</Comment>
+            <Comment>管脚功能&#xD;High_Z:高阻&#xD;GPIO_INPUT:输入&#xD;GPIO_OUTPUT:输出&#xD;GPIO_OUTPUT with Monitor:带监测输出&#xD;Other:复用功能</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin46TTL">
+            <label>Logic Level</label>
+            <value>TTL1</value>
+            <Selections>
+              <sel>TTL1</sel>
+              <sel>TTL2</sel>
+              <sel>CMOS</sel>
+            </Selections>
+            <Comment>逻辑电平</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin46Fltr">
+            <label>Input Filter</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>滤波输入</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin46OM">
+            <label>GPIO OutMode</label>
+            <value>Push-Pull</value>
+            <Selections>
+              <sel>Push-Pull</sel>
+              <sel>Open-Drain</sel>
+            </Selections>
+            <Comment>输出模式</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin46DA">
             <label>Driving Ability</label>
             <value>Normal</value>
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
+              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin46DSR">
             <label>Driving Slew-Rate</label>
             <value>Normal</value>
             <Selections>
@@ -1352,7 +2031,7 @@
             </Selections>
             <Comment>斜率:仅输出有效&#xD;Normal:标准&#xD;Fast:快速</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin46PM">
             <label>Pull Mode</label>
             <value>Pull_None</value>
             <Selections>
@@ -1368,34 +2047,60 @@
             <label>PinFunctions</label>
             <value>Undefined</value>
             <Selections>
-              <sel>High_Z</sel>
-              <sel>GPIO_INPUT</sel>
-              <sel>GPIO_INPUT with Filter</sel>
-              <sel>GPIO_OUTPUT_Push-Pull</sel>
-              <sel>GPIO_OUTPUT_Open-Drain</sel>
-              <sel>GPIO_OUTPUT_Push-Pull with Monitor</sel>
-              <sel>GPIO_OUTPUT_Open-Drain with Monitor</sel>
-              <sel>GPTA1_CHA</sel>
-              <sel>USART0_TX</sel>
-              <sel>GPTA0_CHA</sel>
-              <sel>I2C_SCL</sel>
-              <sel>UART0_RX</sel>
-              <sel>CP1_OUT</sel>
-              <sel>CPIN4P</sel>
-              <sel>ADC_INB14</sel>
+              <sel notAvailable="Pin21TTL,Pin21Fltr,Pin21DA,Pin21DSR,Pin21OM,Pin21PM">High_Z</sel>
+              <sel notAvailable="Pin21DA,Pin21DSR,Pin21OM">GPIO_INPUT</sel>
+              <sel notAvailable="Pin21TTL,Pin21Fltr">GPIO_OUTPUT</sel>
+              <sel notAvailable="Pin21TTL,Pin21Fltr">GPIO_OUTPUT with Monitor</sel>
+              <sel notAvailable="Pin21TTL,Pin21Fltr,Pin21DA,Pin21DSR,Pin21OM">GPTA1_CHA</sel>
+              <sel notAvailable="Pin21TTL,Pin21Fltr,Pin21DA,Pin21DSR,Pin21OM">USART0_TX</sel>
+              <sel notAvailable="Pin21TTL,Pin21Fltr,Pin21DA,Pin21DSR,Pin21OM">GPTA0_CHA</sel>
+              <sel notAvailable="Pin21TTL,Pin21Fltr,Pin21DA,Pin21DSR,Pin21OM">I2C_SCL</sel>
+              <sel notAvailable="Pin21TTL,Pin21Fltr,Pin21DA,Pin21DSR,Pin21OM">UART0_RX</sel>
+              <sel notAvailable="Pin21TTL,Pin21Fltr,Pin21DA,Pin21DSR,Pin21OM">CP1_OUT</sel>
+              <sel notAvailable="Pin21TTL,Pin21Fltr,Pin21DA,Pin21DSR,Pin21OM">CPin214P</sel>
+              <sel notAvailable="Pin21TTL,Pin21Fltr,Pin21DA,Pin21DSR,Pin21OM">ADC_INB14</sel>
             </Selections>
-            <Comment>管脚功能&#xD;High_Z:高阻&#xD;GPIO_INPUT:输入&#xD;GPIO_INPUT with Filter:带30ns滤波输入&#xD;GPIO_OUTPUT_Push-Pull:推挽输出&#xD;GPIO_OUTPUT_Open-Drain:开漏输出&#xD;GPIO_OUTPUT_Push-Pull with Monitor:带输出监测的推挽输出&#xD;GPIO_OUTPUT_Open-Drain with Monitor:带输出监测的开漏输出&#xD;Other:复用功能</Comment>
+            <Comment>管脚功能&#xD;High_Z:高阻&#xD;GPIO_INPUT:输入&#xD;GPIO_OUTPUT:输出&#xD;GPIO_OUTPUT with Monitor:带监测输出&#xD;Other:复用功能</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin21TTL">
+            <label>Logic Level</label>
+            <value>TTL1</value>
+            <Selections>
+              <sel>TTL1</sel>
+              <sel>TTL2</sel>
+              <sel>CMOS</sel>
+            </Selections>
+            <Comment>逻辑电平</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin21Fltr">
+            <label>Input Filter</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>滤波输入</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin21OM">
+            <label>GPIO OutMode</label>
+            <value>Push-Pull</value>
+            <Selections>
+              <sel>Push-Pull</sel>
+              <sel>Open-Drain</sel>
+            </Selections>
+            <Comment>输出模式</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin21DA">
             <label>Driving Ability</label>
             <value>Normal</value>
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
+              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin21DSR">
             <label>Driving Slew-Rate</label>
             <value>Normal</value>
             <Selections>
@@ -1404,7 +2109,7 @@
             </Selections>
             <Comment>斜率:仅输出有效&#xD;Normal:标准&#xD;Fast:快速</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin21PM">
             <label>Pull Mode</label>
             <value>Pull_None</value>
             <Selections>
@@ -1420,34 +2125,60 @@
             <label>PinFunctions</label>
             <value>Undefined</value>
             <Selections>
-              <sel>High_Z</sel>
-              <sel>GPIO_INPUT</sel>
-              <sel>GPIO_INPUT with Filter</sel>
-              <sel>GPIO_OUTPUT_Push-Pull</sel>
-              <sel>GPIO_OUTPUT_Open-Drain</sel>
-              <sel>GPIO_OUTPUT_Push-Pull with Monitor</sel>
-              <sel>GPIO_OUTPUT_Open-Drain with Monitor</sel>
-              <sel>GPTA1_CHB</sel>
-              <sel>USART0_RX</sel>
-              <sel>GPTA0_CHB</sel>
-              <sel>I2C_SDA</sel>
-              <sel>UART0_TX</sel>
-              <sel>CP2_OUT</sel>
-              <sel>CPIN4N</sel>
-              <sel>ADC_INB19</sel>
+              <sel notAvailable="Pin22TTL,Pin22Fltr,Pin22DA,Pin22DSR,Pin22OM,Pin22PM">High_Z</sel>
+              <sel notAvailable="Pin22DA,Pin22DSR,Pin22OM">GPIO_INPUT</sel>
+              <sel notAvailable="Pin22TTL,Pin22Fltr">GPIO_OUTPUT</sel>
+              <sel notAvailable="Pin22TTL,Pin22Fltr">GPIO_OUTPUT with Monitor</sel>
+              <sel notAvailable="Pin22TTL,Pin22Fltr,Pin22DA,Pin22DSR,Pin22OM">GPTA1_CHB</sel>
+              <sel notAvailable="Pin22TTL,Pin22Fltr,Pin22DA,Pin22DSR,Pin22OM">USART0_RX</sel>
+              <sel notAvailable="Pin22TTL,Pin22Fltr,Pin22DA,Pin22DSR,Pin22OM">GPTA0_CHB</sel>
+              <sel notAvailable="Pin22TTL,Pin22Fltr,Pin22DA,Pin22DSR,Pin22OM">I2C_SDA</sel>
+              <sel notAvailable="Pin22TTL,Pin22Fltr,Pin22DA,Pin22DSR,Pin22OM">UART0_TX</sel>
+              <sel notAvailable="Pin22TTL,Pin22Fltr,Pin22DA,Pin22DSR,Pin22OM">CP2_OUT</sel>
+              <sel notAvailable="Pin22TTL,Pin22Fltr,Pin22DA,Pin22DSR,Pin22OM">CPin224N</sel>
+              <sel notAvailable="Pin22TTL,Pin22Fltr,Pin22DA,Pin22DSR,Pin22OM">ADC_INB19</sel>
             </Selections>
-            <Comment>管脚功能&#xD;High_Z:高阻&#xD;GPIO_INPUT:输入&#xD;GPIO_INPUT with Filter:带30ns滤波输入&#xD;GPIO_OUTPUT_Push-Pull:推挽输出&#xD;GPIO_OUTPUT_Open-Drain:开漏输出&#xD;GPIO_OUTPUT_Push-Pull with Monitor:带输出监测的推挽输出&#xD;GPIO_OUTPUT_Open-Drain with Monitor:带输出监测的开漏输出&#xD;Other:复用功能</Comment>
+            <Comment>管脚功能&#xD;High_Z:高阻&#xD;GPIO_INPUT:输入&#xD;GPIO_OUTPUT:输出&#xD;GPIO_OUTPUT with Monitor:带监测输出&#xD;Other:复用功能</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin22TTL">
+            <label>Logic Level</label>
+            <value>TTL1</value>
+            <Selections>
+              <sel>TTL1</sel>
+              <sel>TTL2</sel>
+              <sel>CMOS</sel>
+            </Selections>
+            <Comment>逻辑电平</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin22Fltr">
+            <label>Input Filter</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>滤波输入</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin22OM">
+            <label>GPIO OutMode</label>
+            <value>Push-Pull</value>
+            <Selections>
+              <sel>Push-Pull</sel>
+              <sel>Open-Drain</sel>
+            </Selections>
+            <Comment>输出模式</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin22DA">
             <label>Driving Ability</label>
             <value>Normal</value>
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
+              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin22DSR">
             <label>Driving Slew-Rate</label>
             <value>Normal</value>
             <Selections>
@@ -1456,7 +2187,7 @@
             </Selections>
             <Comment>斜率:仅输出有效&#xD;Normal:标准&#xD;Fast:快速</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin22PM">
             <label>Pull Mode</label>
             <value>Pull_None</value>
             <Selections>
@@ -1472,32 +2203,58 @@
             <label>PinFunctions</label>
             <value>Undefined</value>
             <Selections>
-              <sel>High_Z</sel>
-              <sel>GPIO_INPUT</sel>
-              <sel>GPIO_INPUT with Filter</sel>
-              <sel>GPIO_OUTPUT_Push-Pull</sel>
-              <sel>GPIO_OUTPUT_Open-Drain</sel>
-              <sel>GPIO_OUTPUT_Push-Pull with Monitor</sel>
-              <sel>GPIO_OUTPUT_Open-Drain with Monitor</sel>
-              <sel>SPI0_NSS</sel>
-              <sel>BT3_OUT</sel>
-              <sel>EBI1</sel>
-              <sel>USART0_CK</sel>
-              <sel>CPIN5P</sel>
-              <sel>ADC_INB0</sel>
+              <sel notAvailable="Pin25TTL,Pin25Fltr,Pin25DA,Pin25DSR,Pin25OM,Pin25PM">High_Z</sel>
+              <sel notAvailable="Pin25DA,Pin25DSR,Pin25OM">GPIO_INPUT</sel>
+              <sel notAvailable="Pin25TTL,Pin25Fltr">GPIO_OUTPUT</sel>
+              <sel notAvailable="Pin25TTL,Pin25Fltr">GPIO_OUTPUT with Monitor</sel>
+              <sel notAvailable="Pin25TTL,Pin25Fltr,Pin25DA,Pin25DSR,Pin25OM">SPI0_NSS</sel>
+              <sel notAvailable="Pin25TTL,Pin25Fltr,Pin25DA,Pin25DSR,Pin25OM">BT3_OUT</sel>
+              <sel notAvailable="Pin25TTL,Pin25Fltr,Pin25DA,Pin25DSR,Pin25OM">EBI1</sel>
+              <sel notAvailable="Pin25TTL,Pin25Fltr,Pin25DA,Pin25DSR,Pin25OM">USART0_CK</sel>
+              <sel notAvailable="Pin25TTL,Pin25Fltr,Pin25DA,Pin25DSR,Pin25OM">CPin255P</sel>
+              <sel notAvailable="Pin25TTL,Pin25Fltr,Pin25DA,Pin25DSR,Pin25OM">ADC_INB0</sel>
             </Selections>
-            <Comment>管脚功能&#xD;High_Z:高阻&#xD;GPIO_INPUT:输入&#xD;GPIO_INPUT with Filter:带30ns滤波输入&#xD;GPIO_OUTPUT_Push-Pull:推挽输出&#xD;GPIO_OUTPUT_Open-Drain:开漏输出&#xD;GPIO_OUTPUT_Push-Pull with Monitor:带输出监测的推挽输出&#xD;GPIO_OUTPUT_Open-Drain with Monitor:带输出监测的开漏输出&#xD;Other:复用功能</Comment>
+            <Comment>管脚功能&#xD;High_Z:高阻&#xD;GPIO_INPUT:输入&#xD;GPIO_OUTPUT:输出&#xD;GPIO_OUTPUT with Monitor:带监测输出&#xD;Other:复用功能</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin25TTL">
+            <label>Logic Level</label>
+            <value>TTL1</value>
+            <Selections>
+              <sel>TTL1</sel>
+              <sel>TTL2</sel>
+              <sel>CMOS</sel>
+            </Selections>
+            <Comment>逻辑电平</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin25Fltr">
+            <label>Input Filter</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>滤波输入</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin25OM">
+            <label>GPIO OutMode</label>
+            <value>Push-Pull</value>
+            <Selections>
+              <sel>Push-Pull</sel>
+              <sel>Open-Drain</sel>
+            </Selections>
+            <Comment>输出模式</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin25DA">
             <label>Driving Ability</label>
             <value>Normal</value>
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
+              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin25DSR">
             <label>Driving Slew-Rate</label>
             <value>Normal</value>
             <Selections>
@@ -1506,7 +2263,7 @@
             </Selections>
             <Comment>斜率:仅输出有效&#xD;Normal:标准&#xD;Fast:快速</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin25PM">
             <label>Pull Mode</label>
             <value>Pull_None</value>
             <Selections>
@@ -1522,33 +2279,59 @@
             <label>PinFunctions</label>
             <value>Undefined</value>
             <Selections>
-              <sel>High_Z</sel>
-              <sel>GPIO_INPUT</sel>
-              <sel>GPIO_INPUT with Filter</sel>
-              <sel>GPIO_OUTPUT_Push-Pull</sel>
-              <sel>GPIO_OUTPUT_Open-Drain</sel>
-              <sel>GPIO_OUTPUT_Push-Pull with Monitor</sel>
-              <sel>GPIO_OUTPUT_Open-Drain with Monitor</sel>
-              <sel>SPI0_SCK</sel>
-              <sel>BT2_OUT</sel>
-              <sel>GPTB3_CHAY</sel>
-              <sel>GPTB0_CHAY</sel>
-              <sel>GPTB0_CHAY_1</sel>
-              <sel>CPIN5N</sel>
-              <sel>ADC_INB1</sel>
+              <sel notAvailable="Pin26TTL,Pin26Fltr,Pin26DA,Pin26DSR,Pin26OM,Pin26PM">High_Z</sel>
+              <sel notAvailable="Pin26DA,Pin26DSR,Pin26OM">GPIO_INPUT</sel>
+              <sel notAvailable="Pin26TTL,Pin26Fltr">GPIO_OUTPUT</sel>
+              <sel notAvailable="Pin26TTL,Pin26Fltr">GPIO_OUTPUT with Monitor</sel>
+              <sel notAvailable="Pin26TTL,Pin26Fltr,Pin26DA,Pin26DSR,Pin26OM">SPI0_SCK</sel>
+              <sel notAvailable="Pin26TTL,Pin26Fltr,Pin26DA,Pin26DSR,Pin26OM">BT2_OUT</sel>
+              <sel notAvailable="Pin26TTL,Pin26Fltr,Pin26DA,Pin26DSR,Pin26OM">GPTB3_CHAY</sel>
+              <sel notAvailable="Pin26TTL,Pin26Fltr,Pin26DA,Pin26DSR,Pin26OM">GPTB0_CHAY</sel>
+              <sel notAvailable="Pin26TTL,Pin26Fltr,Pin26DA,Pin26DSR,Pin26OM">GPTB0_CHAY_1</sel>
+              <sel notAvailable="Pin26TTL,Pin26Fltr,Pin26DA,Pin26DSR,Pin26OM">CPin265N</sel>
+              <sel notAvailable="Pin26TTL,Pin26Fltr,Pin26DA,Pin26DSR,Pin26OM">ADC_INB1</sel>
             </Selections>
-            <Comment>管脚功能&#xD;High_Z:高阻&#xD;GPIO_INPUT:输入&#xD;GPIO_INPUT with Filter:带30ns滤波输入&#xD;GPIO_OUTPUT_Push-Pull:推挽输出&#xD;GPIO_OUTPUT_Open-Drain:开漏输出&#xD;GPIO_OUTPUT_Push-Pull with Monitor:带输出监测的推挽输出&#xD;GPIO_OUTPUT_Open-Drain with Monitor:带输出监测的开漏输出&#xD;Other:复用功能</Comment>
+            <Comment>管脚功能&#xD;High_Z:高阻&#xD;GPIO_INPUT:输入&#xD;GPIO_OUTPUT:输出&#xD;GPIO_OUTPUT with Monitor:带监测输出&#xD;Other:复用功能</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin26TTL">
+            <label>Logic Level</label>
+            <value>TTL1</value>
+            <Selections>
+              <sel>TTL1</sel>
+              <sel>TTL2</sel>
+              <sel>CMOS</sel>
+            </Selections>
+            <Comment>逻辑电平</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin26Fltr">
+            <label>Input Filter</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>滤波输入</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin26OM">
+            <label>GPIO OutMode</label>
+            <value>Push-Pull</value>
+            <Selections>
+              <sel>Push-Pull</sel>
+              <sel>Open-Drain</sel>
+            </Selections>
+            <Comment>输出模式</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin26DA">
             <label>Driving Ability</label>
             <value>Normal</value>
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
+              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin26DSR">
             <label>Driving Slew-Rate</label>
             <value>Normal</value>
             <Selections>
@@ -1557,7 +2340,7 @@
             </Selections>
             <Comment>斜率:仅输出有效&#xD;Normal:标准&#xD;Fast:快速</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin26PM">
             <label>Pull Mode</label>
             <value>Pull_None</value>
             <Selections>
@@ -1573,33 +2356,59 @@
             <label>PinFunctions</label>
             <value>Undefined</value>
             <Selections>
-              <sel>High_Z</sel>
-              <sel>GPIO_INPUT</sel>
-              <sel>GPIO_INPUT with Filter</sel>
-              <sel>GPIO_OUTPUT_Push-Pull</sel>
-              <sel>GPIO_OUTPUT_Open-Drain</sel>
-              <sel>GPIO_OUTPUT_Push-Pull with Monitor</sel>
-              <sel>GPIO_OUTPUT_Open-Drain with Monitor</sel>
-              <sel>SPI0_MISO</sel>
-              <sel>BT1_OUT</sel>
-              <sel>GPTB4_CHAY</sel>
-              <sel>GPTB1_CHAY</sel>
-              <sel>GPTB0_CHAX</sel>
-              <sel>CPIN6P</sel>
-              <sel>ADC_INB2</sel>
+              <sel notAvailable="Pin27TTL,Pin27Fltr,Pin27DA,Pin27DSR,Pin27OM,Pin27PM">High_Z</sel>
+              <sel notAvailable="Pin27DA,Pin27DSR,Pin27OM">GPIO_INPUT</sel>
+              <sel notAvailable="Pin27TTL,Pin27Fltr">GPIO_OUTPUT</sel>
+              <sel notAvailable="Pin27TTL,Pin27Fltr">GPIO_OUTPUT with Monitor</sel>
+              <sel notAvailable="Pin27TTL,Pin27Fltr,Pin27DA,Pin27DSR,Pin27OM">SPI0_MISO</sel>
+              <sel notAvailable="Pin27TTL,Pin27Fltr,Pin27DA,Pin27DSR,Pin27OM">BT1_OUT</sel>
+              <sel notAvailable="Pin27TTL,Pin27Fltr,Pin27DA,Pin27DSR,Pin27OM">GPTB4_CHAY</sel>
+              <sel notAvailable="Pin27TTL,Pin27Fltr,Pin27DA,Pin27DSR,Pin27OM">GPTB1_CHAY</sel>
+              <sel notAvailable="Pin27TTL,Pin27Fltr,Pin27DA,Pin27DSR,Pin27OM">GPTB0_CHAX</sel>
+              <sel notAvailable="Pin27TTL,Pin27Fltr,Pin27DA,Pin27DSR,Pin27OM">CPin276P</sel>
+              <sel notAvailable="Pin27TTL,Pin27Fltr,Pin27DA,Pin27DSR,Pin27OM">ADC_INB2</sel>
             </Selections>
-            <Comment>管脚功能&#xD;High_Z:高阻&#xD;GPIO_INPUT:输入&#xD;GPIO_INPUT with Filter:带30ns滤波输入&#xD;GPIO_OUTPUT_Push-Pull:推挽输出&#xD;GPIO_OUTPUT_Open-Drain:开漏输出&#xD;GPIO_OUTPUT_Push-Pull with Monitor:带输出监测的推挽输出&#xD;GPIO_OUTPUT_Open-Drain with Monitor:带输出监测的开漏输出&#xD;Other:复用功能</Comment>
+            <Comment>管脚功能&#xD;High_Z:高阻&#xD;GPIO_INPUT:输入&#xD;GPIO_OUTPUT:输出&#xD;GPIO_OUTPUT with Monitor:带监测输出&#xD;Other:复用功能</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin27TTL">
+            <label>Logic Level</label>
+            <value>TTL1</value>
+            <Selections>
+              <sel>TTL1</sel>
+              <sel>TTL2</sel>
+              <sel>CMOS</sel>
+            </Selections>
+            <Comment>逻辑电平</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin27Fltr">
+            <label>Input Filter</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>滤波输入</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin27OM">
+            <label>GPIO OutMode</label>
+            <value>Push-Pull</value>
+            <Selections>
+              <sel>Push-Pull</sel>
+              <sel>Open-Drain</sel>
+            </Selections>
+            <Comment>输出模式</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin27DA">
             <label>Driving Ability</label>
             <value>Normal</value>
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
+              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin27DSR">
             <label>Driving Slew-Rate</label>
             <value>Normal</value>
             <Selections>
@@ -1608,7 +2417,7 @@
             </Selections>
             <Comment>斜率:仅输出有效&#xD;Normal:标准&#xD;Fast:快速</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin27PM">
             <label>Pull Mode</label>
             <value>Pull_None</value>
             <Selections>
@@ -1624,33 +2433,59 @@
             <label>PinFunctions</label>
             <value>Undefined</value>
             <Selections>
-              <sel>High_Z</sel>
-              <sel>GPIO_INPUT</sel>
-              <sel>GPIO_INPUT with Filter</sel>
-              <sel>GPIO_OUTPUT_Push-Pull</sel>
-              <sel>GPIO_OUTPUT_Open-Drain</sel>
-              <sel>GPIO_OUTPUT_Push-Pull with Monitor</sel>
-              <sel>GPIO_OUTPUT_Open-Drain with Monitor</sel>
-              <sel>SPI0_MOSI</sel>
-              <sel>BT0_OUT</sel>
-              <sel>GPTB5_CHAY</sel>
-              <sel>GPTB2_CHAY</sel>
-              <sel>GPTB1_CHAY</sel>
-              <sel>CPIN6N</sel>
-              <sel>ADC_INB3</sel>
+              <sel notAvailable="Pin28TTL,Pin28Fltr,Pin28DA,Pin28DSR,Pin28OM,Pin28PM">High_Z</sel>
+              <sel notAvailable="Pin28DA,Pin28DSR,Pin28OM">GPIO_INPUT</sel>
+              <sel notAvailable="Pin28TTL,Pin28Fltr">GPIO_OUTPUT</sel>
+              <sel notAvailable="Pin28TTL,Pin28Fltr">GPIO_OUTPUT with Monitor</sel>
+              <sel notAvailable="Pin28TTL,Pin28Fltr,Pin28DA,Pin28DSR,Pin28OM">SPI0_MOSI</sel>
+              <sel notAvailable="Pin28TTL,Pin28Fltr,Pin28DA,Pin28DSR,Pin28OM">BT0_OUT</sel>
+              <sel notAvailable="Pin28TTL,Pin28Fltr,Pin28DA,Pin28DSR,Pin28OM">GPTB5_CHAY</sel>
+              <sel notAvailable="Pin28TTL,Pin28Fltr,Pin28DA,Pin28DSR,Pin28OM">GPTB2_CHAY</sel>
+              <sel notAvailable="Pin28TTL,Pin28Fltr,Pin28DA,Pin28DSR,Pin28OM">GPTB1_CHAY</sel>
+              <sel notAvailable="Pin28TTL,Pin28Fltr,Pin28DA,Pin28DSR,Pin28OM">CPin286N</sel>
+              <sel notAvailable="Pin28TTL,Pin28Fltr,Pin28DA,Pin28DSR,Pin28OM">ADC_INB3</sel>
             </Selections>
-            <Comment>管脚功能&#xD;High_Z:高阻&#xD;GPIO_INPUT:输入&#xD;GPIO_INPUT with Filter:带30ns滤波输入&#xD;GPIO_OUTPUT_Push-Pull:推挽输出&#xD;GPIO_OUTPUT_Open-Drain:开漏输出&#xD;GPIO_OUTPUT_Push-Pull with Monitor:带输出监测的推挽输出&#xD;GPIO_OUTPUT_Open-Drain with Monitor:带输出监测的开漏输出&#xD;Other:复用功能</Comment>
+            <Comment>管脚功能&#xD;High_Z:高阻&#xD;GPIO_INPUT:输入&#xD;GPIO_OUTPUT:输出&#xD;GPIO_OUTPUT with Monitor:带监测输出&#xD;Other:复用功能</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin28TTL">
+            <label>Logic Level</label>
+            <value>TTL1</value>
+            <Selections>
+              <sel>TTL1</sel>
+              <sel>TTL2</sel>
+              <sel>CMOS</sel>
+            </Selections>
+            <Comment>逻辑电平</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin28Fltr">
+            <label>Input Filter</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>滤波输入</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin28OM">
+            <label>GPIO OutMode</label>
+            <value>Push-Pull</value>
+            <Selections>
+              <sel>Push-Pull</sel>
+              <sel>Open-Drain</sel>
+            </Selections>
+            <Comment>输出模式</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin28DA">
             <label>Driving Ability</label>
             <value>Normal</value>
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
+              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin28DSR">
             <label>Driving Slew-Rate</label>
             <value>Normal</value>
             <Selections>
@@ -1659,7 +2494,7 @@
             </Selections>
             <Comment>斜率:仅输出有效&#xD;Normal:标准&#xD;Fast:快速</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin28PM">
             <label>Pull Mode</label>
             <value>Pull_None</value>
             <Selections>
@@ -1675,35 +2510,61 @@
             <label>PinFunctions</label>
             <value>Undefined</value>
             <Selections>
-              <sel>High_Z</sel>
-              <sel>GPIO_INPUT</sel>
-              <sel>GPIO_INPUT with Filter</sel>
-              <sel>GPIO_OUTPUT_Push-Pull</sel>
-              <sel>GPIO_OUTPUT_Open-Drain</sel>
-              <sel>GPIO_OUTPUT_Push-Pull with Monitor</sel>
-              <sel>GPIO_OUTPUT_Open-Drain with Monitor</sel>
-              <sel>RTC_ALM</sel>
-              <sel>GPTB5_CHAX</sel>
-              <sel>GPTB1_CHAX</sel>
-              <sel>UART1_RX</sel>
-              <sel>GPTB0_CHAX</sel>
-              <sel>UART0_RX</sel>
-              <sel>CP0_OUT</sel>
-              <sel>CPIN1P</sel>
-              <sel>ADC_INA0</sel>
+              <sel notAvailable="Pin2TTL,Pin2Fltr,Pin2DA,Pin2DSR,Pin2OM,Pin2PM">High_Z</sel>
+              <sel notAvailable="Pin2DA,Pin2DSR,Pin2OM">GPIO_INPUT</sel>
+              <sel notAvailable="Pin2TTL,Pin2Fltr">GPIO_OUTPUT</sel>
+              <sel notAvailable="Pin2TTL,Pin2Fltr">GPIO_OUTPUT with Monitor</sel>
+              <sel notAvailable="Pin2TTL,Pin2Fltr,Pin2DA,Pin2DSR,Pin2OM">RTC_ALM</sel>
+              <sel notAvailable="Pin2TTL,Pin2Fltr,Pin2DA,Pin2DSR,Pin2OM">GPTB5_CHAX</sel>
+              <sel notAvailable="Pin2TTL,Pin2Fltr,Pin2DA,Pin2DSR,Pin2OM">GPTB1_CHAX</sel>
+              <sel notAvailable="Pin2TTL,Pin2Fltr,Pin2DA,Pin2DSR,Pin2OM">UART1_RX</sel>
+              <sel notAvailable="Pin2TTL,Pin2Fltr,Pin2DA,Pin2DSR,Pin2OM">GPTB0_CHAX</sel>
+              <sel notAvailable="Pin2TTL,Pin2Fltr,Pin2DA,Pin2DSR,Pin2OM">UART0_RX</sel>
+              <sel notAvailable="Pin2TTL,Pin2Fltr,Pin2DA,Pin2DSR,Pin2OM">CP0_OUT</sel>
+              <sel notAvailable="Pin2TTL,Pin2Fltr,Pin2DA,Pin2DSR,Pin2OM">CPin21P</sel>
+              <sel notAvailable="Pin2TTL,Pin2Fltr,Pin2DA,Pin2DSR,Pin2OM">ADC_INA0</sel>
             </Selections>
-            <Comment>管脚功能&#xD;High_Z:高阻&#xD;GPIO_INPUT:输入&#xD;GPIO_INPUT with Filter:带30ns滤波输入&#xD;GPIO_OUTPUT_Push-Pull:推挽输出&#xD;GPIO_OUTPUT_Open-Drain:开漏输出&#xD;GPIO_OUTPUT_Push-Pull with Monitor:带输出监测的推挽输出&#xD;GPIO_OUTPUT_Open-Drain with Monitor:带输出监测的开漏输出&#xD;Other:复用功能</Comment>
+            <Comment>管脚功能&#xD;High_Z:高阻&#xD;GPIO_INPUT:输入&#xD;GPIO_OUTPUT:输出&#xD;GPIO_OUTPUT with Monitor:带监测输出&#xD;Other:复用功能</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin2TTL">
+            <label>Logic Level</label>
+            <value>TTL1</value>
+            <Selections>
+              <sel>TTL1</sel>
+              <sel>TTL2</sel>
+              <sel>CMOS</sel>
+            </Selections>
+            <Comment>逻辑电平</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin2Fltr">
+            <label>Input Filter</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>滤波输入</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin2OM">
+            <label>GPIO OutMode</label>
+            <value>Push-Pull</value>
+            <Selections>
+              <sel>Push-Pull</sel>
+              <sel>Open-Drain</sel>
+            </Selections>
+            <Comment>输出模式</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin2DA">
             <label>Driving Ability</label>
             <value>Normal</value>
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
+              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin2DSR">
             <label>Driving Slew-Rate</label>
             <value>Normal</value>
             <Selections>
@@ -1712,7 +2573,7 @@
             </Selections>
             <Comment>斜率:仅输出有效&#xD;Normal:标准&#xD;Fast:快速</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin2PM">
             <label>Pull Mode</label>
             <value>Pull_None</value>
             <Selections>
@@ -1728,35 +2589,61 @@
             <label>PinFunctions</label>
             <value>Undefined</value>
             <Selections>
-              <sel>High_Z</sel>
-              <sel>GPIO_INPUT</sel>
-              <sel>GPIO_INPUT with Filter</sel>
-              <sel>GPIO_OUTPUT_Push-Pull</sel>
-              <sel>GPIO_OUTPUT_Open-Drain</sel>
-              <sel>GPIO_OUTPUT_Push-Pull with Monitor</sel>
-              <sel>GPIO_OUTPUT_Open-Drain with Monitor</sel>
-              <sel>SXIN</sel>
-              <sel>GPTB5_CHAY</sel>
-              <sel>GPTB2_CHAY</sel>
-              <sel>UART1_TX</sel>
-              <sel>GPTB1_CHAX</sel>
-              <sel>UART0_TX</sel>
-              <sel>CP1_OUT</sel>
-              <sel>CPIN1N</sel>
-              <sel>ADC_INA1</sel>
+              <sel notAvailable="Pin3TTL,Pin3Fltr,Pin3DA,Pin3DSR,Pin3OM,Pin3PM">High_Z</sel>
+              <sel notAvailable="Pin3DA,Pin3DSR,Pin3OM">GPIO_INPUT</sel>
+              <sel notAvailable="Pin3TTL,Pin3Fltr">GPIO_OUTPUT</sel>
+              <sel notAvailable="Pin3TTL,Pin3Fltr">GPIO_OUTPUT with Monitor</sel>
+              <sel notAvailable="Pin3TTL,Pin3Fltr,Pin3DA,Pin3DSR,Pin3OM">SXIN</sel>
+              <sel notAvailable="Pin3TTL,Pin3Fltr,Pin3DA,Pin3DSR,Pin3OM">GPTB5_CHAY</sel>
+              <sel notAvailable="Pin3TTL,Pin3Fltr,Pin3DA,Pin3DSR,Pin3OM">GPTB2_CHAY</sel>
+              <sel notAvailable="Pin3TTL,Pin3Fltr,Pin3DA,Pin3DSR,Pin3OM">UART1_TX</sel>
+              <sel notAvailable="Pin3TTL,Pin3Fltr,Pin3DA,Pin3DSR,Pin3OM">GPTB1_CHAX</sel>
+              <sel notAvailable="Pin3TTL,Pin3Fltr,Pin3DA,Pin3DSR,Pin3OM">UART0_TX</sel>
+              <sel notAvailable="Pin3TTL,Pin3Fltr,Pin3DA,Pin3DSR,Pin3OM">CP1_OUT</sel>
+              <sel notAvailable="Pin3TTL,Pin3Fltr,Pin3DA,Pin3DSR,Pin3OM">CPin31N</sel>
+              <sel notAvailable="Pin3TTL,Pin3Fltr,Pin3DA,Pin3DSR,Pin3OM">ADC_INA1</sel>
             </Selections>
-            <Comment>管脚功能&#xD;High_Z:高阻&#xD;GPIO_INPUT:输入&#xD;GPIO_INPUT with Filter:带30ns滤波输入&#xD;GPIO_OUTPUT_Push-Pull:推挽输出&#xD;GPIO_OUTPUT_Open-Drain:开漏输出&#xD;GPIO_OUTPUT_Push-Pull with Monitor:带输出监测的推挽输出&#xD;GPIO_OUTPUT_Open-Drain with Monitor:带输出监测的开漏输出&#xD;Other:复用功能</Comment>
+            <Comment>管脚功能&#xD;High_Z:高阻&#xD;GPIO_INPUT:输入&#xD;GPIO_OUTPUT:输出&#xD;GPIO_OUTPUT with Monitor:带监测输出&#xD;Other:复用功能</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin3TTL">
+            <label>Logic Level</label>
+            <value>TTL1</value>
+            <Selections>
+              <sel>TTL1</sel>
+              <sel>TTL2</sel>
+              <sel>CMOS</sel>
+            </Selections>
+            <Comment>逻辑电平</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin3Fltr">
+            <label>Input Filter</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>滤波输入</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin3OM">
+            <label>GPIO OutMode</label>
+            <value>Push-Pull</value>
+            <Selections>
+              <sel>Push-Pull</sel>
+              <sel>Open-Drain</sel>
+            </Selections>
+            <Comment>输出模式</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin3DA">
             <label>Driving Ability</label>
             <value>Normal</value>
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
+              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin3DSR">
             <label>Driving Slew-Rate</label>
             <value>Normal</value>
             <Selections>
@@ -1765,7 +2652,7 @@
             </Selections>
             <Comment>斜率:仅输出有效&#xD;Normal:标准&#xD;Fast:快速</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin3PM">
             <label>Pull Mode</label>
             <value>Pull_None</value>
             <Selections>
@@ -1781,32 +2668,58 @@
             <label>PinFunctions</label>
             <value>Undefined</value>
             <Selections>
-              <sel>High_Z</sel>
-              <sel>GPIO_INPUT</sel>
-              <sel>GPIO_INPUT with Filter</sel>
-              <sel>GPIO_OUTPUT_Push-Pull</sel>
-              <sel>GPIO_OUTPUT_Open-Drain</sel>
-              <sel>GPIO_OUTPUT_Push-Pull with Monitor</sel>
-              <sel>GPIO_OUTPUT_Open-Drain with Monitor</sel>
-              <sel>SXOUT</sel>
-              <sel>EBI1</sel>
-              <sel>GPTB2_CHAX</sel>
-              <sel>CP2_OUT</sel>
-              <sel>CPIN2P</sel>
-              <sel>ADC_INA2</sel>
+              <sel notAvailable="Pin4TTL,Pin4Fltr,Pin4DA,Pin4DSR,Pin4OM,Pin4PM">High_Z</sel>
+              <sel notAvailable="Pin4DA,Pin4DSR,Pin4OM">GPIO_INPUT</sel>
+              <sel notAvailable="Pin4TTL,Pin4Fltr">GPIO_OUTPUT</sel>
+              <sel notAvailable="Pin4TTL,Pin4Fltr">GPIO_OUTPUT with Monitor</sel>
+              <sel notAvailable="Pin4TTL,Pin4Fltr,Pin4DA,Pin4DSR,Pin4OM">SXOUT</sel>
+              <sel notAvailable="Pin4TTL,Pin4Fltr,Pin4DA,Pin4DSR,Pin4OM">EBI1</sel>
+              <sel notAvailable="Pin4TTL,Pin4Fltr,Pin4DA,Pin4DSR,Pin4OM">GPTB2_CHAX</sel>
+              <sel notAvailable="Pin4TTL,Pin4Fltr,Pin4DA,Pin4DSR,Pin4OM">CP2_OUT</sel>
+              <sel notAvailable="Pin4TTL,Pin4Fltr,Pin4DA,Pin4DSR,Pin4OM">CPin42P</sel>
+              <sel notAvailable="Pin4TTL,Pin4Fltr,Pin4DA,Pin4DSR,Pin4OM">ADC_INA2</sel>
             </Selections>
-            <Comment>管脚功能&#xD;High_Z:高阻&#xD;GPIO_INPUT:输入&#xD;GPIO_INPUT with Filter:带30ns滤波输入&#xD;GPIO_OUTPUT_Push-Pull:推挽输出&#xD;GPIO_OUTPUT_Open-Drain:开漏输出&#xD;GPIO_OUTPUT_Push-Pull with Monitor:带输出监测的推挽输出&#xD;GPIO_OUTPUT_Open-Drain with Monitor:带输出监测的开漏输出&#xD;Other:复用功能</Comment>
+            <Comment>管脚功能&#xD;High_Z:高阻&#xD;GPIO_INPUT:输入&#xD;GPIO_OUTPUT:输出&#xD;GPIO_OUTPUT with Monitor:带监测输出&#xD;Other:复用功能</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin4TTL">
+            <label>Logic Level</label>
+            <value>TTL1</value>
+            <Selections>
+              <sel>TTL1</sel>
+              <sel>TTL2</sel>
+              <sel>CMOS</sel>
+            </Selections>
+            <Comment>逻辑电平</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin4Fltr">
+            <label>Input Filter</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>滤波输入</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin4OM">
+            <label>GPIO OutMode</label>
+            <value>Push-Pull</value>
+            <Selections>
+              <sel>Push-Pull</sel>
+              <sel>Open-Drain</sel>
+            </Selections>
+            <Comment>输出模式</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin4DA">
             <label>Driving Ability</label>
             <value>Normal</value>
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
+              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin4DSR">
             <label>Driving Slew-Rate</label>
             <value>Normal</value>
             <Selections>
@@ -1815,7 +2728,7 @@
             </Selections>
             <Comment>斜率:仅输出有效&#xD;Normal:标准&#xD;Fast:快速</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin4PM">
             <label>Pull Mode</label>
             <value>Pull_None</value>
             <Selections>
@@ -1831,34 +2744,60 @@
             <label>PinFunctions</label>
             <value>Undefined</value>
             <Selections>
-              <sel>High_Z</sel>
-              <sel>GPIO_INPUT</sel>
-              <sel>GPIO_INPUT with Filter</sel>
-              <sel>GPIO_OUTPUT_Push-Pull</sel>
-              <sel>GPIO_OUTPUT_Open-Drain</sel>
-              <sel>GPIO_OUTPUT_Push-Pull with Monitor</sel>
-              <sel>GPIO_OUTPUT_Open-Drain with Monitor</sel>
-              <sel>XIN</sel>
-              <sel>GPTB5_CHAX</sel>
-              <sel>EBI3</sel>
-              <sel>UART2_RX</sel>
-              <sel>GPTB0_CHB</sel>
-              <sel>LED_S0</sel>
-              <sel>CPIN10P</sel>
-              <sel>ADC_INA3</sel>
+              <sel notAvailable="Pin5TTL,Pin5Fltr,Pin5DA,Pin5DSR,Pin5OM,Pin5PM">High_Z</sel>
+              <sel notAvailable="Pin5DA,Pin5DSR,Pin5OM">GPIO_INPUT</sel>
+              <sel notAvailable="Pin5TTL,Pin5Fltr">GPIO_OUTPUT</sel>
+              <sel notAvailable="Pin5TTL,Pin5Fltr">GPIO_OUTPUT with Monitor</sel>
+              <sel notAvailable="Pin5TTL,Pin5Fltr,Pin5DA,Pin5DSR,Pin5OM">XIN</sel>
+              <sel notAvailable="Pin5TTL,Pin5Fltr,Pin5DA,Pin5DSR,Pin5OM">GPTB5_CHAX</sel>
+              <sel notAvailable="Pin5TTL,Pin5Fltr,Pin5DA,Pin5DSR,Pin5OM">EBI3</sel>
+              <sel notAvailable="Pin5TTL,Pin5Fltr,Pin5DA,Pin5DSR,Pin5OM">UART2_RX</sel>
+              <sel notAvailable="Pin5TTL,Pin5Fltr,Pin5DA,Pin5DSR,Pin5OM">GPTB0_CHB</sel>
+              <sel notAvailable="Pin5TTL,Pin5Fltr,Pin5DA,Pin5DSR,Pin5OM">LED_S0</sel>
+              <sel notAvailable="Pin5TTL,Pin5Fltr,Pin5DA,Pin5DSR,Pin5OM">CPin510P</sel>
+              <sel notAvailable="Pin5TTL,Pin5Fltr,Pin5DA,Pin5DSR,Pin5OM">ADC_INA3</sel>
             </Selections>
-            <Comment>管脚功能&#xD;High_Z:高阻&#xD;GPIO_INPUT:输入&#xD;GPIO_INPUT with Filter:带30ns滤波输入&#xD;GPIO_OUTPUT_Push-Pull:推挽输出&#xD;GPIO_OUTPUT_Open-Drain:开漏输出&#xD;GPIO_OUTPUT_Push-Pull with Monitor:带输出监测的推挽输出&#xD;GPIO_OUTPUT_Open-Drain with Monitor:带输出监测的开漏输出&#xD;Other:复用功能</Comment>
+            <Comment>管脚功能&#xD;High_Z:高阻&#xD;GPIO_INPUT:输入&#xD;GPIO_OUTPUT:输出&#xD;GPIO_OUTPUT with Monitor:带监测输出&#xD;Other:复用功能</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin5TTL">
+            <label>Logic Level</label>
+            <value>TTL1</value>
+            <Selections>
+              <sel>TTL1</sel>
+              <sel>TTL2</sel>
+              <sel>CMOS</sel>
+            </Selections>
+            <Comment>逻辑电平</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin5Fltr">
+            <label>Input Filter</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>滤波输入</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin5OM">
+            <label>GPIO OutMode</label>
+            <value>Push-Pull</value>
+            <Selections>
+              <sel>Push-Pull</sel>
+              <sel>Open-Drain</sel>
+            </Selections>
+            <Comment>输出模式</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin5DA">
             <label>Driving Ability</label>
             <value>Normal</value>
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
+              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin5DSR">
             <label>Driving Slew-Rate</label>
             <value>Normal</value>
             <Selections>
@@ -1867,7 +2806,7 @@
             </Selections>
             <Comment>斜率:仅输出有效&#xD;Normal:标准&#xD;Fast:快速</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin5PM">
             <label>Pull Mode</label>
             <value>Pull_None</value>
             <Selections>
@@ -1883,35 +2822,61 @@
             <label>PinFunctions</label>
             <value>Undefined</value>
             <Selections>
-              <sel>High_Z</sel>
-              <sel>GPIO_INPUT</sel>
-              <sel>GPIO_INPUT with Filter</sel>
-              <sel>GPIO_OUTPUT_Push-Pull</sel>
-              <sel>GPIO_OUTPUT_Open-Drain</sel>
-              <sel>GPIO_OUTPUT_Push-Pull with Monitor</sel>
-              <sel>GPIO_OUTPUT_Open-Drain with Monitor</sel>
-              <sel>XOUT</sel>
-              <sel>SPI1_NSS</sel>
-              <sel>EBI2</sel>
-              <sel>UART2_TX</sel>
-              <sel>GPTB1_CHB</sel>
-              <sel>LED_S1</sel>
-              <sel>CLO</sel>
-              <sel>CPIN10N</sel>
-              <sel>ADC_INA4</sel>
+              <sel notAvailable="Pin6TTL,Pin6Fltr,Pin6DA,Pin6DSR,Pin6OM,Pin6PM">High_Z</sel>
+              <sel notAvailable="Pin6DA,Pin6DSR,Pin6OM">GPIO_INPUT</sel>
+              <sel notAvailable="Pin6TTL,Pin6Fltr">GPIO_OUTPUT</sel>
+              <sel notAvailable="Pin6TTL,Pin6Fltr">GPIO_OUTPUT with Monitor</sel>
+              <sel notAvailable="Pin6TTL,Pin6Fltr,Pin6DA,Pin6DSR,Pin6OM">XOUT</sel>
+              <sel notAvailable="Pin6TTL,Pin6Fltr,Pin6DA,Pin6DSR,Pin6OM">SPI1_NSS</sel>
+              <sel notAvailable="Pin6TTL,Pin6Fltr,Pin6DA,Pin6DSR,Pin6OM">EBI2</sel>
+              <sel notAvailable="Pin6TTL,Pin6Fltr,Pin6DA,Pin6DSR,Pin6OM">UART2_TX</sel>
+              <sel notAvailable="Pin6TTL,Pin6Fltr,Pin6DA,Pin6DSR,Pin6OM">GPTB1_CHB</sel>
+              <sel notAvailable="Pin6TTL,Pin6Fltr,Pin6DA,Pin6DSR,Pin6OM">LED_S1</sel>
+              <sel notAvailable="Pin6TTL,Pin6Fltr,Pin6DA,Pin6DSR,Pin6OM">CLO</sel>
+              <sel notAvailable="Pin6TTL,Pin6Fltr,Pin6DA,Pin6DSR,Pin6OM">CPin610N</sel>
+              <sel notAvailable="Pin6TTL,Pin6Fltr,Pin6DA,Pin6DSR,Pin6OM">ADC_INA4</sel>
             </Selections>
-            <Comment>管脚功能&#xD;High_Z:高阻&#xD;GPIO_INPUT:输入&#xD;GPIO_INPUT with Filter:带30ns滤波输入&#xD;GPIO_OUTPUT_Push-Pull:推挽输出&#xD;GPIO_OUTPUT_Open-Drain:开漏输出&#xD;GPIO_OUTPUT_Push-Pull with Monitor:带输出监测的推挽输出&#xD;GPIO_OUTPUT_Open-Drain with Monitor:带输出监测的开漏输出&#xD;Other:复用功能</Comment>
+            <Comment>管脚功能&#xD;High_Z:高阻&#xD;GPIO_INPUT:输入&#xD;GPIO_OUTPUT:输出&#xD;GPIO_OUTPUT with Monitor:带监测输出&#xD;Other:复用功能</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin6TTL">
+            <label>Logic Level</label>
+            <value>TTL1</value>
+            <Selections>
+              <sel>TTL1</sel>
+              <sel>TTL2</sel>
+              <sel>CMOS</sel>
+            </Selections>
+            <Comment>逻辑电平</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin6Fltr">
+            <label>Input Filter</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>滤波输入</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin6OM">
+            <label>GPIO OutMode</label>
+            <value>Push-Pull</value>
+            <Selections>
+              <sel>Push-Pull</sel>
+              <sel>Open-Drain</sel>
+            </Selections>
+            <Comment>输出模式</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin6DA">
             <label>Driving Ability</label>
             <value>Normal</value>
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
+              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin6DSR">
             <label>Driving Slew-Rate</label>
             <value>Normal</value>
             <Selections>
@@ -1920,7 +2885,7 @@
             </Selections>
             <Comment>斜率:仅输出有效&#xD;Normal:标准&#xD;Fast:快速</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin6PM">
             <label>Pull Mode</label>
             <value>Pull_None</value>
             <Selections>
@@ -1936,34 +2901,60 @@
             <label>PinFunctions</label>
             <value>Undefined</value>
             <Selections>
-              <sel>High_Z</sel>
-              <sel>GPIO_INPUT</sel>
-              <sel>GPIO_INPUT with Filter</sel>
-              <sel>GPIO_OUTPUT_Push-Pull</sel>
-              <sel>GPIO_OUTPUT_Open-Drain</sel>
-              <sel>GPIO_OUTPUT_Push-Pull with Monitor</sel>
-              <sel>GPIO_OUTPUT_Open-Drain with Monitor</sel>
-              <sel>USART1_CK</sel>
-              <sel>SIO0</sel>
-              <sel>EBI3</sel>
-              <sel>CNTA_BUZ</sel>
-              <sel>CLO</sel>
-              <sel>SIO1</sel>
-              <sel>CPIN8P</sel>
-              <sel>ADC_INA15</sel>
+              <sel notAvailable="Pin44TTL,Pin44Fltr,Pin44DA,Pin44DSR,Pin44OM,Pin44PM">High_Z</sel>
+              <sel notAvailable="Pin44DA,Pin44DSR,Pin44OM">GPIO_INPUT</sel>
+              <sel notAvailable="Pin44TTL,Pin44Fltr">GPIO_OUTPUT</sel>
+              <sel notAvailable="Pin44TTL,Pin44Fltr">GPIO_OUTPUT with Monitor</sel>
+              <sel notAvailable="Pin44TTL,Pin44Fltr,Pin44DA,Pin44DSR,Pin44OM">USART1_CK</sel>
+              <sel notAvailable="Pin44TTL,Pin44Fltr,Pin44DA,Pin44DSR,Pin44OM">SIO0</sel>
+              <sel notAvailable="Pin44TTL,Pin44Fltr,Pin44DA,Pin44DSR,Pin44OM">EBI3</sel>
+              <sel notAvailable="Pin44TTL,Pin44Fltr,Pin44DA,Pin44DSR,Pin44OM">CNTA_BUZ</sel>
+              <sel notAvailable="Pin44TTL,Pin44Fltr,Pin44DA,Pin44DSR,Pin44OM">CLO</sel>
+              <sel notAvailable="Pin44TTL,Pin44Fltr,Pin44DA,Pin44DSR,Pin44OM">SIO1</sel>
+              <sel notAvailable="Pin44TTL,Pin44Fltr,Pin44DA,Pin44DSR,Pin44OM">CPin448P</sel>
+              <sel notAvailable="Pin44TTL,Pin44Fltr,Pin44DA,Pin44DSR,Pin44OM">ADC_INA15</sel>
             </Selections>
-            <Comment>管脚功能&#xD;High_Z:高阻&#xD;GPIO_INPUT:输入&#xD;GPIO_INPUT with Filter:带30ns滤波输入&#xD;GPIO_OUTPUT_Push-Pull:推挽输出&#xD;GPIO_OUTPUT_Open-Drain:开漏输出&#xD;GPIO_OUTPUT_Push-Pull with Monitor:带输出监测的推挽输出&#xD;GPIO_OUTPUT_Open-Drain with Monitor:带输出监测的开漏输出&#xD;Other:复用功能</Comment>
+            <Comment>管脚功能&#xD;High_Z:高阻&#xD;GPIO_INPUT:输入&#xD;GPIO_OUTPUT:输出&#xD;GPIO_OUTPUT with Monitor:带监测输出&#xD;Other:复用功能</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin44TTL">
+            <label>Logic Level</label>
+            <value>TTL1</value>
+            <Selections>
+              <sel>TTL1</sel>
+              <sel>TTL2</sel>
+              <sel>CMOS</sel>
+            </Selections>
+            <Comment>逻辑电平</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin44Fltr">
+            <label>Input Filter</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>滤波输入</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin44OM">
+            <label>GPIO OutMode</label>
+            <value>Push-Pull</value>
+            <Selections>
+              <sel>Push-Pull</sel>
+              <sel>Open-Drain</sel>
+            </Selections>
+            <Comment>输出模式</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin44DA">
             <label>Driving Ability</label>
             <value>Normal</value>
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
+              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin44DSR">
             <label>Driving Slew-Rate</label>
             <value>Normal</value>
             <Selections>
@@ -1972,7 +2963,7 @@
             </Selections>
             <Comment>斜率:仅输出有效&#xD;Normal:标准&#xD;Fast:快速</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin44PM">
             <label>Pull Mode</label>
             <value>Pull_None</value>
             <Selections>
@@ -1988,31 +2979,57 @@
             <label>PinFunctions</label>
             <value>Undefined</value>
             <Selections>
-              <sel>High_Z</sel>
-              <sel>GPIO_INPUT</sel>
-              <sel>GPIO_INPUT with Filter</sel>
-              <sel>GPIO_OUTPUT_Push-Pull</sel>
-              <sel>GPIO_OUTPUT_Open-Drain</sel>
-              <sel>GPIO_OUTPUT_Push-Pull with Monitor</sel>
-              <sel>GPIO_OUTPUT_Open-Drain with Monitor</sel>
-              <sel>CLO</sel>
-              <sel>SIO0</sel>
-              <sel>GPTB1_CHAY</sel>
-              <sel>EBI0</sel>
-              <sel>GPTB2_CHAY</sel>
+              <sel notAvailable="Pin1TTL,Pin1Fltr,Pin1DA,Pin1DSR,Pin1OM,Pin1PM">High_Z</sel>
+              <sel notAvailable="Pin1DA,Pin1DSR,Pin1OM">GPIO_INPUT</sel>
+              <sel notAvailable="Pin1TTL,Pin1Fltr">GPIO_OUTPUT</sel>
+              <sel notAvailable="Pin1TTL,Pin1Fltr">GPIO_OUTPUT with Monitor</sel>
+              <sel notAvailable="Pin1TTL,Pin1Fltr,Pin1DA,Pin1DSR,Pin1OM">CLO</sel>
+              <sel notAvailable="Pin1TTL,Pin1Fltr,Pin1DA,Pin1DSR,Pin1OM">SIO0</sel>
+              <sel notAvailable="Pin1TTL,Pin1Fltr,Pin1DA,Pin1DSR,Pin1OM">GPTB1_CHAY</sel>
+              <sel notAvailable="Pin1TTL,Pin1Fltr,Pin1DA,Pin1DSR,Pin1OM">EBI0</sel>
+              <sel notAvailable="Pin1TTL,Pin1Fltr,Pin1DA,Pin1DSR,Pin1OM">GPTB2_CHAY</sel>
             </Selections>
-            <Comment>管脚功能&#xD;High_Z:高阻&#xD;GPIO_INPUT:输入&#xD;GPIO_INPUT with Filter:带30ns滤波输入&#xD;GPIO_OUTPUT_Push-Pull:推挽输出&#xD;GPIO_OUTPUT_Open-Drain:开漏输出&#xD;GPIO_OUTPUT_Push-Pull with Monitor:带输出监测的推挽输出&#xD;GPIO_OUTPUT_Open-Drain with Monitor:带输出监测的开漏输出&#xD;Other:复用功能</Comment>
+            <Comment>管脚功能&#xD;High_Z:高阻&#xD;GPIO_INPUT:输入&#xD;GPIO_OUTPUT:输出&#xD;GPIO_OUTPUT with Monitor:带监测输出&#xD;Other:复用功能</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin1TTL">
+            <label>Logic Level</label>
+            <value>TTL1</value>
+            <Selections>
+              <sel>TTL1</sel>
+              <sel>TTL2</sel>
+              <sel>CMOS</sel>
+            </Selections>
+            <Comment>逻辑电平</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin1Fltr">
+            <label>Input Filter</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>滤波输入</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin1OM">
+            <label>GPIO OutMode</label>
+            <value>Push-Pull</value>
+            <Selections>
+              <sel>Push-Pull</sel>
+              <sel>Open-Drain</sel>
+            </Selections>
+            <Comment>输出模式</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin1DA">
             <label>Driving Ability</label>
             <value>Normal</value>
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
+              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin1DSR">
             <label>Driving Slew-Rate</label>
             <value>Normal</value>
             <Selections>
@@ -2021,7 +3038,7 @@
             </Selections>
             <Comment>斜率:仅输出有效&#xD;Normal:标准&#xD;Fast:快速</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin1PM">
             <label>Pull Mode</label>
             <value>Pull_None</value>
             <Selections>
@@ -2037,33 +3054,59 @@
             <label>PinFunctions</label>
             <value>Undefined</value>
             <Selections>
-              <sel>High_Z</sel>
-              <sel>GPIO_INPUT</sel>
-              <sel>GPIO_INPUT with Filter</sel>
-              <sel>GPIO_OUTPUT_Push-Pull</sel>
-              <sel>GPIO_OUTPUT_Open-Drain</sel>
-              <sel>GPIO_OUTPUT_Push-Pull with Monitor</sel>
-              <sel>GPIO_OUTPUT_Open-Drain with Monitor</sel>
-              <sel>NRST</sel>
-              <sel>SPI1_SCK</sel>
-              <sel>CNTA_BUZ</sel>
-              <sel>BT2_OUT</sel>
-              <sel>GPTB2_CHB</sel>
-              <sel>CPIN2N</sel>
-              <sel>ADC_INA5</sel>
+              <sel notAvailable="Pin7TTL,Pin7Fltr,Pin7DA,Pin7DSR,Pin7OM,Pin7PM">High_Z</sel>
+              <sel notAvailable="Pin7DA,Pin7DSR,Pin7OM">GPIO_INPUT</sel>
+              <sel notAvailable="Pin7TTL,Pin7Fltr">GPIO_OUTPUT</sel>
+              <sel notAvailable="Pin7TTL,Pin7Fltr">GPIO_OUTPUT with Monitor</sel>
+              <sel notAvailable="Pin7TTL,Pin7Fltr,Pin7DA,Pin7DSR,Pin7OM">NRST</sel>
+              <sel notAvailable="Pin7TTL,Pin7Fltr,Pin7DA,Pin7DSR,Pin7OM">SPI1_SCK</sel>
+              <sel notAvailable="Pin7TTL,Pin7Fltr,Pin7DA,Pin7DSR,Pin7OM">CNTA_BUZ</sel>
+              <sel notAvailable="Pin7TTL,Pin7Fltr,Pin7DA,Pin7DSR,Pin7OM">BT2_OUT</sel>
+              <sel notAvailable="Pin7TTL,Pin7Fltr,Pin7DA,Pin7DSR,Pin7OM">GPTB2_CHB</sel>
+              <sel notAvailable="Pin7TTL,Pin7Fltr,Pin7DA,Pin7DSR,Pin7OM">CPin72N</sel>
+              <sel notAvailable="Pin7TTL,Pin7Fltr,Pin7DA,Pin7DSR,Pin7OM">ADC_INA5</sel>
             </Selections>
-            <Comment>管脚功能&#xD;High_Z:高阻&#xD;GPIO_INPUT:输入&#xD;GPIO_INPUT with Filter:带30ns滤波输入&#xD;GPIO_OUTPUT_Push-Pull:推挽输出&#xD;GPIO_OUTPUT_Open-Drain:开漏输出&#xD;GPIO_OUTPUT_Push-Pull with Monitor:带输出监测的推挽输出&#xD;GPIO_OUTPUT_Open-Drain with Monitor:带输出监测的开漏输出&#xD;Other:复用功能</Comment>
+            <Comment>管脚功能&#xD;High_Z:高阻&#xD;GPIO_INPUT:输入&#xD;GPIO_OUTPUT:输出&#xD;GPIO_OUTPUT with Monitor:带监测输出&#xD;Other:复用功能</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin7TTL">
+            <label>Logic Level</label>
+            <value>TTL1</value>
+            <Selections>
+              <sel>TTL1</sel>
+              <sel>TTL2</sel>
+              <sel>CMOS</sel>
+            </Selections>
+            <Comment>逻辑电平</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin7Fltr">
+            <label>Input Filter</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>滤波输入</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin7OM">
+            <label>GPIO OutMode</label>
+            <value>Push-Pull</value>
+            <Selections>
+              <sel>Push-Pull</sel>
+              <sel>Open-Drain</sel>
+            </Selections>
+            <Comment>输出模式</Comment>
+          </Property>
+          <Property class="Choice" property_class="Pin7DA">
             <label>Driving Ability</label>
             <value>Normal</value>
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
+              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin7DSR">
             <label>Driving Slew-Rate</label>
             <value>Normal</value>
             <Selections>
@@ -2072,7 +3115,7 @@
             </Selections>
             <Comment>斜率:仅输出有效&#xD;Normal:标准&#xD;Fast:快速</Comment>
           </Property>
-          <Property class="Choice">
+          <Property class="Choice" property_class="Pin7PM">
             <label>Pull Mode</label>
             <value>Pull_None</value>
             <Selections>
@@ -2097,11 +3140,11 @@
       <Category>
         <label>System</label>
         <Device deviceId="SystemClock">
-          <label>System Clock </label>
+          <label>System Clock</label>
           <UseOrNot>1</UseOrNot>
           <Property class="UIchoice">
             <label>Clock Source</label>
-            <value>IMOSC</value>
+            <value>MANUAL_PLL</value>
             <Selections>
               <sel notAvailable="SystemClockFreqHFOSC,SystemClockFreqText,SystemClockISOSCFreqText,SystemClockFreqManualPLL,SystemClockPLLFreqText">IMOSC</sel>
               <sel notAvailable="SystemClockFreqHFOSC,SystemClockFreqIMOSC,SystemClockISOSCFreqText,SystemClockFreqManualPLL,SystemClockPLLFreqText">EMOSC</sel>
@@ -2179,9 +3222,9 @@
           </Property>
           <Property class="Text" property_class="SystemClockPLLFreqText">
             <label>Freq(PLL)</label>
-            <value>105000000</value>
+            <value>72000000</value>
             <!-- <validReg>^([1-9]|[1-3][0-9]|[4][0-8])$</validReg> -->
-            <Comment>PLL时钟源频率 频率范围:1~105M</Comment>
+            <Comment>PLL时钟源频率 频率范围:1~72M</Comment>
           </Property>
           <Property class="Text" property_class="SystemClockISOSCFreqText">
             <label>Freq(ISOSC)</label>
@@ -2212,7 +3255,7 @@
           </Property>
         </Device>
         <Device deviceId="LVR">
-          <label>LVD_R</label>
+          <label>LVD_R </label>
           <UseOrNot>0</UseOrNot>
           <Property class="UIchoice">
             <label>Rst Level</label>
@@ -2284,7 +3327,6 @@
         <Device deviceId="Flash check">
           <label>Flash Check </label>
           <UseOrNot>0</UseOrNot>
-          <label>Flash Check</label>
           <Property class="Text">
             <label>Fail Time</label>
             <value>0xffffff</value>
@@ -2296,7 +3338,6 @@
           <label>EM Clock Monitor </label>
           <Comment>External Main OSC monitor</Comment>
           <UseOrNot>0</UseOrNot>
-          <label>EM Clock Monitor</label>
           <Property class="UIchoice">
             <label>Fail Action</label>
             <value>reset</value>
@@ -2311,7 +3352,6 @@
           <label>IWDT </label>
           <Comment>Independent WatchDog Timer</Comment>
           <UseOrNot>0</UseOrNot>
-          <label>IWDT</label>
           <Property class="UIchoice">
             <label>Mode</label>
             <value>Normal</value>
@@ -2354,7 +3394,6 @@
         <Device deviceId="CoreTick">
           <label>CoreTick </label>
           <UseOrNot>0</UseOrNot>
-          <label>CoreTick</label>
           <Comment>使能CORET定时器,CORET提供mdelay等函数,10ms进一次中断</Comment>
         </Device>
       </Category>
