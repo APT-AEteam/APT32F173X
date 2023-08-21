@@ -405,16 +405,6 @@ static inline void csp_spi_softreset(csp_spi_t *ptSpiBase,spi_softreset_e eRstSo
 		ptSpiBase->SRR |= eRstSource;
 }
 
-static inline uint8_t csp_spi_get_rxfifo_level(csp_spi_t *ptSpiBase)
-{
-	return (uint8_t)(ptSpiBase->RXFL & 0x0f);
-}
-
-static inline uint8_t csp_spi_get_txfifo_level(csp_spi_t *ptSpiBase)
-{
-	return (uint8_t)(ptSpiBase->TXFL & 0x0f);
-}
-
 static inline void csp_spi_set_rxdma(csp_spi_t *ptSpiBase, spi_rdma_en_e eRxDmaEn, spi_rdma_md_e eRxDmaMode) 
 {
 	ptSpiBase->DMACR = (ptSpiBase->DMACR & ~(SPI_RDMA_EN_MSK | SPI_RDMA_MD_MSK)) | (eRxDmaEn << SPI_RDMA_EN_POS) | (eRxDmaMode << SPI_RDMA_MD_POS);
