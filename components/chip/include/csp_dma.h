@@ -225,146 +225,59 @@ typedef enum{
 }dma_icr_e;
 
 /******************************************************************************
-********************** DMA inline Functions Declaration ***********************
+********************** DMA define Functions 			***********************
 ******************************************************************************/
-static inline void csp_dma_soft_rst(csp_dma_t *ptDmaBase) 
-{
-	ptDmaBase->SRR = DMA_SWRST_MSK;		
-}
+#define csp_dma_soft_rst(ptDmaBase) 									(ptDmaBase->SRR = DMA_SWRST_MSK)	
 
-static inline void csp_dma_ch_swtrig(csp_dma_t *ptDmaBase) 
-{
-	//csp_dma_t *ptDmaChBase = (csp_dma_t *)((uint32_t)ptDmaBase + byChnl * 0x80);
-	ptDmaBase->MTRX |= DMA_SWTRIG_MSK;
-}
+#define csp_dma_ch_swtrig(ptDmaBase)									(ptDmaBase->MTRX |= DMA_SWTRIG_MSK)	
 
-static inline void csp_dma_ch_stop(csp_dma_t *ptDmaBase) 
-{
-	//csp_dma_t *ptDmaChBase = (csp_dma_t *)((uint32_t)ptDmaBase + byChnl * 0x80);
-	ptDmaBase->MTRX |= DMA_STOP_MSK;
-}
+#define csp_dma_ch_stop(ptDmaBase) 										(ptDmaBase->MTRX |= DMA_STOP_MSK)
 
-static inline void csp_dma_set_ch(csp_dma_t *ptDmaBase, dma_dsize_e eDsize, dma_reload_e eReload, dma_smode_e eSmode, dma_tsize_e eTsize) 
-{
-	//csp_dma_t *ptDmaChBase = (csp_dma_t *)((uint32_t)ptDmaBase + byChnl * 0x80);
-	
-	ptDmaBase->CRX = ptDmaBase->CRX & ~(DMA_DSIZE_MSK | DMA_RELOAD_MSK | DMA_SMODE_MSK | DMA_TSIZE_MSK);
-	ptDmaBase->CRX |= (eDsize << DMA_DSIZE_POS) | (eReload << DMA_RELOAD_POS) | (eSmode << DMA_SMODE_POS) | (eTsize << DMA_TSIZE_POS);
-}
+#define csp_dma_set_ch(ptDmaBase,eDsize,eReload,eSmode,eTsize)			({ptDmaBase->CRX = ptDmaBase->CRX & ~(DMA_DSIZE_MSK | DMA_RELOAD_MSK | DMA_SMODE_MSK | DMA_TSIZE_MSK);\
+																		ptDmaBase->CRX |= (eDsize << DMA_DSIZE_POS) | (eReload << DMA_RELOAD_POS) | (eSmode << DMA_SMODE_POS) | (eTsize << DMA_TSIZE_POS);})
 
-static inline void csp_dma_ch_en(csp_dma_t *ptDmaBase) 
-{
-	//csp_dma_t *ptDmaChBase = (csp_dma_t *)((uint32_t)ptDmaBase + byChnl * 0x80);
-	ptDmaBase->MTRX = DMA_CHEN_MSK;
-}
-static inline void csp_dma_ch_dis(csp_dma_t *ptDmaBase) 
-{
-	//csp_dma_t *ptDmaChBase = (csp_dma_t *)((uint32_t)ptDmaBase + byChnl * 0x80);
-	ptDmaBase->MTRX &= ~DMA_CHEN_MSK;
-}
+#define csp_dma_ch_enable(ptDmaBase)									(ptDmaBase->MTRX = DMA_CHEN_MSK)
 
-static inline void csp_dma_set_ch_req(csp_dma_t *ptDmaBase, dma_req_e eReq) 
-{
-	//csp_dma_t *ptDmaChBase = (csp_dma_t *)((uint32_t)ptDmaBase + byChnl * 0x80);
-	ptDmaBase->RSRX = (ptDmaBase->RSRX & ~DMA_REQ_MSK) | (eReq << DMA_REQ_POS);
-}
+#define csp_dma_ch_disable(ptDmaBase)									(ptDmaBase->MTRX &= ~DMA_CHEN_MSK)
 
-static inline void csp_dma_set_ch_src_addr(csp_dma_t *ptDmaBase, uint32_t wSrcAddr) 
-{
-	//csp_dma_t *ptDmaChBase = (csp_dma_t *)((uint32_t)ptDmaBase + byChnl * 0x80);
-	ptDmaBase->ISRX = wSrcAddr;
-}
+#define csp_dma_set_ch_req(ptDmaBase,eReq)								(ptDmaBase->RSRX = (ptDmaBase->RSRX & ~DMA_REQ_MSK) | (eReq << DMA_REQ_POS))
 
-static inline void csp_dma_set_ch_saddr_mode(csp_dma_t *ptDmaBase, dma_linc_e eLinc, dma_hinc_e eHinc) 
-{
-	//csp_dma_t *ptDmaChBase = (csp_dma_t *)((uint32_t)ptDmaBase + byChnl * 0x80);
-	ptDmaBase->ISCRX = (eLinc << DMA_LINC_POS) | (eHinc << DMA_HINC_POS);
-}
+#define csp_dma_set_ch_src_addr(ptDmaBase,wSrcAddr)						(ptDmaBase->ISRX = wSrcAddr)
 
-static inline void csp_dma_set_ch_dst_addr(csp_dma_t *ptDmaBase, uint32_t wDetAddr) 
-{
-	//csp_dma_t *ptDmaChBase = (csp_dma_t *)((uint32_t)ptDmaBase + byChnl * 0x80);
-	ptDmaBase->IDRX = wDetAddr;
-}
+#define csp_dma_set_ch_saddr_mode(ptDmaBase,eLinc,eHinc)				(ptDmaBase->ISCRX = (eLinc << DMA_LINC_POS) | (eHinc << DMA_HINC_POS))
 
-static inline void csp_dma_set_ch_daddr_mode(csp_dma_t *ptDmaBase, dma_linc_e eLinc, dma_hinc_e eHinc) 
-{
-	//csp_dma_t *ptDmaChBase = (csp_dma_t *)((uint32_t)ptDmaBase + byChnl * 0x80);
-	ptDmaBase->IDCRX = (eLinc << DMA_LINC_POS) | (eHinc << DMA_HINC_POS);
-}
+#define csp_dma_set_ch_dst_addr(ptDmaBase,wDetAddr)						(ptDmaBase->IDRX = wDetAddr)
+
+#define csp_dma_set_ch_daddr_mode(ptDmaBase,eLinc,eHinc)				(ptDmaBase->IDCRX = (eLinc << DMA_LINC_POS) | (eHinc << DMA_HINC_POS))
+
+#define csp_dma_set_ch_saddr(ptDmaBase,byChnl,wSrcAddr,eLinc,eHinc)		({ptDmaBase->ISRX = wSrcAddr;\
+																		ptDmaBase->ISCRX = (eLinc << DMA_LINC_POS)  | (eHinc << DMA_HINC_POS);})
 
 
-static inline void csp_dma_set_ch_saddr(csp_dma_t *ptDmaBase, uint8_t byChnl, uint32_t wSrcAddr, dma_linc_e eLinc, dma_hinc_e eHinc) 
-{
-	//csp_dma_t *ptDmaChBase = (csp_dma_t *)((uint32_t)ptDmaBase + byChnl * 0x80);
-	
-	ptDmaBase->ISRX = wSrcAddr;
-	ptDmaBase->ISCRX = (eLinc << DMA_LINC_POS)  | (eHinc << DMA_HINC_POS);
-}
+#define csp_dma_set_ch_daddr(ptDmaBase,byChnl,wDetAddr,eLinc,eHinc)		({ptDmaBase->IDRX = wDetAddr;\
+																		ptDmaBase->IDCRX = (eLinc << DMA_LINC_POS)  | (eHinc << DMA_HINC_POS);})
 
-static inline void csp_dma_set_ch_daddr(csp_dma_t *ptDmaBase, uint8_t byChnl, uint32_t wDetAddr, dma_linc_e eLinc, dma_hinc_e eHinc) 
-{
-	//csp_dma_t *ptDmaChBase = (csp_dma_t *)((uint32_t)ptDmaBase + byChnl * 0x80);
-	
-	ptDmaBase->IDRX = wDetAddr;
-	ptDmaBase->IDCRX = (eLinc << DMA_LINC_POS)  | (eHinc << DMA_HINC_POS);
-	
-}
+#define csp_dma_set_ch_trans_num(ptDmaBase,hwLtc,hwHtc)					(ptDmaBase->CRX = (ptDmaBase->CRX & ~(DMA_LTC_MSK | DMA_HTC_MSK)) | DMA_LTC(hwLtc) | DMA_HTC(hwHtc))
 
-static inline void csp_dma_set_ch_trans_num(csp_dma_t *ptDmaBase, uint16_t hwLtc, uint16_t hwHtc) 
-{
-	//csp_dma_t *ptDmaChBase = (csp_dma_t *)((uint32_t)ptDmaBase + byChnl * 0x80);
-	
-	ptDmaBase->CRX = (ptDmaBase->CRX & ~(DMA_LTC_MSK | DMA_HTC_MSK)) | DMA_LTC(hwLtc) | DMA_HTC(hwHtc);
-}
+#define csp_dma_get_curr_ltc(ptDmaBase)									((uint16_t)(ptDmaBase->SRX & DMA_CURR_LTC_MSK))
 
-static inline uint16_t csp_dma_get_curr_ltc(csp_dma_t *ptDmaBase)
-{
-	return (uint16_t)(ptDmaBase->SRX & DMA_CURR_LTC_MSK);
-}
+#define csp_dma_get_curr_htc(ptDmaBase)									((uint16_t)((ptDmaBase->SRX & DMA_CURR_HTC_MSK) >> DMA_CURR_HTC_POS))
 
-static inline uint16_t csp_dma_get_curr_htc(csp_dma_t *ptDmaBase)
-{
-	return (uint16_t)((ptDmaBase->SRX & DMA_CURR_HTC_MSK) >> DMA_CURR_HTC_POS);
-}
+#define csp_dma_get_ltcst(ptDmaBase)									((uint8_t)((ptDmaBase->SRX & DMA_LTCST_MSK) >>  DMA_LTCST_POS))
 
-static inline uint8_t csp_dma_get_ltcst(csp_dma_t *ptDmaBase)
-{
-	return (uint8_t)((ptDmaBase->SRX & DMA_LTCST_MSK) >>  DMA_LTCST_POS);
-}
+#define csp_dma_get_crx(ptDmaBase)										((uint32_t)(ptDmaBase->CRX))
 
-static inline uint32_t csp_dma_get_crx(csp_dma_t *ptDmaBase)
-{
-	return (uint32_t)(ptDmaBase->CRX);
-}
+#define csp_dma_get_rsrx(ptDmaBase)										((uint8_t)(ptDmaBase->RSRX & 0x01))
 
-static inline uint8_t csp_dma_get_rsrx(csp_dma_t *ptDmaBase)
-{
-	return (uint8_t)(ptDmaBase->RSRX & 0x01);
-}
+#define csp_dma_get_esr(ptDmaBase)										((uint32_t)(ptDmaBase->CESR))
 
-static inline uint32_t csp_dma_get_esr(csp_dma_t *ptDmaBase)
-{
-	return (uint32_t)(ptDmaBase->CESR);
-}
+#define csp_dma_get_isr(ptDmaBase)										((uint32_t)(ptDmaBase->ISR))
 
-static inline uint32_t csp_dma_get_isr(csp_dma_t *ptDmaBase)
-{
-	return (uint32_t)(ptDmaBase->ISR);
-}
+#define csp_dma_clr_isr(ptDmaBase,eDmaIcr)								(ptDmaBase->ICR = eDmaIcr)
 
+#define csp_dma_int_enable(ptDmaBase,eDmaInt)					(ptDmaBase->CRX |= eDmaInt)
 
-static inline void csp_dma_clr_isr(csp_dma_t *ptDmaBase, dma_icr_e eDmaIcr)
-{
-	ptDmaBase->ICR = eDmaIcr;
-}
+#define csp_dma_int_disable(ptDmaBase,eDmaInt)					(ptDmaBase->CRX &= ~eDmaInt)
 
-static inline void csp_dma_int_enable(csp_dma_t *ptDmaBase, dma_int_e eDmaInt, bool bEnable) 
-{
-	if(bEnable)
-		ptDmaBase->CRX |= eDmaInt; 
-	else
-		ptDmaBase->CRX &= ~eDmaInt;
-}
 
 #endif

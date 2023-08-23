@@ -116,7 +116,7 @@ csi_error_t csi_dma_ch_init(csp_dma_t *ptDmaBase, csi_dma_ch_e eDmaCh, csi_dma_c
 	
 	if(ptChCfg->wInt)
 	{
-		csp_dma_int_enable(ptDmaChBase, ptChCfg->wInt, ENABLE);		//nable dma xxx interrupt
+		csp_dma_int_enable(ptDmaChBase, ptChCfg->wInt);		//nable dma xxx interrupt
 		csi_irq_enable((uint32_t *)ptDmaBase);						//enable dma irq		
 	}
 	
@@ -165,7 +165,7 @@ csi_error_t csi_dma_ch_start(csp_dma_t *ptDmaBase, csi_dma_ch_e eDmaCh, void *pS
 	csp_dma_set_ch_trans_num(ptDmaChBase, hwLTranNum, hwHTranNum);	//continuous mode: data length
 	csp_dma_set_ch_src_addr(ptDmaChBase, (uint32_t)pSrcAddr);		//Src addr
 	csp_dma_set_ch_dst_addr(ptDmaChBase, (uint32_t)pDstAddr);		//dst addr
-	csp_dma_ch_en(ptDmaChBase);										//channel enable
+	csp_dma_ch_enable(ptDmaChBase);										//channel enable
 	if(!csp_dma_get_rsrx(ptDmaChBase))
 		csp_dma_ch_swtrig(ptDmaChBase);								//sw triger 
 	
@@ -187,7 +187,7 @@ csi_error_t csi_dma_ch_restart(csp_dma_t *ptDmaBase, csi_dma_ch_e eDmaCh)
 		return CSI_ERROR;
 
 	if(csp_dma_get_crx(ptDmaChBase) & DMA_RELOAD_MSK)               //if reload disable,enable channel
-		csp_dma_ch_en(ptDmaChBase);										//
+		csp_dma_ch_enable(ptDmaChBase);										//
 	if(!csp_dma_get_rsrx(ptDmaChBase))
 		csp_dma_ch_swtrig(ptDmaChBase);								//sw triger 
 	
@@ -206,12 +206,18 @@ void csi_dma_int_enable(csp_dma_t *ptDmaBase, csi_dma_ch_e eDmaCh, csi_dma_intsr
 {
 	csp_dma_t *ptDmaChBase = (csp_dma_t *)DMA_REG_BASE(ptDmaBase, eDmaCh);
 	
-	csp_dma_int_enable(ptDmaChBase, (dma_int_e)eIntSrc, bEnable);
+	
 	
 	if(bEnable)
+	{
+		csp_dma_int_enable(ptDmaChBase, (dma_int_e)eIntSrc);
 		csi_irq_enable((uint32_t *)ptDmaBase);
+	}
 	else
+	{
+		csp_dma_int_disable(ptDmaChBase, (dma_int_e)eIntSrc);
 		csi_irq_disable((uint32_t *)ptDmaBase);
+	}
 }
 /** \brief dma channel transfer stop
  * 

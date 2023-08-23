@@ -141,7 +141,7 @@ csi_error_t csi_usart_init(csp_usart_t *ptUsartBase, csi_usart_config_t *ptUsart
 			//csp_usart_cr_cmd(ptUsartBase, US_STTTO | US_FIFO_EN | US_RXFIFO_1_2);	//enable receive timeover
 			csp_usart_cr_cmd(ptUsartBase, US_STTTO);
 			ptUsartCfg->wInt |= US_TIMEOUT_INT;										//open receive timeout interrupt
-			csp_usart_int_enable(ptUsartBase, ptUsartCfg->wInt, ENABLE);			//enable usart interrupt
+			csp_usart_int_enable(ptUsartBase, ptUsartCfg->wInt);			//enable usart interrupt
 		}
 		csi_irq_enable((uint32_t *)ptUsartBase);												//enable usart irq			
 	}
@@ -162,12 +162,18 @@ csi_error_t csi_usart_init(csp_usart_t *ptUsartBase, csi_usart_config_t *ptUsart
  */
 void csi_usart_int_enable(csp_usart_t *ptUsartBase, csi_usart_intsrc_e eIntSrc, bool bEnable)
 {
-	csp_usart_int_enable(ptUsartBase, (usart_int_e)eIntSrc, bEnable);
 	
 	if(bEnable)
+	{
+		csp_usart_int_enable(ptUsartBase, (usart_int_e)eIntSrc);
 		csi_irq_enable((uint32_t *)ptUsartBase);
+		
+	}
 	else
+	{
+		csp_usart_int_disable(ptUsartBase, (usart_int_e)eIntSrc);
 		csi_irq_disable((uint32_t *)ptUsartBase);
+	}
 }
 /** \brief start(enable) usart rx/tx
  * 
@@ -302,7 +308,7 @@ int16_t csi_usart_send(csp_usart_t *ptUsartBase, const void *pData, uint16_t hwS
 			else
 			{
 				g_tUsartTran[byIdx].bySendStat = USART_STATE_SEND;				//set usart send status, sending
-				csp_usart_int_enable(ptUsartBase, (usart_int_e)USART_INTSRC_TXRIS, ENABLE);	//enable usart txfifo interrupt
+				csp_usart_int_enable(ptUsartBase, (usart_int_e)USART_INTSRC_TXRIS);	//enable usart txfifo interrupt
 			}
 			return CSI_OK;
 			

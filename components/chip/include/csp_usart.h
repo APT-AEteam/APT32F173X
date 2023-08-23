@@ -443,265 +443,113 @@ typedef enum{
 //extern void csp_usart_send_dma(csp_usart_t *ptUsartBase, const void *pbySend, uint32_t wSize, uint8_t byDmaChnl);
 
 /******************************************************************************
-********************** USART inline Functions Declaration *********************
+********************** USART define Functions            *********************
 ******************************************************************************/
-static inline void csp_usart_clk_en(csp_usart_t *ptUsartBase)
-{
-	ptUsartBase->CEDR |= US_CLKEN_MSK ; 		//CLK EN
-}
-static inline void csp_usart_soft_rst(csp_usart_t *ptUsartBase)
-{
-	ptUsartBase->SRR  = US_SWRST_MSK; 			//SWRST 
-}
-static inline void csp_usart_rxfifo_rst(csp_usart_t *ptUsartBase)
-{
-	ptUsartBase->SRR  = US_RXFIFO_RST_MSK; 		//rxfifo
-}
-static inline void csp_usart_txfifo_rst(csp_usart_t *ptUsartBase)
-{
-	ptUsartBase->SRR  = US_TXFIFO_RST_MSK; 		//txfifo
-}
 
-static inline void csp_usart_cr_cmd(csp_usart_t *ptUsartBase, usart_cr_e eCrCmd)
-{
-	ptUsartBase->CR |= eCrCmd;
-}
-//
-static inline void csp_usart_set_ckdiv(csp_usart_t *ptUsartBase, usart_clks_e eClk)
-{
-	ptUsartBase->MR = (ptUsartBase->MR & ~US_CLKS_MSK) | (eClk << US_CLKS_POS);
-}
-static inline void csp_usart_set_clko(csp_usart_t *ptUsartBase, usart_clko_e eClkO)
-{
-	ptUsartBase->MR = (ptUsartBase->MR & ~US_CLKO_MSK) | (eClkO << US_CLKO_POS);
-}
-static inline void csp_usart_set_stopbit(csp_usart_t *ptUsartBase, usart_bstop_e eStop)
-{
-	ptUsartBase->MR = (ptUsartBase->MR & ~US_BSTOP_MSK) | (eStop << US_BSTOP_POS);
-}
-static inline void csp_usart_set_databit(csp_usart_t *ptUsartBase, usart_chrl_e eBits)
-{
-	if(eBits == US_BIT9)
-		ptUsartBase->MR = ((ptUsartBase->MR & ~US_MD9_MSK) | (US_MD9_EN << US_MD9_POS));
-	else
-		ptUsartBase->MR = ((ptUsartBase->MR & ~US_CHRL_MSK) | (eBits << US_CHRL_POS));
-}
-static inline void csp_usart_set_parity(csp_usart_t *ptUsartBase, usart_par_e eParity)
-{
-	ptUsartBase->MR = (ptUsartBase->MR & ~US_PAR_MSK ) | (eParity << US_PAR_POS);
-}
-static inline void csp_usart_set_fifo(csp_usart_t *ptUsartBase, usart_fifoen_e eFifoEn, usart_rxfifo_e eFifoSel)
-{
-	ptUsartBase->MR = (ptUsartBase->MR & ~(US_FIFO_EN_MSK | US_RXIFSEL_MSK)) | (eFifoEn << US_FIFO_EN_POS) | (eFifoSel << US_RXIFSEL_POS);
-}
-static inline void csp_usart_set_format(csp_usart_t *ptUsartBase, usart_chrl_e eBits, usart_par_e eParity, usart_bstop_e eStop)
-{
-	if(eBits == US_BIT9)
-		ptUsartBase->MR = ((ptUsartBase->MR & ~(US_MD9_MSK | US_PAR_MSK | US_BSTOP_MSK)) | (US_MD9_EN << US_MD9_POS) | (eParity << US_PAR_POS) | (eStop << US_BSTOP_POS));
-	else
-		ptUsartBase->MR = ((ptUsartBase->MR & ~(US_MD9_MSK | US_PAR_MSK | US_BSTOP_MSK | US_CHRL_MSK )) | (eBits << US_CHRL_POS) | (eParity << US_PAR_POS) | (eStop << US_BSTOP_POS));
-}
-//
-static inline void csp_usart_set_dsb(csp_usart_t *ptUsartBase, usart_dsb_e eDsb)
-{
-	ptUsartBase->MR = (ptUsartBase->MR & ~US_DSB_MSK) | (eDsb << US_DSB_POS);
-}
-static inline void csp_usart_set_mode(csp_usart_t *ptUsartBase,usart_mode_e eMode, usart_chmd_e eChMode)
-{
-	ptUsartBase->MR = (ptUsartBase->MR & ~( US_MODE_MSK | US_CHMD_MSK)) | ((eMode << US_MODE_POS)  | (eChMode << US_CHMD_POS));
-}
-static inline void csp_usart_set_smart_card(csp_usart_t *ptUsartBase, usart_smart_e eEnable, usart_sdtime_e eCnt)
-{
-	ptUsartBase->MR  = (ptUsartBase->MR & ~( US_SMART_MSK | US_SDTIME_MSK)) | ((eEnable << US_SMART_POS) | (eCnt << US_SDTIME_POS)); 
-}
-static inline void csp_usart_set_brdiv(csp_usart_t *ptUsartBase,uint32_t wBaud, uint32_t wUsFreq)
-{
-	//ptUsartBase->BRGR = US_BAUD_CD(wUsFreq/wBaud) | US_BAUD_FRAC(((wUsFreq << 4)/115200) - ((wUsFreq/wBaud) << 4));
-	ptUsartBase->BRGR = wUsFreq/wBaud;
-}
 
-static inline void csp_usart_set_rtor(csp_usart_t *ptUsartBase, uint16_t hwTimer)
-{
-	ptUsartBase->RTOR = hwTimer;
-}
-static inline void csp_usart_set_ttgr(csp_usart_t *ptUsartBase, uint8_t byTimer)
-{
-	ptUsartBase->TTGR = byTimer;
-}
+#define csp_usart_clk_en(ptUsartBase) 								(ptUsartBase->CEDR |= US_CLKEN_MSK)  //CLK EN
 
-static inline void csp_usart_set_data(csp_usart_t *ptUsartBase, uint16_t hwData)
-{
-	ptUsartBase->THR = hwData;
-}
+#define csp_usart_soft_rst(ptUsartBase) 							(ptUsartBase->SRR  = US_SWRST_MSK) //SWRST
 
-static inline uint16_t csp_usart_get_data(csp_usart_t *ptUsartBase)
-{
-	return (uint16_t)ptUsartBase->RHR; 
-}
+#define csp_usart_rxfifo_rst(ptUsartBase) 							(ptUsartBase->SRR  = US_RXFIFO_RST_MSK) //rxfifo
 
-static inline uint8_t csp_usart_get_mode(csp_usart_t *ptUsartBase)
-{
-	return (uint8_t)((ptUsartBase->MR & US_MODE_MSK) >> US_MODE_POS); 
-}
+#define csp_usart_txfifo_rst(ptUsartBase) 							(ptUsartBase->SRR  = US_TXFIFO_RST_MSK) //txfifo
 
-static inline uint8_t csp_usart_get_clks(csp_usart_t *ptUsartBase)
-{
-	return (uint8_t)((ptUsartBase->MR & US_CLKS_MSK) >> US_CLKS_POS); 
-}
-//
-static inline uint32_t csp_usart_get_sr(csp_usart_t *ptUsartBase)
-{
-	return (uint32_t)(ptUsartBase->SR);
-}
-static inline uint32_t csp_usart_get_isr(csp_usart_t *ptUsartBase)
-{
-	return (uint32_t)(ptUsartBase->MISR);
-}
+#define csp_usart_cr_cmd(ptUsartBase,eCrCmd)  						(ptUsartBase->CR |= eCrCmd)
 
-static inline void csp_usart_clr_isr(csp_usart_t *ptUsartBase, usart_int_e eUsartInt)
-{
-	ptUsartBase->ICR = eUsartInt;
-}
-static inline void csp_usart_int_enable(csp_usart_t *ptUsartBase,usart_int_e eUsartInt, bool bEnable)
-{
-	if(bEnable)
-		ptUsartBase->IMSCR |= eUsartInt;
-	else
-		ptUsartBase->IMSCR &= ~eUsartInt;
-}
-//
-static inline void csp_usart_set_rxdma(csp_usart_t *ptUsartBase, usart_rdma_en_e eRxDmaEn, usart_rdma_md_e eRxDmaMode) 
-{
-	ptUsartBase->DMACR = (ptUsartBase->DMACR & ~(US_RDMA_EN_MSK | US_RDMA_MD_MSK)) | (eRxDmaEn << US_RDMA_EN_POS) | (eRxDmaMode << US_RDMA_MD_POS);
-}
+#define csp_usart_set_ckdiv(ptUsartBase,eClk) 						(ptUsartBase->MR = (ptUsartBase->MR & ~US_CLKS_MSK) | (eClk << US_CLKS_POS))
 
-static inline void csp_usart_set_txdma(csp_usart_t *ptUsartBase, usart_tdma_en_e eTxDmaEn, usart_tdma_md_e eTxDmaMode) 
-{
-	ptUsartBase->DMACR = (ptUsartBase->DMACR & ~(US_TDMA_EN_MSK | US_TDMA_MD_MSK)) | (eTxDmaEn << US_TDMA_EN_POS) | (eTxDmaMode << US_TDMA_MD_POS);
-}
-//
-//static inline uint8_t csp_usart_get_rxfl(csp_usart_t *ptUsartBase)
-//{
-//	return (uint8_t)(ptUsartBase->RXFL & 0x0ful);
-//}
-//static inline uint8_t csp_usart_get_txfl(csp_usart_t *ptUsartBase)
-//{
-//	return (uint8_t)(ptUsartBase->TXFL & 0x0ful);
-//}
+#define csp_usart_set_clko(ptUsartBase,eClkO)						(ptUsartBase->MR = (ptUsartBase->MR & ~US_CLKO_MSK) | (eClkO << US_CLKO_POS))
 
-//lin
-static inline void csp_usart_lin_rst(csp_usart_t *ptUsartBase)
-{
-	ptUsartBase->CR |= LIN_RSLIN;
-}
-//static inline void csp_usart_lin_start_msg(csp_usart_t *ptUsartBase)
-//{
-//	ptUsartBase->CR |= LIN_STMESSAGE;
-//}
-//static inline void csp_usart_lin_start_resp(csp_usart_t *ptUsartBase)
-//{
-//	ptUsartBase->CR |= LIN_STRESP;
-//}
-//static inline void csp_usart_lin_start_head(csp_usart_t *ptUsartBase)
-//{
-//	ptUsartBase->CR |= LIN_STHEADER;
-//}
-//
-static inline void csp_usart_lin_set_ver(csp_usart_t *ptUsartBase, lin_ver_e eVer)
-{
-	ptUsartBase->MR = (ptUsartBase->MR & ~LIN_VER_MSK) | (eVer << LIN_VER_POS);
-}
-static inline void csp_usart_lin_en(csp_usart_t *ptUsartBase)
-{
-	ptUsartBase->MR |= LIN_EN;
-}
-static inline void csp_usart_lin_dis(csp_usart_t *ptUsartBase)
-{
-	ptUsartBase->MR &= ~LIN_EN_MSK;
-}
-static inline uint8_t csp_usart_lin_get_ver(csp_usart_t *ptUsartBase)
-{
-	return (uint8_t)((ptUsartBase->MR & LIN_VER_MSK) >> LIN_VER_POS);
-}
-//
-/*
-static inline void csp_usart_lin_set_id(csp_usart_t *ptUsartBase, uint8_t byId, uint8_t byVer)
-{
-	if(byVer)
-		ptUsartBase->LIR = (ptUsartBase->LIR & ~LIN_ID20_MSK) | LIN_ID20(byId);		//lin2.0
-	else
-		ptUsartBase->LIR = (ptUsartBase->LIR & ~LIN_ID12_MSK) | LIN_ID12(byId);		//lin1.2
-}
-static inline void csp_usart_lin_set_ndata(csp_usart_t *ptUsartBase, uint8_t byNum, uint8_t byVer)
-{
-	if(byVer)
-		ptUsartBase->LIR = (ptUsartBase->LIR & ~LIN_NDATA_V20_MSK) | LIN_NDATA_V20(byNum);		//lin2.0
-	else
-		ptUsartBase->LIR = (ptUsartBase->LIR & ~LIN_NDATA_V12_MSK) | LIN_NDATA_V12(byNum);		//lin1.2
-}
-*/
+#define csp_usart_set_stopbit(ptUsartBase,eStop)					(ptUsartBase->MR = (ptUsartBase->MR & ~US_BSTOP_MSK) | (eStop << US_BSTOP_POS))
 
-static inline void csp_usart_lin_set_id_num(csp_usart_t *ptUsartBase, uint8_t byId, uint8_t byNum, uint8_t byVer)
-{
-	if(byVer)
-		ptUsartBase->LIR = (ptUsartBase->LIR & ~(LIN_NDATA_V20_MSK | LIN_ID20_MSK)) | LIN_NDATA_V20(byNum) | LIN_ID20(byId);	//lin2.0
-	else
-		ptUsartBase->LIR = (ptUsartBase->LIR & ~(LIN_NDATA_V12_MSK | LIN_ID12_MSK)) | LIN_NDATA_V12(byNum) | LIN_ID12(byId);	//lin1.2
-}
+#define csp_usart_set_databit(ptUsartBase,eBits)   					(eBits == US_BIT9 ? \
+																	(ptUsartBase->MR = ((ptUsartBase->MR & ~US_MD9_MSK) | (US_MD9_EN << US_MD9_POS)))\
+																	:(ptUsartBase->MR = ((ptUsartBase->MR & ~US_CHRL_MSK) | (eBits << US_CHRL_POS))))
+													
 
-//static inline void csp_usart_lin_set_chk(csp_usart_t *ptUsartBase, lin_chk_e eChkSel)
-//{
-//	ptUsartBase->LIR = (ptUsartBase->LIR & ~LIN_CHK_MSK) | (eChkSel << LIN_CHK_POS);		
-//}
-//static inline void csp_usart_lin_set_wkup_time(csp_usart_t *ptUsartBase, uint16_t hwVal)
-//{
-//	ptUsartBase->LIR = (ptUsartBase->LIR & ~LIN_WKUP_TIME_MSK) | LIN_WKUP_TIME(hwVal);		
-//}
-static inline void csp_usart_lin_format(csp_usart_t *ptUsartBase, lin_chk_e eChkSel, uint16_t hwWkUpTm)
-{
-	ptUsartBase->LIR = (ptUsartBase->LIR & ~(LIN_CHK_MSK | LIN_WKUP_TIME_MSK)) | (eChkSel << LIN_CHK_POS) | LIN_WKUP_TIME(hwWkUpTm);		
-}
-//
-static inline void csp_usart_lin_set_dfwr0(csp_usart_t *ptUsartBase, uint32_t wVal)
-{
-	ptUsartBase->DFWR0 = wVal;		
-}
-static inline void csp_usart_lin_set_dfwr1(csp_usart_t *ptUsartBase, uint32_t wVal)
-{
-	ptUsartBase->DFWR1 = wVal;		
-}
-//
-static inline uint32_t csp_usart_lin_get_dfrr0(csp_usart_t *ptUsartBase)
-{
-	return (ptUsartBase->DFRR0);		
-}
-static inline uint32_t csp_usart_lin_get_dfrr1(csp_usart_t *ptUsartBase)
-{
-	return (ptUsartBase->DFRR1);		
-}
-//
-static inline void csp_usart_lin_set_sblr(csp_usart_t *ptUsartBase, uint8_t byVal)
-{
-	ptUsartBase->SBLR = LIN_SYNC_BRK(byVal);		
-}
-//
-//static inline void csp_usart_lin_set_lcpr1(csp_usart_t *ptUsartBase, uint32_t wVal)
-//{
-//	ptUsartBase->LCP1 = wVal;		
-//}
-//static inline void csp_usart_lin_set_lcpr2(csp_usart_t *ptUsartBase, uint32_t wVal)
-//{
-//	ptUsartBase->LCP2 = wVal;		
-//}
-static inline void csp_usart_lin_set_lcp1(csp_usart_t *ptUsartBase, uint8_t *pbyData)
-{
-	ptUsartBase->LCP1 = (uint32_t)(pbyData[0] | (pbyData[1] << 8) | (pbyData[2] << 16) | (pbyData[3] << 24));	
-}
+#define csp_usart_set_parity(ptUsartBase,eParity)					(ptUsartBase->MR = (ptUsartBase->MR & ~US_PAR_MSK ) | (eParity << US_PAR_POS))
 
-static inline void csp_usart_lin_set_lcp2(csp_usart_t *ptUsartBase, uint8_t *pbyData)
-{
-	ptUsartBase->LCP2 = (uint32_t)(pbyData[0] | (pbyData[1] << 8) | (pbyData[2] << 16) | (pbyData[3] << 24));	
-}
+#define csp_usart_set_fifo(ptUsartBase,eFifoEn,eFifoSel)			(ptUsartBase->MR = (ptUsartBase->MR & ~(US_FIFO_EN_MSK | US_RXIFSEL_MSK)) | (eFifoEn << US_FIFO_EN_POS) | (eFifoSel << US_RXIFSEL_POS))
+
+#define csp_usart_set_format(ptUsartBase,eBits,eParity,eStop)		(eBits == US_BIT9? \
+																	(ptUsartBase->MR = ((ptUsartBase->MR & ~(US_MD9_MSK | US_PAR_MSK | US_BSTOP_MSK)) | (US_MD9_EN << US_MD9_POS) | (eParity << US_PAR_POS) | (eStop << US_BSTOP_POS)))\
+																	: (ptUsartBase->MR = ((ptUsartBase->MR & ~(US_MD9_MSK | US_PAR_MSK | US_BSTOP_MSK | US_CHRL_MSK )) | (eBits << US_CHRL_POS) | (eParity << US_PAR_POS) | (eStop << US_BSTOP_POS))))
+																		
+#define csp_usart_set_dsb(ptUsartBase,eDsb)							(ptUsartBase->MR = (ptUsartBase->MR & ~US_DSB_MSK) | (eDsb << US_DSB_POS))
+
+#define csp_usart_set_mode(ptUsartBase,eMode,eChMode)				(ptUsartBase->MR = (ptUsartBase->MR & ~( US_MODE_MSK | US_CHMD_MSK)) | ((eMode << US_MODE_POS)  | (eChMode << US_CHMD_POS)))
+
+#define csp_usart_set_smart_card(ptUsartBase,eEnable,eCnt)			(ptUsartBase->MR  = (ptUsartBase->MR & ~( US_SMART_MSK | US_SDTIME_MSK)) | ((eEnable << US_SMART_POS) | (eCnt << US_SDTIME_POS)))
+
+#define csp_usart_set_brdiv(ptUsartBase,wBaud,wUsFreq)				(ptUsartBase->BRGR = wUsFreq/wBaud)
+
+#define csp_usart_set_rtor(ptUsartBase,hwTimer)						(ptUsartBase->RTOR = hwTimer)
+
+#define csp_usart_set_ttgr(ptUsartBase,byTimer)						(ptUsartBase->TTGR = byTimer)
+
+#define csp_usart_set_data(ptUsartBase,hwData)						(ptUsartBase->THR = hwData)
+
+#define csp_usart_get_data(ptUsartBase)								((uint16_t)ptUsartBase->RHR)
+
+#define csp_usart_get_mode(ptUsartBase)								((uint8_t)((ptUsartBase->MR & US_MODE_MSK) >> US_MODE_POS))
+
+#define csp_usart_get_clks(ptUsartBase)								((uint8_t)((ptUsartBase->MR & US_CLKS_MSK) >> US_CLKS_POS))
+
+#define csp_usart_get_sr(ptUsartBase)								((uint32_t)(ptUsartBase->SR))
+
+#define csp_usart_get_isr(ptUsartBase)								((uint32_t)(ptUsartBase->MISR))
+
+#define csp_usart_clr_isr(ptUsartBase,eUsartInt)					(ptUsartBase->ICR = eUsartInt)
+
+#define csp_usart_int_enable(ptUsartBase,eUsartInt)					(ptUsartBase->IMSCR |= eUsartInt)
+
+#define csp_usart_int_disable(ptUsartBase,eUsartInt)				(ptUsartBase->IMSCR &= ~eUsartInt)
+
+#define csp_usart_set_rxdma(ptUsartBase,eRxDmaEn,eRxDmaMode) 		(ptUsartBase->DMACR = (ptUsartBase->DMACR & ~(US_RDMA_EN_MSK | US_RDMA_MD_MSK)) | (eRxDmaEn << US_RDMA_EN_POS) | (eRxDmaMode << US_RDMA_MD_POS))
+
+#define csp_usart_set_txdma(ptUsartBase,eTxDmaEn,eTxDmaMode)		(ptUsartBase->DMACR = (ptUsartBase->DMACR & ~(US_TDMA_EN_MSK | US_TDMA_MD_MSK)) | (eTxDmaEn << US_TDMA_EN_POS) | (eTxDmaMode << US_TDMA_MD_POS))
+
+
+/******************************************************************************
+********************** USART  LIN define Functions       *********************
+******************************************************************************/
+#define csp_usart_lin_rst(ptUsartBase)								(ptUsartBase->CR |= LIN_RSLIN)
+
+#define csp_usart_lin_start_msg(ptUsartBase)						(ptUsartBase->CR |= LIN_STMESSAGE)
+
+#define csp_usart_lin_start_resp(ptUsartBase)						(ptUsartBase->CR |= LIN_STRESP)
+
+#define csp_usart_lin_start_head(ptUsartBase)						(ptUsartBase->CR |= LIN_STHEADER)
+
+#define csp_usart_lin_set_ver(ptUsartBase,eVer)						(ptUsartBase->MR = (ptUsartBase->MR & ~LIN_VER_MSK) | (eVer << LIN_VER_POS))
+
+#define csp_usart_lin_enable(ptUsartBase)							(ptUsartBase->MR |= LIN_EN)
+
+#define csp_usart_lin_disable(ptUsartBase)							(ptUsartBase->MR &= ~LIN_EN_MSK)
+
+#define csp_usart_lin_get_ver(ptUsartBase)							((uint8_t)((ptUsartBase->MR & LIN_VER_MSK) >> LIN_VER_POS))
+
+#define csp_usart_lin_set_id_num(ptUsartBase,byId,byNum,byVer)		(byVer ? \
+																	(ptUsartBase->LIR = (ptUsartBase->LIR & ~(LIN_NDATA_V20_MSK | LIN_ID20_MSK)) | LIN_NDATA_V20(byNum) | LIN_ID20(byId))\
+																	:(ptUsartBase->LIR = (ptUsartBase->LIR & ~(LIN_NDATA_V12_MSK | LIN_ID12_MSK)) | LIN_NDATA_V12(byNum) | LIN_ID12(byId)) )
+																		
+#define csp_usart_lin_format(ptUsartBase,eChkSel,hwWkUpTm)			(ptUsartBase->LIR = (ptUsartBase->LIR & ~(LIN_CHK_MSK | LIN_WKUP_TIME_MSK)) | (eChkSel << LIN_CHK_POS) | LIN_WKUP_TIME(hwWkUpTm))
+
+#define csp_usart_lin_set_dfwr0(ptUsartBase,wVal)					(ptUsartBase->DFWR0 = wVal)	
+
+#define csp_usart_lin_set_dfwr1(ptUsartBase,wVal)					(ptUsartBase->DFWR1 = wVal)
+
+#define csp_usart_lin_get_dfrr0(ptUsartBase)						(ptUsartBase->DFRR0)
+
+#define csp_usart_lin_get_dfrr1(ptUsartBase)						(ptUsartBase->DFRR1)
+
+#define csp_usart_lin_set_sblr(ptUsartBase,byVal)					(ptUsartBase->SBLR = LIN_SYNC_BRK(byVal))
+
+#define csp_usart_lin_set_lcp1(ptUsartBase,pbyData)					(ptUsartBase->LCP1 = (uint32_t)(pbyData[0] | (pbyData[1] << 8) | (pbyData[2] << 16) | (pbyData[3] << 24)))
+
+#define csp_usart_lin_set_lcp2(ptUsartBase,pbyData)					(ptUsartBase->LCP2 = (uint32_t)(pbyData[0] | (pbyData[1] << 8) | (pbyData[2] << 16) | (pbyData[3] << 24)))
+
 
 #endif
 
