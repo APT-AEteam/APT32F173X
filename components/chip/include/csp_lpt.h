@@ -65,8 +65,9 @@ typedef enum
     LPT_ISCLK      =    (0x01ul),
 	LPT_IMCLK_DIV4 = 	(0x02ul),
 	LPT_EMCLK      =    (0x03ul),
-	LPT_IN_RISE    = 	(0x04ul),
-	LPT_IN_FALL    = 	(0x05ul),	
+	LPT_ESCLK      =    (0x04ul),
+	LPT_IN_RISE    = 	(0x05ul),
+	LPT_IN_FALL    = 	(0x06ul),	
 }lpt_css_e;
 
 #define	LPT_SHDWSTP_POS		(6)

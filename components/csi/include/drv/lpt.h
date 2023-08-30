@@ -65,8 +65,9 @@ typedef enum
     LPT_CLK_ISCLK 		= (0x01ul),
 	LPT_CLK_IMCLK_DIV4  = (0x02ul),
 	LPT_CLK_EMCLK 		= (0x03ul ),
-	LPT_CLK_IN_RISE 	= (0x04ul ),
-	LPT_CLK_IN_FALL 	= (0x05ul),	
+	LPT_CLK_ESCLK 		= (0x04ul ),
+	LPT_CLK_IN_RISE 	= (0x05ul ),
+	LPT_CLK_IN_FALL 	= (0x06ul),	
 }csi_lpt_clksrc_e;
 
 typedef enum
