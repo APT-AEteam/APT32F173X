@@ -68,7 +68,7 @@ int bt_timer_demo(void)
 	
 	tTimConfig.hwTimeVal = 1000;				//BT定时值 = 1000us
 	tTimConfig.byWkMode  = BT_CNT_CONTINU;		//BT计数器工作模式
-	csi_bt_time_init(BT1, &tTimConfig);			//初始化BT	
+	csi_bt_timer_init(BT1, &tTimConfig);			//初始化BT	
 	csi_bt_start(BT1);							//启动BT定时器,定时默认使用(开启)BT的PEND(周期结束)中断
 		
 	while(1)

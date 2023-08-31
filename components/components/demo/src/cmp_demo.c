@@ -147,7 +147,7 @@ int cmp_wfcr_demo(void)
 	
 	csi_cmp_start(CMP0);	
 
-	csi_bt_timer_init(BT0, 2000);		//初始化BT0, 定时2000us； BT定时，默认采用PEND中断
+//	csi_bt_timer_init(BT0, 2000);		//初始化BT0, 定时2000us； BT定时，默认采用PEND中断
 	csi_bt_start(BT0);					//启动定时器  
 	csi_bt_set_evtrg(BT0, BT_TRGSRC_PEND,ENABLE);	  
   

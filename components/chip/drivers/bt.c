@@ -75,42 +75,7 @@ void csi_bt_irqhandler(csp_bt_t *ptBtBase, uint8_t byIdx)
  *  \param[in] wTimeOut: the timeout for bt, unit: us
  *  \return error code \ref csi_error_t
  */ 
-csi_error_t csi_bt_timer_init(csp_bt_t *ptBtBase, uint32_t wTimeOut)
-{
-	uint32_t wTmLoad;
-	uint32_t wClkDiv;
-	
-	g_tBtCtrl[apt_get_bt_idx(ptBtBase)].callback = NULL;					//init callback == NULL
-	
-	csi_clk_enable((uint32_t *)ptBtBase);									//bt clk enable
-	csp_bt_soft_rst(ptBtBase);												//reset bt
-	
-	wClkDiv = (csi_get_pclk_freq() / 100000 * wTimeOut / 600000);			//bt clk div value
-	if(wClkDiv < 0xfffe)	
-		wClkDiv  += 1;
-		
-	wTmLoad = (csi_get_pclk_freq() / wClkDiv /20000) * wTimeOut / 50;		//bt prdr load value
-	if(wTmLoad > 0xffff)
-		wTmLoad = 0xffff;
-		
-	csp_bt_set_cr(ptBtBase, (BT_SHDOW << BT_SHDW_POS) | (BT_CONTINUOUS << BT_OPM_POS) |		//bt work mode
-			(BT_PCLKDIV << BT_EXTCKM_POS) | (BT_CNTRLD_EN << BT_CNTRLD_POS) | BT_CLK_EN );
-	csp_bt_set_pscr(ptBtBase, (uint16_t)wClkDiv - 1);						//bt clk div	
-	csp_bt_set_prdr(ptBtBase, (uint16_t)wTmLoad);							//bt prdr load value
-	csp_bt_set_cmp(ptBtBase, (uint16_t)(wTmLoad >> 1));						//bt prdr load value
-	csp_bt_int_enable(ptBtBase, BT_PEND_INT);								//enable PEND interrupt
-	
-	csi_irq_enable((uint32_t *)ptBtBase);									//enable bt irq
-	
-    return CSI_OK;
-}
-/** \brief initialize bt data structure
- * 
- *  \param[in] ptBtBase: pointer of bt register structure
- *  \param[in] wTimeOut: the timeout for bt, unit: us
- *  \return error code \ref csi_error_t
- */ 
-csi_error_t csi_bt_time_init(csp_bt_t *ptBtBase, csi_bt_time_config_t *ptBtTimCfg)
+csi_error_t csi_bt_timer_init(csp_bt_t *ptBtBase, csi_bt_time_config_t *ptBtTimCfg)
 {
 	uint32_t wTmLoad;
 	uint32_t wClkDiv;
@@ -137,17 +102,6 @@ csi_error_t csi_bt_time_init(csp_bt_t *ptBtBase, csi_bt_time_config_t *ptBtTimCf
 	
 	return CSI_OK;
 }
-/** \brief set bt count mode
- * 
- *  \param[in] ptBtBase: pointer of bt register structure
- *  \param[in] eCntMode: bt count mode, one pulse/continuous
- *  \return none
-// */ 
-//void csi_bt_count_mode(csp_bt_t *ptBtBase, csi_bt_wkmode_e eWkMode)
-//{
-//	csp_bt_cnt_mode(ptBtBase, (bt_opm_e)eWkMode);
-//}
-
 /** \brief start bt
  * 
  *  \param[in] ptBtBase: pointer of bt register structure

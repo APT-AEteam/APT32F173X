@@ -156,8 +156,7 @@ void csi_bt_irqhandler(csp_bt_t *ptBtBase, uint8_t byIdx);
   \param[in]   wTimeOut		the timeout for bt, unit: us
   \return      error code \ref csi_error_t
 */
-csi_error_t csi_bt_timer_init(csp_bt_t *ptBtBase, uint32_t wTimeOut);
-csi_error_t csi_bt_time_init(csp_bt_t *ptBtBase, csi_bt_time_config_t *ptBtTimCfg);
+csi_error_t csi_bt_timer_init(csp_bt_t *ptBtBase, csi_bt_time_config_t *ptBtTimCfg);
 
 /** 
   \brief 	   set work mode

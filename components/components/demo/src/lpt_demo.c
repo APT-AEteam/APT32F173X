@@ -12,7 +12,6 @@
 #include <string.h>
 #include <lpt.h>
 #include <pin.h>
-#include "demo.h"
 #include <etb.h>
 #include <bt.h>
 /* externs function--------------------------------------------------------*/
@@ -128,7 +127,7 @@ int lpt_trg_out_demo(void)
 	
 	csp_lpt_set_trgprd(LPT,0xf);
 	csp_lpt_set_trgcnt(LPT,0xf);
-	csi_bt_timer_init(BT1,5000);									//BT定时1ms
+//	csi_bt_timer_init(BT1,5000);									//BT定时1ms
 	csi_bt_set_sync(BT1, BT_TRGIN_SYNCEN0, BT_TRG_ONCE, DISABLE);		//外部触发bt启动(SYNCIN0)
 
 	
@@ -159,7 +158,7 @@ int lpt_soft_trg_out_demo(void)
 	volatile uint8_t ch;
 	csi_etb_config_t tEtbConfig;				    				//ETB 参数配置结构体
 	
-	csi_bt_timer_init(BT1,5000);									//BT定时1ms
+//	csi_bt_timer_init(BT1,5000);									//BT定时1ms
 	csi_bt_set_sync(BT1,BT_TRGIN_SYNCEN0, BT_TRG_ONCE, DISABLE);		//外部触发bt启动(SYNCIN0)
 	
 	tEtbConfig.byChType = ETB_ONE_TRG_ONE;  						//单个源触发单个目标
@@ -215,7 +214,7 @@ int lpt_window_demo(void)
 	csi_pin_set_mux(PA5,PA5_OUTPUT);	
 	csi_pin_set_mux(PA2,PA2_OUTPUT);	
 #endif
-	csi_bt_timer_init(BT0, 1000);	//初始化BT0, 定时2000us； BT定时，默认采用PEND中断
+//	csi_bt_timer_init(BT0, 1000);	//初始化BT0, 定时2000us； BT定时，默认采用PEND中断
 	csi_bt_start(BT0);					//启动定时器  
 	csi_bt_set_evtrg(BT0, 0, BT_TRGSRC_PEND);   
 

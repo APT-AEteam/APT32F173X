@@ -55,7 +55,7 @@ int bt_timer_callback_demo(void)
 	
 	tTimConfig.hwTimeVal = 1000;					//BT定时值，单位：us；即定时值 = 1000us
 	tTimConfig.byWkMode  = BT_CNT_CONTINU;			//BT计数器工作模式：连续/单次
-	csi_bt_time_init(BT0, &tTimConfig);				//初始化BT	
+	csi_bt_timer_init(BT0, &tTimConfig);				//初始化BT	
 	csi_bt_register_callback(BT0, bt0_callback);	//注册中断回调函数
 	csi_bt_start(BT0);								//启动BT定时器,定时默认开启BT的PEND(周期结束)中断
 
