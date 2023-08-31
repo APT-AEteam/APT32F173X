@@ -189,7 +189,7 @@ typedef struct {
 	ringbuffer_t		*ptRingBuf;			//pointer of ringbuffer		
 } csi_usart_trans_t;
 
-extern csi_usart_trans_t g_tUsartTran[USART_IDX_NUM];	
+extern csi_usart_trans_t g_tUsartTran[USART_IDX];	
 
 /**
   \brief       initializes the resources needed for the USART interface.

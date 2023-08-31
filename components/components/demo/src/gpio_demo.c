@@ -9,12 +9,8 @@
  * *********************************************************************
 */
 /* Includes ---------------------------------------------------------------*/
-#include <string.h>
-#include "sys_clk.h"
-#include <drv/gpio.h>
-#include <drv/pin.h>
-#include <iostring.h>
-#include "demo.h"
+#include "drv/gpio.h"
+
 /* externs function--------------------------------------------------------*/
 /* externs variablesr------------------------------------------------------*/
 /* Private macro-----------------------------------------------------------*/
@@ -36,36 +32,34 @@
  *  \param[in] none
  *  \return error code
  */
-int gpio_port_ouput_demo(void)
+int gpio_ouput_demo(void)
 {
 	int iRet = 0;
-	uint32_t wPinMask = PINMASK_PA00 | PINMASK_PA02;				//GPIOA0端口，PA0/PA2
-	
-	csi_gpio_port_dir(GPIOA, wPinMask, GPIO_DIR_OUTPUT);			//GPIOA 端口配置为输出
-	csi_gpio_port_set_high(GPIOA, wPinMask);						//输出高
+
+	csi_gpio_set_mux(GPIOA, PA2, PA2_OUTPUT);			//PA2输出
+	csi_gpio_set_high(GPIOA, PA2);						//输出高
 	mdelay(100);
-	csi_gpio_port_set_low(GPIOA, wPinMask);							//输出低
+	csi_gpio_set_low(GPIOA, PA2);						//输出低
 	mdelay(100);
-	csi_gpio_port_set_high(GPIOA, wPinMask);						//输出高
-	mdelay(100);
-	
-	csi_gpio_port_output_mode(GPIOA, wPinMask, GPIO_OPEN_DRAIN);	//GPIOA 端口配置为开漏输出
-	csi_gpio_port_set_high(GPIOA, wPinMask);						//输出高
-	mdelay(100);
-	csi_gpio_port_set_low(GPIOA, wPinMask);						//输出低
-	mdelay(100);
-	csi_gpio_port_set_high(GPIOA, wPinMask);						//输出高
+	csi_gpio_set_high(GPIOA, PA2);						//输出高
 	mdelay(100);
 	
-	csi_gpio_port_output_mode(GPIOA, wPinMask, GPIO_PUSH_PULL);	//GPIOA 端口配置为推挽输出
-	csi_gpio_port_set_high(GPIOA, wPinMask);						//输出高
+	csi_gpio_output_mode(GPIOA, PA2, GPIO_OPEN_DRAIN);	//GPIOA 端口配置为开漏输出
+	csi_gpio_set_high(GPIOA, PA2);						//输出高
 	mdelay(100);
-	csi_gpio_port_set_low(GPIOA, wPinMask);						//输出低
+	csi_gpio_set_low(GPIOA, PA2);						//输出低
 	mdelay(100);
-	csi_gpio_port_set_high(GPIOA, wPinMask);						//输出高
+	csi_gpio_set_high(GPIOA, PA2);						//输出高
 	mdelay(100);
 	
-	my_printf("GPIO PINMASK: %d \n", wPinMask);
+	csi_gpio_output_mode(GPIOA, PA2, GPIO_PUSH_PULL);	//GPIOA 端口配置为推挽输出
+	csi_gpio_set_high(GPIOA, PA2);						//输出高
+	mdelay(100);
+	csi_gpio_set_low(GPIOA, PA2);						//输出低
+	mdelay(100);
+	csi_gpio_set_high(GPIOA, PA2);						//输出高
+	mdelay(100);
+	
 	
 	return iRet;
 }
@@ -75,28 +69,20 @@ int gpio_port_ouput_demo(void)
  *  \param[in] none
  *  \return error code
  */
-int gpio_port_input_demo(void)
+int gpio_input_demo(void)
 {
 	int iRet = 0;
-	uint32_t wStatus;
-	uint32_t wPinMask = PINMASK_PA00 | PINMASK_PA02;				//GPIOA端口，PA0/PA2
 	
-	csi_gpio_port_dir(GPIOA, wPinMask, GPIO_DIR_INPUT);			//GPIOA 端口配置为输入
-	csi_gpio_port_pull_mode(GPIOA, wPinMask, GPIO_PULLNONE);		//无上下拉
+	csi_gpio_set_mux(GPIOA, PA0, PA0_INPUT);			//PA0配置为输入
+	csi_gpio_pull_mode(GPIOA, PA0, GPIO_PULLNONE);		//无上下拉
 	mdelay(100);
-	wStatus = csi_gpio_port_read(GPIOA,wPinMask);
-	while(wStatus != 0);
 	
-	csi_gpio_port_pull_mode(GPIOA, wPinMask, GPIO_PULLUP);			//上拉
+	csi_gpio_pull_mode(GPIOA, PA0, GPIO_PULLUP);		//上拉
 	mdelay(100);
-	wStatus = csi_gpio_port_read(GPIOA,wPinMask);
-	while(wStatus != wPinMask);
-	
-	csi_gpio_port_pull_mode(GPIOA, wPinMask, GPIO_PULLDOWN);		//下拉
+
+	csi_gpio_pull_mode(GPIOA, PA0, GPIO_PULLDOWN);		//下拉
 	mdelay(100);
-	wStatus = csi_gpio_port_read(GPIOA,wPinMask);
-	while(wStatus != 0);
-	
+
 	return iRet;
 }
 
@@ -106,100 +92,42 @@ int gpio_port_input_demo(void)
  *  \return error code
  */
  
-int gpio_port_irq_demo(void)
+int gpio_irq_demo(void)
 {
 	int iRet = 0;
-	uint32_t wPinMask = PINMASK_PA00 | PINMASK_PA02 | PINMASK_PA013; //GPIOA端口，PA0/PA2/PA13
-
-	csi_gpio_port_dir(GPIOA, wPinMask, GPIO_DIR_INPUT);				//端口配置为输入
-	csi_gpio_port_pull_mode(GPIOA, wPinMask, GPIO_PULLUP);			//上拉
-	csi_gpio_port_irq_enable(GPIOA,wPinMask,ENABLE);				//使能GPIOA端口对应外部中断
-	csi_gpio_port_irq_mode(GPIOA,wPinMask,GPIO_IRQ_FALLING_EDGE);	//下降沿
-	csi_gpio_port_vic_irq_enable(wPinMask, ENABLE);					//GPIOA端口对应VIC中断使能
+	
+	csi_gpio_set_mux(GPIOA, PA0, PA0_INPUT);						//PA0配置为输入
+	csi_gpio_pull_mode(GPIOA, PA0, GPIO_PULLUP);					//上拉
+	csi_gpio_irq_enable(GPIOA,PA0);									//使能PA0端口对应外部中断
+	csi_gpio_irq_mode(GPIOA, PA0, EXI_GRP0,GPIO_IRQ_FALLING_EDGE);	//下降沿
+	csi_gpio_vic_irq_enable(EXI_GRP0, ENABLE);						//GPIOA端口对应VIC中断使能
 	
 	return iRet;
 }
 
-/** \brief gpio interrupt handle function
+/** \brief  exi0_int_handler: EXI0 中断服务函数,支持EXI GROUP0和GROUP16
+ * 
+ *  \brief 	支持EXI的中断GROUP0和GROUP16，两者中任一产生中断，会调用该函数；函数在interrupt.c里定义为弱(weak)
+ * 			属性，默认处理仅清除状态，使用EXI中断时，请用户重定义此函数，完成对应的中断处理
+ * 			
  * 
  *  \param[in] byExiNum: exi interrupt vector num, 0~4
  *  \return none
  */ 
-__attribute__((weak)) void gpio_irqhandler(uint8_t byExiNum)
+ATTRIBUTE_ISR  void exi0_int_handler(void) 
 {
-	volatile uint32_t wExiSta; 
-	wExiSta = csp_exi_port_get_isr(SYSCON);
+	volatile uint32_t wExiSta = csp_exi_get_isr(SYSCON); 		//get interrupt status
 	
-    switch(byExiNum)
+	if(wExiSta & STATUS_EXI0)				//exi group0
 	{
-		case 0:
-			switch(wExiSta)								//EXI0
-			{
-				case STATUS_EXI0:						//int group0
-					break;
-				case STATUS_EXI16:						//int group16
-					break;
-			}
-			break;
-		case 1:
-			switch(wExiSta)								//EXI1							
-			{
-				case STATUS_EXI1:						//int group1
-					break;
-				case STATUS_EXI17:						//int group17
-					break;
-			}
-			break;
-		case 2:
-			switch(wExiSta)								//EXI2-3
-			{
-				case STATUS_EXI2:						//int group2
-					break;
-				case STATUS_EXI3:						//int group3
-					break;
-				case STATUS_EXI18:						//int group18
-					break;
-				case STATUS_EXI19:						//int group19
-					break;
-			}
-			break;
-		case 3:
-			switch(wExiSta)								//EXI4-9
-			{
-				case STATUS_EXI4:						//int group4
-					break;
-				case STATUS_EXI5:						//int group5
-					break;
-				case STATUS_EXI6:						//int group6
-					break;
-				case STATUS_EXI7:						//int group7
-					break;
-				case STATUS_EXI8:						//int group8
-					break;
-				case STATUS_EXI9:						//int group9
-					break;
-			}
-			break;
-		case 4:
-			switch(wExiSta)								//EXI10-15
-			{
-				case STATUS_EXI10:						//int grou10
-					break;
-				case STATUS_EXI11:						//int group11
-					break;
-				case STATUS_EXI12:						//int group12
-					break;
-				case STATUS_EXI13:						//int group13
-					break;
-				case STATUS_EXI14:						//int group14
-					break;
-				case STATUS_EXI15:						//int group15
-					break;
-			}
-			break;
-		default:
-			break;
-		
+		//用户添加处理
+		nop;
 	}
-	csp_exi_port_clr_isr(SYSCON, wExiSta);		//clear interrput 
+	
+	if(STATUS_EXI0 & STATUS_EXI16)			//exigroup16			
+	{
+		//用户添加处理
+		nop;
+	}
+	csp_exi_clr_isr(SYSCON, wExiSta);		//clear interrput 
 }

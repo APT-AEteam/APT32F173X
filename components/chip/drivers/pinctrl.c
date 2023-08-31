@@ -58,7 +58,7 @@ static unsigned int *apt_get_pin_name_addr(pin_name_e ePinName)
  *  \param[in] eExiGrp:	EXI_IGRP0 ~ EXI_IGRP19
  *  \return none
  */ 
-int apt_gpio_intgroup_set(csp_gpio_t *ptGpioBase, uint8_t byPinNum, gpio_igrp_e eExiGrp)
+static int apt_gpio_intgroup_set(csp_gpio_t *ptGpioBase, uint8_t byPinNum, gpio_igrp_e eExiGrp)
 {
 	uint32_t byMaskShift,byMask;
 	gpio_group_e eIoGroup = GRP_GPIOA;
@@ -140,7 +140,7 @@ int apt_gpio_intgroup_set(csp_gpio_t *ptGpioBase, uint8_t byPinNum, gpio_igrp_e 
  *  \param[in] eGpioTrg: EXI_IRT,EXI_IFT,
  *  \return none
  */ 
-void apt_exi_trg_edge_set(csp_syscon_t *ptSysconBase,gpio_igrp_e eExiGrp, exi_trigger_e eGpioTrg)
+static void apt_exi_trg_edge_set(csp_syscon_t *ptSysconBase,gpio_igrp_e eExiGrp, exi_trigger_e eGpioTrg)
 {
 	uint32_t wPinMsak = (0x01ul << eExiGrp);
 	
@@ -419,7 +419,7 @@ void csi_pin_speed(pin_name_e ePinName, csi_gpio_speed_e eSpeed)
 	ptGpioBase = (csp_gpio_t *)pwPinMess[0];			//pin addr
 	ePinName = (pin_name_e)pwPinMess[1];				//pin
 	
-	csp_gpio_speed_set(ptGpioBase, ePinName, (uint8_t)eSpeed);
+	csp_gpio_set_speed(ptGpioBase, ePinName, (uint8_t)eSpeed);
 	
 }
 
@@ -438,7 +438,7 @@ csi_error_t csi_pin_drive(pin_name_e ePinName, csi_gpio_drive_e eDrive)
 	ptGpioBase = (csp_gpio_t *)pwPinMess[0];			//pin addr
 	ePinName = (pin_name_e)pwPinMess[1];				//pin
 	
-	csp_gpio_drv_set(ptGpioBase, ePinName, (uint8_t)eDrive);
+	csp_gpio_set_drive(ptGpioBase, ePinName, (uint8_t)eDrive);
 		
     return ret;
 }
@@ -461,9 +461,13 @@ csi_error_t csi_pin_input_mode(pin_name_e ePinName, csi_gpio_input_mode_e eInput
 	
 	switch (eInputMode)
 	{
-		case (GPIO_INPUT_TTL2):	csp_gpio_ccm_ttl2(ptGpioBase, ePinName);
+		case (GPIO_INPUT_TTL2):	
+			csp_gpio_ccm_ttl(ptGpioBase, ePinName);
+			csp_gpio_set_ttl2(ptGpioBase, ePinName);
 			break;
-		case (GPIO_INPUT_TTL1): csp_gpio_ccm_ttl1(ptGpioBase, ePinName);
+		case (GPIO_INPUT_TTL1): 
+			csp_gpio_ccm_ttl(ptGpioBase, ePinName);
+			csp_gpio_set_ttl2(ptGpioBase, ePinName);
 			break;
 		case (GPIO_INPUT_CMOS):	csp_gpio_ccm_cmos(ptGpioBase, ePinName);
 			break;
@@ -491,10 +495,10 @@ csi_error_t csi_pin_output_mode(pin_name_e ePinName, csi_gpio_output_mode_e eOut
 	switch(eOutMode)
 	{
 		case GPIO_PUSH_PULL:
-			csp_gpio_opendrain_dis(ptGpioBase, ePinName);	//push-pull mode
+			csp_gpio_opendrain_disable(ptGpioBase, ePinName);	//push-pull mode
 			break;
 		case GPIO_OPEN_DRAIN:
-			csp_gpio_opendrain_en(ptGpioBase, ePinName);	//open drain mode 
+			csp_gpio_opendrain_enable(ptGpioBase, ePinName);	//open drain mode 
 			break;
 		default:
 			ret = CSI_ERROR;
@@ -518,7 +522,7 @@ void csi_pin_input_filter(pin_name_e ePinName, bool bEnable)
 	ptGpioBase = (csp_gpio_t *)ptPinInfo[0];	
 	ePinName = (pin_name_e)ptPinInfo[1];	
 	
-	csp_gpio_flt_en(ptGpioBase, ePinName, bEnable);
+	csp_gpio_flt_enable(ptGpioBase, ePinName, bEnable);
 }
 /** \brief get gpio pin num
  * 
@@ -547,7 +551,7 @@ uint32_t csi_pin_read(pin_name_e ePinName)
 	ptGpioBase = (csp_gpio_t *)pwPinMess[0];			//pin addr
 	ePinName = (pin_name_e)pwPinMess[1];				//pin
 		
-	return (csp_gpio_read_input_port(ptGpioBase) & (0x01ul << ePinName));
+	return (csp_gpio_read_input(ptGpioBase) & (0x01ul << ePinName));
 }
 /** \brief config pin irq mode(assign exi group)
  * 
@@ -575,8 +579,8 @@ csi_error_t csi_pin_irq_mode(pin_name_e ePinName, csi_exi_grp_e eExiGrp, csi_gpi
 	else
 		apt_exi_trg_edge_set(SYSCON,(gpio_igrp_e)eExiGrp, (exi_trigger_e)eTrgEdge);				//interrupt edge
 		
-	csp_exi_port_int_enable(SYSCON,(0x01ul << eExiGrp), ENABLE);	//EXI INT enable
-	csp_exi_port_clr_isr(SYSCON,(0x01ul << eExiGrp));	
+	csp_exi_int_enable(SYSCON,(0x01ul << eExiGrp));		//EXI INT enable
+	csp_exi_clr_isr(SYSCON,(0x01ul << eExiGrp));	
 	
 	return ret;
 }
@@ -594,7 +598,7 @@ void csi_pin_irq_enable(pin_name_e ePinName, bool bEnable)
 	ptGpioBase = (csp_gpio_t *)pwPinMess[0];						//pin addr
 	ePinName = (pin_name_e)pwPinMess[1];							//pin	
 		
-	csp_gpio_int_enable(ptGpioBase, (gpio_int_e)ePinName, bEnable);
+	csp_gpio_int_enable(ptGpioBase, (gpio_int_e)ePinName);
 }
 /** \brief pin vic irq enable
  * 

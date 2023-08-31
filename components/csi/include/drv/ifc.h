@@ -36,7 +36,6 @@ typedef struct {
 
 // Function documentation
 
-
 /**
   \brief       config data flash workmode
   \param[in]   ptIfcBase    pointer of ifc register structure

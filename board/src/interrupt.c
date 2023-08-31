@@ -11,27 +11,17 @@
 
 /* Includes ------------------------------------------------------------------*/
 
-#include "soc.h"
-#include "gpio.h"
-#include "adc.h"
-#include "lpt.h"
-#include "pin.h"
-#include "spi.h"
+#include "csi_drv.h"
 #include "board_config.h"
-#include "csp.h"
-#include "rtc.h"
-#include "irq.h"
-#include "cnta.h"
-#include <drv/tick.h>
 #include <csi_config.h>
-#include "soc.h"
+
 #ifdef CONFIG_KERNEL_FREERTOS
 #include <csi_kernel.h>
 #endif
 
+			
 /* externs function--------------------------------------------------------*/
 extern void nmi_int_handler(void);
-extern void uart_irqhandler(csp_uart_t *ptUartBase,uint8_t byIdx);
 extern void usart_irqhandler(csp_usart_t *ptUsartBase,uint8_t byIdx);
 extern void can_irqhandler(csp_can_t *ptCanBase);
 extern void dma_irqhandler(csp_dma_t *ptDmaBase);						//DMA
@@ -60,16 +50,16 @@ extern void rtc_irqhandler(csp_rtc_t *ptRtcBase);
 extern void lpt_irqhandler(csp_lpt_t *ptLptBase);
 extern void dac_irqhandler(csp_dac_t *ptDacBase);
 /* Private macro-----------------------------------------------------------*/
-#define  ATTRIBUTE_ISR __attribute__ ((interrupt ("machine")))
-
-
-#ifdef CONFIG_KERNEL_FREERTOS
-#define  CSI_INTRPT_ENTER() csi_kernel_intrpt_enter()
-#define  CSI_INTRPT_EXIT()  csi_kernel_intrpt_exit()
-#else
-#define  CSI_INTRPT_ENTER()
-#define  CSI_INTRPT_EXIT()
-#endif
+//#define  ATTRIBUTE_ISR __attribute__ ((interrupt ("machine")))
+//
+//
+//#ifdef CONFIG_KERNEL_FREERTOS
+//#define  CSI_INTRPT_ENTER() csi_kernel_intrpt_enter()
+//#define  CSI_INTRPT_EXIT()  csi_kernel_intrpt_exit()
+//#else
+//#define  CSI_INTRPT_ENTER()
+//#define  CSI_INTRPT_EXIT()
+//#endif
 
 
 /* Private variablesr------------------------------------------------------*/
@@ -87,10 +77,10 @@ ATTRIBUTE_ISR void nmi_int_handler(void)
 		nop;
 		csp_syscon_int_clr(SYSCON, LVD_INT);
 	}
-	if(csp_exi_port_get_isr(SYSCON) & STATUS_EXI0)
+	if(csp_exi_get_isr(SYSCON) & STATUS_EXI0)
 	{
 		nop;
-		gpio_irqhandler(0);
+		//gpio_irqhandler(0);
 	}
 }
 
@@ -120,16 +110,14 @@ ATTRIBUTE_ISR void syscon_int_handler(void)
 
 ATTRIBUTE_ISR void ifc_int_handler(void)
 {
-#if	IFC_INT_HANDLE_EN
 	// ISR content ...
 	CSI_INTRPT_ENTER();
-	ifc_irqhandler();      // ifc interrupt handle function,this is a weak function defined in ifc.c,mainly used for para mode PGM of DFLASH
-	CSI_INTRPT_EXIT();
-#endif
 	
+	
+	CSI_INTRPT_EXIT();
 }
 
-ATTRIBUTE_ISR void adc0_int_handler(void) 
+ATTRIBUTE_ISR __attribute__((weak)) void adc0_int_handler(void) 
 {	
 #if	ADC0_INT_HANDLE_EN
 	// ISR content ...
@@ -139,7 +127,7 @@ ATTRIBUTE_ISR void adc0_int_handler(void)
 #endif	
 }
 
-ATTRIBUTE_ISR void adc1_int_handler(void) 
+ATTRIBUTE_ISR __attribute__((weak)) void adc1_int_handler(void) 
 {
 #if	ADC1_INT_HANDLE_EN
 	// ISR content ...
@@ -151,27 +139,23 @@ ATTRIBUTE_ISR void adc1_int_handler(void)
 #endif	
 }
 
-ATTRIBUTE_ISR void dma0_int_handler(void)
+ATTRIBUTE_ISR __attribute__((weak)) void dma0_int_handler(void)
 {
-#if DMA0_INT_HANDLE_EN	
-	// ISR content ...
 	CSI_INTRPT_ENTER();
-	dma_irqhandler(DMA0);//this is a weak function defined in dma.c, for better efficiency, we recommand user directly implement IRQ handler here without any function call.
+	//dma_irqhandler(DMA0);//this is a weak function defined in dma.c, for better efficiency, we recommand user directly implement IRQ handler here without any function call.
 	CSI_INTRPT_EXIT();
-#endif
 }
 
-ATTRIBUTE_ISR void dma1_int_handler(void) 
+
+ATTRIBUTE_ISR __attribute__((weak)) void dma1_int_handler(void) 
 {
-#if DMA1_INT_HANDLE_EN	
 	// ISR content ...
 	CSI_INTRPT_ENTER();
-	dma_irqhandler(DMA1);//this is a weak function defined in dma.c, for better efficiency, we recommand user directly implement IRQ handler here without any function call.
+	//dma_irqhandler(DMA1);//this is a weak function defined in dma.c, for better efficiency, we recommand user directly implement IRQ handler here without any function call.
 	CSI_INTRPT_EXIT();
-#endif	
 }
 
-ATTRIBUTE_ISR void wwdt_int_handler(void)
+ATTRIBUTE_ISR __attribute__((weak)) void wwdt_int_handler(void)
 {
 #if WWDT_INT_HANDLE_EN
 	 // ISR content ...
@@ -181,7 +165,7 @@ ATTRIBUTE_ISR void wwdt_int_handler(void)
 #endif
 }
 
-ATTRIBUTE_ISR void gpta0_int_handler(void)
+ATTRIBUTE_ISR __attribute__((weak)) void gpta0_int_handler(void)
 {
 #if GPTA0_INT_HANDLE_EN	
 	 // ISR content ...
@@ -191,7 +175,7 @@ ATTRIBUTE_ISR void gpta0_int_handler(void)
 #endif
 }
 
-ATTRIBUTE_ISR void gpta1_int_handler(void) 
+ATTRIBUTE_ISR __attribute__((weak)) void gpta1_int_handler(void) 
 {
 #if GPTA1_INT_HANDLE_EN	
 	 // ISR content ...
@@ -202,7 +186,7 @@ ATTRIBUTE_ISR void gpta1_int_handler(void)
 }
 
 
-ATTRIBUTE_ISR void gpta2_int_handler(void)
+ATTRIBUTE_ISR __attribute__((weak)) void gpta2_int_handler(void)
 {
 #if GPTA2_INT_HANDLE_EN	
 	 // ISR content ...
@@ -212,7 +196,7 @@ ATTRIBUTE_ISR void gpta2_int_handler(void)
 #endif
 }
 
-ATTRIBUTE_ISR void gpta3_int_handler(void) 
+ATTRIBUTE_ISR __attribute__((weak)) void gpta3_int_handler(void) 
 {
 #if GPTA3_INT_HANDLE_EN	
 	CSI_INTRPT_ENTER();
@@ -222,7 +206,7 @@ ATTRIBUTE_ISR void gpta3_int_handler(void)
 #endif
 }
 
-ATTRIBUTE_ISR void gptb0_int_handler(void) 
+ATTRIBUTE_ISR __attribute__((weak)) void gptb0_int_handler(void) 
 {
 #if GPTB0_INT_HANDLE_EN		
     // ISR content ...	
@@ -232,7 +216,7 @@ ATTRIBUTE_ISR void gptb0_int_handler(void)
 #endif
 }
 
-ATTRIBUTE_ISR void gptb1_int_handler(void) 
+ATTRIBUTE_ISR __attribute__((weak)) void gptb1_int_handler(void) 
 {
 #if GPTB1_INT_HANDLE_EN		
     // ISR content ...	
@@ -242,7 +226,7 @@ ATTRIBUTE_ISR void gptb1_int_handler(void)
 #endif	
 }
 
-ATTRIBUTE_ISR void gptb2_int_handler(void) 
+ATTRIBUTE_ISR __attribute__((weak)) void gptb2_int_handler(void) 
 {
 #if GPTB2_INT_HANDLE_EN		
     // ISR content ...	
@@ -252,7 +236,7 @@ ATTRIBUTE_ISR void gptb2_int_handler(void)
 #endif	
 }
 
-ATTRIBUTE_ISR void gptb3_int_handler(void) 
+ATTRIBUTE_ISR __attribute__((weak)) void gptb3_int_handler(void) 
 {
 #if GPTB3_INT_HANDLE_EN		
     // ISR content ...	
@@ -262,7 +246,7 @@ ATTRIBUTE_ISR void gptb3_int_handler(void)
 #endif
 }
 
-ATTRIBUTE_ISR void gptb4_int_handler(void) 
+ATTRIBUTE_ISR __attribute__((weak)) void gptb4_int_handler(void) 
 {
 #if GPTB4_INT_HANDLE_EN		
     // ISR content ...	
@@ -272,7 +256,7 @@ ATTRIBUTE_ISR void gptb4_int_handler(void)
 #endif	
 }
 
-ATTRIBUTE_ISR void gptb5_int_handler(void) 
+ATTRIBUTE_ISR __attribute__((weak)) void gptb5_int_handler(void) 
 {
 #if GPTB5_INT_HANDLE_EN		
     // ISR content ...	
@@ -282,7 +266,7 @@ ATTRIBUTE_ISR void gptb5_int_handler(void)
 #endif
 }
 
-ATTRIBUTE_ISR void dac0_int_handler(void) 
+ATTRIBUTE_ISR __attribute__((weak)) void dac0_int_handler(void) 
 {
 #if DAC0_INT_HANDLE_EN		
     // ISR content ...
@@ -292,7 +276,7 @@ ATTRIBUTE_ISR void dac0_int_handler(void)
 #endif
 }
 
-ATTRIBUTE_ISR void usart0_int_handler(void) 
+ATTRIBUTE_ISR __attribute__((weak)) void usart0_int_handler(void) 
 {
 #if	USART0_INT_HANDLE_EN	
 	CSI_INTRPT_ENTER();
@@ -301,7 +285,7 @@ ATTRIBUTE_ISR void usart0_int_handler(void)
 #endif	
 }
 
-ATTRIBUTE_ISR void usart1_int_handler(void) 
+ATTRIBUTE_ISR __attribute__((weak)) void usart1_int_handler(void) 
 {
 #if	USART0_INT_HANDLE_EN	
     // ISR content ...
@@ -311,37 +295,43 @@ ATTRIBUTE_ISR void usart1_int_handler(void)
 #endif
 }
 
-ATTRIBUTE_ISR void uart0_int_handler(void) 
+ATTRIBUTE_ISR __attribute__((weak)) void uart0_int_handler(void) 
 {
-#if	UART0_INT_HANDLE_EN
     // ISR content ...
 	CSI_INTRPT_ENTER();
-	uart_irqhandler(UART0, 0);//this is a weak function defined in uart_demo.c, for better efficiency, we recommand user directly implement IRQ handler here without any function call.
-	CSI_INTRPT_EXIT();
+#if (USE_UART_CALLBACK == 1)
+	csi_uart_irqhandler(UART0, 0);
+#else
+	csp_uart_clr_isr(UART0, csp_uart_get_isr(UART0))
 #endif
+	CSI_INTRPT_EXIT();
 }
 
-ATTRIBUTE_ISR void uart1_int_handler(void) 
+ATTRIBUTE_ISR __attribute__((weak)) void uart1_int_handler(void) 
 {
-#if	UART1_INT_HANDLE_EN
     // ISR content ...
 	CSI_INTRPT_ENTER();
-	uart_irqhandler(UART1, 1);//this is a weak function defined in uart_demo.c, for better efficiency, we recommand user directly implement IRQ handler here without any function call.
-	CSI_INTRPT_EXIT();
+#if (USE_UART_CALLBACK == 1)
+	csi_uart_irqhandler(UART1, 1);
+#else
+	csp_uart_clr_isr(UART1, csp_uart_get_isr(UART1))
 #endif
+	CSI_INTRPT_EXIT();
 }
 
-ATTRIBUTE_ISR void uart2_int_handler(void) 
+ATTRIBUTE_ISR __attribute__((weak)) void uart2_int_handler(void) 
 {
-#if	UART2_INT_HANDLE_EN
     // ISR content ...
 	CSI_INTRPT_ENTER();
-	uart_irqhandler(UART2, 2);//this is a weak function defined in uart_demo.c, for better efficiency, we recommand user directly implement IRQ handler here without any function call.
-	CSI_INTRPT_EXIT();
+#if (USE_UART_CALLBACK == 1)
+	csi_uart_irqhandler(UART2, 2);
+#else
+	csp_uart_clr_isr(UART2, csp_uart_get_isr(UART2))
 #endif
+	CSI_INTRPT_EXIT();
 }
 
-ATTRIBUTE_ISR void sio0_int_handler(void) 
+ATTRIBUTE_ISR __attribute__((weak)) void sio0_int_handler(void) 
 {
 #if	SIO0_INT_HANDLE_EN
 	CSI_INTRPT_ENTER();
@@ -351,7 +341,7 @@ ATTRIBUTE_ISR void sio0_int_handler(void)
 #endif
 }
 
-ATTRIBUTE_ISR void sio1_int_handler(void) 
+ATTRIBUTE_ISR __attribute__((weak)) void sio1_int_handler(void) 
 {
 #if	SIO1_INT_HANDLE_EN
 	CSI_INTRPT_ENTER();
@@ -361,7 +351,7 @@ ATTRIBUTE_ISR void sio1_int_handler(void)
 #endif
 }
 
-ATTRIBUTE_ISR void i2c_int_handler(void) 
+ATTRIBUTE_ISR __attribute__((weak)) void i2c_int_handler(void) 
 {
 #if	I2C_INT_HANDLE_EN
     // ISR content ...
@@ -371,7 +361,7 @@ ATTRIBUTE_ISR void i2c_int_handler(void)
 #endif
 }
 
-ATTRIBUTE_ISR void spi0_int_handler(void) 
+ATTRIBUTE_ISR __attribute__((weak)) void spi0_int_handler(void) 
 {
 #if	SPI0_INT_HANDLE_EN
    // ISR content ...
@@ -381,7 +371,7 @@ ATTRIBUTE_ISR void spi0_int_handler(void)
 #endif   
 }
 
-ATTRIBUTE_ISR void spi1_int_handler(void) 
+ATTRIBUTE_ISR __attribute__((weak)) void spi1_int_handler(void) 
 {
 #if	SPI1_INT_HANDLE_EN
    // ISR content ...
@@ -391,37 +381,31 @@ ATTRIBUTE_ISR void spi1_int_handler(void)
 #endif
 }
 
-ATTRIBUTE_ISR void exi0_int_handler(void) 
+ATTRIBUTE_ISR __attribute__((weak)) void exi0_int_handler(void) 
 {
-#if	EXI0_INT_HANDLE_EN
     // ISR content ...
 	CSI_INTRPT_ENTER();
-	gpio_irqhandler(0);	//this is a weak function defined in gpio_demo.c, for better efficiency, we recommand user directly implement IRQ handler here without any function call.
+	csp_exi_clr_isr(SYSCON, csp_exi_get_isr(SYSCON));				//clear interrput 
 	CSI_INTRPT_EXIT();
-#endif
 }
 
-ATTRIBUTE_ISR void exi1_int_handler(void) 
+ATTRIBUTE_ISR __attribute__((weak)) void exi1_int_handler(void) 
 {
-#if	EXI1_INT_HANDLE_EN
     // ISR content ...
 	CSI_INTRPT_ENTER();
-	gpio_irqhandler(1); //this is a weak function defined in gpio_demo.c, for better efficiency, we recommand user directly implement IRQ handler here without any function call.
+	csp_exi_clr_isr(SYSCON, csp_exi_get_isr(SYSCON));				//clear interrput 
 	CSI_INTRPT_EXIT();
-#endif
 }
 
-ATTRIBUTE_ISR void exi2_3_int_handler(void) 
+ATTRIBUTE_ISR __attribute__((weak)) void exi2_3_int_handler(void) 
 {
-#if	EXI2_3_INT_HANDLE_EN
     // ISR content ...
 	CSI_INTRPT_ENTER();
-	gpio_irqhandler(2); //this is a weak function defined in gpio_demo.c, for better efficiency, we recommand user directly implement IRQ handler here without any function call.
+	csp_exi_clr_isr(SYSCON, csp_exi_get_isr(SYSCON));				//clear interrput 
 	CSI_INTRPT_EXIT();
-#endif
 }
 
-ATTRIBUTE_ISR void exi4_9_int_handler(void) 
+ATTRIBUTE_ISR __attribute__((weak)) void exi4_9_int_handler(void) 
 {
 #if	EXI4_9_INT_HANDLE_EN
     // ISR content ...
@@ -431,7 +415,7 @@ ATTRIBUTE_ISR void exi4_9_int_handler(void)
 #endif
 }
 
-ATTRIBUTE_ISR void exi10_15_int_handler(void) 
+ATTRIBUTE_ISR __attribute__((weak)) void exi10_15_int_handler(void) 
 {
 #if	EXI10_15_INT_HANDLE_EN
     // ISR content ...
@@ -441,7 +425,7 @@ ATTRIBUTE_ISR void exi10_15_int_handler(void)
 #endif
 }
 
-ATTRIBUTE_ISR void can_int_handler(void) 
+ATTRIBUTE_ISR void __attribute__((weak)) can_int_handler(void) 
 {
 #if	CAN_INT_HANDLE_EN
     // ISR content ...
@@ -451,7 +435,7 @@ ATTRIBUTE_ISR void can_int_handler(void)
 #endif
 }
 
-ATTRIBUTE_ISR void cnta_int_handler(void)
+ATTRIBUTE_ISR __attribute__((weak)) void cnta_int_handler(void)
 {
 #if	CNTA_INT_HANDLE_EN
 	// ISR content ...
@@ -461,7 +445,7 @@ ATTRIBUTE_ISR void cnta_int_handler(void)
 #endif
 }
 
-ATTRIBUTE_ISR void lpt_int_handler(void)
+ATTRIBUTE_ISR __attribute__((weak)) void lpt_int_handler(void)
 {
 #if	LPT_INT_HANDLE_EN
     // ISR content ...
@@ -471,7 +455,7 @@ ATTRIBUTE_ISR void lpt_int_handler(void)
 #endif
 }
 
-ATTRIBUTE_ISR void rtc_int_handler(void)
+ATTRIBUTE_ISR __attribute__((weak)) void rtc_int_handler(void)
 {
 #if	RTC_INT_HANDLE_EN
 	// ISR content ...
@@ -481,7 +465,7 @@ ATTRIBUTE_ISR void rtc_int_handler(void)
 #endif
 }
 
-ATTRIBUTE_ISR void cmp0_int_handler(void) 
+ATTRIBUTE_ISR __attribute__((weak)) void cmp0_int_handler(void) 
 {
 #if	CMP0_INT_HANDLE_EN
     // ISR content ...
@@ -491,7 +475,7 @@ ATTRIBUTE_ISR void cmp0_int_handler(void)
 #endif
 }
 
-ATTRIBUTE_ISR void cmp1_int_handler(void) 
+ATTRIBUTE_ISR __attribute__((weak)) void cmp1_int_handler(void) 
 {
 #if	CMP1_INT_HANDLE_EN
     // ISR content ...
@@ -501,7 +485,7 @@ ATTRIBUTE_ISR void cmp1_int_handler(void)
 #endif
 }
 
-ATTRIBUTE_ISR void cmp2_int_handler(void) 
+ATTRIBUTE_ISR __attribute__((weak)) void cmp2_int_handler(void) 
 {
 #if	CMP2_INT_HANDLE_EN
     // ISR content ...
@@ -511,7 +495,7 @@ ATTRIBUTE_ISR void cmp2_int_handler(void)
 #endif
 }
 
-ATTRIBUTE_ISR void led_int_handler(void) 
+ATTRIBUTE_ISR __attribute__((weak)) void led_int_handler(void) 
 {
 #if	LED_INT_HANDLE_EN
     // ISR content ...
@@ -521,43 +505,49 @@ ATTRIBUTE_ISR void led_int_handler(void)
 #endif
 }
 
-ATTRIBUTE_ISR void bt0_int_handler(void) 
+ATTRIBUTE_ISR  __attribute__((weak)) void bt0_int_handler(void) 
 {
-#if	BT0_INT_HANDLE_EN
     // ISR content ...
 	CSI_INTRPT_ENTER();
-	bt_irqhandler0(BT0); //this is a weak function defined in bt_demo.c, for better efficiency, we recommand user directly implement IRQ handler here without any function call.
+#if (USE_BT_CALLBACK == 1)
+	csi_bt_irqhandler(BT0, 0);
+#else
+	csp_bt_clr_isr(BT0, csp_bt_get_isr(BT0));
+#endif
 	CSI_INTRPT_EXIT();	
-#endif
 }
 
-ATTRIBUTE_ISR void bt1_int_handler(void) 
+ATTRIBUTE_ISR __attribute__((weak)) void bt1_int_handler(void) 
 {
-#if	BT1_INT_HANDLE_EN
     // ISR content ...
 	CSI_INTRPT_ENTER();
-	bt_irqhandler1(BT1); //this is a weak function defined in bt_demo.c, for better efficiency, we recommand user directly implement IRQ handler here without any function call.
-	CSI_INTRPT_EXIT();
+#if (USE_BT_CALLBACK == 1)
+	csi_bt_irqhandler(BT1, 1);
+#else
+	csp_bt_clr_isr(BT1, csp_bt_get_isr(BT1));
 #endif
+	CSI_INTRPT_EXIT();
 }
 
-ATTRIBUTE_ISR void bt2_int_handler(void) 
+ATTRIBUTE_ISR __attribute__((weak)) void bt2_int_handler(void) 
 {
-#if	BT2_INT_HANDLE_EN
     // ISR content ...
 	CSI_INTRPT_ENTER();
-	bt_irqhandler2(BT2); //this is a weak function defined in bt_demo.c, for better efficiency, we recommand user directly implement IRQ handler here without any function call. 
-	CSI_INTRPT_EXIT();
+#if (USE_BT_CALLBACK == 1)
+	csi_bt_irqhandler(BT1, 2);
+#else
+	csp_bt_clr_isr(BT0, csp_bt_get_isr(BT0));
 #endif
+	
+	CSI_INTRPT_EXIT();
 }
 
-ATTRIBUTE_ISR void bt3_int_handler(void) 
+ATTRIBUTE_ISR void __attribute__((weak)) bt3_int_handler(void) 
 {
-#if	BT3_INT_HANDLE_EN
-//    // ISR content ...
-	csi_tick_increase();
-	bt_irqhandler3(BT3);   //BT3 is for systick!!!
-#endif	
+	// ISR content ...
+	CSI_INTRPT_ENTER();
+	csp_bt_clr_isr(BT3, csp_bt_get_isr(BT3));				//use for tick
+	CSI_INTRPT_EXIT();	
 }
 /*************************************************************/
 /*************************************************************/

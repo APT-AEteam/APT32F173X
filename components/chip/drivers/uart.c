@@ -8,24 +8,16 @@
  * </table>
  * *********************************************************************
 */
-#include <sys_clk.h>
-#include <clk.h>
 #include <drv/uart.h>
-#include <drv/irq.h>
-#include <drv/gpio.h>
-#include <drv/pin.h>
-#include <drv/tick.h>
 #include <drv/etb.h>
 #include <drv/dma.h>
-
-#include "csp_dma.h"
-#include "csp_etb.h"
+#include <drv/tick.h>
 
 /* Private macro------------------------------------------------------*/
 /* externs function---------------------------------------------------*/
 /* externs variablesr-------------------------------------------------*/
 /* Private variablesr-------------------------------------------------*/
-csi_uart_trans_t g_tUartTran[UART_IDX_NUM];	
+csi_uart_ctrl_t g_tUartCtrl[UART_IDX];	
 
 //static uint32_t s_wCtrlRegBack = 0;	
 
@@ -34,7 +26,7 @@ csi_uart_trans_t g_tUartTran[UART_IDX_NUM];
  *  \param[in] ptUartBase: pointer of uart register structure
  *  \return uart id number(0~2) or error(0xff)
  */ 
-static uint8_t csi_get_uart_idx(csp_uart_t *ptUartBase)
+static uint8_t apt_get_uart_idx(csp_uart_t *ptUartBase)
 {
 	switch((uint32_t)ptUartBase)
 	{
@@ -48,25 +40,6 @@ static uint8_t csi_get_uart_idx(csp_uart_t *ptUartBase)
 			return 0xff;		//error
 	}
 }
-/** \brief uart receive a bunch of data, dynamic scan
- * 
- *  \param[in] byIdx: uart id number(0~2)
- *  \return none
- */ 
-void csi_uart_recv_dynamic_scan(uint8_t byIdx)
-{
-	if(g_tUartTran[byIdx].ptRingBuf->hwDataLen > 0)
-	{
-		if(g_tUartTran[byIdx].hwRxSize == g_tUartTran[byIdx].ptRingBuf->hwDataLen)
-		{
-			g_tUartTran[byIdx].hwRxSize = 0;
-			g_tUartTran[byIdx].byRecvStat = UART_STATE_FULL;
-		}
-		else 
-			g_tUartTran[byIdx].hwRxSize = g_tUartTran[byIdx].ptRingBuf->hwDataLen;
-	}
-}
-
 /** \brief initialize uart parameter structure
  * 
  *  \param[in] ptUartBase: pointer of uart register structure
@@ -77,102 +50,213 @@ csi_error_t csi_uart_init(csp_uart_t *ptUartBase, csi_uart_config_t *ptUartCfg)
 {
 	uart_parity_e eParity = UART_PAR_NONE;
 	uint32_t wBrDiv;
-	uint8_t byIdx;
 	
-	
-	csi_clk_enable((uint32_t *)ptUartBase);							//uart peripheral clk enable
-	csp_uart_soft_rst(ptUartBase);
+	csi_clk_enable((uint32_t *)ptUartBase);						//uart peripheral clk enable
+	csp_uart_soft_rst(ptUartBase);								//reset ip
 	
 	wBrDiv = csi_get_pclk_freq()/ptUartCfg->wBaudRate;	
 	if(wBrDiv < 16)
 		wBrDiv = 16;
-	csp_uart_set_brdiv(ptUartBase, wBrDiv);				//set uart baud rate 
+	csp_uart_set_brdiv(ptUartBase, wBrDiv);						//set uart baud rate 
 	
-	switch(ptUartCfg->byParity)							//set uart parity bits
+	//databits = 8/stopbits = 1; fixed, can not be configured 
+	if(ptUartCfg->byParity == UART_PARITY_ODD)					//set uart parity bits
+		eParity = UART_PAR_ODD;
+	else if(ptUartCfg->byParity == UART_PAR_EVEN)
+		eParity = UART_PAR_EVEN;
+	else if(ptUartCfg->byParity == UART_PARITY_NONE)
+		 eParity = UART_PAR_NONE;
+	else
+		 return CSI_ERROR;
+	csp_uart_set_parity(ptUartBase, eParity);					//parity
+	
+	if((ptUartCfg->byRxFifoTrg != UART_RXFIFOTRG_ONE) && (ptUartCfg->byRxFifoTrg != UART_RXFIFOTRG_TWO) && (ptUartCfg->byRxFifoTrg != UART_RXFIFOTRG_FOUR))
+		ptUartCfg->byRxFifoTrg = UART_RXFIFOTRG_ONE;
+	csp_uart_set_fifo(ptUartBase, ptUartCfg->byRxFifoTrg, ENABLE);	//set fxfifo and enable
+	
+	if(ptUartCfg->hwRecvTo > 0)	
 	{
-		case UART_PARITY_NONE:
+		csp_uart_set_rtor(ptUartBase, ptUartCfg->hwRecvTo);			//set receive timeout 
+		csp_uart_rto_enable(ptUartBase);
+	}
+	else
+		csp_uart_rto_disable(ptUartBase);					
+	
+	csi_irq_enable((uint32_t *)ptUartBase);							//enable uart vic interrupt		
+
+	return CSI_OK;
+}
+
+/** \brief  register uart interrupt callback function
+ * 
+ *  \param[in] ptUartBase: pointer of uart register structure
+ *  \param[in] eCallBkId: uart interrupt callback type, receive/send/error 
+ *  \param[in] callback: uart interrupt handle function
+ *  \return error code \ref csi_error_t
+ */ 
+csi_error_t csi_uart_register_callback(csp_uart_t *ptUartBase, csi_uart_callback_id_e eCallBkId, void  *callback)
+{
+	uint8_t byIdx = apt_get_uart_idx(ptUartBase);
+	if(byIdx == 0xff)
+		return CSI_ERROR;
+
+	switch(eCallBkId)
+	{
+		case CALLBACK_ID_RECV:
+			g_tUartCtrl[byIdx].recv_callback = callback;
 			break;
-		case UART_PARITY_ODD:
-			eParity = UART_PAR_ODD;
+		case CALLBACK_ID_SEND:
+			g_tUartCtrl[byIdx].send_callback = callback;
 			break;
-		case UART_PARITY_EVEN:
-			eParity = UART_PAR_EVEN;
+		case CALLBACK_ID_ERR:
+			g_tUartCtrl[byIdx].err_callback = callback;
 			break;
 		default:
 			return CSI_ERROR;
 	}
-	
-	//get uart rx/tx mode 
-	byIdx = csi_get_uart_idx(ptUartBase);
-	g_tUartTran[byIdx].byRecvMode = ptUartCfg->byRxMode;			
-	g_tUartTran[byIdx].bySendMode = ptUartCfg->byTxMode;
-	g_tUartTran[byIdx].byRecvStat = UART_STATE_IDLE;
-	g_tUartTran[byIdx].bySendStat = UART_STATE_IDLE;
-	
-	//databits = 8/stopbits = 1; fixed, can not be configured 
-	csp_uart_set_parity(ptUartBase, eParity);						//parity
-	csp_uart_set_fifo(ptUartBase, UART_RXFIFO_1_2, ENABLE);			//set /fx fifo = 1_2/fifo enable
-	csp_uart_set_rtor(ptUartBase, ptUartCfg->hwRecvTo);							//set receive timeout 
-	
-	
-	if(ptUartCfg->wInt)
-	{
-		if(ptUartCfg->wInt ==UART_INTSRC_RX||ptUartCfg->wInt ==UART_INTSRC_TX_OV||ptUartCfg->wInt==UART_INTSRC_TX_OV)
-		{
-			csp_uart_set_fifo(ptUartBase, UART_RXFIFO_1_2, DISABLE);			//set /fx fifo = 1_2/fifo enable
-		}
-	
-		
-		if((ptUartCfg->byRxMode) || (ptUartCfg->byTxMode))
-		{
-			if(ptUartCfg->byRxMode)
-			{
-				csp_uart_rto_en(ptUartBase);						//enable  receive timeout 
-				ptUartCfg->wInt |= UART_RXTO_INT;					//open receive timeout interrupt
-			}
-			csp_uart_int_enable(ptUartBase, ptUartCfg->wInt, ENABLE);	
-		}
-	
-		csi_irq_enable((uint32_t *)ptUartBase);						//enable uart irq			
-	}
-	else
-	{
-		if((ptUartCfg->byRxMode) || (ptUartCfg->byTxMode))
-			return CSI_ERROR;
-	}
-		
 	return CSI_OK;
+
 }
-/** \brief enable/disable uart interrupt 
+/** \brief uart interrupt handler function
+ * 
+ *  \param[in] ptUartBase: pointer of uart register structure
+ *  \param[in] byIdx: uart idx(0/1/2)
+ *  \return none
+ */ 
+void csi_uart_irqhandler(csp_uart_t *ptUartBase, uint8_t byIdx)
+{
+	switch(csp_uart_get_isr(ptUartBase) & 0x000670)							//RXFIFO/TXFIFO/RXTO/RXBRAK/PAR_ERR中断状态
+	{
+		case UART_RXFIFO_INT_S:												//使用RXFIFO中断接收数据
+			while(csp_uart_get_sr(ptUartBase) & UART_RNE)					//接收FIFO非空
+			{
+				if(g_tUartCtrl[byIdx].hwTransNum < g_tUartCtrl[byIdx].hwRxSize)
+					g_tUartCtrl[byIdx].pbyRxBuf[g_tUartCtrl[byIdx].hwTransNum ++] = csp_uart_get_data(ptUartBase);		//读数据
+				else														//接收完成											
+				{
+					csp_uart_rxfifo_rst(ptUartBase);						//复位rxfifo
+					csp_uart_int_disable(ptUartBase, UART_RXFIFO_INT);		//关闭接收中断 
+					csp_uart_rto_disable(ptUartBase);						//关闭接收超时
+					g_tUartCtrl[byIdx].hwTransNum = 0;						//清除接收计数
+					g_tUartCtrl[byIdx].byRxState = UART_EVENT_RX_DNE;		//接收完成标志，即接收指定长度
+					
+					//回调，接收完用户指定长度数据
+					if(g_tUartCtrl[byIdx].recv_callback)
+						g_tUartCtrl[byIdx].recv_callback(ptUartBase, UART_EVENT_RX_DNE, g_tUartCtrl[byIdx].pbyRxBuf, &g_tUartCtrl[byIdx].hwRxSize);
+					
+					csp_uart_rto_enable(ptUartBase);						//使能接收超时
+				}
+			}
+			break;
+	
+		case UART_RXTO_INT_S:												 //接收超时中断
+			if(g_tUartCtrl[byIdx].byRxState != UART_EVENT_RX_DNE)
+			{
+				while(csp_uart_get_sr(ptUartBase) & UART_RNE)
+				{
+					g_tUartCtrl[byIdx].pbyRxBuf[g_tUartCtrl[byIdx].hwTransNum ++] = csp_uart_get_data(ptUartBase);
+				}
+				
+				if(g_tUartCtrl[byIdx].hwTransNum  < g_tUartCtrl[byIdx].hwRxSize)	//接收处理
+				{
+					g_tUartCtrl[byIdx].byRxState = UART_EVENT_RX_TO;				//接收超时标志，即接收到一串字符
+				
+					//回调，接收完一串字符
+					if(g_tUartCtrl[byIdx].recv_callback)									//用户回调
+						g_tUartCtrl[byIdx].recv_callback(ptUartBase, UART_EVENT_RX_TO, g_tUartCtrl[byIdx].pbyRxBuf, &g_tUartCtrl[byIdx].hwTransNum);
+				}
+				else																//用户回调,接收完用户指定长度
+				{
+					g_tUartCtrl[byIdx].hwTransNum = 0;								//清除接收计数
+					g_tUartCtrl[byIdx].byRxState = UART_EVENT_RX_DNE;				//接收完成标志，即接收到用户指定长度数据
+					
+					//回调，接收完指定数据
+					if(g_tUartCtrl[byIdx].recv_callback)
+						g_tUartCtrl[byIdx].recv_callback(ptUartBase, UART_EVENT_RX_DNE, g_tUartCtrl[byIdx].pbyRxBuf, &g_tUartCtrl[byIdx].hwRxSize);
+				}
+			}
+			csp_uart_clr_isr(ptUartBase, UART_RXTO_INT_S);							//清除中断标志(状态)
+			csp_uart_rto_enable(ptUartBase);										//使能字节接收超时
+			
+			break;
+		case UART_TXFIFO_INT_S:														//TXFIFO中断	
+			csp_uart_set_data(ptUartBase, *g_tUartCtrl[byIdx].pbyTxBuf);			//发送数据
+			g_tUartCtrl[byIdx].hwTxSize --;
+			g_tUartCtrl[byIdx].pbyTxBuf ++;
+			
+			if(g_tUartCtrl[byIdx].hwTxSize == 0)	
+			{	
+				g_tUartCtrl[byIdx].byTxState = UART_EVENT_TX_DNE;					//发送完成标志
+				csp_uart_int_disable(ptUartBase, UART_TXFIFO_INT);					//关闭中断
+				
+				//回调，发送完成
+				if(g_tUartCtrl[byIdx].send_callback)
+					g_tUartCtrl[byIdx].send_callback(ptUartBase);
+			}
+			break;
+		case UART_RXBRK_INT_S:
+			csp_uart_clr_isr(ptUartBase, UART_RXBRK_INT_S);							//清除中断标志(状态)
+			if(g_tUartCtrl[byIdx].err_callback)
+				g_tUartCtrl[byIdx].err_callback(ptUartBase, UART_EVENT_RX_BREAK);
+			break;
+		case UART_PARERR_INT_S:
+			csp_uart_clr_isr(ptUartBase, UART_PARERR_INT_S);						//清除中断标志(状态)
+			if(g_tUartCtrl[byIdx].err_callback)
+				g_tUartCtrl[byIdx].err_callback(ptUartBase, UART_EVENT_PAR_ERR);
+			break;
+		default:
+			csp_uart_clr_isr(ptUartBase, 0x806ff);					
+			break;
+	}
+}
+/** \brief enable/disbale receive timeout function
  * 
  *  \param[in] ptSioBase: pointer of uart register structure
- *  \param[in] hwTimeOut: receive timeout time
- *  \param[in] bEnable: enable/disable interrupt
+ *  \param[in] bEnable: enable/disable receive timeout function
  *  \return none
  */
-void csi_uart_recv_timeout(csp_uart_t *ptUartBase, uint16_t hwTimeOut, bool bEnable)
+void csi_uart_rto_enable(csp_uart_t *ptUartBase, uint16_t hwTimeOut, bool bEnable)
 {
-	csp_uart_set_rtor(ptUartBase, hwTimeOut);
 	if(bEnable)
-		csp_uart_rto_en(ptUartBase);
+		csp_uart_rto_enable(ptUartBase);
 	else
-		csp_uart_rto_dis(ptUartBase);
+		csp_uart_rto_disable(ptUartBase);
 }
-/** \brief enable/disable uart interrupt 
+
+/** \brief enable/disbale receive fifo function
+ * 
+ *  \param[in] ptSioBase: pointer of uart register structure
+ *  \param[in] bEnable: enable/disable receive fifo function
+ *  \return none
+ */
+void csi_uart_rxfifo_enable(csp_uart_t *ptUartBase, bool bEnable)
+{
+	if(bEnable)
+		csp_uart_fifo_enable(ptUartBase);
+	else
+		csp_uart_fifo_disable(ptUartBase);
+}
+/** \brief enable uart interrupt 
  * 
  *  \param[in] ptUartBase: pointer of uart register structure
  *  \param[in] eIntSrc: uart interrupt source
- *  \param[in] bEnable: enable/disable interrupt
+ *  \param[in] bEnable: enable interrupt
  *  \return none
  */
-void csi_uart_int_enable(csp_uart_t *ptUartBase, csi_uart_intsrc_e eIntSrc, bool bEnable)
+void csi_uart_int_enable(csp_uart_t *ptUartBase, csi_uart_intsrc_e eIntSrc)
 {
-	csp_uart_int_enable(ptUartBase, (uart_int_e)eIntSrc, bEnable);
-	
-	if(bEnable)
-		csi_irq_enable((uint32_t *)ptUartBase);
-	else
-		csi_irq_disable((uint32_t *)ptUartBase);
+	csp_uart_int_enable(ptUartBase, (uart_int_e)eIntSrc);
+}
+/** \brief disable uart interrupt 
+ * 
+ *  \param[in] ptUartBase: pointer of uart register structure
+ *  \param[in] eIntSrc: uart interrupt source
+ *  \param[in] bEnable: disable interrupt
+ *  \return none
+ */
+void csi_uart_int_disable(csp_uart_t *ptUartBase, csi_uart_intsrc_e eIntSrc)
+{
+	csp_uart_int_disable(ptUartBase, (uart_int_e)eIntSrc);
 }
 /** \brief start(enable) uart rx/tx
  * 
@@ -222,23 +306,7 @@ csi_error_t csi_uart_stop(csp_uart_t *ptUartBase, csi_uart_func_e eFunc)
 	}
 	return CSI_OK;
 }
-/** \brief set uart receive buffer and buffer depth 
- * 
- *  \param[in] ptUartBase: pointer of uart register structure
- *  \param[in] ptRingbuf: pointer of receive ringbuf structure
- *  \param[in] pbyRdBuf: pointer of uart receive buffer
- *  \param[in] hwLen: uart receive buffer length
- *  \return error code \ref csi_error_t
- */ 
-void csi_uart_set_buffer(csp_uart_t *ptUartBase, ringbuffer_t *ptRingbuf, uint8_t *pbyRdBuf,  uint16_t hwLen)
-{
-	uint8_t byIdx = csi_get_uart_idx(ptUartBase);
-	
-	ptRingbuf->pbyBuf = pbyRdBuf;					//assignment ringbuf = pbyRdBuf  
-	ptRingbuf->hwSize = hwLen;						//assignment ringbuf size = hwLen 
-	g_tUartTran[byIdx].ptRingBuf = ptRingbuf;		//UARTx ringbuf assignment	
-	ringbuffer_reset(g_tUartTran[byIdx].ptRingBuf);	//init UARTx ringbuf
-}
+
 /** \brief uart send character
  * 
  *  \param[in] ptUartBase: pointer of uart register structure
@@ -260,82 +328,121 @@ uint8_t csi_uart_getc(csp_uart_t *ptUartBase)
 	while(!(csp_uart_get_sr(ptUartBase) & UART_RNE));
 	return csp_uart_get_data(ptUartBase);
 }
-/** \brief send data from uart, this function is polling(sync mode).
+
+/** \brief send data from uart, this function is no interrup(polling).
  * 
  *  \param[in] ptUartBase: pointer of uart register structure
  *  \param[in] pData: pointer to buffer with data to send to uart transmitter.
  *  \param[in] hwSize: number of data to send (byte).
  *  \return  the num of data which is send successfully or CSI_ERROR/CSI_OK
  */
-int16_t csi_uart_send(csp_uart_t *ptUartBase, const void *pData, uint16_t hwSize)
+int32_t csi_uart_send(csp_uart_t *ptUartBase, const void *pData, uint16_t hwSize)
 {
 	int32_t i; 
 	uint8_t *pbySend = (uint8_t *)pData;
-	uint8_t byIdx = csi_get_uart_idx(ptUartBase);
 	
 	if(NULL == pData || 0 == hwSize)
-		return 0;
+		return -1;
 	
-	switch(g_tUartTran[byIdx].bySendMode)
+	for(i = 0; i < hwSize; i++)
 	{
-		case UART_TX_MODE_POLL:						//return the num of data which is send							
-			for(i = 0; i < hwSize; i++)
-			{
-				while((csp_uart_get_sr(ptUartBase) & UART_TX_FULL));			
-				csp_uart_set_data(ptUartBase, *(pbySend+i));
-			}
-			return i;
-			
-		case UART_TX_MODE_INT:						//return CSI_ERROR or CSI_OK
-			if(hwSize == 0 || byIdx >= UART_IDX_NUM) 
-				return CSI_ERROR;
-				
-			g_tUartTran[byIdx].pbyTxData =(uint8_t *)pData;
-			g_tUartTran[byIdx].hwTxSize = hwSize;
-	
-			if(g_tUartTran[byIdx].bySendStat == UART_STATE_SEND)				//uart sending?
-				return CSI_ERROR;
-			else
-			{
-				g_tUartTran[byIdx].bySendStat = UART_STATE_SEND;				//set uart send status, sending
-				csp_uart_set_data(ptUartBase, *g_tUartTran[byIdx].pbyTxData);	//start uart tx,send first byte
-				
-			}
-			return CSI_OK;
-			
-		default:
-			return CSI_ERROR;
+		while((csp_uart_get_sr(ptUartBase) & UART_TX_FULL));			
+		csp_uart_set_data(ptUartBase, *(pbySend+i));
 	}
+	
+	return i;
 }
+/** \brief receive data from uart, this function is no interrupt polling
+ * 
+ *  \param[in] ptUartBase: pointer of uart register structure
+ *  \param[in] pData: pointer to buffer with data to be received.
+ *  \param[in] hwSize: number of data to receive (byte).
+ *  \param[in] wTimeOut: the timeout between bytes(ms), unit: ms 
+ *  \return  the num of data which is receive successfully/error code
+ */
+int32_t csi_uart_receive(csp_uart_t *ptUartBase, void *pData, uint16_t hwSize, uint32_t wTimeOut)
+{
+	uint8_t *pbyRecv = (uint8_t *)pData;
+	volatile int16_t hwRecvNum = 0;
+	
+	csp_uart_rxfifo_rst(ptUartBase);								//reset rxfifo，clear rxfifo
+	if(NULL == pData) 
+		return -1;
+	
+	if(wTimeOut)	//handle with wTimeOut
+	{
+		uint32_t wRecvStart = csi_tick_get_ms();	
+		while(hwRecvNum < hwSize)
+		{
+			while(!(csp_uart_get_sr(ptUartBase) & UART_RNE))		//fifo empty? wait	
+			{
+				if((csi_tick_get_ms() - wRecvStart) >= wTimeOut) 
+				{
+					return hwRecvNum;
+				}
+			}
+			pbyRecv[hwRecvNum ++] = csp_uart_get_data(ptUartBase);
+			wRecvStart = csi_tick_get_ms();	
+		}
+	}
+	else			//handle without wTimeOut
+	{
+		while(hwRecvNum < hwSize)
+		{
+			while(!(csp_uart_get_sr(ptUartBase) & UART_RNE));		//fifo empty? wait	
+			pbyRecv[hwRecvNum ++] = csi_uart_getc(ptUartBase);
+		}
+	}
 
-/** \brief send data from uart, this function is interrupt mode(async mode)
+	return hwRecvNum;
+}
+/** \brief send data from uart, this function is interrupt mode.
  * 
  *  \param[in] ptUartBase: pointer of uart register structure
  *  \param[in] pData: pointer to buffer with data to send to uart transmitter.
  *  \param[in] hwSize: number of data to send (byte).
  *  \return  error code \ref csi_error_t
  */
-//csi_error_t csi_uart_send_async(csp_uart_t *ptUartBase, const void *pData, uint16_t hwSize)
-//{
-//	csi_error_t ret = CSI_ERROR;
-//	uint8_t byIdx = csi_get_uart_idx(ptUartBase);
-//
-//	if(hwSize == 0 || NULL == pData) 
-//		return CSI_ERROR;
-//	
-//	g_tUartTran[byIdx].pbyTxData =(uint8_t *)pData;
-//	g_tUartTran[byIdx].hwTxSize = hwSize;
-//	
-//	if(g_tUartTran[byIdx].bySendStat == UART_STATE_SEND)					//uart sending?
-//		ret = CSI_ERROR;
-//	else
-//	{
-//		g_tUartTran[byIdx].bySendStat = UART_STATE_SEND;					//set uart send status, sending
-//		csp_uart_set_data(ptUartBase, *g_tUartTran[byIdx].pbyTxData);		//start uart tx,send first byte
-//	}
-//	
-//	return ret;
-//}
+csi_error_t csi_uart_send_int(csp_uart_t *ptUartBase, const void *pData, uint16_t hwSize)
+{
+	uint8_t byIdx = apt_get_uart_idx(ptUartBase);
+	 
+	if((NULL == pData) || (0 == hwSize) || (g_tUartCtrl[byIdx].byTxState== UART_EVENT_SEND))
+		return CSI_ERROR;
+	
+	g_tUartCtrl[byIdx].pbyTxBuf = (uint8_t *)pData;					
+	g_tUartCtrl[byIdx].hwTxSize = hwSize;
+	g_tUartCtrl[byIdx].byTxState = UART_EVENT_SEND;
+	
+	csp_uart_int_enable(ptUartBase, UART_TXFIFO_INT);
+		
+	return CSI_OK;
+}
+/** \brief receive data from uart, this function is interrupt receive
+ * 
+ *  \param[in] ptUartBase: pointer of uart register structure
+ *  \param[in] pData: pointer to buffer with data to be received.
+ *  \param[in] hwSize: number of data to receive (byte).
+ *  \return  error code \ref csi_error_t
+ */	
+csi_error_t csi_uart_receive_int(csp_uart_t *ptUartBase, void *pData, uint16_t hwSize)
+{
+	uint8_t byIdx = apt_get_uart_idx(ptUartBase);
+	
+	if((NULL == pData) || (0 == hwSize) || (g_tUartCtrl[byIdx].byTxState == UART_EVENT_RECV)) 
+		return CSI_ERROR;
+		
+	g_tUartCtrl[byIdx].pbyRxBuf = (uint8_t *)pData;
+	g_tUartCtrl[byIdx].hwRxSize = hwSize;
+	g_tUartCtrl[byIdx].hwTransNum = 0;
+	g_tUartCtrl[byIdx].byRxState = UART_EVENT_RECV;
+	
+	csp_uart_rxfifo_rst(ptUartBase);										//reset rxfifo
+	csp_uart_rto_enable(ptUartBase);										//enable rto
+	csp_uart_int_enable(ptUartBase, UART_RXFIFO_INT | UART_RXTO_INT);		//rxfifo and receive timeout int
+	
+	return CSI_OK;
+}
 /** \brief uart dma receive mode init
  * 
  *  \param[in] ptUartBase: pointer of uart register structure
@@ -344,12 +451,12 @@ int16_t csi_uart_send(csp_uart_t *ptUartBase, const void *pData, uint16_t hwSize
  *  \return  error code \ref csi_error_t
  */
 //csi_error_t csi_uart_dma_rx_init(csp_uart_t *ptUartBase, csi_dma_reload_e eReload, csp_dma_t *ptDmaBase, csi_dma_ch_e eDmaCh, csi_etb_ch_e eEtbCh)
-	csi_error_t csi_uart_dma_rx_init(csp_uart_t *ptUartBase, csi_dma_ch_e eDmaCh, csi_etb_ch_e eEtbCh)
+csi_error_t csi_uart_dma_rx_init(csp_uart_t *ptUartBase, csi_dma_ch_e eDmaCh, csi_etb_ch_e eEtbCh)
 {
 	csi_error_t ret = CSI_OK;
 	csi_dma_ch_config_t tDmaConfig;				
 	csi_etb_config_t 	tEtbConfig;				
-	uint8_t byUartIdx = csi_get_uart_idx(ptUartBase);	
+	uint8_t byUartIdx = apt_get_uart_idx(ptUartBase);	
 	
 	//dma config
 	tDmaConfig.bySrcLinc 	= DMA_ADDR_CONSTANT;		//低位传输原地址固定不变
@@ -389,7 +496,7 @@ csi_error_t csi_uart_dma_tx_init(csp_uart_t *ptUartBase, csi_dma_ch_e eDmaCh, cs
 	csi_error_t ret = CSI_OK;
 	csi_dma_ch_config_t tDmaConfig;				
 	csi_etb_config_t 	tEtbConfig;	
-	uint8_t byUartIdx = csi_get_uart_idx(ptUartBase);				
+	uint8_t byUartIdx = apt_get_uart_idx(ptUartBase);				
 
 	//dma config
 	tDmaConfig.bySrcLinc 	= DMA_ADDR_CONSTANT;		//低位传输原地址固定不变
@@ -432,7 +539,6 @@ csi_error_t csi_uart_dma_tx_init(csp_uart_t *ptUartBase, csi_dma_ch_e eDmaCh, cs
 void csi_uart_send_dma(csp_uart_t *ptUartBase, csi_dma_ch_e eDmaCh, const void *pData, uint16_t hwSize)
 {
 	csi_dma_ch_start(DMA0, eDmaCh, (void *)pData, (void *)&(ptUartBase->DATA), hwSize,1);
-	
 }
 /** \brief receive data from uart, this function is dma mode
  * 
@@ -445,166 +551,8 @@ void csi_uart_send_dma(csp_uart_t *ptUartBase, csi_dma_ch_e eDmaCh, const void *
  */
 void csi_uart_recv_dma(csp_uart_t *ptUartBase, csi_dma_ch_e eDmaCh, void *pData, uint16_t hwSize)
 {
-	
 	csi_dma_ch_start(DMA0, eDmaCh, (void *)&(ptUartBase->DATA), (void *)pData, hwSize,1);
 }
-/** \brief receive data from uart, this function is polling(sync).
- * 
- *  \param[in] ptUartBase: pointer of uart register structure
- *  \param[in] pData: pointer to buffer with data to be received.
- *  \param[in] hwSize: number of data to receive (byte).
- *  \param[in] wTimeOut: the timeout between bytes(ms), unit: ms 
- *  \return  the num of data which is receive successfully
- */
-int16_t csi_uart_receive(csp_uart_t *ptUartBase, void *pData, uint16_t hwSize, uint32_t wTimeOut)
-{
-	uint8_t *pbyRecv = (uint8_t *)pData;
-	uint8_t byIdx = csi_get_uart_idx(ptUartBase);
-	int16_t hwRecvNum = 0;
-	
-	if(NULL == pData)
-		return 0;
-	
-	switch(g_tUartTran[byIdx].byRecvMode)
-	{
-		case UART_RX_MODE_POLL:
-			if(wTimeOut)				//handle with wTimeOut
-			{
-				uint32_t wRecvStart = csi_tick_get_ms();	
-				while(hwRecvNum < hwSize)
-				{
-					while(!(csp_uart_get_sr(ptUartBase) & UART_RNE))			//fifo empty? wait	
-					{
-						if((csi_tick_get_ms() - wRecvStart) >= wTimeOut) 
-							return hwRecvNum;
-					}
-					pbyRecv[hwRecvNum ++] = csp_uart_get_data(ptUartBase);
-					wRecvStart = csi_tick_get_ms();	
-				}
-			}
-			else							//handle without wTimeOut
-			{
-				while(hwRecvNum < hwSize)
-				{
-					while(!(csp_uart_get_sr(ptUartBase) & UART_RNE));			//fifo empty? wait	
-					pbyRecv[hwRecvNum ++] = csi_uart_getc(ptUartBase);
-				}
-			}
-			
-			break;
-		case UART_RX_MODE_INT_FIX:			//receive assign length data, handle without wTimeOut
-			
-			//read ringbuffer, multiple processing methods 
-			//allow users to modify 
-			hwRecvNum = ringbuffer_len(g_tUartTran[byIdx].ptRingBuf);
-			switch(hwSize)
-			{
-				case 0:						
-					return 0;
-				case 1:						//single byte receive(read)
-					if(hwRecvNum)
-						hwRecvNum = ringbuffer_byte_out(g_tUartTran[byIdx].ptRingBuf, pData);
-					else
-						hwRecvNum = 0;
-					break;
-				default:					//Multibyte  receive(read)
-					if(hwRecvNum >= hwSize)
-						hwRecvNum = ringbuffer_out(g_tUartTran[byIdx].ptRingBuf, pData, hwSize);
-					else
-						hwRecvNum = 0;
-					break;
-			}
-			
-//			if(hwRecvNum >= hwSize)
-//				ringbuffer_out(g_tUartTran[byIdx].ptRingBuf, pData, hwRecvNum);
-//			else
-//				hwRecvNum = 0;
-
-//			hwRecvNum = (hwRecvNum > hwSize)? hwSize: hwRecvNum;
-//			if(hwRecvNum)
-//				ringbuffer_out(g_tUartTran[byIdx].ptRingBuf, pData, hwRecvNum);
-				
-			break;
-		case UART_RX_MODE_INT_DYN:			//receive dynamic length data, handle without (wTimeOut and hwSize)
-			 hwRecvNum = ringbuffer_len(g_tUartTran[byIdx].ptRingBuf);
-			if(hwRecvNum)
-			{
-				memcpy(pData, (void *)g_tUartTran[byIdx].ptRingBuf->pbyBuf, hwRecvNum);		//read receive data
-				//ringbuffer_out(g_tUartTran[byIdx].ptRingBuf, pData, hwRecvNum);			//the same as previous line of code 
-				ringbuffer_reset(g_tUartTran[byIdx].ptRingBuf);								//reset ringbuffer	
-				g_tUartTran[byIdx].byRecvStat = UART_STATE_IDLE;							//set uart receive status for idle				
-			}
-			break;
-		default:
-			hwRecvNum = 0;
-			break;
-	}
-	
-	return hwRecvNum;
-}
-/** \brief receive data from uart , assign length; this function is interrupt mode(async),
- * 
- *  \param[in] ptUartBase: pointer of uart register structure
- *  \param[in] pData: pointer to buffer with data to be received.
- *  \param[in] hwSize: number of data to receive (byte).
- *  \return  the num of data which is receive successfully
- */
-//int16_t csi_uart_recv_async(csp_uart_t *ptUartBase, void *pData, uint16_t hwSize)
-//{
-//	uint8_t  byIdx = csi_get_uart_idx(ptUartBase);
-//	uint16_t hwRecvNum = ringbuffer_len(g_tUartTran[byIdx].ptRingBuf);
-//	
-//	if(NULL == pData)
-//		return 0;
-//		
-//	switch(hwSize)
-//	{
-//		case 0: 	
-//			return 0;
-//		case 1:					//single byte receive(read)
-//			if(hwRecvNum)
-//				hwRecvNum = ringbuffer_byte_out(g_tUartTran[byIdx].ptRingBuf, pData);
-//			else
-//				hwRecvNum = 0;
-//			break;
-//		default:				//Multibyte  receive(read)
-//			if(hwRecvNum >= hwSize)
-//				hwRecvNum = ringbuffer_out(g_tUartTran[byIdx].ptRingBuf, pData, hwSize);
-//			else
-//				hwRecvNum = 0;
-//			break;
-//	}
-//		
-////	hwRecvNum = (hwRecvNum > hwSize)? hwSize: hwRecvNum;
-////	if(hwRecvNum)
-////		ringbuffer_out(g_tUartTran[byIdx].ptRingBuf, pData, hwRecvNum);
-//		
-//	return hwRecvNum;
-//}
-
-/** \brief receive data from uart, dynamic length receive; this function is interrupt mode(async).
- * 
- *  \param[in] ptUartBase: pointer of uart register structure
- *  \param[in] pData: pointer to buffer with data to be received.
- *  \param[in] wTimeOut: the timeout between bytes(ms). 
- *  \return  the num of data which is receive successfully
- */
-//int16_t csi_uart_recv_dynamic(csp_uart_t *ptUartBase, void *pData)
-//{
-//	
-//	uint8_t  byIdx = csi_get_uart_idx(ptUartBase);
-//	uint16_t hwRecvNum = ringbuffer_len(g_tUartTran[byIdx].ptRingBuf);
-//	
-//	if(hwRecvNum)
-//	{
-//		memcpy(pData, (void *)g_tUartTran[byIdx].ptRingBuf->pbyBuf, hwRecvNum);		//read receive data
-//		//ringbuffer_out(g_tUartTran[byIdx].ptRingBuf, pData, hwRecvNum);			//the same as previous line of code 
-//		ringbuffer_reset(g_tUartTran[byIdx].ptRingBuf);								//reset ringbuffer para
-//		g_tUartTran[byIdx].byRecvStat = UART_STATE_IDLE;							//set uart receive status for idle
-//	}
-//		
-//	return hwRecvNum;
-//}
 /** \brief get uart receive/send complete message and (Do not) clear message
  * 
  *  \param[in] ptUartBase: pointer of uart reg structure.
@@ -614,31 +562,39 @@ int16_t csi_uart_receive(csp_uart_t *ptUartBase, void *pData, uint16_t hwSize, u
  */ 
 bool csi_uart_get_msg(csp_uart_t *ptUartBase, csi_uart_wkmode_e eWkMode, bool bClrEn)
 {
-	uint8_t byIdx = csi_get_uart_idx(ptUartBase);
+	uint8_t byIdx = apt_get_uart_idx(ptUartBase);
 	bool bRet = false;
 	
 	switch(eWkMode)
 	{
 		case UART_SEND:
-			if(g_tUartTran[byIdx].bySendStat == UART_STATE_DONE)
+			if(g_tUartCtrl[byIdx].byTxState == UART_EVENT_TX_DNE)
 			{
 				if(bClrEn)
-					g_tUartTran[byIdx].bySendStat = UART_STATE_IDLE;		//clear send status
+					g_tUartCtrl[byIdx].byTxState = UART_EVENT_IDLE;		//clear send status
 				bRet = true;
 			}
 			break;
 		case UART_RECV:
-			if(g_tUartTran[byIdx].byRecvStat == UART_STATE_FULL)
+			if(g_tUartCtrl[byIdx].byTxState == UART_EVENT_RX_DNE)
 			{
 				if(bClrEn)
-					g_tUartTran[byIdx].byRecvStat = UART_STATE_IDLE;		//clear receive status
+					g_tUartCtrl[byIdx].byRxState = UART_EVENT_IDLE;		//clear receive status
+				bRet = true;
+			}
+			break;
+		case UART_RTO:
+			if(g_tUartCtrl[byIdx].byTxState == UART_EVENT_RX_TO)
+			{
+				if(bClrEn)
+					g_tUartCtrl[byIdx].byRxState = UART_EVENT_IDLE;		//clear receive status
 				bRet = true;
 			}
 			break;
 		default:
+		
 			break;
 	}
-	
 	return bRet;
 }
 /** \brief clr uart receive/send status message (set uart recv/send status idle) 
@@ -649,12 +605,11 @@ bool csi_uart_get_msg(csp_uart_t *ptUartBase, csi_uart_wkmode_e eWkMode, bool bC
  */ 
 void csi_uart_clr_msg(csp_uart_t *ptUartBase, csi_uart_wkmode_e eWkMode)
 {
-	uint8_t byIdx = csi_get_uart_idx(ptUartBase);
+	uint8_t byIdx = apt_get_uart_idx(ptUartBase);
 	
 	if(eWkMode == UART_SEND)
-		g_tUartTran[byIdx].bySendStat = UART_STATE_IDLE;		//clear send status
+		g_tUartCtrl[byIdx].byTxState = UART_EVENT_IDLE;		//clear send status
 	else
-		g_tUartTran[byIdx].byRecvStat = UART_STATE_IDLE;		//clear receive status
+		g_tUartCtrl[byIdx].byRxState = UART_EVENT_IDLE;		//clear receive status
 }
-
 

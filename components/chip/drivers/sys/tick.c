@@ -36,15 +36,16 @@ static volatile uint32_t s_wLastTimeMs = 0U;
 //{
 //	return  CORETIMER->MTIME;
 //}
-void bt_irqhandler3(csp_bt_t *ptBtBase)
+
+ATTRIBUTE_ISR void  bt3_int_handler(void) 
 {
     // ISR content ...
-	volatile uint32_t wMisr = csp_bt_get_isr(ptBtBase);
+	volatile uint32_t wMisr = csp_bt_get_isr(BT3);
 	
 	if(wMisr & BT_PEND_INT)					//PEND interrupt
 	{
-
-		
+	
+		s_wTick++;
 #if defined(CONFIG_KERNEL_RHINO)
         systick_handler();
 #elif defined(CONFIG_KERNEL_FREERTOS)
@@ -52,8 +53,7 @@ void bt_irqhandler3(csp_bt_t *ptBtBase)
 #elif defined(CONFIG_KERNEL_UCOS)
 		OSTimeTick();
 #endif
-
-		csp_bt_clr_isr(ptBtBase, BT_PEND_INT);			
+		csp_bt_clr_isr(BT3, BT_PEND_INT);			
 	}
 }
 
@@ -64,9 +64,13 @@ void csi_tick_increase(void)
 
 csi_error_t csi_tick_init(void)
 {
-    s_wTick = 0U;
-
-	csi_bt_timer_init(BT3, 10000);		//初始化BT3, 定时10ms； BT定时，默认采用PEND中断
+	csi_bt_time_config_t tTimConfig;
+	
+	s_wTick = 0U;
+	
+	tTimConfig.hwTimeVal = 10000;				//BT定时值，单位：us；即定时值 = 10000us
+	tTimConfig.byWkMode  = BT_CNT_CONTINU;		//BT计数器工作模式：连续/单次
+	csi_bt_time_init(BT3, &tTimConfig);			//初始化BT		
 	csi_bt_start(BT3);
 	
     return CSI_OK;

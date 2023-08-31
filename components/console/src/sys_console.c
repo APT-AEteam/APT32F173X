@@ -9,14 +9,10 @@
  * @version  V1.0
  * @date     2019-12-19
  ******************************************************************************/
-
-#include <stdbool.h>
-#include <stdio.h>
-#include <stdint.h>
 #include <drv/pin.h>
-#include <drv/uart.h>
 #include "sys_console.h"
 
+extern void csi_uart_putc(csp_uart_t *ptUartBase, uint8_t byData);
 
 int32_t console_init(sys_console_t *handle)
 {
@@ -30,9 +26,6 @@ int32_t console_init(sys_console_t *handle)
 	
 	tUartConfig.byParity = UART_PARITY_NONE;		//no parity
 	tUartConfig.wBaudRate = handle->baudrate;		//115200
-	tUartConfig.wInt = UART_INTSRC_NONE;			//no interrupt		
-	tUartConfig.byRxMode = UART_RX_MODE_POLL;
-	tUartConfig.byTxMode = UART_TX_MODE_POLL;
 	
     ret = csi_uart_init(handle->uart, &tUartConfig);
 	

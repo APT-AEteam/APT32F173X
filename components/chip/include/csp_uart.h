@@ -1,10 +1,10 @@
 /***********************************************************************//** 
  * \file  csp_uart.h
  * \brief  UART description and static inline functions at register level 
- * \copyright Copyright (C) 2015-2020 @ APTCHIP
+ * \copyright Copyright (C) 2015-2023 @ APTCHIP
  * <table>
  * <tr><th> Date  <th>Version  <th>Author  <th>Description
- * <tr><td> 2020-8-20 <td>V0.0  <td>ZJY   <td>initial
+ * <tr><td> 2023-8-14 <td>V1.0  <td>ZJY   <td>initial
  * </table>
  * *********************************************************************
 */
@@ -37,9 +37,9 @@ typedef struct
 ************************** UART Para Macro defined ***************************
 ******************************************************************************/
 #define UART_RESET_VALUE	(0x00000000)
-#define UART_RX_TIMEOUT		(0x10ff)
+#define UART_RX_TIMEOUT		(0x1FFF)
 #define UART_TX_TIMEOUT		(0x1FFF)
-#define UART_BUF_SIZE			(36)
+#define UART_BUF_SIZE		(36)
 
 /******************************************************************************
 * SR : UART Status Register
@@ -78,11 +78,11 @@ typedef enum{
 #define	UART_PARITY_POS		(8)			// Uart Parity select			       
 #define	UART_PARITY_MSK		(0x07ul << UART_PARITY_POS)
 typedef enum{
-	UART_PAR_NONE	= 0x00,
-	UART_PAR_EVEN	= 0x04,
-	UART_PAR_ODD    = 0x05,
-	UART_PAR_SPACE  = 0x06,
-	UART_PAR_MARK   = 0x07
+	UART_PAR_NONE		= 0x00,
+	UART_PAR_EVEN		= 0x04,
+	UART_PAR_ODD    	= 0x05,
+	UART_PAR_SPACE 	 	= 0x06,
+	UART_PAR_MARK   	= 0x07
 }uart_parity_e;
 
 #define	UART_FIFO_POS		(11)		// Receiver FIFO level            
@@ -95,9 +95,9 @@ typedef enum{
 #define	UART_RXFIFO_POS		(14)		// Receiver FIFO level            
 #define	UART_RXFIFO_MSK		(0x07ul << UART_RXFIFO_POS)		
 typedef enum{
-	UART_RXFIFO_1_8		= 1,
-	UART_RXFIFO_1_4		= 2,
-	UART_RXFIFO_1_2		= 4
+	UART_FIFO_1_8		= 1,
+	UART_FIFO_1_4		= 2,
+	UART_FIFO_1_2		= 4
 }uart_fifo_bit_e;
 
 #define	UART_STTTO_POS		(20)		// Receiver FIFO level            
@@ -126,7 +126,7 @@ typedef enum{
 	UART_RX_INT     	= (0x01ul << 3),
 	UART_TX_OV_INT    	= (0x01ul << 4),
 	UART_RX_OV_INT     	= (0x01ul << 5),
-	UART_PAR_ERR_INT 	= (0x01ul << 7),
+	UART_PARERR_INT 	= (0x01ul << 7),
 	UART_TXFIFO_INT     = (0x01ul << 12),
 	UART_RXFIFO_INT     = (0x01ul << 13),
 	UART_RXFIFO_OV_INT	= (0x01ul << 18),
@@ -144,7 +144,7 @@ typedef enum{
 	UART_RX_INT_S			= (0x01ul << 1),	//Receiver INT Status          
 	UART_TX_OV_INT_S    	= (0x01ul << 2),	//Transmitter Over INT Status  
 	UART_RX_OV_INT_S   	 	= (0x01ul << 3),	//Receiver Over INT Status   
-	UART_PAR_ERR_S     		= (0x01ul << 4),	//Parity Error Status  
+	UART_PARERR_INT_S     	= (0x01ul << 4),	//Parity Error INT Status  
 	UART_TXFIFO_INT_S     	= (0x01ul << 5),	//Transmitter FIFO INT Status      
 	UART_RXFIFO_INT_S     	= (0x01ul << 6),	//Receiver FIFO INT Status 
 	UART_RXFIFO_OV_INT_S	= (0x01ul << 7),	//Receiver FIFO Over INT Status 
@@ -232,126 +232,64 @@ typedef enum{
 ******************************************************************************/
 
 /******************************************************************************
-********************* ADC12 inline Functions Declaration **********************
+********************* UARTx Macro Definition Declaration **********************
 ******************************************************************************/
-//
-static inline void csp_uart_soft_rst(csp_uart_t *ptUartBase)
-{
-	ptUartBase->SRR = UART_SWRST_MSK;
-}
-static inline void csp_uart_rxfifo_rst(csp_uart_t *ptUartBase)
-{
-	ptUartBase->SRR = UART_RXFIFO_RST_MSK;
-}
-static inline void csp_uart_txfifo_rst(csp_uart_t *ptUartBase)
-{
-	ptUartBase->SRR = UART_TXFIFO_RST_MSK;
-}
-static inline void csp_uart_set_tx(csp_uart_t *ptUartBase, tx_ctrl_e eTxCtrl) 
-{
-	ptUartBase->CTRL = (ptUartBase->CTRL & (~UART_TX_MSK)) | eTxCtrl;
-}
-static inline void csp_uart_set_rx(csp_uart_t *ptUartBase, rx_ctrl_e eRxCtrl) 
-{
-	ptUartBase->CTRL = (ptUartBase->CTRL & (~UART_RX_MSK)) | (eRxCtrl << UART_RX_POS);
-}
-static inline void csp_uart_enable(csp_uart_t *ptUartBase) 
-{
-	ptUartBase->CTRL |= (UART_TX_EN | ( UART_RX_EN << UART_RX_POS));
-}
-static inline void csp_uart_disable(csp_uart_t *ptUartBase) 
-{
-	ptUartBase->CTRL &= ~(UART_TX_MSK | UART_RX_MSK);
-}
-static inline void csp_uart_set_parity(csp_uart_t *ptUartBase, uart_parity_e eParity)
-{
-	ptUartBase->CTRL |= (eParity << UART_PARITY_POS);
-}
-static inline void csp_uart_set_fifo(csp_uart_t *ptUartBase, uart_fifo_bit_e eFiBit, bool bEnable)
-{
-	ptUartBase->CTRL = (ptUartBase->CTRL & ~(UART_RXFIFO_MSK | UART_FIFO_MSK)) | (eFiBit << UART_RXFIFO_POS) | (bEnable << UART_FIFO_POS);
-}
-//
-static inline void csp_uart_set_ttgr(csp_uart_t *ptUartBase, uint8_t byTg)
-{
-	ptUartBase->TTGR = byTg;
-}
-static inline void csp_uart_set_rtor(csp_uart_t *ptUartBase, uint16_t hwTimeOut)
-{
-	ptUartBase->RTOR = hwTimeOut;
-}
-static inline void csp_uart_rto_en(csp_uart_t *ptUartBase)
-{
-	ptUartBase->CTRL |= UART_STTTO_MSK;
-}
-static inline void csp_uart_rto_dis(csp_uart_t *ptUartBase)
-{
-	ptUartBase->CTRL &= (~UART_STTTO_MSK);
-}
-static inline void csp_uart_brk_en(csp_uart_t *ptUartBase)
-{
-	ptUartBase->CTRL |= (UART_BREAK_EN << UART_BREAK_POS);
-}
-static inline void csp_uart_brk_dis(csp_uart_t *ptUartBase)
-{
-	ptUartBase->CTRL |= (UART_BREAK_DIS << UART_BREAK_POS);
-}
-//
-static inline uint8_t csp_uart_get_data(csp_uart_t *ptUartBase)
-{
-	return (uint8_t)ptUartBase->DATA; 
-}
-static inline void csp_uart_set_data(csp_uart_t *ptUartBase, uint8_t byByte)
-{
-	ptUartBase->DATA = byByte;
-}
-//
-static inline uint32_t csp_uart_get_sr(csp_uart_t *ptUartBase)
-{
-	return (uint32_t)(ptUartBase->SR);
-}
-static inline void csp_uart_clr_sr(csp_uart_t *ptUartBase)
-{
-	ptUartBase->SR = 0x01ff;
-}
-static inline uint32_t csp_uart_get_isr(csp_uart_t *ptUartBase)
-{
-	return (uint32_t)(ptUartBase->ISR);
-}
-static inline void csp_uart_clr_isr(csp_uart_t *ptUartBase, uart_isr_e eIsr)
-{
-	ptUartBase->ISR = eIsr;
-}
-static inline void csp_uart_int_enable(csp_uart_t *ptUartBase, uart_int_e eUartInt, bool bEnable)
-{
-	if(bEnable)
-		ptUartBase->CTRL |= eUartInt;
-	else
-		ptUartBase->CTRL &= ~eUartInt;
-}
-//
-static inline uint32_t csp_uart_get_ctrl(csp_uart_t *ptUartBase)
-{
-	return ptUartBase->CTRL;
-}
-static inline void csp_uart_set_ctrl(csp_uart_t *ptUartBase, uint32_t wVal)
-{
-	ptUartBase->CTRL = wVal;
-}
-//
-static inline void csp_uart_set_brdiv(csp_uart_t *ptUartBase, uint32_t wVal)
-{
-	ptUartBase->BRDIV = wVal;
-}
-//
-static inline void csp_uart_set_rxdma(csp_uart_t *ptUartBase, uart_rdma_en_e eRxDmaEn, uart_rdma_md_e eRxDmaMode) 
-{
-	ptUartBase->DMACR = (ptUartBase->DMACR & ~(UART_RDMA_EN_MSK | UART_RDMA_MD_MSK)) | (eRxDmaEn << UART_RDMA_EN_POS) | (eRxDmaMode << UART_RDMA_MD_POS);
-}
+//reset
+#define csp_uart_soft_rst(UARTx)		((UARTx)->SRR = UART_SWRST_MSK)		
+#define csp_uart_rxfifo_rst(UARTx)		((UARTx)->SRR = UART_RXFIFO_RST_MSK)	
+#define	csp_uart_txfifo_rst(UARTx)		((UARTx)->SRR = UART_TXFIFO_RST_MSK)	
 
-static inline void csp_uart_set_txdma(csp_uart_t *ptUartBase, uart_tdma_en_e eTxDmaEn, uart_tdma_md_e eTxDmaMode) 
-{
-	ptUartBase->DMACR = (ptUartBase->DMACR & ~(UART_TDMA_EN_MSK | UART_TDMA_MD_MSK)) | (eTxDmaEn << UART_TDMA_EN_POS) | (eTxDmaMode << UART_TDMA_MD_POS);
-}
+//TX/RX  enable/disable
+#define csp_uart_tx_enable(UARTx) 		((UARTx)->CTRL |= UART_TX_MSK)
+#define csp_uart_tx_disable(UARTx) 		((UARTx)->CTRL &= ~UART_TX_MSK)
+#define csp_uart_rx_enable(UARTx) 		((UARTx)->CTRL |= UART_RX_MSK)
+#define csp_uart_rx_disable(UARTx) 		((UARTx)->CTRL &= ~UART_RX_MSK)
+
+//TX and RX enable/disable
+#define csp_uart_enable(UARTx)			((UARTx)->CTRL |= (UART_TX_MSK | UART_RX_MSK)) 
+#define csp_uart_disable(UARTx)			((UARTx)->CTRL &= ~(UART_TX_MSK | UART_RX_MSK)) 
+
+//receive timeout and break	enable/disable	
+#define csp_uart_rto_enable(UARTx)		((UARTx)->CTRL |= UART_STTTO_MSK)
+#define csp_uart_rto_disable(UARTx)		((UARTx)->CTRL &= ~UART_STTTO_MSK)
+#define csp_uart_brk_enable(UARTx)		((UARTx)->CTRL |= UART_BREAK_MSK)
+#define csp_uart_brk_disable(UARTx)		((UARTx)->CTRL &= ~UART_BREAK_MSK)
+
+//fifo and parity
+#define csp_uart_fifo_disable(UARTx)	((UARTx)->CTRL &= ~UART_FIFO_MSK)	
+#define csp_uart_fifo_enable(UARTx)		((UARTx)->CTRL &=  UART_FIFO_MSK)	
+
+//read reg
+#define csp_uart_get_data(UARTx)		((UARTx)->DATA)
+#define csp_uart_get_ctrl(UARTx)		((UARTx)->CTRL)
+#define csp_uart_get_sr(UARTx)			((UARTx)->SR)
+//clr sr
+#define csp_uart_clr_all_sr(UARTx)		((UARTx)->SR = 0x01ff)				
+
+//interrupt
+#define csp_uart_get_isr(UARTx)				((UARTx)->ISR)
+#define csp_uart_clr_isr(UARTx, eIsr)		((UARTx)->ISR = eIsr)
+#define csp_uart_int_enable(UARTx, eInt)	((UARTx)->CTRL |= eInt)
+#define csp_uart_int_disable(UARTx, eInt)	((UARTx)->CTRL &= ~eInt)
+
+//set reg
+#define csp_uart_set_ctrl(UARTx, wVal)		((UARTx)->CTRL = wVal)
+#define csp_uart_set_brdiv(UARTx, wVal)		((UARTx)->BRDIV = wVal)
+#define csp_uart_set_ttgr(UARTx, byVal)		((UARTx)->TTGR = byVal)
+#define csp_uart_set_rtor(UARTx, hwVal)		((UARTx)->RTOR = hwVal)
+#define csp_uart_set_data(UARTx, byVal)		((UARTx)->DATA = byVal)
+
+//set patity/fifo/radma/txdma
+#define csp_uart_set_parity(UARTx, eParity)	((UARTx)->CTRL = ((UARTx)->CTRL & ~UART_PARITY_MSK) | (eParity << UART_PARITY_POS))
+
+#define csp_uart_set_fifo(UARTx, eFiBit, bEnable)		\
+	((UARTx)->CTRL = ((UARTx)->CTRL & ~(UART_RXFIFO_MSK | UART_FIFO_MSK)) | (eFiBit << UART_RXFIFO_POS) | (bEnable << UART_FIFO_POS))
+
+#define csp_uart_set_rxdma(UARTx, eRxDmaEn, eRxDmaMode)	\
+	((UARTx)->DMACR = ((UARTx)->DMACR & ~(UART_RDMA_EN_MSK | UART_RDMA_MD_MSK)) | (eRxDmaEn << UART_RDMA_EN_POS) | (eRxDmaMode << UART_RDMA_MD_POS))
+
+#define csp_uart_set_txdma(UARTx, eTxDmaEn, eTxDmaMode)	\
+	((UARTx)->DMACR = ((UARTx)->DMACR & ~(UART_TDMA_EN_MSK | UART_TDMA_MD_MSK)) | (eTxDmaEn << UART_TDMA_EN_POS) | (eTxDmaMode << UART_TDMA_MD_POS))
+
 
 #endif

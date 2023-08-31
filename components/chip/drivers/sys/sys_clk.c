@@ -9,13 +9,8 @@
  * </table>
  * *********************************************************************
 */
-#include <stdint.h>
 #include <sys_clk.h>
-#include <pin.h>
 #include "board_config.h"
-
-#include <csp.h>
-
 
 //extern system_clk_config_t g_tSystemClkConfig[];
 

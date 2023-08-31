@@ -186,194 +186,63 @@ typedef enum
 }exi_trigger_e;
 
 /******************************************************************************
-************************** Exported functions ************************
-******************************************************************************/
-//extern void csp_gpio_default_Init(csp_gpio_t *ptGpioBase);
-//extern void csp_igrp_default_Init(csp_igrp_t *igrp_base);
-//extern void csp_gpio_mux_init(csp_gpio_t *ptGpioBase,gpio_byte_e eByte,uint32_t wVal);
-//extern int  csp_gpio_mux_set(csp_gpio_t *ptGpioBase,uint8_t byPinNum,uint8_t af_mode);
-//extern int  csp_gpio_mux_get(csp_gpio_t *ptGpioBase,uint8_t byPinNum);
-//extern void csp_gpio_dir_set(csp_gpio_t *ptGpioBase, uint8_t byPinNum,gpio_dir_e eDir);
-//extern void csp_gpio_inputoutput_dis(csp_gpio_t *ptGpioBase,uint8_t byPinNum);
-////
-//extern void csp_gpio_set_value(csp_gpio_t *ptGpioBase,uint8_t byPinNum,gpio_pin_state_e eState);
-//extern void csp_gpio_toggle(csp_gpio_t *ptGpioBase,uint8_t byPinNum);
-////
-//extern uint32_t get_gpio_exi_intnum(gpio_igrp_e eExiGrp);
-////extern void csp_gpio_set_port_irq(csp_gpio_t *ptGpioBase, uint32_t wValue, bool bEnable);
-//extern void csp_gpio_intgroup_set(csp_gpio_t *ptGpioBase, uint8_t byPinNum, gpio_igrp_e eExiGrp);
-//extern void csp_gpio_exi_config(csp_gpio_t *ptGpioBase,uint8_t byPinNum,gpio_igrp_e eExiGrp,exi_trigger_e eGpioTrig, bool bExiEn);
-////extern void csp_exi_set_port_irq(csp_syscon_t *ptSysconBase,uint32_t wValue,bool bEnable);
-//extern void csp_exi_trigger_set(csp_syscon_t *ptSysconBase,gpio_igrp_e eExiGrp, exi_trigger_e eGpioTrig);
-
-/******************************************************************************
 ********************* gpio inline Functions Declaration ***********************
 ******************************************************************************/
 /*************************************************************************
  * @brief  gpio pull set 
 ****************************************************************************/
-static inline void csp_gpio_pullup(csp_gpio_t *ptGpioBase,uint8_t byPinNum)
-{
-	ptGpioBase->PUDR  = ((ptGpioBase->PUDR) & ~(0x03 << (byPinNum*2))) | (0x01 << (byPinNum*2));
-}
+#define csp_gpio_pullnone(GPIOx, byPinNum)	((GPIOx)->PUDR = (GPIOx)->PUDR & ~(0x03 << (byPinNum*2)))
+#define csp_gpio_pullup(GPIOx, byPinNum)	((GPIOx)->PUDR = ((GPIOx)->PUDR & ~(0x03 << (byPinNum*2))) | (0x01 << (byPinNum*2)))
+#define csp_gpio_pulldown(GPIOx, byPinNum)	((GPIOx)->PUDR = ((GPIOx)->PUDR & ~(0x03 << (byPinNum*2))) | (0x02 << (byPinNum*2)))
 
-static inline void csp_gpio_pulldown(csp_gpio_t *ptGpioBase,uint8_t byPinNum)
-{
-	ptGpioBase->PUDR  = ((ptGpioBase->PUDR) & ~(0x03 << (byPinNum*2))) | (0x02 << (byPinNum*2));
-}
-
-static inline void csp_gpio_pullnone(csp_gpio_t *ptGpioBase,uint8_t byPinNum)
-{
-	ptGpioBase->PUDR  = (ptGpioBase->PUDR) & ~(0x03 << (byPinNum*2));
-}
 /*************************************************************************
  * @brief  gpio exi set 
 ****************************************************************************/
-static inline void csp_gpio_int_enable(csp_gpio_t *ptGpioBase, gpio_int_e eIoInt, bool bEnable)
-{
-	if(bEnable)
-		ptGpioBase->IEER  =  (1 << eIoInt);
-	else
-		ptGpioBase->IEDR  =  (1 << eIoInt);
-}
-static inline void csp_gpio_port_int_enable(csp_gpio_t *ptGpioBase, uint32_t wValue, bool bEnable)
-{
-	if(bEnable)	
-		ptGpioBase->IEER = wValue;
-	else 
-		ptGpioBase->IEDR = wValue;
-}
-//
-static inline void csp_exi_port_clr_isr(csp_syscon_t *ptSysconBase, uint32_t wValue)
-{
-    ptSysconBase->EXICR = wValue;
-}
-static inline uint32_t csp_exi_port_get_isr(csp_syscon_t *ptSysconBase)
-{
-    return ptSysconBase->EXICR;
-}
-static inline void csp_exi_int_enable(csp_syscon_t *ptSysconBase, gpio_igrp_e eExiGrp, bool bEnable)
-{
-	if(bEnable)
-		ptSysconBase->EXIER =  (0x01ul << eExiGrp);
-	else
-		ptSysconBase->EXIDR = (0x01ul << eExiGrp);
-}
-static inline void csp_exi_port_int_enable(csp_syscon_t *ptSysconBase,uint32_t wValue, bool bEnable)
-{
-   	if(bEnable)
-	{
-		ptSysconBase->EXIER |= wValue;				//EXI interrupt enable
-//		while(!(ptSysconBase->EXIMR & wValue));		//Check EXI is enabled or not
-		ptSysconBase->EXICR = wValue;				//Clear EXI status bit
-	}
-	else
-		ptSysconBase ->EXIDR = wValue;
-}
+#define csp_gpio_int_enable(GPIOx, hwPinMsk)	((GPIOx)->IEER = hwPinMsk)
+#define csp_gpio_int_disable(GPIOx, hwPinMsk)	((GPIOx)->IEDR = hwPinMsk)
+#define csp_exi_get_isr(SYSCON)					((SYSCON)->EXICR)
+#define csp_exi_clr_isr(SYSCON, eIsr)			((SYSCON)->EXICR = eIsr)
+#define csp_exi_int_enable(SYSCON, eExiGrp)		((SYSCON)->EXIER = (0x01ul << eExiGrp))
+#define csp_exi_int_disable(SYSCON, eExiGrp)	((SYSCON)->EXIDR = (0x01ul << eExiGrp))
 
 /*************************************************************************
  * @brief  gpio filtering
 ****************************************************************************/
-static inline void csp_gpio_flt_en(csp_gpio_t *ptGpioBase,uint8_t byPinNum, bool bEnable)
-{
-	if(bEnable)
-		ptGpioBase->FLTEN  |= (0x01 << byPinNum);
-	else
-		ptGpioBase->FLTEN  &=  ~(0x01 << byPinNum);
-}
+#define csp_gpio_flt_enable(GPIOx, hwPinMsk, bEnable)	(bEnable > 0 ? ((GPIOx)->FLTEN = hwPinMsk) : ((GPIOx)->FLTEN &= ~hwPinMsk))  
+
 /*************************************************************************
  * @brief  gpio output mode set 
 ****************************************************************************/
-static inline void csp_gpio_opendrain_en(csp_gpio_t *ptGpioBase,uint8_t byPinNum)
-{
-	ptGpioBase->OMCR  = (ptGpioBase->OMCR) | (0x01 << byPinNum);
-}
-static inline void csp_gpio_opendrain_dis(csp_gpio_t *ptGpioBase,uint8_t byPinNum)
-{
-	ptGpioBase->OMCR  = (ptGpioBase->OMCR) & ~(0x01 << byPinNum);
-}
+#define csp_gpio_opendrain_enable(GPIOx, hwPinMsk)		((GPIOx)->OMCR |= hwPinMsk)
+#define csp_gpio_opendrain_disable(GPIOx, hwPinMsk)		((GPIOx)->OMCR &= ~hwPinMsk)
 
-//static inline void csp_gpio_constcurr_en(csp_gpio_t *ptGpioBase,uint8_t byPinNum)
-//{
-//	ptGpioBase->OMCR  = (ptGpioBase->OMCR) | (0x01 << (byPinNum+16));
-//}
-//static inline void csp_gpio_constcurr_dis(csp_gpio_t *ptGpioBase,uint8_t byPinNum)
-//{
-//	ptGpioBase->OMCR  = (ptGpioBase->OMCR) & ~(0x01 << (byPinNum+16));
-//}
 /*************************************************************************
- * @brief  gpio pin driver strength
+ * @brief  gpio pin coms/ttl/driver/speed/
 ****************************************************************************/
+#define csp_gpio_ccm_ttl(GPIOx, byPinNum)	((GPIOx)->DSCR |= (0x02ul << (2*byPinNum)))	
+#define csp_gpio_ccm_cmos(GPIOx, byPinNum)	((GPIOx)->DSCR &= ~(0x02ul << (2*byPinNum)))
 
-static inline void csp_gpio_ccm_ttl2(csp_gpio_t *ptGpioBase,uint8_t byPinNum)
-{
-	ptGpioBase->DSCR  = (ptGpioBase->DSCR) | (0x02 << (2*byPinNum));
-	ptGpioBase->OMCR  = (ptGpioBase->OMCR) | (0x01 << (byPinNum+16));
-}
-static inline void csp_gpio_ccm_ttl1(csp_gpio_t *ptGpioBase,uint8_t byPinNum)
-{
-	ptGpioBase->DSCR  = (ptGpioBase->DSCR) | (0x02 << (2*byPinNum));
-	ptGpioBase->OMCR  = (ptGpioBase->OMCR) & ~(0x01 << (byPinNum+16));
-}
-static inline void csp_gpio_ccm_cmos(csp_gpio_t *ptGpioBase,uint8_t byPinNum)
-{
-	ptGpioBase->DSCR  = (ptGpioBase->DSCR) & ~(0x02 << (2*byPinNum));
-}
+#define csp_gpio_set_ttl1(GPIOx, byPinNum)	((GPIOx)->OMCR &= ~(0x01 << (byPinNum+16)))	
+#define csp_gpio_set_ttl2(GPIOx, byPinNum)	((GPIOx)->OMCR |= (0x01ul << (byPinNum+16)))
 
-static inline void csp_gpio_drv_set(csp_gpio_t *ptGpioBase, uint8_t byPinNum, uint8_t byDrive)
-{
-    if(0 == byDrive)
-		ptGpioBase->DSCR = (ptGpioBase->DSCR & ~(0x01ul << 2*byPinNum));
-	else
-		ptGpioBase->DSCR = (ptGpioBase->DSCR  | (0x01ul << 2*byPinNum));
-}
-
-static inline void csp_gpio_speed_set(csp_gpio_t *ptGpioBase, uint8_t byPinNum, uint8_t bySpeed)
-{
-    if(0 == bySpeed)
-		ptGpioBase->DSCR = (ptGpioBase->DSCR & ~(0x02ul << 2*byPinNum));
-	else
-		ptGpioBase->DSCR = (ptGpioBase->DSCR  | (0x02ul << 2*byPinNum));
-}
-
+#define csp_gpio_set_drive(GPIOx, byPinNum, byDrive)	(byDrive == 0 ?  ((GPIOx)->DSCR &= ~(0x01ul << 2*byPinNum)) : \
+														((GPIOx)->DSCR |= (0x01ul << 2*byPinNum)))
+														
+#define csp_gpio_set_speed(GPIOx, byPinNum, bySpeed)	(bySpeed == 0 ?  ((GPIOx)->DSCR &= ~(0x02ul << 2*byPinNum)) : \
+														((GPIOx)->DSCR |= (0x02ul << 2*byPinNum)))
+		
 /*************************************************************************
  * @brief  gpio output or input or status handle
 ****************************************************************************/
-static inline void csp_gpio_write_output_port(csp_gpio_t *ptGpioBase, uint32_t wValue)
-{
-    ptGpioBase->WODR = wValue;
-}
+#define csp_gpio_set_wodr(GPIOx, wVal)			((GPIOx)->WODR = wVal)
+#define csp_gpio_set_high(GPIOx, hwPinMsk)		((GPIOx)->SODR = hwPinMsk)
+#define csp_gpio_set_low(GPIOx, hwPinMsk)		((GPIOx)->CODR = hwPinMsk)
 
-static inline uint32_t csp_gpio_read_output_port(csp_gpio_t *ptGpioBase)
-{
-    return ptGpioBase->ODSR;
-}
-
-static inline uint32_t csp_gpio_read_input_port(csp_gpio_t *ptGpioBase)
-{
-    return ptGpioBase->PSDR;
-}
-
-static inline void csp_gpio_set_high(csp_gpio_t *ptGpioBase,uint8_t byPinNum)
-{
-	ptGpioBase->SODR = (0x01ul << byPinNum);
-}
-
-static inline void csp_gpio_set_low(csp_gpio_t *ptGpioBase,uint8_t byPinNum)
-{
-	ptGpioBase->CODR = (0x01ul << byPinNum);
-}
-static inline uint8_t csp_gpio_read_status(csp_gpio_t *ptGpioBase,uint8_t byPinNum)
-{
-    return (((ptGpioBase->PSDR) >> byPinNum) & 0x01);
-}
-static inline uint8_t csp_gpio_read_output(csp_gpio_t *ptGpioBase,uint8_t byPinNum)
-{
-    return (((ptGpioBase->ODSR) >> byPinNum) & 0x01);
-}
+#define csp_gpio_read_input(GPIOx)				((GPIOx)->PSDR)
+#define csp_gpio_read_output(GPIOx)				((GPIOx)->ODSR)
 
 
-#endif   // apt32f102_gpio_H */
+#endif   // apt32f173_gpio_H */
 
 /******************* (C) COPYRIGHT 2019 APT Chip *****END OF FILE****/
 

@@ -107,7 +107,7 @@ int cnta_envelope_demo(void)
 	tBTPwmCfg.byDutyCycle = 50;								//PWM 输出占空比(0 < DutyCycle < 100)		
 	tBTPwmCfg.wFreq 	  = 100;							//PWM 输出频率
 //	tPwmCfg.byInt   	= BT_INTSRC_PEND | BT_INTSRC_CMP;	//PWM 中断配置(PEND and CMP)
-	tBTPwmCfg.byInt  		= BT_INTSRC_NONE;
+	//tBTPwmCfg.byInt  		= BT_INTSRC_NONE;
 	
 	csi_bt_pwm_init(BT0, &tBTPwmCfg);						//初始化BT0 PWM输出
 	csi_bt_start(BT0);										//启动BT0	

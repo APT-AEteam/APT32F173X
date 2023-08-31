@@ -9,8 +9,8 @@
  * *********************************************************************
 */
 
-#include <sys_clk.h>
-#include <can.h>
+#include "sys_clk.h"
+#include "drv/can.h"
 #include "board_config.h"
 #include "sys_console.h"
 

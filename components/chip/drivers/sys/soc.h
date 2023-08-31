@@ -15,14 +15,12 @@
 #ifndef _SOC_H_
 #define _SOC_H_
 
-#include <stdint.h>
-#include <csi_core.h>
-#include <drv/clk.h>
+#include "drv/clk.h"
+#include "drv/irq.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-
 
 #ifndef ISOSC_VALU
 #define ISOSC_VALUE			27000U
@@ -58,12 +56,10 @@ extern "C" {
 #define HFOSC_3M_VALUE      3000000U
 #endif
 
-//UARTx id number
-#define UART_IDX_NUM   		3
-#define UART_RECV_MAX_LEN	128
-//USARTx id number
-#define USART_IDX_NUM   	2
-#define USART_RECV_MAX_LEN	128
+//IP ID number
+#define BT_IDX   			4		//BTx id number
+#define UART_IDX   			3		//UARTx id number
+#define USART_IDX  			2		//USARTx id number
 
 //DMA  id number
 //max channel number
@@ -90,6 +86,25 @@ extern "C" {
 #define DFLASHLIMIT 		(DFLASHBASE + DFLASHSIZE) 
 
 #define START_SRAM1_ADDR     0x20006000
+
+//GPIO PIN
+#define GPIO_PIN0			((uint16_t)(0x01ul << 0))  	// Pin 0 selected    
+#define GPIO_PIN1           ((uint16_t)(0x01ul << 1))  	// Pin 1 selected    
+#define GPIO_PIN2           ((uint16_t)(0x01ul << 2))  	// Pin 2 selected    
+#define GPIO_PIN3           ((uint16_t)(0x01ul << 3))  	// Pin 3 selected    
+#define GPIO_PIN4           ((uint16_t)(0x01ul << 4))  	// Pin 4 selected    
+#define GPIO_PIN5           ((uint16_t)(0x01ul << 5))  	// Pin 5 selected    
+#define GPIO_PIN6           ((uint16_t)(0x01ul << 6))  	// Pin 6 selected    
+#define GPIO_PIN7           ((uint16_t)(0x01ul << 7))  	// Pin 7 selected    
+#define GPIO_PIN8           ((uint16_t)(0x01ul << 8))  	// Pin 8 selected    
+#define GPIO_PIN9           ((uint16_t)(0x01ul << 9))  	// Pin 9 selected    
+#define GPIO_PIN10          ((uint16_t)(0x01ul << 10))  // Pin 10 selected   
+#define GPIO_PIN11          ((uint16_t)(0x01ul << 11))  // Pin 11 selected   
+#define GPIO_PIN12          ((uint16_t)(0x01ul << 12))  // Pin 12 selected   
+#define GPIO_PIN13          ((uint16_t)(0x01ul << 13))  // Pin 13 selected   
+#define GPIO_PIN14          ((uint16_t)(0x01ul << 14))  // Pin 14 selected   
+#define GPIO_PIN15          ((uint16_t)(0x01ul << 15))  // Pin 15 selected   
+#define GPIO_PIN_All        ((uint16_t)0xFFFFU)  		// All pins selected 
 
 typedef enum {
 	
@@ -145,64 +160,65 @@ typedef enum {
 	BT3_IRQn      					= 63U,
 } irqn_type_e;
 
+
 typedef enum {
-	PA0			= 0U,
-	PA1			= 1U,		
-	PA2			= 2U,
-    PA3			= 3U,
-    PA4			= 4U,
-    PA5			= 5U,
-    PA6			= 6U,
-    PA7			= 7U,
-    PA8			= 8U,
-    PA9			= 9U,
-    PA10		= 10U,
-    PA11		= 11U,
-    PA12		= 12U,
-    PA13		= 13U,
-    PA14		= 14U,
-    PA15		= 15U,
+	PA0			= GPIO_PIN0,
+	PA1			= GPIO_PIN1,		
+	PA2			= GPIO_PIN2,
+    PA3			= GPIO_PIN3,
+    PA4			= GPIO_PIN4,
+    PA5			= GPIO_PIN5,
+    PA6			= GPIO_PIN6,
+    PA7			= GPIO_PIN7,
+    PA8			= GPIO_PIN8,
+    PA9			= GPIO_PIN9,
+    PA10		= GPIO_PIN10,
+    PA11		= GPIO_PIN11,
+    PA12		= GPIO_PIN12,
+    PA13		= GPIO_PIN13,
+    PA14		= GPIO_PIN14,
+    PA15		= GPIO_PIN15,
 	
-    PB0			= 16U,
-    PB1		    = 17U,
-    PB2		    = 18U,
-    PB3		    = 19U,
-    PB4		    = 20U,
-    PB5		    = 21U,
-	PB6			= 22U,
-    PB7			= 23U,
-    PB8		    = 24U,
-    PB9	        = 25U,
-    PB10		= 26U,
-    PB11		= 27U,
-    PB12		= 28U,
-	PB13		= 29U,
-	PB14		= 30U,
-	PB15		= 31U,
+    PB0			= GPIO_PIN0,
+    PB1		    = GPIO_PIN1,
+    PB2		    = GPIO_PIN2,
+    PB3		    = GPIO_PIN3,
+    PB4		    = GPIO_PIN4,
+    PB5		    = GPIO_PIN5,
+	PB6			= GPIO_PIN6,	
+    PB7			= GPIO_PIN7,
+    PB8		    = GPIO_PIN8,
+    PB9	        = GPIO_PIN9,
+    PB10		= GPIO_PIN10,
+    PB11		= GPIO_PIN11,
+    PB12		= GPIO_PIN12,
+	PB13		= GPIO_PIN13,
+	PB14		= GPIO_PIN14,
+	PB15		= GPIO_PIN15,
 	
-	PC0		    = 32U,
-	PC1		    = 33U,
-	PC2		    = 34U,
-	PC3		    = 35U,
-	PC4		    = 36U,
-	PC5		    = 37U,
-	PC6		    = 38U,
-	PC7		    = 39U,
-	PC8		    = 40U,
-	PC9		    = 41U,
-	PC10		= 42U,
-	PC11		= 43U,
-	PC12		= 44U,
-	PC13		= 45U,
-	PC14		= 46U,
-	PC15		= 47U,
+	PC0		    = GPIO_PIN0,
+	PC1		    = GPIO_PIN1,
+	PC2		    = GPIO_PIN2,
+	PC3		    = GPIO_PIN3,
+	PC4		    = GPIO_PIN4,
+	PC5		    = GPIO_PIN5,
+	PC6		    = GPIO_PIN6,
+	PC7		    = GPIO_PIN7,
+	PC8		    = GPIO_PIN8,
+	PC9		    = GPIO_PIN9,
+	PC10		= GPIO_PIN10,
+	PC11		= GPIO_PIN11,
+	PC12		= GPIO_PIN12,
+	PC13		= GPIO_PIN13,
+	PC14		= GPIO_PIN14,
+	PC15		= GPIO_PIN15,
 	
-	PD0		    = 48U,
-	PD1		    = 49U,
-	PD2		    = 50U,
-	PD3		    = 51U,
-	PD4		    = 52U,
-	PD5		    = 53U,
+	PD0		    = GPIO_PIN0,
+	PD1		    = GPIO_PIN1,
+	PD2		    = GPIO_PIN2,
+	PD3		    = GPIO_PIN3,
+	PD4		    = GPIO_PIN4,
+	PD5		    = GPIO_PIN5,
 	
 } pin_name_e;
 
@@ -1064,8 +1080,10 @@ typedef enum{
 #define nop							asm ("nop")
 #define NOP							asm ("nop")
 
-//ISR Define for generating special interrupt related ASM (E906), with compile option -mistack
 
+
+//ISR Define for generating special interrupt related ASM (E906), with compile option -mistack
+#define  ATTRIBUTE_ISR __attribute__ ((interrupt ("machine")))
 void sw_int_handler(void);				//CPU software interrupt
 void coret_int_handler(void);			//CPU Systick interrupt 
 void syscon_int_handler(void);			//System controller interrupt

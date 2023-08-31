@@ -125,7 +125,7 @@ Default_Handler:
 
     def_irq_handler tspend_handler
     def_irq_handler coret_int_handler
-//    def_irq_handler STIM0_IRQHandler
+    def_irq_handler STIM0_IRQHandler
 //    def_irq_handler STIM1_IRQHandler
 //    def_irq_handler STIM2_IRQHandler
 //    def_irq_handler STIM3_IRQHandler

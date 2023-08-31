@@ -120,50 +120,51 @@ struct csi_dev {
 
 
 
-#define HANDLE_REG_BASE(handle)     (handle->dev.reg_base)
-#define HANDLE_IRQ_NUM(handle)      (handle->dev.irq_num)
-#define HANDLE_DEV_IDX(handle)      (handle->dev.idx)
-#define HANDLE_IRQ_HANDLER(handle)  (handle->dev.irq_handler)
+//#define HANDLE_REG_BASE(handle)     (handle->dev.reg_base)
+//#define HANDLE_IRQ_NUM(handle)      (handle->dev.irq_num)
+//#define HANDLE_DEV_IDX(handle)      (handle->dev.idx)
+//#define HANDLE_IRQ_HANDLER(handle)  (handle->dev.irq_handler)
+//
+//typedef struct {
+//    uint32_t reg_base;
+//    uint8_t  irq_num;
+//    uint8_t  idx;
+//    uint16_t dev_tag;
+//} csi_perip_info_t;
+//
+//typedef enum {
+//	
+//	DEV_CORET_TAG = 0U,						 					
+//	DEV_SYSCON_TAG, 						
+//	DEV_IFC_TAG,												 					
+//	DEV_ADC_TAG,						
+//	DEV_EPT_TAG,
+//	DEV_WDT_TAG,											
+//	DEV_EXI_TAG,
+//	//DEV_EXI1_TAG,	
+//	DEV_CRC_TAG,						
+//	DEV_GPT_TAG,						
+//	DEV_RTC_TAG,     					
+//	DEV_UART_TAG,   					
+//	//DEV_UART1_TAG,  				
+//	//DEV_UART2_TAG,   				
+//	DEV_IIC_TAG,     				
+//	DEV_SPI_TAG, 
+//	DEV_SIO_TAG,     				
+//	//DEV_EXI2_TAG,   					
+//	//DEV_EXI3_TAG,    				
+//	//DEV_EXI4_TAG, 
+//	DEV_CNTA_TAG,    					
+//	DEV_TKEY_TAG,     					
+//	DEV_LPT_TAG,      					
+//	DEV_BT_TAG,      					
+//	//DEV_BT1_TAG,  
+//	DEV_ETCB_TAG
+//} csi_dev_tag_t;
+//
+//csi_error_t target_get(csi_dev_tag_t dev_tag, uint32_t idx, csi_dev_t *dev);
+//csi_error_t target_get_optimal_dma_channel(void *dma_list, uint32_t ctrl_num, csi_dev_t *parent_dev, void *ch_info);
 
-typedef struct {
-    uint32_t reg_base;
-    uint8_t  irq_num;
-    uint8_t  idx;
-    uint16_t dev_tag;
-} csi_perip_info_t;
-
-typedef enum {
-	
-	DEV_CORET_TAG = 0U,						 					
-	DEV_SYSCON_TAG, 						
-	DEV_IFC_TAG,												 					
-	DEV_ADC_TAG,						
-	DEV_EPT_TAG,
-	DEV_WDT_TAG,											
-	DEV_EXI_TAG,
-	//DEV_EXI1_TAG,	
-	DEV_CRC_TAG,						
-	DEV_GPT_TAG,						
-	DEV_RTC_TAG,     					
-	DEV_UART_TAG,   					
-	//DEV_UART1_TAG,  				
-	//DEV_UART2_TAG,   				
-	DEV_IIC_TAG,     				
-	DEV_SPI_TAG, 
-	DEV_SIO_TAG,     				
-	//DEV_EXI2_TAG,   					
-	//DEV_EXI3_TAG,    				
-	//DEV_EXI4_TAG, 
-	DEV_CNTA_TAG,    					
-	DEV_TKEY_TAG,     					
-	DEV_LPT_TAG,      					
-	DEV_BT_TAG,      					
-	//DEV_BT1_TAG,  
-	DEV_ETCB_TAG
-} csi_dev_tag_t;
-
-csi_error_t target_get(csi_dev_tag_t dev_tag, uint32_t idx, csi_dev_t *dev);
-csi_error_t target_get_optimal_dma_channel(void *dma_list, uint32_t ctrl_num, csi_dev_t *parent_dev, void *ch_info);
 void mdelay(uint32_t ms);
 void udelay(uint32_t us);
 void delay_ums(uint32_t t);

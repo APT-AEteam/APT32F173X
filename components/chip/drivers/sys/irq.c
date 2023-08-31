@@ -9,9 +9,8 @@
  * </table>
  * *********************************************************************
 */
-//#include <csi_config.h>
-#include <stdbool.h>
-#include <irq.h>
+#include "soc.h"
+#include "drv/irq.h"
 
 extern csi_irqmap_t g_tIrqMap[];
 extern void Default_Handler(void);

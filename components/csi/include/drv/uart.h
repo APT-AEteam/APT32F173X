@@ -12,10 +12,7 @@
 #ifndef _DRV_UART_H_
 #define _DRV_UART_H_
 
-#include <drv/common.h>
 #include <drv/dma.h>
-#include <drv/ringbuf.h>
-
 #include "csp.h"
 
 #ifdef __cplusplus
@@ -58,12 +55,22 @@ typedef enum {
  * \enum     csi_uart_flowctrl_e
  * \brief    UART Mode Parameters:  Flow Control
  */
-typedef enum {
-    UART_FLOWCTRL_NONE	= 0,    		//none flowctrl
-    UART_FLOWCTRL_RTS,                  //RTS
-    UART_FLOWCTRL_CTS,                  //CTS
-    UART_FLOWCTRL_RTS_CTS               //RTS & CTS
-} csi_uart_flowctrl_e;
+//typedef enum {
+//    UART_FLOWCTRL_NONE	= 0,    		//none flowctrl
+//    UART_FLOWCTRL_RTS,                  //RTS
+//    UART_FLOWCTRL_CTS,                  //CTS
+//    UART_FLOWCTRL_RTS_CTS               //RTS & CTS
+//} csi_uart_flowctrl_e;
+
+/**
+ * \enum     csi_uart_rxfifo_e
+ * \brief    rx fifo trigger point
+ */
+typedef enum{
+	UART_RXFIFOTRG_ONE	= 1,
+	UART_RXFIFOTRG_TWO	= 2,
+	UART_RXFIFOTRG_FOUR	= 4
+}csi_uart_rxfifo_trg_e;
 
 /**
  * \enum     csi_uart_func_e
@@ -80,21 +87,27 @@ typedef enum{
  * \brief    UART work mode(rx/tx)
  */
 typedef enum{
-	UART_SEND	=	0,			//uart send 
-	UART_RECV	=	1,			//uart receive
+	UART_SEND	=	0,				//uart send 
+	UART_RECV,						//uart receive
+	UART_RTO						//uart receive
 }csi_uart_wkmode_e;
 
 /**
- * \enum     csi_uart_state_e
- * \brief    UART working status
+ * \enum     csi_uart_event_e
+ * \brief    UART working event(state)
  */
 typedef enum {
-	UART_STATE_IDLE		= 0,			//uart idle(rx/tx)
-	UART_STATE_RECV,					//uart receiving 
-	UART_STATE_SEND,					//uart sending 
-	UART_STATE_FULL,					//uart receive complete(full)
-	UART_STATE_DONE						//uart send complete
-} csi_uart_state_e;
+	UART_EVENT_IDLE		= 0,		//uart idle(rx/tx)
+	UART_EVENT_RECV,				//uart receiving 
+	UART_EVENT_SEND,				//uart sending 
+	UART_EVENT_RX_TO,				//uart receive timeout(dynamic end)
+	UART_EVENT_RX_DNE,				//uart receive complete
+	UART_EVENT_TX_DNE,				//uart send complete
+	UART_EVENT_RX_BREAK,			//uart receive break
+	UART_EVENT_PAR_ERR,				//uart PARITY ERROR
+} csi_uart_event_e;
+
+typedef csi_uart_event_e  csi_uart_state_e ;
 
 /**
  * \enum     csi_uart_intsrc_e
@@ -116,48 +129,46 @@ typedef enum
 	UART_INTSRC_RXBRK  		= (0x01ul << 22) 		//RX BREAK
 }csi_uart_intsrc_e;
 
+
 /**
- * \enum     csi_uart_work_e
- * \brief    UART tx/rx work mode
+ * \enum     csi_uart_callbackid_e
+ * \brief    UART callback id
  */
 typedef enum{
-	//send mode
-	UART_TX_MODE_POLL		=	0,			//polling mode, no interrupt
-	UART_TX_MODE_INT		=	1,			//tx use interrupt mode(TXDONE)
-	//receive
-	UART_RX_MODE_POLL		=	0,			//polling mode, no interrupt
-	UART_RX_MODE_INT_FIX	=	1,			//rx use interrupt mode(RXFIFO), receive assign(fixed) length data		
-	UART_RX_MODE_INT_DYN	=	2,			//rx use interrupt mode(RXFIFO), receive a bunch of data(dynamic length data)
-	UART_RX_MODE_INT		=	3			//rx use interrupt mode
-}csi_uart_work_e;
+	CALLBACK_ID_RECV	=	0,		//uart rteceive callback id
+	CALLBACK_ID_SEND,				//uart send callback id
+	CALLBACK_ID_ERR,				//uart error callback id
+}csi_uart_callback_id_e;
 
 /// \struct csi_uart_config_t
 /// \brief  uart parameter configuration, open to users  
 typedef struct {
 	uint32_t            wBaudRate;			//baud rate	
-	uint32_t            wInt;				//interrupt
 	uint16_t			hwRecvTo;			//receive timeout
+	uint8_t				byRxFifoTrg;        //rxfifo Trigger point 
 	uint8_t				byParity;           //parity type 
-	uint8_t				byTxMode;			//send mode: polling/interrupt
-	uint8_t				byRxMode;			//recv mode: polling/interrupt0/interrupt1
-	bool				bRecvToEn;			//enable receive timeout
 } csi_uart_config_t;
 
-
-/// \struct csi_uart_transfer_t
-/// \brief  uart transport handle, not open to users  
+/// \struct csi_uart_ctrl_t
+/// \brief  uart control handle, not open to users  
 typedef struct {
-	uint8_t				bySendStat;			//send status
-	uint8_t				byRecvStat;			//receive status
-	uint8_t				bySendMode;			//send mode
-	uint8_t				byRecvMode;			//receive mode
 	uint16_t            hwTxSize;			//tx send data size
 	uint16_t            hwRxSize;			//rx receive data size
-	uint8_t				*pbyTxData;			//pointer of send buf 
-	ringbuffer_t		*ptRingBuf;			//pointer of ringbuffer		
-} csi_uart_trans_t;
+	uint8_t				*pbyTxBuf;			//pointer of send buf 
+	uint8_t				*pbyRxBuf;			//pointer of recv buf 
+	uint16_t			hwTransNum;			//send/receive data num
+	uint8_t 			byTxState;			//send state
+	uint8_t 			byRxState;			//receive state	
+	//CallBack
+#if	!defined(CSI_UART_CALLBACK)				
+	void(*recv_callback)(csp_uart_t *ptUartBase, csi_uart_event_e eEvent, uint8_t *pbyBuf, uint16_t *hwSzie);
+	void(*send_callback)(csp_uart_t *ptUartBase);
+	void(*err_callback)(csp_uart_t *ptUartBase, csi_uart_event_e eEvent);
+#endif
 
-extern csi_uart_trans_t g_tUartTran[UART_IDX_NUM];	
+} csi_uart_ctrl_t;
+
+extern csi_uart_ctrl_t g_tUartCtrl[UART_IDX];	
 
 /**
   \brief       initializes the resources needed for the UART interface.
@@ -168,13 +179,62 @@ extern csi_uart_trans_t g_tUartTran[UART_IDX_NUM];
 csi_error_t csi_uart_init(csp_uart_t *ptUartBase, csi_uart_config_t *ptUartCfg);
 
 /** 
+  \brief  	   register uart interrupt callback function
+  \param[in]   ptUartBase	pointer of uart register structure
+  \param[in]   eCallBkId	receive/error callback id, recv/send/error
+  \param[in]   callback		uart interrupt handle function
+  \return 	   error code \ref csi_error_t
+ */ 
+csi_error_t csi_uart_register_callback(csp_uart_t *ptUartBase, csi_uart_callback_id_e eCallBkId, void  *callback);
+
+/** 
+  \brief  	   uart send interrupt callback function
+  \param[in]   ptUartBase	pointer of uart register structure
+  \return 	   none
+ */ 
+void csi_uart_send_callback(csp_uart_t *ptUartBase);
+
+/** 
+  \brief  	   uart receive interrupt callback function
+  \param[in]   ptUartBase	pointer of uart register structure
+  \param[in]   eEvent		uart interrupt callback state event, receive dne/send dne/error 
+  \param[in]   pbyBuf		pointer of uart interrupt receive data buffer
+  \param[in]   hwLen		length receive data
+  \return 	   none
+ */ 
+void csi_uart_recv_callback(csp_uart_t *ptUartBase, csi_uart_event_e eEvent, uint8_t *pbyBuf, uint16_t *hwLen);
+
+/** 
+  \brief  	   uart send interrupt callback function
+  \param[in]   ptUartBase	pointer of uart register structure
+  \param[in]   eEvent		uart err interrupt callback event event, break/par error
+  \return 	   none
+ */ 
+__attribute__((weak)) void csi_uart_err_callback(csp_uart_t *ptUartBase, csi_uart_event_e eEvent);
+
+/** 
+  \brief  	   uart interrupt handler function
+  \param[in]   ptUartBase	pointer of uart register structure
+  \param[in]   byIdx		uart idx(0/1/2)
+  \return 	   none
+ */ 
+void csi_uart_irqhandler(csp_uart_t *ptUartBase, uint8_t byIdx);
+
+/** 
   \brief 	   enable/disable uart interrupt 
   \param[in]   ptUartBase	pointer of uart register structure
   \param[in]   eIntSrc		uart interrupt source
-  \param[in]   bEnable		enable/disable interrupt
   \return 	   none
  */
-void csi_uart_int_enable(csp_uart_t *ptUartBase, csi_uart_intsrc_e eIntSrc, bool bEnable);
+void csi_uart_int_enable(csp_uart_t *ptUartBase, csi_uart_intsrc_e eIntSrc);
+
+/** 
+  \brief 	   disable uart interrupt 
+  \param[in]   ptUartBase	pointer of uart register structure
+  \param[in]   eIntSrc		uart interrupt source
+  \return 	   none
+ */
+void csi_uart_int_disable(csp_uart_t *ptUartBase, csi_uart_intsrc_e eIntSrc);
 
 /** 
   \brief 	   start(enable) uart rx/tx
@@ -192,16 +252,6 @@ csi_error_t csi_uart_start(csp_uart_t *ptUartBase, csi_uart_func_e eFunc);
  */ 
 csi_error_t csi_uart_stop(csp_uart_t *ptUartBase, csi_uart_func_e eFunc);
 
-/** 
-  \brief 	   set uart receive buffer and buffer depth
-  \param[in]   ptUartBase	pointer of uart register structure
-  \param[in]   ptRingbuf	pointer of receive ringbuf
-  \param[in]   pbyRdBuf		pointer of uart receive buffer
-  \param[in]   hwLen		uart  receive buffer length
-  \return 	   error code \ref csi_error_t
- */ 
-void csi_uart_set_buffer(csp_uart_t *ptUartBase, ringbuffer_t *ptRingbuf, uint8_t *pbyRdBuf,  uint16_t hwLen);
-
 /**
   \brief       Start send data to UART transmitter, this function is blocking.
   \param[in]   uart     	uart handle to operate.
@@ -209,16 +259,16 @@ void csi_uart_set_buffer(csp_uart_t *ptUartBase, ringbuffer_t *ptRingbuf, uint8_
   \param[in]   size     	number of data to send (byte).
   \return      the num of data which is sent successfully or CSI_ERROR.
 */
-int16_t csi_uart_send(csp_uart_t *ptUartBase, const void *pData, uint16_t hwSize);
+int32_t csi_uart_send(csp_uart_t *ptUartBase, const void *pData, uint16_t hwSize);
 
 /** 
-  \brief 	   send data to uart transmitter, this function is interrupt mode(async/non-blocking)
-  \param[in]   ptUartBase	pointer of uart register structure
-  \param[in]   pData		pointer to buffer with data to send to uart transmitter.
-  \param[in]   wSize		number of data to send (byte).
-  \return      error code \ref csi_error_t
+  \brief send data from uart, this function is interrupt mode.
+  \param[in] ptUartBase: pointer of uart register structure
+  \param[in] pData: pointer to buffer with data to send to uart transmitter.
+  \param[in] hwSize: number of data to send (byte).
+  \return  the num of data which is send successfully or CSI_ERROR/CSI_OK
  */
-//csi_error_t csi_uart_send_async(csp_uart_t *ptUartBase, const void *pData, uint16_t hwSize);
+csi_error_t csi_uart_send_int(csp_uart_t *ptUartBase, const void *pData, uint16_t hwSize);
 
 /** 
   \brief 	   uart dma receive mode init
@@ -268,7 +318,7 @@ void csi_uart_recv_dma(csp_uart_t *ptUartBase, csi_dma_ch_e eDmaCh, void *pData,
   \param[in]   timeout  	the timeout between bytes(ms).
   \return      the num of data witch is received successfully or CSI_ERROR.
 */
-int16_t csi_uart_receive(csp_uart_t *ptUartBase, void *pData, uint16_t hwSize, uint32_t wTimeOut);
+int32_t csi_uart_receive(csp_uart_t *ptUartBase, void *pData, uint16_t hwSize, uint32_t wTimeOut);
 
 /** 
   \brief 	   receive data to uart transmitter,assign length ;this function is interrupt mode(async/no-blocking),
@@ -277,15 +327,7 @@ int16_t csi_uart_receive(csp_uart_t *ptUartBase, void *pData, uint16_t hwSize, u
   \param[in]   wSize		number of data to receive (byte).
   \return      the num of data which is receive successfully
  */
-//int16_t csi_uart_recv_async(csp_uart_t *ptUartBase, void *pData, uint16_t hwSize);
-
-/** 
-  \brief 	   receive data to uart transmitter, dynamic receive; this function is interrupt mode(async/no-blocking).
-  \param[in]   ptUartBase	UART handle to operate
-  \param[in]   pData		pointer to buffer with data to be received.
-  \return      the num of data which is send successfully
- */
-//int16_t csi_uart_recv_dynamic(csp_uart_t *ptUartBase, void *pData);
+csi_error_t csi_uart_receive_int(csp_uart_t *ptUartBase, void *pData, uint16_t hwSize);
 
 /**
   \brief       Get character in query mode.
@@ -310,7 +352,7 @@ void csi_uart_putc(csp_uart_t *ptUartBase, uint8_t byData);
   \return  	   bool type true/false
  */ 
 bool csi_uart_get_msg(csp_uart_t *ptUartBase, csi_uart_wkmode_e eWkMode, bool bClrEn);
-
+uint16_t csi_uart_get_recvlen(csp_uart_t *ptUartBase);
 /** 
   \brief 	   clr uart receive/send status message (set uart recv/send status idle) 
   \param[in]   ptUartBase	pointer of uart reg structure.
@@ -318,6 +360,7 @@ bool csi_uart_get_msg(csp_uart_t *ptUartBase, csi_uart_wkmode_e eWkMode, bool bC
   \return      none
  */ 
 void csi_uart_clr_msg(csp_uart_t *ptUartBase, csi_uart_wkmode_e eWkMode);
+void csi_uart_clr_recvlen(csp_uart_t *ptUartBase);
 
 #ifdef __cplusplus
 }

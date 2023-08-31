@@ -13,23 +13,11 @@
 #ifndef _DRV_BT_H_
 #define _DRV_BT_H_
 
-#include <drv/common.h>
-
 #include "csp.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-/// \struct csi_bt_pwm_config_t
-/// \brief  bt pwm parameter configuration, open to users  
-typedef struct {
-	uint8_t		byIdleLevel;		//TIMER PWM OUTPUT idel level
-	uint8_t		byStartLevel;		//TIMER PWM OUTPUT start Level
-	uint8_t		byInt;			    //TIMER PWM interrupt source select
-	uint8_t		byDutyCycle;		//TIMER PWM OUTPUT duty cycle
-	uint32_t	wFreq;				//TIMER PWM OUTPUT frequency
-} csi_bt_pwm_config_t;
 
 /**
  * \enum     csi_bt_pwmlev_e
@@ -48,9 +36,9 @@ typedef enum
  * \brief    BT count mode  
  */
 typedef enum{
-	BT_CNT_ONEPULSE	= 0,			//one pulse 	
-	BT_CNT_CONTINUOUS				//continuous		
-}csi_bt_cntmode_e;
+	BT_CNT_CONTINU	= 0,			//continuous count mode	
+	BT_CNT_ONCE 					//once count mode	
+}csi_bt_wkmode_e;
 
 /**
  * \enum     csi_bt_trgin_e
@@ -106,13 +94,62 @@ typedef enum
 	BT_INTSRC_EVTRG  =	(0x01ul << 3)		//EVTRG interrupt
 }csi_bt_intsrc_e;
 
-
 /**
-  \brief       BT irq 
+ * \enum     csi_bt_event_e
+ * \brief    BT callback event 
+ */
+typedef enum
+{
+	BT_EVENT_PEND   =	0, 			//PEND
+	BT_EVENT_CMP,
+//	BT_EVENT_OVF,   
+	BT_EVENT_EVTRG
+}csi_bt_event_e;
+
+
+/// \struct csi_bt_time_config_t
+/// \brief  bt timer parameter configuration, open to users  
+typedef struct {
+	uint16_t	hwTimeVal;			//TIMER Timing Value
+	uint8_t		byWkMode;			//TIMER WorkMode: continuous/once
+} csi_bt_time_config_t;
+
+/// \struct csi_bt_pwm_config_t
+/// \brief  bt pwm parameter configuration, open to users  
+typedef struct {
+	uint8_t		byIdleLevel;		//TIMER PWM OUTPUT idel level
+	uint8_t		byStartLevel;		//TIMER PWM OUTPUT start Level
+	uint8_t		byWkMode;			//TIMER WorkMode: continuous/once
+	uint8_t		byDutyCycle;		//TIMER PWM OUTPUT duty cycle
+	uint32_t	wFreq;				//TIMER PWM OUTPUT frequency
+} csi_bt_pwm_config_t;
+
+
+/// \struct csi_bt_ctrl_t
+/// \brief  bt control handle, not open to users  
+typedef struct 
+{
+    void(*callback)(csp_bt_t *ptBtBase, uint8_t byIsr);
+} csi_bt_ctrl_t;
+
+extern csi_bt_ctrl_t g_tBtCtrl[BT_IDX];
+
+/** 
+  \brief  	   register bt interrupt callback function
   \param[in]   ptBtBase		pointer of bt register structure
-  \return      none
-*/
-__attribute__((weak)) void bt_irqhandler(csp_bt_t *ptBtBase);
+  \param[in]   callback		bt interrupt handle function
+  \return      error code \ref csi_error_t
+ */ 
+csi_error_t csi_bt_register_callback(csp_bt_t *ptBtBase, void  *callback);
+
+/** 
+  \brief  	   bt interrupt handler function
+  \param[in]   ptBtBase		pointer of bt register structure
+  \param[in]   byIdx		bt idx(0/1/2/3)
+  \return 	   none
+ */ 
+void csi_bt_irqhandler(csp_bt_t *ptBtBase, uint8_t byIdx);
+
 /**
   \brief       Initialize BT Interface. Initializes the resources needed for the TIMER interface
   \param[in]   ptBtBase		pointer of bt register structure
@@ -120,6 +157,7 @@ __attribute__((weak)) void bt_irqhandler(csp_bt_t *ptBtBase);
   \return      error code \ref csi_error_t
 */
 csi_error_t csi_bt_timer_init(csp_bt_t *ptBtBase, uint32_t wTimeOut);
+csi_error_t csi_bt_time_init(csp_bt_t *ptBtBase, csi_bt_time_config_t *ptBtTimCfg);
 
 /** 
   \brief 	   set work mode
@@ -127,7 +165,7 @@ csi_error_t csi_bt_timer_init(csp_bt_t *ptBtBase, uint32_t wTimeOut);
   \param[in]   eCntMode		bt count mode, one pulse/continuous
   \return 	   none
  */ 
-void csi_bt_count_mode(csp_bt_t *ptBtBase, csi_bt_cntmode_e eCntMode);
+void csi_bt_count_mode(csp_bt_t *ptBtBase, csi_bt_wkmode_e eWkMode);
 
 /** 
   \brief 	   start bt
@@ -147,10 +185,17 @@ void csi_bt_stop(csp_bt_t *ptBtBase);
   \brief 	   enable/disable bt interrupt
   \param[in]   ptBtBase	 	pointer of bt register structure
   \param[in]   eIntSrc		bt interrupt source
-  \param[in]   bEnable		enable/disable interrupt
   \return 	   none
  */ 
-void csi_bt_int_enable(csp_bt_t *ptBtBase, csi_bt_intsrc_e eIntSrc, bool bEnable);
+void csi_bt_int_enable(csp_bt_t *ptBtBase, csi_bt_intsrc_e eIntSrc);
+
+/** 
+  \brief 	   isable bt interrupt
+  \param[in]   ptBtBase	 	pointer of bt register structure
+  \param[in]   eIntSrc		bt interrupt source
+  \return 	   none
+ */ 
+void csi_bt_int_disable(csp_bt_t *ptBtBase, csi_bt_intsrc_e eIntSrc);
 
 /**
   \brief       Get bt remaining value

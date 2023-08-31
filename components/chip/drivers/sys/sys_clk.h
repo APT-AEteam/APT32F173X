@@ -14,9 +14,7 @@
 #ifndef _SYS_CLK_H_
 #define _SYS_CLK_H_
 
-#include <stdint.h>
-#include <soc.h>
-#include "csp_syscon.h"
+#include <csp.h>
 
 typedef enum {
     SRC_IMOSC = 0,

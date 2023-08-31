@@ -11,10 +11,8 @@
  * *********************************************************************
 */
 #include <drv/clk.h>
-#include <drv/pin.h>
 
 #include "csp.h"
-#include "board_config.h"
 
 extern csi_clkmap_t g_tClkMap[];
 

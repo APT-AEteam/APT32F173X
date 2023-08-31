@@ -13,15 +13,25 @@
 #ifndef _DRV_IRQ_H_
 #define _DRV_IRQ_H_
 
-#include <stdint.h>
-#include <drv/common.h>
-#include <soc.h>
 #include <csi_core.h>
+
+#define  ATTRIBUTE_ISR __attribute__ ((interrupt ("machine")))
+
+#ifdef CONFIG_KERNEL_FREERTOS
+#define  CSI_INTRPT_ENTER() csi_kernel_intrpt_enter()
+#define  CSI_INTRPT_EXIT()  csi_kernel_intrpt_exit()
+#else
+#define  CSI_INTRPT_ENTER()
+#define  CSI_INTRPT_EXIT()
+#endif
+
 
 typedef struct {
 	uint32_t wRegBase;
     uint32_t wIrqNum;
 } csi_irqmap_t;
+
+
 
 /**
   \brief       enable irq.

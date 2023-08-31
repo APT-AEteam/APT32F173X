@@ -60,107 +60,15 @@ extern "C" {
 #define XOUT_PIN_FUNC					PD1
 
 
-#define EXI_PIN                      	PA9
-#define EXI_PIN_FUNC                 	PIN_FUNC_INPUT
-
-#define SPI_IDX                 		0
-#define SPI_MOSI_PIN            		PA14            
-#define SPI_MISO_PIN            		PA15            
-#define SPI_NSS_PIN             		PB5             
-#define SPI_SCK_PIN             		PB4             
-#define SPI_MOSI_PIN_FUNC       		PA14
-#define SPI_MISO_PIN_FUNC       		PA15
-#define SPI_NSS_PIN_FUNC        		PB5
-#define SPI_SCK_PIN_FUNC				PB4
-
-#define IIC_IDX		            		0
-#define IIC_SDA_PIN             		PA13        
-#define IIC_SCL_PIN             		PB0        
-#define IIC_SDA_PIN_FUNC        		PA13
-#define IIC_SCL_PIN_FUNC        		PB0
-
-#define GPIO_IDX						1
-#define GPIO_PIN                		PB2
-#define GPIO_PIN_MSK	     			0x4
-#define GPIO_PIN_FUNC           		PIN_FUNC_OUTPUT
-
-
-#define EPT_IDX                 		0
-#define EPT_PWMCHAY_PIN              	PA12
-#define EPT_PWMCHAX_PIN					PA10
-#define EPT_PWMCHAX_PIN_FUNC            PA10
-#define EPT_PWMCHAY_PIN_FUNC			PA12
-#define EPT_EBI_PIN						PB2
-#define EPT_EBI							PB2
-
-#define ADC_IDX							0
-#define ADC_PIN							PA11
-#define ADC_PIN_FUNC					PA11
-#define ADC_CH							ADCIN12
-#define ADC_PIN1						PA13
-#define ADC_PIN1_FUNC					PA13
-#define ADC_CH1							ADCIN14
-
-
-#define TCH_IDX							0
-#define TCH_PIN1						PB3
-#define TCH_PIN2						PA8
-#define	TCH_PIN1_FUNC					PB3
-#define TCH_PIN2_FUNC					PA8_
-
-#define SIO_IDX					        0
-#define SIO_PIN					        PA2
-#define SIO_PIN_FUNC					PA2
+//csi interrupt user callback enable: 1/0 = ENABLE/DISABLE
+//csi库函数中断支持回调函数，通过宏USE_XXX_CALLBACK来实现次功能选择，若使能需用
+#define USE_BT_CALLBACK					1		//UART(0/1/2)
+#define USE_UART_CALLBACK				1		//UART(0/1/2)
 
 //csi Interrupt Handling Enable, 1/0(OPEN/CLOSE)
 //系统中断处理配置默认是全部打开，对应的中断处理会调用处理函数，会占用的代码空间
 //用户不需要用到某个中断时，可以将对应中断宏定义值设置为0可节约代码空间
 
-#define	IFC_INT_HANDLE_EN				1		//IFC 
-#define	ADC0_INT_HANDLE_EN				1		//ADC0
-#define	ADC1_INT_HANDLE_EN				1		//ADC1
-#define	DMA0_INT_HANDLE_EN				1		//DMA0
-#define	DMA1_INT_HANDLE_EN				1		//DMA1
-#define	WWDT_INT_HANDLE_EN				1		//WWDT
-#define	GPTA0_INT_HANDLE_EN				1		//GPTA0
-#define	GPTA1_INT_HANDLE_EN				1		//GPTA1
-#define	GPTA2_INT_HANDLE_EN				1		//GPTA2
-#define	GPTA3_INT_HANDLE_EN				1		//GPTA3
-#define	GPTB0_INT_HANDLE_EN             1       //GPTB0
-#define	GPTB1_INT_HANDLE_EN             1       //GPTB1
-#define	GPTB2_INT_HANDLE_EN             1       //GPTB2
-#define	GPTB3_INT_HANDLE_EN             1       //GPTB3
-#define	GPTB4_INT_HANDLE_EN             1       //GPTB4
-#define	GPTB5_INT_HANDLE_EN             1       //GPTB5
-#define	DAC0_INT_HANDLE_EN	            1       //DAC0
-#define	RTC_INT_HANDLE_EN				1		//RTC
-#define	UART0_INT_HANDLE_EN				1		//UART0
-#define	UART1_INT_HANDLE_EN				1		//UART1
-#define	UART2_INT_HANDLE_EN				1		//UART2
-#define	USART0_INT_HANDLE_EN			1		//USART0
-#define	USART1_INT_HANDLE_EN			1		//USART1
-#define	SIO0_INT_HANDLE_EN				1		//SIO0
-#define	SIO1_INT_HANDLE_EN				1		//SIO1
-#define	I2C_INT_HANDLE_EN				1		//I2C
-#define	SPI0_INT_HANDLE_EN				1		//SPI0
-#define	SPI1_INT_HANDLE_EN				1		//SPI1
-#define	EXI0_INT_HANDLE_EN				1		//EXI0(GPIO external interrupt), EXI GROUP0 or GROUP16
-#define	EXI1_INT_HANDLE_EN				1		//EXI1(GPIO external interrupt), EXI GROUP1 or GROUP17
-#define	EXI2_3_INT_HANDLE_EN			1		//EXI2~3(GPIO external interrupt), EXI GROUP2~3 or GROUP18~19
-#define	EXI4_9_INT_HANDLE_EN			1		//EXI4~9(GPIO external interrupt), EXI GROUP4~9 
-#define	EXI10_15_INT_HANDLE_EN			1		//EXI10~15(GPIO external interrupt), EXI GROUP10~15 
-#define	CNTA_INT_HANDLE_EN				1		//CNTA
-#define	CAN_INT_HANDLE_EN				1		//CAN
-#define	LPT_INT_HANDLE_EN				1		//LPT
-#define	BT0_INT_HANDLE_EN				1		//BT0
-#define	BT1_INT_HANDLE_EN				1		//BT1
-#define	BT2_INT_HANDLE_EN				1		//BT2
-#define	BT3_INT_HANDLE_EN				1		//BT3,用作系统时钟，默认开启。
-#define	CMP0_INT_HANDLE_EN				1		//CMP0
-#define	CMP1_INT_HANDLE_EN				1		//CMP1
-#define	CMP2_INT_HANDLE_EN				1		//CMP2
-#define	LED_INT_HANDLE_EN				1		//LED
-#define	TKEY_INT_HANDLE_EN				1		//TOUCH
 
 
 __attribute__((weak)) void board_init(void);

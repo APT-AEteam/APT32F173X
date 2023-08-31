@@ -25,7 +25,7 @@
 /* externs function---------------------------------------------------*/
 /* externs variablesr-------------------------------------------------*/
 /* Private variablesr-------------------------------------------------*/
-csi_usart_trans_t g_tUsartTran[USART_IDX_NUM];	
+csi_usart_trans_t g_tUsartTran[USART_IDX];	
 
 /** \brief get usart idx 
  * 
@@ -133,7 +133,7 @@ csi_error_t csi_usart_init(csp_usart_t *ptUsartBase, csi_usart_config_t *ptUsart
 	{
 		if(ptUsartCfg->wInt ==USART_INTSRC_RXRDY)
 		{
-			csp_usart_set_fifo(ptUsartBase, UART_RXFIFO_1_2, DISABLE);			//set /fx fifo = 1_2/fifo enable
+			csp_usart_set_fifo(ptUsartBase, DISABLE, US_RXFIFO_1_2);			//set /fx fifo = 1_2/fifo enable
 		}
 		ptUsartCfg->wInt &= 0xbdfd;													//clear tx all interrupt
 		if((ptUsartCfg->wInt) && (ptUsartCfg->byRxMode))							//receive iterrupt mode
@@ -297,7 +297,7 @@ int16_t csi_usart_send(csp_usart_t *ptUsartBase, const void *pData, uint16_t hwS
 			return i;
 			
 		case USART_TX_MODE_INT:							//return CSI_ERROR or CSI_OK
-			if(hwSize == 0 || byIdx >= USART_IDX_NUM) 
+			if(hwSize == 0 || byIdx >= USART_IDX) 
 				return CSI_ERROR;
 				
 			g_tUsartTran[byIdx].pbyTxData =(uint8_t *)pData;

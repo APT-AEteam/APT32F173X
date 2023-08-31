@@ -13,9 +13,6 @@
 #ifndef _DRV_GPIO_H_
 #define _DRV_GPIO_H_
 
-#include <drv/common.h>
-#include <stdint.h>
-#include <stdbool.h>
 
 #include "csp.h"
 
@@ -244,126 +241,290 @@ typedef enum{
 }csi_exi_flttm_e;
 
 /**
+  \brief       set gpio mux function
+  \param[in]   ptGpioBase  pointer of gpio register structure  
+  \param[in]   ePinName    pin name, defined in soc.h
+  \param[in]   ePinFunc    pin function, defined in soc.h
+  \return      none
+*/
+void csi_gpio_set_mux(csp_gpio_t *ptGpioBase, pin_name_e ePinName, pin_func_e ePinFunc);
+
+/** 
+  \brief 	   set gpio iomap function
+  \param[in]   ptGpioBase 	pointer of gpio register structure 
+  \param[in]   ePinName		gpio pin name
+  \param[in]   eIoMap			gpio pin remap function
+  \return 	   error code \ref csi_error_t
+ */  
+csi_error_t csi_gpio_set_iomap(csp_gpio_t *ptGpioBase, pin_name_e ePinName, csi_gpio_iomap_e eIoMap);
+
+/**
+  \brief       get gpio function
+  \param[in]   ptGpioBase 	pointer of gpio register structure 
+  \param[in]   ePinName    pin name, defined in soc.h
+  \return      pin function
+*/
+pin_func_e csi_gpio_get_mux(csp_gpio_t *ptGpioBase, pin_name_e ePinName);
+
+/**
+  \brief       set gpio pull mode
+  \param[in]   ptGpioBase 	pointer of gpio register structure 
+  \param[in]   ePinName    pin name, defined in soc.h
+  \param[in]   ePullMode   pull mode, pull none/pull up/pull down
+  \return      \ref  csi_error_t
+*/
+csi_error_t csi_gpio_pull_mode(csp_gpio_t *ptGpioBase, pin_name_e ePinName, csi_gpio_pull_mode_e ePullMode);
+
+/** 
+  \brief 	   set gpio input mode
+  \param[in]   ptGpioBase 	pointer of gpio register structure 
+  \param[in]   ePinName		gpio pin name, defined in soc.h.
+  \param[in]   eInputMode	INPUT_CMOS/INPUT_TTL
+  \return 	   error code \ref csi_error_t
+ */ 
+csi_error_t csi_gpio_input_mode(csp_gpio_t *ptGpioBase, pin_name_e ePinName, csi_gpio_input_mode_e eInputMode);
+
+/** 
+  \brief       set gpio output mode
+  \param[in]   ptGpioBase 	pointer of gpio register structure 
+  \param[in]   ePinName		gpio pin name, defined in soc.h.
+  \param[in]   eOutMode		push-pull/open drain
+  \return      error code \ref csi_error_t
+ */ 
+csi_error_t csi_gpio_output_mode(csp_gpio_t *ptGpioBase, pin_name_e ePinName, csi_gpio_output_mode_e eOutMode);
+
+/**
+  \brief       set gpio speed
+  \param[in]   ptGpioBase 	pointer of gpio register structure 
+  \param[in]   ePinName     pin name, defined in soc.h
+  \param[in]   eSpeed       io speed
+  \return      none
+*/
+void csi_gpio_speed(csp_gpio_t *ptGpioBase, pin_name_e ePinName, csi_gpio_speed_e eSpeed);
+
+/**
+  \brief       set gpio drive
+  \param[in]   ptGpioBase 	pointer of gpio register structure 
+  \param[in]   ePinName     pin name, defined in soc.h
+  \param[in]   eDrive       io drive
+  \return      \ref  csi_error_t
+*/
+void csi_gpio_drive(csp_gpio_t *ptGpioBase, pin_name_e ePinName, csi_gpio_drive_e eDrive);
+
+/** 
+  \brief 	   enable gpio input filtering
+  \param[in]   ptGpioBase 	pointer of gpio register structure 
+  \param[in]   ePinName		gpio pin name, defined in soc.h.
+  \param[in]   bEnable		ENABLE/DISABLE
+  \return 	   none
+ */ 
+void csi_pin_gpio_filter(csp_gpio_t *ptGpioBase, pin_name_e ePinName, bool bEnable);
+
+/** 
+  \brief       get gpio num
+  \param[in]   ePinName	 	gpio pin name, defined in soc.h.
+  \return      pin num
+ */
+uint8_t csi_gpio_get_num(pin_name_e ePinName);
+
+/** 
+  \brief 	   get the value of selected gpio 
+  \param[in]   ptGpioBase 	pointer of gpio register structure 
+  \param[in]   ePinName		gpio pin name, defined in soc.h.
+  \return 	   According to the bit mask, the corresponding pin status is obtained
+*/
+bool csi_gpio_read(csp_gpio_t *ptGpioBase, pin_name_e ePinName);
+
+/** 
+  \brief  	   gpio set high(output = 1)
+  \param[in]   ptGpioBase 	pointer of gpio register structure 
+  \param[in]   ePinName		gpio pin name
+  \return      none
+ */
+void csi_gpio_set_high(csp_gpio_t *ptGpioBase, pin_name_e ePinName);
+
+/** 
+  \brief   	   gpio set low(output = 0)
+  \param[in]   ptGpioBase 	pointer of gpio register structure 
+  \param[in]   ePinName		gpio pin name
+  \return      none
+ */
+void csi_gpio_set_low(csp_gpio_t *ptGpioBase, pin_name_e ePinName);
+
+/** 
+  \brief  	   gpio toggle
+  \param[in]   ptGpioBase 	pointer of gpio register structure 
+  \param[in]   pin_name		gpio pin name
+  \return      none
+ */
+void csi_gpio_toggle(csp_gpio_t *ptGpioBase, pin_name_e ePinName);
+
+/** 
+  \brief  	   write gpio port ouput value
+  \param[in]   ptGpioBase	pointer of gpio register structure
+  \param[in]   wPinMask		pin mask, mask of write pin
+  \param[in]   hwVal		Value of write
+  \return none
+ */ 
+void  csi_gpio_write_port(csp_gpio_t *ptGpioBase, uint16_t hwPinMask, uint16_t hwVal);
+
+/** 
+  \brief       config gpio irq mode(assign exi group)
+  \param[in]   ptGpioBase 	pointer of gpio register structure 
+  \param[in]   ePinName		pin name
+  \param[in]   eExiGrp		exi group; EXI_GRP0 ~EXI_GRP19
+  \param[in]   eTrgEdge		rising edge; falling edge;	both edge;
+  \return      error code \ref csi_error_t
+ */ 
+csi_error_t csi_gpio_irq_mode(csp_gpio_t *ptGpioBase, pin_name_e ePinName, csi_exi_grp_e eExiGrp, csi_gpio_irq_mode_e eTrgEdge);
+
+/** 
+  \brief       gpio interrupt enable
+  \param[in]   ptGpioBase 	pointer of gpio register structure 
+  \param[in]   ePinName		pin mask,0x0001~0xffff
+  \param[in]   bEnable		true or false
+  \return      error code \ref csi_error_t
+ */ 
+void csi_gpio_irq_enable(csp_gpio_t *ptGpioBase, pin_name_e ePinName);
+
+/** 
+  \brief       gpio interrupt disable
+  \param[in]   ptGpioBase 	pointer of gpio register structure 
+  \param[in]   ePinName		pin mask,0x0001~0xffff
+  \param[in]   bEnable		true or false
+  \return      error code \ref csi_error_t
+ */ 
+void csi_gpio_irq_disable(csp_gpio_t *ptGpioBase, pin_name_e ePinName);
+
+/** 
+  \brief 	   gpio vic irq enable
+  \param[in]   eExiGrp: exi group(exi line); EXI_GRP0 ~EXI_GRP19
+  \param[in]   bEnable: ENABLE OR DISABLE
+  \return 	   error code \ref csi_error_t
+ */ 
+csi_error_t csi_gpio_vic_irq_enable(csi_exi_grp_e eExiGrp, bool bEnable);
+
+/**
   \brief       Config pin direction
   \param[in]   ptGpioBase	pointer of gpio register structure
   \param[in]   wPinMask    	Pin mask need to be set
   \param[in]   eDir         \ref csi_gpio_dir_e
   \return      Error code
 */
-csi_error_t csi_gpio_port_dir(csp_gpio_t *ptGpioBase, uint32_t wPinMask, csi_gpio_dir_e eDir);
-
-/**
-  \brief       Config pin pull mode
-  \param[in]   ptGpioBase	GPIO port handle
-  \param[in]   wPinMask		Pin mask need to be set
-  \param[in]   eMode        \ref csi_gpio_pull_mode_e
-  \return      Error code
-*/
-csi_error_t csi_gpio_port_pull_mode(csp_gpio_t *ptGpioBase, uint32_t wPinMask, csi_gpio_pull_mode_e eMode);
-
-/**
-  \brief       Config pin output mode
-  \param[in]   ptGpioBase	GPIO port handle
-  \param[in]   wPinMask		Pin mask need to be set
-  \param[in]   eMode        \ref csi_gpio_output_mode_e
-  \return      Error code
-*/
-csi_error_t csi_gpio_port_output_mode(csp_gpio_t *ptGpioBase, uint32_t wPinMask, csi_gpio_output_mode_e eMode);
-
-/** 
-  \brief config gpio input mode
-  \param[in]   ptGpioBase	pointer of gpio register structure
-  \param[in]   wPinMask		pin mask,0x0001~0xffff
-  \param[in]   eMode		\ref csi_gpio_output_mode_e
-  \return 	   error code 	\ref csi_error_t
- */ 
-csi_error_t csi_gpio_port_input_mode(csp_gpio_t *ptGpioBase, uint32_t wPinMask, csi_gpio_input_mode_e eMode);
-
-/** 
-  \brief config gpio input drive
-  \param[in] ptGpioBase: pointer of gpio register structure
-  \param[in] wPinMask: pin mask,0x0001~0xffff
-  \param[in] eDrive: pin input drive; GPIO_DRIVE_LV0/GPIO_DRIVE_LV1
-  \return error code \ref csi_error_t
- */ 
-csi_error_t csi_gpio_port_drive(csp_gpio_t *ptGpioBase, uint32_t wPinMask, csi_gpio_drive_e eDrive);
-
-/** 
-  \brief config gpio ouput speed
-  \param[in] ptGpioBase: pointer of gpio register structure
-  \param[in] wPinMask: pin mask,0x0001~0xffff
-  \param[in] eSpeed: pin output speed; GPIO_SPEED_LV0/GPIO_SPEED_LV1
-  \return error code \ref csi_error_t
- */ 
-csi_error_t csi_gpio_port_speed(csp_gpio_t *ptGpioBase, uint32_t wPinMask, csi_gpio_speed_e eSpeed);
-
-/**
-  \brief       Config gpio irq params
-  \param[in]   ptGpioBase	pointer of gpio register structure
-  \param[in]   wPinMask    	Pin mask need to be set
-  \param[in]   eTrgEdge      Interrupt trigger mode \ref csi_gpio_irq_mode_e
-  \return      Error code
-*/
-csi_error_t csi_gpio_port_irq_mode(csp_gpio_t *ptGpioBase, uint32_t wPinMask, csi_gpio_irq_mode_e eTrgEdge);
-
-/**
-  \brief       Enable or disable gpio pin interrupt
-  \param[in]   ptGpioBase	pointer of gpio register structure
-  \param[in]   wPinMask    	Pin mask need to be set
-  \param[in]   bEnable      0:disable  1:enable
-  \return      none
-*/
-void csi_gpio_port_irq_enable(csp_gpio_t *ptGpioBase, uint32_t wPinMask, bool bEnable);
-
-/** 
-  \brief 	   gpio port vic irq enable
-  \param[in]   wPinMask: pin mask,0x0001~0xffff
-  \param[in]   bEnable: true or false
-  \return 	   none
- */ 
-void csi_gpio_port_vic_irq_enable(uint32_t wPinMask, bool bEnable);
-
-//csi_error_t csi_gpio_debonce(csi_gpio_t *gpio, uint32_t pin_mask, bool enable);
-/**
-  \brief       Set one or zero to the selected pin mask
-  \param[in]   ptGpioBase	pointer of gpio register structure
-  \param[in]   wPinMask    	Pin mask need to be set
-  \param[in]   ePinVal      Value to be set \ref csi_gpio_pin_state_e
-  \return      None
-*/
-void  csi_gpio_port_write(csp_gpio_t *ptGpioBase, uint32_t wPinMask, csi_gpio_pin_state_e ePinVal);
-
-/**
-  \brief       Set high(1) selected pin mask
-  \param[in]   ptGpioBase	pointer of gpio register structure
-  \param[in]   wPinMask    	Pin mask need to be set
-  \return      None
-*/
-void  csi_gpio_port_set_high(csp_gpio_t *ptGpioBase, uint32_t wPinMask);
-
-/**
-  \brief       Set low(0) selected pin mask
-  \param[in]   ptGpioBase	pointer of gpio register structure
-  \param[in]   wPinMask    	Pin mask need to be set
-  \return      None
-*/
-void  csi_gpio_port_set_low(csp_gpio_t *ptGpioBase, uint32_t wPinMask);
-
-/**
-  \brief       Toggle output gpio value,ex.if previous value is 1, then output 0
-  \param[in]   ptGpioBase	pointer of gpio register structure
-  \param[in]   wPinMask    	Pin mask need to be set
-  \return      None
-*/
-void csi_gpio_port_toggle(csp_gpio_t *ptGpioBase, uint32_t wPinMask);
-
-/**
-  \brief       Get the value of  selected GPIO pin mask
-  \param[in]   ptGpioBase	pointer of gpio register structure
-  \param[in]   wPinMask		Pin mask need to be set
-  \return      According to the bit mask, the corresponding pin status is obtained
-*/
-uint32_t csi_gpio_port_read(csp_gpio_t *ptGpioBase, uint32_t wPinMask);
+//csi_error_t csi_gpio_port_dir(csp_gpio_t *ptGpioBase, uint32_t wPinMask, csi_gpio_dir_e eDir);
+//
+///**
+//  \brief       Config pin pull mode
+//  \param[in]   ptGpioBase	GPIO port handle
+//  \param[in]   wPinMask		Pin mask need to be set
+//  \param[in]   eMode        \ref csi_gpio_pull_mode_e
+//  \return      Error code
+//*/
+//csi_error_t csi_gpio_port_pull_mode(csp_gpio_t *ptGpioBase, uint32_t wPinMask, csi_gpio_pull_mode_e eMode);
+//
+///**
+//  \brief       Config pin output mode
+//  \param[in]   ptGpioBase	GPIO port handle
+//  \param[in]   wPinMask		Pin mask need to be set
+//  \param[in]   eMode        \ref csi_gpio_output_mode_e
+//  \return      Error code
+//*/
+//csi_error_t csi_gpio_port_output_mode(csp_gpio_t *ptGpioBase, uint32_t wPinMask, csi_gpio_output_mode_e eMode);
+//
+///** 
+//  \brief config gpio input mode
+//  \param[in]   ptGpioBase	pointer of gpio register structure
+//  \param[in]   wPinMask		pin mask,0x0001~0xffff
+//  \param[in]   eMode		\ref csi_gpio_output_mode_e
+//  \return 	   error code 	\ref csi_error_t
+// */ 
+//csi_error_t csi_gpio_port_input_mode(csp_gpio_t *ptGpioBase, uint32_t wPinMask, csi_gpio_input_mode_e eMode);
+//
+///** 
+//  \brief config gpio input drive
+//  \param[in] ptGpioBase: pointer of gpio register structure
+//  \param[in] wPinMask: pin mask,0x0001~0xffff
+//  \param[in] eDrive: pin input drive; GPIO_DRIVE_LV0/GPIO_DRIVE_LV1
+//  \return error code \ref csi_error_t
+// */ 
+//csi_error_t csi_gpio_port_drive(csp_gpio_t *ptGpioBase, uint32_t wPinMask, csi_gpio_drive_e eDrive);
+//
+///** 
+//  \brief config gpio ouput speed
+//  \param[in] ptGpioBase: pointer of gpio register structure
+//  \param[in] wPinMask: pin mask,0x0001~0xffff
+//  \param[in] eSpeed: pin output speed; GPIO_SPEED_LV0/GPIO_SPEED_LV1
+//  \return error code \ref csi_error_t
+// */ 
+//csi_error_t csi_gpio_port_speed(csp_gpio_t *ptGpioBase, uint32_t wPinMask, csi_gpio_speed_e eSpeed);
+//
+///**
+//  \brief       Config gpio irq params
+//  \param[in]   ptGpioBase	pointer of gpio register structure
+//  \param[in]   wPinMask    	Pin mask need to be set
+//  \param[in]   eTrgEdge      Interrupt trigger mode \ref csi_gpio_irq_mode_e
+//  \return      Error code
+//*/
+//csi_error_t csi_gpio_port_irq_mode(csp_gpio_t *ptGpioBase, uint32_t wPinMask, csi_gpio_irq_mode_e eTrgEdge);
+//
+///**
+//  \brief       Enable or disable gpio pin interrupt
+//  \param[in]   ptGpioBase	pointer of gpio register structure
+//  \param[in]   wPinMask    	Pin mask need to be set
+//  \param[in]   bEnable      0:disable  1:enable
+//  \return      none
+//*/
+//void csi_gpio_port_irq_enable(csp_gpio_t *ptGpioBase, uint32_t wPinMask, bool bEnable);
+//
+///** 
+//  \brief 	   gpio port vic irq enable
+//  \param[in]   wPinMask: pin mask,0x0001~0xffff
+//  \param[in]   bEnable: true or false
+//  \return 	   none
+// */ 
+//void csi_gpio_port_vic_irq_enable(uint32_t wPinMask, bool bEnable);
+//
+////csi_error_t csi_gpio_debonce(csi_gpio_t *gpio, uint32_t pin_mask, bool enable);
+///**
+//  \brief       Set one or zero to the selected pin mask
+//  \param[in]   ptGpioBase	pointer of gpio register structure
+//  \param[in]   wPinMask    	Pin mask need to be set
+//  \param[in]   ePinVal      Value to be set \ref csi_gpio_pin_state_e
+//  \return      None
+//*/
+//void  csi_gpio_port_write(csp_gpio_t *ptGpioBase, uint32_t wPinMask, csi_gpio_pin_state_e ePinVal);
+//
+///**
+//  \brief       Set high(1) selected pin mask
+//  \param[in]   ptGpioBase	pointer of gpio register structure
+//  \param[in]   wPinMask    	Pin mask need to be set
+//  \return      None
+//*/
+//void  csi_gpio_port_set_high(csp_gpio_t *ptGpioBase, uint32_t wPinMask);
+//
+///**
+//  \brief       Set low(0) selected pin mask
+//  \param[in]   ptGpioBase	pointer of gpio register structure
+//  \param[in]   wPinMask    	Pin mask need to be set
+//  \return      None
+//*/
+//void  csi_gpio_port_set_low(csp_gpio_t *ptGpioBase, uint32_t wPinMask);
+//
+///**
+//  \brief       Toggle output gpio value,ex.if previous value is 1, then output 0
+//  \param[in]   ptGpioBase	pointer of gpio register structure
+//  \param[in]   wPinMask    	Pin mask need to be set
+//  \return      None
+//*/
+//void csi_gpio_port_toggle(csp_gpio_t *ptGpioBase, uint32_t wPinMask);
+//
+///**
+//  \brief       Get the value of  selected GPIO pin mask
+//  \param[in]   ptGpioBase	pointer of gpio register structure
+//  \param[in]   wPinMask		Pin mask need to be set
+//  \return      According to the bit mask, the corresponding pin status is obtained
+//*/
+//uint32_t csi_gpio_port_read(csp_gpio_t *ptGpioBase, uint32_t wPinMask);
 
 
 #ifdef __cplusplus

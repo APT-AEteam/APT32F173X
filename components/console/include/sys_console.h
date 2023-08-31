@@ -12,8 +12,6 @@
 #ifndef _SYS_CONSOLE_H_
 #define _SYS_CONSOLE_H_
 
-#include <stdint.h>
-#include <soc.h>
 #include "drv/uart.h"
 
 #ifdef __cplusplus

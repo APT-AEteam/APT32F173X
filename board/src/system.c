@@ -13,14 +13,12 @@
 
 #include <soc.h>
 #include "sys_clk.h"
-#include "csp_gpio.h"
 #include "drv/tick.h"
 #include "drv/iwdt.h" 
-#include "drv/pin.h" 
-#include "csp.h"
+
 #include "board_config.h"
-#include <irq.h>
-#include <csi_config.h>
+//#include <csi_config.h>
+
 
 /**
   \brief       initialize the system
@@ -145,7 +143,7 @@ __attribute__((weak)) void system_init(void)
 	irq_vectors_init();
 #endif
 	
-	csi_iwdt_close();				  //close iwdt
+	csi_iwdt_close();
 	csi_sysclk_config(g_tClkConfig);  //sysclk config	
 	
 #ifdef CONFIG_KERNEL_FREERTOS
