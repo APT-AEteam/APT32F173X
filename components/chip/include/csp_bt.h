@@ -16,7 +16,6 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include <soc.h>
-#include "csp_common.h"
 
 /// \struct csp_bt_t
 /// \brief BT reg description      
