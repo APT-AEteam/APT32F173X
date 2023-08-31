@@ -66,8 +66,8 @@ int bt_timer_demo(void)
 	
 	csi_gpio_set_mux(GPIOA,PA6, PA6_OUTPUT);	//初始化PA6为输出
 	
-	tTimConfig.hwTimeVal = 1000;				//BT定时值 = 1000us
-	tTimConfig.byWkMode  = BT_CNT_CONTINU;		//BT计数器工作模式
+	tTimConfig.wTimeVal = 1000;					//BT定时值 = 1000us
+	tTimConfig.eWkMode  = BT_CNT_CONTINU;		//BT计数器工作模式
 	csi_bt_timer_init(BT1, &tTimConfig);			//初始化BT	
 	csi_bt_start(BT1);							//启动BT定时器,定时默认使用(开启)BT的PEND(周期结束)中断
 		
@@ -98,9 +98,9 @@ int bt_pwm_demo(void)
 #endif
 	
 	//init timer pwm para config
-	tPwmConfig.byIdleLevel 	= BT_PWM_IDLE_HIGH;		//PWM 输出空闲电平
-	tPwmConfig.byStartLevel	= BT_PWM_START_HIGH;	//PWM 输出起始电平
-	tPwmConfig.byWkMode  	= BT_CNT_CONTINU;		//BT计数器工作模式：连续/单次
+	tPwmConfig.eIdleLevel 	= BT_PWM_IDLE_HIGH;		//PWM 输出空闲电平
+	tPwmConfig.eStartLevel	= BT_PWM_START_HIGH;	//PWM 输出起始电平
+	tPwmConfig.eWkMode  	= BT_CNT_CONTINU;		//BT计数器工作模式：连续/单次
 	tPwmConfig.byDutyCycle 	= 90;					//PWM 输出占空比(0 < DutyCycle < 100)		
 	tPwmConfig.wFreq 		= 50;					//PWM 输出频率
 	csi_bt_pwm_init(BT1, &tPwmConfig);				//初始化BT1 PWM输出

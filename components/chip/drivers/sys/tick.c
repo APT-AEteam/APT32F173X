@@ -68,8 +68,8 @@ csi_error_t csi_tick_init(void)
 	
 	s_wTick = 0U;
 	
-	tTimConfig.hwTimeVal = 10000;				//BT定时值，单位：us；即定时值 = 10000us
-	tTimConfig.byWkMode  = BT_CNT_CONTINU;		//BT计数器工作模式：连续/单次
+	tTimConfig.wTimeVal = 10000;				//BT定时值，单位：us；即定时值 = 10000us
+	tTimConfig.eWkMode  = BT_CNT_CONTINU;		//BT计数器工作模式：连续/单次
 	csi_bt_timer_init(BT3, &tTimConfig);			//初始化BT		
 	csi_bt_start(BT3);
 	

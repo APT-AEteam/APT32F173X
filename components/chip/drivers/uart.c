@@ -60,19 +60,19 @@ csi_error_t csi_uart_init(csp_uart_t *ptUartBase, csi_uart_config_t *ptUartCfg)
 	csp_uart_set_brdiv(ptUartBase, wBrDiv);						//set uart baud rate 
 	
 	//databits = 8/stopbits = 1; fixed, can not be configured 
-	if(ptUartCfg->byParity == UART_PARITY_ODD)					//set uart parity bits
+	if(ptUartCfg->eParity == UART_PARITY_ODD)					//set uart parity bits
 		eParity = UART_PAR_ODD;
-	else if(ptUartCfg->byParity == UART_PAR_EVEN)
+	else if(ptUartCfg->eParity == UART_PAR_EVEN)
 		eParity = UART_PAR_EVEN;
-	else if(ptUartCfg->byParity == UART_PARITY_NONE)
+	else if(ptUartCfg->eParity == UART_PARITY_NONE)
 		 eParity = UART_PAR_NONE;
 	else
 		 return CSI_ERROR;
 	csp_uart_set_parity(ptUartBase, eParity);					//parity
 	
-	if((ptUartCfg->byRxFifoTrg != UART_RXFIFOTRG_ONE) && (ptUartCfg->byRxFifoTrg != UART_RXFIFOTRG_TWO) && (ptUartCfg->byRxFifoTrg != UART_RXFIFOTRG_FOUR))
-		ptUartCfg->byRxFifoTrg = UART_RXFIFOTRG_ONE;
-	csp_uart_set_fifo(ptUartBase, ptUartCfg->byRxFifoTrg, ENABLE);	//set fxfifo and enable
+	if((ptUartCfg->eRxFifoTrg != UART_RXFIFOTRG_ONE) && (ptUartCfg->eRxFifoTrg != UART_RXFIFOTRG_TWO) && (ptUartCfg->eRxFifoTrg != UART_RXFIFOTRG_FOUR))
+		ptUartCfg->eRxFifoTrg = UART_RXFIFOTRG_ONE;
+	csp_uart_set_fifo(ptUartBase, ptUartCfg->eRxFifoTrg, ENABLE);	//set fxfifo and enable
 	
 	if(ptUartCfg->hwRecvTo > 0)	
 	{

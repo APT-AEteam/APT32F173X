@@ -76,7 +76,7 @@ int uart_send_demo(void)
 	csi_gpio_set_mux(GPIOA, PA5, PA5_UART1_RX);	//RX
 	csi_gpio_pull_mode(GPIOA, PA5, GPIO_PULLUP);//RX管脚上拉使能, 建议配置
 #endif	
-	tUartConfig.byParity 	= UART_PARITY_ODD;	//校验位，奇校验
+	tUartConfig.eParity 	= UART_PARITY_ODD;	//校验位，奇校验
 	tUartConfig.wBaudRate 	= 115200;			//波特率，115200
 	csi_uart_init(UART1, &tUartConfig);			//初始化串口
 	csi_uart_start(UART1, UART_FUNC_RX_TX);		//开启UART的RX和TX功能，也可单独开启RX或者TX功能
@@ -112,7 +112,7 @@ int uart_send_int_demo(void)
 	csi_gpio_set_mux(GPIOA, PA5, PA5_UART1_RX);		//RX
 	csi_gpio_pull_mode(GPIOA, PA5, GPIO_PULLUP);	//RX管脚上拉使能, 建议配置
 #endif	
-	tUartConfig.byParity 	= UART_PARITY_ODD;		//校验位，奇校验
+	tUartConfig.eParity 	= UART_PARITY_ODD;		//校验位，奇校验
 	tUartConfig.wBaudRate 	= 115200;				//波特率，115200
 	csi_uart_init(UART1, &tUartConfig);				//初始化串口
 	csi_uart_start(UART1, UART_FUNC_RX_TX);			//开启UART的RX和TX功能，也可单独开启RX或者TX功能
@@ -152,10 +152,10 @@ int uart_recv_int_demo(void)
 	csi_pin_pull_mode(PA5,GPIO_PULLUP);				//RX管脚上拉使能, 建议配置
 #endif	
 
-	tUartConfig.byParity 	= UART_PARITY_ODD;		//校验位，奇校验
+	tUartConfig.eParity 	= UART_PARITY_ODD;		//校验位，奇校验
 	tUartConfig.wBaudRate 	= 115200;				//波特率，115200
 	tUartConfig.hwRecvTo 	= 88;					//UART接收超时时间，单位：bit位周期，8个bytes(11bit*8=88, 115200波特率时=764us)
-	tUartConfig.byRxFifoTrg  = UART_RXFIFOTRG_ONE;	//UART的RXFIFO的中断触发点设置为1，即RXFIFO接收到数据,就会触发RXFIFO中断；支持三种配置(1/2/4)
+	tUartConfig.eRxFifoTrg  = UART_RXFIFOTRG_ONE;	//UART的RXFIFO的中断触发点设置为1，即RXFIFO接收到数据,就会触发RXFIFO中断；支持三种配置(1/2/4)
 	csi_uart_init(UART1, &tUartConfig);				//初始化串口
 	csi_uart_start(UART1, UART_FUNC_RX_TX);			//开启UART的RX和TX功能，也可单独开启RX或者TX功能
 	
@@ -188,7 +188,7 @@ int uart_send_dma_demo(void)
 	csi_pin_pull_mode(PA5,GPIO_PULLUP);			//RX管脚上拉使能, 建议配置
 #endif	
 
-	tUartConfig.byParity = UART_PARITY_ODD;		//校验位，奇校验
+	tUartConfig.eParity = UART_PARITY_ODD;		//校验位，奇校验
 	tUartConfig.wBaudRate = 115200;				//波特率，115200
 	csi_uart_init(UART1, &tUartConfig);			//初始化串口
 	csi_uart_start(UART1, UART_FUNC_RX_TX);		//开启UART的RX和TX功能，也可单独开启RX或者TX功能
@@ -229,7 +229,7 @@ int uart_recv_dma_demo(void)
 	csi_pin_set_mux(PA5, PA5_UART1_RX);			//RX
 	csi_pin_pull_mode(PA5,GPIO_PULLUP);			//RX管脚上拉使能, 建议配置
 #endif	
-	tUartConfig.byParity = UART_PARITY_ODD;		//校验位，奇校验
+	tUartConfig.eParity = UART_PARITY_ODD;		//校验位，奇校验
 	tUartConfig.wBaudRate = 115200;				//波特率，115200
 	csi_uart_init(UART1, &tUartConfig);			//初始化串口
 	csi_uart_start(UART1, UART_FUNC_RX_TX);		//开启UART的RX和TX功能，也可单独开启RX或者TX功能

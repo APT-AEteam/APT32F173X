@@ -24,7 +24,7 @@ int32_t console_init(sys_console_t *handle)
     csi_pin_set_mux(handle->rx.pin, handle->rx.func);
 	csi_pin_pull_mode(handle->rx.pin, GPIO_PULLUP);
 	
-	tUartConfig.byParity = UART_PARITY_NONE;		//no parity
+	tUartConfig.eParity = UART_PARITY_NONE;			//no parity
 	tUartConfig.wBaudRate = handle->baudrate;		//115200
 	
     ret = csi_uart_init(handle->uart, &tUartConfig);

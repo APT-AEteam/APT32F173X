@@ -102,8 +102,8 @@ int cnta_envelope_demo(void)
 #endif
 
 	//init timer pwm para config
-	tBTPwmCfg.byIdleLevel = BT_PWM_IDLE_HIGH;				//PWM 输出空闲电平
-	tBTPwmCfg.byStartLevel= BT_PWM_START_HIGH;				//PWM 输出起始电平
+	tBTPwmCfg.eIdleLevel = BT_PWM_IDLE_HIGH;				//PWM 输出空闲电平
+	tBTPwmCfg.eStartLevel= BT_PWM_START_HIGH;				//PWM 输出起始电平
 	tBTPwmCfg.byDutyCycle = 50;								//PWM 输出占空比(0 < DutyCycle < 100)		
 	tBTPwmCfg.wFreq 	  = 100;							//PWM 输出频率
 //	tPwmCfg.byInt   	= BT_INTSRC_PEND | BT_INTSRC_CMP;	//PWM 中断配置(PEND and CMP)

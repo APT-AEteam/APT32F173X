@@ -110,18 +110,18 @@ typedef enum
 /// \struct csi_bt_time_config_t
 /// \brief  bt timer parameter configuration, open to users  
 typedef struct {
-	uint16_t	hwTimeVal;			//TIMER Timing Value
-	uint8_t		byWkMode;			//TIMER WorkMode: continuous/once
+	uint32_t			wTimeVal;			//TIMER Timing Value
+	csi_bt_wkmode_e		eWkMode;			//TIMER WorkMode: continuous/once
 } csi_bt_time_config_t;
 
 /// \struct csi_bt_pwm_config_t
 /// \brief  bt pwm parameter configuration, open to users  
 typedef struct {
-	uint8_t		byIdleLevel;		//TIMER PWM OUTPUT idel level
-	uint8_t		byStartLevel;		//TIMER PWM OUTPUT start Level
-	uint8_t		byWkMode;			//TIMER WorkMode: continuous/once
-	uint8_t		byDutyCycle;		//TIMER PWM OUTPUT duty cycle
-	uint32_t	wFreq;				//TIMER PWM OUTPUT frequency
+	csi_bt_pwmlev_e	eIdleLevel;			//TIMER PWM OUTPUT idel level
+	csi_bt_pwmlev_e	eStartLevel;		//TIMER PWM OUTPUT start Level
+	csi_bt_wkmode_e	eWkMode;			//TIMER WorkMode: continuous/once
+	uint8_t			byDutyCycle;		//TIMER PWM OUTPUT duty cycle
+	uint32_t		wFreq;				//TIMER PWM OUTPUT frequency
 } csi_bt_pwm_config_t;
 
 

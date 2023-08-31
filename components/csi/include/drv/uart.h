@@ -143,10 +143,10 @@ typedef enum{
 /// \struct csi_uart_config_t
 /// \brief  uart parameter configuration, open to users  
 typedef struct {
-	uint32_t            wBaudRate;			//baud rate	
-	uint16_t			hwRecvTo;			//receive timeout
-	uint8_t				byRxFifoTrg;        //rxfifo Trigger point 
-	uint8_t				byParity;           //parity type 
+	uint32_t            	wBaudRate;		//baud rate	
+	uint16_t				hwRecvTo;		//receive timeout
+	csi_uart_rxfifo_trg_e 	eRxFifoTrg;     //rxfifo Trigger point 
+	csi_uart_parity_e		eParity;        //parity type 
 } csi_uart_config_t;
 
 /// \struct csi_uart_ctrl_t
