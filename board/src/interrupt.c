@@ -473,22 +473,26 @@ ATTRIBUTE_ISR __attribute__((weak)) void cmp1_int_handler(void)
 
 ATTRIBUTE_ISR __attribute__((weak)) void cmp2_int_handler(void) 
 {
-#if	CMP2_INT_HANDLE_EN
-    // ISR content ...
+	// ISR content ...
 	CSI_INTRPT_ENTER();
-	cmp_irqhandler(CMP2); //this is a weak function defined in cmp_demo.c, for better efficiency, we recommand user directly implement IRQ handler here without any function call.
-	CSI_INTRPT_EXIT();
+#if (USE_CMP2_CALLBACK == 1)
+	
+#else
+	
 #endif
+	CSI_INTRPT_EXIT();
 }
 
 ATTRIBUTE_ISR __attribute__((weak)) void led_int_handler(void) 
 {
-#if	LED_INT_HANDLE_EN
-    // ISR content ...
+	// ISR content ...
 	CSI_INTRPT_ENTER();
-	led_irqhandler(LED); //this is a weak function defined in led_demo.c, for better efficiency, we recommand user directly implement IRQ handler here without any function call.
-	CSI_INTRPT_EXIT();
+#if (USE_LED_CALLBACK == 1)
+	
+#else
+	
 #endif
+	CSI_INTRPT_EXIT();
 }
 
 ATTRIBUTE_ISR  __attribute__((weak)) void bt0_int_handler(void) 

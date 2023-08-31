@@ -12,6 +12,7 @@
 #include "drv/bt.h"
 #include "drv/pin.h"
 #include "drv/etb.h"
+#include "board_config.h"
 
 /* externs function--------------------------------------------------------*/
 /* externs variablesr------------------------------------------------------*/
@@ -91,7 +92,7 @@ int bt_pwm_demo(void)
 	int iRet = 0;
 	csi_bt_pwm_config_t tPwmConfig;					//BT PWM输出参数初始化配置结构体
 
-#if !defined(USE_GUI)		
+#if (USE_GUI == 0)		
 //	csi_gpio_set_mux(GPIOA, PA1, PA1_BT1_OUT);		//PA1  作为BT1 PWM输出引脚
 //	csi_gpio_set_mux(GPIOB, PB14, PB14_BT1_OUT);	//PB14 作为BT1 PWM输出引脚
 	csi_gpio_set_mux(GPIOC, PC11, PC11_BT1_OUT);	//PC11 作为BT1 PWM输出引脚

@@ -9,13 +9,9 @@
  * </table>
  * *********************************************************************
 */
-
 #ifndef _BOARD_CONFIG_H_
 #define _BOARD_CONFIG_H_
 
-#include <stdint.h>
-#include "soc.h"
-#include "sys_clk.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -48,28 +44,27 @@ extern "C" {
 
 /* example pin manager */
 
-#define CONSOLE_IDX                     1
-#define CONSOLE_TXD                     PA2
-#define CONSOLE_RXD                     PA3
-#define CONSOLE_TXD_FUNC                PA2_UART1_TX
-#define CONSOLE_RXD_FUNC                PA3_UART1_RX
+#define CONSOLE_IDX				1
+#define CONSOLE_TXD             PA2
+#define CONSOLE_RXD             PA3
+#define CONSOLE_TXD_FUNC        PA2_UART1_TX
+#define CONSOLE_RXD_FUNC        PA3_UART1_RX
+#define CONSOLE_PORT     		(GPIOA)
 
-#define XIN_PIN							PD0
-#define XOUT_PIN						PD1
-#define XIN_PIN_FUNC					PD0
-#define XOUT_PIN_FUNC					PD1
+#define XIN_PIN					PD0
+#define XOUT_PIN				PD1
+#define XIN_PIN_FUNC			PD0
+#define XOUT_PIN_FUNC			PD1
 
 
 //csi interrupt user callback enable: 1/0 = ENABLE/DISABLE
 //csi库函数中断支持回调函数，通过宏USE_XXX_CALLBACK来实现次功能选择，若使能需用
-#define USE_BT_CALLBACK					1		//UART(0/1/2)
-#define USE_UART_CALLBACK				1		//UART(0/1/2)
+#define USE_BT_CALLBACK			1		//BT(0/1/2/3)
+#define USE_UART_CALLBACK		1		//UART(0/1/2)
 
-//csi Interrupt Handling Enable, 1/0(OPEN/CLOSE)
-//系统中断处理配置默认是全部打开，对应的中断处理会调用处理函数，会占用的代码空间
-//用户不需要用到某个中断时，可以将对应中断宏定义值设置为0可节约代码空间
-
-
+//csi GUI Handling Enable, 1/0(OPEN/CLOSE)
+//可视化编程，通过宏USE_GUI来实现功能选择
+#define USE_GUI					0						
 
 __attribute__((weak)) void board_init(void);
 

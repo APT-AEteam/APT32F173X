@@ -24,6 +24,7 @@ typedef struct {
 } console_port_t;
 
 typedef struct {
+	csp_gpio_t *gpiox;
     console_port_t tx;
     console_port_t rx;
     uint32_t uart_id;

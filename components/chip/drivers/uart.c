@@ -44,6 +44,10 @@ static uint8_t apt_get_uart_idx(csp_uart_t *ptUartBase)
  * 
  *  \param[in] ptUartBase: pointer of uart register structure
  *  \param[in] ptUartCfg: pointer of uart parameter config structure
+ * 			   - wBaudRate: baud rate
+ * 			   - hwRecvTo: rx byte timeout
+ * 			   - eParity: parity bit
+ * 			   - eRxFifoTrg: rx FIFO level to trigger UART_RNE interrupt
  *  \return error code \ref csi_error_t
  */ 
 csi_error_t csi_uart_init(csp_uart_t *ptUartBase, csi_uart_config_t *ptUartCfg)
@@ -62,7 +66,7 @@ csi_error_t csi_uart_init(csp_uart_t *ptUartBase, csi_uart_config_t *ptUartCfg)
 	//databits = 8/stopbits = 1; fixed, can not be configured 
 	if(ptUartCfg->eParity == UART_PARITY_ODD)					//set uart parity bits
 		eParity = UART_PAR_ODD;
-	else if(ptUartCfg->eParity == UART_PAR_EVEN)
+	else if(ptUartCfg->eParity == UART_PARITY_EVEN)
 		eParity = UART_PAR_EVEN;
 	else if(ptUartCfg->eParity == UART_PARITY_NONE)
 		 eParity = UART_PAR_NONE;

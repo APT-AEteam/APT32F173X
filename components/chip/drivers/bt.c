@@ -72,7 +72,9 @@ void csi_bt_irqhandler(csp_bt_t *ptBtBase, uint8_t byIdx)
 /** \brief initialize bt data structure
  * 
  *  \param[in] ptBtBase: pointer of bt register structure
- *  \param[in] wTimeOut: the timeout for bt, unit: us
+ *  \param[in] ptBtTimCfg: ptBtTimCfg: pointer of bt timing parameter config structure
+ * 			   - wTimeVal: timing value, unit: us
+ * 			   - eWkMode: bt count work mode, \ref csi_bt_wkmode_e
  *  \return error code \ref csi_error_t
  */ 
 csi_error_t csi_bt_timer_init(csp_bt_t *ptBtBase, csi_bt_time_config_t *ptBtTimCfg)
@@ -180,6 +182,12 @@ bool csi_bt_is_running(csp_bt_t *ptBtBase)
  * 
  *  \param[in] ptBtBase: pointer of bt register structure
  *  \param[in] ptBtPwmCfg: pointer of bt pwm parameter config structure
+ *             - eIdleLevel: pwm output level of bt idel, \ref csi_bt_pwmlev_e
+ *             - eStartLevel: pwm output level of bt start, \ref csi_bt_wkmode_e
+ * 			   - eWkMode: bt count work mode, \ref csi_bt_pwmlev_e
+ * 			   - byDutyCycle: pwm duty cycle, 0~100
+ *             - wFreq: pwm frequency
+ * 			   
  *  \return error code \ref csi_error_t
  */ 
 csi_error_t csi_bt_pwm_init(csp_bt_t *ptBtBase, csi_bt_pwm_config_t *ptBtPwmCfg)

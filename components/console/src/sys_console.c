@@ -9,7 +9,7 @@
  * @version  V1.0
  * @date     2019-12-19
  ******************************************************************************/
-#include <drv/pin.h>
+#include "drv/gpio.h"
 #include "sys_console.h"
 
 extern void csi_uart_putc(csp_uart_t *ptUartBase, uint8_t byData);
@@ -20,9 +20,9 @@ int32_t console_init(sys_console_t *handle)
 	
 	csi_uart_config_t tUartConfig;
 	
-    csi_pin_set_mux(handle->tx.pin, handle->tx.func);
-    csi_pin_set_mux(handle->rx.pin, handle->rx.func);
-	csi_pin_pull_mode(handle->rx.pin, GPIO_PULLUP);
+    csi_gpio_set_mux(handle->gpiox, handle->tx.pin, handle->tx.func);
+    csi_gpio_set_mux(handle->gpiox, handle->rx.pin, handle->rx.func);
+	csi_gpio_pull_mode(handle->gpiox, handle->rx.pin, GPIO_PULLUP);
 	
 	tUartConfig.eParity = UART_PARITY_NONE;			//no parity
 	tUartConfig.wBaudRate = handle->baudrate;		//115200
