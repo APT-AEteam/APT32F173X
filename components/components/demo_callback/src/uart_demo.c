@@ -10,7 +10,7 @@
 */
 /* Includes ---------------------------------------------------------------*/
 #include "drv/uart.h"
-#include "drv/pin.h"
+#include "drv/gpio.h"
 #include "board_config.h"
 
 

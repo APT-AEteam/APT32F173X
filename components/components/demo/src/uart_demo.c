@@ -10,7 +10,7 @@
 */
 /* Includes ---------------------------------------------------------------*/
 #include "drv/uart.h"
-#include "drv/pin.h"
+#include "drv/gpio.h"
 #include "board_config.h"
 
 /* externs function--------------------------------------------------------*/
@@ -149,9 +149,9 @@ int uart_recv_int_demo(void)
 	csi_uart_config_t tUartConfig;					//UART1 参数配置结构体
 	
 #if (USE_GUI == 0)	
-	csi_pin_set_mux(PA4, PA4_UART1_TX);				//TX	
-	csi_pin_set_mux(PA5, PA5_UART1_RX);				//RX
-	csi_pin_pull_mode(PA5,GPIO_PULLUP);				//RX管脚上拉使能, 建议配置
+	csi_gpio_set_mux(GPIOA, PA4, PA4_UART1_TX);		//TX	
+	csi_gpio_set_mux(GPIOA, PA5, PA5_UART1_RX);		//RX
+	csi_gpio_pull_mode(GPIOA,PA5,GPIO_PULLUP);		//RX管脚上拉使能, 建议配置
 #endif	
 
 	tUartConfig.eParity 	= UART_PARITY_ODD;		//校验位，奇校验
@@ -185,9 +185,9 @@ int uart_send_dma_demo(void)
 	csi_uart_config_t tUartConfig;				//UART1 参数配置结构体
 	
 #if (USE_GUI == 0)		
-	csi_pin_set_mux(PA4, PA4_UART1_TX);			//TX	
-	csi_pin_set_mux(PA5, PA5_UART1_RX);			//RX
-	csi_pin_pull_mode(PA5,GPIO_PULLUP);			//RX管脚上拉使能, 建议配置
+	csi_gpio_set_mux(GPIOA,PA4, PA4_UART1_TX);	//TX	
+	csi_gpio_set_mux(GPIOA, PA5, PA5_UART1_RX);	//RX
+	csi_gpio_pull_mode(GPIOA, PA5,GPIO_PULLUP);	//RX管脚上拉使能, 建议配置
 #endif	
 
 	tUartConfig.eParity = UART_PARITY_ODD;		//校验位，奇校验
@@ -227,9 +227,9 @@ int uart_recv_dma_demo(void)
 	int iRet = 0;
 	csi_uart_config_t tUartConfig;				//UART1 参数配置结构体
 #if (USE_GUI == 0)		
-	csi_pin_set_mux(PA4, PA4_UART1_TX);			//TX	
-	csi_pin_set_mux(PA5, PA5_UART1_RX);			//RX
-	csi_pin_pull_mode(PA5,GPIO_PULLUP);			//RX管脚上拉使能, 建议配置
+	csi_gpio_set_mux(GPIOA,PA4, PA4_UART1_TX);	//TX	
+	csi_gpio_set_mux(GPIOA, PA5, PA5_UART1_RX);	//RX
+	csi_gpio_pull_mode(GPIOA, PA5,GPIO_PULLUP);	//RX管脚上拉使能, 建议配置
 #endif	
 	tUartConfig.eParity = UART_PARITY_ODD;		//校验位，奇校验
 	tUartConfig.wBaudRate = 115200;				//波特率，115200
