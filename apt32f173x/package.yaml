@@ -20,6 +20,7 @@ license: ""
 type: solution
 depends:
   - apt32f173x_demo: v1.1.0
+  - apt32f173x_demo_callback: v1.0.0
   - sdk_173x: v1.1.0
 build_config:
   include:
@@ -43,6 +44,7 @@ source_file:
   - src/*.c
 depends_forward:
   - apt32f173x_demo: v1.1.0
+  - apt32f173x_demo_callback: v1.0.0
   - sdk_173x: v1.1.0
 install: 
 homepage: 
