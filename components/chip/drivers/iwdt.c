@@ -106,12 +106,18 @@ void csi_iwdt_feed(void)
 void csi_iwdt_irq_enable(csi_iwdt_alarm_e eAlarmTo, bool bEnable)
 {
 	csp_iwdt_set_int(SYSCON, (iwdt_intv_e)eAlarmTo);					//iwdt interrupt timer, 1/2/3/4/5/6/7_8
-	csp_syscon_int_enable(SYSCON, IWDT_INT, bEnable);	//enable iwdt interrupt
+	
 	
 	if(bEnable)
+	{
+		csp_syscon_int_enable(SYSCON, IWDT_INT);	//enable iwdt interrupt
 		csi_vic_enable_irq(SYSCON_IRQ_NUM);				//enable iwdt irq
+	}
 	else
+	{
+		csp_syscon_int_disable(SYSCON, IWDT_INT);
 		csi_vic_disable_irq(SYSCON_IRQ_NUM);				//disable iwdt irq
+	}
 }
 /** \brief check if wdt is running
  * 
@@ -164,5 +170,8 @@ uint32_t csi_iwdt_get_remaining_time(void)
 */
 void csi_iwdt_debug_enable(bool bEnable)
 {
-	csp_iwdt_debug_enable(SYSCON, bEnable);
+	if(bEnable)
+		csp_iwdt_debug_enable(SYSCON);
+	else
+		csp_iwdt_debug_disable(SYSCON);
 }

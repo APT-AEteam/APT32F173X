@@ -134,7 +134,7 @@ csi_error_t csi_iic_slave_init(csp_i2c_t *ptIicBase, csi_iic_slave_config_t *ptI
 	uint16_t hwSclH;
 	if((ptIicBase == NULL)||(ptIicSlaveCfg == NULL))
 		return CSI_ERROR;
-	csp_pcer0_clk_en(SYSCON,22);
+	csp_pcer0_clk_enable(SYSCON,22);
 	apt_iic_deinit(ptIicBase);
 	
 	csp_i2c_set_saddr(ptIicBase, ptIicSlaveCfg->hwSlaveAddr >> 1);
@@ -226,7 +226,7 @@ csi_error_t csi_iic_master_init(csp_i2c_t *ptIicBase, csi_iic_master_config_t *p
 	uint16_t hwSclH ;
 	if((ptIicBase == NULL)||(ptIicMasterCfg == NULL))
 		return CSI_ERROR;
-	csp_pcer0_clk_en(SYSCON,22);
+	csp_pcer0_clk_enable(SYSCON,22);
 	
 	apt_iic_deinit(ptIicBase);
 	wIicClk = csi_get_pclk_freq() / 1000000U;

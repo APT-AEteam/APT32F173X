@@ -55,50 +55,33 @@ typedef struct
 #define CRC_POLY_POS	(4ul)
 #define CRC_POLY_MSK	(0x3 << CRC_POLY_POS)
 
-static inline void csp_crc_clk_enable(csp_crc_t *ptCrcBase, bool bEnable)
-{
-	ptCrcBase -> CEDR = (ptCrcBase -> CEDR & (~CRC_CLKEN)) | bEnable;
-}
+#define csp_crc_clk_enable(ptCrcBase)				(ptCrcBase -> CEDR = (ptCrcBase -> CEDR & (~CRC_CLKEN)) | 1)
 
-static inline void csp_crc_rst(csp_crc_t *ptCrcBase)
-{
-	ptCrcBase -> SRR = CRC_SWRST;
-}
+#define csp_crc_clk_disable(ptCrcBase)				(ptCrcBase -> CEDR = (ptCrcBase -> CEDR & (~CRC_CLKEN)) | 0)
 
-static inline void csp_crc_xorin_enable(csp_crc_t *ptCrcBase, bool bEnable)
-{
-	ptCrcBase -> CR = (ptCrcBase -> CR & (~CRC_XORIN_MSK))|(bEnable << CRC_XORIN_POS);
-}
+#define csp_crc_rst(ptCrcBase)						(ptCrcBase -> SRR = CRC_SWRST)
 
-static inline void csp_crc_xorout_enable(csp_crc_t *ptCrcBase, bool bEnable)
-{
-	ptCrcBase -> CR = (ptCrcBase -> CR & (~CRC_XOROUT_MSK))|(bEnable << CRC_XOROUT_POS);
-}
+#define csp_crc_xorin_enable(ptCrcBase)				(ptCrcBase -> CR = (ptCrcBase -> CR & (~CRC_XORIN_MSK))|(1 << CRC_XORIN_POS))
 
-static inline void csp_crc_refin_enable(csp_crc_t *ptCrcBase, bool bEnable)
-{
-	ptCrcBase -> CR = (ptCrcBase -> CR & (~CRC_REFIN_MSK))|(bEnable << CRC_REFIN_POS);
-}
+#define csp_crc_xorin_disable(ptCrcBase)			(ptCrcBase -> CR = (ptCrcBase -> CR & (~CRC_XORIN_MSK))|(0 << CRC_XORIN_POS))
 
-static inline void csp_crc_refout_enable(csp_crc_t *ptCrcBase, bool bEnable)
-{
-	ptCrcBase -> CR = (ptCrcBase -> CR & (~CRC_REFOUT_MSK)) | (bEnable << CRC_REFOUT_POS);
-}
+#define csp_crc_xorout_enable(ptCrcBase)			(ptCrcBase -> CR = (ptCrcBase -> CR & (~CRC_XOROUT_MSK))|(1 << CRC_XOROUT_POS))
 
-static inline void csp_crc_set_poly(csp_crc_t *ptCrcBase, uint8_t byPoly )
-{
-	ptCrcBase -> CR = (ptCrcBase -> CR & (~CRC_POLY_MSK))|(byPoly << CRC_POLY_POS);
-}
+#define csp_crc_xorout_disable(ptCrcBase)			(ptCrcBase -> CR = (ptCrcBase -> CR & (~CRC_XOROUT_MSK))|(0 << CRC_XOROUT_POS))
 
-static inline void csp_crc_set_seed(csp_crc_t *ptCrcBase, uint32_t wSeed)
-{
-	ptCrcBase -> SEED = wSeed;
-}
+#define csp_crc_refin_enable(ptCrcBase)				(ptCrcBase -> CR = (ptCrcBase -> CR & (~CRC_REFIN_MSK))|(1 << CRC_REFIN_POS))
 
-static inline uint32_t csp_crc_get_result(csp_crc_t *ptCrcBase)
-{
-	return (ptCrcBase->DATAOUT);
-}
+#define csp_crc_refin_disable(ptCrcBase)			(ptCrcBase -> CR = (ptCrcBase -> CR & (~CRC_REFIN_MSK))|(0 << CRC_REFIN_POS))
+
+#define csp_crc_refout_enable(ptCrcBase)			(ptCrcBase -> CR = (ptCrcBase -> CR & (~CRC_REFOUT_MSK)) | (1 << CRC_REFOUT_POS))
+
+#define csp_crc_refout_disable(ptCrcBase)			(ptCrcBase -> CR = (ptCrcBase -> CR & (~CRC_REFOUT_MSK)) | (0 << CRC_REFOUT_POS))
+
+#define csp_crc_set_poly(ptCrcBase,byPoly)			(ptCrcBase -> CR = (ptCrcBase -> CR & (~CRC_POLY_MSK))|(byPoly << CRC_POLY_POS))
+
+#define csp_crc_set_seed(ptCrcBase,wSeed)			(ptCrcBase -> SEED = wSeed)
+
+#define csp_crc_get_result(ptCrcBase)				(ptCrcBase->DATAOUT)
 
 #endif /* CSP_CRC_H */
 

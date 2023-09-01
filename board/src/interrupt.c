@@ -58,10 +58,10 @@ extern void dac_irqhandler(csp_dac_t *ptDacBase);
 /*************************************************************/
 ATTRIBUTE_ISR void nmi_int_handler(void)
 {
-	if(csp_syscon_get_int_st(SYSCON) & LVD_INT)
+	if(csp_syscon_get_isr(SYSCON) & LVD_INT)
 	{
 		nop;
-		csp_syscon_int_clr(SYSCON, LVD_INT);
+		csp_syscon_clr_isr(SYSCON, LVD_INT);
 	}
 	if(csp_exi_get_isr(SYSCON) & STATUS_EXI0)
 	{
@@ -79,17 +79,17 @@ ATTRIBUTE_ISR void syscon_int_handler(void)
 {
     // ISR content ...
 
-	if(csp_syscon_get_int_st(SYSCON) & LVD_INT)
+	if(csp_syscon_get_isr(SYSCON) & LVD_INT)
 	{
 		nop;
-		csp_syscon_int_clr(SYSCON, LVD_INT);
+		csp_syscon_clr_isr(SYSCON, LVD_INT);
 	}
 	
-	if(csp_syscon_get_int_st(SYSCON) & IWDT_INT)
+	if(csp_syscon_get_isr(SYSCON) & IWDT_INT)
 	{
 		nop;
 		//csi_pin_toggle(PA05);
-		csp_syscon_int_clr(SYSCON, IWDT_INT);
+		csp_syscon_clr_isr(SYSCON, IWDT_INT);
 		//csi_iwdt_feed();
 	}
 }
