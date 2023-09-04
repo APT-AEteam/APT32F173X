@@ -425,130 +425,119 @@ typedef enum{
 #define	UART_TXFL_POS			(0)			 
 #define	UART_TXFL_MSK			(0x01ul << UART_TXFL_POS)
 
-/******************************************************************************
-********************** USART External Functions Declaration *******************
-******************************************************************************/
-//extern void csp_usart_soft_rst(csp_usart_t *ptUsartBase);
-//extern void csp_usart_set_int(csp_usart_t *ptUsartBase,usart_int_e eUsartInt, bool bEnable);
-//extern void csp_usart_set_baudrate(csp_usart_t *ptUsartBase,uint32_t wBaud, uint32_t wUsFreq);
-//extern void csp_usart_set_mode(csp_usart_t *ptUsartBase,usart_mode_e eMode, usart_chmd_e eChMode);
-//extern void csp_usart_format(csp_usart_t *ptUsartBase, usart_chrl_e eBits, usart_par_e eParity, usart_bstop_e eStop);
-//extern void csp_usart_set_smart_card(csp_usart_t *ptUsartBase, usart_smart_e eEnable, usart_sdtime_e eCnt);
-
-//extern uint16_t csp_usart_get_char(csp_usart_t *ptUsartBase);
-//extern uint32_t csp_usart_send(csp_usart_t *ptUsartBase, uint16_t *hwPdata, uint32_t size);
-//extern void csp_usart_put_char(csp_usart_t *ptUsartBase,uint16_t hwByte);
-//
-//extern void csp_usart_recv_dma(csp_usart_t *ptUsartBase, void *pbyRecv, uint32_t size, uint8_t byDmaChnl);
-//extern void csp_usart_send_dma(csp_usart_t *ptUsartBase, const void *pbySend, uint32_t wSize, uint8_t byDmaChnl);
 
 /******************************************************************************
 ********************** USART define Functions            *********************
 ******************************************************************************/
 
 
-#define csp_usart_clk_en(ptUsartBase) 								(ptUsartBase->CEDR |= US_CLKEN_MSK)  //CLK EN
+#define csp_usart_clk_en(USARTx) 								(USARTx->CEDR |= US_CLKEN_MSK)  
 
-#define csp_usart_soft_rst(ptUsartBase) 							(ptUsartBase->SRR  = US_SWRST_MSK) //SWRST
+#define csp_usart_soft_rst(USARTx) 								(USARTx->SRR  = US_SWRST_MSK) 
 
-#define csp_usart_rxfifo_rst(ptUsartBase) 							(ptUsartBase->SRR  = US_RXFIFO_RST_MSK) //rxfifo
+#define csp_usart_rxfifo_rst(USARTx) 							(USARTx->SRR  = US_RXFIFO_RST_MSK) 
 
-#define csp_usart_txfifo_rst(ptUsartBase) 							(ptUsartBase->SRR  = US_TXFIFO_RST_MSK) //txfifo
+#define csp_usart_txfifo_rst(USARTx) 							(USARTx->SRR  = US_TXFIFO_RST_MSK) 
 
-#define csp_usart_cr_cmd(ptUsartBase,eCrCmd)  						(ptUsartBase->CR |= eCrCmd)
+#define csp_usart_cr_cmd(USARTx,eCrCmd)  						(USARTx->CR |= eCrCmd)			///\param eCrCmd \ref usart_cr_e
 
-#define csp_usart_set_ckdiv(ptUsartBase,eClk) 						(ptUsartBase->MR = (ptUsartBase->MR & ~US_CLKS_MSK) | (eClk << US_CLKS_POS))
+#define csp_usart_set_ckdiv(USARTx,eClk) 						(USARTx->MR = (USARTx->MR & ~US_CLKS_MSK) | (eClk << US_CLKS_POS))				///\param eClk \ref usart_clks_e
 
-#define csp_usart_set_clko(ptUsartBase,eClkO)						(ptUsartBase->MR = (ptUsartBase->MR & ~US_CLKO_MSK) | (eClkO << US_CLKO_POS))
+#define csp_usart_set_clko(USARTx,eClkO)						(USARTx->MR = (USARTx->MR & ~US_CLKO_MSK) | (eClkO << US_CLKO_POS))				///\param eClkO \ref usart_clko_e
 
-#define csp_usart_set_stopbit(ptUsartBase,eStop)					(ptUsartBase->MR = (ptUsartBase->MR & ~US_BSTOP_MSK) | (eStop << US_BSTOP_POS))
+#define csp_usart_set_stopbit(USARTx,eStop)						(USARTx->MR = (USARTx->MR & ~US_BSTOP_MSK) | (eStop << US_BSTOP_POS))			///\param eStop \ref usart_bstop_e
 
-#define csp_usart_set_databit(ptUsartBase,eBits)   					(eBits == US_BIT9 ? \
-																	(ptUsartBase->MR = ((ptUsartBase->MR & ~US_MD9_MSK) | (US_MD9_EN << US_MD9_POS)))\
-																	:(ptUsartBase->MR = ((ptUsartBase->MR & ~US_CHRL_MSK) | (eBits << US_CHRL_POS))))
+#define csp_usart_set_databit(USARTx,eBits)   					(eBits == US_BIT9 ? \
+																	(USARTx->MR = ((USARTx->MR & ~US_MD9_MSK) | (US_MD9_EN << US_MD9_POS)))\
+																	:(USARTx->MR = ((USARTx->MR & ~US_CHRL_MSK) | (eBits << US_CHRL_POS))))		///\param eBits \ref usart_chrl_e
 													
 
-#define csp_usart_set_parity(ptUsartBase,eParity)					(ptUsartBase->MR = (ptUsartBase->MR & ~US_PAR_MSK ) | (eParity << US_PAR_POS))
+#define csp_usart_set_parity(USARTx,eParity)					(USARTx->MR = (USARTx->MR & ~US_PAR_MSK ) | (eParity << US_PAR_POS))			///\param eParity \ref usart_par_e
 
-#define csp_usart_set_fifo(ptUsartBase,eFifoEn,eFifoSel)			(ptUsartBase->MR = (ptUsartBase->MR & ~(US_FIFO_EN_MSK | US_RXIFSEL_MSK)) | (eFifoEn << US_FIFO_EN_POS) | (eFifoSel << US_RXIFSEL_POS))
+///\param eFifoEn, eFifoSel \ref usart_fifoen_e, usart_rxfifo_e
+#define csp_usart_set_fifo(USARTx,eFifoEn,eFifoSel)				(USARTx->MR = (USARTx->MR & ~(US_FIFO_EN_MSK | US_RXIFSEL_MSK)) | (eFifoEn << US_FIFO_EN_POS) | (eFifoSel << US_RXIFSEL_POS)) 
 
-#define csp_usart_set_format(ptUsartBase,eBits,eParity,eStop)		(eBits == US_BIT9? \
-																	(ptUsartBase->MR = ((ptUsartBase->MR & ~(US_MD9_MSK | US_PAR_MSK | US_BSTOP_MSK)) | (US_MD9_EN << US_MD9_POS) | (eParity << US_PAR_POS) | (eStop << US_BSTOP_POS)))\
-																	: (ptUsartBase->MR = ((ptUsartBase->MR & ~(US_MD9_MSK | US_PAR_MSK | US_BSTOP_MSK | US_CHRL_MSK )) | (eBits << US_CHRL_POS) | (eParity << US_PAR_POS) | (eStop << US_BSTOP_POS))))
+#define csp_usart_set_format(USARTx,eBits,eParity,eStop)		(eBits == US_BIT9? \
+																	(USARTx->MR = ((USARTx->MR & ~(US_MD9_MSK | US_PAR_MSK | US_BSTOP_MSK)) | (US_MD9_EN << US_MD9_POS) | (eParity << US_PAR_POS) | (eStop << US_BSTOP_POS)))\
+																	: (USARTx->MR = ((USARTx->MR & ~(US_MD9_MSK | US_PAR_MSK | US_BSTOP_MSK | US_CHRL_MSK )) | (eBits << US_CHRL_POS) | (eParity << US_PAR_POS) | (eStop << US_BSTOP_POS))))
 																		
-#define csp_usart_set_dsb(ptUsartBase,eDsb)							(ptUsartBase->MR = (ptUsartBase->MR & ~US_DSB_MSK) | (eDsb << US_DSB_POS))
+#define csp_usart_set_dsb(USARTx,eDsb)							(USARTx->MR = (USARTx->MR & ~US_DSB_MSK) | (eDsb << US_DSB_POS))				///\param eDsb \ref usart_dsb_e
 
-#define csp_usart_set_mode(ptUsartBase,eMode,eChMode)				(ptUsartBase->MR = (ptUsartBase->MR & ~( US_MODE_MSK | US_CHMD_MSK)) | ((eMode << US_MODE_POS)  | (eChMode << US_CHMD_POS)))
+///\param eMode, eChMode \ref usart_mode_e, usart_chmd_e
+#define csp_usart_set_mode(USARTx,eMode,eChMode)				(USARTx->MR = (USARTx->MR & ~( US_MODE_MSK | US_CHMD_MSK)) | ((eMode << US_MODE_POS)  | (eChMode << US_CHMD_POS)))	
 
-#define csp_usart_set_smart_card(ptUsartBase,eEnable,eCnt)			(ptUsartBase->MR  = (ptUsartBase->MR & ~( US_SMART_MSK | US_SDTIME_MSK)) | ((eEnable << US_SMART_POS) | (eCnt << US_SDTIME_POS)))
+///\param eEnable, eCnt \ref usart_smart_e, usart_sdtime_e
+#define csp_usart_set_smart_card(USARTx,eEnable,eCnt)			(USARTx->MR  = (USARTx->MR & ~( US_SMART_MSK | US_SDTIME_MSK)) | ((eEnable << US_SMART_POS) | (eCnt << US_SDTIME_POS)))	
 
-#define csp_usart_set_brdiv(ptUsartBase,wBaud,wUsFreq)				(ptUsartBase->BRGR = wUsFreq/wBaud)
+#define csp_usart_set_brdiv(USARTx,wBaud,wUsFreq)				(USARTx->BRGR = wUsFreq/wBaud)
 
-#define csp_usart_set_rtor(ptUsartBase,hwTimer)						(ptUsartBase->RTOR = hwTimer)
+#define csp_usart_set_rtor(USARTx,hwTimer)						(USARTx->RTOR = hwTimer)
 
-#define csp_usart_set_ttgr(ptUsartBase,byTimer)						(ptUsartBase->TTGR = byTimer)
+#define csp_usart_set_ttgr(USARTx,byTimer)						(USARTx->TTGR = byTimer)
 
-#define csp_usart_set_data(ptUsartBase,hwData)						(ptUsartBase->THR = hwData)
+#define csp_usart_set_data(USARTx,hwData)						(USARTx->THR = hwData)
 
-#define csp_usart_get_data(ptUsartBase)								((uint16_t)ptUsartBase->RHR)
+#define csp_usart_get_data(USARTx)								((uint16_t)USARTx->RHR)
 
-#define csp_usart_get_mode(ptUsartBase)								((uint8_t)((ptUsartBase->MR & US_MODE_MSK) >> US_MODE_POS))
+#define csp_usart_get_mode(USARTx)								((uint8_t)((USARTx->MR & US_MODE_MSK) >> US_MODE_POS))
 
-#define csp_usart_get_clks(ptUsartBase)								((uint8_t)((ptUsartBase->MR & US_CLKS_MSK) >> US_CLKS_POS))
+#define csp_usart_get_clks(USARTx)								((uint8_t)((USARTx->MR & US_CLKS_MSK) >> US_CLKS_POS))
 
-#define csp_usart_get_sr(ptUsartBase)								((uint32_t)(ptUsartBase->SR))
+#define csp_usart_get_sr(USARTx)								((uint32_t)(USARTx->SR))
 
-#define csp_usart_get_isr(ptUsartBase)								((uint32_t)(ptUsartBase->MISR))
+#define csp_usart_get_isr(USARTx)								((uint32_t)(USARTx->MISR))
 
-#define csp_usart_clr_isr(ptUsartBase,eUsartInt)					(ptUsartBase->ICR = eUsartInt)
+#define csp_usart_clr_isr(USARTx,eUsartInt)						(USARTx->ICR = eUsartInt)		///\param eUsartInt \ref usart_int_e
 
-#define csp_usart_int_enable(ptUsartBase,eUsartInt)					(ptUsartBase->IMSCR |= eUsartInt)
+#define csp_usart_int_enable(USARTx,eUsartInt)					(USARTx->IMSCR |= eUsartInt)	///\param eUsartInt \ref usart_int_e
 
-#define csp_usart_int_disable(ptUsartBase,eUsartInt)				(ptUsartBase->IMSCR &= ~eUsartInt)
+#define csp_usart_int_disable(USARTx,eUsartInt)					(USARTx->IMSCR &= ~eUsartInt)	///\param eUsartInt \ref usart_int_e
 
-#define csp_usart_set_rxdma(ptUsartBase,eRxDmaEn,eRxDmaMode) 		(ptUsartBase->DMACR = (ptUsartBase->DMACR & ~(US_RDMA_EN_MSK | US_RDMA_MD_MSK)) | (eRxDmaEn << US_RDMA_EN_POS) | (eRxDmaMode << US_RDMA_MD_POS))
+///\param eRxDmaEn, eRxDmaMode \ref usart_rdma_en_e, usart_rdma_md_e
+#define csp_usart_set_rxdma(USARTx,eRxDmaEn,eRxDmaMode) 		(USARTx->DMACR = (USARTx->DMACR & ~(US_RDMA_EN_MSK | US_RDMA_MD_MSK)) | (eRxDmaEn << US_RDMA_EN_POS) | (eRxDmaMode << US_RDMA_MD_POS)) 
 
-#define csp_usart_set_txdma(ptUsartBase,eTxDmaEn,eTxDmaMode)		(ptUsartBase->DMACR = (ptUsartBase->DMACR & ~(US_TDMA_EN_MSK | US_TDMA_MD_MSK)) | (eTxDmaEn << US_TDMA_EN_POS) | (eTxDmaMode << US_TDMA_MD_POS))
+///\param eTxDmaEn, eTxDmaMode \ref usart_tdma_en_e, usart_tdma_md_e 
+#define csp_usart_set_txdma(USARTx,eTxDmaEn,eTxDmaMode)			(USARTx->DMACR = (USARTx->DMACR & ~(US_TDMA_EN_MSK | US_TDMA_MD_MSK)) | (eTxDmaEn << US_TDMA_EN_POS) | (eTxDmaMode << US_TDMA_MD_POS)) 
 
 
 /******************************************************************************
 ********************** USART  LIN define Functions       *********************
 ******************************************************************************/
-#define csp_usart_lin_rst(ptUsartBase)								(ptUsartBase->CR |= LIN_RSLIN)
+#define csp_usart_lin_rst(USARTx)								(USARTx->CR |= LIN_RSLIN)
 
-#define csp_usart_lin_start_msg(ptUsartBase)						(ptUsartBase->CR |= LIN_STMESSAGE)
+#define csp_usart_lin_start_msg(USARTx)							(USARTx->CR |= LIN_STMESSAGE)
 
-#define csp_usart_lin_start_resp(ptUsartBase)						(ptUsartBase->CR |= LIN_STRESP)
+#define csp_usart_lin_start_resp(USARTx)						(USARTx->CR |= LIN_STRESP)
 
-#define csp_usart_lin_start_head(ptUsartBase)						(ptUsartBase->CR |= LIN_STHEADER)
+#define csp_usart_lin_start_head(USARTx)						(USARTx->CR |= LIN_STHEADER)
 
-#define csp_usart_lin_set_ver(ptUsartBase,eVer)						(ptUsartBase->MR = (ptUsartBase->MR & ~LIN_VER_MSK) | (eVer << LIN_VER_POS))
+#define csp_usart_lin_set_ver(USARTx,eVer)						(USARTx->MR = (USARTx->MR & ~LIN_VER_MSK) | (eVer << LIN_VER_POS))		///\param eVer \ref lin_ver_e
 
-#define csp_usart_lin_enable(ptUsartBase)							(ptUsartBase->MR |= LIN_EN)
+#define csp_usart_lin_enable(USARTx)							(USARTx->MR |= LIN_EN)
 
-#define csp_usart_lin_disable(ptUsartBase)							(ptUsartBase->MR &= ~LIN_EN_MSK)
+#define csp_usart_lin_disable(USARTx)							(USARTx->MR &= ~LIN_EN_MSK)
 
-#define csp_usart_lin_get_ver(ptUsartBase)							((uint8_t)((ptUsartBase->MR & LIN_VER_MSK) >> LIN_VER_POS))
+#define csp_usart_lin_get_ver(USARTx)							((uint8_t)((USARTx->MR & LIN_VER_MSK) >> LIN_VER_POS))
 
-#define csp_usart_lin_set_id_num(ptUsartBase,byId,byNum,byVer)		(byVer ? \
-																	(ptUsartBase->LIR = (ptUsartBase->LIR & ~(LIN_NDATA_V20_MSK | LIN_ID20_MSK)) | LIN_NDATA_V20(byNum) | LIN_ID20(byId))\
-																	:(ptUsartBase->LIR = (ptUsartBase->LIR & ~(LIN_NDATA_V12_MSK | LIN_ID12_MSK)) | LIN_NDATA_V12(byNum) | LIN_ID12(byId)) )
+#define csp_usart_lin_set_id_num(USARTx,byId,byNum,byVer)		(byVer ? \
+																	(USARTx->LIR = (USARTx->LIR & ~(LIN_NDATA_V20_MSK | LIN_ID20_MSK)) | LIN_NDATA_V20(byNum) | LIN_ID20(byId))\
+																	:(USARTx->LIR = (USARTx->LIR & ~(LIN_NDATA_V12_MSK | LIN_ID12_MSK)) | LIN_NDATA_V12(byNum) | LIN_ID12(byId)) )
 																		
-#define csp_usart_lin_format(ptUsartBase,eChkSel,hwWkUpTm)			(ptUsartBase->LIR = (ptUsartBase->LIR & ~(LIN_CHK_MSK | LIN_WKUP_TIME_MSK)) | (eChkSel << LIN_CHK_POS) | LIN_WKUP_TIME(hwWkUpTm))
+#define csp_usart_lin_format(USARTx,eChkSel,hwWkUpTm)			(USARTx->LIR = (USARTx->LIR & ~(LIN_CHK_MSK | LIN_WKUP_TIME_MSK)) | (eChkSel << LIN_CHK_POS) | LIN_WKUP_TIME(hwWkUpTm))		///\param eChkSel \ref lin_chk_e
 
-#define csp_usart_lin_set_dfwr0(ptUsartBase,wVal)					(ptUsartBase->DFWR0 = wVal)	
+#define csp_usart_lin_set_dfwr0(USARTx,wVal)					(USARTx->DFWR0 = wVal)	
 
-#define csp_usart_lin_set_dfwr1(ptUsartBase,wVal)					(ptUsartBase->DFWR1 = wVal)
+#define csp_usart_lin_set_dfwr1(USARTx,wVal)					(USARTx->DFWR1 = wVal)
 
-#define csp_usart_lin_get_dfrr0(ptUsartBase)						(ptUsartBase->DFRR0)
+#define csp_usart_lin_get_dfrr0(USARTx)							(USARTx->DFRR0)
 
-#define csp_usart_lin_get_dfrr1(ptUsartBase)						(ptUsartBase->DFRR1)
+#define csp_usart_lin_get_dfrr1(USARTx)							(USARTx->DFRR1)
 
-#define csp_usart_lin_set_sblr(ptUsartBase,byVal)					(ptUsartBase->SBLR = LIN_SYNC_BRK(byVal))
+#define csp_usart_lin_set_sblr(USARTx,byVal)					(USARTx->SBLR = LIN_SYNC_BRK(byVal))
 
-#define csp_usart_lin_set_lcp1(ptUsartBase,pbyData)					(ptUsartBase->LCP1 = (uint32_t)(pbyData[0] | (pbyData[1] << 8) | (pbyData[2] << 16) | (pbyData[3] << 24)))
+#define csp_usart_lin_set_lcp1(USARTx,pbyData)					(USARTx->LCP1 = (uint32_t)(pbyData[0] | (pbyData[1] << 8) | (pbyData[2] << 16) | (pbyData[3] << 24)))
 
-#define csp_usart_lin_set_lcp2(ptUsartBase,pbyData)					(ptUsartBase->LCP2 = (uint32_t)(pbyData[0] | (pbyData[1] << 8) | (pbyData[2] << 16) | (pbyData[3] << 24)))
+#define csp_usart_lin_set_lcp2(USARTx,pbyData)					(USARTx->LCP2 = (uint32_t)(pbyData[0] | (pbyData[1] << 8) | (pbyData[2] << 16) | (pbyData[3] << 24)))
 
 
 #endif

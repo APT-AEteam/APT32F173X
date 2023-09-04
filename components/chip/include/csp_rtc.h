@@ -1,6 +1,6 @@
 /***********************************************************************//** 
  * \file  csp_rtc.h
- * \brief RTC description and static inline functions at register level 
+ * \brief RTC description and #define functions at register level 
  * \copyright Copyright (C) 2015-2020 @ APTCHIP
  * <table>
  * <tr><th> Date  <th>Version  <th>Author  <th>Description
@@ -30,9 +30,9 @@
 
  typedef struct
  {
-   __IOM uint32_t TIMR;  		//0x0000	Time Control Register
-   __IOM uint32_t DATR;		//0x0004	Date Control Register
-   __IOM uint32_t CR;  		//0x0008	Control Register
+   __IOM uint32_t 	TIMR;  		//0x0000	Time Control Register
+   __IOM uint32_t 	DATR;		//0x0004	Date Control Register
+   __IOM uint32_t 	CR;  		//0x0008	Control Register
    __IOM uint32_t	CCR;  		//0x000C	Clock Control register
    __IOM uint32_t	ALRA;		//0x0010	Alarm A
    __IOM uint32_t	ALRB;		//0x0014	Alarm B
@@ -295,340 +295,145 @@ typedef enum {
 #define RTC_EV1SWF  (0x2)
 
 
-/// static inline functions
-static inline void csp_rtc_clk_enable(csp_rtc_t *ptRtcBase, bool bEnable)
-{
-	ptRtcBase->KEY = 0xCA53;
-	if (bEnable)
-		ptRtcBase->CCR |= RTC_CLKEN;
-	else
-		ptRtcBase->CCR &= (~RTC_CLKEN);
-	ptRtcBase->KEY = 0x0;
-	while(ptRtcBase->CR & RTC_BSY);
-}
+/// #define functions
+#define csp_rtc_clk_enable(RTCx)						(RTCx->CCR |= RTC_CLKEN)			///key is needed!
 
-static inline void csp_rtc_wr_key(csp_rtc_t *ptRtcBase)
-{
-	ptRtcBase->KEY = 0xCA53;
-}
+#define csp_rtc_clk_disable(RTCx)						(RTCx->CCR &= (~RTC_CLKEN))			///key is needed!
+															
+#define csp_rtc_update_status(RTCx)						(RTCx->CR & RTC_BSY)
 
-static inline void csp_rtc_ers_key(csp_rtc_t *ptRtcBase)
-{
-	ptRtcBase->KEY = 0x0;
-}
+#define csp_rtc_set_key(RTCx)							(RTCx->KEY = 0xCA53)
 
+#define csp_rtc_clr_key(RTCx)							(RTCx->KEY = 0x0)
 
-static inline void csp_rtc_set_fmt(csp_rtc_t *ptRtcBase, rtc_fmt_e bFmt)
-{
-	ptRtcBase->KEY = 0xCA53;
-	ptRtcBase->CR = (ptRtcBase->CR & (~RTC_FMT_MSK)) | (bFmt << RTC_FMT_POS);
-	ptRtcBase->KEY = 0x0;
-	while(ptRtcBase->CR & RTC_BSY);
-}
-static inline rtc_fmt_e csp_rtc_get_fmt(csp_rtc_t *ptRtcBase)
-{
-	return (((ptRtcBase->CR) & RTC_FMT_MSK) >> RTC_FMT_POS);
-}
+#define csp_rtc_set_fmt(RTCx,bFmt)						(RTCx->CR = (RTCx->CR & (~RTC_FMT_MSK)) | (bFmt << RTC_FMT_POS))	///key is needed!
+											
+#define csp_rtc_get_fmt(RTCx)							((rtc_fmt_e)((RTCx->CR) & RTC_FMT_MSK) >> RTC_FMT_POS)
 
-static inline void csp_rtc_debug_enable(csp_rtc_t *ptRtcBase, bool bEnable)
-{
-	ptRtcBase->KEY = 0xCA53;
-	ptRtcBase->CCR = (ptRtcBase->CCR &(~RTC_DBGEN)) | (bEnable << 23);
-	ptRtcBase->KEY = 0x0;
-}
+#define csp_rtc_debug_enable(RTCx)						(RTCx->CCR = (RTCx->CCR &(~RTC_DBGEN)) | (1 << 23))  	///key is needed!
 
-static inline void csp_rtc_rb_enable(csp_rtc_t *ptRtcBase, bool bEnable)
-{
-	//while(ptRtcBase->CR & RTC_BSY);
-	ptRtcBase->KEY = 0xCA53;
-	ptRtcBase->CR = (ptRtcBase->CR &(~RTC_RBEN)) | (bEnable << 16);
-	ptRtcBase->KEY = 0x0;
-	while(ptRtcBase->CR & RTC_BSY);
-}
+#define csp_rtc_debug_disable(RTCx)						(RTCx->CCR = (RTCx->CCR &(~RTC_DBGEN)) | (0 << 23))		///key is needed!
+												
+#define csp_rtc_rb_enable(RTCx)							(RTCx->CR = (RTCx->CR &(~RTC_RBEN)) | (1 << 16))		///key is needed!
+												
+#define csp_rtc_rb_disable(RTCx)						(RTCx->CR = (RTCx->CR &(~RTC_RBEN)) | (0 << 16))		///key is needed!
 
-static inline void csp_rtc_set_cprd(csp_rtc_t *ptRtcBase, rtc_cprd_e eCprd)
-{
-	//while(ptRtcBase->CR & RTC_BSY);
-	ptRtcBase->KEY = 0xCA53;
-	ptRtcBase->CR  = (ptRtcBase->CR & (~RTC_CPRD_MSK)) | (eCprd << RTC_CPRD_POS) ;
-	ptRtcBase->KEY = 0x0;
-	while(ptRtcBase->CR & RTC_BSY);
-}
+#define csp_rtc_set_cprd(RTCx,eCprd)					(RTCx->CR  = (RTCx->CR & (~RTC_CPRD_MSK)) | (eCprd << RTC_CPRD_POS))	///key is needed!  \param eCprd \ref rtc_cprd_e
 
-static inline void csp_rtc_set_osel(csp_rtc_t *ptRtcBase, rtc_osel_e eOsel)
-{
-	//while(ptRtcBase->CR & RTC_BSY);
-	ptRtcBase->KEY = 0xCA53;
-	ptRtcBase->CR  = (ptRtcBase->CR & (~RTC_OSEL_MSK)) | (eOsel << RTC_OSEL_POS) ;
-	ptRtcBase->KEY = 0x0;
-	while(ptRtcBase->CR & RTC_BSY);
-}
+#define csp_rtc_set_osel(RTCx,eOsel)					(RTCx->CR  = (RTCx->CR & (~RTC_OSEL_MSK)) | (eOsel << RTC_OSEL_POS))  	///key is needed!  \param eOsel \ref rtc_osel_e
 
-static inline void csp_rtc_stop(csp_rtc_t *ptRtcBase)
-{
-	//while(ptRtcBase->CR & RTC_BSY);
-	ptRtcBase->KEY = 0xCA53;
-	ptRtcBase->CR |= RTC_INIT;
-	ptRtcBase->KEY = 0x0;
-	while(ptRtcBase->CR & RTC_BSY);
-}
+#define csp_rtc_stop(RTCx)								(RTCx->CR |= RTC_INIT)			///key is needed!
 
-static inline void csp_rtc_run(csp_rtc_t *ptRtcBase)
-{
-	//while(ptRtcBase->CR & RTC_BSY);
-	
-	ptRtcBase->KEY = 0xCA53;
-	ptRtcBase->CR &= (~RTC_INIT);
-	ptRtcBase->KEY = 0x0;
-	while(ptRtcBase->CR & RTC_BSY);
-}
+#define csp_rtc_run(RTCx)								(RTCx->CR &= (~RTC_INIT))		///key is needed!
 
-static inline void csp_rtc_reset(csp_rtc_t *ptRtcBase)
-{
+#define csp_rtc_reset(RTCx)								(RTCx->CR |= RTC_RESET)
 
-	ptRtcBase->CR |= RTC_RESET;
-}
+#define csp_rtc_is_busy(RTCx)							((bool)((RTCx->CR & RTC_BSY) >> 1))
 
-static inline bool csp_rtc_is_busy(csp_rtc_t *ptRtcBase)
-{
-	return ((ptRtcBase->CR & RTC_BSY) >> 1);
-}
+#define csp_rtc_is_running(RTCx)						((bool)(!(RTCx->CR & RTC_INIT)))
 
-static inline bool csp_rtc_is_running(csp_rtc_t *ptRtcBase)
-{
-	return (!(ptRtcBase->CR & RTC_INIT));
-}
+#define csp_rtc_set_time_hour(RTCx,bPm,byVal)			(RTCx->TIMR = (RTCx->TIMR  & (~RTC_HOR_MSK) & (~RTC_PM_MSK)) |(byVal << RTC_HORU_POS) | ((bool)bPm << RTC_PM_POS))
+
+#define csp_rtc_set_time_min(RTCx,byVal)				(RTCx->TIMR = (RTCx->TIMR  & (~RTC_MIN_MSK)) | (byVal << RTC_MINU_POS))
+
+#define csp_rtc_set_time_sec(RTCx,byVal)				(RTCx->TIMR = (RTCx->TIMR  & (~RTC_SEC_MSK)) |  (byVal << RTC_SECU_POS))
+
+#define csp_rtc_set_date_year(RTCx,byVal)				(RTCx->DATR = (RTCx->DATR  & (~RTC_YEA_MSK)) |  (byVal << RTC_YEAU_POS))
+
+#define csp_rtc_set_date_mon(RTCx,byVal)				(RTCx->DATR = (RTCx->DATR  & (~RTC_MON_MSK)) |  (byVal << RTC_MONU_POS))
+
+#define csp_rtc_set_date_wday(RTCx,byVal)				(RTCx->DATR = (RTCx->DATR  & (~RTC_WKD_MSK)) | (byVal << RTC_WKD_POS))
+
+#define csp_rtc_set_date_day(RTCx,byVal)				(RTCx->DATR = (RTCx->DATR  & (~RTC_DAY_MSK)) |  (byVal << RTC_DAYU_POS))
+
+#define csp_rtc_set_date_week(RTCx,byVal)				(RTCx->DATR = (RTCx->DATR  & (~RTC_WKD_MSK)) | (byVal << RTC_WKD_POS))
+
+#define csp_rtc_read_year(RTCx)							((uint8_t)((RTCx->DATR & RTC_YEAT_MSK) >> RTC_YEAT_POS) * 10 + ((RTCx->DATR & RTC_YEAU_MSK) >> RTC_YEAU_POS))
+
+#define csp_rtc_read_mon(RTCx)							((uint8_t)((RTCx->DATR & RTC_MONT_MSK) >> RTC_MONT_POS) * 10 + ((RTCx->DATR & RTC_MONU_MSK) >> RTC_MONU_POS))
+
+#define csp_rtc_read_mday(RTCx)							((uint8_t)((RTCx->DATR & RTC_DAYT_MSK) >> RTC_DAYT_POS) * 10 + ((RTCx->DATR & RTC_DAYU_MSK) >> RTC_DAYU_POS))
+
+#define csp_rtc_read_wday(RTCx)							((uint8_t)((RTCx->DATR & RTC_WKD_MSK) >> RTC_WKD_POS))
+
+#define csp_rtc_read_hour(RTCx)							((uint8_t)((RTCx->TIMR & RTC_HORT_MSK) >> RTC_HORT_POS) * 10 + ((RTCx->TIMR & RTC_HORU_MSK) >> RTC_HORU_POS))
+
+#define csp_rtc_read_pm(RTCx)							((uint8_t)((RTCx->TIMR & RTC_PM_MSK) >> RTC_PM_POS))
+
+#define csp_rtc_read_min(RTCx)							((uint8_t)((RTCx->TIMR & RTC_MINT_MSK) >> RTC_MINT_POS) * 10 + ((RTCx->TIMR & RTC_MINU_MSK) >> RTC_MINU_POS))
+
+#define csp_rtc_read_sec(RTCx)							((uint8_t)((RTCx->TIMR & RTC_SECT_MSK) >> RTC_SECT_POS) * 10 + ((RTCx->TIMR & RTC_SECU_MSK) >> RTC_SECU_POS))
+
+#define csp_rtc_alm_enable(RTCx,byAlm)					(RTCx->CR |= 0x1 << (3 + byAlm))		///key is needed!
+														
+#define csp_rtc_alm_disable(RTCx,byAlm)					(RTCx->CR &= ~(0x1 << (3 + byAlm)))		///key is needed!												
+
+#define csp_rtc_alm_set_day(RTCx,byAlm,byVal)			((byAlm == RTC_ALMA)?\
+															(RTCx->ALRA = (RTCx->ALRA & (~RTC_ALM_DAY_MSK)) |(byVal << RTC_ALM_DAYU_POS)):\
+															(RTCx->ALRB = (RTCx->ALRB & (~RTC_ALM_DAY_MSK))|(byVal << RTC_ALM_DAYU_POS)))
+
+#define csp_rtc_alm_set_hour(RTCx,byAlm,byPm,byVal)		((byAlm == RTC_ALMA)?\
+															(RTCx->ALRA = (RTCx->ALRA & (~RTC_ALM_HOR_MSK) & (~RTC_ALM_PM)) | (byVal << RTC_ALM_HORU_POS) | (byPm<<22)):\
+															(RTCx->ALRB = (RTCx->ALRB & (~RTC_ALM_HOR_MSK) & (~RTC_ALM_PM)) |  (byVal << RTC_ALM_HORU_POS) | (byPm<<22)))
 
 
-static inline void csp_rtc_set_time_hour(csp_rtc_t *ptRtcBase, bool bPm, uint8_t byVal)
-{
-	ptRtcBase->TIMR = (ptRtcBase->TIMR  & (~RTC_HOR_MSK) & (~RTC_PM_MSK)) |(byVal << RTC_HORU_POS) | (bPm << RTC_PM_POS);
-}
+#define csp_rtc_alm_set_min(RTCx,byAlm,byVal)			((byAlm == RTC_ALMA)?\
+															(RTCx->ALRA = (RTCx->ALRA & (~RTC_ALM_MIN_MSK)) | (byVal << RTC_ALM_MINU_POS)):\
+															(RTCx->ALRB = (RTCx->ALRB & (~RTC_ALM_MIN_MSK)) |  (byVal << RTC_ALM_MINU_POS)))
 
-static inline void csp_rtc_set_time_min(csp_rtc_t *ptRtcBase, uint8_t byVal)
-{
-	ptRtcBase->TIMR = (ptRtcBase->TIMR  & (~RTC_MIN_MSK)) | (byVal << RTC_MINU_POS);
-}
+#define csp_rtc_alm_set_sec(RTCx,byAlm,byVal)			((byAlm == RTC_ALMA)?\
+															(RTCx->ALRA = (RTCx->ALRA & (~RTC_ALM_SEC_MSK)) | (byVal << RTC_ALM_SECU_POS)):\
+															(RTCx->ALRB = (RTCx->ALRB & (~RTC_ALM_SEC_MSK)) | (byVal << RTC_ALM_SECU_POS)))
 
-static inline void csp_rtc_set_time_sec(csp_rtc_t *ptRtcBase, uint8_t byVal)
-{
-	ptRtcBase->TIMR = (ptRtcBase->TIMR  & (~RTC_SEC_MSK)) |  (byVal << RTC_SECU_POS);
-}
+#define csp_rtc_alm_read_mday(RTCx,byAlm)				((byAlm == RTC_ALMA)?\
+															(((RTCx->ALRA & RTC_ALM_DAYT_MSK) >> RTC_ALM_DAYT_POS) * 10 + ((RTCx->ALRA & RTC_ALM_DAYU_MSK) >> RTC_ALM_DAYU_POS)):\
+															(((RTCx->ALRB & RTC_ALM_DAYT_MSK) >> RTC_ALM_DAYT_POS) * 10 + ((RTCx->ALRB & RTC_ALM_DAYU_MSK) >> RTC_ALM_DAYU_POS)))
 
-static inline void csp_rtc_set_date_year(csp_rtc_t *ptRtcBase, uint8_t byVal)
-{
-	ptRtcBase->DATR = (ptRtcBase->DATR  & (~RTC_YEA_MSK)) |  (byVal << RTC_YEAU_POS);
-}
+#define csp_rtc_alm_read_wday(RTCx,byAlm)				((byAlm == RTC_ALMA)?\
+															(uint8_t)((RTCx->ALRA & RTC_ALM_DAYU_MSK) >> RTC_ALM_DAYU_POS):\
+															(uint8_t)((RTCx->ALRB & RTC_ALM_DAYU_MSK) >> RTC_ALM_DAYU_POS))
 
-static inline void csp_rtc_set_date_mon(csp_rtc_t *ptRtcBase,  uint8_t byVal)
-{
-	ptRtcBase->DATR = (ptRtcBase->DATR  & (~RTC_MON_MSK)) |  (byVal << RTC_MONU_POS);
-}
+#define csp_rtc_alm_read_hour(RTCx,byAlm)				((byAlm == RTC_ALMA)?\
+															(uint8_t)((RTCx->ALRA & RTC_ALM_HORT_MSK) >> RTC_ALM_HORT_POS) * 10 + ((RTCx->ALRA & RTC_ALM_HORU_MSK) >> RTC_ALM_HORU_POS):\
+															(uint8_t)((RTCx->ALRB & RTC_ALM_HORT_MSK) >> RTC_ALM_HORT_POS) * 10 + ((RTCx->ALRB & RTC_ALM_HORU_MSK) >> RTC_ALM_HORU_POS))
 
-static inline void csp_rtc_set_date_wday(csp_rtc_t *ptRtcBase, uint8_t byVal)
-{
-	ptRtcBase->DATR = (ptRtcBase->DATR  & (~RTC_WKD_MSK)) | (byVal << RTC_WKD_POS);
-}
+#define csp_rtc_alm_read_min(RTCx,byAlm)				((byAlm == RTC_ALMA)?\
+															(uint8_t)((RTCx->ALRA & RTC_ALM_MINT_MSK) >> RTC_ALM_MINT_POS) * 10 + ((RTCx->ALRA & RTC_ALM_MINU_MSK) >> RTC_ALM_MINU_POS):\
+															(uint8_t)((RTCx->ALRB & RTC_ALM_MINT_MSK) >> RTC_ALM_MINT_POS) * 10 + ((RTCx->ALRB & RTC_ALM_MINU_MSK) >> RTC_ALM_MINU_POS))
 
-static inline void csp_rtc_set_date_day(csp_rtc_t *ptRtcBase, uint8_t byVal)
-{
-	ptRtcBase->DATR = (ptRtcBase->DATR  & (~RTC_DAY_MSK)) |  (byVal << RTC_DAYU_POS);
-}
+#define csp_rtc_alm_read_sec(RTCx,byAlm)				((byAlm == RTC_ALMA)?\
+															(uint8_t)((RTCx->ALRA & RTC_ALM_SECT_MSK) >> RTC_ALM_SECT_POS) * 10 + ((RTCx->ALRA & RTC_ALM_SECU_MSK) >> RTC_ALM_SECU_POS):\
+															(uint8_t)((RTCx->ALRB & RTC_ALM_SECT_MSK) >> RTC_ALM_SECT_POS) * 10 + ((RTCx->ALRB & RTC_ALM_SECU_MSK) >> RTC_ALM_SECU_POS))
 
-static inline void csp_rtc_set_date_week(csp_rtc_t *ptRtcBase, uint8_t byVal)
-{
-	ptRtcBase->DATR = (ptRtcBase->DATR  & (~RTC_WKD_MSK)) | (byVal << RTC_WKD_POS);
-}
+#define csp_rtc_alm_read_dmsk(RTCx,byAlm)				((byAlm == RTC_ALMA)?\
+															(bool)( (RTCx->ALRA & RTC_ALM_DMSK_MSK) >> RTC_ALM_DMSK_POS):\
+															(bool)( (RTCx->ALRB & RTC_ALM_DMSK_MSK) >> RTC_ALM_DMSK_POS))
 
-static inline uint8_t csp_rtc_read_year(csp_rtc_t *ptRtcBase)
-{
-	return (  ((ptRtcBase->DATR & RTC_YEAT_MSK) >> RTC_YEAT_POS) * 10 + ((ptRtcBase->DATR & RTC_YEAU_MSK) >> RTC_YEAU_POS)  );
-}
+#define csp_rtc_alm_read_wdsel(RTCx,byAlm)				((byAlm == RTC_ALMA)?\
+															(bool)( (RTCx->ALRA & RTC_ALM_WDSEL_MSK) >> RTC_ALM_WDSEL_POS):\
+															(bool)( (RTCx->ALRB & RTC_ALM_WDSEL_MSK) >> RTC_ALM_WDSEL_POS))
 
-static inline uint8_t csp_rtc_read_mon(csp_rtc_t *ptRtcBase)
-{
-	return (  ((ptRtcBase->DATR & RTC_MONT_MSK) >> RTC_MONT_POS) * 10 + ((ptRtcBase->DATR & RTC_MONU_MSK) >> RTC_MONU_POS)  );
-}
-
-static inline uint8_t csp_rtc_read_mday(csp_rtc_t *ptRtcBase)
-{
-	return (  ((ptRtcBase->DATR & RTC_DAYT_MSK) >> RTC_DAYT_POS) * 10 + ((ptRtcBase->DATR & RTC_DAYU_MSK) >> RTC_DAYU_POS)  );
-}
-
-static inline uint8_t csp_rtc_read_wday(csp_rtc_t *ptRtcBase)
-{
-	return  ((ptRtcBase->DATR & RTC_WKD_MSK) >> RTC_WKD_POS) ;
-}
-
-static inline uint8_t csp_rtc_read_hour(csp_rtc_t *ptRtcBase)
-{
-	return (  ((ptRtcBase->TIMR & RTC_HORT_MSK) >> RTC_HORT_POS) * 10 + ((ptRtcBase->TIMR & RTC_HORU_MSK) >> RTC_HORU_POS)  );
-}
-
-static inline uint8_t csp_rtc_read_pm(csp_rtc_t *ptRtcBase)
-{
-	return (  ((ptRtcBase->TIMR & RTC_PM_MSK) >> RTC_PM_POS));
-}
-
-static inline uint8_t csp_rtc_read_min(csp_rtc_t *ptRtcBase)
-{
-	return (  ((ptRtcBase->TIMR & RTC_MINT_MSK) >> RTC_MINT_POS) * 10 + ((ptRtcBase->TIMR & RTC_MINU_MSK) >> RTC_MINU_POS)  );
-}
-
-static inline uint8_t csp_rtc_read_sec(csp_rtc_t *ptRtcBase)
-{
-	return (  ((ptRtcBase->TIMR & RTC_SECT_MSK) >> RTC_SECT_POS) * 10 + ((ptRtcBase->TIMR & RTC_SECU_MSK) >> RTC_SECU_POS)  );
-}
-
-static inline void csp_rtc_alm_enable(csp_rtc_t *ptRtcBase, uint8_t byAlm, bool bEnable)
-{
-
-	ptRtcBase->KEY = 0xCA53;
-	if (bEnable)
-		ptRtcBase->CR |= 0x1 << (3 + byAlm);
-	else	
-		ptRtcBase->CR &= ~(0x1 << (3 + byAlm));
-	ptRtcBase->KEY = 0x0;
-	while(ptRtcBase->CR & RTC_BSY);
-}
-
-static inline void csp_rtc_alm_set_day(csp_rtc_t *ptRtcBase, uint8_t byAlm,  uint8_t byVal)
-{
-	if (byAlm == RTC_ALMA)
-		ptRtcBase->ALRA = (ptRtcBase->ALRA & (~RTC_ALM_DAY_MSK)) |   (byVal << RTC_ALM_DAYU_POS);
-	else
-		ptRtcBase->ALRB = (ptRtcBase->ALRB & (~RTC_ALM_DAY_MSK)) |   (byVal << RTC_ALM_DAYU_POS);
-}
-
-static inline void csp_rtc_alm_set_hour(csp_rtc_t *ptRtcBase, uint8_t byAlm, uint8_t byPm, uint8_t byVal)
-{
-	if (byAlm == RTC_ALMA)
-		ptRtcBase->ALRA = (ptRtcBase->ALRA & (~RTC_ALM_HOR_MSK) & (~RTC_ALM_PM)) |  (byVal << RTC_ALM_HORU_POS) | (byPm<<22);
-	else
-		ptRtcBase->ALRB = (ptRtcBase->ALRB & (~RTC_ALM_HOR_MSK) & (~RTC_ALM_PM)) |  (byVal << RTC_ALM_HORU_POS) | (byPm<<22);
-}
-
-static inline void csp_rtc_alm_set_min(csp_rtc_t *ptRtcBase, uint8_t byAlm, uint8_t byVal)
-{
-	if (byAlm == RTC_ALMA)
-		ptRtcBase->ALRA = (ptRtcBase->ALRA & (~RTC_ALM_MIN_MSK)) | (byVal << RTC_ALM_MINU_POS);
-	else
-		ptRtcBase->ALRB = (ptRtcBase->ALRB & (~RTC_ALM_MIN_MSK)) |  (byVal << RTC_ALM_MINU_POS);
-}
-
-static inline void csp_rtc_alm_set_sec(csp_rtc_t *ptRtcBase, uint8_t byAlm,  uint8_t byVal)
-{
-	if (byAlm == RTC_ALMA)
-		ptRtcBase->ALRA = (ptRtcBase->ALRA & (~RTC_ALM_SEC_MSK)) |  (byVal << RTC_ALM_SECU_POS);
-	else
-		ptRtcBase->ALRB = (ptRtcBase->ALRB & (~RTC_ALM_SEC_MSK)) | (byVal << RTC_ALM_SECU_POS);
-}
-
-static inline uint8_t csp_rtc_alm_read_mday(csp_rtc_t *ptRtcBase, uint8_t byAlm)
-{
-	if (byAlm == RTC_ALMA)
-		return (  ((ptRtcBase->ALRA & RTC_ALM_DAYT_MSK) >> RTC_ALM_DAYT_POS) * 10 + ((ptRtcBase->ALRA & RTC_ALM_DAYU_MSK) >> RTC_ALM_DAYU_POS)  );
-	else
-		return (  ((ptRtcBase->ALRB & RTC_ALM_DAYT_MSK) >> RTC_ALM_DAYT_POS) * 10 + ((ptRtcBase->ALRB & RTC_ALM_DAYU_MSK) >> RTC_ALM_DAYU_POS)  );
-}
-
-static inline uint8_t csp_rtc_alm_read_wday(csp_rtc_t *ptRtcBase, uint8_t byAlm)
-{
-	if (byAlm == RTC_ALMA)
-		return (   ((ptRtcBase->ALRA & RTC_ALM_DAYU_MSK) >> RTC_ALM_DAYU_POS)  );
-	else
-		return (  ((ptRtcBase->ALRB & RTC_ALM_DAYU_MSK) >> RTC_ALM_DAYU_POS)  );
-}
-
-static inline uint8_t csp_rtc_alm_read_hour(csp_rtc_t *ptRtcBase, uint8_t byAlm)
-{
-	if (byAlm == RTC_ALMA)
-		return (  ((ptRtcBase->ALRA & RTC_ALM_HORT_MSK) >> RTC_ALM_HORT_POS) * 10 + ((ptRtcBase->ALRA & RTC_ALM_HORU_MSK) >> RTC_ALM_HORU_POS)  );
-	else
-		return (  ((ptRtcBase->ALRB & RTC_ALM_HORT_MSK) >> RTC_ALM_HORT_POS) * 10 + ((ptRtcBase->ALRB & RTC_ALM_HORU_MSK) >> RTC_ALM_HORU_POS)  );
-}
-
-static inline uint8_t csp_rtc_alm_read_min(csp_rtc_t *ptRtcBase, uint8_t byAlm)
-{
-	if (byAlm == RTC_ALMA)
-		return (  ((ptRtcBase->ALRA & RTC_ALM_MINT_MSK) >> RTC_ALM_MINT_POS) * 10 + ((ptRtcBase->ALRA & RTC_ALM_MINU_MSK) >> RTC_ALM_MINU_POS)  );
-	else
-		return (  ((ptRtcBase->ALRB & RTC_ALM_MINT_MSK) >> RTC_ALM_MINT_POS) * 10 + ((ptRtcBase->ALRB & RTC_ALM_MINU_MSK) >> RTC_ALM_MINU_POS)  );
-}
-
-static inline uint8_t csp_rtc_alm_read_sec(csp_rtc_t *ptRtcBase, uint8_t byAlm)
-{
-	if (byAlm == RTC_ALMA)
-		return (  ((ptRtcBase->ALRA & RTC_ALM_SECT_MSK) >> RTC_ALM_SECT_POS) * 10 + ((ptRtcBase->ALRA & RTC_ALM_SECU_MSK) >> RTC_ALM_SECU_POS)  );
-	else
-		return (  ((ptRtcBase->ALRB & RTC_ALM_SECT_MSK) >> RTC_ALM_SECT_POS) * 10 + ((ptRtcBase->ALRB & RTC_ALM_SECU_MSK) >> RTC_ALM_SECU_POS)  );
-}
-
-static inline bool csp_rtc_alm_read_dmsk(csp_rtc_t *ptRtcBase, uint8_t byAlm)
-{
-	if (byAlm == RTC_ALMA)
-		return ( (ptRtcBase->ALRA & RTC_ALM_DMSK_MSK) >> RTC_ALM_DMSK_POS);
-	else
-		return ( (ptRtcBase->ALRB & RTC_ALM_DMSK_MSK) >> RTC_ALM_DMSK_POS);
-}
-
-static inline bool csp_rtc_alm_read_wdsel(csp_rtc_t *ptRtcBase, uint8_t byAlm)
-{
-	if (byAlm == RTC_ALMA)
-		return ( (ptRtcBase->ALRA & RTC_ALM_WDSEL_MSK) >> RTC_ALM_WDSEL_POS);
-	else
-		return ( (ptRtcBase->ALRB & RTC_ALM_WDSEL_MSK) >> RTC_ALM_WDSEL_POS);
-}
+#define csp_rtc_alm_set_mode(RTCx,byAlm,bWdsel,\
+		bDmsk,bHmsk,bMmsk,bSmsk)						((byAlm == RTC_ALMA)?\
+															(RTCx->ALRA = (RTCx->ALRA & (~RTC_ALM_MODE)) | (bool)bWdsel << RTC_ALM_WDSEL_POS |((bool)bDmsk << RTC_ALM_DMSK_POS) | ((bool)bHmsk << RTC_ALM_HMSK_POS) \
+																| ((bool)bMmsk << RTC_ALM_MINU_POS) |((bool)bSmsk << RTC_ALM_SMSK_POS)):\
+															(RTCx->ALRB = (RTCx->ALRB & (~RTC_ALM_MODE)) | (bool)bWdsel << RTC_ALM_WDSEL_POS |((bool)bDmsk << RTC_ALM_DMSK_POS) | ((bool)bHmsk << RTC_ALM_HMSK_POS) \
+																| ((bool)bMmsk << RTC_ALM_MINU_POS) |((bool)bSmsk << RTC_ALM_SMSK_POS)))    ///key is needed!
 
 
-static inline void csp_rtc_alm_set_mode(csp_rtc_t *ptRtcBase, uint8_t byAlm, bool bWdsel, bool bDmsk, bool bHmsk, bool bMmsk, bool bSmsk)
-{
-	ptRtcBase->KEY = 0xCA53;
-	if (byAlm == RTC_ALMA)
-		ptRtcBase->ALRA = (ptRtcBase->ALRA & (~RTC_ALM_MODE)) | bWdsel << RTC_ALM_WDSEL_POS |(bDmsk << RTC_ALM_DMSK_POS) | (bHmsk << RTC_ALM_HMSK_POS) | (bMmsk << RTC_ALM_MINU_POS) |(bSmsk << RTC_ALM_SMSK_POS);
-	else
-		ptRtcBase->ALRB = (ptRtcBase->ALRB & (~RTC_ALM_MODE)) | bWdsel << RTC_ALM_WDSEL_POS |(bDmsk << RTC_ALM_DMSK_POS) | (bHmsk << RTC_ALM_HMSK_POS) | (bMmsk << RTC_ALM_MINU_POS) |(bSmsk << RTC_ALM_SMSK_POS);
-	ptRtcBase->KEY = 0x0;
-}
+#define csp_rtc_int_enable(RTCx,eInt)					(RTCx->IMCR |= eInt)	///\param eInt \ref rtc_int_e
 
-static inline void csp_rtc_int_enable(csp_rtc_t *ptRtcBase, rtc_int_e eInt, bool bEnable)
-{
-	//ptRtcBase->KEY = 0xCA53;	
-	if (bEnable)
-		ptRtcBase->IMCR |= eInt;
-	else
-		ptRtcBase->IMCR &= ~eInt;
-	//ptRtcBase->KEY = 0x0;
-}
+#define csp_rtc_int_disable(RTCx,eInt)					(RTCx->IMCR &= ~eInt)	///\param eInt \ref rtc_int_e
+
+#define csp_rtc_clr_isr(RTCx,eInt)						(RTCx->ICR = eInt)		///\param eInt \ref rtc_int_e
+
+#define csp_rtc_get_isr(RTCx)							(RTCx->MISR)
+
+#define csp_rtc_get_imcr(RTCx)							(RTCx->IMCR)
+
+#define csp_rtc_swf_trg(RTCx,byTrg)						(RTCx -> EVSWF = 0x1 << byTrg)
 
 
-static inline void csp_rtc_clr_isr(csp_rtc_t *ptRtcBase, rtc_int_e eInt)
-{
-	ptRtcBase->ICR = eInt;
-}
-
-static inline uint32_t csp_rtc_get_isr(csp_rtc_t *ptRtcBase)
-{
-	return (ptRtcBase->MISR);
-}
-
-static inline uint32_t csp_rtc_get_imcr(csp_rtc_t *ptRtcBase)
-{
-	return (ptRtcBase->IMCR);
-}
-static inline void csp_rtc_swf_trg(csp_rtc_t *ptRtcBase, uint8_t byTrg)
-{
-	ptRtcBase -> EVSWF = 0x1 << byTrg;
-}
-
-void csp_rtc_clk_config(csp_rtc_t *ptRtcBase, rtc_clksrc_e eOsc);
-void csp_rtc_init(csp_rtc_t *ptRtcBase, uint8_t byOsc);
-csp_error_t csp_rtc_set_date(csp_rtc_t *ptRtcBase, uint8_t byYear, uint8_t byMon, uint8_t byWday, uint8_t byDay);
-csp_error_t csp_rtc_set_time(csp_rtc_t *ptRtcBase, bool bPm, uint8_t byHor, uint8_t byMin,uint8_t bySec);
-csp_error_t csp_rtc_alm_set(csp_rtc_t *ptRtcBase, uint8_t byAlm, uint8_t byDay, uint8_t byPm, uint8_t byHor, uint8_t byMin,uint8_t bySec);
-void csp_rtc_alm_reset(csp_rtc_t *ptRtcBase, uint8_t byAlm);
-csp_error_t csp_rtc_set_trgsrc(csp_rtc_t *ptRtcBase, uint8_t byTrg, csp_rtc_trgsel_e eSrc);
-csp_error_t csp_rtc_set_trgprd(csp_rtc_t *ptRtcBase, uint8_t byTrg, uint8_t byPrd);
 #endif   /* CSP_EPWM_H */
 
 

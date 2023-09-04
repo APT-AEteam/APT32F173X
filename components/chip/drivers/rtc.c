@@ -45,8 +45,11 @@ void csi_rtc_init(csp_rtc_t *ptRtc, csi_rtc_config_t *tConfig)
 	uint16_t hwDivs = 0;
 	
 	soc_clk_enable(RTC_SYS_CLK);
-		
+	
+	csp_rtc_set_key(ptRtc);		
 	csp_rtc_stop(ptRtc);
+	csp_rtc_clr_key(ptRtc);
+	while(csp_rtc_update_status(ptRtc));
 	
 	switch (tConfig->byClkSrc)
 	{ 
@@ -85,7 +88,7 @@ void csi_rtc_init(csp_rtc_t *ptRtc, csi_rtc_config_t *tConfig)
 			}			
 			break;
 		case (RTC_EMOSC_DIV4):
-			csi_emosc_enable(EMOSC_VALUE); //EMOSC_VALUE 值在board_config.h 文件定义
+			csi_emosc_enable(EMOSC_VALUE); // EMOSC_VALUE is defined in "board_config.h "
 			byDiva = 99;                   //外部主晶振24MHz，如果不为12MHz请根据实际晶振大小再计算
 			hwDivs = 29999;                //外部主晶振24MHz，如果不为12MHz请根据实际晶振大小再计算
 			break;
@@ -93,19 +96,25 @@ void csi_rtc_init(csp_rtc_t *ptRtc, csi_rtc_config_t *tConfig)
 			break;
 	}
 	
-	ptRtc->KEY = 0xCA53;
+	//ptRtc->KEY = 0xCA53;
+	csp_rtc_set_key(ptRtc);
 	ptRtc->CCR = (ptRtc->CCR & (~RTC_CLKSRC_MSK) & (~RTC_DIVA_MSK)& (~RTC_DIVS_MSK)) | (tConfig->byClkSrc << RTC_CLKSRC_POS)|(byDiva << RTC_DIVA_POS)| (hwDivs << RTC_DIVS_POS) | (RTC_CLKEN);
-	ptRtc->KEY = 0x0;
+	csp_rtc_clr_key(ptRtc);
 	while((ptRtc->CCR & RTC_CLK_STABLE) == 0);
 	
-	//csp_rtc_ers_key(ptRtc);
-	csp_rtc_rb_enable(ptRtc, ENABLE);
+	//csp_rtc_clr_key(ptRtc);
+	csp_rtc_set_key(ptRtc);
+	
+	csp_rtc_rb_enable(ptRtc);
 	csp_rtc_set_fmt(ptRtc, tConfig->byFmt);
-	csp_rtc_alm_enable(ptRtc, RTC_ALMB, DISABLE);
-	csp_rtc_alm_enable(ptRtc, RTC_ALMA, DISABLE);
 	
+	csp_rtc_alm_disable(ptRtc, RTC_ALMB);
+	csp_rtc_alm_disable(ptRtc, RTC_ALMA);
 	
-	csp_rtc_int_enable(ptRtc, RTC_INT_ALMA|RTC_INT_ALMB|RTC_INT_CPRD|RTC_INT_TRGEV0|RTC_INT_TRGEV1, DISABLE);
+	csp_rtc_clr_key(ptRtc);
+	while(csp_rtc_update_status(ptRtc));
+	
+	csp_rtc_int_disable(ptRtc, RTC_INT_ALMA|RTC_INT_ALMB|RTC_INT_CPRD|RTC_INT_TRGEV0|RTC_INT_TRGEV1);
 	csp_rtc_clr_isr(ptRtc, RTC_INT_ALMA|RTC_INT_ALMB|RTC_INT_CPRD|RTC_INT_TRGEV0|RTC_INT_TRGEV1);
 
 
@@ -119,7 +128,20 @@ void csi_rtc_init(csp_rtc_t *ptRtc, csi_rtc_config_t *tConfig)
 */
 void csi_rtc_rb_enable(csp_rtc_t *ptRtc, bool bEnable)
 {
-	csp_rtc_rb_enable(ptRtc, bEnable);
+	if(bEnable)
+	{
+		csp_rtc_set_key(ptRtc);
+		csp_rtc_rb_enable(ptRtc);
+		csp_rtc_clr_key(ptRtc);
+		while(csp_rtc_update_status(ptRtc));
+	}
+	else
+	{
+		csp_rtc_set_key(ptRtc);
+		csp_rtc_rb_disable(ptRtc);
+		csp_rtc_clr_key(ptRtc);
+		while(csp_rtc_update_status(ptRtc));
+	}
 }
 
 /**
@@ -130,7 +152,10 @@ void csi_rtc_rb_enable(csp_rtc_t *ptRtc, bool bEnable)
 */
 void csi_rtc_change_fmt(csp_rtc_t *ptRtc,  rtc_fmt_e eFmt)
 {
+	csp_rtc_set_key(ptRtc);
 	csp_rtc_set_fmt(ptRtc, (rtc_fmt_e)eFmt);
+	csp_rtc_clr_key(ptRtc);
+	while(csp_rtc_update_status(ptRtc));
 }
 
 /**
@@ -140,7 +165,10 @@ void csi_rtc_change_fmt(csp_rtc_t *ptRtc,  rtc_fmt_e eFmt)
 */
 void csi_rtc_start(csp_rtc_t *ptRtc)
 {
+	csp_rtc_set_key(ptRtc);
 	csp_rtc_run(ptRtc);
+	csp_rtc_clr_key(ptRtc);
+	while(csp_rtc_update_status(ptRtc));
 }
 
 
@@ -151,7 +179,10 @@ void csi_rtc_start(csp_rtc_t *ptRtc)
 */
 void csi_rtc_stop(csp_rtc_t *ptRtc)
 {
+	csp_rtc_set_key(ptRtc);		
 	csp_rtc_stop(ptRtc);
+	csp_rtc_clr_key(ptRtc);
+	while(csp_rtc_update_status(ptRtc));
 }
 
 /**
@@ -186,9 +217,11 @@ csi_error_t csi_rtc_set_time(csp_rtc_t *ptRtc, csi_rtc_time_t *ptRtcTime)
             break;
 		
         }
-		csp_rtc_stop(ptRtc);
 		
-	
+		csp_rtc_set_key(ptRtc);		
+		csp_rtc_stop(ptRtc);
+		csp_rtc_clr_key(ptRtc);
+		while(csp_rtc_update_status(ptRtc));
 		
 		ptRtcTime->iWday = get_week_by_date((struct tm *)ptRtcTime);
 		
@@ -273,20 +306,29 @@ csi_error_t csi_rtc_set_alarm(csp_rtc_t *ptRtc, uint8_t byAlm, uint8_t byMode, c
 	switch (byAlm)
 	{
 		case (RTC_ALMA): 	csp_rtc_clr_isr(ptRtc, RTC_INT_ALMA);
-							csp_rtc_int_enable(ptRtc, RTC_INT_ALMA, ENABLE);
+							csp_rtc_int_enable(ptRtc, RTC_INT_ALMA);
 							break;
 		case (RTC_ALMB):	csp_rtc_clr_isr(ptRtc, RTC_INT_ALMB);
-							csp_rtc_int_enable(ptRtc, RTC_INT_ALMB, ENABLE);
+							csp_rtc_int_enable(ptRtc, RTC_INT_ALMB);
 							break;
 		default:
 			return CSI_ERROR;
 	}
 	
-	csi_rtc_int_enable(RTC, RTC_INT_ALMA, ENABLE);
-	csp_rtc_alm_enable(ptRtc, byAlm, DISABLE);
+	csi_rtc_int_enable(RTC, RTC_INT_ALMA,ENABLE);
+	
+	csp_rtc_set_key(ptRtc);
+	csp_rtc_alm_disable(ptRtc, byAlm);
+	csp_rtc_clr_key(ptRtc);
+	while(csp_rtc_update_status(ptRtc));
+	
 	apt_rtc_alm_set_time(ptRtc, byAlm, ptAlmTime->iMday, bFmt,  ptAlmTime->iHour, ptAlmTime->iMin,ptAlmTime->iSec);
+	
+	csp_rtc_set_key(ptRtc);	
 	csp_rtc_alm_set_mode(ptRtc, byAlm, bWdsel, bDmsk, bHmsk, bMmsk, bSmsk);
-	csp_rtc_alm_enable(ptRtc, byAlm, ENABLE);
+	csp_rtc_alm_enable(ptRtc, byAlm);
+	csp_rtc_clr_key(ptRtc);
+	while(csp_rtc_update_status(ptRtc));
 	
 	return CSI_OK;
 }
@@ -299,14 +341,17 @@ csi_error_t csi_rtc_set_alarm(csp_rtc_t *ptRtc, uint8_t byAlm, uint8_t byMode, c
 */
 void csi_rtc_cancel_alarm(csp_rtc_t *ptRtc, uint8_t byAlm)
 {
-    
-	csp_rtc_alm_enable(ptRtc, byAlm, DISABLE);
+	csp_rtc_set_key(ptRtc);
+	csp_rtc_alm_disable(ptRtc, byAlm);
+	csp_rtc_clr_key(ptRtc);
+	while(csp_rtc_update_status(ptRtc));	
+	
 	switch (byAlm)
 	{
-		case (RTC_ALMA): 	csi_rtc_int_enable(ptRtc, RTC_INT_ALMA, DISABLE);
+		case (RTC_ALMA): 	csi_rtc_int_enable(ptRtc, RTC_INT_ALMA,DISABLE);
 							csp_rtc_clr_isr(ptRtc, RTC_INT_ALMA);
 							break;
-		case (RTC_ALMB):	csi_rtc_int_enable(ptRtc, RTC_INT_ALMB, DISABLE);
+		case (RTC_ALMB):	csi_rtc_int_enable(ptRtc, RTC_INT_ALMB,DISABLE);
 							csp_rtc_clr_isr(ptRtc, RTC_INT_ALMB);
 							break;
 		default: break;
@@ -321,7 +366,10 @@ void csi_rtc_cancel_alarm(csp_rtc_t *ptRtc, uint8_t byAlm)
 */
 void csi_rtc_set_alarm_out(csp_rtc_t *ptRtc, csi_rtc_osel_e eOut)
 {	
+	csp_rtc_set_key(ptRtc);
 	csp_rtc_set_osel(ptRtc, (rtc_osel_e)eOut);
+	csp_rtc_clr_key(ptRtc);
+	while(csp_rtc_update_status(ptRtc));
 }
 
 
@@ -335,7 +383,10 @@ void csi_rtc_set_alarm_out(csp_rtc_t *ptRtc, csi_rtc_osel_e eOut)
 void csi_rtc_start_as_timer(csp_rtc_t *ptRtc, csi_rtc_timer_e ePrd)
 {	
 	
+	csp_rtc_set_key(ptRtc);
 	csp_rtc_set_cprd(ptRtc, (rtc_cprd_e)ePrd);
+	csp_rtc_clr_key(ptRtc);
+	while(csp_rtc_update_status(ptRtc));
 	csi_rtc_int_enable(ptRtc, RTC_INT_CPRD , ENABLE);
 	//csp_rtc_run(ptRtc);
 }
@@ -349,12 +400,14 @@ void csi_rtc_start_as_timer(csp_rtc_t *ptRtc, csi_rtc_timer_e ePrd)
 */
 void csi_rtc_int_enable(csp_rtc_t *ptRtc, rtc_int_e eIntSrc, bool bEnable)
 {
-	csp_rtc_int_enable(ptRtc, (rtc_int_e)eIntSrc, bEnable);	
+		
 	
 	if (bEnable) {
+		csp_rtc_int_enable(ptRtc, (rtc_int_e)eIntSrc);
 		csi_irq_enable((uint32_t *)ptRtc);
 	}
 	else {
+		csp_rtc_int_disable(ptRtc, (rtc_int_e)eIntSrc);
 		if (eIntSrc == csp_rtc_get_imcr(ptRtc)) {
 			csi_irq_disable((uint32_t *)ptRtc);
 		}
@@ -473,7 +526,7 @@ static csp_error_t apt_rtc_set_date(csp_rtc_t *ptRtc, uint8_t byYear, uint8_t by
 	if (csp_rtc_is_running(ptRtc))
 		return CSP_FAIL;
 		
-	csp_rtc_wr_key(ptRtc);
+	csp_rtc_set_key(ptRtc);
 	byVal = apt_dec2bcd(byYear);
 	csp_rtc_set_date_year(ptRtc, byVal);
 	byVal = apt_dec2bcd(byMon);
@@ -482,7 +535,7 @@ static csp_error_t apt_rtc_set_date(csp_rtc_t *ptRtc, uint8_t byYear, uint8_t by
 	csp_rtc_set_date_wday(ptRtc, byVal);
 	byVal = apt_dec2bcd(byDay);
 	csp_rtc_set_date_day(ptRtc, byVal);	
-	csp_rtc_ers_key(ptRtc);
+	csp_rtc_clr_key(ptRtc);
 	
 	return ret;
 }
@@ -500,14 +553,14 @@ static csp_error_t apt_rtc_set_time(csp_rtc_t *ptRtc, bool bPm, uint8_t byHor, u
 //		ret = CSP_FAIL;
 //	else {
 	
-		csp_rtc_wr_key(ptRtc);
+		csp_rtc_set_key(ptRtc);
 		byVal = apt_dec2bcd(byHor);
 		csp_rtc_set_time_hour(ptRtc, bPm, byVal);
 		byVal = apt_dec2bcd(byMin);
 		csp_rtc_set_time_min(ptRtc, byVal);
 		byVal = apt_dec2bcd(bySec);
 		csp_rtc_set_time_sec(ptRtc, byVal);
-		csp_rtc_ers_key(ptRtc);
+		csp_rtc_clr_key(ptRtc);
 //	}
 	
 	return ret;
@@ -518,7 +571,7 @@ static void apt_rtc_alm_set_time(csp_rtc_t *ptRtc, uint8_t byAlm, uint8_t byDay,
 {
 	uint8_t byVal;
 		
-	csp_rtc_wr_key(ptRtc);
+	csp_rtc_set_key(ptRtc);
 		
 	byVal = apt_dec2bcd(byDay);
 	csp_rtc_alm_set_day(ptRtc, byAlm, byVal);
@@ -529,7 +582,7 @@ static void apt_rtc_alm_set_time(csp_rtc_t *ptRtc, uint8_t byAlm, uint8_t byDay,
 	byVal = apt_dec2bcd(bySec);
 	csp_rtc_alm_set_sec(ptRtc, byAlm, byVal);
 	
-	csp_rtc_ers_key(ptRtc);
+	csp_rtc_clr_key(ptRtc);
 }
 
 

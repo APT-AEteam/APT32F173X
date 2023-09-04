@@ -456,7 +456,7 @@ csi_error_t csi_cmos_autotrim(void)
  */
 void csi_cqcr_enable(void)
 {
-	csp_cqcr_enable(SYSCON, ENABLE);
+	csp_cqcr_enable(SYSCON);
 }
 
 /** \brief cqcr disable
@@ -466,7 +466,7 @@ void csi_cqcr_enable(void)
  */
 void csi_cqcr_disable(void)
 {
-	csp_cqcr_enable(SYSCON, DISABLE);
+	csp_cqcr_disable(SYSCON);
 }
 
 /** \brief cqcr ref sel
@@ -481,7 +481,7 @@ void csi_set_cqcr(csi_cqcr_refsel_e eRefSel,csi_cqcr_srcsel_e eSrcSel,uint32_t w
 	csp_set_cqcr_ref_sel(SYSCON,(cqcr_refsel_e)eRefSel);
 	csp_set_cqcr_src_sel(SYSCON,(cqcr_srcsel_e)eSrcSel);
 	csp_set_cqcr_value(SYSCON,wVal);
-	csp_cqcr_enable(SYSCON, ENABLE);
+	csp_cqcr_enable(SYSCON);
 }
 
 /** \brief get cqcr 
