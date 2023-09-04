@@ -488,9 +488,9 @@ ATTRIBUTE_ISR __attribute__((weak)) void led_int_handler(void)
 	// ISR content ...
 	CSI_INTRPT_ENTER();
 #if (USE_LED_CALLBACK == 1)
-	
+	csi_led_irqhandler(LED, 0);
 #else
-	
+	csp_led_clr_isr(LED, csp_led_get_misr(LED));
 #endif
 	CSI_INTRPT_EXIT();
 }

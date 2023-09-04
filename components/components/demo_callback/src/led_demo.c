@@ -1,13 +1,11 @@
 /***********************************************************************//** 
  * \file  led_demo.c
- * \brief  LED示例代码
+ * \brief  LED  callback功能示例代码
 
  * \copyright Copyright (C) 2015-2021 @ APTCHIP
  * <table>
- * <tr><th> Date  <th>Version    <th>Author  <th>Description
- * <tr><td> 2021-12-03 <td>V0.0  <td>WNN     <td>initial
- * <tr><td> 2023-3-21  <td>V0.1  <td>WCH     <td>modified
- * <tr><td> 2023-9-1   <td>V0.2  <td>WCH     <td>modified
+ * <tr><th> Date       <th>Version    <th>Author  <th>Description
+ * <tr><td> 2023-9-4   <td>V0.0       <td>WCH     <td>initial
  * </table>
  * *********************************************************************
 */
@@ -21,31 +19,25 @@
 /* private function--------------------------------------------------------*/
 /* externs variablesr------------------------------------------------------*/
 /* Private variablesr------------------------------------------------------*/
-/* device instance ------------------------------------------------------*/
-/* Private variablesr-----------------------------------------------------*/ 
+/* device instance --------------------------------------------------------*/
+/* Private variablesr------------------------------------------------------*/ 
 uint8_t g_byLedData[4] = {0x06,0x5b,0x4f,0x66};//数码管编码：1,2,3,4 
 csi_led_config_t ptLedCfg;
 
-/** \brief	ledx_int_handler: led中断服务函数
+/** \brief  led_callback：led中断回调函数
  * 
- *  \brief 	LED发生中断时会调用此函数，函数在interrupt.c里定义为弱(weak)属性，默认不做处理；用户用到LED中
- * 			断时，请重新定义此函数，在此函数中进行对应中断处理，也可直接在interrupt.c里的函数里进行处理
+ * 	\brief	用户定义，支持指ICPEND/IPEND/两种中断处理，使用csi标准库，中断发生时会自动调用用户注册的回调函
+ * 			数，用户可在回调函数里做自己的处理，而不需要关注具体的底层中断处理。
  * 
- *  \param[in] none
+ *  \param[out] ptLedBase: 	LEDx寄存器结构体指针，指向LEDx的基地址 
+ *  \param[out] byIsr: 		LEDx中断状态
  *  \return none
- */
-ATTRIBUTE_ISR  void led_int_handler(void)
+ */ 
+void led_callback(csp_led_t *ptLedBase, uint8_t byIsr)
 {
-	//用户直接在中断服务接口函数里处理中断，建议客户使用此模式
-	volatile uint32_t wMisr = csp_led_get_misr(LED);
-	
-	if(wMisr & LED_INTSRC_ICEND)				//ICEND interrupt
+	if(byIsr & LED_INTSRC_ICEND)
 	{
-		csp_led_clr_isr(LED, LED_INTSRC_ICEND);
-	}
-	if(wMisr & LED_INTSRC_IPEND)				//IPEND interrupt
-	{
-		csp_led_clr_isr(LED, LED_INTSRC_IPEND);	
+		//user code
 	}
 }
 
@@ -60,7 +52,7 @@ ATTRIBUTE_ISR  void led_int_handler(void)
  * \param[in] none
  * \return none
  */
-void apt_io_config(void)
+void led_io_config(void)
 {
 #if (USE_GUI == 0)
 	//SEG0~SEG7
@@ -110,11 +102,11 @@ void apt_io_config(void)
 						|	|	|	|	|	|
 					    e   d   dp  c   g  COM4
 */
-csi_error_t led_demo(void)
+csi_error_t led_callback_demo(void)
 {	
 	uint8_t byDisplayStatus=0;
 	
-	apt_io_config();
+	led_io_config();
 	
 	ptLedCfg.byClkDiv 	  = LED_PCLK_DIV8;	//LED时钟为系统时钟8分频
 	ptLedCfg.hwComMask 	  = 0x0f;			//COM0~3打开
@@ -122,7 +114,9 @@ csi_error_t led_demo(void)
 	ptLedCfg.hwOnTime 	  = 120;			//显示周期时间(单位：Tledclk)
 	ptLedCfg.hwBreakTime  = 50;				//Non-Overlap时间(单位：Tledclk)
 	csi_led_init(LED, &ptLedCfg);			
-
+	csi_led_int_enable(LED, LED_INTSRC_ICEND);		//若需使用中断，请调该接口使能对应中断，这里使用ICPEND中断
+	csi_led_register_callback(LED, led_callback);	//注册中断回调函数
+	
 	while(1)
 	{
 		switch(byDisplayStatus)

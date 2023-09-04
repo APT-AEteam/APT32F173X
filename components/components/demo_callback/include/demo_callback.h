@@ -152,7 +152,7 @@ extern int gptb_pwm_dz_em_demo(void);
 extern csi_error_t crc_demo();
 
 //led
-extern csi_error_t led_demo(void);
+extern csi_error_t led_callback_demo(void);
 
 //opa demo
 extern void opa_internal_gain_mode_demo(void);

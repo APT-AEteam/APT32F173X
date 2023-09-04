@@ -12,6 +12,12 @@
 */
 #include <drv/led.h>
 
+/* Private macro------------------------------------------------------*/
+/* externs function---------------------------------------------------*/
+/* externs variablesr-------------------------------------------------*/
+/* Private variablesr-------------------------------------------------*/
+csi_led_ctrl_t g_tLedCtrl[LED_IDX];
+
  /** \brief initialize uart parameter structure
  * 
  *  \param[in] ptLedBase: pointer of led register structure
@@ -47,7 +53,7 @@ csi_error_t csi_led_init(csp_led_t *ptLedBase, csi_led_config_t *ptLedCfg)
  */
 void csi_led_set_bright(csp_led_t *ptLedBase, csi_led_brt_e eBrt) 
 {
-	csp_led_set_brt(ptLedBase,(csp_led_brt_e)eBrt);
+	csp_led_set_brt(ptLedBase,eBrt);
 }
 
 /** \brief LED interrupt enable control
@@ -58,7 +64,7 @@ void csi_led_set_bright(csp_led_t *ptLedBase, csi_led_brt_e eBrt)
  */ 
 void csi_led_int_enable(csp_led_t *ptLedBase, csi_led_intsrc_e eIntSrc)
 {
-	csp_led_int_enable(ptLedBase, (csp_led_int_e)eIntSrc);
+	csp_led_int_enable(ptLedBase, eIntSrc);
 }
 
 /** \brief LED interrupt disable control
@@ -69,7 +75,7 @@ void csi_led_int_enable(csp_led_t *ptLedBase, csi_led_intsrc_e eIntSrc)
  */ 
 void csi_led_int_disable(csp_led_t *ptLedBase, csi_led_intsrc_e eIntSrc)
 {
-	csp_led_int_disable(ptLedBase, (csp_led_int_e)eIntSrc);
+	csp_led_int_disable(ptLedBase, eIntSrc);
 }
 
 /** \brief   write led data
@@ -127,4 +133,53 @@ void csi_led_light_on(csp_led_t *ptLedBase)
 void csi_led_light_off(csp_led_t *ptLedBase)
 {	
 	csp_led_light_off(ptLedBase);
+}
+
+/** \brief get led number 
+ * 
+ *  \param[in] ptLedBase: pointer of led register structure
+ *  \return led number 0/1
+ */ 
+static uint8_t apt_get_led_idx(csp_led_t *ptLedBase)
+{
+	switch((uint32_t)ptLedBase)
+	{
+		case APB_LED_BASE:		//LED0
+			return 0;		
+
+		default:
+			return 0xff;		//error
+	}
+}
+/** \brief  register led interrupt callback function
+ * 
+ *  \param[in] ptLedBase: pointer of led register structure
+ *  \param[in] callback: led interrupt handle function
+ *  \return error code \ref csi_error_t
+ */ 
+csi_error_t csi_led_register_callback(csp_led_t *ptLedBase, void  *callback)
+{
+	uint8_t byIdx = apt_get_led_idx(ptLedBase);
+	if(byIdx == 0xff)
+		return CSI_ERROR;
+		
+	g_tLedCtrl[byIdx].callback = callback;
+	
+	return CSI_OK;
+}
+
+/** \brief led interrupt handler function
+ * 
+ *  \param[in] ptLedBase: pointer of led register structure
+ *  \param[in] byIdx: led idx(0)
+ *  \return none
+ */ 
+void csi_led_irqhandler(csp_led_t *ptLedBase, uint8_t byIdx)
+{
+	uint8_t byIsr = csp_led_get_misr(ptLedBase);
+	
+	if(g_tLedCtrl[byIdx].callback)
+			g_tLedCtrl[byIdx].callback(ptLedBase, byIsr);
+			
+	csp_led_clr_isr(ptLedBase, byIsr);
 }

@@ -98,27 +98,26 @@ typedef enum {
 ********************* LEDx Macro Definition Declaration **********************
 ******************************************************************************/
 //on/off
-#define csp_led_light_on(LEDx) 			((LEDx) -> CR = ((LEDx) -> CR & (~LED_LIGHTON_MSK)) | (0x1 << LED_LIGHTON_POS))
-#define csp_led_light_off(LEDx) 		((LEDx) -> CR = (LEDx) -> CR & (~LED_LIGHTON_MSK))
-#define csp_led_com_on(LEDx, hwVal)		((LEDx) -> BLKDR = hwVal)
-#define csp_led_com_off(LEDx,hwVal)		((LEDx) -> BLKER = hwVal)
+#define csp_led_light_on(LEDx) 					 ((LEDx) -> CR = ((LEDx) -> CR & (~LED_LIGHTON_MSK)) | (0x1 << LED_LIGHTON_POS))
+#define csp_led_light_off(LEDx) 				 ((LEDx) -> CR = (LEDx) -> CR & (~LED_LIGHTON_MSK))
+#define csp_led_com_on(LEDx, hwVal)				 ((LEDx) -> BLKDR = hwVal)
+#define csp_led_com_off(LEDx,hwVal)			  	 ((LEDx) -> BLKER = hwVal)
 
 //write reg
-#define csp_led_set_clk(LEDx, eClk) 		((LEDx) -> CR = ((LEDx) -> CR & (~LED_LEDCLK_MSK)) | (eClk << LED_LEDCLK_POS))
-#define csp_led_set_brt(LEDx, eBrt)  	    ((LEDx) -> BRIGHT = eBrt)
-#define csp_led_set_commask(LEDx, byComMsk) ((LEDx) -> CR = ((LEDx) -> CR & (~LED_COM_EN_MSK)) | (byComMsk << LED_COM_EN_POS))
-
-#define csp_led_set_dcomcnt(LEDx, byVal)	((LEDx) -> TIMCR = ((LEDx) -> TIMCR & (~LED_DCOMCNT_MSK)) | (byVal << LED_DCOMCNT_POS))
-#define csp_led_set_novcnt(LEDx, byVal)     ((LEDx) -> TIMCR = ((LEDx) -> TIMCR & (~LED_NOVCNT_MSK)) | (byVal << LED_NOVCNT_POS))
+#define csp_led_set_clk(LEDx, eClk) 			 ((LEDx) -> CR = ((LEDx) -> CR & (~LED_LEDCLK_MSK)) | (eClk << LED_LEDCLK_POS))
+#define csp_led_set_brt(LEDx, eBrt)  	    	 ((LEDx) -> BRIGHT = eBrt)
+#define csp_led_set_commask(LEDx, byComMsk) 	 ((LEDx) -> CR = ((LEDx) -> CR & (~LED_COM_EN_MSK)) | (byComMsk << LED_COM_EN_POS))
+#define csp_led_set_dcomcnt(LEDx, byVal)		 ((LEDx) -> TIMCR = ((LEDx) -> TIMCR & (~LED_DCOMCNT_MSK)) | (byVal << LED_DCOMCNT_POS))
+#define csp_led_set_novcnt(LEDx, byVal)     	 ((LEDx) -> TIMCR = ((LEDx) -> TIMCR & (~LED_NOVCNT_MSK)) | (byVal << LED_NOVCNT_POS))
 #define csp_led_set_setdata(LEDx, byCom, byData) ((LEDx) -> SEGDATA[byCom] = byData)
 
 //read reg
-#define csp_led_get_com_st(LEDx)  	((LEDx) -> BLKST)
+#define csp_led_get_com_st(LEDx)  				 ((LEDx) -> BLKST)
 
 //interrupt
-#define csp_led_int_enable(LEDx, eInt)	((LEDx) -> IMCR |= eInt)
-#define csp_led_int_disable(LEDx, eInt)	((LEDx) -> IMCR &= ~eInt)
-#define csp_led_clr_int(LEDx, eInt)		((LEDx) -> ICR  =  eInt)
-#define csp_led_get_misr(LEDx)			((LEDx) -> MISR)
+#define csp_led_int_enable(LEDx, eInt)			 ((LEDx) -> IMCR |= eInt)
+#define csp_led_int_disable(LEDx, eInt)			 ((LEDx) -> IMCR &= ~eInt)
+#define csp_led_clr_isr(LEDx, eInt)				 ((LEDx) -> ICR  =  eInt)
+#define csp_led_get_misr(LEDx)					 ((LEDx) -> MISR)
 
 #endif

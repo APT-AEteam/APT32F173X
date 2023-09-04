@@ -60,6 +60,7 @@ extern "C" {
 #define BT_IDX   			4		//BTx id number
 #define UART_IDX   			3		//UARTx id number
 #define USART_IDX  			2		//USARTx id number
+#define LED_IDX  			1		//LEDx id number
 
 //DMA  id number
 //max channel number

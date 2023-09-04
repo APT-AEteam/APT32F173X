@@ -53,13 +53,21 @@ typedef enum {
 }csi_led_intsrc_e;
 
 typedef struct csi_led_config {
-	uint8_t 	byClkDiv;			//clk configure
-	uint8_t 	byBrt;			//brightness configure
-	uint16_t 	hwComMask;		//COM enable
-	uint16_t 	hwOnTime;		//scanning timing: COM on cycles(range:56~2096).Tcom = byOnTime * Tledclk, needs to be a multiple of 8, otherwise the timing will NOT be accurate
-	uint16_t 	hwBreakTime;	//scanning timing: cycles between COMs(range:14~524).Tbreak = byBreakTime * Tledclk.
+	csi_led_ledclk_e 	byClkDiv;		//clk configure
+	csi_led_brt_e 		byBrt;			//brightness configure
+	uint16_t 			hwComMask;		//COM enable
+	uint16_t 			hwOnTime;		//scanning timing: COM on cycles(range:56~2096).Tcom = byOnTime * Tledclk, needs to be a multiple of 8, otherwise the timing will NOT be accurate
+	uint16_t 			hwBreakTime;	//scanning timing: cycles between COMs(range:14~524).Tbreak = byBreakTime * Tledclk.
 }csi_led_config_t;
 
+/// \struct csi_led_ctrl_t
+/// \brief  bt control handle, not open to users  
+typedef struct 
+{
+    void(*callback)(csp_led_t *ptLedBase, uint8_t byIsr);
+} csi_led_ctrl_t;
+
+extern csi_led_ctrl_t g_tLedCtrl[LED_IDX];
 
  /** \brief initialize uart parameter structure
  * 
@@ -138,7 +146,21 @@ void csi_led_light_on(csp_led_t *ptLedBase);
 */
 void csi_led_light_off(csp_led_t *ptLedBase);
 
+/** \brief led interrupt handler function
+ * 
+ *  \param[in] ptLedBase: pointer of led register structure
+ *  \param[in] byIdx: led idx(0/1/2/3)
+ *  \return none
+ */ 
+void csi_led_irqhandler(csp_led_t *ptLedBase, uint8_t byIdx);
 
+/** 
+  \brief  	   register led interrupt callback function
+  \param[in]   ptLedBase    pointer of led register structure
+  \param[in]   callback		led interrupt handle function
+  \return      error code \ref csi_error_t
+ */ 
+csi_error_t csi_led_register_callback(csp_led_t *ptLedBase, void  *callback);
 
 #ifdef __cplusplus
 }
