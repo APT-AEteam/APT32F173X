@@ -57,7 +57,7 @@ static uint8_t apt_get_gpio_num(pin_name_e ePinName)
 	uint8_t byPinNum = 0;
 	
 	if(ePinName > 0x80)
-		byPinNum = apt_get_gpio_num_low(ePinName >> 8) + 7;
+		byPinNum = apt_get_gpio_num_low(ePinName >> 8) + 8;
 	else
 		byPinNum = apt_get_gpio_num_low((uint8_t)ePinName);
 		

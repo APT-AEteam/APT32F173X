@@ -10,8 +10,8 @@
  * *********************************************************************
 */
 
-#ifndef _WJ_ETB_LL_H_
-#define _WJ_ETB_LL_H_
+#ifndef _CSP_ETB_H
+#define _CSP_ETB_H
 
 #include <stdio.h>
 #include <soc.h>
@@ -197,7 +197,7 @@ typedef enum
 #define	ETB_CH1_2_TRG_DST2(val)	(((val) & 0xFFul) << ETB_CH1_2_TRG_DST2_POS)
 
 /******************************************************************************
-*CHxCON1 : ETB Channel x Control Register1,(x = 1->2)
+*CHxCON1 : ETB Channel x Control Register1,(x = 0->2)
 ******************************************************************************/
 //#define	ETB_CH1_2_EN_POS		(0U)	//CH1_2 enable/disable		
 //#define	ETB_CH1_2_EN_MSK		(0x01ul << ETB_CH1_2_EN_POS)
@@ -220,24 +220,8 @@ typedef enum
 #define	ETB_CH1_2_TRG_SRC(val)	(((val) & 0x7Ful) << ETB_CH1_2_TRG_SRC_POS)
 
 /******************************************************************************
-*CHxCON : ETB Channel x Control Register,(x = 3->7)
+*CHxCON : ETB Channel x Control Register,(x = 3->31)
 ******************************************************************************/
-//#define	ETB_CHX_EN_POS			(0U)	//CHx(3->7) enable/disable		
-//#define	ETB_CHX_EN_MSK			(0x01ul << ETB_CHX_EN_POS)
-//typedef enum
-//{
-//	ETB_CHX_DIS			= 0,	
-//	ETB_CHX_EN	
-//}etb_chx_en_e;
-//
-//#define	ETB_CHX_TRG_MODE_POS	(1U)	//CHx(3->7) trigger mode select
-//#define	ETB_CHX_TRG_MODE_MSK	(0x01ul << ETB_CHX_TRG_MODE_POS)
-//typedef enum
-//{
-//	ETB_CHX_TRG_HARD	= 0,			//Hardware trigger	
-//	ETB_CHX_TRG_SOFT					//Software trigger	
-//}etb_chx_trg_mode_e;
-
 //source 
 #define	ETB_CHX_TRG_SRC_POS		(12U)	//CHx(3->31) trigger source select
 #define	ETB_CHX_TRG_SRC_MSK		(0x7Ful << ETB_CHX_TRG_SRC_POS)
@@ -256,57 +240,28 @@ typedef enum
 /******************************************************************************
 ********************** ETCB inline Functions Declaration **********************
 ******************************************************************************/
-static inline void csp_etb_enable(csp_etb_t *ptEtbBase)
-{
-    ptEtbBase->ETB_EN = (ETB_ENABLE << ETB_ENABLE_POS);
-}
-
-static inline void csp_etb_disable(csp_etb_t *ptEtbBase)
-{
-    ptEtbBase->ETB_EN &= ~(ETB_ENABLE_MSK);
-}
-
-static inline void csp_etb_dma_en(csp_etb_t *ptEtbBase, uint8_t byChNum)
-{
-    ptEtbBase->CFG_CHX[byChNum-3] |= (ETB_CHX_DMA_EN << ETB_CHX_DMA_EN_POS);
-}
-
-static inline void csp_etb_dma_dis(csp_etb_t *ptEtbBase, uint8_t byChNum)
-{
-    ptEtbBase->CFG_CHX[byChNum-3] &= (~ETB_CHX_DMA_EN_MSK);
-}
+#define csp_etb_enable(ETBx)				((ETBx)->ETB_EN |= ETB_ENABLE_MSK)	
+#define csp_etb_disable(ETBx)				((ETBx)->ETB_EN &= ~ETB_ENABLE_MSK)	
 
 //chx enable: x > 2; channel num > 2
-static inline void csp_etb_chx_en(csp_etb_t *ptEtbBase, uint8_t byChNum)
-{
-    ptEtbBase->CFG_CHX[byChNum-3] |= ETB_CH_EN;
-}
+#define csp_etb_chx_enable(ETBx, byChNum)	((ETBx)->CFG_CHX[byChNum-3] |= ETB_CH_EN_MSK)
 
-static inline void csp_etb_soft_trigrer(csp_etb_t *ptEtbBase, uint8_t byChNum)
-{
-    if (byChNum >= 3U) 
-        ptEtbBase->CFG_CHX[byChNum - 3U] |= (ETB_CH_TRG_SOFT << ETB_CH_TRG_MODE_POS);
-}
+//dma channel: 20~31
+#define csp_etb_dma_enable(ETBx, byChNum)	((ETBx)->CFG_CHX[byChNum-3] |= ETB_CHX_DMA_EN_MSK)	
+#define csp_etb_dma_disable(ETBx, byChNum)	((ETBx)->CFG_CHX[byChNum-3] &= ~ETB_CHX_DMA_EN_MSK)	
 
-static inline void csp_etb_hard_trigger(csp_etb_t *ptEtbBase, uint8_t byChNum)
-{
-    if (byChNum >= 3U)
-        ptEtbBase->CFG_CHX[byChNum - 3U] &= ~(ETB_CH_TRG_MODE_MSK);
-}
+//trg mode
+#define csp_etb_soft_trg_mode(ETBx, byChNum)	((ETBx)->CFG_CHX[byChNum-3] |= ETB_CH_TRG_MODE_MSK)
+#define csp_etb_hart_trg_mode(ETBx, byChNum)	((ETBx)->CFG_CHX[byChNum-3] &= ~ETB_CH_TRG_MODE_MSK)
+#define csp_etb_soft_trg_enable(ETBx, byChNum)	((ETBx)->SOFTTRIG |= ETB_SWTRG_CH_SET(byChNum))
 
-static inline void csp_etb_ch_swtrg_en(csp_etb_t *ptEtbBase, uint8_t byChNum)
-{
-    ptEtbBase->SOFTTRIG |= ETB_SWTRG_CH_SET(byChNum);
-}
-
-static inline void csp_etb_one_trg_one_set(csp_etb_t *ptEtbBase, uint8_t byChNum, uint8_t bySrc, uint8_t byDst, etb_ch_trg_mode_e eTrgMode)
-{
-	ptEtbBase->CFG_CHX[byChNum-3] = (eTrgMode << ETB_CH_TRG_MODE_POS) | ETB_CHX_TRG_SRC(bySrc) | ETB_CHX_TRG_DST(byDst);
-}
-
+//
+#define csp_etb_set_one_trg_one(ETBx, byChNum, bySrc, byDst, eTrgMode)										\
+											((ETBx)->CFG_CHX[byChNum-3] = (eTrgMode << ETB_CH_TRG_MODE_POS) \
+											| ETB_CHX_TRG_SRC(bySrc) | ETB_CHX_TRG_DST(byDst));
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* _WJ_ETB_LL_H_ */
+#endif 

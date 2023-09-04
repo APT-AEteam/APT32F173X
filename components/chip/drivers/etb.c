@@ -99,27 +99,27 @@ static void etb_channel_enable(csp_etb_t *ptEtbBase, csi_etb_ch_e eEtbCh, bool b
  *  \param[in] eTrgMode: hard/soft trigger
  *  \return none
  */ 
-static void etb_more_trg_one_set(csp_etb_t *ptEtbBase, uint8_t bySrc0, uint8_t bySrc1, uint8_t bySrc2,uint8_t byDst, etb_ch_trg_mode_e eTrgMode)
-{
-	ptEtbBase->CFG0_CH0 = (ETB_CH0_TRG_SRC0(bySrc0) | ETB_CH0_TRG_SRC1(bySrc1) | ETB_CH0_TRG_SRC2(bySrc2)); 
-	if(bySrc0 != ETB_SRC_NOT_USE)
-		ptEtbBase->CFG0_CH0 |= ETB_CH0_SRC0_EN;
-	else
-		ptEtbBase->CFG0_CH0 &= ~ETB_CH0_SRC0_EN_MSK;
-	
-	if(bySrc1 != ETB_SRC_NOT_USE)
-		ptEtbBase->CFG0_CH0 |= (ETB_CH0_SRC1_EN << ETB_CH0_SRC1_EN_POS);
-	else
-		ptEtbBase->CFG0_CH0 &= ~ETB_CH0_SRC1_EN_MSK;
-		
-	if(bySrc1 != ETB_SRC_NOT_USE)
-		ptEtbBase->CFG0_CH0 |= (ETB_CH0_SRC2_EN << ETB_CH0_SRC2_EN_POS);
-	else
-		ptEtbBase->CFG0_CH0 &= ~ETB_CH0_SRC2_EN_MSK;
-		
-	ptEtbBase->CFG1_CH0 = (eTrgMode << ETB_CH_TRG_MODE_POS) | ETB_CH0_TRG_DST(byDst); 
-	ptEtbBase->CFG1_CH0  |= ETB_CH_EN;		//enable etb channel
-}
+//static void etb_set_more_trg_one(csp_etb_t *ptEtbBase, uint8_t bySrc0, uint8_t bySrc1, uint8_t bySrc2,uint8_t byDst, etb_ch_trg_mode_e eTrgMode)
+//{
+//	ptEtbBase->CFG0_CH0 = (ETB_CH0_TRG_SRC0(bySrc0) | ETB_CH0_TRG_SRC1(bySrc1) | ETB_CH0_TRG_SRC2(bySrc2)); 
+//	if(bySrc0 != ETB_SRC_NOT_USE)
+//		ptEtbBase->CFG0_CH0 |= ETB_CH0_SRC0_EN;
+//	else
+//		ptEtbBase->CFG0_CH0 &= ~ETB_CH0_SRC0_EN_MSK;
+//	
+//	if(bySrc1 != ETB_SRC_NOT_USE)
+//		ptEtbBase->CFG0_CH0 |= (ETB_CH0_SRC1_EN << ETB_CH0_SRC1_EN_POS);
+//	else
+//		ptEtbBase->CFG0_CH0 &= ~ETB_CH0_SRC1_EN_MSK;
+//		
+//	if(bySrc1 != ETB_SRC_NOT_USE)
+//		ptEtbBase->CFG0_CH0 |= (ETB_CH0_SRC2_EN << ETB_CH0_SRC2_EN_POS);
+//	else
+//		ptEtbBase->CFG0_CH0 &= ~ETB_CH0_SRC2_EN_MSK;
+//		
+//	ptEtbBase->CFG1_CH0 = (eTrgMode << ETB_CH_TRG_MODE_POS) | ETB_CH0_TRG_DST(byDst); 
+//	ptEtbBase->CFG1_CH0  |= ETB_CH_EN;		//enable etb channel
+//}
 /** \brief etb one source trigger more destination
  * 
  *  \param[in] ptEtbBase: pionter of etb reg structure.
@@ -131,7 +131,7 @@ static void etb_more_trg_one_set(csp_etb_t *ptEtbBase, uint8_t bySrc0, uint8_t b
  *  \param[in] eTrgMode: hard/soft trigger
  *  \return none
  */ 
-static void etb_one_trg_more_set(csp_etb_t *ptEtbBase, uint8_t byChNum, uint8_t bySrc, uint8_t byDst0, uint8_t byDst1, uint8_t byDst2, etb_ch_trg_mode_e eTrgMode)
+static void etb_set_one_trg_more(csp_etb_t *ptEtbBase, uint8_t byChNum, uint8_t bySrc, uint8_t byDst0, uint8_t byDst1, uint8_t byDst2, etb_ch_trg_mode_e eTrgMode)
 {
 	ptEtbBase->CH1_2[byChNum-1].CFG0 = (ETB_CH1_2_TRG_DST0(byDst0) | ETB_CH1_2_TRG_DST1(byDst1) | ETB_CH1_2_TRG_DST2(byDst2)); 
 	if(byDst0 != ETB_DST_NOT_USE)
@@ -172,7 +172,8 @@ int32_t csi_etb_ch_alloc(csi_etb_ch_type_e eChType)
     int32_t ret, ret_ch;
     uint32_t result = csi_irq_save();
 
-    switch (eChType) {
+    switch (eChType) 
+	{
         case ETB_ONE_TRG_MORE:
             for (ret_ch = 0; ret_ch < 3; ret_ch++) 
 			{
@@ -245,29 +246,29 @@ csi_error_t csi_etb_ch_config(csi_etb_ch_e eEtbCh, csi_etb_config_t *ptConfig)
 	
 	switch(ptConfig->byChType)
 	{
-		case ETB_ONE_TRG_ONE:					//channel num = [3:32]
+		case ETB_ONE_TRG_ONE:						//channel num = [3:32]
 			if(eEtbCh > ETB_CH2)
 			{
-				csp_etb_one_trg_one_set(ETCB, eEtbCh, ptConfig->bySrcIp, ptConfig->byDstIp, ptConfig->byTrgMode);
-				csp_etb_chx_en(ETCB, eEtbCh);	//enable etb channel 
+				csp_etb_set_one_trg_one(ETCB, eEtbCh, ptConfig->bySrcIp, ptConfig->byDstIp, ptConfig->byTrgMode);
+				csp_etb_chx_enable(ETCB, eEtbCh);	//enable etb channel 
 			}
 			else
 				ret = CSI_ERROR;
 
 			break;
-		case ETB_ONE_TRG_MORE:					//channel num = [1:2]		
-			if((eEtbCh == ETB_CH0) ||(eEtbCh == ETB_CH1) || (eEtbCh == ETB_CH2))
-				etb_one_trg_more_set(ETCB, eEtbCh, ptConfig->bySrcIp, ptConfig->byDstIp, ptConfig->byDstIp1, ptConfig->byDstIp2,ptConfig->byTrgMode);
+		case ETB_ONE_TRG_MORE:						//channel num = [0:2]		
+			if(eEtbCh < ETB_CH3)
+				etb_set_one_trg_more(ETCB, eEtbCh, ptConfig->bySrcIp, ptConfig->byDstIp, ptConfig->byDstIp1, ptConfig->byDstIp2,ptConfig->byTrgMode);
 			else
 				ret = CSI_ERROR;
 				
 			break;
-		case ETB_ONE_TRG_ONE_DMA:				//channel num = [20:31]
+		case ETB_ONE_TRG_ONE_DMA:					//channel num = [20:31]
 			if((eEtbCh >= ETB_CH_DMA_STAR) && (eEtbCh < ETB_CH_MAX_NUM))
 			{
-				csp_etb_one_trg_one_set(ETCB, eEtbCh, ptConfig->bySrcIp, ptConfig->byDstIp, ptConfig->byTrgMode);
-				csp_etb_dma_en(ETCB, eEtbCh);	//enable etb dma
-				csp_etb_chx_en(ETCB, eEtbCh);	//enable etb channel 
+				csp_etb_set_one_trg_one(ETCB, eEtbCh, ptConfig->bySrcIp, ptConfig->byDstIp, ptConfig->byTrgMode);
+				csp_etb_dma_enable(ETCB, eEtbCh);	//enable etb dma
+				csp_etb_chx_enable(ETCB, eEtbCh);	//enable etb channel 
 			}
 			else
 				ret = CSI_ERROR;
@@ -287,7 +288,7 @@ csi_error_t csi_etb_ch_config(csi_etb_ch_e eEtbCh, csi_etb_config_t *ptConfig)
 */
 void csi_etb_ch_swtrg(csi_etb_ch_e eEtbCh)
 {
-	csp_etb_ch_swtrg_en(ETCB, eEtbCh);
+	csp_etb_soft_trg_enable(ETCB, eEtbCh);
 }
 /**
  * \brief start an etb channel
