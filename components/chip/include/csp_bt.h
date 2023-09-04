@@ -256,7 +256,7 @@ typedef enum
 #define csp_bt_get_risr(BTx)			((BTx)->RISR)
 #define csp_bt_get_isr(BTx)				((BTx)->MISR)
 #define csp_bt_clr_isr(BTx, eInt)		((BTx)->ICR = eInt)
-#define csp_bt_int_enable(BTx, eInt)	((BTx)->IMCR |= eInt)
+#define csp_bt_int_enable(BTx, eInt)	((BTx)->IMCR |= eInt)						
 #define csp_bt_int_disable(BTx, eInt)	((BTx)->IMCR &= ~eInt)
 //#define csp_bt_clr_all_isr(BTx)			((BTx)->ICR = 0x0f)
 
@@ -266,121 +266,5 @@ typedef enum
 #define csp_bt_evtrg_enable(BTx)		((BTx)->EVTRG |= BT_TRGOE_MSK)
 #define csp_bt_evtrg_disable(BTx)		((BTx)->EVTRG &= ~BT_TRGOE_MSK)
 
-//static inline void csp_bt_start(csp_bt_t *ptBtBase)
-//{
-//	ptBtBase->RSSR |= BT_START;
-//}
-//static inline void csp_bt_stop(csp_bt_t *ptBtBase)
-//{
-//	ptBtBase->RSSR &= ~BT_CTRL_MSK;
-//}
-//static inline void csp_bt_clk_en(csp_bt_t *ptBtBase)
-//{
-//	ptBtBase->CR |= BT_CLK_EN;
-//}
-//static inline void csp_bt_updata_en(csp_bt_t *ptBtBase)
-//{
-//	ptBtBase->CR |= (BT_UPDATE_EN << BT_UPDATA_POS);
-//}
-//static inline void csp_bt_count_mode(csp_bt_t *ptBtBase, bt_opm_e eOpm)
-//{
-//	ptBtBase->CR = (ptBtBase->CR & ~BT_OPM_MSK) | (eOpm << BT_OPM_POS);
-//}
-//static inline void csp_bt_soft_rst(csp_bt_t *ptBtBase)
-//{
-//	ptBtBase->RSSR = (ptBtBase->RSSR & (~BT_SRR_MSK)) | (BT_SRR_EN << BT_SRR_POS);
-//}
-//
-//static inline void csp_bt_set_cr(csp_bt_t *ptBtBase, uint32_t wCr)
-//{
-//	ptBtBase->CR = wCr;
-//}
-//static inline void csp_bt_set_pscr(csp_bt_t *ptBtBase, uint16_t hwPscr)
-//{
-//	ptBtBase->PSCR = hwPscr;
-//}
-//static inline void csp_bt_set_prdr(csp_bt_t *ptBtBase, uint16_t hwPrdr)
-//{
-//	ptBtBase->PRDR = hwPrdr;
-//}
-//static inline void csp_bt_set_cmp(csp_bt_t *ptBtBase, uint16_t hwCmp)
-//{
-//	ptBtBase->CMP = hwCmp;
-//}
-//static inline void csp_bt_set_cnt(csp_bt_t *ptBtBase, uint16_t hwCnt)
-//{
-//	ptBtBase->CNT = hwCnt;
-//}
-//static inline void csp_bt_set_evtrg(csp_bt_t *ptBtBase, uint32_t wEvTrg)
-//{
-//	ptBtBase->EVTRG = wEvTrg;
-//}
 
-//static inline uint16_t csp_bt_get_pscr(csp_bt_t *ptBtBase)
-//{
-//	return (uint16_t)(ptBtBase->PSCR & BT_PSCR_MSK);
-//}
-//static inline uint16_t csp_bt_get_prdr(csp_bt_t *ptBtBase)
-//{
-//	return (uint16_t)(ptBtBase->PRDR & BT_PRDR_MSK);
-//}
-//static inline uint16_t csp_bt_get_cnt(csp_bt_t *ptBtBase)
-//{
-//	return (uint16_t)ptBtBase->CNT;
-//}
-//
-
-
-
-//static inline void csp_bt_evswf_en(csp_bt_t *ptBtBase)
-//{
-//	ptBtBase->EVSWF = 0x01;
-//}
-//static inline void csp_bt_clr_isr(csp_bt_t *ptBtBase, bt_int_e eIntNum)
-//{
-//	ptBtBase->ICR = eIntNum;
-//}
-//static inline void csp_bt_clr_all_int(csp_bt_t *ptBtBase)
-//{
-//	ptBtBase->ICR = 0x0f;
-//}
-//static inline uint32_t csp_bt_get_isr(csp_bt_t *ptBtBase)
-//{
-//	return ptBtBase->MISR;
-//}
-//static inline void csp_bt_int_set(csp_bt_t *ptBtBase, bt_int_e eBtInt,bool bEnable)
-//{
-//	if(bEnable)
-//		ptBtBase->IMCR |= eBtInt; 
-//	else
-//		ptBtBase->IMCR &= ~eBtInt; 
-//}
-//
-//static inline void csp_bt_rearm_sync(csp_bt_t *ptBtBase, bt_evtrg_in_e eTrgIn)
-//{
-//	ptBtBase->CR |= (0x01 << (BT_REARM_POS(eTrgIn)));
-//}
-//static inline void csp_bt_evtrg_soft(csp_bt_t *ptBtBase)
-//{
-//	ptBtBase->EVSWF =BT_EVSWF_EN;
-//}
-//static inline void csp_bt_evtrg_en(csp_bt_t *ptBtBase)
-//{
-//	ptBtBase->EVTRG |= (BT_TRGOE_EN << BT_TRGOE_POS);
-//}
-//static inline void csp_bt_evtrg_dis(csp_bt_t *ptBtBase)
-//{
-//	ptBtBase->EVTRG &= (~BT_TRGOE_MSK);
-//}
-
-//+++++++++++++++++++++++++++++++++++++++++++++
-//static inline uint32_t csp_bt_get_risr(csp_bt_t *ptBtBase)
-//{
-//	return ptBtBase->RISR;
-//}
-
-//static inline uint32_t csp_bt_get_imcr(csp_bt_t *ptBtBase)
-//{
-//	return ptBtBase->IMCR;
-//}
 #endif
