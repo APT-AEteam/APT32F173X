@@ -10,6 +10,7 @@
  * *********************************************************************
 */
 #include <sys_clk.h>
+#include "csp.h"
 #include "board_config.h"
 
 //extern system_clk_config_t g_tSystemClkConfig[];

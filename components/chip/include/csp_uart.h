@@ -14,7 +14,7 @@
 #define _CSP_UART_H
 
 /* Includes ------------------------------------------------------------------*/
-#include <soc.h>
+#include "soc.h"
 
 /// \struct csp_uart_t
 /// \brief UART reg description
