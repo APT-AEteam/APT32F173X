@@ -22,7 +22,7 @@
  */
 void csi_crc_init(void)
 {	
-	csp_crc_clk_enable(CRC); //enable crc clock
+	csp_crc_clk_enable(CRC); 		//enable crc clock
 	csp_crc_rst(CRC);                //software reset
 }
 
@@ -51,6 +51,7 @@ uint16_t csi_crc16(uint16_t hwCrcSeed, uint8_t* pbyData, uint32_t wSize)
 	csp_crc_refout_enable(CRC);    			//Enables bitwise reversal of control of CRC output data
 	csp_crc_xorout_disable(CRC);  			//Disable XOR control of CRC output data
 	csp_crc_set_seed(CRC, hwCrcSeed);      	//Set CRC seed value
+	
 	for (i=0; i<wSize; i++)                
 	{
 		*(uint8_t *)(APB_CRC_BASE + 0x14 + (i%4)) = *pbyData; //Write data
@@ -76,6 +77,7 @@ uint16_t csi_crc16_ccitt( uint16_t hwCrcSeed, uint8_t *pbyData, uint32_t wSize)
 	csp_crc_xorout_disable(CRC); //Disable XOR control of CRC output data
 	csp_crc_xorin_disable(CRC);  //Enables XOR control of CRC input data
 	csp_crc_set_seed(CRC, hwCrcSeed);    //Set CRC seed value
+	
 	for (i=0; i<wSize; i++)
 	{
 		*(uint8_t *)(APB_CRC_BASE + 0x14 + (i%4)) = *pbyData; //Write data
@@ -102,6 +104,7 @@ uint16_t csi_crc16_itu(uint16_t hwCrcSeed, uint8_t* pbyData, uint32_t wSize)
 	csp_crc_refout_disable(CRC); 		 //Enables bitwise reversal of control of CRC output data
 	csp_crc_xorout_disable(CRC);         //Disable XOR control of CRC output data
 	csp_crc_set_seed(CRC, hwCrcSeed);    //Set CRC seed value
+	
 	for (i=0; i<wSize; i++)
 	{
 		*(uint8_t *)(APB_CRC_BASE + 0x14 + (i%4)) = *pbyData;  //Write data
@@ -128,6 +131,7 @@ uint32_t csi_crc32_be(uint32_t wCrcSeed, uint8_t* pbyData, uint32_t wSize)
 	csp_crc_refout_disable(CRC); 		 //Disable bitwise reversal of control of CRC output data
 	csp_crc_xorout_disable(CRC); 		 //Disable XOR control of CRC output data
 	csp_crc_set_seed(CRC, wCrcSeed);     //Set CRC seed value
+	
 	for (i=0; i<wSize; i++) 
 	{
 		*(uint8_t *)(APB_CRC_BASE + 0x14 + (i%4)) = *pbyData; //Write data

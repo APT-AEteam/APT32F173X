@@ -56,35 +56,77 @@ typedef struct
 #define CRC_POLY_MSK	(0x3 << CRC_POLY_POS)
 
 
-///CRC definition functions
+///CRC inline functions
 
-#define csp_crc_clk_enable(CRCx)				(CRCx -> CEDR = (CRCx -> CEDR & (~CRC_CLKEN)) | 1)
+static inline void csp_crc_clk_enable(csp_crc_t *ptCrcBase)				
+{
+	ptCrcBase -> CEDR = (ptCrcBase -> CEDR & (~CRC_CLKEN)) | 1;
+}
 
-#define csp_crc_clk_disable(CRCx)				(CRCx -> CEDR = (CRCx -> CEDR & (~CRC_CLKEN)) | 0)
+static inline void csp_crc_clk_disable(csp_crc_t *ptCrcBase)				
+{ 
+	ptCrcBase -> CEDR = (ptCrcBase -> CEDR & (~CRC_CLKEN)) | 0;
+}
 
-#define csp_crc_rst(CRCx)						(CRCx -> SRR = CRC_SWRST)
+static inline void csp_crc_rst(csp_crc_t *ptCrcBase)						
+{ 
+	ptCrcBase -> SRR = CRC_SWRST;
+}
 
-#define csp_crc_xorin_enable(CRCx)				(CRCx -> CR = (CRCx -> CR & (~CRC_XORIN_MSK))|(1 << CRC_XORIN_POS))
+static inline void csp_crc_xorin_enable(csp_crc_t *ptCrcBase)				
+{	
+	ptCrcBase -> CR = (ptCrcBase -> CR & (~CRC_XORIN_MSK))|(1 << CRC_XORIN_POS);
+}
 
-#define csp_crc_xorin_disable(CRCx)				(CRCx -> CR = (CRCx -> CR & (~CRC_XORIN_MSK))|(0 << CRC_XORIN_POS))
+static inline void csp_crc_xorin_disable(csp_crc_t *ptCrcBase)				
+{ 
+	ptCrcBase -> CR = (ptCrcBase -> CR & (~CRC_XORIN_MSK))|(0 << CRC_XORIN_POS);
+}
 
-#define csp_crc_xorout_enable(CRCx)				(CRCx -> CR = (CRCx -> CR & (~CRC_XOROUT_MSK))|(1 << CRC_XOROUT_POS))
+static inline void csp_crc_xorout_enable(csp_crc_t *ptCrcBase)				
+{ 
+	ptCrcBase -> CR = (ptCrcBase -> CR & (~CRC_XOROUT_MSK))|(1 << CRC_XOROUT_POS);
+}
 
-#define csp_crc_xorout_disable(CRCx)			(CRCx -> CR = (CRCx -> CR & (~CRC_XOROUT_MSK))|(0 << CRC_XOROUT_POS))
+static inline void csp_crc_xorout_disable(csp_crc_t *ptCrcBase)			
+{ 
+	ptCrcBase -> CR = (ptCrcBase -> CR & (~CRC_XOROUT_MSK))|(0 << CRC_XOROUT_POS);
+}
 
-#define csp_crc_refin_enable(CRCx)				(CRCx -> CR = (CRCx -> CR & (~CRC_REFIN_MSK))|(1 << CRC_REFIN_POS))
+static inline void csp_crc_refin_enable(csp_crc_t *ptCrcBase)				
+{ 
+	ptCrcBase -> CR = (ptCrcBase -> CR & (~CRC_REFIN_MSK))|(1 << CRC_REFIN_POS);
+}
 
-#define csp_crc_refin_disable(CRCx)				(CRCx -> CR = (CRCx -> CR & (~CRC_REFIN_MSK))|(0 << CRC_REFIN_POS))
+static inline void csp_crc_refin_disable(csp_crc_t *ptCrcBase)				
+{ 
+	ptCrcBase -> CR = (ptCrcBase -> CR & (~CRC_REFIN_MSK))|(0 << CRC_REFIN_POS);
+}
 
-#define csp_crc_refout_enable(CRCx)				(CRCx -> CR = (CRCx -> CR & (~CRC_REFOUT_MSK))|(1 << CRC_REFOUT_POS))
+static inline void csp_crc_refout_enable(csp_crc_t *ptCrcBase)				
+{ 
+	ptCrcBase -> CR = (ptCrcBase -> CR & (~CRC_REFOUT_MSK))|(1 << CRC_REFOUT_POS);
+}
 
-#define csp_crc_refout_disable(CRCx)			(CRCx -> CR = (CRCx -> CR & (~CRC_REFOUT_MSK))|(0 << CRC_REFOUT_POS))
+static inline void csp_crc_refout_disable(csp_crc_t *ptCrcBase)			
+{ 
+	ptCrcBase -> CR = (ptCrcBase -> CR & (~CRC_REFOUT_MSK))|(0 << CRC_REFOUT_POS);
+}
 
-#define csp_crc_set_poly(CRCx,byPoly)			(CRCx -> CR = (CRCx -> CR & (~CRC_POLY_MSK))|(byPoly << CRC_POLY_POS))
+static inline void csp_crc_set_poly(csp_crc_t *ptCrcBase, uint8_t byPoly)			
+{ 
+	ptCrcBase -> CR = (ptCrcBase -> CR & (~CRC_POLY_MSK))|(byPoly << CRC_POLY_POS);
+}
 
-#define csp_crc_set_seed(CRCx,wSeed)			(CRCx -> SEED = wSeed)
+static inline void csp_crc_set_seed(csp_crc_t *ptCrcBase, uint32_t  wSeed)			
+{ 
+	ptCrcBase -> SEED = wSeed;
+}
 
-#define csp_crc_get_result(CRCx)				(CRCx->DATAOUT)
+static inline uint32_t csp_crc_get_result(csp_crc_t *ptCrcBase)				
+{ 
+	return (ptCrcBase ->DATAOUT);
+}
 
 #endif /* CSP_CRC_H */
 
