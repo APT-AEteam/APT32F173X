@@ -46,7 +46,6 @@ int main()
 
 	my_printf("Hello World~~~~~~~\n");		//print message
 	
-	lpt_timer_demo();
 
 	while(1)
 	{	
