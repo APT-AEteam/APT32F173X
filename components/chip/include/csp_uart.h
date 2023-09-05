@@ -232,64 +232,158 @@ typedef enum{
 ******************************************************************************/
 
 /******************************************************************************
-********************* UARTx Macro Definition Declaration **********************
+********************* UARTx inline Functions Declaration **********************
 ******************************************************************************/
 //reset
-#define csp_uart_soft_rst(UARTx)		((UARTx)->SRR = UART_SWRST_MSK)		
-#define csp_uart_rxfifo_rst(UARTx)		((UARTx)->SRR = UART_RXFIFO_RST_MSK)	
-#define	csp_uart_txfifo_rst(UARTx)		((UARTx)->SRR = UART_TXFIFO_RST_MSK)	
+static inline void csp_uart_soft_rst(csp_uart_t *ptUartBase)		
+{
+	ptUartBase->SRR = UART_SWRST_MSK;		
+}
+static inline void csp_uart_rxfifo_rst(csp_uart_t *ptUartBase)
+{
+	ptUartBase->SRR = UART_RXFIFO_RST_MSK;	
+}
+static inline void	csp_uart_txfifo_rst(csp_uart_t *ptUartBase)		
+{ 
+	ptUartBase->SRR = UART_TXFIFO_RST_MSK;	
+}
 
 //TX/RX  enable/disable
-#define csp_uart_tx_enable(UARTx) 		((UARTx)->CTRL |= UART_TX_MSK)
-#define csp_uart_tx_disable(UARTx) 		((UARTx)->CTRL &= ~UART_TX_MSK)
-#define csp_uart_rx_enable(UARTx) 		((UARTx)->CTRL |= UART_RX_MSK)
-#define csp_uart_rx_disable(UARTx) 		((UARTx)->CTRL &= ~UART_RX_MSK)
+static inline void csp_uart_tx_enable(csp_uart_t *ptUartBase)
+{
+	ptUartBase->CTRL |= UART_TX_MSK;
+}
+static inline void csp_uart_tx_disable(csp_uart_t *ptUartBase)
+{
+	ptUartBase->CTRL &= ~UART_TX_MSK;
+}
+static inline void csp_uart_rx_enable(csp_uart_t *ptUartBase)
+{
+ 	ptUartBase->CTRL |= UART_RX_MSK;
+}
+static inline void csp_uart_rx_disable(csp_uart_t *ptUartBase)
+{
+ 	ptUartBase->CTRL &= ~UART_RX_MSK;
+}
 
 //TX and RX enable/disable
-#define csp_uart_enable(UARTx)			((UARTx)->CTRL |= (UART_TX_MSK | UART_RX_MSK)) 
-#define csp_uart_disable(UARTx)			((UARTx)->CTRL &= ~(UART_TX_MSK | UART_RX_MSK)) 
+static inline void csp_uart_enable(csp_uart_t *ptUartBase)
+{
+	ptUartBase->CTRL |= (UART_TX_MSK | UART_RX_MSK); 
+}
+static inline void csp_uart_disable(csp_uart_t *ptUartBase)
+{
+	ptUartBase->CTRL &= ~(UART_TX_MSK | UART_RX_MSK); 
+}
 
 //receive timeout and break	enable/disable	
-#define csp_uart_rto_enable(UARTx)		((UARTx)->CTRL |= UART_STTTO_MSK)
-#define csp_uart_rto_disable(UARTx)		((UARTx)->CTRL &= ~UART_STTTO_MSK)
-#define csp_uart_brk_enable(UARTx)		((UARTx)->CTRL |= UART_BREAK_MSK)
-#define csp_uart_brk_disable(UARTx)		((UARTx)->CTRL &= ~UART_BREAK_MSK)
+static inline void csp_uart_rto_enable(csp_uart_t *ptUartBase)
+{
+		ptUartBase->CTRL |= UART_STTTO_MSK;
+}
+static inline void csp_uart_rto_disable(csp_uart_t *ptUartBase)	
+{
+	ptUartBase->CTRL &= ~UART_STTTO_MSK;
+}
+static inline void csp_uart_brk_enable(csp_uart_t *ptUartBase)	
+{
+	ptUartBase->CTRL |= UART_BREAK_MSK;
+}
+static inline void csp_uart_brk_disable(csp_uart_t *ptUartBase)	
+{
+	ptUartBase->CTRL &= ~UART_BREAK_MSK;
+}
 
 //fifo and parity
-#define csp_uart_fifo_disable(UARTx)	((UARTx)->CTRL &= ~UART_FIFO_MSK)	
-#define csp_uart_fifo_enable(UARTx)		((UARTx)->CTRL &=  UART_FIFO_MSK)	
+static inline void csp_uart_fifo_disable(csp_uart_t *ptUartBase)
+{
+	ptUartBase->CTRL &= ~UART_FIFO_MSK;	
+}
+static inline void csp_uart_fifo_enable(csp_uart_t *ptUartBase)	
+{
+	ptUartBase->CTRL &=  UART_FIFO_MSK;	
+}
 
 //read reg
-#define csp_uart_get_data(UARTx)		((UARTx)->DATA)
-#define csp_uart_get_ctrl(UARTx)		((UARTx)->CTRL)
-#define csp_uart_get_sr(UARTx)			((UARTx)->SR)
+static inline uint8_t csp_uart_get_data(csp_uart_t *ptUartBase)	
+{
+	return (uint8_t)ptUartBase->DATA;
+}
+static inline uint32_t csp_uart_get_ctrl(csp_uart_t *ptUartBase)	
+{
+	return ptUartBase->CTRL;
+}
+static inline uint16_t csp_uart_get_sr(csp_uart_t *ptUartBase)		
+{
+	return (uint16_t)ptUartBase->SR;
+}
 //clr sr
-#define csp_uart_clr_all_sr(UARTx)		((UARTx)->SR = 0x01ff)				
+//static inline void csp_uart_clr_all_sr(csp_uart_t *ptUartBase)	
+//{
+//	ptUartBase->SR = 0x01ff;				
+//}
 
 //interrupt
-#define csp_uart_get_isr(UARTx)				((UARTx)->ISR)
-#define csp_uart_clr_isr(UARTx, eIsr)		((UARTx)->ISR = eIsr)
-#define csp_uart_int_enable(UARTx, eInt)	((UARTx)->CTRL |= eInt)
-#define csp_uart_int_disable(UARTx, eInt)	((UARTx)->CTRL &= ~eInt)
+static inline uint32_t csp_uart_get_isr(csp_uart_t *ptUartBase)				
+{
+	return ptUartBase->ISR;
+}
+static inline void csp_uart_clr_isr(csp_uart_t *ptUartBase, uart_isr_e eIsr)		
+{
+	ptUartBase->ISR = eIsr;
+}
+static inline void csp_uart_int_enable(csp_uart_t *ptUartBase, uart_int_e eInt)	
+{
+	ptUartBase->CTRL |= eInt;
+}
+static inline void csp_uart_int_disable(csp_uart_t *ptUartBase, uart_int_e eInt)	
+{ 
+	ptUartBase->CTRL &= ~eInt;
+}
 
 //set reg
-#define csp_uart_set_ctrl(UARTx, wVal)		((UARTx)->CTRL = wVal)
-#define csp_uart_set_brdiv(UARTx, wVal)		((UARTx)->BRDIV = wVal)
-#define csp_uart_set_ttgr(UARTx, byVal)		((UARTx)->TTGR = byVal)
-#define csp_uart_set_rtor(UARTx, hwVal)		((UARTx)->RTOR = hwVal)
-#define csp_uart_set_data(UARTx, byVal)		((UARTx)->DATA = byVal)
+static inline void csp_uart_set_ctrl(csp_uart_t *ptUartBase, uint32_t wVal)
+{
+	ptUartBase->CTRL = wVal;
+}
+static inline void csp_uart_set_brdiv(csp_uart_t *ptUartBase, uint32_t wVal)	
+{
+	ptUartBase->BRDIV = wVal;
+}
+static inline void csp_uart_set_ttgr(csp_uart_t *ptUartBase, uint8_t byVal)	
+{
+	ptUartBase->TTGR = byVal;
+}
+static inline void csp_uart_set_rtor(csp_uart_t *ptUartBase, uint16_t hwVal)	
+{
+	ptUartBase->RTOR = hwVal;
+}
+static inline void csp_uart_set_data(csp_uart_t *ptUartBase, uint8_t byVal)	
+{
+	ptUartBase->DATA = byVal;
+}
 
 //set patity/fifo/radma/txdma
-#define csp_uart_set_parity(UARTx, eParity)	((UARTx)->CTRL = ((UARTx)->CTRL & ~UART_PARITY_MSK) | (eParity << UART_PARITY_POS))
+static inline void csp_uart_set_parity(csp_uart_t *ptUartBase, uart_parity_e eParity)	
+{
+	ptUartBase->CTRL = (ptUartBase->CTRL & ~UART_PARITY_MSK) | (eParity << UART_PARITY_POS);
+}
 
-#define csp_uart_set_fifo(UARTx, eFiBit, bEnable)		\
-	((UARTx)->CTRL = ((UARTx)->CTRL & ~(UART_RXFIFO_MSK | UART_FIFO_MSK)) | (eFiBit << UART_RXFIFO_POS) | (bEnable << UART_FIFO_POS))
+static inline void csp_uart_set_fifo(csp_uart_t *ptUartBase, uart_fifo_bit_e eFiBit, bool bEnable)
+{
+	ptUartBase->CTRL = (ptUartBase->CTRL & ~(UART_RXFIFO_MSK | UART_FIFO_MSK)) | (eFiBit << UART_RXFIFO_POS) | (bEnable << UART_FIFO_POS);
+}		
+	
 
-#define csp_uart_set_rxdma(UARTx, eRxDmaEn, eRxDmaMode)	\
-	((UARTx)->DMACR = ((UARTx)->DMACR & ~(UART_RDMA_EN_MSK | UART_RDMA_MD_MSK)) | (eRxDmaEn << UART_RDMA_EN_POS) | (eRxDmaMode << UART_RDMA_MD_POS))
+static inline void csp_uart_set_rxdma(csp_uart_t *ptUartBase, uart_rdma_en_e eRxDmaEn, uart_rdma_md_e eRxDmaMode)
+{
+	ptUartBase->DMACR = (ptUartBase->DMACR & ~(UART_RDMA_EN_MSK | UART_RDMA_MD_MSK)) | (eRxDmaEn << UART_RDMA_EN_POS) | (eRxDmaMode << UART_RDMA_MD_POS);
+}
 
-#define csp_uart_set_txdma(UARTx, eTxDmaEn, eTxDmaMode)	\
-	((UARTx)->DMACR = ((UARTx)->DMACR & ~(UART_TDMA_EN_MSK | UART_TDMA_MD_MSK)) | (eTxDmaEn << UART_TDMA_EN_POS) | (eTxDmaMode << UART_TDMA_MD_POS))
-
-
+static inline void csp_uart_set_txdma(csp_uart_t *ptUartBase, uart_tdma_en_e eTxDmaEn, uart_tdma_md_e eTxDmaMode)	
+{
+	ptUartBase->DMACR = (ptUartBase->DMACR & ~(UART_TDMA_EN_MSK | UART_TDMA_MD_MSK)) | (eTxDmaEn << UART_TDMA_EN_POS) | (eTxDmaMode << UART_TDMA_MD_POS);
+}
+	
+	
 #endif

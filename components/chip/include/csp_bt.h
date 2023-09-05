@@ -231,40 +231,118 @@ typedef enum
 /******************************************************************************
 ********************** BT inline Functions Declaration ************************
 ******************************************************************************/
-#define csp_bt_start(BTx)			((BTx)->RSSR |= BT_START)	
-#define csp_bt_stop(BTx)			((BTx)->RSSR &= ~BT_CTRL_MSK)
-#define csp_bt_soft_rst(BTx)		((BTx)->RSSR |= (BT_SRR_EN << BT_SRR_POS))	
-#define csp_bt_clk_enable(BTx)		((BTx)->CR |= BT_CLK_EN)	
-#define csp_bt_updata_enable(BTx)	((BTx)->CR |= BT_UPDATA_MSK)
-#define csp_bt_cnt_mode(BTx, eOpm)	((BTx)->CR = ((BTx)->CR &~BT_OPM_MSK) | (eOpm << BT_OPM_POS))
+static inline void csp_bt_start(csp_bt_t *ptBtBase)			
+{
+	ptBtBase->RSSR |= BT_START;
+}
+static inline void csp_bt_stop(csp_bt_t *ptBtBase)
+{			
+	ptBtBase->RSSR &= ~BT_CTRL_MSK;
+}
+static inline void csp_bt_soft_rst(csp_bt_t *ptBtBase)		
+{
+	ptBtBase->RSSR |= (BT_SRR_EN << BT_SRR_POS);	
+}
+static inline void csp_bt_clk_enable(csp_bt_t *ptBtBase)		
+{
+	ptBtBase->CR |= BT_CLK_EN;	
+}
+static inline void csp_bt_updata_enable(csp_bt_t *ptBtBase)	
+{
+	ptBtBase->CR |= BT_UPDATA_MSK;
+}
+static inline void csp_bt_cnt_mode(csp_bt_t *ptBtBase, bt_opm_e eOpm)
+{
+	ptBtBase->CR = (ptBtBase->CR  & ~BT_OPM_MSK) | (eOpm << BT_OPM_POS);
+}
 
 //set reg
-#define csp_bt_set_cr(BTx, wVal)	((BTx)->CR = wVal)
-#define csp_bt_set_pscr(BTx, hwVal)	((BTx)->PSCR = hwVal)
-#define csp_bt_set_prdr(BTx, hwVal)	((BTx)->PRDR = hwVal)
-#define csp_bt_set_cmp(BTx, hwVal)	((BTx)->CMP = hwVal)
-#define csp_bt_set_cnt(BTx, hwVal)	((BTx)->CNT = hwVal)
-#define csp_bt_set_evtrg(BTx, wVal)	((BTx)->EVTRG = wVal)
+static inline void csp_bt_set_cr(csp_bt_t *ptBtBase, uint32_t wVal)	
+{
+	ptBtBase->CR = wVal;
+}
+static inline void csp_bt_set_pscr(csp_bt_t *ptBtBase, uint16_t hwVal)	
+{
+	ptBtBase->PSCR = hwVal;
+}
+static inline void csp_bt_set_prdr(csp_bt_t *ptBtBase, uint16_t hwVal)	
+{
+	ptBtBase->PRDR = hwVal;
+}
+static inline void csp_bt_set_cmp(csp_bt_t *ptBtBase, uint16_t hwVal)	
+{
+	ptBtBase->CMP = hwVal;
+}
+static inline void csp_bt_set_cnt(csp_bt_t *ptBtBase, uint16_t hwVal)	
+{
+	ptBtBase->CNT = hwVal;
+}
+static inline void csp_bt_set_evtrg(csp_bt_t *ptBtBase, uint32_t wVal)	
+{
+	ptBtBase->EVTRG = wVal;
+}
 
 //read reg
-#define csp_bt_get_pscr(BTx)		((BTx)->PSCR & BT_PSCR_MSK)
-#define csp_bt_get_prdr(BTx)		((BTx)->PRDR & BT_PRDR_MSK)
-#define csp_bt_get_cmp(BTx)			((BTx)->CMP & BT_CMP_MSK)
-#define csp_bt_get_cnt(BTx)			((BTx)->CNT)
+static inline uint16_t csp_bt_get_pscr(csp_bt_t *ptBtBase)		
+{
+	return (uint16_t)(ptBtBase->PSCR & BT_PSCR_MSK);
+}
+static inline uint16_t csp_bt_get_prdr(csp_bt_t *ptBtBase)		
+{
+	return (uint16_t)(ptBtBase->PRDR & BT_PRDR_MSK);
+}
+static inline uint16_t csp_bt_get_cmp(csp_bt_t *ptBtBase)			
+{ 
+	return (uint16_t)(ptBtBase->CMP & BT_CMP_MSK);
+}
+static inline uint16_t csp_bt_get_cnt(csp_bt_t *ptBtBase)			
+{
+	return (uint16_t)ptBtBase->CNT;
+}
 
 //interrupt
-#define csp_bt_get_risr(BTx)			((BTx)->RISR)
-#define csp_bt_get_isr(BTx)				((BTx)->MISR)
-#define csp_bt_clr_isr(BTx, eInt)		((BTx)->ICR = eInt)
-#define csp_bt_int_enable(BTx, eInt)	((BTx)->IMCR |= eInt)						
-#define csp_bt_int_disable(BTx, eInt)	((BTx)->IMCR &= ~eInt)
-//#define csp_bt_clr_all_isr(BTx)			((BTx)->ICR = 0x0f)
+static inline uint8_t csp_bt_get_risr(csp_bt_t *ptBtBase)			
+{
+	return (uint8_t)ptBtBase->RISR;
+}
+static inline uint8_t csp_bt_get_isr(csp_bt_t *ptBtBase)
+{
+	return (uint8_t)ptBtBase->MISR;
+}
+static inline void csp_bt_clr_isr(csp_bt_t *ptBtBase, bt_int_e eInt)
+{
+	ptBtBase->ICR = eInt;
+}
+static inline void csp_bt_int_enable(csp_bt_t *ptBtBase, bt_int_e eInt)
+{
+	ptBtBase->IMCR |= eInt;						
+}
+static inline void csp_bt_int_disable(csp_bt_t *ptBtBase, bt_int_e eInt)
+{
+	ptBtBase->IMCR &= ~eInt;
+}
+//static inline void csp_bt_clr_all_isr(csp_bt_t *ptBtBase)			
+//{
+//	ptBtBase->ICR = 0x0f;
+//}
 
 //sync and event 
-#define csp_bt_rearm_sync(BTx, eTrgIn)	((BTx)->CR |= (0x01 << BT_REARM_POS(eTrgIn)))
-#define csp_bt_soft_evtrg(BTx)			((BTx)->EVSWF = BT_EVSWF_EN)
-#define csp_bt_evtrg_enable(BTx)		((BTx)->EVTRG |= BT_TRGOE_MSK)
-#define csp_bt_evtrg_disable(BTx)		((BTx)->EVTRG &= ~BT_TRGOE_MSK)
+static inline void csp_bt_rearm_sync(csp_bt_t *ptBtBase, bt_evtrg_in_e eTrgIn)	
+{
+	ptBtBase->CR |= (0x01 << BT_REARM_POS(eTrgIn));
+}
+static inline void csp_bt_soft_evtrg(csp_bt_t *ptBtBase)			
+{
+	ptBtBase->EVSWF = BT_EVSWF_EN;
+}
+static inline void csp_bt_evtrg_enable(csp_bt_t *ptBtBase)
+{
+	ptBtBase->EVTRG |= BT_TRGOE_MSK;
+}
+static inline void csp_bt_evtrg_disable(csp_bt_t *ptBtBase)
+{
+		ptBtBase->EVTRG &= ~BT_TRGOE_MSK;
+}
 
 
 #endif
