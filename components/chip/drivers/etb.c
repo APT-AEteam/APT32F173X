@@ -181,10 +181,8 @@ int32_t csi_etb_ch_alloc(csi_etb_ch_type_e eChType)
                     break;
             }
 
-            if (ret_ch == 3) 
+            if (ret_ch >= 3) 
                 ret = CSI_ERROR;
-			else 
-                ret = ret_ch;
 				
             break;
         case ETB_ONE_TRG_ONE:
@@ -194,10 +192,8 @@ int32_t csi_etb_ch_alloc(csi_etb_ch_type_e eChType)
                     break;
             }
 
-            if (ret_ch == ETB_CH_DMA_STAR) 
+            if (ret_ch >= ETB_CH_DMA_STAR) 
                 ret = CSI_ERROR;
-			else 
-                ret = ret_ch;
 				
             break;
 		case ETB_ONE_TRG_ONE_DMA:
@@ -207,10 +203,8 @@ int32_t csi_etb_ch_alloc(csi_etb_ch_type_e eChType)
                     break;
             }
 
-            if (ret_ch == ETB_CH_MAX_NUM) 
+            if (ret_ch >= ETB_CH_MAX_NUM) 
                 ret = CSI_ERROR;
-			else 
-                ret = ret_ch;
 			
 			break;
         default:

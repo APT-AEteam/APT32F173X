@@ -13,9 +13,7 @@
 #ifndef _CSP_ETB_H
 #define _CSP_ETB_H
 
-#include <stdio.h>
 #include <soc.h>
-#include <csi_core.h>
 
 /*
  * Usage
@@ -240,25 +238,50 @@ typedef enum
 /******************************************************************************
 ********************** ETCB inline Functions Declaration **********************
 ******************************************************************************/
-#define csp_etb_enable(ETBx)				((ETBx)->ETB_EN |= ETB_ENABLE_MSK)	
-#define csp_etb_disable(ETBx)				((ETBx)->ETB_EN &= ~ETB_ENABLE_MSK)	
+static inline void csp_etb_enable(csp_etb_t *ptEtbBase)				
+{ 
+	ptEtbBase->ETB_EN |= ETB_ENABLE_MSK;	
+}
+static inline void csp_etb_disable(csp_etb_t *ptEtbBase)		
+{
+	ptEtbBase->ETB_EN &= ~ETB_ENABLE_MSK;	
+}
 
 //chx enable: x > 2; channel num > 2
-#define csp_etb_chx_enable(ETBx, byChNum)	((ETBx)->CFG_CHX[byChNum-3] |= ETB_CH_EN_MSK)
+static inline void csp_etb_chx_enable(csp_etb_t *ptEtbBase, uint8_t byChNum)	
+{
+	ptEtbBase->CFG_CHX[byChNum-3] |= ETB_CH_EN_MSK;
+}
 
 //dma channel: 20~31
-#define csp_etb_dma_enable(ETBx, byChNum)	((ETBx)->CFG_CHX[byChNum-3] |= ETB_CHX_DMA_EN_MSK)	
-#define csp_etb_dma_disable(ETBx, byChNum)	((ETBx)->CFG_CHX[byChNum-3] &= ~ETB_CHX_DMA_EN_MSK)	
+static inline void csp_etb_dma_enable(csp_etb_t *ptEtbBase, uint8_t byChNum)
+{
+	ptEtbBase->CFG_CHX[byChNum-3] |= ETB_CHX_DMA_EN_MSK;	
+}
+static inline void csp_etb_dma_disable(csp_etb_t *ptEtbBase, uint8_t byChNum)
+{
+	ptEtbBase->CFG_CHX[byChNum-3] &= ~ETB_CHX_DMA_EN_MSK;	
+}
 
 //trg mode
-#define csp_etb_soft_trg_mode(ETBx, byChNum)	((ETBx)->CFG_CHX[byChNum-3] |= ETB_CH_TRG_MODE_MSK)
-#define csp_etb_hart_trg_mode(ETBx, byChNum)	((ETBx)->CFG_CHX[byChNum-3] &= ~ETB_CH_TRG_MODE_MSK)
-#define csp_etb_soft_trg_enable(ETBx, byChNum)	((ETBx)->SOFTTRIG |= ETB_SWTRG_CH_SET(byChNum))
+static inline void csp_etb_soft_trg_mode(csp_etb_t *ptEtbBase, uint8_t byChNum)
+{
+	ptEtbBase->CFG_CHX[byChNum-3] |= ETB_CH_TRG_MODE_MSK;
+}
+static inline void csp_etb_hart_trg_mode(csp_etb_t *ptEtbBase, uint8_t byChNum)
+{
+	ptEtbBase->CFG_CHX[byChNum-3] &= ~ETB_CH_TRG_MODE_MSK;
+}
+static inline void csp_etb_soft_trg_enable(csp_etb_t *ptEtbBase, uint8_t byChNum)	
+{
+	ptEtbBase->SOFTTRIG |= ETB_SWTRG_CH_SET(byChNum);
+}
 
-//
-#define csp_etb_set_one_trg_one(ETBx, byChNum, bySrc, byDst, eTrgMode)										\
-											((ETBx)->CFG_CHX[byChNum-3] = (eTrgMode << ETB_CH_TRG_MODE_POS) \
-											| ETB_CHX_TRG_SRC(bySrc) | ETB_CHX_TRG_DST(byDst));
+//one trg one
+static inline void csp_etb_set_one_trg_one(csp_etb_t *ptEtbBase, uint8_t byChNum, uint8_t bySrc, uint8_t byDst, etb_ch_trg_mode_e eTrgMode)
+{
+	ptEtbBase->CFG_CHX[byChNum-3] = (eTrgMode << ETB_CH_TRG_MODE_POS) | ETB_CHX_TRG_SRC(bySrc) | ETB_CHX_TRG_DST(byDst);
+}
 
 #ifdef __cplusplus
 }
