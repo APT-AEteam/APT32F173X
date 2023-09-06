@@ -90,14 +90,14 @@ int lpt_sync_trg_start_demo(void)
 	csp_lpt_set_evtrg(LPT, LPT_TRGSRC0_ZRO);  
 	
 	
-	tEtbConfig.byChType = ETB_ONE_TRG_ONE;  		//单个源触发单个目标
-	tEtbConfig.bySrcIp  = ETB_EXI_TRGOUT0;  	    //EXI_TRGOUT5作为触发源
-	tEtbConfig.byDstIp =  ETB_LPT_SYNCIN;   	    //LPT同步输入作为目标事件
-	tEtbConfig.byTrgMode = ETB_HARDWARE_TRG;
+	tEtbConfig.eChType = ETB_ONE_TRG_ONE;  		//单个源触发单个目标
+	tEtbConfig.eSrcIp  = ETB_EXI_TRGOUT0;  	    //EXI_TRGOUT5作为触发源
+	tEtbConfig.eDstIp =  ETB_LPT_SYNCIN;   	    //LPT同步输入作为目标事件
+	tEtbConfig.eTrgMode = ETB_HARDWARE_TRG;
 	
 	csi_etb_init();
 	
-	ch = csi_etb_ch_alloc(tEtbConfig.byChType);	    //自动获取空闲通道号,ch >= 0 获取成功
+	ch = csi_etb_ch_alloc(tEtbConfig.eChType);	    //自动获取空闲通道号,ch >= 0 获取成功
 	if(ch < 0)
 		return -1;								    //ch < 0,则获取通道号失败
 	iRet = csi_etb_ch_config(ch, &tEtbConfig);
@@ -131,13 +131,13 @@ int lpt_trg_out_demo(void)
 	csi_bt_set_sync(BT1, BT_TRGIN_SYNCEN0, BT_TRG_ONCE, DISABLE);		//外部触发bt启动(SYNCIN0)
 
 	
-	tEtbConfig.byChType = ETB_ONE_TRG_ONE;  						//单个源触发单个目标
-	tEtbConfig.bySrcIp  = ETB_LPT_TRGOUT0;  	    					//LPT作为触发源
-	tEtbConfig.byDstIp =  ETB_BT1_SYNCIN0;   	    				//BT1同步输入0 作为目标事件
-	tEtbConfig.byTrgMode = ETB_HARDWARE_TRG;
+	tEtbConfig.eChType = ETB_ONE_TRG_ONE;  						//单个源触发单个目标
+	tEtbConfig.eSrcIp  = ETB_LPT_TRGOUT0;  	    					//LPT作为触发源
+	tEtbConfig.eDstIp =  ETB_BT1_SYNCIN0;   	    				//BT1同步输入0 作为目标事件
+	tEtbConfig.eTrgMode = ETB_HARDWARE_TRG;
 	
 	csi_etb_init();
-	ch = csi_etb_ch_alloc(tEtbConfig.byChType);	    				//自动获取空闲通道号,ch >= 0 获取成功
+	ch = csi_etb_ch_alloc(tEtbConfig.eChType);	    				//自动获取空闲通道号,ch >= 0 获取成功
 	if(ch < 0)
 		return -1;								    				//ch < 0,则获取通道号失败
 	iRet = csi_etb_ch_config(ch, &tEtbConfig);
@@ -161,13 +161,13 @@ int lpt_soft_trg_out_demo(void)
 //	csi_bt_timer_init(BT1,5000);									//BT定时1ms
 	csi_bt_set_sync(BT1,BT_TRGIN_SYNCEN0, BT_TRG_ONCE, DISABLE);		//外部触发bt启动(SYNCIN0)
 	
-	tEtbConfig.byChType = ETB_ONE_TRG_ONE;  						//单个源触发单个目标
-	tEtbConfig.bySrcIp  = ETB_LPT_TRGOUT0;  	    					//LPT作为触发源
-	tEtbConfig.byDstIp =  ETB_BT1_SYNCIN0;   	    				//BT1同步输入0 作为目标事件
-	tEtbConfig.byTrgMode = ETB_HARDWARE_TRG;
+	tEtbConfig.eChType = ETB_ONE_TRG_ONE;  						//单个源触发单个目标
+	tEtbConfig.eSrcIp  = ETB_LPT_TRGOUT0;  	    					//LPT作为触发源
+	tEtbConfig.eDstIp =  ETB_BT1_SYNCIN0;   	    				//BT1同步输入0 作为目标事件
+	tEtbConfig.eTrgMode = ETB_HARDWARE_TRG;
 	
 	csi_etb_init();
-	ch = csi_etb_ch_alloc(tEtbConfig.byChType);	    				//自动获取空闲通道号,ch >= 0 获取成功
+	ch = csi_etb_ch_alloc(tEtbConfig.eChType);	    				//自动获取空闲通道号,ch >= 0 获取成功
 	if(ch < 0)
 		return -1;								    				//ch < 0,则获取通道号失败
 	iRet = csi_etb_ch_config(ch, &tEtbConfig);
@@ -231,17 +231,17 @@ int lpt_window_demo(void)
 
 	csi_lpt_set_sync_window(LPT, ENABLE, DISABLE, 50, 50);
 
-	tEtbConfig.byChType = ETB_ONE_TRG_ONE;  		//单个源触发单个目标
-	tEtbConfig.bySrcIp  = ETB_BT0_TRGOUT ;  	    //BT0 触发输出0作为触发源
-	tEtbConfig.bySrcIp1 = 0xff;      
-	tEtbConfig.bySrcIp2 = 0xff;
-	tEtbConfig.byDstIp =  ETB_LPT_SYNCIN;   	    //LPT0 同步输入作为目标事件
-	tEtbConfig.byDstIp1 = 0xff;
-	tEtbConfig.byDstIp2 = 0xff;
-	tEtbConfig.byTrgMode = ETB_HARDWARE_TRG;
+	tEtbConfig.eChType = ETB_ONE_TRG_ONE;  		//单个源触发单个目标
+	tEtbConfig.eSrcIp  = ETB_BT0_TRGOUT ;  	    //BT0 触发输出0作为触发源
+	tEtbConfig.eSrcIp1 = 0xff;      
+	tEtbConfig.eSrcIp2 = 0xff;
+	tEtbConfig.eDstIp =  ETB_LPT_SYNCIN;   	    //LPT0 同步输入作为目标事件
+	tEtbConfig.eDstIp1 = 0xff;
+	tEtbConfig.eDstIp2 = 0xff;
+	tEtbConfig.eTrgMode = ETB_HARDWARE_TRG;
 
 	csi_etb_init();
-	ch = csi_etb_ch_alloc(tEtbConfig.byChType);	    //自动获取空闲通道号,ch >= 0 获取成功
+	ch = csi_etb_ch_alloc(tEtbConfig.eChType);	    //自动获取空闲通道号,ch >= 0 获取成功
 	if(ch < 0)
 		return -1;								    //ch < 0,则获取通道号失败
 	iRet = csi_etb_ch_config(ch, &tEtbConfig);	

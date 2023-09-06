@@ -426,10 +426,10 @@ csi_error_t csi_usart_dma_rx_init(csp_usart_t *ptUsartBase, csi_dma_ch_e eDmaCh,
 	tDmaConfig.wInt			= DMA_INTSRC_TCIT;			//使用TCIT中断
 	
 	//etb config
-	tEtbConfig.byChType = ETB_ONE_TRG_ONE_DMA;			//单个源触发单个目标，DMA方式
-	tEtbConfig.bySrcIp 	= ETB_USART0_RXSRC;				//UART TXSRC作为触发源
-	tEtbConfig.byDstIp 	= ETB_DMA0_CH0 + eDmaCh;			//ETB DMA通道 作为目标实际
-	tEtbConfig.byTrgMode = ETB_HARDWARE_TRG;			//通道触发模式采样硬件触发
+	tEtbConfig.eChType = ETB_ONE_TRG_ONE_DMA;			//单个源触发单个目标，DMA方式
+	tEtbConfig.eSrcIp 	= ETB_USART0_RXSRC;				//UART TXSRC作为触发源
+	tEtbConfig.eDstIp 	= ETB_DMA0_CH0 + eDmaCh;			//ETB DMA通道 作为目标实际
+	tEtbConfig.eTrgMode = ETB_HARDWARE_TRG;			//通道触发模式采样硬件触发
 	
 	ret = csi_etb_ch_config(eEtbCh, &tEtbConfig);		//初始化ETB，DMA ETB CHANNEL > ETB_CH19_ID
 	if(ret < 0)
@@ -465,10 +465,10 @@ csi_error_t csi_usart_dma_tx_init(csp_usart_t *ptUsartBase, csi_dma_ch_e eDmaCh,
 	tDmaConfig.wInt			= DMA_INTSRC_LTCIT;			//使用TCIT中断
 	
 	//etb config
-	tEtbConfig.byChType = ETB_ONE_TRG_ONE_DMA;			//单个源触发单个目标，DMA方式
-	tEtbConfig.bySrcIp 	= ETB_USART0_TXSRC;				//UART TXSRC作为触发源
-	tEtbConfig.byDstIp 	= ETB_DMA0_CH0 + eDmaCh;		//ETB DMA通道 作为目标实际
-	tEtbConfig.byTrgMode = ETB_HARDWARE_TRG;			//通道触发模式采样硬件触发
+	tEtbConfig.eChType = ETB_ONE_TRG_ONE_DMA;			//单个源触发单个目标，DMA方式
+	tEtbConfig.eSrcIp 	= ETB_USART0_TXSRC;				//UART TXSRC作为触发源
+	tEtbConfig.eDstIp 	= ETB_DMA0_CH0 + eDmaCh;		//ETB DMA通道 作为目标实际
+	tEtbConfig.eTrgMode = ETB_HARDWARE_TRG;			//通道触发模式采样硬件触发
 	
 	ret = csi_etb_ch_config(eEtbCh, &tEtbConfig);		//初始化ETB，DMA ETB CHANNEL > ETB_CH19_ID
 	if(ret < 0)

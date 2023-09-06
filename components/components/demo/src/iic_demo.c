@@ -209,14 +209,14 @@ void iic_multi_slave_address_demo(void)
 #endif		
 	// tx etcb config
 	csi_etb_init();      //使能ETB模块
-	tEtbConfig.byChType = ETB_ONE_TRG_ONE_DMA;     //单个源触发单个目标，DMA方式
-	tEtbConfig.bySrcIp  = ETB_I2C0_TXSRC;			//I2C0_TXSRC作为触发源
-	tEtbConfig.bySrcIp1 = 0xff;      
-	tEtbConfig.bySrcIp2 = 0xff;
-	tEtbConfig.byDstIp  = ETB_DMA0_CH0 ; //ETB DMA通道 作为目标实际
-	tEtbConfig.byDstIp1 = 0xff;
-	tEtbConfig.byDstIp2 = 0xff;
-	tEtbConfig.byTrgMode = ETB_HARDWARE_TRG;     //通道触发模式采样硬件触发
+	tEtbConfig.eChType = ETB_ONE_TRG_ONE_DMA;     //单个源触发单个目标，DMA方式
+	tEtbConfig.eSrcIp  = ETB_I2C0_TXSRC;			//I2C0_TXSRC作为触发源
+	tEtbConfig.eSrcIp1 = 0xff;      
+	tEtbConfig.eSrcIp2 = 0xff;
+	tEtbConfig.eDstIp  = ETB_DMA0_CH0 ; //ETB DMA通道 作为目标实际
+	tEtbConfig.eDstIp1 = 0xff;
+	tEtbConfig.eDstIp2 = 0xff;
+	tEtbConfig.eTrgMode = ETB_HARDWARE_TRG;     //通道触发模式采样硬件触发
 	csi_etb_ch_config(ETB_CH21, &tEtbConfig);    //初始化ETB，DMA ETB CHANNEL > ETB_CH19_ID 
 	csi_dma_soft_rst(DMA0);    //复位DMA模块
 	
@@ -275,14 +275,14 @@ void iic_multi_slave_address_demo(void)
 #endif
 	// rx etcb config
 	csi_etb_init();      //使能ETB模块
-	tEtbConfig.byChType = ETB_ONE_TRG_ONE_DMA;     //单个源触发单个目标，DMA方式
-	tEtbConfig.bySrcIp  = ETB_I2C0_RXSRC;			//I2C0_TXSRC作为触发源
-	tEtbConfig.bySrcIp1 = 0xff;      
-	tEtbConfig.bySrcIp2 = 0xff;
-	tEtbConfig.byDstIp  = ETB_DMA0_CH1; //ETB DMA通道 作为目标实际
-	tEtbConfig.byDstIp1 = 0xff;
-	tEtbConfig.byDstIp2 = 0xff;
-	tEtbConfig.byTrgMode = ETB_HARDWARE_TRG;     //通道触发模式采样硬件触发
+	tEtbConfig.eChType = ETB_ONE_TRG_ONE_DMA;     //单个源触发单个目标，DMA方式
+	tEtbConfig.eSrcIp  = ETB_I2C0_RXSRC;			//I2C0_TXSRC作为触发源
+	tEtbConfig.eSrcIp1 = 0xff;      
+	tEtbConfig.eSrcIp2 = 0xff;
+	tEtbConfig.eDstIp  = ETB_DMA0_CH1; //ETB DMA通道 作为目标实际
+	tEtbConfig.eDstIp1 = 0xff;
+	tEtbConfig.eDstIp2 = 0xff;
+	tEtbConfig.eTrgMode = ETB_HARDWARE_TRG;     //通道触发模式采样硬件触发
 	
 	csi_etb_ch_config(ETB_CH22, &tEtbConfig);    //初始化ETB，DMA ETB CHANNEL > ETB_CH19_ID 
 	csi_dma_soft_rst(DMA0);    //复位DMA模块

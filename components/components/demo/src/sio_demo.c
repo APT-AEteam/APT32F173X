@@ -197,10 +197,10 @@ int sio_led_rgb_send_dma_demo(void)
 	tDmaConfig.wInt			= DMA_INTSRC_TCIT;			//使用TCIT中断
 	
 	//etb config
-	tEtbConfig.byChType = ETB_ONE_TRG_ONE_DMA;			//单个源触发单个目标，DMA方式
-	tEtbConfig.bySrcIp 	= ETB_SIO0_TXSRC;				//SIO TXSRC作为触发源
-	tEtbConfig.byDstIp 	= ETB_DMA0_CH1;					//ETB DMA通道 作为目标实际
-	tEtbConfig.byTrgMode = ETB_HARDWARE_TRG;			//通道触发模式采样硬件触发
+	tEtbConfig.eChType = ETB_ONE_TRG_ONE_DMA;			//单个源触发单个目标，DMA方式
+	tEtbConfig.eSrcIp 	= ETB_SIO0_TXSRC;				//SIO TXSRC作为触发源
+	tEtbConfig.eDstIp 	= ETB_DMA0_CH1;					//ETB DMA通道 作为目标实际
+	tEtbConfig.eTrgMode = ETB_HARDWARE_TRG;			//通道触发模式采样硬件触发
 	
 	csi_etb_init();										//使能ETB模块
 	ret = csi_etb_ch_config(ETB_CH21, &tEtbConfig);		//初始化ETB
@@ -283,10 +283,10 @@ int sio_led_rgb_recv_dma_demo(void)
 	tDmaConfig.wInt			= DMA_INTSRC_TCIT;			//使用TCIT中断
 	
 	//etb config
-	tEtbConfig.byChType = ETB_ONE_TRG_ONE_DMA;			//单个源触发单个目标，DMA方式
-	tEtbConfig.bySrcIp 	= ETB_SIO0_RXSRC;				//SIO RXSRC作为触发源
-	tEtbConfig.byDstIp 	= ETB_DMA0_CH2;					//ETB DMA通道 作为目标实际
-	tEtbConfig.byTrgMode = ETB_HARDWARE_TRG;			//通道触发模式采样硬件触发
+	tEtbConfig.eChType = ETB_ONE_TRG_ONE_DMA;			//单个源触发单个目标，DMA方式
+	tEtbConfig.eSrcIp 	= ETB_SIO0_RXSRC;				//SIO RXSRC作为触发源
+	tEtbConfig.eDstIp 	= ETB_DMA0_CH2;					//ETB DMA通道 作为目标实际
+	tEtbConfig.eTrgMode = ETB_HARDWARE_TRG;			//通道触发模式采样硬件触发
 	
 	csi_etb_init();										//使能ETB模块
 	ret = csi_etb_ch_config(ETB_CH20, &tEtbConfig);		//初始化ETB，DMA ETB CHANNEL > ETB_CH19_ID
