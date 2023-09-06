@@ -12,10 +12,7 @@
 #ifndef _DRV_TICK_H_
 #define _DRV_TICK_H_
 
-#include <stdint.h>
-#include <stdint.h>
-#include <drv/bt.h>
-#include <drv/common.h>
+#include "csp_bt.h"
 
 #ifndef CONFIG_SYSTICK_HZ
 #define CONFIG_SYSTICK_HZ  100U

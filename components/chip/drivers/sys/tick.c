@@ -9,13 +9,8 @@
  * </table>
  * *********************************************************************
 */
-#include <csi_config.h>
-#include <sys_clk.h>
-#include <drv/tick.h>
-#include <drv/pin.h>
-#include <drv/uart.h>
-#include <drv/irq.h>
-#include <drv/bt.h>
+#include "drv/tick.h"
+#include "drv/bt.h"
 
 /* Private macro------------------------------------------------------*/
 #define __WEAK	__attribute__((weak))

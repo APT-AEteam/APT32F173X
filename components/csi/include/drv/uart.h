@@ -177,12 +177,22 @@ extern csi_uart_ctrl_t g_tUartCtrl[UART_IDX];
   \param[in]   ptUartCfg    pointer of uart parameter config structure
   \return      error code.
 */
+/** 
+  \brief 	   initialize uart parameter structure
+  \param[in]   ptUartBase	pointer of uart register structure
+  \param[in]   ptUartCfg	pointer of uart parameter config structure
+  			   - wBaudRate	baud rate
+  			   - hwRecvTo	rx byte timeout
+  			   - eParity	parity bit, \ref csi_uart_rxfifo_trg_e
+  			   - eRxFifoTrg rx FIFO level to trigger UART_RNE interrupt, \ref csi_uart_rxfifo_trg_e
+ *  \return error code \ref csi_error_t
+ */ 
 csi_error_t csi_uart_init(csp_uart_t *ptUartBase, csi_uart_config_t *ptUartCfg);
 
 /** 
   \brief  	   register uart interrupt callback function
   \param[in]   ptUartBase	pointer of uart register structure
-  \param[in]   eCallBkId	receive/error callback id, recv/send/error
+  \param[in]   eCallBkId	receive/error callback id, \ref csi_uart_callback_id_e
   \param[in]   callback		uart interrupt handle function
   \return 	   error code \ref csi_error_t
  */ 
@@ -198,7 +208,7 @@ void csi_uart_send_callback(csp_uart_t *ptUartBase);
 /** 
   \brief  	   uart receive interrupt callback function
   \param[in]   ptUartBase	pointer of uart register structure
-  \param[in]   eEvent		uart interrupt callback state event, receive dne/send dne/error 
+  \param[in]   eEvent		uart interrupt callback state event, \ref csi_uart_event_e
   \param[in]   pbyBuf		pointer of uart interrupt receive data buffer
   \param[in]   hwLen		length receive data
   \return 	   none
@@ -208,7 +218,7 @@ void csi_uart_recv_callback(csp_uart_t *ptUartBase, csi_uart_event_e eEvent, uin
 /** 
   \brief  	   uart send interrupt callback function
   \param[in]   ptUartBase	pointer of uart register structure
-  \param[in]   eEvent		uart err interrupt callback event event, break/par error
+  \param[in]   eEvent		uart err interrupt callback event event, \ref csi_uart_event_e
   \return 	   none
  */ 
 __attribute__((weak)) void csi_uart_err_callback(csp_uart_t *ptUartBase, csi_uart_event_e eEvent);
@@ -224,7 +234,7 @@ void csi_uart_irqhandler(csp_uart_t *ptUartBase, uint8_t byIdx);
 /** 
   \brief 	   enable/disable uart interrupt 
   \param[in]   ptUartBase	pointer of uart register structure
-  \param[in]   eIntSrc		uart interrupt source
+  \param[in]   eIntSrc		uart interrupt source, \ref csi_uart_intsrc_e
   \return 	   none
  */
 void csi_uart_int_enable(csp_uart_t *ptUartBase, csi_uart_intsrc_e eIntSrc);
@@ -232,7 +242,7 @@ void csi_uart_int_enable(csp_uart_t *ptUartBase, csi_uart_intsrc_e eIntSrc);
 /** 
   \brief 	   disable uart interrupt 
   \param[in]   ptUartBase	pointer of uart register structure
-  \param[in]   eIntSrc		uart interrupt source
+  \param[in]   eIntSrc		uart interrupt source, \ref csi_uart_intsrc_e
   \return 	   none
  */
 void csi_uart_int_disable(csp_uart_t *ptUartBase, csi_uart_intsrc_e eIntSrc);
@@ -348,20 +358,19 @@ void csi_uart_putc(csp_uart_t *ptUartBase, uint8_t byData);
 /** 
   \brief 	   get uart receive/send complete message and (Do not) clear message
   \param[in]   ptUartBase	pointer of uart reg structure.
-  \param[in]   eWkMode		tx or rx mode
+  \param[in]   eWkMode		tx or rx mode, \ref csi_uart_wkmode_e
   \param[in]   bClrEn		clear uart receive/send complete message enable; ENABLE: clear , DISABLE: Do not clear 
   \return  	   bool type true/false
  */ 
 bool csi_uart_get_msg(csp_uart_t *ptUartBase, csi_uart_wkmode_e eWkMode, bool bClrEn);
-uint16_t csi_uart_get_recvlen(csp_uart_t *ptUartBase);
+
 /** 
   \brief 	   clr uart receive/send status message (set uart recv/send status idle) 
   \param[in]   ptUartBase	pointer of uart reg structure.
-  \param[in]   eWkMode		tx or rx mode
+  \param[in]   eWkMode		tx or rx mode, \ref csi_uart_wkmode_e
   \return      none
  */ 
 void csi_uart_clr_msg(csp_uart_t *ptUartBase, csi_uart_wkmode_e eWkMode);
-void csi_uart_clr_recvlen(csp_uart_t *ptUartBase);
 
 #ifdef __cplusplus
 }

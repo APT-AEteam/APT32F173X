@@ -9,8 +9,6 @@
  * *********************************************************************
 */
 #include <drv/uart.h>
-#include <drv/etb.h>
-#include <drv/dma.h>
 #include <drv/tick.h>
 
 /* Private macro------------------------------------------------------*/
@@ -46,8 +44,8 @@ static uint8_t apt_get_uart_idx(csp_uart_t *ptUartBase)
  *  \param[in] ptUartCfg: pointer of uart parameter config structure
  * 			   - wBaudRate: baud rate
  * 			   - hwRecvTo: rx byte timeout
- * 			   - eParity: parity bit
- * 			   - eRxFifoTrg: rx FIFO level to trigger UART_RNE interrupt
+ * 			   - eParity: parity bit, \ref csi_uart_rxfifo_trg_e
+ * 			   - eRxFifoTrg: rx FIFO level to trigger UART_RNE interrupt, \ref csi_uart_rxfifo_trg_e
  *  \return error code \ref csi_error_t
  */ 
 csi_error_t csi_uart_init(csp_uart_t *ptUartBase, csi_uart_config_t *ptUartCfg)
