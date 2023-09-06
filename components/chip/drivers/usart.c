@@ -8,18 +8,8 @@
  * </table>
  * *********************************************************************
 */
-#include <sys_clk.h>
-#include <drv/usart.h>
-#include <drv/irq.h>
-#include <drv/gpio.h>
-#include <drv/pin.h>
-#include <drv/tick.h>
-#include <drv/etb.h>
-#include <drv/dma.h>
 
-#include "csp_dma.h"
-#include "csp_etb.h"
-#include "csp_usart.h"
+#include <drv/usart.h>
 
 /* Private macro------------------------------------------------------*/
 /* externs function---------------------------------------------------*/
@@ -238,15 +228,15 @@ csi_error_t csi_usart_stop(csp_usart_t *ptUsartBase, csi_usart_func_e eFunc)
  *  \param[in] hwLen: usart receive buffer length
  *  \return error code \ref csi_error_t
  */ 
-void csi_usart_set_buffer(csp_usart_t *ptUsartBase, ringbuffer_t *ptRingbuf, uint8_t *pbyRdBuf,  uint16_t hwLen)
-{
-	uint8_t byIdx = csi_get_usart_idx(ptUsartBase);
-	
-	ptRingbuf->pbyBuf = pbyRdBuf;						//assignment ringbuf = pbyRdBuf  
-	ptRingbuf->hwSize = hwLen;							//assignment ringbuf size = hwLen 
-	g_tUsartTran[byIdx].ptRingBuf = ptRingbuf;			//UARTx ringbuf assignment	
-	ringbuffer_reset(g_tUsartTran[byIdx].ptRingBuf);	//init UARTx ringbuf
-}
+//void csi_usart_set_buffer(csp_usart_t *ptUsartBase, ringbuffer_t *ptRingbuf, uint8_t *pbyRdBuf,  uint16_t hwLen)
+//{
+//	uint8_t byIdx = csi_get_usart_idx(ptUsartBase);
+//	
+//	ptRingbuf->pbyBuf = pbyRdBuf;						//assignment ringbuf = pbyRdBuf  
+//	ptRingbuf->hwSize = hwLen;							//assignment ringbuf size = hwLen 
+//	g_tUsartTran[byIdx].ptRingBuf = ptRingbuf;			//UARTx ringbuf assignment	
+//	ringbuffer_reset(g_tUsartTran[byIdx].ptRingBuf);	//init UARTx ringbuf
+//}
 /** \brief usart send character
  * 
  *  \param[in] ptUsartBase: pointer of usart register structure
@@ -359,49 +349,49 @@ int32_t csi_usart_receive(csp_usart_t *ptUsartBase, void *pData, uint16_t hwSize
 				}
 			}
 			break;
-		case USART_RX_MODE_INT_FIX:			//receive assign length data, handle without wTimeOut
-			
-			//read ringbuffer, multiple processing methods 
-			//allow users to modify 
-			hwRecvNum = ringbuffer_len(g_tUsartTran[byIdx].ptRingBuf);
-			switch(hwSize)
-			{
-				case 0:						
-					return 0;
-				case 1:						//single byte receive(read)
-					if(hwRecvNum)
-						hwRecvNum = ringbuffer_byte_out(g_tUsartTran[byIdx].ptRingBuf, pData);
-					else
-						hwRecvNum = 0;
-					break;
-				default:					//Multibyte  receive(read)
-					if(hwRecvNum >= hwSize)
-						hwRecvNum = ringbuffer_out(g_tUsartTran[byIdx].ptRingBuf, pData, hwSize);
-					else
-						hwRecvNum = 0;
-					break;
-			}
-			
-//			if(hwRecvNum >= hwSize)
-//				ringbuffer_out(g_tUsartTran[byIdx].ptRingBuf, pData, hwRecvNum);
-//			else
-//				hwRecvNum = 0;
-
-//			hwRecvNum = (hwRecvNum > hwSize)? hwSize: hwRecvNum;
+//		case USART_RX_MODE_INT_FIX:			//receive assign length data, handle without wTimeOut
+//			
+//			//read ringbuffer, multiple processing methods 
+//			//allow users to modify 
+//			hwRecvNum = ringbuffer_len(g_tUsartTran[byIdx].ptRingBuf);
+//			switch(hwSize)
+//			{
+//				case 0:						
+//					return 0;
+//				case 1:						//single byte receive(read)
+//					if(hwRecvNum)
+//						hwRecvNum = ringbuffer_byte_out(g_tUsartTran[byIdx].ptRingBuf, pData);
+//					else
+//						hwRecvNum = 0;
+//					break;
+//				default:					//Multibyte  receive(read)
+//					if(hwRecvNum >= hwSize)
+//						hwRecvNum = ringbuffer_out(g_tUsartTran[byIdx].ptRingBuf, pData, hwSize);
+//					else
+//						hwRecvNum = 0;
+//					break;
+//			}
+//			
+////			if(hwRecvNum >= hwSize)
+////				ringbuffer_out(g_tUsartTran[byIdx].ptRingBuf, pData, hwRecvNum);
+////			else
+////				hwRecvNum = 0;
+//
+////			hwRecvNum = (hwRecvNum > hwSize)? hwSize: hwRecvNum;
+////			if(hwRecvNum)
+////				ringbuffer_out(g_tUsartTran[byIdx].ptRingBuf, pData, hwRecvNum);
+//				
+//			break;
+//		case USART_RX_MODE_INT_DYN:			//receive dynamic length data, handle without (wTimeOut and hwSize)
+//			 hwRecvNum = ringbuffer_len(g_tUsartTran[byIdx].ptRingBuf);
 //			if(hwRecvNum)
-//				ringbuffer_out(g_tUsartTran[byIdx].ptRingBuf, pData, hwRecvNum);
-				
-			break;
-		case USART_RX_MODE_INT_DYN:			//receive dynamic length data, handle without (wTimeOut and hwSize)
-			 hwRecvNum = ringbuffer_len(g_tUsartTran[byIdx].ptRingBuf);
-			if(hwRecvNum)
-			{
-				memcpy(pData, (void *)g_tUsartTran[byIdx].ptRingBuf->pbyBuf, hwRecvNum);		//read receive data
-				//ringbuffer_out(g_tUsartTran[byIdx].ptRingBuf, pData, hwRecvNum);			//the same as previous line of code 
-				ringbuffer_reset(g_tUsartTran[byIdx].ptRingBuf);								//reset ringbuffer	
-				g_tUsartTran[byIdx].byRecvStat = USART_STATE_IDLE;							//set usart receive status for idle				
-			}
-			break;
+//			{
+//				memcpy(pData, (void *)g_tUsartTran[byIdx].ptRingBuf->pbyBuf, hwRecvNum);		//read receive data
+//				//ringbuffer_out(g_tUsartTran[byIdx].ptRingBuf, pData, hwRecvNum);			//the same as previous line of code 
+//				ringbuffer_reset(g_tUsartTran[byIdx].ptRingBuf);								//reset ringbuffer	
+//				g_tUsartTran[byIdx].byRecvStat = USART_STATE_IDLE;							//set usart receive status for idle				
+//			}
+//			break;
 		default:
 			hwRecvNum = 0;
 			break;

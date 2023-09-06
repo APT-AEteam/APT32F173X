@@ -9,11 +9,7 @@
  * *********************************************************************
 */
 
-#include <drv/common.h>
 #include <drv/crc.h>
-#include "csp_common.h"
-#include "csp_crc.h"
-#include "csp.h"
 
 
 /** \brief       Initialize CRC Interface. 1. Initializes the resources needed for the CRC interface 

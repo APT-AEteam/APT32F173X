@@ -12,6 +12,7 @@
 #ifndef _DRV_UART_H_
 #define _DRV_UART_H_
 
+#include <drv/etb.h>
 #include <drv/dma.h>
 #include "csp.h"
 

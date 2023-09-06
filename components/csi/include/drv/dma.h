@@ -13,11 +13,9 @@
 #ifndef _DRV_DMA_H_
 #define _DRV_DMA_H_
 
-#include <stdint.h>
-#include <stdio.h>
-#include <drv/etb.h>
-#include <drv/common.h>
+
 #include <csp.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif

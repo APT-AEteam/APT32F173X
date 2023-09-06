@@ -13,11 +13,9 @@
 #ifndef _DRV_USART_H_
 #define _DRV_USART_H_
 
-#include <drv/common.h>
+#include <drv/etb.h>
 #include <drv/dma.h>
-#include <drv/ringbuf.h>
-
-#include "csp.h"
+#include <csp.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -186,7 +184,7 @@ typedef struct {
 	uint16_t            hwTxSize;			//tx send data size
 	uint16_t            hwRxSize;			//rx receive data size
 	uint8_t				*pbyTxData;			//pointer of send buf 
-	ringbuffer_t		*ptRingBuf;			//pointer of ringbuffer		
+//	ringbuffer_t		*ptRingBuf;			//pointer of ringbuffer		
 } csi_usart_trans_t;
 
 extern csi_usart_trans_t g_tUsartTran[USART_IDX];	
@@ -232,7 +230,7 @@ csi_error_t csi_usart_stop(csp_usart_t *ptUsartBase, csi_usart_func_e eFunc);
   \param[in]   hwLen		usart  receive buffer length
   \return 	   error code \ref csi_error_t
  */ 
-void csi_usart_set_buffer(csp_usart_t *ptUsartBase, ringbuffer_t *ptRingbuf, uint8_t *pbyRdBuf,  uint16_t hwLen);
+//void csi_usart_set_buffer(csp_usart_t *ptUsartBase, ringbuffer_t *ptRingbuf, uint8_t *pbyRdBuf,  uint16_t hwLen);
 
 /**
   \brief       Start send data to USART transmitter, this function is blocking.

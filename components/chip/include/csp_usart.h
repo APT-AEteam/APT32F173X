@@ -14,6 +14,7 @@
 #define _CSP_USART_H
 
 /* Includes ------------------------------------------------------------------*/
+#include <drv/dma.h>
 #include <soc.h>
 
 /// \struct csp_usart_t

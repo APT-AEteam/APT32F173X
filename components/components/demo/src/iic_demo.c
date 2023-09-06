@@ -15,6 +15,7 @@
 #include "irq.h"
 #include "pin.h"
 #include "demo.h"
+#include "etb.h"
 
 
 csi_iic_master_config_t  g_tIicMasterCfg;	//主机初始化结构体变量

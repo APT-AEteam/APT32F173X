@@ -21,6 +21,7 @@
 /* include ----------------------------------------------------------------*/
 #include "spi.h"
 #include "pin.h"
+#include "etb.h"
 #include <iostring.h> 
 
 #define SPI_NSS_PIN PB12   //define spi nss pin here.!!!!!only used in NSS SOFTWARE controled demo!!!!!users can change to other pins

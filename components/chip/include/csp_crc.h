@@ -13,20 +13,17 @@
 #ifndef _CSP_CRC_H
 #define _CSP_CRC_H
 
-#include "csi_core.h"
-#include "stdint.h"
-#include "stdbool.h"
-#include "csp_common.h"
+#include "soc.h"
 
 typedef struct
 {
     __IM   uint32_t RSVD;
 	__IOM  uint32_t CEDR;            /**< Clock Enable/Disable Register	     */
-   __OM  uint32_t SRR;             /**< Software Reset Register	     */
-   __IOM uint32_t CR;              /**< Control Register	             */
-   __IOM uint32_t SEED;            /**< Seed Value Register	             */
-   __OM  uint32_t DATAIN;          /**< Data in Value Register	             */
-   __IM  uint32_t DATAOUT;         /**< Data out Value Register	     */
+	__OM  uint32_t SRR;             /**< Software Reset Register	     */
+	__IOM uint32_t CR;              /**< Control Register	             */
+	__IOM uint32_t SEED;            /**< Seed Value Register	             */
+	__OM  uint32_t DATAIN;          /**< Data in Value Register	             */
+	__IM  uint32_t DATAOUT;         /**< Data out Value Register	     */
 } csp_crc_t;
 
 /******************************************************************************
