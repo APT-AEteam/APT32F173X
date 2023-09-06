@@ -59,8 +59,8 @@ __attribute__((weak)) void dma_irqhandler(csp_dma_t *ptDmaBase)
 		case DMA_CH3_LTCIT_SR:
 		case DMA_CH4_LTCIT_SR:
 		case DMA_CH5_LTCIT_SR:
-			csp_dma_clr_isr(ptDmaBase, (uint8_t)wIsr);		//clear LTCIT status
-			apt_dma_post_msg(ptDmaBase, wIsr, 1);						//post LTCIT interrupt message
+			csp_dma_clr_isr(ptDmaBase, (uint8_t)wIsr);		///clear LTCIT status
+			apt_dma_post_msg(ptDmaBase, wIsr, 1);			//post LTCIT interrupt message
 			break;
 		
 		//TCIT 
@@ -71,7 +71,7 @@ __attribute__((weak)) void dma_irqhandler(csp_dma_t *ptDmaBase)
 		case DMA_CH4_TCIT_SR:
 		case DMA_CH5_TCIT_SR:
 			csp_dma_clr_isr(ptDmaBase, (wIsr >> 16));		//clear LTCIT status
-			apt_dma_post_msg(ptDmaBase, (wIsr >> 10), 1);				//post TCIT interrupt message
+			apt_dma_post_msg(ptDmaBase, (wIsr >> 10), 1);	//post TCIT interrupt message
 			break;
 		default:
 			break;
@@ -92,7 +92,7 @@ uint8_t csi_get_dma_idx(csp_dma_t *ptDmaBase)
 		case APB_DMA1_BASE:
 			return 1;
 		default:
-			return 0xff;		//error
+			return 0xff;		///error
 	}
 }
 /** \brief Init dma channel parameter config structure
@@ -109,10 +109,10 @@ csi_error_t csi_dma_ch_init(csp_dma_t *ptDmaBase, csi_dma_ch_e eDmaCh, csi_dma_c
 	if(eDmaCh >= DMA_CH_MAX_NUM)
 		return CSI_ERROR;
 	
-	csp_dma_set_ch_saddr_mode(ptDmaChBase, ptChCfg->bySrcLinc, ptChCfg->bySrcHinc);										//Src addr control mode
-	csp_dma_set_ch_daddr_mode(ptDmaChBase, ptChCfg->byDetLinc, ptChCfg->byDetHinc);										//Det addr control mode
-	csp_dma_set_ch(ptDmaChBase, ptChCfg->byDataWidth, ptChCfg->byReload, ptChCfg->byTransMode, ptChCfg->byTsizeMode);	//dma ch para config
-	csp_dma_set_ch_req(ptDmaChBase, ptChCfg->byReqMode);																//software or hardware request
+	csp_dma_set_ch_saddr_mode(ptDmaChBase, ptChCfg->bySrcLinc, ptChCfg->bySrcHinc);										///Src addr control mode
+	csp_dma_set_ch_daddr_mode(ptDmaChBase, ptChCfg->byDetLinc, ptChCfg->byDetHinc);										///Det addr control mode
+	csp_dma_set_ch(ptDmaChBase, ptChCfg->byDataWidth, ptChCfg->byReload, ptChCfg->byTransMode, ptChCfg->byTsizeMode);	///dma ch para config
+	csp_dma_set_ch_req(ptDmaChBase, ptChCfg->byReqMode);																///software or hardware request
 	
 	if(ptChCfg->wInt)
 	{
@@ -136,38 +136,17 @@ csi_error_t csi_dma_ch_init(csp_dma_t *ptDmaBase, csi_dma_ch_e eDmaCh, csi_dma_c
  */
 csi_error_t csi_dma_ch_start(csp_dma_t *ptDmaBase, csi_dma_ch_e eDmaCh, void *pSrcAddr, void *pDstAddr, uint16_t hwHTranNum, uint16_t hwLTranNum)
 {
-//	uint32_t wTranLtc = wLen;
-//	uint32_t wTranHtc = 0x01;
 	csp_dma_t *ptDmaChBase = (csp_dma_t *)DMA_REG_BASE(ptDmaBase, eDmaCh);
 	
 	if((eDmaCh >= DMA_CH_MAX_NUM) || ((hwHTranNum == 0) && (hwLTranNum == 0)))
 		return CSI_ERROR;
-	
-//	if(csp_dma_get_crx(ptDmaChBase) & DMA_TSIZE_MSK)			//Tsize mode 4byte mode
-//	{
-//		if((wLen % 4) == 0)
-//			wTranLtc = wLen >> 2;  
-//		else
-//			wTranLtc = (wLen >> 2) + 1;
-//	}
-//	
-//	if(wTranLtc > 0xfff)								
-//	{
-//		wTranHtc = wTranLtc / 0xfff;							//transfer low count and high count
-//		wTranLtc = wTranLtc % 0xfff;
-//	}
-	
-//	if(csp_dma_get_crx(ptDmaChBase) & DMA_SMODE_MSK)				
-//		csp_dma_set_ch_trans_num(ptDmaChBase, hwLTranNum, hwHTranNum);	//continuous mode: data length
-//	else
-//		csp_dma_set_ch_trans_num(ptDmaChBase, hwHTranNum, hwLTranNum);	//once mode: data length switch
-		
-	csp_dma_set_ch_trans_num(ptDmaChBase, hwLTranNum, hwHTranNum);	//continuous mode: data length
-	csp_dma_set_ch_src_addr(ptDmaChBase, (uint32_t)pSrcAddr);		//Src addr
-	csp_dma_set_ch_dst_addr(ptDmaChBase, (uint32_t)pDstAddr);		//dst addr
-	csp_dma_ch_enable(ptDmaChBase);										//channel enable
+
+	csp_dma_set_ch_trans_num(ptDmaChBase, hwLTranNum, hwHTranNum);	///continuous mode: data length
+	csp_dma_set_ch_src_addr(ptDmaChBase, (uint32_t)pSrcAddr);		///Src addr
+	csp_dma_set_ch_dst_addr(ptDmaChBase, (uint32_t)pDstAddr);		///dst addr
+	csp_dma_ch_enable(ptDmaChBase);									///channel enable
 	if(!csp_dma_get_rsrx(ptDmaChBase))
-		csp_dma_ch_swtrig(ptDmaChBase);								//sw triger 
+		csp_dma_ch_swtrig(ptDmaChBase);								///sw triger 
 	
 	return CSI_OK;
 }
@@ -186,38 +165,43 @@ csi_error_t csi_dma_ch_restart(csp_dma_t *ptDmaBase, csi_dma_ch_e eDmaCh)
 	if(eDmaCh >= DMA_CH_MAX_NUM)
 		return CSI_ERROR;
 
-	if(csp_dma_get_crx(ptDmaChBase) & DMA_RELOAD_MSK)               //if reload disable,enable channel
-		csp_dma_ch_enable(ptDmaChBase);										//
+	if(csp_dma_get_crx(ptDmaChBase) & DMA_RELOAD_MSK)               ///if reload disable,enable channel
+		csp_dma_ch_enable(ptDmaChBase);									
 	if(!csp_dma_get_rsrx(ptDmaChBase))
-		csp_dma_ch_swtrig(ptDmaChBase);								//sw triger 
+		csp_dma_ch_swtrig(ptDmaChBase);								///sw triger 
 	
 	return CSI_OK;
 }
 
-/** \brief enable/disable dma interrupt 
+/** \brief enable dma interrupt 
  * 
  *  \param[in] ptDmaBase: pointer of dma register structure
  *  \param[in] eDmaCh: channel num of dma(6 channel: 0->5)
  *  \param[in] eIntSrc: dma interrupt source
- *  \param[in] bEnable: enable/disable interrupt
  *  \return none
  */
-void csi_dma_int_enable(csp_dma_t *ptDmaBase, csi_dma_ch_e eDmaCh, csi_dma_intsrc_e eIntSrc, bool bEnable)
+void csi_dma_int_enable(csp_dma_t *ptDmaBase, csi_dma_ch_e eDmaCh, csi_dma_intsrc_e eIntSrc)
 {
 	csp_dma_t *ptDmaChBase = (csp_dma_t *)DMA_REG_BASE(ptDmaBase, eDmaCh);
 	
+	csp_dma_int_enable(ptDmaChBase, (dma_int_e)eIntSrc);
+	csi_irq_enable((uint32_t *)ptDmaBase);
+}
+
+/** \brief disable dma interrupt 
+ * 
+ *  \param[in] ptDmaBase: pointer of dma register structure
+ *  \param[in] eDmaCh: channel num of dma(6 channel: 0->5)
+ *  \param[in] eIntSrc: dma interrupt source
+ *  \return none
+ */
+void csi_dma_int_disable(csp_dma_t *ptDmaBase, csi_dma_ch_e eDmaCh, csi_dma_intsrc_e eIntSrc)
+{
+	csp_dma_t *ptDmaChBase = (csp_dma_t *)DMA_REG_BASE(ptDmaBase, eDmaCh); 
 	
+	csp_dma_int_disable(ptDmaChBase, (dma_int_e)eIntSrc);
+	csi_irq_disable((uint32_t *)ptDmaBase);
 	
-	if(bEnable)
-	{
-		csp_dma_int_enable(ptDmaChBase, (dma_int_e)eIntSrc);
-		csi_irq_enable((uint32_t *)ptDmaBase);
-	}
-	else
-	{
-		csp_dma_int_disable(ptDmaChBase, (dma_int_e)eIntSrc);
-		csi_irq_disable((uint32_t *)ptDmaBase);
-	}
 }
 /** \brief dma channel transfer stop
  * 
