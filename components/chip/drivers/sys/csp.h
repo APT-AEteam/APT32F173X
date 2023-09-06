@@ -14,6 +14,7 @@
 #define _CSP_H
 
 /* Includes ------------------------------------------------------------------*/
+#include "sys_clk.h"
 #include "csp_adc.h"
 #include "csp_bt.h"
 #include "csp_cnta.h"

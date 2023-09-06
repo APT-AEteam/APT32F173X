@@ -11,7 +11,6 @@
  * *********************************************************************
 */
 #include <drv/clk.h>
-
 #include "csp.h"
 
 extern csi_clkmap_t g_tClkMap[];

@@ -16,7 +16,7 @@
 #define _CSP_GPIO_H
 
 /* Includes ------------------------------------------------------------------*/
-#include <sys_clk.h>
+#include "soc.h"
 #include "csp_syscon.h"
 
 #define GPIO_RESET_VALUE  	(0x00000000)

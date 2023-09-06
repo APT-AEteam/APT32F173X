@@ -15,7 +15,7 @@
 #define _CSP_BT_H
 
 /* Includes ------------------------------------------------------------------*/
-#include <soc.h>
+#include "soc.h"
 
 /// \struct csp_bt_t
 /// \brief BT reg description      
