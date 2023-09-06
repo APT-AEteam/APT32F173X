@@ -150,12 +150,14 @@ csi_error_t csi_bt_register_callback(csp_bt_t *ptBtBase, void  *callback);
  */ 
 void csi_bt_irqhandler(csp_bt_t *ptBtBase, uint8_t byIdx);
 
-/**
-  \brief       Initialize BT Interface. Initializes the resources needed for the TIMER interface
-  \param[in]   ptBtBase		pointer of bt register structure
-  \param[in]   wTimeOut		the timeout for bt, unit: us
-  \return      error code \ref csi_error_t
-*/
+/** 
+  \brief initialize bt data structure
+  \param[in] ptBtBase		pointer of bt register structure
+  \param[in] ptBtTimCfg		ptBtTimCfg: pointer of bt timing parameter config structure
+				- wTimeVal	timing value, unit: us
+				- eWkMode	bt count work mode, \ref csi_bt_wkmode_e
+   \return error code \ref csi_error_t
+*/ 
 csi_error_t csi_bt_timer_init(csp_bt_t *ptBtBase, csi_bt_time_config_t *ptBtTimCfg);
 
 /** 
@@ -217,12 +219,17 @@ uint32_t csi_bt_get_load_value(csp_bt_t *ptBtBase);
 */
 bool csi_bt_is_running(csp_bt_t *ptBtBase);
 
-/**
-  \brief       bt pwm init
-  \param[in]   ptBtBase		pointer of bt register structure
-  \param[in]   ptTmPara		pointer of bt parameter structure
-  \return      error code \ref csi_error_t
-*/
+/** 
+  \brief bt pwm init 
+  \param[in] ptBtBase		pointer of bt register structure
+  \param[in] ptBtPwmCfg		pointer of bt pwm parameter config structure
+				- eIdleLevel	pwm output level of bt idel, \ref csi_bt_pwmlev_e
+				- eStartLevel	pwm output level of bt start, \ref csi_bt_wkmode_e
+				- eWkMode		bt count work mode, \ref csi_bt_pwmlev_e
+				- byDutyCycle	pwm duty cycle, 0~100
+				- wFreq: pwm frequency
+  \return error code \ref csi_error_t
+ */ 
 csi_error_t csi_bt_pwm_init(csp_bt_t *ptBtBase, csi_bt_pwm_config_t *ptBtPwmCfg);
 
 /** 
@@ -254,9 +261,9 @@ void csi_bt_pwm_updata(csp_bt_t *ptBtBase, uint32_t wfreq, uint8_t byDutyCycle);
 /** 
   \brief 	   bt sync evtrg config  
   \param[in]   ptBtBase		pointer of bt register structure
-  \param[in]   eTrgin		bt evtrg input channel(0~1)
-  \param[in]   eTrgMode 	bt evtrg mode, continuous/once
-  \param[in]   bAutoRearm 	auto rearm, ENABLE/DISABLE(true/false)
+  \param[in]   eTrgin		bt evtrg input channel, \ref csi_bt_trgin_e 
+  \param[in]   eTrgMode 	bt evtrg mode, \ref csi_bt_trgmode_e 
+  \param[in]   bAutoRearm 	auto rearm, \ref csi_bt_trgmode_e  
   \return      none
 */
 csi_error_t csi_bt_set_sync(csp_bt_t *ptBtBase,csi_bt_trgin_e eTrgin, csi_bt_trgmode_e eTrgMode, csi_bt_arearm_e bAutoRearm);
@@ -264,7 +271,7 @@ csi_error_t csi_bt_set_sync(csp_bt_t *ptBtBase,csi_bt_trgin_e eTrgin, csi_bt_trg
 /** 
   \brief 	   restart bt sync evtrg 
   \param[in]   ptBtBase		pointer of bt register structure
-  \param[in]   eTrgin		bt evtrg input channel(0~1)
+  \param[in]   eTrgin		bt evtrg input channel, \ref csi_bt_trgin_e 
   \return      none
  */
 void csi_bt_rearm_sync(csp_bt_t *ptBtBase,csi_bt_trgin_e eTrgin);
@@ -272,7 +279,7 @@ void csi_bt_rearm_sync(csp_bt_t *ptBtBase,csi_bt_trgin_e eTrgin);
 /** 
   \brief 	   bt evtrg output config
   \param[in]   ptBtBase		pointer of bt register structure
-  \param[in]   eTrgSrc 		bt evtrg source(0~3) 
+  \param[in]   eTrgSrc 		bt evtrg source, \ref csi_bt_trgsrc_e 
   \param[in]   bTrgoe		evtrg out enable
   \return 	   error code \ref csi_error_t
  */

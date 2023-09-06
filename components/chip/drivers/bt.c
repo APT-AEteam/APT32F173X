@@ -130,7 +130,7 @@ void csi_bt_stop(csp_bt_t *ptBtBase)
  */ 
 void csi_bt_int_enable(csp_bt_t *ptBtBase, csi_bt_intsrc_e eIntSrc)
 {
-	csp_bt_int_enable(ptBtBase, eIntSrc);	
+	csp_bt_int_enable(ptBtBase, (bt_int_e)eIntSrc);	
 }
 /** \brief disable bt interrupt 
  * 
@@ -140,7 +140,7 @@ void csi_bt_int_enable(csp_bt_t *ptBtBase, csi_bt_intsrc_e eIntSrc)
  */ 
 void csi_bt_int_disable(csp_bt_t *ptBtBase, csi_bt_intsrc_e eIntSrc)
 {
-	csp_bt_int_disable(ptBtBase, eIntSrc);	
+	csp_bt_int_disable(ptBtBase, (bt_int_e)eIntSrc);	
 }
 
 /** \brief get bt remaining value
@@ -285,20 +285,15 @@ void csi_bt_pwm_updata(csp_bt_t *ptBtBase, uint32_t wFreq, uint8_t byDutyCycle)
 /** \brief bt sync input evtrg config  
  * 
  *  \param[in] ptBtBase: pointer of bt register structure
- *  \param[in] eTrgin: bt sync evtrg input channel(0~1)
- *  \param[in] eTrgMode: bt evtrg mode, continuous/once
- *  \param[in] eAutoRearm: auto rearm, BT_TRG_AUTOAREARM/BT_TRG_SYCAREARM
+ *  \param[in] eTrgin: bt sync evtrg input channel, \ref csi_bt_trgin_e
+ *  \param[in] eTrgMode: bt evtrg mode, \ref csi_bt_trgmode_e
+ *  \param[in] eAutoRearm: auto rearm, \ref \ref csi_bt_trgmode_e
  *  \return none
  */
 csi_error_t csi_bt_set_sync(csp_bt_t *ptBtBase, csi_bt_trgin_e eTrgin, csi_bt_trgmode_e eTrgMode, csi_bt_arearm_e eAutoRearm)
 {
 	if(eTrgin > BT_TRGIN_SYNCEN2)
 		return CSI_ERROR;
-	
-//	ptBtBase->CR = ptBtBase->CR & ~(BT_SYNCCMD_MSK | BT_OSTMD_MSK(eTrgin) | BT_AREARM_MSK(eTrgin));
-//	
-//	ptBtBase->CR |=  (BT_SYNC_EN << BT_SYNC_POS(eTrgin)) | (BT_SYNCMD_DIS << BT_SYNCCMD_POS) | 
-//				(eTrgMode << BT_OSTMD_POS(eTrgin)) | (eAutoRearm << BT_AREARM_POS(eTrgin));
 	
 	ptBtBase->CR = ptBtBase->CR & ~(BT_SYNCCMD_MSK | BT_OSTMD_MSK(eTrgin));
 	ptBtBase->CR |=  ((BT_SYNC_EN << BT_SYNC_POS(eTrgin)) | (BT_SYNCMD_EN << BT_SYNCCMD_POS) | (eTrgMode << BT_OSTMD_POS(eTrgin)));
@@ -320,26 +315,26 @@ csi_error_t csi_bt_set_sync(csp_bt_t *ptBtBase, csi_bt_trgin_e eTrgin, csi_bt_tr
 /** \brief rearm bt sync evtrg  
  * 
  *  \param[in] ptBtBase: pointer of bt register structure
- *  \param[in] eTrgin: bt sync evtrg input channel(0~1)
+ *  \param[in] eTrgin: bt sync evtrg input channel, \ref csi_bt_trgin_e
  *  \return none
  */
-void csi_bt_rearm_sync(csp_bt_t *ptBtBase,csi_bt_trgin_e eTrgin)
+void csi_bt_sync_rearm(csp_bt_t *ptBtBase,csi_bt_trgin_e eTrgin)
 {
-	csp_bt_rearm_sync(ptBtBase, eTrgin);
+	csp_bt_sync_rearm(ptBtBase, (bt_evtrg_in_e)eTrgin);
 }
 /** \brief bt evtrg output config
  * 
  *  \param[in] ptBtBase:pointer of bt register structure
- *  \param[in] byTrgOut: evtrg out port (byTrgOut = 0)
- *  \param[in] eTrgSrc: evtrg source(1~3) 
+ *  \param[in] eTrgSrc: evtrg source, \ref csi_bt_trgsrc_e
+ *  \param[in] bEnable: ENABLE/DISABLE
  *  \return error code \ref csi_error_t
  */
-csi_error_t csi_bt_set_evtrg(csp_bt_t *ptBtBase,csi_bt_trgsrc_e eTrgSrc, bool bTrgoe)
+csi_error_t csi_bt_set_evtrg(csp_bt_t *ptBtBase, csi_bt_trgsrc_e eTrgSrc, bool bEnable)
 {
 	if(eTrgSrc == BT_TRGSRC_DIS)
 		csp_bt_set_evtrg(ptBtBase,0x00);
 	else
-		csp_bt_set_evtrg(ptBtBase,(eTrgSrc | (bTrgoe << BT_TRGOE_POS)));
+		csp_bt_set_evtrg(ptBtBase,(eTrgSrc | (bEnable << BT_TRGOE_POS)));
 		
 	return CSI_OK;
 }
@@ -353,30 +348,4 @@ void csi_bt_soft_evtrg(csp_bt_t *ptBtBase)
 {
 	csp_bt_soft_evtrg(ptBtBase);
 }
-//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-/** \brief start bt by sync event
- * 
- *  \param[in] ptBtBase: handle bt handle to operate
- *  \param[in] wTimeOut: tthe timeout for bt, unit: us
- *  \return none
- */ 
-//void csi_bt_start_sync(csp_bt_t *ptBtBase, uint32_t wTimeOut)
-//{
-//	uint32_t wTmLoad;
-//	uint32_t wClkDiv;
-//	
-//	csi_clk_enable((uint32_t *)ptBtBase);									//bt clk enable
-//	csp_bt_soft_rst(ptBtBase);												//reset bt
-//	
-//	wClkDiv = (csi_get_pclk_freq()/100000 * wTimeOut/600000);				//bt clk div
-//	if(wClkDiv == 0)
-//		wClkDiv  = 1;
-//	wTmLoad = (csi_get_pclk_freq() / (wClkDiv * 20000)) * wTimeOut / 50;	//bt prdr load value
-//	
-//	csp_bt_set_cr(ptBtBase, (BT_IMMEDIATE << BT_SHDW_POS) | (BT_CONTINUOUS << BT_OPM_POS) |		//bt work mode
-//			(BT_PCLKDIV << BT_EXTCKM_POS) | (BT_CNTRLD_EN << BT_CNTRLD_POS) | BT_CLK_EN );
-//	csp_bt_set_pscr(ptBtBase, (uint16_t)wClkDiv - 1);						//bt clk div	
-//	csp_bt_set_prdr(ptBtBase, (uint16_t)wTmLoad);							//bt prdr load value
-//	csp_bt_int_set(ptBtBase, BT_PEND_INT, true);							//enable PEND interrupt
-//	csi_irq_enable((uint32_t *)ptBtBase);									//enable bt irq
-//}
+

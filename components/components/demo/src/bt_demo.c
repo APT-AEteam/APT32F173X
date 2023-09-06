@@ -48,7 +48,6 @@ ATTRIBUTE_ISR  void bt1_int_handler(void)
 		csp_bt_clr_isr(BT1, BT_EVTRG_INT);
 	}
 }
-
 /** \brief	bt_timer_demo: BT做基本定时器功能，默认使用PEND中断
  * 
  *  \brief	csi初始化使用(开启)周期结束中断，并在中断里面翻转IO(需要打开PA6IO配置注释)；若不需要开启中断,
@@ -116,7 +115,38 @@ int bt_pwm_demo(void)
 	return iRet;
 }
 
-/** \brief bt sync trg start ：PB1外部下降沿中断触发BT0工作
+/** \brief	btx_int_handler: BT中断服务函数
+ * 
+ *  \brief 	BT发生中断时会调用此函数，函数在interrupt.c里定义为弱(weak)属性，默认不做处理；用户用到BT中
+ * 			断时，请重新定义此函数，在此函数中进行对应中断处理，也可直接在interrupt.c里的函数里进行处理
+ * 
+ *  \param[in] none
+ *  \return none
+ */
+ATTRIBUTE_ISR  void bt0_int_handler(void)
+{
+	//用户直接在中断服务接口函数里处理中断，建议客户使用此模式
+	volatile uint32_t wMisr = csp_bt_get_isr(BT0);
+	
+	if(wMisr & BT_PEND_INT)					//PEND interrupt
+	{
+		csp_bt_clr_isr(BT0, BT_PEND_INT);
+		csi_gpio_toggle(GPIOA, PA6);		//PA6翻转
+	}
+	if(wMisr & BT_CMP_INT)					//CMP interrupt
+	{
+		csp_bt_clr_isr(BT0, BT_CMP_INT);	
+	}
+	if(wMisr & BT_EVTRG_INT)				//EVTRG interrupt
+	{
+		csp_bt_clr_isr(BT0, BT_EVTRG_INT);
+	}
+}
+
+/** \brief	bt sync trg start：外部信号同步触发BT启动demo
+ * 
+ *  \brief	PB1外部下降沿触发BT0启动，对应VIC中断不开启，即不进入PB1的外部中断；若需要进入PB1外部中断，需
+ * 			开启对应的VIC中断，调用csi_gpio_vic_irq_enable接口函数
  *  
  *  \param[in] none
  *  \return error code
@@ -124,53 +154,93 @@ int bt_pwm_demo(void)
 int bt_sync_trg_start_demo(void)
 {
 	int iRet = 0;
-//	volatile uint8_t ch;
-//	csi_etb_config_t tEtbConfig;				               			//ETB 参数配置结构体		
-//
-//#if !defined(USE_GUI)		
-//	csi_pin_set_mux(PB1, PB1_INPUT);									//PB1 配置为输入
-//	csi_pin_pull_mode(PB1, GPIO_PULLUP);								//PB1 上拉
-//	csi_pin_irq_mode(PB1, EXI_GRP1, GPIO_IRQ_FALLING_EDGE);			    //PB1 下降沿产生中断，选择中断组1
-//	csi_pin_irq_enable(PB1,ENABLE);										//PB1 中断使能	
-//	csi_exi_set_evtrg(1, TRGSRC_EXI1, 0);						        //EXI1 触发EXI_TRGOUT1
-//#endif
-//	
-////	csi_pin_set_mux(PA6, PA6_OUTPUT);									//PA6 output ，并在BT0中断里面翻转IO
-////	csi_pin_set_high(PA6);												//PA6 output high;		
-//	
-//	csi_bt_timer_init(BT0,1000);					//BT0 定时
-//	csi_bt_set_sync(BT0, BT_TRGIN_SYNCEN0, BT_TRG_CONTINU, BT_TRG_SYCAREARM);	//外部触发bt0启动(SYNCIN0)
-//	
-////	csi_bt_timer_init(BT1,2000);					//BT1 定时
-////	csi_bt_set_sync(BT1, BT_TRGIN_SYNCEN0, BT_TRG_ONCE, BT_TRG_AUTOAREARM);	//外部触发bt1启动(SYNCIN0)
-//	
-////	csi_bt_timer_init(BT2,3000);					//BT2 定时
-////	csi_bt_set_sync(BT2, BT_TRGIN_SYNCEN0, BT_TRG_ONCE, BT_TRG_AUTOAREARM);	//外部触发bt2启动(SYNCIN0)
-//	
-////	csi_bt_timer_init(BT3,4000);					//BT3 定时
-////	csi_bt_set_sync(BT3, BT_TRGIN_SYNCEN0, BT_TRG_ONCE, BT_TRG_AUTOAREARM);	//外部触发bt3启动(SYNCIN0)
-//	
-//	// ETCB 初始化
-//	tEtbConfig.byChType = ETB_ONE_TRG_ONE;  		//单个源触发单个目标
-//	tEtbConfig.bySrcIp  = ETB_EXI_TRGOUT1;  	    //EXI_TRGOUT1作为触发源
-//	tEtbConfig.byDstIp =  ETB_BT0_SYNCIN0;   	    //BT0 同步输入作为目标事件
-////	tEtbConfig.byDstIp =  ETB_BT1_SYNCIN0;   	    //BT1 同步输入作为目标事件
-////	tEtbConfig.byDstIp =  ETB_BT2_SYNCIN0;   	    //BT2 同步输入作为目标事件
-////	tEtbConfig.byDstIp =  ETB_BT3_SYNCIN0;   	    //BT3 同步输入作为目标事件	
-//	tEtbConfig.byTrgMode = ETB_HARDWARE_TRG;
-//	csi_etb_init();
-//	ch = csi_etb_ch_alloc(tEtbConfig.byChType);	    //自动获取空闲通道号,ch >= 0 获取成功
-//	if(ch < 0)
-//		return -1;								    //ch < 0,则获取通道号失败
-//	iRet = csi_etb_ch_config(ch, &tEtbConfig);
-//	
-//	while(1)
-//	{
-//		NOP;
-//	}
+	volatile uint8_t ch = 0;
+	csi_etb_config_t tEtbConfig;				               			//ETB 参数配置结构体	
+	csi_bt_time_config_t tTimConfig;									//BT 定时初始化参数结构体	
+
+#if (USE_GUI == 0)			
+	csi_gpio_set_mux(GPIOB, PB1, PB1_INPUT);							//PB1 配置为输入
+	csi_gpio_pull_mode(GPIOB, PB1, GPIO_PULLUP);						//PB1 上拉
+	csi_gpio_irq_enable(GPIOB, PB1);									//PB1 中断使能	
+	csi_gpio_irq_mode(GPIOB, PB1, EXI_GRP1, GPIO_IRQ_FALLING_EDGE);		//PB1 下降沿产生中断，选择中断组1
+//	csi_gpio_vic_irq_enable(EXI_GRP1, ENABLE);							//EXI  GROUP1 VIC中断使能
+	csi_exi_set_evtrg(EXI_TRGOUT1, TRGSRC_EXI1, 0);						//EXI1 触发EXI_TRGOUT1
+#endif
+	
+	csi_gpio_set_mux(GPIOA, PA6, PA6_OUTPUT);							//PA6 output ，并在BT0中断里面翻转IO
+	csi_gpio_set_high(GPIOA, PA6);										//PA6 output high;		
+	
+	tTimConfig.wTimeVal = 1000;											//BT定时值 = 1000us
+	tTimConfig.eWkMode  = BT_CNT_CONTINU;								//BT计数器工作模式
+	csi_bt_timer_init(BT0,&tTimConfig);									//BT0 定时	
+	csi_bt_set_sync(BT0, BT_TRGIN_SYNCEN0, BT_TRG_CONTINU, BT_TRG_SYCAREARM);	//外部触发bt0启动(SYNCIN0)
+	
+	// ETCB 初始化
+	tEtbConfig.eChType = ETB_ONE_TRG_ONE;  		//单个源触发单个目标
+	tEtbConfig.eSrcIp  = ETB_EXI_TRGOUT1;  	    //EXI_TRGOUT1作为触发源
+	tEtbConfig.eDstIp =  ETB_BT0_SYNCIN0;   	    //BT0 同步输入作为目标事件
+	tEtbConfig.eTrgMode = ETB_HARDWARE_TRG;
+	csi_etb_init();
+	ch = csi_etb_ch_alloc(tEtbConfig.eChType);	    //自动获取空闲通道号,ch >= 0 获取成功
+	if(ch < 0)
+		return -1;								    //ch < 0,则获取通道号失败
+	iRet = csi_etb_ch_config(ch, &tEtbConfig);
+	
+	while(1)
+	{
+		nop;
+	}
 	return iRet;
 }
+/** \brief bt sync trg stop: 外部信号同步触发BT停止/启动demo
+ * 
+ *  \brief	PB1外部下降沿触发BT0停止/启动，当BT处于运行状态时才有效，即第一次触发关闭BT，再次触发开启BT，
+ * 			依次类推。
+ *
+ *  \param[in] none
+ *  \return error code
+// */
+int bt_sync_trg_stop_demo(void)
+{
+	int iRet = 0;
+	volatile uint8_t ch = 0;
+	csi_etb_config_t tEtbConfig;				               		//ETB 参数配置结构体
+	csi_bt_time_config_t tTimConfig;								//BT 定时初始化参数结构体				
 
+#if (USE_GUI == 0)			
+	csi_gpio_set_mux(GPIOB, PB1, PB1_INPUT);						//PB1 配置为输入
+	csi_gpio_pull_mode(GPIOB, PB1, GPIO_PULLUP);					//PB1 上拉
+	csi_gpio_irq_enable(GPIOB, PB1);								//PB1 中断使能	
+	csi_gpio_irq_mode(GPIOB, PB1, EXI_GRP1, GPIO_IRQ_FALLING_EDGE);	//PB1 下降沿产生中断，选择中断组1
+//	csi_gpio_vic_irq_enable(EXI_GRP1, ENABLE);						//EXI  GROUP1 VIC中断使能
+	csi_exi_set_evtrg(EXI_TRGOUT1, TRGSRC_EXI1, 0);					//EXI1 触发EXI_TRGOUT1
+#endif	
+	
+	csi_gpio_set_mux(GPIOA, PA6, PA6_OUTPUT);						//PA6 output ，并在BT0中断里面翻转IO
+	csi_gpio_set_high(GPIOA, PA6);									//PA6 output high;		
+	
+	tTimConfig.wTimeVal = 1000;										//BT定时值 = 1000us
+	tTimConfig.eWkMode  = BT_CNT_CONTINU;							//BT计数器工作模式
+	csi_bt_timer_init(BT0,&tTimConfig);								//BT0 定时	
+	csi_bt_set_sync(BT0, BT_TRGIN_SYNCEN1, BT_TRG_CONTINU, BT_TRG_AUTOAREARM);		//外部触发BT0停止(SYNCIN1)，连续模式
+	csi_bt_start(BT0);	    						//启动BT0
+	
+	tEtbConfig.eChType = ETB_ONE_TRG_ONE;  			//单个源触发单个目标
+	tEtbConfig.eSrcIp  = ETB_EXI_TRGOUT1;  	    	//EXI_TRGOUT1作为触发源
+	tEtbConfig.eDstIp =  ETB_BT0_SYNCIN1;   	    //BT0 同步输入作为目标事件
+	tEtbConfig.eTrgMode = ETB_HARDWARE_TRG;
+	csi_etb_init();
+	ch = csi_etb_ch_alloc(tEtbConfig.eChType);	    //自动获取空闲通道号,ch >= 0 获取成功
+	if(ch < 0)
+		return -1;								    //ch < 0,则获取通道号失败
+	iRet = csi_etb_ch_config(ch, &tEtbConfig);
+	
+	while(1)
+	{
+		nop;
+	}
+	return iRet;	
+}
 /** \brief bt sync trg count: BT0 输出PWM触发EXI脚PB1，再通过BT1同步输入端口，触发BT1计数值加1
  *                            BT0的PWM输出脚PA0要和PB1脚连接在一起
  *  \param[in] none
@@ -231,64 +301,7 @@ int bt_sync_trg_count_demo(void)
 	return iRet;
 }
 
-/** \brief bt sync trg stop:外部中断触发BT0~BT3 关闭
- *  
- *  \param[in] none
- *  \return error code
-// */
-int bt_sync_trg_stop_demo(void)
-{
-	int iRet = 0;
-//	volatile uint8_t ch;
-//	csi_etb_config_t tEtbConfig;				               			//ETB 参数配置结构体		
-//
-//#if !defined(USE_GUI)		
-//	csi_pin_set_mux(PB1, PB1_INPUT);									//PB1 配置为输入
-//	csi_pin_pull_mode(PB1, GPIO_PULLUP);								//PB1 上拉
-//	csi_pin_irq_mode(PB1, EXI_GRP1, GPIO_IRQ_FALLING_EDGE);			    //PB1 下降沿产生中断，选择中断组1
-//	csi_pin_irq_enable(PB1,ENABLE);							            //PB1 中断使能	
-//	csi_exi_set_evtrg(1, TRGSRC_EXI1, 0);						        //EXI1 触发EXI_TRGOUT0
-//#endif	
-//	
-////	csi_pin_set_mux(PA6, PA6_OUTPUT);		//PA6 output ，并在BT中断里面翻转IO
-////	csi_pin_set_high(PA6);					//PA6 output high;		
-//	
-//	csi_bt_timer_init(BT0,1000);									//BT0 定时
-//	csi_bt_set_sync(BT0, BT_TRGIN_SYNCEN1, BT_TRG_ONCE, BT_TRG_AUTOAREARM);	//外部触发BT0启动(SYNCIN1)，单次模式
-//	
-////	csi_bt_timer_init(BT1,2000);									//BT1 定时
-////	csi_bt_set_sync(BT1, BT_TRGIN_SYNCEN1, BT_TRG_ONCE, BT_TRG_AUTOAREARM);	//外部触发BT1启动(SYNCIN1)
-//	
-////	csi_bt_timer_init(BT2,3000);									//BT2 定时
-////	csi_bt_set_sync(BT2, BT_TRGIN_SYNCEN1, BT_TRG_ONCE, BT_TRG_AUTOAREARM);	//外部触发BT2启动(SYNCIN1)
-//	
-////	csi_bt_timer_init(BT3,4000);									//BT3 定时
-////	csi_bt_set_sync(BT3, BT_TRGIN_SYNCEN1, BT_TRG_CONTINU, BT_TRG_AUTOAREARM);	//外部触发BT3启动(SYNCIN1)
-//		
-//	tEtbConfig.byChType = ETB_ONE_TRG_ONE;  		//单个源触发单个目标
-//	tEtbConfig.bySrcIp  = ETB_EXI_TRGOUT1;  	    //EXI_TRGOUT1作为触发源
-//	tEtbConfig.byDstIp =  ETB_BT0_SYNCIN1;   	    //BT0 同步输入作为目标事件
-////	tEtbConfig.byDstIp =  ETB_BT1_SYNCIN1;   	    //BT1 同步输入作为目标事件
-////	tEtbConfig.byDstIp =  ETB_BT2_SYNCIN1;   	    //BT2 同步输入作为目标事件
-////	tEtbConfig.byDstIp =  ETB_BT3_SYNCIN1;   	    //BT3 同步输入作为目标事件
-//	tEtbConfig.byTrgMode = ETB_HARDWARE_TRG;
-//   
-//	csi_etb_init();
-//	ch = csi_etb_ch_alloc(tEtbConfig.byChType);	    //自动获取空闲通道号,ch >= 0 获取成功
-//	if(ch < 0)
-//		return -1;								    //ch < 0,则获取通道号失败
-//	iRet = csi_etb_ch_config(ch, &tEtbConfig);
-//	
-//	csi_bt_start(BT0);	     //启动BT0
-////	csi_bt_start(BT1);	     //启动BT1
-////	csi_bt_start(BT2);	     //启动BT2
-////	csi_bt_start(BT3);	     //启动BT3
-//	while(1)
-//	{
-//		NOP;
-//	}
-	return iRet;	
-}
+
 
 /** \brief bt evtrg out: 用BT0定时触发另外BT1 PWM输出，当BT0定时周期到时触发BT1输出PWM
  *  \param[in] none

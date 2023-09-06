@@ -311,14 +311,14 @@ typedef enum{
 }csi_etb_dst_e;
 
 typedef struct {
-    uint8_t			bySrcIp;			//a specific number represent a location in an source trigger location map to trigger other ip(s).
-	uint8_t         bySrcIp1; 
-	uint8_t         bySrcIp2; 
-    uint8_t         byDstIp;     		//a specific number represent an location in an dest trigger map to wait signal(s) from source ip(s) or location(s).
-	uint8_t         byDstIp1;
-	uint8_t         byDstIp2;  
-    uint8_t    		byTrgMode;			//the input source is hardware trigger or software trigger.
-    uint8_t     	byChType;    		//channel type
+    csi_etb_src_e		eSrcIp;		//a specific number represent a location in an source trigger location map to trigger other ip(s).
+	csi_etb_src_e       eSrcIp1; 
+	csi_etb_src_e       eSrcIp2; 
+    csi_etb_dst_e       eDstIp;     //a specific number represent an location in an dest trigger map to wait signal(s) from source ip(s) or location(s).
+	csi_etb_dst_e       eDstIp1;
+	csi_etb_dst_e       eDstIp2;  
+    csi_etb_trg_mode_e  eTrgMode;	//the input source is hardware trigger or software trigger.
+    csi_etb_ch_type_e	eChType;    //channel type
 } csi_etb_config_t;
 
 /**
@@ -329,43 +329,57 @@ void csi_etb_init(void);
 
 /**
   \brief       alloc an  etb channel
-  \param[in]   eChType		etb channel work mode
+  \param[in]   eChType		etb channel work mode, \ref csi_etb_ch_type_e
   \return      channel id or CSI_ERROR
 */
 int32_t csi_etb_ch_alloc(csi_etb_ch_type_e eChType);
 
 /**
   \brief       free an etb channel
-  \param[in]   eEtbCh		etb channel number 
+  \param[in]   eEtbCh		etb channel number, \ref csi_etb_ch_e 
   \return      none
 */
 void csi_etb_ch_free(csi_etb_ch_e eEtbCh);
 
 /**
   \brief       config etb channel
-  \param[in]   eEtbCh		etb channel number
+  \param[in]   eEtbCh		etb channel number, \ref csi_etb_ch_e 
   \param[in]   ptConfig     the config structure for etb channel
   \return      csi error code
+*/
+/** 
+  \brief 	  config etb channel
+  \param[in]  eEtbCh			channel number, \ref csi_etb_ch_e
+  \param[in]  ptConfig		the config structure pointer for etb channel
+  				- eSrcIp: trigger source0, \ref csi_etb_src_e
+  				- eSrcIp1: trigger source1, \ref csi_etb_src_e
+  				- eSrcIp2: trigger source2, \ref csi_etb_src_e
+  				- eDstIp: trigger destination0, \ref csi_etb_dst_e
+  				- eDstIp1: trigger destination1, \ref csi_etb_dst_e
+  				- eDstIp2: trigger destination2, \ref csi_etb_dst_e
+  				- eTrgMode: trigger mode, \ref csi_etb_trg_mode_e
+  				- byChType: trigger source0, \ref csi_etb_ch_type_e
+ *  \return csi error code
 */
 csi_error_t csi_etb_ch_config(csi_etb_ch_e eEtbCh, csi_etb_config_t *ptConfig);
 
 /** 
   \brief 	   etb channel sw force triger
-  \param[in]   eEtbCh		etb channel number
+  \param[in]   eEtbCh		etb channel number, \ref csi_etb_ch_e 
   \return 	   none
 */
 void csi_etb_ch_swtrg(csi_etb_ch_e eEtbCh);
 
 /**
   \brief       open(start) an etb channel
-  \param[in]   eEtbCh      	etb channel number
+  \param[in]   eEtbCh      	etb channel number, \ref csi_etb_ch_e 
   \return      none
 */
 void csi_etb_ch_start(csi_etb_ch_e eEtbCh);
 
 /**
   \brief       close(stop) an etb channel
-  \param[in]   etb        etb channel number
+  \param[in]   etb        etb channel number, \ref csi_etb_ch_e 
   \return      none
 */
 void csi_etb_ch_stop(csi_etb_ch_e eEtbCh);

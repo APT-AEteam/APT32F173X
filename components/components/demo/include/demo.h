@@ -30,8 +30,8 @@ extern int pin_irq_demo(void);
 extern int bt_timer_demo(void);
 extern int bt_pwm_demo(void);
 extern int bt_sync_trg_start_demo(void);
-extern int bt_sync_trg_count_demo(void);
 extern int bt_sync_trg_stop_demo(void);
+extern int bt_sync_trg_count_demo(void);
 extern int bt_trg_out_demo(void);
 
 //iwdt demo

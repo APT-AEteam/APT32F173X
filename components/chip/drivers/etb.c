@@ -23,9 +23,9 @@
 static uint32_t s_wEtbAllocStatus[ETB_BUF_LEN] = {0};
 
 
-/** \brief etb channel[0->7] check
+/** \brief etb channel[0->31] check
  * 
- *  \param[in] eEtbCh: channel number = [0:32]
+ *  \param[in] eEtbCh: channel number, \ref csi_etb_ch_e
  *  \return none
  */ 
 static int32_t check_is_alloced(csi_etb_ch_e eEtbCh)
@@ -44,9 +44,9 @@ static int32_t check_is_alloced(csi_etb_ch_e eEtbCh)
 
     return ret;
 }
-/** \brief etb channel[0:32] status 
+/** \brief etb channel[0:31] status 
  * 
- *  \param[in] eEtbCh: channel number = [0:32]
+ *  \param[in] eEtbCh: channel number, \ref csi_etb_ch_e
  *  \param[in] status: status
  *  \return none
  */ 
@@ -63,10 +63,10 @@ static void set_ch_alloc_status(csi_etb_ch_e eEtbCh, uint32_t wStatus)
         s_wEtbAllocStatus[byChGroup] &= ~(uint32_t)(1U << byChOffset);
 		
 }
-/** \brief etb channel[0->7] enable/disable 
+/** \brief etb channel[0->31] enable/disable 
  * 
  *  \param[in] ptEtbBase: pionter of ETB reg structure.
- *  \param[in] eEtbCh: channel number = [0:32]
+ *  \param[in] eEtbCh: channel number, \ref csi_etb_ch_e
  *  \param[in] bEnable: enable/disable
  *  \return none
  */ 
@@ -128,7 +128,7 @@ static void etb_channel_enable(csp_etb_t *ptEtbBase, csi_etb_ch_e eEtbCh, bool b
  *  \param[in] byDst0: trigger destination 0
  *  \param[in] byDst1: trigger destination 1
  *  \param[in] byDst2: trigger destination 2
- *  \param[in] eTrgMode: hard/soft trigger
+ *  \param[in] eTrgMode: trigger mode(hard/soft), \ref csi_etb_ch_e
  *  \return none
  */ 
 static void etb_set_one_trg_more(csp_etb_t *ptEtbBase, uint8_t byChNum, uint8_t bySrc, uint8_t byDst0, uint8_t byDst1, uint8_t byDst2, etb_ch_trg_mode_e eTrgMode)
@@ -164,7 +164,7 @@ void csi_etb_init(void)
 }
 /** \brief alloc an etb channel
  * 
- *  \param[in] eChType: etb channel work mode
+ *  \param[in] eChType: etb channel woke mode, \ref csi_etb_ch_type_e
  *  \return channel id or CSI_ERROR
 */
 int32_t csi_etb_ch_alloc(csi_etb_ch_type_e eChType)
@@ -219,7 +219,7 @@ int32_t csi_etb_ch_alloc(csi_etb_ch_type_e eChType)
 }
 /** \brief free an etb channel
  * 
- *  \param[in] eEtbCh: channel number = [0:32]
+ *  \param[in] eEtbCh: channel number, \ref csi_etb_ch_e
  *  \return none
 */
 void csi_etb_ch_free(csi_etb_ch_e eEtbCh)
@@ -229,8 +229,17 @@ void csi_etb_ch_free(csi_etb_ch_e eEtbCh)
     csi_irq_restore(result);
 }
 /** \brief config etb channel
- *  \param[in] eEtbCh: channel number = [0:32]
+ *  \param[in] eEtbCh: channel number, \ref csi_etb_ch_e
  *  \param[in] ptConfig: the config structure pointer for etb channel
+ * 				- eSrcIp: trigger source0, \ref csi_etb_src_e
+ * 				- eSrcIp1: trigger source1, \ref csi_etb_src_e
+ * 				- eSrcIp2: trigger source2, \ref csi_etb_src_e
+ * 				- eDstIp: trigger destination0, \ref csi_etb_dst_e
+ * 				- eDstIp1: trigger destination1, \ref csi_etb_dst_e
+ * 				- eDstIp2: trigger destination2, \ref csi_etb_dst_e
+ * 				- eTrgMode: trigger mode, \ref csi_etb_trg_mode_e
+ * 				- byChType: trigger source0, \ref csi_etb_ch_type_e
+ * 
  *  \return csi error code
 */
 csi_error_t csi_etb_ch_config(csi_etb_ch_e eEtbCh, csi_etb_config_t *ptConfig)
@@ -238,12 +247,12 @@ csi_error_t csi_etb_ch_config(csi_etb_ch_e eEtbCh, csi_etb_config_t *ptConfig)
     CSI_PARAM_CHK(ptConfig, CSI_ERROR);
 	csi_error_t ret = CSI_OK;
 	
-	switch(ptConfig->byChType)
+	switch(ptConfig->eChType)
 	{
 		case ETB_ONE_TRG_ONE:						//channel num = [3:32]
 			if(eEtbCh > ETB_CH2)
 			{
-				csp_etb_set_one_trg_one(ETCB, eEtbCh, ptConfig->bySrcIp, ptConfig->byDstIp, ptConfig->byTrgMode);
+				csp_etb_set_one_trg_one(ETCB, eEtbCh, ptConfig->eSrcIp, ptConfig->eDstIp, (etb_ch_trg_mode_e)ptConfig->eTrgMode);
 				csp_etb_chx_enable(ETCB, eEtbCh);	//enable etb channel 
 			}
 			else
@@ -252,7 +261,7 @@ csi_error_t csi_etb_ch_config(csi_etb_ch_e eEtbCh, csi_etb_config_t *ptConfig)
 			break;
 		case ETB_ONE_TRG_MORE:						//channel num = [0:2]		
 			if(eEtbCh < ETB_CH3)
-				etb_set_one_trg_more(ETCB, eEtbCh, ptConfig->bySrcIp, ptConfig->byDstIp, ptConfig->byDstIp1, ptConfig->byDstIp2,ptConfig->byTrgMode);
+				etb_set_one_trg_more(ETCB, eEtbCh, ptConfig->eSrcIp, ptConfig->eDstIp, ptConfig->eDstIp1, ptConfig->eDstIp2, (etb_ch_trg_mode_e)ptConfig->eTrgMode);
 			else
 				ret = CSI_ERROR;
 				
@@ -260,7 +269,7 @@ csi_error_t csi_etb_ch_config(csi_etb_ch_e eEtbCh, csi_etb_config_t *ptConfig)
 		case ETB_ONE_TRG_ONE_DMA:					//channel num = [20:31]
 			if((eEtbCh >= ETB_CH_DMA_STAR) && (eEtbCh < ETB_CH_MAX_NUM))
 			{
-				csp_etb_set_one_trg_one(ETCB, eEtbCh, ptConfig->bySrcIp, ptConfig->byDstIp, ptConfig->byTrgMode);
+				csp_etb_set_one_trg_one(ETCB, eEtbCh, ptConfig->eSrcIp, ptConfig->eDstIp, (etb_ch_trg_mode_e)ptConfig->eTrgMode);
 				csp_etb_dma_enable(ETCB, eEtbCh);	//enable etb dma
 				csp_etb_chx_enable(ETCB, eEtbCh);	//enable etb channel 
 			}
@@ -277,7 +286,7 @@ csi_error_t csi_etb_ch_config(csi_etb_ch_e eEtbCh, csi_etb_config_t *ptConfig)
 }
 /** \brief etb channel sw force triger
  * 
- *  \param[in] eEtbCh: channel number = [0:32]
+ *  \param[in] eEtbCh: channel number, \ref csi_etb_ch_e
  *  \return none
 */
 void csi_etb_ch_swtrg(csi_etb_ch_e eEtbCh)
@@ -286,7 +295,7 @@ void csi_etb_ch_swtrg(csi_etb_ch_e eEtbCh)
 }
 /**
  * \brief start an etb channel
- * \param[in] eEtbCh: channel number = [0:32]
+ * \param[in] eEtbCh: channel number, \ref csi_etb_ch_e
  * \return none
 */
 void csi_etb_ch_start(csi_etb_ch_e eEtbCh)
@@ -295,7 +304,7 @@ void csi_etb_ch_start(csi_etb_ch_e eEtbCh)
 }
 /**
  * \brief stop an etb channel
- * \param[in] eEtbCh: channel number = [0:32]
+ * \param[in] eEtbCh: channel number, \ref csi_etb_ch_e
  * \return none
 */
 void csi_etb_ch_stop(csi_etb_ch_e eEtbCh)

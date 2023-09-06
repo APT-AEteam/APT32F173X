@@ -76,7 +76,7 @@ csi_error_t csi_uart_init(csp_uart_t *ptUartBase, csi_uart_config_t *ptUartCfg)
 	
 	if((ptUartCfg->eRxFifoTrg != UART_RXFIFOTRG_ONE) && (ptUartCfg->eRxFifoTrg != UART_RXFIFOTRG_TWO) && (ptUartCfg->eRxFifoTrg != UART_RXFIFOTRG_FOUR))
 		ptUartCfg->eRxFifoTrg = UART_RXFIFOTRG_ONE;
-	csp_uart_set_fifo(ptUartBase, ptUartCfg->eRxFifoTrg, ENABLE);	//set fxfifo and enable
+	csp_uart_set_fifo(ptUartBase, (uart_fifo_bit_e)ptUartCfg->eRxFifoTrg, ENABLE);	//set fxfifo and enable
 	
 	if(ptUartCfg->hwRecvTo > 0)	
 	{
@@ -94,7 +94,7 @@ csi_error_t csi_uart_init(csp_uart_t *ptUartBase, csi_uart_config_t *ptUartCfg)
 /** \brief  register uart interrupt callback function
  * 
  *  \param[in] ptUartBase: pointer of uart register structure
- *  \param[in] eCallBkId: uart interrupt callback type, receive/send/error 
+ *  \param[in] eCallBkId: uart interrupt callback type, \ref csi_uart_callback_id_e
  *  \param[in] callback: uart interrupt handle function
  *  \return error code \ref csi_error_t
  */ 
@@ -243,7 +243,7 @@ void csi_uart_rxfifo_enable(csp_uart_t *ptUartBase, bool bEnable)
 /** \brief enable uart interrupt 
  * 
  *  \param[in] ptUartBase: pointer of uart register structure
- *  \param[in] eIntSrc: uart interrupt source
+ *  \param[in] eIntSrc: uart interrupt source, \ref csi_uart_intsrc_e
  *  \param[in] bEnable: enable interrupt
  *  \return none
  */
@@ -254,7 +254,7 @@ void csi_uart_int_enable(csp_uart_t *ptUartBase, csi_uart_intsrc_e eIntSrc)
 /** \brief disable uart interrupt 
  * 
  *  \param[in] ptUartBase: pointer of uart register structure
- *  \param[in] eIntSrc: uart interrupt source
+ *  \param[in] eIntSrc: uart interrupt source, \ref csi_uart_intsrc_e
  *  \param[in] bEnable: disable interrupt
  *  \return none
  */
@@ -560,7 +560,7 @@ void csi_uart_recv_dma(csp_uart_t *ptUartBase, csi_dma_ch_e eDmaCh, void *pData,
 /** \brief get uart receive/send complete message and (Do not) clear message
  * 
  *  \param[in] ptUartBase: pointer of uart reg structure.
- *  \param[in] eWkMode: tx or rx mode
+ *  \param[in] eWkMode: tx or rx mode, \ref csi_uart_wkmode_e
  *  \param[in] bClrEn: clear uart receive/send complete message enable; ENABLE: clear , DISABLE: Do not clear
  *  \return  bool type true/false
  */ 
@@ -604,7 +604,7 @@ bool csi_uart_get_msg(csp_uart_t *ptUartBase, csi_uart_wkmode_e eWkMode, bool bC
 /** \brief clr uart receive/send status message (set uart recv/send status idle) 
  * 
  *  \param[in] ptUartBase: pointer of uart reg structure.
- *  \param[in] eMode: tx or rx mode
+ *  \param[in] eMode: tx or rx mode, \ref csi_uart_wkmode_e
  *  \return none
  */ 
 void csi_uart_clr_msg(csp_uart_t *ptUartBase, csi_uart_wkmode_e eWkMode)

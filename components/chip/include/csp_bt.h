@@ -327,8 +327,8 @@ static inline void csp_bt_int_disable(csp_bt_t *ptBtBase, bt_int_e eInt)
 //}
 
 //sync and event 
-static inline void csp_bt_rearm_sync(csp_bt_t *ptBtBase, bt_evtrg_in_e eTrgIn)	
-{
+static inline void csp_bt_sync_rearm(csp_bt_t *ptBtBase, bt_evtrg_in_e eTrgIn)	
+{ 
 	ptBtBase->CR |= (0x01 << BT_REARM_POS(eTrgIn));
 }
 static inline void csp_bt_soft_evtrg(csp_bt_t *ptBtBase)			
