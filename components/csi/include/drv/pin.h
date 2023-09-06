@@ -190,7 +190,7 @@ void csi_pin_set_low(pin_name_e ePinName);
   \param       byTrgPrd 	accumulated EXI events to output trigger 
   \return 	   error code \ref csi_error_t
  */ 
-csi_error_t csi_exi_set_evtrg(uint8_t byTrgOut, csi_exi_trgsrc_e eExiTrgSrc, uint8_t byTrgPrd);
+//csi_error_t csi_exi_set_evtrg(uint8_t byTrgOut, csi_exi_trgsrc_e eExiTrgSrc, uint8_t byTrgPrd);
 
 /** 
   \brief  exi filter config

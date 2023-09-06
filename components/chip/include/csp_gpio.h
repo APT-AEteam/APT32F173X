@@ -315,5 +315,19 @@ static inline uint16_t csp_gpio_read_output(csp_gpio_t *ptGpioBase)
 	return (uint16_t)ptGpioBase->ODSR;
 }
 
+//exi trigger 
+static inline void csp_exi_trg_enable(csp_syscon_t *ptSysconBase, uint8_t byTrgOut)		
+{
+	ptSysconBase->EVTRG |= ENDIS_ESYNC_MSK(byTrgOut); 
+}
+static inline void csp_exi_trg_disable(csp_syscon_t *ptSysconBase, uint8_t byTrgOut)		
+{
+	ptSysconBase->EVTRG &= ~ENDIS_ESYNC_MSK(byTrgOut); 
+}
+static inline void csp_exi_soft_evtrg(csp_syscon_t *ptSysconBase, uint8_t byTrgOut)		
+{
+	ptSysconBase->EVSWF = (0x01ul << byTrgOut);
+}
+
 
 #endif   

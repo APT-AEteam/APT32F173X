@@ -703,35 +703,35 @@ void csi_pin_set_low(pin_name_e ePinName)
  *  \param[in] byTrgPrd: accumulated EXI events to output trigger 
  *  \return error code \ref csi_error_t
  */ 
-csi_error_t csi_exi_set_evtrg(uint8_t byTrgOut, csi_exi_trgsrc_e eExiTrgSrc, uint8_t byTrgPrd)
-{
-	
-	byTrgPrd &= 0xf;
-	//set evtrg source 
-	if (byTrgOut < 4 && eExiTrgSrc < 16)	
-	{
-		SYSCON -> EVTRG = (SYSCON -> EVTRG & ~(TRG_SRC0_3_MSK(byTrgOut))) | (eExiTrgSrc << TRG_SRC0_3_POS(byTrgOut));
-		
-		if(byTrgPrd)		//set evtrg period
-		{
-			SYSCON -> EVTRG |= TRG_EVCNT_CLR_MSK(byTrgOut);		//clear TRG EVxCNT
-			SYSCON -> EVPS = (SYSCON -> EVPS & ~(TRG_EVPRD_MSK(byTrgOut)))| ((byTrgPrd - 1) << TRG_EVPRD_POS(byTrgOut));
-		}
-	}
-	else if (byTrgOut < 6 && eExiTrgSrc > 15) 
-		SYSCON -> EVTRG = (SYSCON -> EVTRG & ~(TRG_SRC4_5_MSK(byTrgOut)))| ((eExiTrgSrc-16) << TRG_SRC4_5_POS(byTrgOut));
-	else
-		return CSI_ERROR;
-	
-	//evtrg output event enable
-	SYSCON -> EVTRG = (SYSCON -> EVTRG & ~(ENDIS_ESYNC_MSK(byTrgOut))) | (ENABLE << ENDIS_ESYNC_POS(byTrgOut));
-	
-//	csp_syscon_set_evtrg_src(SYSCON, byTrgOut, eExiTrgSrc);
-//	csp_syscon_set_evtrg_prd(SYSCON, byTrgOut, byTrgPrd);
-//	csp_syscon_evtrg_enable(SYSCON, byTrgOut, ENABLE);
-	
-	return CSI_OK;
-}
+//csi_error_t csi_exi_set_evtrg(uint8_t byTrgOut, csi_exi_trgsrc_e eExiTrgSrc, uint8_t byTrgPrd)
+//{
+//	
+//	byTrgPrd &= 0xf;
+//	//set evtrg source 
+//	if (byTrgOut < 4 && eExiTrgSrc < 16)	
+//	{
+//		SYSCON -> EVTRG = (SYSCON -> EVTRG & ~(TRG_SRC0_3_MSK(byTrgOut))) | (eExiTrgSrc << TRG_SRC0_3_POS(byTrgOut));
+//		
+//		if(byTrgPrd)		//set evtrg period
+//		{
+//			SYSCON -> EVTRG |= TRG_EVCNT_CLR_MSK(byTrgOut);		//clear TRG EVxCNT
+//			SYSCON -> EVPS = (SYSCON -> EVPS & ~(TRG_EVPRD_MSK(byTrgOut)))| ((byTrgPrd - 1) << TRG_EVPRD_POS(byTrgOut));
+//		}
+//	}
+//	else if (byTrgOut < 6 && eExiTrgSrc > 15) 
+//		SYSCON -> EVTRG = (SYSCON -> EVTRG & ~(TRG_SRC4_5_MSK(byTrgOut)))| ((eExiTrgSrc-16) << TRG_SRC4_5_POS(byTrgOut));
+//	else
+//		return CSI_ERROR;
+//	
+//	//evtrg output event enable
+//	SYSCON -> EVTRG = (SYSCON -> EVTRG & ~(ENDIS_ESYNC_MSK(byTrgOut))) | (ENABLE << ENDIS_ESYNC_POS(byTrgOut));
+//	
+////	csp_syscon_set_evtrg_src(SYSCON, byTrgOut, eExiTrgSrc);
+////	csp_syscon_set_evtrg_prd(SYSCON, byTrgOut, byTrgPrd);
+////	csp_syscon_evtrg_enable(SYSCON, byTrgOut, ENABLE);
+//	
+//	return CSI_OK;
+//}
 /** \brief  exi filter config
  * 
  *  \param[in] eExiGrp: exi group0~3 and group16~19

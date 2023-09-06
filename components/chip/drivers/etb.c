@@ -169,7 +169,7 @@ void csi_etb_init(void)
 */
 int32_t csi_etb_ch_alloc(csi_etb_ch_type_e eChType)
 {
-    int32_t ret, ret_ch;
+    int32_t ret_ch = 0;
     uint32_t result = csi_irq_save();
 
     switch (eChType) 
@@ -182,7 +182,7 @@ int32_t csi_etb_ch_alloc(csi_etb_ch_type_e eChType)
             }
 
             if (ret_ch >= 3) 
-                ret = CSI_ERROR;
+                ret_ch = CSI_ERROR;
 				
             break;
         case ETB_ONE_TRG_ONE:
@@ -193,7 +193,7 @@ int32_t csi_etb_ch_alloc(csi_etb_ch_type_e eChType)
             }
 
             if (ret_ch >= ETB_CH_DMA_STAR) 
-                ret = CSI_ERROR;
+                ret_ch = CSI_ERROR;
 				
             break;
 		case ETB_ONE_TRG_ONE_DMA:
@@ -204,18 +204,18 @@ int32_t csi_etb_ch_alloc(csi_etb_ch_type_e eChType)
             }
 
             if (ret_ch >= ETB_CH_MAX_NUM) 
-                ret = CSI_ERROR;
+               ret_ch = CSI_ERROR;
 			
 			break;
         default:
-            ret = CSI_ERROR;
+            ret_ch = CSI_ERROR;
     }
 
-    if (ret != CSI_ERROR) 
+    if (ret_ch != CSI_ERROR) 
         set_ch_alloc_status(ret_ch, 1U);
 
     csi_irq_restore(result);
-    return ret;
+    return ret_ch;
 }
 /** \brief free an etb channel
  * 

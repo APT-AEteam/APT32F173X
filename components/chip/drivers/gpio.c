@@ -519,3 +519,64 @@ csi_error_t csi_gpio_vic_irq_enable(csi_exi_grp_e eExiGrp, bool bEnable)
 	
 	return CSI_OK;
 }
+
+/** \brief  set exi as trigger event(EV0~5) 
+ *  \param[in] eTrgOut: output event select \ref csi_exi_trgout_e
+ *  \param[in] eExiTrgSrc: event source \ref csi_exi_trgsrc_e
+ *  \param[in] byTrgPrd: accumulated EXI events to output trigger; 0~16
+ *  \return error code \ref csi_error_t
+ */ 
+csi_error_t csi_exi_set_evtrg(csi_exi_trgout_e eTrgOut, csi_exi_trgsrc_e eExiTrgSrc, uint8_t byTrgPrd)
+{
+	
+	byTrgPrd &= 0xf;
+	//set evtrg source 
+	if (eTrgOut < 4 && eExiTrgSrc < 16)	
+	{
+		SYSCON -> EVTRG = (SYSCON -> EVTRG & ~(TRG_SRC0_3_MSK(eTrgOut))) | (eExiTrgSrc << TRG_SRC0_3_POS(eTrgOut));
+		
+		if(byTrgPrd)		//set evtrg period
+		{
+			SYSCON -> EVTRG |= TRG_EVCNT_CLR_MSK(eTrgOut);		//clear TRG EVxCNT
+			SYSCON -> EVPS = (SYSCON -> EVPS & ~(TRG_EVPRD_MSK(eTrgOut)))| ((byTrgPrd - 1) << TRG_EVPRD_POS(eTrgOut));
+		}
+	}
+	else if (eTrgOut < 6 && eExiTrgSrc > 15) 
+		SYSCON -> EVTRG = (SYSCON -> EVTRG & ~(TRG_SRC4_5_MSK(eTrgOut)))| ((eExiTrgSrc-16) << TRG_SRC4_5_POS(eTrgOut));
+	else
+		return CSI_ERROR;
+	
+	//evtrg output event enable
+	SYSCON -> EVTRG = (SYSCON -> EVTRG & ~(ENDIS_ESYNC_MSK(eTrgOut))) | (ENABLE << ENDIS_ESYNC_POS(eTrgOut));
+	
+	return CSI_OK;
+}
+/** \brief exi evtrg output enable/disable
+ * 
+ *  \param[in] eTrgOut: output event select \ref csi_exi_trgout_e
+ *  \param[in] bEnable: ENABLE/DISABLE
+ *  \return none
+ */
+void csi_exi_evtrg_enable(csi_exi_trgout_e eTrgOut)
+{
+	csp_exi_trg_enable(SYSCON, eTrgOut);
+}
+/** \brief exi evtrg output enable/disable
+ * 
+ *  \param[in] eTrgOut: output event select \ref csi_exi_trgout_e
+ *  \param[in] bEnable: ENABLE/DISABLE
+ *  \return none
+ */
+void csi_exi_evtrg_disable(csi_exi_trgout_e eTrgOut)
+{
+	csp_exi_trg_enable(SYSCON, eTrgOut);
+}
+
+/** \brief  exi software trigger event 
+ *  \param[in] eTrgOut: output event select \ref csi_exi_trgout_e
+ *  \return none
+ */ 
+void csi_exi_soft_evtrg(csi_exi_trgout_e eTrgOut)
+{
+	csp_exi_soft_evtrg(SYSCON, eTrgOut);
+}
