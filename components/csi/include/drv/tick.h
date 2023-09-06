@@ -12,7 +12,7 @@
 #ifndef _DRV_TICK_H_
 #define _DRV_TICK_H_
 
-#include "csp_bt.h"
+#include "drv/common.h"
 
 #ifndef CONFIG_SYSTICK_HZ
 #define CONFIG_SYSTICK_HZ  100U
@@ -22,7 +22,7 @@
 extern "C" {
 #endif
 
-void bt_irqhandler3(csp_bt_t *ptBtBase);
+
 /**
   \brief       Initializes the resources needed for the TICK interface
   \return      error code
