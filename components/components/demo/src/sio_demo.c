@@ -83,10 +83,9 @@ int sio_led_rgb_demo(void)
 												//					          |   |_| 	
 	tSioTxCfg.byTxBufLen 	= 8;				//发送数据缓存长度(bit个数 = 8)，txbuf 一次发送bit数量，len <= 16
 	tSioTxCfg.byTxCnt 		= 24;				//SIO一次发送总的数据长度(bit个数 = 24)，byTxCnt >= byTxBufLen，byTxCnt < 256(最大32bytes)
-	tSioTxCfg.byIdleLev 	= SIO_IDLE_L;		//SIO空闲时刻IO管脚输出电平
-	tSioTxCfg.byTxDir 		= SIO_TXDIR_LSB;	//LSB->MSB, txbuf 数据按照bit[1:0]...[31:30]方式移出
+	tSioTxCfg.eIdleLev 		= SIO_IDLE_L;		//SIO空闲时刻IO管脚输出电平
+	tSioTxCfg.eTxDir 		= SIO_TXDIR_LSB;	//LSB->MSB, txbuf 数据按照bit[1:0]...[31:30]方式移出
 	tSioTxCfg.wTxFreq 		= 500000;			//tx clk =500KHz, Ttxshift = 1/0.5 = 2us；发送每bit时间是2us
-	tSioTxCfg.byInt			= SIO_INTSRC_NONE;	//不使用中断
 	
 	csi_sio_tx_init(SIO0, &tSioTxCfg);
 	//mdelay(10);
@@ -135,10 +134,9 @@ int sio_led_rgb_int_demo(void)
 													//					          |   |_| 	
 	tSioTxCfg.byTxBufLen 	= 8;					//发送数据缓存长度(bit个数 = 8)，txbuf 一次发送bit数量，len <= 16
 	tSioTxCfg.byTxCnt 		= 8;					//SIO一次发送总的数据长度(bit个数 = 8)，byTxCnt >= byTxBufLen，byTxCnt < 256(最大32bytes)
-	tSioTxCfg.byIdleLev 	= SIO_IDLE_L;			//SIO空闲时刻IO管脚输出电平
-	tSioTxCfg.byTxDir 		= SIO_TXDIR_LSB;		//MSB->LSB, txbuf 数据按照bit[1:0]...[31:30]方式移出
+	tSioTxCfg.eIdleLev 		= SIO_IDLE_L;			//SIO空闲时刻IO管脚输出电平
+	tSioTxCfg.eTxDir 		= SIO_TXDIR_LSB;		//MSB->LSB, txbuf 数据按照bit[1:0]...[31:30]方式移出
 	tSioTxCfg.wTxFreq 		= 500000;				//tx clk =500KHz, Ttxshift = 1/0.5 = 2us；发送每bit时间是2us
-	tSioTxCfg.byInt			= SIO_INTSRC_TXBUFEMPT;	//使用发送BUF空中断
 	
 	csi_sio_tx_init(SIO0, &tSioTxCfg);
 	//mdelay(10);
@@ -219,11 +217,9 @@ int sio_led_rgb_send_dma_demo(void)
 														//					          |   |_| 	
 	tSioTxCfg.byTxBufLen 	= 8;						//发送数据缓存长度(bit个数 = 8)，txbuf 一次发送bit数量，len <= 16
 	tSioTxCfg.byTxCnt 		= 8;						//SIO一次发送总的数据长度(bit个数 = 8)，byTxCnt >= byTxBufLen，byTxCnt < 256(最大32bytes)
-	tSioTxCfg.byIdleLev 	= SIO_IDLE_L;				//SIO空闲时刻IO管脚输出电平
-	tSioTxCfg.byTxDir 		= SIO_TXDIR_LSB;			//MSB->LSB, txbuf 数据按照bit[1:0]...[31:30]方式移出
+	tSioTxCfg.eIdleLev 		= SIO_IDLE_L;				//SIO空闲时刻IO管脚输出电平
+	tSioTxCfg.eTxDir 		= SIO_TXDIR_LSB;			//MSB->LSB, txbuf 数据按照bit[1:0]...[31:30]方式移出
 	tSioTxCfg.wTxFreq 		= 500000;					//tx clk =500KHz, Ttxshift = 1/0.5 = 2us；发送每bit时间是2us
-	tSioTxCfg.byInt			= SIO_INTSRC_NONE;			//不使用中断。
-	
 	csi_sio_tx_init(SIO0, &tSioTxCfg);
 	
 	for(byCount = 0; byCount < 8; byCount++ )
@@ -297,20 +293,19 @@ int sio_led_rgb_recv_dma_demo(void)
 	//SIO RX 参数配置
 	tSioRxCfg.byDebPerLen 	= 3;					//接收滤波周期	
 	tSioRxCfg.byDebClkDiv 	= 2;					//接收滤波时钟分频
-	tSioRxCfg.byTrgEdge 	= SIO_TRG_RISE;			//接收采样触发边沿，上升沿
-	tSioRxCfg.byTrgMode		= SIO_TRGMD_DEB;		//接收采样触发模式，去抖后
-	tSioRxCfg.byRxDir 	 	= SIO_RXDIR_LSB;		//接收数据方向， 数据按照bit0...31方式移入，根据不同应用移入数据
-	tSioRxCfg.bySpMode		= SIO_SPMD_EDGE_EN;		//接收数据采样边沿对齐使能	
-	tSioRxCfg.bySpExtra		= SIO_EXTRACT_HI;		//采样提取策略，(20H)HITHR; (BIT = 1)个数 > HITHR 提取H,否则提取L
+	tSioRxCfg.eTrgEdge 		= SIO_TRG_RISE;			//接收采样触发边沿，上升沿
+	tSioRxCfg.eTrgMode		= SIO_TRGMD_DEB;		//接收采样触发模式，去抖后
+	tSioRxCfg.eRxDir 	 	= SIO_RXDIR_LSB;		//接收数据方向， 数据按照bit0...31方式移入，根据不同应用移入数据
+	tSioRxCfg.eSpMode		= SIO_SPMD_EDGE_EN;		//接收数据采样边沿对齐使能	
+	tSioRxCfg.eSpExtra		= SIO_EXTRACT_HI;		//采样提取策略，(20H)HITHR; (BIT = 1)个数 > HITHR 提取H,否则提取L
 	tSioRxCfg.byHithr		= 4;					//提取判定值, (BIT = 1)个数 > HITHR 提取H,否则提取L
 	tSioRxCfg.byRxBufLen	= 8;					//发送数据缓存长度(bit个数 = 8)，rxbuf 一次接收bit数量，len <= 32				
 	tSioRxCfg.byRxCnt		= 8;					//SIO一次接收总的数据长度(bit个数 = 24)，byRxCnt >= byRxBufLen，byRxCnt < 256(最大32bytes)				
 	tSioRxCfg.wRxFreq		= 1000000;				//rx clk =1MHz, Trxsamp = 1/1 = 1us；每1us 采样一次
 	tSioRxCfg.bySpBitLen	= 8;					//bit采样的长度，每个bit采样次数为8，总得采样时间 = 8*Trxsamp = 1us
-	tSioRxCfg.byInt			= SIO_INTSRC_NONE;		//接收采用RXBUFFULL中断，当接收到byRxBufLen个bit后，产生中断，读取到接收buf中，每次读取byRxBufLen(8)bit
 	
 	csi_sio_rx_init(SIO0, &tSioRxCfg);				//初始化SIO接收参数
-	csi_sio_timeout_rst(SIO0, 20, ENABLE);			//接收超时复位, timeout cnt > bySpBitLen
+	csi_sio_set_samp_timeout(SIO0, 20, ENABLE);			//接收超时复位, timeout cnt > bySpBitLen
 	
 
 	csi_sio_recv_dma(SIO0, DMA0, DMA_CH2, (void*)byLedRxBuf, 24);
@@ -348,20 +343,18 @@ int sio_led_rgb_recv_rxfull_demo(void)
 	//SIO RX 参数配置
 	tSioRxCfg.byDebPerLen 	= 3;					//接收滤波周期	
 	tSioRxCfg.byDebClkDiv 	= 2;					//接收滤波时钟分频
-	tSioRxCfg.byTrgEdge 	= SIO_TRG_RISE;			//接收采样触发边沿，上升沿
-	tSioRxCfg.byTrgMode		= SIO_TRGMD_DEB;		//接收采样触发模式，去抖后
-	tSioRxCfg.byRxDir 	 	= SIO_RXDIR_LSB;		//接收数据方向， 数据按照bit0...31方式移入，根据不同应用移入数据
-	tSioRxCfg.bySpMode		= SIO_SPMD_EDGE_EN;		//接收数据采样边沿对齐使能	
-	tSioRxCfg.bySpExtra		= SIO_EXTRACT_HI;		//采样提取策略，(20H)HITHR; (BIT = 1)个数 > HITHR 提取H,否则提取L
+	tSioRxCfg.eTrgEdge 	= SIO_TRG_RISE;			//接收采样触发边沿，上升沿
+	tSioRxCfg.eTrgMode		= SIO_TRGMD_DEB;		//接收采样触发模式，去抖后
+	tSioRxCfg.eRxDir 	 	= SIO_RXDIR_LSB;		//接收数据方向， 数据按照bit0...31方式移入，根据不同应用移入数据
+	tSioRxCfg.eSpMode		= SIO_SPMD_EDGE_EN;		//接收数据采样边沿对齐使能	
+	tSioRxCfg.eSpExtra		= SIO_EXTRACT_HI;		//采样提取策略，(20H)HITHR; (BIT = 1)个数 > HITHR 提取H,否则提取L
 	tSioRxCfg.byHithr		= 4;					//提取判定值, (BIT = 1)个数 > HITHR 提取H,否则提取L
 	tSioRxCfg.byRxBufLen	= 8;					//发送数据缓存长度(bit个数 = 8)，rxbuf 一次接收bit数量，len <= 32				
 	tSioRxCfg.byRxCnt		= 24;					//SIO一次接收总的数据长度(bit个数 = 24)，byRxCnt >= byRxBufLen，byRxCnt < 256(最大32bytes)				
 	tSioRxCfg.wRxFreq		= 1000000;				//rx clk =1MHz, Trxsamp = 1/1 = 1us；每1us 采样一次
 	tSioRxCfg.bySpBitLen	= 8;					//bit采样的长度，每个bit采样次数为8，总得采样时间 = 8*Trxsamp = 1us
-	tSioRxCfg.byInt			= SIO_INTSRC_RXBUFFULL;	//接收采用RXBUFFULL中断，当接收到byRxBufLen个bit后，产生中断，读取到接收buf中，每次读取byRxBufLen(8)bit
-	
 	csi_sio_rx_init(SIO0, &tSioRxCfg);				//初始化SIO接收参数
-	csi_sio_timeout_rst(SIO0, 20, ENABLE);			//接收超时复位, timeout cnt > bySpBitLen
+	csi_sio_set_samp_timeout(SIO0, 20, ENABLE);			//接收超时复位, timeout cnt > bySpBitLen
 	csi_sio_set_buffer(g_wSioRxBuf, 24);			//设置接收数据buf和buf长度len >= (24个byRxBufLen)，将接收到的数据存放于用户定义的buffer中
 	
 	while(1)
@@ -398,20 +391,19 @@ int sio_led_rgb_recv_rxdone_demo(void)
 	//SIO RX 参数配置
 	tSioRxCfg.byDebPerLen 	= 3;					//接收滤波周期	
 	tSioRxCfg.byDebClkDiv 	= 2;					//接收滤波时钟分频
-	tSioRxCfg.byTrgEdge 	= SIO_TRG_RISE;			//接收采样触发边沿，上升沿
-	tSioRxCfg.byTrgMode		= SIO_TRGMD_DEB;		//接收采样触发模式，去抖后
-	tSioRxCfg.byRxDir 	 	= SIO_RXDIR_LSB;		//接收数据方向， 数据按照bit0...31方式移入，根据不同应用移入数据
-	tSioRxCfg.bySpMode		= SIO_SPMD_EDGE_EN;		//接收数据采样边沿对齐使能	
-	tSioRxCfg.bySpExtra		= SIO_EXTRACT_HI;		//采样提取策略，(20H)HITHR; (BIT = 1)个数 > HITHR 提取H,否则提取L
+	tSioRxCfg.eTrgEdge 	= SIO_TRG_RISE;			//接收采样触发边沿，上升沿
+	tSioRxCfg.eTrgMode		= SIO_TRGMD_DEB;		//接收采样触发模式，去抖后
+	tSioRxCfg.eRxDir 	 	= SIO_RXDIR_LSB;		//接收数据方向， 数据按照bit0...31方式移入，根据不同应用移入数据
+	tSioRxCfg.eSpMode		= SIO_SPMD_EDGE_EN;		//接收数据采样边沿对齐使能	
+	tSioRxCfg.eSpExtra		= SIO_EXTRACT_HI;		//采样提取策略，(20H)HITHR; (BIT = 1)个数 > HITHR 提取H,否则提取L
 	tSioRxCfg.byHithr		= 4;					//提取判定值, (BIT = 1)个数 > HITHR 提取H,否则提取L
 	tSioRxCfg.byRxBufLen	= 8;					//发送数据缓存长度(bit个数 = 8)，rxbuf 一次接收bit数量，len <= 32				
 	tSioRxCfg.byRxCnt		= 24;					//SIO一次接收总的数据长度(bit个数 = 24)，byRxCnt >= byRxBufLen，byRxCnt < 256(最大32bytes)				
 	tSioRxCfg.wRxFreq		= 1000000;				//rx clk =1MHz, Trxsamp = 1/1 = 1us；每1us 采样一次
 	tSioRxCfg.bySpBitLen	= 8;					//bit采样的长度，每个bit采样次数为8，总得采样时间 = 8*Trxsamp = 1us
-	tSioRxCfg.byInt			= SIO_INTSRC_RXDNE;		//接收采RXDNE中断，byRxCnt <= 32bit；接收byRxCnt(24)个bit，产生中断,读取数据到接收buf，每次读取byRxCnt(24)bit
 	
 	csi_sio_rx_init(SIO0, &tSioRxCfg);				//初始化SIO接收参数
-	csi_sio_timeout_rst(SIO0, 20, ENABLE);			//接收超时复位, timeout cnt > bySpBitLen
+	csi_sio_set_samp_timeout(SIO0, 20, ENABLE);			//接收超时复位, timeout cnt > bySpBitLen
 	csi_sio_set_buffer(g_wSioRxBuf, 8);				//设置接收数据buf和buf长度，buf长度len >= (byRxCnt * 8)bit ;数据存放于用户定义的buffer中
 	
 	while(1)
@@ -456,10 +448,9 @@ int sio_hdq_send_demo(void)
 												//					          |_|	 |
 	tHdqTxCfg.byTxBufLen 	= 11;				//发送数据缓存长度(bit个数 = 8)，txbuf 一次发送bit数量，len <= 16
 	tHdqTxCfg.byTxCnt 		= 19;				//SIO一次发送总的数据长度(bit个数 = 24)，byTxCnt >= byTxBufLen，byTxCnt < 256(最大32bytes)
-	tHdqTxCfg.byIdleLev 	= SIO_IDLE_H;		//SIO空闲时刻IO管脚输出电平
-	tHdqTxCfg.byTxDir 		= SIO_TXDIR_LSB;	//MSB->LSB, txbuf 数据按照bit[1:0]...[31:30]方式移出
+	tHdqTxCfg.eIdleLev 	= SIO_IDLE_H;		//SIO空闲时刻IO管脚输出电平
+	tHdqTxCfg.eTxDir 		= SIO_TXDIR_LSB;	//MSB->LSB, txbuf 数据按照bit[1:0]...[31:30]方式移出
 	tHdqTxCfg.wTxFreq 		= 25000;			//tx clk =25kHz, Ttxshift = 1/4 = 40us；发送每bit时间是40us
-	tHdqTxCfg.byInt		= SIO_INTSRC_NONE;		//不使用中断。目前只支持非中断模式
 	
 	csi_sio_tx_init(SIO0, &tHdqTxCfg);
 	
@@ -500,20 +491,20 @@ int sio_hdq_recv_wrcmd_demo(void)
 	//SIO RX 参数配置
 	tHdqRxCfg.byDebPerLen 	= 3;					//接收滤波周期	
 	tHdqRxCfg.byDebClkDiv 	= 4;					//接收滤波时钟分频
-	tHdqRxCfg.byTrgEdge 	= SIO_TRG_FALL;			//接收采样触发边沿，下降沿
-	tHdqRxCfg.byTrgMode		= SIO_TRGMD_DEB;		//接收采样触发模式，去抖后
-	tHdqRxCfg.byRxDir 	 	= SIO_RXDIR_MSB;		//接收数据方向， 数据按照bit31...0方式移入，根据不同应用移入数据
-	tHdqRxCfg.bySpMode		= SIO_SPMD_EDGE_EN;		//接收数据采样边沿对齐使能	
-	tHdqRxCfg.bySpExtra		= SIO_EXTRACT_HI;		//采样提取策略，(20H)HITHR; (BIT = 1)个数 > HITHR 提取H,否则提取L
+	tHdqRxCfg.eTrgEdge 	= SIO_TRG_FALL;			//接收采样触发边沿，下降沿
+	tHdqRxCfg.eTrgMode		= SIO_TRGMD_DEB;		//接收采样触发模式，去抖后
+	tHdqRxCfg.eRxDir 	 	= SIO_RXDIR_MSB;		//接收数据方向， 数据按照bit31...0方式移入，根据不同应用移入数据
+	tHdqRxCfg.eSpMode		= SIO_SPMD_EDGE_EN;		//接收数据采样边沿对齐使能	
+	tHdqRxCfg.eSpExtra		= SIO_EXTRACT_HI;		//采样提取策略，(20H)HITHR; (BIT = 1)个数 > HITHR 提取H,否则提取L
 	tHdqRxCfg.byHithr		= 13;					//提取判定值, (BIT = 1)个数 > HITHR 提取H,否则提取L
 	tHdqRxCfg.byRxBufLen	= 8;					//发送数据缓存长度(bit个数 = 8)，rxbuf 一次接收bit数量，len <= 32				
 	tHdqRxCfg.byRxCnt		= 16;					//SIO一次接收总的数据长度(bit个数 = 16)，byRxCnt >= byRxBufLen，byRxCnt < 256(最大32bytes)				
 	tHdqRxCfg.wRxFreq		= 100000;				//rx clk =100kHz, Trxsamp = 1/100kHz = 10us；每10us采样一次
 	tHdqRxCfg.bySpBitLen	= 19;					//bit采样的长度，每个bit采样次数为19，总得采样时间 = 19*Trxsamp = 190us
-	tHdqRxCfg.byInt		= SIO_INTSRC_RXDNE | SIO_INTSRC_BREAK;	//接收RXDNE和BREAK中断，byRxCnt <= 32bit接；收byRxCnt(16)个bit，产生中断,读取数据到接收buf，每次读取byRxCnt(16)bit
+	//tHdqRxCfg.byInt		= SIO_INTSRC_RXDNE | SIO_INTSRC_BREAK;	//接收RXDNE和BREAK中断，byRxCnt <= 32bit接；收byRxCnt(16)个bit，产生中断,读取数据到接收buf，每次读取byRxCnt(16)bit
 	
 	csi_sio_rx_init(SIO0, &tHdqRxCfg);					//初始化SIO接收参数
-	csi_sio_break_rst(SIO0, SIO_BKLEV_LOW, 19, ENABLE);	//检测接收break
+	csi_sio_set_break(SIO0, SIO_BKLEV_LOW, 19, ENABLE);	//检测接收break
 
 	csi_sio_set_buffer(g_wSioRxBuf, 1);					//设置接收数据buf和buf长度，buf长度len >= (byRxCnt * 8)bit ;数据存放于用户定义的buffer中
 	
@@ -553,20 +544,20 @@ int sio_hdq_send_recv_demo(void)
 	//SIO RX 参数配置
 	tHdqRxCfg.byDebPerLen 	= 3;					//接收滤波周期	
 	tHdqRxCfg.byDebClkDiv 	= 4;					//接收滤波时钟分频
-	tHdqRxCfg.byTrgEdge 	= SIO_TRG_FALL;			//接收采样触发边沿，下降沿
-	tHdqRxCfg.byTrgMode		= SIO_TRGMD_DEB;		//接收采样触发模式，去抖后
-	tHdqRxCfg.byRxDir 	 	= SIO_RXDIR_MSB;		//接收数据方向， 数据按照bit0...31方式移入，根据不同应用移入数据
-	tHdqRxCfg.bySpMode		= SIO_SPMD_EDGE_EN;		//接收数据采样边沿对齐使能	
-	tHdqRxCfg.bySpExtra		= SIO_EXTRACT_HI;		//采样提取策略，(20H)HITHR; (BIT = 1)个数 > HITHR 提取H,否则提取L
+	tHdqRxCfg.eTrgEdge 	= SIO_TRG_FALL;			//接收采样触发边沿，下降沿
+	tHdqRxCfg.eTrgMode		= SIO_TRGMD_DEB;		//接收采样触发模式，去抖后
+	tHdqRxCfg.eRxDir 	 	= SIO_RXDIR_MSB;		//接收数据方向， 数据按照bit0...31方式移入，根据不同应用移入数据
+	tHdqRxCfg.eSpMode		= SIO_SPMD_EDGE_EN;		//接收数据采样边沿对齐使能	
+	tHdqRxCfg.eSpExtra		= SIO_EXTRACT_HI;		//采样提取策略，(20H)HITHR; (BIT = 1)个数 > HITHR 提取H,否则提取L
 	tHdqRxCfg.byHithr		= 13;					//提取判定值, (BIT = 1)个数 > HITHR 提取H,否则提取L
 	tHdqRxCfg.byRxBufLen	= 8;					//发送数据缓存长度(bit个数 = 8)，rxbuf 一次接收bit数量，len <= 32				
 	tHdqRxCfg.byRxCnt		= 8;					//SIO一次接收总的数据长度(bit个数 = 16)，byRxCnt >= byRxBufLen，byRxCnt < 256(最大32bytes)				
 	tHdqRxCfg.wRxFreq		= 100000;				//rx clk =100kHz, Trxsamp = 1/100kHz = 10us；每10us采样一次
 	tHdqRxCfg.bySpBitLen	= 19;					//bit采样的长度，每个bit采样次数为19，总得采样时间 = 19*Trxsamp = 190us
-	tHdqRxCfg.byInt			= SIO_INTSRC_RXDNE; 	//接收RXDNE中断，byRxCnt <= 32bit；接收byRxCnt(8)个bit，产生中断,读取数据到接收buf，每次读取byRxCnt(8)bit
+	//tHdqRxCfg.byInt			= SIO_INTSRC_RXDNE; 	//接收RXDNE中断，byRxCnt <= 32bit；接收byRxCnt(8)个bit，产生中断,读取数据到接收buf，每次读取byRxCnt(8)bit
 	
 	csi_sio_rx_init(SIO0, &tHdqRxCfg);					//初始化SIO接收参数
-	csi_sio_break_rst(SIO0, SIO_BKLEV_LOW, 19, ENABLE);	//检测接收break
+	csi_sio_set_break(SIO0, SIO_BKLEV_LOW, 19, ENABLE);	//检测接收break
 	csi_sio_set_buffer(g_wSioRxBuf, 1);					//设置接收数据buf和buf长度，buf长度len >= (byRxCnt * 8)bit ;数据存放于用户定义的buffer中
 	
 	//SIO TX 参数配置
@@ -580,10 +571,9 @@ int sio_hdq_send_recv_demo(void)
 												//					          |_|	 |
 	tHdqTxCfg.byTxBufLen 	= 11;				//发送数据缓存长度(bit个数 = 8)，txbuf 一次发送bit数量，len <= 16
 	tHdqTxCfg.byTxCnt 		= 11;				//SIO一次发送总的数据长度(bit个数 = 24)，byTxCnt >= byTxBufLen，byTxCnt < 256(最大32bytes)
-	tHdqTxCfg.byIdleLev 	= SIO_IDLE_H;		//SIO空闲时刻IO管脚输出电平
-	tHdqTxCfg.byTxDir 		= SIO_TXDIR_LSB;	//MSB->LSB, txbuf 数据按照bit[1:0]...[31:30]方式移出
+	tHdqTxCfg.eIdleLev 	= SIO_IDLE_H;			//SIO空闲时刻IO管脚输出电平
+	tHdqTxCfg.eTxDir 		= SIO_TXDIR_LSB;	//MSB->LSB, txbuf 数据按照bit[1:0]...[31:30]方式移出
 	tHdqTxCfg.wTxFreq 		= 25000;			//tx clk =25kHz, Ttxshift = 1/4 = 40us；发送每bit时间是40us
-	tHdqTxCfg.byInt		= SIO_INTSRC_NONE;	//不使用中断。目前只支持非中断模式
 	
 	csi_sio_tx_init(SIO0, &tHdqTxCfg);
 	
@@ -657,10 +647,9 @@ int sio_hdq_recv_rdcmd_demo(void)
 												//					          |_|	 |
 	tHdqTxCfg.byTxBufLen 	= 8;				//发送数据缓存长度(bit个数 = 8)，txbuf 一次发送bit数量，len <= 16
 	tHdqTxCfg.byTxCnt 		= 8;				//SIO一次发送总的数据长度(bit个数 = 24)，byTxCnt >= byTxBufLen，byTxCnt < 256(最大32bytes)
-	tHdqTxCfg.byIdleLev 	= SIO_IDLE_H;		//SIO空闲时刻IO管脚输出电平
-	tHdqTxCfg.byTxDir 		= SIO_TXDIR_LSB;	//MSB->LSB, txbuf 数据按照bit[1:0]...[31:30]方式移出
+	tHdqTxCfg.eIdleLev 		= SIO_IDLE_H;		//SIO空闲时刻IO管脚输出电平
+	tHdqTxCfg.eTxDir 		= SIO_TXDIR_LSB;	//MSB->LSB, txbuf 数据按照bit[1:0]...[31:30]方式移出
 	tHdqTxCfg.wTxFreq 		= 25000;			//tx clk =25kHz, Ttxshift = 1/4 = 40us；发送每bit时间是40us
-	tHdqTxCfg.byInt		= SIO_INTSRC_NONE;	//不使用中断。目前只支持非中断模式
 	
 	csi_sio_tx_init(SIO0, &tHdqTxCfg);			//初始化SIO发送参数
 	wTxData = sio_data_conver(byTxChar);		//数据转换
@@ -668,20 +657,20 @@ int sio_hdq_recv_rdcmd_demo(void)
 	//SIO RX 参数配置
 	tHdqRxCfg.byDebPerLen 	= 3;					//接收滤波周期	
 	tHdqRxCfg.byDebClkDiv 	= 4;					//接收滤波时钟分频
-	tHdqRxCfg.byTrgEdge 	= SIO_TRG_FALL;			//接收采样触发边沿，下降沿
-	tHdqRxCfg.byTrgMode		= SIO_TRGMD_DEB;		//接收采样触发模式，去抖后
-	tHdqRxCfg.byRxDir 	 	= SIO_RXDIR_MSB;		//接收数据方向， 数据按照bit0...31方式移入，根据不同应用移入数据
-	tHdqRxCfg.bySpMode		= SIO_SPMD_EDGE_EN;		//接收数据采样边沿对齐使能	
-	tHdqRxCfg.bySpExtra		= SIO_EXTRACT_HI;		//采样提取策略，(20H)HITHR; (BIT = 1)个数 > HITHR 提取H,否则提取L
+	tHdqRxCfg.eTrgEdge 		= SIO_TRG_FALL;			//接收采样触发边沿，下降沿
+	tHdqRxCfg.eTrgMode		= SIO_TRGMD_DEB;		//接收采样触发模式，去抖后
+	tHdqRxCfg.eRxDir 	 	= SIO_RXDIR_MSB;		//接收数据方向， 数据按照bit0...31方式移入，根据不同应用移入数据
+	tHdqRxCfg.eSpMode		= SIO_SPMD_EDGE_EN;		//接收数据采样边沿对齐使能	
+	tHdqRxCfg.eSpExtra		= SIO_EXTRACT_HI;		//采样提取策略，(20H)HITHR; (BIT = 1)个数 > HITHR 提取H,否则提取L
 	tHdqRxCfg.byHithr		= 13;					//提取判定值, (BIT = 1)个数 > HITHR 提取H,否则提取L
 	tHdqRxCfg.byRxBufLen	= 8;					//发送数据缓存长度(bit个数 = 8)，rxbuf 一次接收bit数量，len <= 32				
 	tHdqRxCfg.byRxCnt		= 8;					//SIO一次接收总的数据长度(bit个数 = 16)，byRxCnt >= byRxBufLen，byRxCnt < 256(最大32bytes)				
 	tHdqRxCfg.wRxFreq		= 100000;				//rx clk =100kHz, Trxsamp = 1/100kHz = 10us；每10us采样一次
 	tHdqRxCfg.bySpBitLen	= 19;					//bit采样的长度，每个bit采样次数为19，总得采样时间 = 19*Trxsamp = 190us
-	tHdqRxCfg.byInt		= SIO_INTSRC_RXDNE | SIO_INTSRC_BREAK;	//接收RXDNE和BREAK中断，byRxCnt <= 32bit；接收byRxCnt(16)个bit，产生中断,读取数据到接收buf，每次读取byRxCnt(16)bit
+//	tHdqRxCfg.byInt		= SIO_INTSRC_RXDNE | SIO_INTSRC_BREAK;	//接收RXDNE和BREAK中断，byRxCnt <= 32bit；接收byRxCnt(16)个bit，产生中断,读取数据到接收buf，每次读取byRxCnt(16)bit
 	
 	csi_sio_rx_init(SIO0, &tHdqRxCfg);					//初始化SIO接收参数
-	csi_sio_break_rst(SIO0, SIO_BKLEV_LOW, 19, ENABLE);	//接收检测break, HDQ协议起始需要break总线
+	csi_sio_set_break(SIO0, SIO_BKLEV_LOW, 19, ENABLE);	//接收检测break, HDQ协议起始需要break总线
 	csi_sio_set_buffer(g_wSioRxBuf, 1);					//设置接收数据buf和buf长度，buf长度len >= (byRxCnt * 8)bit ;数据存放于用户定义的buffer中
 	
 	while(1)
@@ -796,56 +785,56 @@ uint32_t sio_data_conver(uint8_t byTxData)
  *  \param[in] ptSioBase: pointer of sio register structure
  *  \return none
  */
-__attribute__((weak)) void sio_irqhandler(csp_sio_t *ptSioBase)
-{
-	volatile uint32_t wStatus = csp_sio_get_isr(ptSioBase) & 0x3f;
-	
-	switch(wStatus)
-	{
-		case SIO_RXBUFFULL:										
-		case SIO_RXDNE:
-			if(NULL == g_tSioTran.pwData || 0 == g_tSioTran.hwSize)
-			{
-				csp_sio_get_rxbuf(ptSioBase);
-				g_tSioTran.byRxStat = SIO_STATE_ERROR;				//receive error
-			}
-			else
-			{
-				*(g_tSioTran.pwData + g_tSioTran.hwTranLen) = csp_sio_get_rxbuf(ptSioBase);	//receive data
-				g_tSioTran.hwTranLen ++;
-				if(g_tSioTran.hwTranLen >= g_tSioTran.hwSize)
-				{
-					g_tSioTran.byRxStat = SIO_STATE_FULL;			//receive buf full, g_tSioTran.hwTranLen = receive data len = receive buf len
-					csp_sio_woke_rst(SIO0);
-				}
-			}
-			csp_sio_clr_isr(ptSioBase, SIO_RXDNE | SIO_RXBUFFULL);
-			break;
-		case SIO_TIMEOUT:
-			nop;
-			csp_sio_clr_isr(ptSioBase, SIO_TIMEOUT);
-			break;
-		case SIO_BREAK:												//receive break interrupt ,reset receive module
-			nop;
-			csp_sio_clr_isr(ptSioBase, SIO_BREAK);
-			break;
-		case SIO_TXBUFEMPT:
-			csp_sio_clr_isr(ptSioBase, SIO_TXBUFEMPT);
-		 	SIO0->TXBUF = *(g_tSioTran.pwData);
-			g_tSioTran.pwData++;
-			g_tSioTran.hwTranLen++;
-			if(g_tSioTran.hwTranLen >= g_tSioTran.hwSize)
-			{
-				csp_sio_int_disable(ptSioBase,SIO_INTSRC_TXBUFEMPT);
-				g_tSioTran.hwTranLen = 0;
-				g_tSioTran.byTxStat = SIO_STATE_IDLE;
-			}
-			break;
-		case SIO_TXDNE:
-			csp_sio_clr_isr(ptSioBase, SIO_TXDNE);
-			break;
-		default:
-			csp_sio_clr_isr(ptSioBase, SIO_BREAK | SIO_RXDNE | SIO_RXBUFFULL | SIO_TIMEOUT);
-			break;
-	}
-}
+//__attribute__((weak)) void sio_irqhandler(csp_sio_t *ptSioBase)
+//{
+//	volatile uint32_t wStatus = csp_sio_get_isr(ptSioBase) & 0x3f;
+//	
+//	switch(wStatus)
+//	{
+//		case SIO_RXBUFFULL:										
+//		case SIO_RXDNE:
+//			if(NULL == g_tSioTran.pwData || 0 == g_tSioTran.hwSize)
+//			{
+//				csp_sio_get_rxbuf(ptSioBase);
+//				g_tSioTran.byRxStat = SIO_STATE_ERROR;				//receive error
+//			}
+//			else
+//			{
+//				*(g_tSioTran.pwData + g_tSioTran.hwTranLen) = csp_sio_get_rxbuf(ptSioBase);	//receive data
+//				g_tSioTran.hwTranLen ++;
+//				if(g_tSioTran.hwTranLen >= g_tSioTran.hwSize)
+//				{
+//					g_tSioTran.byRxStat = SIO_STATE_FULL;			//receive buf full, g_tSioTran.hwTranLen = receive data len = receive buf len
+//					csp_sio_woke_rst(SIO0);
+//				}
+//			}
+//			csp_sio_clr_isr(ptSioBase, SIO_RXDNE | SIO_RXBUFFULL);
+//			break;
+//		case SIO_TIMEOUT:
+//			nop;
+//			csp_sio_clr_isr(ptSioBase, SIO_TIMEOUT);
+//			break;
+//		case SIO_BREAK:												//receive break interrupt ,reset receive module
+//			nop;
+//			csp_sio_clr_isr(ptSioBase, SIO_BREAK);
+//			break;
+//		case SIO_TXBUFEMPT:
+//			csp_sio_clr_isr(ptSioBase, SIO_TXBUFEMPT);
+//		 	SIO0->TXBUF = *(g_tSioTran.pwData);
+//			g_tSioTran.pwData++;
+//			g_tSioTran.hwTranLen++;
+//			if(g_tSioTran.hwTranLen >= g_tSioTran.hwSize)
+//			{
+//				csp_sio_int_disable(ptSioBase,SIO_INTSRC_TXBUFEMPT);
+//				g_tSioTran.hwTranLen = 0;
+//				g_tSioTran.byTxStat = SIO_STATE_IDLE;
+//			}
+//			break;
+//		case SIO_TXDNE:
+//			csp_sio_clr_isr(ptSioBase, SIO_TXDNE);
+//			break;
+//		default:
+//			csp_sio_clr_isr(ptSioBase, SIO_BREAK | SIO_RXDNE | SIO_RXBUFFULL | SIO_TIMEOUT);
+//			break;
+//	}
+//}

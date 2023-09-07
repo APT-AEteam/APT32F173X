@@ -104,20 +104,19 @@ csi_error_t csi_uart_register_callback(csp_uart_t *ptUartBase, csi_uart_callback
 
 	switch(eCallBkId)
 	{
-		case CALLBACK_ID_RECV:
+		case UART_CALLBACK_RECV:
 			g_tUartCtrl[byIdx].recv_callback = callback;
 			break;
-		case CALLBACK_ID_SEND:
+		case UART_CALLBACK_SEND:
 			g_tUartCtrl[byIdx].send_callback = callback;
 			break;
-		case CALLBACK_ID_ERR:
+		case UART_CALLBACK_ERR:
 			g_tUartCtrl[byIdx].err_callback = callback;
 			break;
 		default:
 			return CSI_ERROR;
 	}
 	return CSI_OK;
-
 }
 /** \brief uart interrupt handler function
  * 
