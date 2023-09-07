@@ -26,6 +26,22 @@
 /* device instance ------------------------------------------------------*/
 
 
+/** \brief	cnta_int_handler: cnta中断服务函数
+ * 
+ *  \brief 	CNTA发生中断时会调用此函数，函数在interrupt.c里定义为弱(weak)属性，默认不做处理；用户用到CNTA中
+ * 			断时，请重新定义此函数，在此函数中进行对应中断处理，也可直接在interrupt.c里的函数里进行处理
+ * 
+ *  \param[in] none
+ *  \return none
+ */
+ATTRIBUTE_ISR  void cnta_int_handler(void)
+{
+	//用户直接在中断服务接口函数里处理中断，建议客户使用此模式
+	csi_pin_toggle(PA10);
+}
+
+
+
 /**
   \brief       CounterA 定时中断示例
   \return      int
@@ -44,9 +60,9 @@ int cnta_timer_demo(void)
 	tTimerCfg.eClkDiv = CNTA_CK_DIV8;
 	tTimerCfg.wTime = 1000;                     //1000us,if cnta clk is 3M,the timeout for timer((0.333us * 1) ->(0.333us * 65535): 0.3333us -> 21.845ms)
 	tTimerCfg.eRunMode = CNTA_REPEAT_MODE;
-	tTimerCfg.byInt    = CNTA_PENDL_INT;
 	csi_cnta_timer_init(CA0,&tTimerCfg);        //初始化CountA
-	csi_cnta_start(CA0);  //启动CountA
+	csi_cnta_start(CA0);                        //启动CountA
+	csi_cnta_int_enable(CA0, CNTA_INTSRC_PENDL);//若需使用中断，请调该接口使能对应中断，这里使用PENDL中断
 	while(1)
 	{
 		nop;
@@ -68,7 +84,6 @@ int cnta_pwm_demo(void)
 	tPwmCfg.byStopLevel = CNTA_STOP_LOW;     //结束极性低
 	tPwmCfg.byDutyCycle = 33;           //占空比
 	tPwmCfg.wFreq = 38000;              //频率(hz)
-	tPwmCfg.byInt   = CNTA_NONE_INT;    //无中断源
 	
 	//cnta作为pwm输出口
 #if !defined(USE_GUI)	
@@ -118,7 +133,6 @@ int cnta_envelope_demo(void)
 	tPwmCfg.byStopLevel  = CNTA_STOP_LOW;       //结束极性低
 	tPwmCfg.byDutyCycle  = 60;             //占空比
 	tPwmCfg.wFreq        = 380000;         //频率(hz)
-	tPwmCfg.byInt        = CNTA_NONE_INT;  //无中断源
 
 #if !defined(USE_GUI)		
 	csi_pin_set_mux(PA10,PA10_CNTA_BUZ);//set counter output pin	
@@ -140,12 +154,3 @@ int cnta_envelope_demo(void)
 	return iRet;
 }
 
-/** \brief cnta interrupt handle weak function
- * 
- *  \param[in] ptCntaBase: pointer of cnta register structure
- *  \return none
- */ 
-__attribute__((weak)) void cnta_irqhandler(csp_cnta_t *ptCntaBase)
-{	
-	csi_pin_toggle(PA10);
-}

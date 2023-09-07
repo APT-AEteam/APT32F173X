@@ -35,7 +35,6 @@ extern void bt_irqhandler0(csp_bt_t *ptBtBase);
 extern void bt_irqhandler1(csp_bt_t *ptBtBase);
 extern void bt_irqhandler2(csp_bt_t *ptBtBase);
 extern void bt_irqhandler3(csp_bt_t *ptBtBase);
-extern void cnta_irqhandler(csp_cnta_t *ptCntaBase);
 extern void wwdt_irqhandler(void);
 extern void cmp_irqhandler(csp_cmp_t *ptCmpBase);
 extern void adc_irqhandler(csp_adc_t *ptAdcBase);
@@ -423,12 +422,14 @@ ATTRIBUTE_ISR void __attribute__((weak)) can_int_handler(void)
 
 ATTRIBUTE_ISR __attribute__((weak)) void cnta_int_handler(void)
 {
-#if	CNTA_INT_HANDLE_EN
 	// ISR content ...
 	CSI_INTRPT_ENTER();
-	cnta_irqhandler(CA0);  //this is a weak function defined in cnta_demo.c, for better efficiency, we recommand user directly implement IRQ handler here without any function call.
-	CSI_INTRPT_EXIT();
+#if (USE_CNTA_CALLBACK == 1)
+	csi_cnta_irqhandler(CA0, 0);
+#else
+	csi_pin_toggle(PA10);
 #endif
+	CSI_INTRPT_EXIT();
 }
 
 ATTRIBUTE_ISR __attribute__((weak)) void lpt_int_handler(void)

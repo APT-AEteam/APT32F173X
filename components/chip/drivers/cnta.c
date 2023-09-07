@@ -7,6 +7,7 @@
  * <tr><td> 2020-9-09 <td>V0.0  <td>ZJY     <td>initial
  * <tr><td> 2021-1-09 <td>V0.1  <td>ZJY     <td>modify
  * <tr><td> 2021-5-27 <td>V0.2  <td>LQ      <td>modify
+ * <tr><td> 2023-09-07 <td>V0.1  <td>LHY    <td>modify
  * </table>
  * *********************************************************************
 */
@@ -24,7 +25,7 @@
 /* externs function---------------------------------------------------*/
 /* externs variablesr-------------------------------------------------*/
 /* Private variablesr-------------------------------------------------*/
-
+csi_cnta_ctrl_t g_tCntaCtrl[CNTA_IDX];
 
 /** \brief initialize cnta data structure
  * 
@@ -41,7 +42,7 @@ csi_error_t csi_cnta_timer_init(csp_cnta_t *ptCntaBase,csi_cnta_timer_config_t *
 	
 	csi_clk_enable((uint32_t *)ptCntaBase);		//cnta clk enable
     csp_cnta_soft_rst(ptCntaBase);				//default init valu
-	csp_cnta_set_ckdiv(ptCntaBase,(cnta_ckdiv_e)ptContaTimerCfg->eClkDiv,(cnta_mode_e)ptContaTimerCfg->eRunMode);	//cnta clk = pclk/eClkDiv
+	csp_cnta_set_ckdiv(ptCntaBase,(csp_cnta_ckdiv_e)ptContaTimerCfg->eClkDiv,(csp_cnta_mode_e)ptContaTimerCfg->eRunMode);	//cnta clk = pclk/eClkDiv
 	
 	csp_cnta_set_datal(ptCntaBase, wTempLoad);				//set CADATAL data
 //    csp_cnta_set_datah(ptCntaBase, wTempLoad);			    //set CADATAH data
@@ -49,7 +50,6 @@ csi_error_t csi_cnta_timer_init(csp_cnta_t *ptCntaBase,csi_cnta_timer_config_t *
 	
 	apt_cnta_int_arrt_set(CLIC_INTATTR_TRIG_UP); 
 	csp_cnta_soft_updata(ptCntaBase);	                    //updata CADATAH CADATAL value 
-	csp_cnta_set_int(ptCntaBase,(cnta_int_e)ptContaTimerCfg->byInt, true);//set intrrupt
 	csi_irq_enable((uint32_t *)ptCntaBase);					//enable cnta irq
 	
 	return CSI_OK;
@@ -108,8 +108,8 @@ csi_error_t csi_cnta_pwm_init(csp_cnta_t *ptCntaBase,csi_cnta_pwm_config_t *ptCo
 	volatile uint32_t wDatalLoad;
 	uint32_t wPeriod;
 	//uint8_t byClkDiv;
-	cnta_osp_e eOsp = 0;
-	cnta_remstat_e eRemStat = 0;	
+	csp_cnta_osp_e eOsp = 0;
+	csp_cnta_remstat_e eRemStat = 0;	
 	
 	if(ptContaPwmCfg->wFreq == 0 || ptContaPwmCfg->byDutyCycle == 0 || ptContaPwmCfg->byDutyCycle == 100)
 		return CSI_ERROR;
@@ -123,12 +123,12 @@ csi_error_t csi_cnta_pwm_init(csp_cnta_t *ptCntaBase,csi_cnta_pwm_config_t *ptCo
 	if(wPeriod * ptContaPwmCfg->byDutyCycle < 300)
 		wDatahLoad = 0x00;
 	else
-		wDatahLoad = wPeriod * ptContaPwmCfg->byDutyCycle / 100 - 3 ;//转换计数模式需要3个周期
+		wDatahLoad = wPeriod * ptContaPwmCfg->byDutyCycle / 100 - 3 ;//convert count-mode need 3 cycles
 		
 	if(wPeriod * (100 - ptContaPwmCfg->byDutyCycle) < 300)	
 		wDatalLoad = 0x00;
 	else
-		wDatalLoad = wPeriod * (100 - ptContaPwmCfg->byDutyCycle) / 100 - 3 ;//转换计数模式需要3个周期
+		wDatalLoad = wPeriod * (100 - ptContaPwmCfg->byDutyCycle) / 100 - 3 ;//convert count-mode need 3 cycles
 	
 	if(ptContaPwmCfg->byStartLevel == CNTA_POLAR_LOW)			//initial polarity
 		eOsp = CNTA_OSP_LOW;
@@ -140,15 +140,14 @@ csi_error_t csi_cnta_pwm_init(csp_cnta_t *ptCntaBase,csi_cnta_pwm_config_t *ptCo
 	else if(ptContaPwmCfg->byStopLevel == CNTA_STOP_HIGH)
 		eRemStat = CNTA_REMSTAT_HIGH;
 			
-	csp_cnta_set_ckdiv(ptCntaBase, (cnta_ckdiv_e)ptContaPwmCfg->eClkDiv,(cnta_mode_e)CNTA_REPEAT_MODE);		//cnta clk = pclk/eClkDiv	
-	csp_cnta_set_carrier(ptCntaBase, (cnta_carrier_e)CNTA_CARRIER_EN, (cnta_envelope_e)CNTA_PWM_CARRIER, (cnta_remstat_e)eRemStat,(cnta_osp_e) eOsp); //载波输出	
+	csp_cnta_set_ckdiv(ptCntaBase, (csp_cnta_ckdiv_e)ptContaPwmCfg->eClkDiv,(csp_cnta_mode_e)CNTA_REPEAT_MODE);		//cnta clk = pclk/eClkDiv	
+	csp_cnta_set_carrier(ptCntaBase, (csp_cnta_carrier_e)CNTA_CARRIER_EN, (csp_cnta_envelope_e)CNTA_PWM_CARRIER, (csp_cnta_remstat_e)eRemStat,(csp_cnta_osp_e) eOsp); //载波输出	
 	//csp_cnta_set_carrier(ptCntaBase, (cnta_carrier_e)CNTA_CARRIER_EN, (cnta_envelope_e)PWM_ENVELOPE,(cnta_remstat_e) eRemStat, (cnta_osp_e)eOsp);  //包络输出
 
 	csp_cnta_set_datah(ptCntaBase, wDatahLoad);
 	csp_cnta_set_datal(ptCntaBase, wDatalLoad);	
 	apt_cnta_int_arrt_set(CLIC_INTATTR_TRIG_UP); 
 	csp_cnta_soft_updata(ptCntaBase);
-	csp_cnta_set_int(ptCntaBase, (cnta_int_e)ptContaPwmCfg->byInt  , true);
 	csi_irq_enable((uint32_t *)ptCntaBase);					    //enable cnta irq
 	
 	return ret;
@@ -183,7 +182,74 @@ void csi_cnta_pwm_para_updata(csp_cnta_t *ptCntaBase, uint16_t hwDatah, uint16_t
  */
 csi_error_t csi_cnta_bt0_sync(csp_cnta_t *ptCntaBase, csi_cnta_tcpend_e eTcpendRem, csi_cnta_tcmatch_e eTcmatchRem,csi_cnta_hw_updata_e eHwUpdata)
 {
-	csp_cnta_set_sync(ptCntaBase, (cnta_pendrem_e) eTcpendRem, (cnta_matchrem_e)eTcmatchRem, (cnta_hwstrobe_e)eHwUpdata);	
+	csp_cnta_set_sync(ptCntaBase, (csp_cnta_pendrem_e) eTcpendRem, (csp_cnta_matchrem_e)eTcmatchRem, (csp_cnta_hwstrobe_e)eHwUpdata);	
 	return CSI_OK;
 }
 
+/** \brief CNTA interrupt enable control
+ * 
+ *  \param[in] ptCntaBase: pointer of cnta register structure
+ *  \param[in] eIntSrc: cnta interrupt source \ref csi_cnta_intsrc_e
+ *  \return none
+ */ 
+void csi_cnta_int_enable(csp_cnta_t *ptCntaBase, csi_cnta_intsrc_e eIntSrc)
+{
+	csp_cnta_int_enable(ptCntaBase, (csp_cnta_int_e)eIntSrc);
+}
+
+/** \brief CNTA interrupt disable control
+ * 
+ *  \param[in] ptCntaBase: pointer of cnta register structure
+ *  \param[in] eIntSrc: cnta interrupt source \ref csi_cnta_intsrc_e
+ *  \return none
+ */ 
+void csi_cnta_int_disable(csp_cnta_t *ptCntaBase, csi_cnta_intsrc_e eIntSrc)
+{
+	csp_cnta_int_disable(ptCntaBase, (csp_cnta_int_e)eIntSrc);
+}
+
+/** \brief get cnta number 
+ * 
+ *  \param[in] ptCntaBase: pointer of cnta register structure
+ *  \return cnta number 0/1
+ */ 
+static uint8_t apt_get_cnta_idx(csp_cnta_t *ptCntaBase)
+{
+	switch((uint32_t)ptCntaBase)
+	{
+		case APB_CNTA_BASE:		//CNTA
+			return 0;		
+
+		default:
+			return 0xff;		//error
+	}
+}
+
+/** \brief  register cnta interrupt callback function
+ * 
+ *  \param[in] ptCntaBase: pointer of cnta register structure
+ *  \param[in] callback: cnta interrupt handle function
+ *  \return error code \ref csi_error_t
+ */ 
+csi_error_t csi_cnta_register_callback(csp_cnta_t *ptCntaBase, void  *callback)
+{
+	uint8_t byIdx = apt_get_cnta_idx(ptCntaBase);
+	if(byIdx == 0xff)
+		return CSI_ERROR;
+		
+	g_tCntaCtrl[byIdx].callback = callback;
+	
+	return CSI_OK;
+}
+
+/** \brief cnta interrupt handler function
+ * 
+ *  \param[in] ptCntaBase: pointer of cnta register structure
+ *  \param[in] byIdx: cnta idx(0)
+ *  \return none
+ */ 
+void csi_cnta_irqhandler(csp_cnta_t *ptCntaBase,  uint8_t byIdx)
+{
+	if(g_tCntaCtrl[byIdx].callback)
+		g_tCntaCtrl[byIdx].callback(ptCntaBase);
+}
