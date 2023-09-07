@@ -136,9 +136,9 @@ typedef enum
  * \brief    UART callback id
  */
 typedef enum{
-	CALLBACK_ID_RECV	=	0,		//uart rteceive callback id
-	CALLBACK_ID_SEND,				//uart send callback id
-	CALLBACK_ID_ERR,				//uart error callback id
+	UART_CALLBACK_RECV	=	0,		//uart rteceive callback id
+	UART_CALLBACK_SEND,				//uart send callback id
+	UART_CALLBACK_ERR,				//uart error callback id
 }csi_uart_callback_id_e;
 
 /// \struct csi_uart_config_t
