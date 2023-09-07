@@ -41,7 +41,7 @@ csi_error_t csi_sio_tx_init(csp_sio_t *ptSioBase, csi_sio_tx_config_t *ptTxCfg)
 	uint16_t hwClkDiv;
 	
 	csi_clk_enable((uint32_t *)ptSioBase);		//sio peripheral clk en
-	csp_sio_clk_en(ptSioBase);					//enable clk
+	csp_sio_clk_enable(ptSioBase);					//enable clk
 	csp_sio_set_mode(ptSioBase, SIO_MODE_TX);	//sio tx mode
 	
 	if(ptTxCfg->wTxFreq > 1)					//tx clk config
@@ -82,7 +82,7 @@ csi_error_t csi_sio_rx_init(csp_sio_t *ptSioBase, csi_sio_rx_config_t *ptRxCfg)
 	uint16_t hwClkDiv;
 	
 	csi_clk_enable((uint32_t *)ptSioBase);		//sio peripheral clk en
-	csp_sio_clk_en(ptSioBase);					//enable clk
+	csp_sio_clk_enable(ptSioBase);					//enable clk
 	csp_sio_set_mode(ptSioBase, SIO_MODE_RX);	//sio rx mode
 	
 	if(ptRxCfg->wRxFreq > 1)					//tx clk config
@@ -108,7 +108,7 @@ csi_error_t csi_sio_rx_init(csp_sio_t *ptSioBase, csi_sio_rx_config_t *ptRxCfg)
 			if(ptRxCfg->byRxCnt > 256)									//byRxCnt > 32 ,the mode work error
 				return CSI_ERROR;
 		}
-		csp_sio_int_enable(ptSioBase, ptRxCfg->byInt, ENABLE);			//enable sio interrupt
+		csp_sio_int_enable(ptSioBase, ptRxCfg->byInt);			//enable sio interrupt
 		csi_irq_enable((uint32_t*)ptSioBase);							//enable sio irq 
 	}
 	else
@@ -169,7 +169,7 @@ void csi_sio_set_mode(csp_sio_t *ptSioBase, csi_sio_wkmode_e eWorkMd)
  */
 void csi_sio_int_enable(csp_sio_t *ptSioBase, csi_sio_intsrc_e eIntSrc, bool bEnable)
 {
-	csp_sio_int_enable(ptSioBase, (sio_int_e)eIntSrc, bEnable);
+	csp_sio_int_enable(ptSioBase, (sio_int_e)eIntSrc);
 	
 	if(bEnable)
 		csi_irq_enable((uint32_t *)ptSioBase);
@@ -209,7 +209,7 @@ int32_t csi_sio_send(csp_sio_t *ptSioBase, const uint32_t *pwData, uint16_t hwSi
 			g_tSioTran.hwSize 	 = hwSize;
 			g_tSioTran.hwTranLen = 0;
 			g_tSioTran.byTxStat  = SIO_STATE_SEND;
-			csp_sio_int_enable(SIO0,(sio_int_e)SIO_INTSRC_TXBUFEMPT, ENABLE);
+			csp_sio_int_enable(SIO0,(sio_int_e)SIO_INTSRC_TXBUFEMPT);
 			return CSI_OK;		
 		default:
 			return CSI_UNSUPPORTED;
@@ -295,7 +295,7 @@ csi_error_t csi_sio_send_dma(csp_sio_t *ptSioBase, csp_dma_t *ptDmaBase, csi_dma
 	if(hwSize > 0xfff)
 		return CSI_ERROR;
 		
-	csp_sio_set_txdma(ptSioBase, SIO_TDMA_EN);
+	csp_sio_txdma_enable(ptSioBase, ENABLE);
 	csi_dma_ch_start(ptDmaBase, eDmaCh, (void *)pData, (void *)&(ptSioBase->TXBUF), hwSize, 1);
 	
 	return CSI_OK;
@@ -313,7 +313,7 @@ csi_error_t csi_sio_recv_dma(csp_sio_t *ptSioBase, csp_dma_t *ptDmaBase, csi_dma
 {
 	if(hwSize > 0xfff)
 		return CSI_ERROR;
-	csp_sio_set_rxdma(ptSioBase, SIO_RDMA_EN);
+	csp_sio_rxdma_enable(ptSioBase, ENABLE);
 	csi_dma_ch_start(ptDmaBase, eDmaCh, (void *)&(ptSioBase->RXBUF), (void *)pData, hwSize, 1);
 	
 	return CSI_OK;

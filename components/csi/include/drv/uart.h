@@ -160,13 +160,10 @@ typedef struct {
 	uint16_t			hwTransNum;			//send/receive data num
 	uint8_t 			byTxState;			//send state
 	uint8_t 			byRxState;			//receive state	
-	//CallBack
-#if	!defined(CSI_UART_CALLBACK)				
+	//CallBack		
 	void(*recv_callback)(csp_uart_t *ptUartBase, csi_uart_event_e eEvent, uint8_t *pbyBuf, uint16_t *hwSzie);
 	void(*send_callback)(csp_uart_t *ptUartBase);
 	void(*err_callback)(csp_uart_t *ptUartBase, csi_uart_event_e eEvent);
-#endif
-
 } csi_uart_ctrl_t;
 
 extern csi_uart_ctrl_t g_tUartCtrl[UART_IDX];	
