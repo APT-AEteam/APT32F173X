@@ -62,6 +62,9 @@ extern "C" {
 #define USE_BT_CALLBACK			1		//BT(0/1/2/3)
 #define USE_UART_CALLBACK		1		//UART(0/1/2)
 #define USE_LED_CALLBACK		1		//LED(0)
+#define USE_CNTA_CALLBACK		1		//CNTA(0)
+#define USE_CMP_CALLBACK		1		//CMP(0/1/2)
+#define USE_GPTA_CALLBACK		1		//GPTA(0/1/2/3)
 
 //csi GUI Handling Enable, 1/0(OPEN/CLOSE)
 //可视化编程，通过宏USE_GUI来实现功能选择
