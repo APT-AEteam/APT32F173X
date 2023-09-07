@@ -23,8 +23,10 @@ build_config:
   asmflag: ""
   define:
     - include
-  libs: 
-  libpath: 
+  libs:
+    - libcsi_xt900p32f_dsp.a
+  libpath:
+    - dsp/lib/
 source_file:
   - src/*.c
 install:
