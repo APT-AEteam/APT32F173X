@@ -165,6 +165,7 @@ typedef struct {
 
 extern csi_uart_ctrl_t g_tUartCtrl[UART_IDX];	
 
+
 /**
   \brief       initializes the resources needed for the UART interface.
   \param[in]   ptUartBase	pointer of uart register structure
