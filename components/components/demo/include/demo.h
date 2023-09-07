@@ -165,6 +165,7 @@ extern void opa_external_gain_mode_demo(void);
 
 //fvr demo
 extern void fvr_output_demo(void);
+extern void fvr_referenceset_demo(void);
 extern void fvr_buf_demo(void);
 
 //can

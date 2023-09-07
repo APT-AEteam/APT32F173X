@@ -14,21 +14,22 @@
 /**
   \brief       set fvr lvl 
   \param[in]   ptFvrBase	pointer of fvr register structure
+  \param[in]   eLvl 	    voltage  level selection
   \return      none
 */
 void csi_fvr_lvl_set(csp_fvr_t *ptFvrBase, csi_fvr_lvl_e eLvl)
 {
 	csp_fvr_set_lvl(ptFvrBase,(fvr_lvl_e)eLvl);
-
 }
 /**
   \brief       set fvr cmp reference 
   \param[in]   ptFvrBase	pointer of fvr register structure
+  \param[in]   eCmpref	 	compare voltage reference select 
   \return      none
 */
-void csi_fvr_cmpref_set(csp_fvr_t *ptFvrBase, csi_fvr_cmpref_e eOpacmpref)
+void csi_fvr_cmpref_set(csp_fvr_t *ptFvrBase, csi_fvr_cmpref_e eCmpref)
 {
-	csp_fvr_cmpref_set(ptFvrBase,(fvr_cmpref_e)eOpacmpref);
+	csp_fvr_cmpref_set(ptFvrBase,(fvr_cmpref_e)eCmpref);
 }
 
 /**
@@ -50,12 +51,12 @@ void csi_fvr_start(csp_fvr_t *ptFvrBase)
 void csi_fvr_stop(csp_fvr_t *ptFvrBase)
 {
 	csp_fvr_dis(ptFvrBase);
-	
 }
 
 /**
   \brief       fvr buffer int 
   \param[in]   ptFvrBase	pointer of fvr register structure
+  \param[in]   eBuflvl		buffin voltage  level selection
   \return      none
 */
 void csi_fvr_buf_init(csp_fvr_t *ptFvrBase,csi_fvr_buflvl_e eBuflvl)
@@ -77,10 +78,10 @@ void csi_fvr_buf_init(csp_fvr_t *ptFvrBase,csi_fvr_buflvl_e eBuflvl)
 /**
   \brief       set fvr opacm 
   \param[in]   ptFvrBase	pointer of fvr register structure
+  \param[in]   eOpacm		opa voltage reference select
   \return      none
 */
-void csi_fvr_opacm(csp_fvr_t *ptFvrBase)
+void csi_fvr_opacm(csp_fvr_t *ptFvrBase,csi_fvr_opacm_e eOpacm)
 {
-	csp_fvr_opacm_set(ptFvrBase, FVR_OPACM_FVR);
-	
+	csp_fvr_opacm_set(ptFvrBase, (fvr_opacm_e)eOpacm);
 }

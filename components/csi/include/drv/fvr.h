@@ -34,6 +34,11 @@ typedef enum{
 	BUFLVL_1V,
 	BUFLVL_TS = 3
 }csi_fvr_buflvl_e;
+
+typedef enum{
+	OPACM_HALFAVDD	= 0,
+	OPACM_HALFFVR,
+}csi_fvr_opacm_e;
 /**
   \brief       set fvr lvl 
   \param[in]   ptFvrBase	pointer of fvr register structure
@@ -74,7 +79,7 @@ void csi_fvr_buf_init(csp_fvr_t *ptFvrBase,csi_fvr_buflvl_e eBuflvl);
   \param[in]   ptFvrBase	pointer of fvr register structure
   \return      none
 */
-void csi_fvr_opacm(csp_fvr_t *ptFvrBase);
+void csi_fvr_opacm(csp_fvr_t *ptFvrBase,csi_fvr_opacm_e eOpacm);
 
 #ifdef __cplusplus
 }

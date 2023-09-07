@@ -32,8 +32,23 @@ void fvr_output_demo(void)
 #endif	
 	soc_clk_enable(FVR_SYS_CLK);//配置FVR时钟
 	csi_fvr_lvl_set(FVR, LVL_4V);//设置FVR电平为4V
-//	csi_fvr_cmpref_set(FVR,FVR_CMPREF_FVR);//设置CMP参考电平为FVR
-//	csi_fvr_opacm(FVR);	//设置OPA CM电平为FVR
+	csi_fvr_start(FVR);	
+}
+
+/** \brief 配置FVR电平，设置CMP和OPA的参考电平为FVR
+ * 
+ *  \param[in] none
+ *  \return none
+ */
+void fvr_referenceset_demo(void)
+{
+#if !defined(USE_GUI)	
+	csi_pin_set_mux(PB7, PB7_FVROUT);//设置PB7为FVR输出
+#endif	
+	soc_clk_enable(FVR_SYS_CLK);//配置FVR时钟
+	csi_fvr_lvl_set(FVR, LVL_4V);//设置FVR电平为4V
+	csi_fvr_cmpref_set(FVR,CMPREF_FVR);//设置CMP参考电平为FVR
+	csi_fvr_opacm(FVR,OPACM_HALFFVR);	//设置OPA CM电平为FVR
 	csi_fvr_start(FVR);	
 }
 
