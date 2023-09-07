@@ -15,6 +15,7 @@
 
 #include <drv/etb.h>
 #include <drv/dma.h>
+#include <tick.h>
 #include <csp.h>
 
 #ifdef __cplusplus

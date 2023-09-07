@@ -13,8 +13,7 @@
 #ifndef _DRV_RTC_H_
 #define _DRV_RTC_H_
 
-#include <drv/common.h>
-#include "csp_rtc.h"
+#include <csp.h>
 
 #ifdef __cplusplus
 extern "C" {

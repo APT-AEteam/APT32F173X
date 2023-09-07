@@ -10,12 +10,10 @@
 */
 
 /* include ----------------------------------------------------------------*/
-#include "csp.h"
-#include "rtc.h"
+
 #include "rtc_alg.h"
-#include "irq.h"
-#include "soc.h"
 #include "board_config.h"
+#include <drv/rtc.h>
 
 /* externs function--------------------------------------------------------*/
 /* private function--------------------------------------------------------*/
@@ -230,9 +228,9 @@ csi_error_t csi_rtc_set_time(csp_rtc_t *ptRtc, csi_rtc_time_t *ptRtcTime)
 		
 	
 		if ((ptRtcTime->iHour == 12) && (csp_rtc_get_fmt(ptRtc) == RTC_24FMT))
-			ret =  apt_rtc_set_time(ptRtc, RTC_PM, ptRtcTime->iHour, ptRtcTime->iMin,ptRtcTime->iSec);
+			ret =  (csi_error_t)apt_rtc_set_time(ptRtc, RTC_PM, ptRtcTime->iHour, ptRtcTime->iMin,ptRtcTime->iSec);
 		else
-			ret =  apt_rtc_set_time(ptRtc, ptRtcTime->iPm, ptRtcTime->iHour, ptRtcTime->iMin,ptRtcTime->iSec);
+			ret =  (csi_error_t)apt_rtc_set_time(ptRtc, ptRtcTime->iPm, ptRtcTime->iHour, ptRtcTime->iMin,ptRtcTime->iSec);
 		
 		
 		if (ret < CSI_OK) {
@@ -325,7 +323,13 @@ csi_error_t csi_rtc_set_alarm(csp_rtc_t *ptRtc, uint8_t byAlm, uint8_t byMode, c
 	apt_rtc_alm_set_time(ptRtc, byAlm, ptAlmTime->iMday, bFmt,  ptAlmTime->iHour, ptAlmTime->iMin,ptAlmTime->iSec);
 	
 	csp_rtc_set_key(ptRtc);	
-	csp_rtc_alm_set_mode(ptRtc, byAlm, bWdsel, bDmsk, bHmsk, bMmsk, bSmsk);
+	if(byAlm == RTC_ALMA)
+	{
+		csp_rtc_alma_set_mode(ptRtc, bWdsel, bDmsk, bHmsk, bMmsk, bSmsk);
+	}
+	else {
+		csp_rtc_almb_set_mode(ptRtc, bWdsel, bDmsk, bHmsk, bMmsk, bSmsk);
+	}
 	csp_rtc_alm_enable(ptRtc, byAlm);
 	csp_rtc_clr_key(ptRtc);
 	while(csp_rtc_update_status(ptRtc));
@@ -452,38 +456,68 @@ uint32_t csi_rtc_get_alarm_remaining_time(csp_rtc_t *ptRtc, uint8_t byAlm)
 	tCurrentTime.iMin = csp_rtc_read_min(ptRtc); 
 	tCurrentTime.iSec = csp_rtc_read_sec(ptRtc); 
 	
-
-	tAlmTime.iMday = csp_rtc_alm_read_mday(ptRtc, byAlm); 
-	tAlmTime.iWday = csp_rtc_alm_read_wday(ptRtc, byAlm); 
-	tAlmTime.iHour = csp_rtc_alm_read_hour(ptRtc, byAlm);
-	tAlmTime.iMin = csp_rtc_alm_read_min(ptRtc, byAlm); 
-	tAlmTime.iSec = csp_rtc_alm_read_sec(ptRtc, byAlm); 
-	
-
-	
-	if (csp_rtc_alm_read_dmsk(ptRtc, byAlm) == 1) {
+	if(byAlm == RTC_ALMA)
+	{
+		tAlmTime.iMday = csp_rtc_alma_read_mday(ptRtc); 
+		tAlmTime.iWday = csp_rtc_alma_read_wday(ptRtc); 
+		tAlmTime.iHour = csp_rtc_alma_read_hour(ptRtc);
+		tAlmTime.iMin = csp_rtc_alma_read_min(ptRtc); 
+		tAlmTime.iSec = csp_rtc_alma_read_sec(ptRtc); 
+		
+		if (csp_rtc_alma_read_dmsk(ptRtc) == 1) {
 		wCurrentTime = tCurrentTime.iHour * 3600 + tCurrentTime.iMin * 60 + tCurrentTime.iSec;
 		wAlmTime = tAlmTime.iHour * 3600 + tAlmTime.iMin * 60 + tAlmTime.iSec;
 		if(wAlmTime < wCurrentTime)
 			return (24*3600 - wCurrentTime + wAlmTime);
 	
-	}
-	else {
-		if (csp_rtc_alm_read_wdsel(ptRtc, byAlm) == 1) {
-			wCurrentTime = tCurrentTime.iWday * 86400 + tCurrentTime.iHour * 3600 + tCurrentTime.iMin * 60 + tCurrentTime.iSec;
-			wAlmTime = tAlmTime.iWday * 86400 + tAlmTime.iHour * 3600 + tAlmTime.iMin * 60 + tAlmTime.iSec;
-			if(wAlmTime < wCurrentTime)
-				return (7*24*3600 - wCurrentTime + wAlmTime);
 		}
 		else {
-			wCurrentTime = tCurrentTime.iMday * 86400 + tCurrentTime.iHour * 3600 + tCurrentTime.iMin * 60 + tCurrentTime.iSec;
-			wAlmTime = tAlmTime.iMday * 86400 + tAlmTime.iHour * 3600 + tAlmTime.iMin * 60 + tAlmTime.iSec;
-			if(wAlmTime < wCurrentTime)
-				return CSI_UNSUPPORTED;	
-		}
+			if (csp_rtc_alma_read_wdsel(ptRtc) == 1) {
+				wCurrentTime = tCurrentTime.iWday * 86400 + tCurrentTime.iHour * 3600 + tCurrentTime.iMin * 60 + tCurrentTime.iSec;
+				wAlmTime = tAlmTime.iWday * 86400 + tAlmTime.iHour * 3600 + tAlmTime.iMin * 60 + tAlmTime.iSec;
+				if(wAlmTime < wCurrentTime)
+					return (7*24*3600 - wCurrentTime + wAlmTime);
+			}
+			else {
+				wCurrentTime = tCurrentTime.iMday * 86400 + tCurrentTime.iHour * 3600 + tCurrentTime.iMin * 60 + tCurrentTime.iSec;
+				wAlmTime = tAlmTime.iMday * 86400 + tAlmTime.iHour * 3600 + tAlmTime.iMin * 60 + tAlmTime.iSec;
+				if(wAlmTime < wCurrentTime)
+					return CSI_UNSUPPORTED;	
+			}
 		
+		}
 	}
+	else 
+	{
+		tAlmTime.iMday = csp_rtc_almb_read_mday(ptRtc); 
+		tAlmTime.iWday = csp_rtc_almb_read_wday(ptRtc); 
+		tAlmTime.iHour = csp_rtc_almb_read_hour(ptRtc);
+		tAlmTime.iMin = csp_rtc_almb_read_min(ptRtc); 
+		tAlmTime.iSec = csp_rtc_almb_read_sec(ptRtc); 
+		
+		if (csp_rtc_almb_read_dmsk(ptRtc) == 1) {
+		wCurrentTime = tCurrentTime.iHour * 3600 + tCurrentTime.iMin * 60 + tCurrentTime.iSec;
+		wAlmTime = tAlmTime.iHour * 3600 + tAlmTime.iMin * 60 + tAlmTime.iSec;
+		if(wAlmTime < wCurrentTime)
+			return (24*3600 - wCurrentTime + wAlmTime);
 	
+		}
+		else {
+			if (csp_rtc_almb_read_wdsel(ptRtc) == 1) {
+				wCurrentTime = tCurrentTime.iWday * 86400 + tCurrentTime.iHour * 3600 + tCurrentTime.iMin * 60 + tCurrentTime.iSec;
+				wAlmTime = tAlmTime.iWday * 86400 + tAlmTime.iHour * 3600 + tAlmTime.iMin * 60 + tAlmTime.iSec;
+				if(wAlmTime < wCurrentTime)
+					return (7*24*3600 - wCurrentTime + wAlmTime);
+			}
+			else {
+				wCurrentTime = tCurrentTime.iMday * 86400 + tCurrentTime.iHour * 3600 + tCurrentTime.iMin * 60 + tCurrentTime.iSec;
+				wAlmTime = tAlmTime.iMday * 86400 + tAlmTime.iHour * 3600 + tAlmTime.iMin * 60 + tAlmTime.iSec;
+				if(wAlmTime < wCurrentTime)
+					return CSI_UNSUPPORTED;	
+			}
+		
+		}
+	}
 	
 	return (wAlmTime - wCurrentTime);
 }
@@ -549,19 +583,15 @@ static csp_error_t apt_rtc_set_time(csp_rtc_t *ptRtc, bool bPm, uint8_t byHor, u
 	if (csp_rtc_is_running(ptRtc))
 		return CSP_FAIL;
 			
-//	if (bPm == RTC_AM && byHor > 12)
-//		ret = CSP_FAIL;
-//	else {
-	
-		csp_rtc_set_key(ptRtc);
-		byVal = apt_dec2bcd(byHor);
-		csp_rtc_set_time_hour(ptRtc, bPm, byVal);
-		byVal = apt_dec2bcd(byMin);
-		csp_rtc_set_time_min(ptRtc, byVal);
-		byVal = apt_dec2bcd(bySec);
-		csp_rtc_set_time_sec(ptRtc, byVal);
-		csp_rtc_clr_key(ptRtc);
-//	}
+	csp_rtc_set_key(ptRtc);
+	byVal = apt_dec2bcd(byHor);
+	csp_rtc_set_time_hour(ptRtc, bPm, byVal);
+	byVal = apt_dec2bcd(byMin);
+	csp_rtc_set_time_min(ptRtc, byVal);
+	byVal = apt_dec2bcd(bySec);
+	csp_rtc_set_time_sec(ptRtc, byVal);
+	csp_rtc_clr_key(ptRtc);
+
 	
 	return ret;
 }
@@ -570,19 +600,36 @@ static csp_error_t apt_rtc_set_time(csp_rtc_t *ptRtc, bool bPm, uint8_t byHor, u
 static void apt_rtc_alm_set_time(csp_rtc_t *ptRtc, uint8_t byAlm, uint8_t byDay, bool byPm, uint8_t byHor, uint8_t byMin,uint8_t bySec)
 {
 	uint8_t byVal;
+	if(byAlm == RTC_ALMA)	
+	{
+		csp_rtc_set_key(ptRtc);
 		
-	csp_rtc_set_key(ptRtc);
-		
-	byVal = apt_dec2bcd(byDay);
-	csp_rtc_alm_set_day(ptRtc, byAlm, byVal);
-	byVal = apt_dec2bcd(byHor);
-	csp_rtc_alm_set_hour(ptRtc, byAlm, byPm, byVal);
-	byVal = apt_dec2bcd(byMin);
-	csp_rtc_alm_set_min(ptRtc, byAlm, byVal);
-	byVal = apt_dec2bcd(bySec);
-	csp_rtc_alm_set_sec(ptRtc, byAlm, byVal);
+		byVal = apt_dec2bcd(byDay);
+		csp_rtc_alma_set_day(ptRtc,  byVal);
+		byVal = apt_dec2bcd(byHor);
+		csp_rtc_alma_set_hour(ptRtc, byPm, byVal);
+		byVal = apt_dec2bcd(byMin);
+		csp_rtc_alma_set_min(ptRtc, byVal);
+		byVal = apt_dec2bcd(bySec);
+		csp_rtc_alma_set_sec(ptRtc, byVal);
 	
-	csp_rtc_clr_key(ptRtc);
+		csp_rtc_clr_key(ptRtc);
+	}
+	else 
+	{
+		csp_rtc_set_key(ptRtc);
+		
+		byVal = apt_dec2bcd(byDay);
+		csp_rtc_almb_set_day(ptRtc,  byVal);
+		byVal = apt_dec2bcd(byHor);
+		csp_rtc_almb_set_hour(ptRtc, byPm, byVal);
+		byVal = apt_dec2bcd(byMin);
+		csp_rtc_almb_set_min(ptRtc,  byVal);
+		byVal = apt_dec2bcd(bySec);
+		csp_rtc_almb_set_sec(ptRtc,  byVal);
+	
+		csp_rtc_clr_key(ptRtc);
+	}
 }
 
 
