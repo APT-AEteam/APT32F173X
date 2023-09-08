@@ -33,7 +33,7 @@ csi_error_t csi_led_init(csp_led_t *ptLedBase, csi_led_config_t *ptLedCfg)
 {
 	csi_clk_enable((uint32_t *)ptLedBase);	
 	csi_led_set_bright(ptLedBase, ptLedCfg->byBrt);
-	csp_led_set_clk(ptLedBase, ptLedCfg->byClkDiv);
+	csp_led_set_clk(ptLedBase, (csp_led_ledclk_e)(ptLedCfg->byClkDiv));
 	csp_led_set_commask(ptLedBase, (ptLedCfg->hwComMask & 0x3ff));
 	if(ptLedCfg->hwOnTime > 2096 || ptLedCfg->hwBreakTime > 524)
 		return CSI_ERROR;
@@ -53,7 +53,7 @@ csi_error_t csi_led_init(csp_led_t *ptLedBase, csi_led_config_t *ptLedCfg)
  */
 void csi_led_set_bright(csp_led_t *ptLedBase, csi_led_brt_e eBrt) 
 {
-	csp_led_set_brt(ptLedBase,eBrt);
+	csp_led_set_brt(ptLedBase,(csp_led_brt_e)eBrt);
 }
 
 /** \brief LED interrupt enable control
@@ -64,7 +64,7 @@ void csi_led_set_bright(csp_led_t *ptLedBase, csi_led_brt_e eBrt)
  */ 
 void csi_led_int_enable(csp_led_t *ptLedBase, csi_led_intsrc_e eIntSrc)
 {
-	csp_led_int_enable(ptLedBase, eIntSrc);
+	csp_led_int_enable(ptLedBase, (csp_led_int_e)eIntSrc);
 }
 
 /** \brief LED interrupt disable control
@@ -75,7 +75,7 @@ void csi_led_int_enable(csp_led_t *ptLedBase, csi_led_intsrc_e eIntSrc)
  */ 
 void csi_led_int_disable(csp_led_t *ptLedBase, csi_led_intsrc_e eIntSrc)
 {
-	csp_led_int_disable(ptLedBase, eIntSrc);
+	csp_led_int_disable(ptLedBase, (csp_led_int_e)eIntSrc);
 }
 
 /** \brief   write led data
@@ -98,8 +98,8 @@ void csi_led_write_data(csp_led_t *ptLedBase, uint8_t byCom, uint8_t byData)
  */
 void csi_led_set_blink_pattern(csp_led_t *ptLedBase, uint16_t hwOnMsk)
 {
-	csp_led_com_on(ptLedBase, (hwOnMsk&LED_BLK_MSK));
-	csp_led_com_off(ptLedBase, ~(hwOnMsk&LED_BLK_MSK));
+	csp_led_com_on(ptLedBase,   (hwOnMsk & LED_BLK_MSK));
+	csp_led_com_off(ptLedBase, ~(hwOnMsk & LED_BLK_MSK));
 }
 
 /** \brief  led blink control

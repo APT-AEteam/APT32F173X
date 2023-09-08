@@ -24,21 +24,18 @@
 uint8_t g_byLedData[4] = {0x06,0x5b,0x4f,0x66};//数码管编码：1,2,3,4 
 csi_led_config_t ptLedCfg;
 
-/** \brief  led_callback：led中断回调函数
+/** \brief  user_led_callback：led中断回调函数
  * 
- * 	\brief	用户定义，支持指ICPEND/IPEND/两种中断处理，使用csi标准库，中断发生时会自动调用用户注册的回调函
+ * 	\brief	用户定义，支持ICPEND/IPEND两种中断处理，使用csi标准库，中断发生时会自动调用用户注册的回调函
  * 			数，用户可在回调函数里做自己的处理，而不需要关注具体的底层中断处理。
  * 
  *  \param[out] ptLedBase: 	LEDx寄存器结构体指针，指向LEDx的基地址 
  *  \param[out] byIsr: 		LEDx中断状态
  *  \return none
  */ 
-void led_callback(csp_led_t *ptLedBase, uint8_t byIsr)
+static void user_led_callback(csp_led_t *ptLedBase, uint8_t byIsr)
 {
-	if(byIsr & LED_INTSRC_ICEND)
-	{
-		//user code
-	}
+	csp_led_clr_isr(LED, csp_led_get_misr(LED));
 }
 
 /** \brief  apt_io_config: LED相关IO配置，包括SEG脚与COM脚的配置
@@ -114,8 +111,8 @@ csi_error_t led_callback_demo(void)
 	ptLedCfg.hwOnTime 	  = 120;			//显示周期时间(单位：Tledclk)
 	ptLedCfg.hwBreakTime  = 50;				//Non-Overlap时间(单位：Tledclk)
 	csi_led_init(LED, &ptLedCfg);			
-	csi_led_int_enable(LED, LED_INTSRC_ICEND);		//若需使用中断，请调该接口使能对应中断，这里使用ICPEND中断
-	csi_led_register_callback(LED, led_callback);	//注册中断回调函数
+	csi_led_int_enable(LED, LED_INTSRC_ICEND);			//若需使用中断，请调该接口使能对应中断，这里使用LED_INTSRC_ICEND中断
+	csi_led_register_callback(LED, user_led_callback);	//注册中断回调函数
 	
 	while(1)
 	{

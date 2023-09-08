@@ -95,29 +95,85 @@ typedef enum {
 #define LED_SEGDATA_MSK(n)              (0x1UL << LED_SEGDAT0_SEG7_POS)          /*!< LED SEGDATn: Mask */
 
 /******************************************************************************
-********************* LEDx Macro Definition Declaration **********************
+********************* ptLedBase inline Functions Declaration **********************
 ******************************************************************************/
 //on/off
-#define csp_led_light_on(LEDx) 					 ((LEDx) -> CR = ((LEDx) -> CR & (~LED_LIGHTON_MSK)) | (0x1 << LED_LIGHTON_POS))
-#define csp_led_light_off(LEDx) 				 ((LEDx) -> CR = (LEDx) -> CR & (~LED_LIGHTON_MSK))
-#define csp_led_com_on(LEDx, hwVal)				 ((LEDx) -> BLKDR = hwVal)
-#define csp_led_com_off(LEDx,hwVal)			  	 ((LEDx) -> BLKER = hwVal)
+static inline void csp_led_light_on(csp_led_t *ptLedBase) 					 
+{
+	ptLedBase -> CR = (ptLedBase -> CR & (~LED_LIGHTON_MSK)) | (0x1 << LED_LIGHTON_POS);
+}
+
+static inline void csp_led_light_off(csp_led_t *ptLedBase) 	
+{
+	ptLedBase -> CR = ptLedBase -> CR & (~LED_LIGHTON_MSK);
+}		
+
+static inline void csp_led_com_on(csp_led_t *ptLedBase,uint16_t hwVal)	
+{
+	ptLedBase -> BLKDR = hwVal;
+}			 
+
+static inline void csp_led_com_off(csp_led_t *ptLedBase,uint16_t hwVal)	
+{
+	ptLedBase -> BLKER = hwVal;
+}		  	 
 
 //write reg
-#define csp_led_set_clk(LEDx, eClk) 			 ((LEDx) -> CR = ((LEDx) -> CR & (~LED_LEDCLK_MSK)) | (eClk << LED_LEDCLK_POS))
-#define csp_led_set_brt(LEDx, eBrt)  	    	 ((LEDx) -> BRIGHT = eBrt)
-#define csp_led_set_commask(LEDx, byComMsk) 	 ((LEDx) -> CR = ((LEDx) -> CR & (~LED_COM_EN_MSK)) | (byComMsk << LED_COM_EN_POS))
-#define csp_led_set_dcomcnt(LEDx, byVal)		 ((LEDx) -> TIMCR = ((LEDx) -> TIMCR & (~LED_DCOMCNT_MSK)) | (byVal << LED_DCOMCNT_POS))
-#define csp_led_set_novcnt(LEDx, byVal)     	 ((LEDx) -> TIMCR = ((LEDx) -> TIMCR & (~LED_NOVCNT_MSK)) | (byVal << LED_NOVCNT_POS))
-#define csp_led_set_setdata(LEDx, byCom, byData) ((LEDx) -> SEGDATA[byCom] = byData)
+static inline void csp_led_set_clk(csp_led_t *ptLedBase, csp_led_ledclk_e eClk) 		
+{
+	ptLedBase -> CR = (ptLedBase -> CR & (~LED_LEDCLK_MSK)) | (eClk << LED_LEDCLK_POS);
+}	
+ 
+static inline void csp_led_set_brt(csp_led_t *ptLedBase, csp_led_brt_e eBrt)
+{
+	ptLedBase -> BRIGHT = eBrt;
+}  	
+
+static inline void csp_led_set_commask(csp_led_t *ptLedBase,uint8_t byComMsk) 	 
+{
+	ptLedBase -> CR = (ptLedBase -> CR & (~LED_COM_EN_MSK)) | (byComMsk << LED_COM_EN_POS);
+}
+
+static inline void csp_led_set_dcomcnt(csp_led_t *ptLedBase,uint8_t byVal)	
+{
+	ptLedBase -> TIMCR = (ptLedBase -> TIMCR & (~LED_DCOMCNT_MSK)) | (byVal << LED_DCOMCNT_POS);
+}	 
+
+static inline void csp_led_set_novcnt(csp_led_t *ptLedBase,uint8_t byVal)   
+{
+	ptLedBase -> TIMCR = (ptLedBase -> TIMCR & (~LED_NOVCNT_MSK)) | (byVal << LED_NOVCNT_POS);
+}  	 
+
+static inline void csp_led_set_setdata(csp_led_t *ptLedBase,uint8_t byCom,uint8_t byData)
+{
+	ptLedBase -> SEGDATA[byCom] = byData;
+}
 
 //read reg
-#define csp_led_get_com_st(LEDx)  				 ((LEDx) -> BLKST)
+static inline uint16_t csp_led_get_com_st(csp_led_t *ptLedBase)  	
+{
+	return ptLedBase -> BLKST;
+}			 
 
 //interrupt
-#define csp_led_int_enable(LEDx, eInt)			 ((LEDx) -> IMCR |= eInt)
-#define csp_led_int_disable(LEDx, eInt)			 ((LEDx) -> IMCR &= ~eInt)
-#define csp_led_clr_isr(LEDx, eInt)				 ((LEDx) -> ICR  =  eInt)
-#define csp_led_get_misr(LEDx)					 ((LEDx) -> MISR)
+static inline void csp_led_int_enable(csp_led_t *ptLedBase,csp_led_int_e eInt)
+{
+	ptLedBase -> IMCR |= eInt;
+}	
+
+static inline void csp_led_int_disable(csp_led_t *ptLedBase,csp_led_int_e eInt)
+{
+	ptLedBase -> IMCR &= ~eInt;
+}	
+
+static inline void csp_led_clr_isr(csp_led_t *ptLedBase,csp_led_int_e eInt)		
+{
+	ptLedBase -> ICR  =  eInt;
+}	
+
+static inline uint32_t csp_led_get_misr(csp_led_t *ptLedBase)	
+{
+	return ptLedBase -> MISR;
+}				 
 
 #endif

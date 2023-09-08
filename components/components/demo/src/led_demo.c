@@ -26,7 +26,7 @@
 uint8_t g_byLedData[4] = {0x06,0x5b,0x4f,0x66};//数码管编码：1,2,3,4 
 csi_led_config_t ptLedCfg;
 
-/** \brief	ledx_int_handler: led中断服务函数
+/** \brief	led_int_handler: led中断服务函数
  * 
  *  \brief 	LED发生中断时会调用此函数，函数在interrupt.c里定义为弱(weak)属性，默认不做处理；用户用到LED中
  * 			断时，请重新定义此函数，在此函数中进行对应中断处理，也可直接在interrupt.c里的函数里进行处理
@@ -34,19 +34,10 @@ csi_led_config_t ptLedCfg;
  *  \param[in] none
  *  \return none
  */
-ATTRIBUTE_ISR  void led_int_handler(void)
+ATTRIBUTE_ISR void led_int_handler(void)
 {
 	//用户直接在中断服务接口函数里处理中断，建议客户使用此模式
-	volatile uint32_t wMisr = csp_led_get_misr(LED);
-	
-	if(wMisr & LED_INTSRC_ICEND)				//ICEND interrupt
-	{
-		csp_led_clr_isr(LED, LED_INTSRC_ICEND);
-	}
-	if(wMisr & LED_INTSRC_IPEND)				//IPEND interrupt
-	{
-		csp_led_clr_isr(LED, LED_INTSRC_IPEND);	
-	}
+	csp_led_clr_isr(LED, csp_led_get_misr(LED));
 }
 
 /** \brief  apt_io_config: LED相关IO配置，包括SEG脚与COM脚的配置
