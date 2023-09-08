@@ -61,6 +61,7 @@ extern "C" {
 #define UART_IDX   			3		//UARTx id number
 #define USART_IDX  			2		//USARTx id number
 #define LED_IDX  			1		//LEDx id number
+#define DAC_IDX   			1		//DACx id number
 
 //DMA  id number
 //max channel number

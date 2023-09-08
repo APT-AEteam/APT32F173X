@@ -37,6 +37,15 @@ typedef enum{
 	SYNCIN2			= (0x01uL << 2),
 	
 }csi_dac_syncr_e;
+
+/// \struct csi_dac_ctrl_t
+/// \brief  dac control handle, not open to users  
+typedef struct 
+{
+    void(*callback)(csp_dac_t *ptDacBase, uint8_t byIsr);
+} csi_dac_ctrl_t;
+
+extern csi_dac_ctrl_t g_tDacCtrl[DAC_IDX];
 /** \brief initialize dac data structure
  * 
  *  \param[in] ptDacBase: pointer of dac register structure
@@ -60,11 +69,18 @@ void csi_dac_en(csp_dac_t *ptDacBase);
 void csi_dac_dis(csp_dac_t *ptDacBase);
 
 /**
-  \brief       dac interrupt set 
+  \brief       dac interrupt enable 
   \param[in]   ptDacBase	pointer of dac register structure
   \return      none
 */
-void csi_dac_irq_enable(csp_dac_t *ptDacBase, csi_dac_irq_e byVal,bool bEnable);
+void csi_dac_int_enable(csp_dac_t *ptDacBase, csi_dac_irq_e byVal);
+
+/**
+  \brief       dac interrupt disable 
+  \param[in]   ptDacBase	pointer of dac register structure
+  \return      none
+*/
+void csi_dac_int_disable(csp_dac_t *ptDacBase, csi_dac_irq_e byVal);
 
 /**
   \brief       dac syncr set 
@@ -86,5 +102,21 @@ void csi_dac_step_val(csp_dac_t *ptDacBase, uint16_t byDer);
   \return      none
 */
 void csi_dac_start(csp_dac_t *ptDacBase);
+
+/** \brief  register dac interrupt callback function
+ * 
+ *  \param[in] ptDacBase: pointer of dac register structure
+ *  \param[in] callback: dac interrupt handle function
+ *  \return error code \ref csi_error_t
+ */ 
+csi_error_t csi_dac_register_callback(csp_dac_t *ptDacBase, void  *callback);
+
+/** \brief dac interrupt handler function
+ * 
+ *  \param[in] ptDacBase: pointer of dac register structure
+ *  \param[in] byIdx: dac idx(0)
+ *  \return none
+ */ 
+void csi_dac_irqhandler(csp_dac_t *ptDacBase, uint8_t byIdx);
 
 #endif

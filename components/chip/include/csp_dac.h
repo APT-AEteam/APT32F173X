@@ -42,14 +42,14 @@ typedef enum{
 	DAC_SYNCIN1			= (0x01uL << 1),
 	DAC_SYNCIN2			= (0x01uL << 2),
 	
-}dac_syncr_e;
+}dac_sync_e;
 
 typedef enum{
 	DAC_EOC			    = (0x01uL << 0),
 	DAC_WRERR			= (0x01uL << 1),
 	DAC_SYNCERR			= (0x01uL << 2),
 	
-}dac_irq_e;
+}dac_int_e;
 /******************************************************************************
 * ECR, 
 ******************************************************************************/
@@ -138,18 +138,9 @@ DAC_SR
 #define DAC_ICR_SYNCERR_POS         2
 #define DAC_ICR_SYNCERR_MSK      	(0x01ul<<  DAC_ICR_SYNCERR_POS   )
 
-
-
-
-static inline void csp_dac_vic_irq_en(void)
-{
-    //NVIC_EnableIRQ(DAC0_IRQn);
-}
-
-static inline void csp_dac_vic_irq_dis(void)
-{
-	//NVIC_DisableIRQ(DAC0_IRQn);
-}
+/******************************************************************************
+********************* DAC inline Functions Declaration **********************
+******************************************************************************/
 
 static inline void csp_dac_start(csp_dac_t *ptDacBase)
 {
@@ -187,7 +178,6 @@ static inline void csp_dac_powerdown_enable(csp_dac_t *ptDacBase, bool bEnable)
 {
 	if(bEnable)ptDacBase -> DAC_DACR |=   DAC_PD_MSK ;
 	else{         ptDacBase -> DAC_DACR  =   ptDacBase -> DAC_DACR &(~DAC_PD_MSK) ;}
-
 }
 
 static inline void csp_dac_set_datal(csp_dac_t *ptDacBase, uint16_t byDer)
@@ -200,7 +190,7 @@ static inline void csp_dac_set_datar(csp_dac_t *ptDacBase, uint16_t byDer)
 	ptDacBase->DATAINR = (ptDacBase->DATAINR & (~DAC_DATAINR_MSK)) | (byDer );
 }
 
-static inline void csp_dac_syncr_enable(csp_dac_t *ptDacBase, dac_syncr_e byVal,bool bEnable)
+static inline void csp_dac_syncr_enable(csp_dac_t *ptDacBase, dac_sync_e byVal,bool bEnable)
 {	
 	switch(byVal)
 	{
@@ -218,8 +208,6 @@ static inline void csp_dac_syncr_enable(csp_dac_t *ptDacBase, dac_syncr_e byVal,
 			break;		
 	}
 }
-
-
 static inline void csp_dac_step_val(csp_dac_t *ptDacBase, uint16_t byDer)
 {	
 	ptDacBase->DAC_STEP = (ptDacBase->DAC_STEP & (~DAC_STEP_MSK)) | (byDer );
@@ -229,66 +217,22 @@ static inline bool csp_dac_get_busy(csp_dac_t *ptDacBase)
 {
 	return (bool)(ptDacBase->DAC_SR & 0x01);
 }
-
-static inline void csp_dac_irq_enable(csp_dac_t *ptDacBase, dac_irq_e byVal,bool bEnable)
-{	
-	switch(byVal)
-	{
-		case DAC_EOC:						//
-		     ptDacBase->DAC_IMCR = (ptDacBase->DAC_IMCR & (~DAC_IMCR_ECO_MSK)) | (bEnable<<0 );
-			break;
-		case DAC_WRERR:						//
-		     ptDacBase->DAC_IMCR = (ptDacBase->DAC_IMCR & (~DAC_IMCR_WRERR_MSK)) | (bEnable<<1 );
-			break;
-		case DAC_SYNCERR:						//
-		     ptDacBase->DAC_IMCR = (ptDacBase->DAC_IMCR & (~DAC_IMCR_SYNCERR_MSK)) | (bEnable<<2 );
-			break;
-		default:
-					
-			break;	
-	}
-}
-
-static inline uint32_t csp_dac_irq_stata(csp_dac_t *ptDacBase, uint32_t byVal)
-{	
-	switch(byVal)
-	{
-		case DAC_EOC:						//
-		     return (bool)( (ptDacBase->DAC_MISR  & DAC_IMSR_ECO_MSK)  );
-			break;
-		case DAC_WRERR:						//
-		     return (bool)( (ptDacBase->DAC_MISR  & DAC_IMSR_WRERR_MSK) >> 1 );
-			break;
-		case DAC_SYNCERR:						//
-		     return (bool)( (ptDacBase->DAC_MISR  & DAC_IMSR_SYNCERR_MSK) >> 2 );
-			break;
-		default:		
-			return ptDacBase->DAC_MISR;
-            break;		
-	}
-}
-
-static inline void csp_dac_irq_clr(csp_dac_t *ptDacBase,dac_irq_e byVal)
-{	
-	switch(byVal)
-	{
-		case DAC_EOC:						//
-		     ptDacBase->DAC_ICR  |= DAC_ICR_ECO_MSK;
-			break;
-		case DAC_WRERR:						//
-		     ptDacBase->DAC_ICR  |= DAC_ICR_WRERR_MSK;
-			break;
-		case DAC_SYNCERR:						//
-		     ptDacBase->DAC_ICR  |= DAC_ICR_SYNCERR_MSK;
-			break;
-		default:
-					
-			break;	
-	}
-}
-static inline uint32_t csp_dac_get_misr(csp_dac_t *ptDacBase)
+//interrupt
+static inline void csp_dac_int_enable(csp_dac_t *ptDacBase, dac_int_e eInt)
 {
-	return (uint32_t)(ptDacBase->DAC_MISR);
+	ptDacBase->DAC_IMCR |= eInt;						
+}
+static inline void csp_dac_int_disable(csp_dac_t *ptDacBase, dac_int_e eInt)
+{
+	ptDacBase->DAC_IMCR &= ~eInt;
+}
+static inline uint8_t csp_dac_get_isr(csp_dac_t *ptDacBase)
+{
+	return (uint8_t)ptDacBase->DAC_MISR;
+}
+static inline void csp_dac_clr_isr(csp_dac_t *ptDacBase, dac_int_e eInt)
+{
+	ptDacBase->DAC_ICR = eInt;
 }
 #endif
 

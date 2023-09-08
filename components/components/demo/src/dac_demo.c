@@ -9,8 +9,6 @@
  * *********************************************************************
 */
 /* Includes ---------------------------------------------------------------*/
-#include <string.h>
-#include "sys_clk.h"
 #include <drv/dac.h>
 #include "pin.h"
 
@@ -69,9 +67,9 @@ void dac_sync_demo(void)
 	csi_dac_init(DAC0, &tDacConfig);	
 	csi_dac_en(DAC0);
 	
-	csi_dac_irq_enable(DAC0, EOC,1);	//使能EOC中断
-	csi_dac_irq_enable(DAC0, WRERR,1);	//使能WRERR中断
-	csi_dac_irq_enable(DAC0, SYNCERR,1);//使能SYNCERR中断
+	csi_dac_int_enable(DAC0, EOC);		//使能EOC中断
+	csi_dac_int_enable(DAC0, WRERR);	//使能WRERR中断
+	csi_dac_int_enable(DAC0, SYNCERR);	//使能SYNCERR中断
 	
 	csi_dac_syncr_enable(DAC0, SYNCIN0,true);//开启DAC_SYNCIN0触发
 	csi_dac_syncr_enable(DAC0, SYNCIN1,true);//开启DAC_SYNCIN1触发
@@ -81,13 +79,30 @@ void dac_sync_demo(void)
 	csi_dac_start(DAC0);
 }
 
-/** \brief dac interrupt handle function
+/** \brief	dacx_int_handler: BT中断服务函数
  * 
- *  \param[in] ptDacBase: pointer of dac register structure
+ *  \brief 	DAC发生中断时会调用此函数，函数在interrupt.c里定义为弱(weak)属性，默认不做处理；用户用到DAC中
+ * 			断时，请重新定义此函数，在此函数中进行对应中断处理，也可直接在interrupt.c里的函数里进行处理
+ * 
+ *  \param[in] none
  *  \return none
- */ 
-__attribute__((weak)) void dac_irqhandler(csp_dac_t *ptDacBase)
+ */
+ATTRIBUTE_ISR  void dac0_int_handler(void)
 {
-	volatile uint32_t wVal = csp_dac_get_misr(ptDacBase);	
-	csp_dac_irq_clr(ptDacBase,wVal);
+	//用户直接在中断服务接口函数里处理中断，建议客户使用此模式
+	volatile uint32_t wMisr = csp_dac_get_isr(DAC0);
+	
+	if(wMisr & DAC_EOC)					//PEND interrupt
+	{
+		csp_dac_clr_isr(DAC0, DAC_EOC);
+		csi_gpio_toggle(GPIOA, PA6);		//PA6翻转
+	}
+	if(wMisr & DAC_WRERR)					//CMP interrupt
+	{
+		csp_dac_clr_isr(DAC0, DAC_WRERR);	
+	}
+	if(wMisr & DAC_SYNCERR)				//EVTRG interrupt
+	{
+		csp_dac_clr_isr(DAC0, DAC_SYNCERR);
+	}
 }
