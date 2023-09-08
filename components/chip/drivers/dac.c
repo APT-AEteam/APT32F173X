@@ -9,20 +9,62 @@
  * </table>
  * *********************************************************************
 */
-//#include <csi_config.h>
-#include <csp_dac.h>
-#include <drv/irq.h>
-#include <drv/clk.h>
-#include <sys_clk.h>
 #include <drv/dac.h>
-#include "drv/gpio.h"
-#include <drv/pin.h>
-#include "csp.h"
+/* Private macro------------------------------------------------------*/
+/* externs function---------------------------------------------------*/
+/* externs variablesr-------------------------------------------------*/
+/* Private variablesr-------------------------------------------------*/
+csi_dac_ctrl_t g_tDacCtrl[DAC_IDX];
+/** \brief get dac number 
+ * 
+ *  \param[in] ptDacBase: pointer of dac register structure
+ *  \return dac number 0/1
+ */ 
+static uint8_t apt_get_dac_idx(csp_dac_t *ptDacBase)
+{
+	switch((uint32_t)ptDacBase)
+	{
+		case AHB_DAC_BASE:		//DAC0
+			return 0;		
+
+		default:
+			return 0xff;		//error
+	}
+}
+/** \brief  register dac interrupt callback function
+ * 
+ *  \param[in] ptDacBase: pointer of dac register structure
+ *  \param[in] callback: dac interrupt handle function
+ *  \return error code \ref csi_error_t
+ */ 
+csi_error_t csi_dac_register_callback(csp_dac_t *ptDacBase, void  *callback)
+{
+	uint8_t byIdx = apt_get_dac_idx(ptDacBase);
+	if(byIdx == 0xff)
+		return CSI_ERROR;
+		
+	g_tDacCtrl[byIdx].callback = callback;
+	
+	return CSI_OK;
+}
+/** \brief dac interrupt handler function
+ * 
+ *  \param[in] ptDacBase: pointer of dac register structure
+ *  \param[in] byIdx: dac idx(0)
+ *  \return none
+ */ 
+void csi_dac_irqhandler(csp_dac_t *ptDacBase, uint8_t byIdx)
+{
+	uint8_t byIsr = csp_dac_get_isr(ptDacBase);
+	g_tDacCtrl[byIdx].callback(ptDacBase, byIsr);
+			
+	csp_dac_clr_isr(ptDacBase, byIsr);
+}
 
 /** \brief initialize dac data structure
  * 
  *  \param[in] ptDacBase: pointer of dac register structure
- *  \param[in] ptDacCfg: pointer of dca parameter config structure
+ *  \param[in] ptDacCfg: pointer of dac parameter config structure
  *  \return error code \ref csi_error_t
  */ 
 void csi_dac_init(csp_dac_t *ptDacBase, csi_dac_config_t *ptDacCfg)
@@ -64,28 +106,41 @@ void csi_dac_dis(csp_dac_t *ptDacBase)
 }
 
 /**
-  \brief       dac interrupt set 
-  \param[in]   ptDacBase	pointer of dac register structure
+  \brief       dac interrupt enable 
+  \param[in]   ptDacBase:	pointer of dac register structure
+  \param[in]   eVal: pointer of dac interrupt config structure
   \return      none
 */
-void csi_dac_irq_enable(csp_dac_t *ptDacBase, csi_dac_irq_e eVal,bool eEnable)
+void csi_dac_int_enable(csp_dac_t *ptDacBase, csi_dac_irq_e eVal)
 {
-	csp_dac_irq_enable(ptDacBase,(dac_irq_e)eVal,eEnable);
+	csp_dac_int_enable(ptDacBase,(dac_int_e)eVal);
 }
-
+/**
+  \brief       dac interrupt disable 
+  \param[in]   ptDacBase:	pointer of dac register structure
+  \param[in]   eVal: pointer of dac interrupt config structure
+  \return      none
+*/
+void csi_dac_int_disable(csp_dac_t *ptDacBase, csi_dac_irq_e eVal)
+{
+	csp_dac_int_disable(ptDacBase,(dac_int_e)eVal);
+}
 /**
   \brief       dac syncr set 
   \param[in]   ptDacBase	pointer of dac register structure
+  \param[in]   eVal: pointer of dac sync config structure
+  \param[in]   eEnable: enable/disable dac sync
   \return      none
 */
 void csi_dac_syncr_enable(csp_dac_t *ptDacBase, csi_dac_syncr_e eVal,bool eEnable)
 {
-	csp_dac_syncr_enable(ptDacBase,(dac_syncr_e)eVal,eEnable);
+	csp_dac_syncr_enable(ptDacBase,(dac_sync_e)eVal,eEnable);
 }
 
 /**
   \brief       dac step value set 
   \param[in]   ptDacBase	pointer of dac register structure
+  \param[in]   eDer	data of dac sync step
   \return      none
 */
 void csi_dac_step_val(csp_dac_t *ptDacBase, uint16_t eDer)

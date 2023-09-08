@@ -12,10 +12,6 @@
 #ifndef _DRV_ADC_H_
 #define _DRV_ADC_H_
 
-#include <stdint.h>
-#include <stdbool.h>
-#include <drv/common.h>
-
 #include "csp.h"
 
 #ifdef __cplusplus
@@ -314,20 +310,6 @@ typedef struct {
 	uint32_t			wInt;			//adc interrupt select
 	csi_adc_seq_t		*ptSeqCfg;		//pointer of send buf sequence config 
 } csi_adc_config_t;
-
-
-/// \struct csi_adc_samp_t
-/// \brief  adc sample handle, not open to users
-typedef struct {
-	uint16_t			*phwData;		//pointer of receive adc data buffer
-	uint16_t			hwChnlDep;		//channel sample depth(data sample length of channel)
-	uint16_t			hwSampCnt;		//channel sample depth count
-	uint8_t				byChnlNum;		//channel number of sequence 
-	uint8_t				byConvStat;		//adc working status
-} csi_adc_samp_t;
-
-extern csi_adc_samp_t g_tAdcSamp;
-
 
 /**
   \brief       Initialize adc Interface. Initialize the resources needed for the adc interface

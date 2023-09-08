@@ -252,12 +252,14 @@ ATTRIBUTE_ISR __attribute__((weak)) void gptb5_int_handler(void)
 
 ATTRIBUTE_ISR __attribute__((weak)) void dac0_int_handler(void) 
 {
-#if DAC0_INT_HANDLE_EN		
     // ISR content ...
 	CSI_INTRPT_ENTER();
-	dac_irqhandler(DAC0);//this is a weak function defined in dac_demo.c, for better efficiency, we recommand user directly implement IRQ handler here without any function call.
-	CSI_INTRPT_EXIT();
+#if (USE_DAC_CALLBACK == 1)
+	csi_dac_irqhandler(DAC0, 0);
+#else
+	csp_dac_clr_isr(DAC0, csp_dac_get_isr(DAC0))
 #endif
+	CSI_INTRPT_EXIT();
 }
 
 ATTRIBUTE_ISR __attribute__((weak)) void usart0_int_handler(void) 

@@ -65,6 +65,7 @@ extern "C" {
 #define CNTA_IDX  			1		//CNTAx id number
 #define CMP_IDX  			3		//CMPx id number
 #define GPTA_IDX  			4		//GPTAx id number
+#define DAC_IDX   			1		//DACx id number
 
 //DMA  id number
 //max channel number
