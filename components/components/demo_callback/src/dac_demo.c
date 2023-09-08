@@ -46,7 +46,7 @@ void dac_callback(csp_dac_t *ptDacBase, uint8_t byIsr)
  *  \param[in] none
  *  \return 0/-1
  */
-int dac_eoc_callback_demo(void)
+int dac_callback_demo(void)
 {
 	int iRet = 0;
 	csi_dac_config_t tDacConfig;

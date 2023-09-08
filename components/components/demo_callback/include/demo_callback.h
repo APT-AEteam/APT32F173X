@@ -163,7 +163,7 @@ extern int can_send_demo(void);
 extern int can_recv_demo(void);
 
 //dac demo
-extern void dac_demo(void);	
+extern int dac_callback_demo(void);
 
 
 ///  sram相关的示例代码
