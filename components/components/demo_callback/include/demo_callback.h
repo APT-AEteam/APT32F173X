@@ -123,9 +123,7 @@ extern int spi_etcb_dma_send_demo(void);
 extern int spi_etcb_dma_send_receive_demo(void);
 
 //cmp demo
-extern int cmp_base_demo(void);
-extern int cmp_dfcr_demo(void);
-extern int cmp_wfcr_demo(void);
+extern int cmp_base_callback_demo(void);
 
 //gpta demo
 extern int gpta_timer_demo(void);
