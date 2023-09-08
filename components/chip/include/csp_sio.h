@@ -370,11 +370,11 @@ typedef struct
 /*****************************************************************************
  ******************** SIO inline Functions Declaration ***********************
  *****************************************************************************/
-static inline void csp_sio_clk_en(csp_sio_t *ptUsartBase)
+static inline void csp_sio_clk_enable(csp_sio_t *ptUsartBase)
 {
-	ptUsartBase->CR |= SIO_CLKEN ; 		//CLK EN
+	ptUsartBase->CR |= SIO_CLKEN_MSK ; 		//CLK EN
 }
-static inline void csp_sio_clk_dis(csp_sio_t *ptUsartBase)
+static inline void csp_sio_clk_disable(csp_sio_t *ptUsartBase)
 {
 	ptUsartBase->CR &= ~SIO_CLKEN_MSK ; //CLK DIS
 }
@@ -382,20 +382,19 @@ static inline void csp_sio_set_mode(csp_sio_t *ptSioBase, sio_mode_e eTxRx)
 {
 	ptSioBase->CR = (ptSioBase->CR & ~SIO_MODE_MSK) | (eTxRx << SIO_MODE_POS);
 }
-
 static inline void csp_sio_woke_rst(csp_sio_t *ptSioBase)
 {
-	ptSioBase->CR |= SIO_WOKE_RSTKEY_MSK | SIO_WOKE_RST_MSK;
+	ptSioBase->CR |= (SIO_WOKE_RSTKEY_MSK | SIO_WOKE_RST_MSK);		//reset without reg
 }
 //SIO DMA
-static inline void csp_sio_set_txdma(csp_sio_t *ptSioBase, sio_tdma_en_e eTxDmaEn) 
+static inline void csp_sio_txdma_enable(csp_sio_t *ptSioBase, bool bEnable) 
 {
-	ptSioBase->CR = (ptSioBase->CR & ~SIO_TDMA_EN_MSK) | (eTxDmaEn << SIO_TDMA_EN_POS);
+	ptSioBase->CR = (ptSioBase->CR & ~SIO_TDMA_EN_MSK) | (bEnable << SIO_TDMA_EN_POS);
 }
 
-static inline void csp_sio_set_rxdma(csp_sio_t *ptSioBase, sio_rdma_en_e eRxDmaEn) 
+static inline void csp_sio_rxdma_enable(csp_sio_t *ptSioBase, bool bEnable) 
 {
-	ptSioBase->CR = (ptSioBase->CR & ~SIO_RDMA_EN_MSK) | (eRxDmaEn << SIO_RDMA_EN_POS);
+	ptSioBase->CR = (ptSioBase->CR & ~SIO_RDMA_EN_MSK) | (bEnable << SIO_RDMA_EN_POS);
 }
 
 //SIO TX 
@@ -403,7 +402,6 @@ static inline void csp_sio_set_tx_clkdiv(csp_sio_t *ptSioBase,uint16_t hwClkDiv)
 {
 	ptSioBase->CR = (ptSioBase->CR & ~SIO_TCKPRS_MSK) | SIO_TCKPRS(hwClkDiv);
 }
-
 static inline void csp_sio_set_txcr0(csp_sio_t *ptSioBase,sio_idlest_e eIdlest, sio_tdir_e eTdir, uint8_t byTxBufLen, uint8_t byTxCnt)
 {
 	ptSioBase->TXCR0 = (eIdlest) | (eTdir << SIO_TDIR_POS) | SIO_TXBUFLEN(byTxBufLen) | SIO_TXCNT(byTxCnt);
@@ -421,21 +419,18 @@ static inline void csp_sio_set_d1(csp_sio_t *ptSioBase, uint8_t byD1Time)
 
 static inline void csp_sio_set_dl(csp_sio_t *ptSioBase, sio_lenob_e eDlBit, uint8_t byDlSq)
 {
-	ptSioBase->TXCR1 = (ptSioBase->TXCR1 & ~(SIO_LENOBL_MSK | SIO_LSQ_MSK));
-	ptSioBase->TXCR1 |= (eDlBit << SIO_LENOBL_POS) | SIO_LSQ(byDlSq);
+	ptSioBase->TXCR1 = (ptSioBase->TXCR1 & ~(SIO_LENOBL_MSK | SIO_LSQ_MSK)) | (eDlBit << SIO_LENOBL_POS) | SIO_LSQ(byDlSq);
 }
 
 static inline  void csp_sio_set_dh(csp_sio_t *ptSioBase, sio_lenob_e eDhBit, uint8_t byDhSq)
 {
-	ptSioBase->TXCR1 = (ptSioBase->TXCR1 & ~(SIO_LENOBH_MSK | SIO_HSQ_MSK));
-	ptSioBase->TXCR1 |= (eDhBit << SIO_LENOBH_POS) | SIO_HSQ(byDhSq);
+	ptSioBase->TXCR1 = (ptSioBase->TXCR1 & ~(SIO_LENOBH_MSK | SIO_HSQ_MSK))| (eDhBit << SIO_LENOBH_POS) | SIO_HSQ(byDhSq);
 }
 
 static inline void csp_sio_wait_tx(csp_sio_t *ptSioBase)
 {
 	while(!(ptSioBase->RISR & SIO_TXDNE));
 }
-
 static inline void csp_sio_set_txbuf(csp_sio_t *ptSioBase,uint32_t wVal)
 {
 	ptSioBase->TXBUF = wVal;
@@ -452,24 +447,24 @@ static inline void csp_sio_set_rx_deb(csp_sio_t *ptSioBase,sio_debdep_e eDebDep,
 	ptSioBase->CR = (ptSioBase->CR & ~(SIO_DEBDEP_MSK | SIO_DEBCKS_MSK)) | (eDebDep << SIO_DEBDEP_POS) | SIO_DEBCKS(byDebCks);
 }
 
-static inline void csp_sio_set_break_para(csp_sio_t *ptSioBase,sio_breaklel_e eBkLvl,uint8_t byBkCnt)
+//static inline void csp_sio_set_break_para(csp_sio_t *ptSioBase,sio_breaklel_e eBkLvl,uint8_t byBkCnt)
+//{
+//	ptSioBase->RXCR2 = (ptSioBase->RXCR2 & ~(SIO_BREAKLVL_MSK | SIO_BREAKCNT_MSK)) | (eBkLvl << SIO_BREAKLVL_POS) | SIO_BREAKCNT(byBkCnt);
+//}
+
+static inline void csp_sio_align_enable(csp_sio_t *ptSioBase, bool bEnable)
 {
-	ptSioBase->RXCR2 = (ptSioBase->RXCR2 & ~(SIO_BREAKLVL_MSK | SIO_BREAKCNT_MSK)) | (eBkLvl << SIO_BREAKLVL_POS) | SIO_BREAKCNT(byBkCnt);
+	ptSioBase->RXCR0 = (ptSioBase->RXCR0 & ~SIO_ALIGNEN_MSK) | (bEnable << SIO_ALIGNEN_POS);
 }
 
-static inline void csp_sio_set_align(csp_sio_t *ptSioBase, sio_align_e eAlign)
+static inline void csp_sio_set_torst(csp_sio_t *ptSioBase, uint8_t byToCnt, bool bEnable)
 {
-	ptSioBase->RXCR0 = (ptSioBase->RXCR0 & ~SIO_ALIGNEN_MSK) | (eAlign << SIO_ALIGNEN_POS);
+	ptSioBase->RXCR2 = (ptSioBase->RXCR2 & ~(SIO_TORSTEN_MSK | SIO_TOCNT_MSK)) | (bEnable << SIO_TORSTEN_POS) | SIO_TOCNT(byToCnt);
 }
 
-static inline void csp_sio_set_torst(csp_sio_t *ptSioBase, sio_torst_e eTorst, uint8_t byToCnt)
+static inline void csp_sio_break_enable(csp_sio_t *ptSioBase, bool bEnable)
 {
-	ptSioBase->RXCR2 = (ptSioBase->RXCR2 & ~(SIO_TORSTEN_MSK | SIO_TOCNT_MSK)) | (eTorst << SIO_TORSTEN_POS) | SIO_TOCNT(byToCnt);
-}
-
-static inline void csp_sio_ctrl_break(csp_sio_t *ptSioBase, sio_break_e eBreak)
-{
-	ptSioBase->RXCR2 = (ptSioBase->RXCR2 & ~SIO_BREAKEN_MSK) | (eBreak << SIO_BREAKEN_POS);
+	ptSioBase->RXCR2 = (ptSioBase->RXCR2 & ~SIO_BREAKEN_MSK) | (bEnable << SIO_BREAKEN_POS);
 }
 
 static inline uint32_t csp_sio_get_rxbuf(csp_sio_t *ptSioBase)
@@ -495,37 +490,34 @@ static inline void csp_sio_set_recv(csp_sio_t *ptSioBase,sio_rdir_e eRdir, uint8
 	ptSioBase->RXCR1 = (ptSioBase->RXCR1 & ~(SIO_BUFCNT_MSK | SIO_RXCNT_MSK)) | SIO_BUFCNT(byBuflen) | SIO_RXCNT(byRxCnt) ;
 }
 
-static inline void csp_sio_set_break(csp_sio_t *ptSioBase, sio_break_e eBreak, sio_breaklel_e eBkLvl,uint8_t byBkCnt)
+static inline void csp_sio_set_break(csp_sio_t *ptSioBase, sio_breaklel_e eBkLvl,uint8_t byBkCnt, bool bEnable)
 {
-	ptSioBase->RXCR2 = (ptSioBase->RXCR2 & ~(SIO_BREAKEN_MSK | SIO_BREAKLVL_MSK | SIO_BREAKCNT_MSK));
-	ptSioBase->RXCR2 |= eBreak | (eBkLvl << SIO_BREAKLVL_POS) | SIO_BREAKCNT(byBkCnt);
+	ptSioBase->RXCR2 = (ptSioBase->RXCR2 & ~(SIO_BREAKEN_MSK | SIO_BREAKLVL_MSK | SIO_BREAKCNT_MSK)) |  bEnable | 
+						(eBkLvl << SIO_BREAKLVL_POS) | SIO_BREAKCNT(byBkCnt);
 }
+
 //SIO INT
-static inline uint32_t csp_sio_get_isr(csp_sio_t *ptSioBase)
+static inline uint8_t csp_sio_get_risr(csp_sio_t *ptSioBase)
 {
-	return (uint32_t)(ptSioBase->MISR);
+	return (uint8_t)(ptSioBase->RISR);
 }
-
-static inline uint32_t csp_sio_get_risr(csp_sio_t *ptSioBase)
+static inline uint8_t csp_sio_get_isr(csp_sio_t *ptSioBase)
 {
-	return (uint32_t)(ptSioBase->RISR);
+	return (uint8_t)(ptSioBase->MISR);
 }
-
 static inline void csp_sio_clr_isr(csp_sio_t *ptSioBase, sio_int_e eSioInt)
 {
 	ptSioBase->ICR = eSioInt;
 }
-
-static inline void csp_sio_int_enable(csp_sio_t *ptSioBase,sio_int_e eSioInt, bool bEnable)
+static inline void csp_sio_int_enable(csp_sio_t *ptSioBase,sio_int_e eSioInt)
 {
-	if(bEnable)
-		ptSioBase->IMCR |= eSioInt;
-	else
-		ptSioBase->IMCR &= ~eSioInt;
-
+	ptSioBase->IMCR |= eSioInt;
 }
-
-static inline void csp_sio_soft_reset(csp_sio_t *ptSioBase)
+static inline void csp_sio_int_disable(csp_sio_t *ptSioBase,sio_int_e eSioInt)
+{
+	ptSioBase->IMCR &= ~eSioInt;
+}
+static inline void csp_sio_soft_rst(csp_sio_t *ptSioBase)
 {
 	ptSioBase->SRR = SIO_SWRST_MSK;
 }

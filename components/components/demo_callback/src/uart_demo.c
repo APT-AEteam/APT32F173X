@@ -60,7 +60,7 @@ int uart_send_int_callback_demo(void)
 	tUartConfig.eParity 	= UART_PARITY_ODD;	//校验位，奇校验
 	tUartConfig.wBaudRate 	= 115200;			//波特率，115200
 	csi_uart_init(UART1, &tUartConfig);			//初始化串口
-	csi_uart_register_callback(UART1, CALLBACK_ID_SEND, user_send_callback);		//注册UART1发送中断回调函数
+	csi_uart_register_callback(UART1, UART_CALLBACK_SEND, user_send_callback);		//注册UART1发送中断回调函数
 	csi_uart_start(UART1, UART_FUNC_RX_TX);		//开启UART的RX和TX功能，也可单独开启RX或者TX功能
 	
 	
@@ -79,35 +79,35 @@ int uart_send_int_callback_demo(void)
  * 	\brief 	用户定义,使用csi标准库进行中断接收时,接收支持指定长度和动态长度(一串字符)两种方式，两者中任
  * 			一方式完成都会调用回调函数；用户可在回调函数里做自己的处理，而不需要关注具体的底层中断处理。
  * 
- * @UART_EVENT_RX_DNE：	定长接收完成事件，用户通过接口函数csi_uart_receive_int指定接收长度和数据接收buf，
+ * @UART_STATE_RX_DNE：	定长接收完成状态，用户通过接口函数csi_uart_receive_int指定接收长度和数据接收buf，
  * 						数据会依次接收到buf中直到接收数据达到指定长度，接收结束自动调用回调函数，用户可在
  * 						对应的回调函数中做处理。
  * 
- * @UART_EVENT_RX_TO:	动态接收完成事件，用户通过接口函数csi_uart_receive_int将接收长度和数据接收buf传入，
+ * @UART_STATE_RX_TO:	动态接收完成状态，用户通过接口函数csi_uart_receive_int将接收长度和数据接收buf传入，
  * 						接收长度要足够大，需超过实际使用中最长的协议长度；通过节超时作为区分不同字符串的依
  * 						据，字节超时时间初始化时可配置。
  * 
- * @ 注意：				实际使用中，两种接收方式请选择一种，若选择了指定长度，回调函数UART_EVENT_RX_TO事件
+ * @ 注意：				实际使用中，两种接收方式请选择一种，若选择了指定长度，回调函数UART_STATE_RX_TO事件
  * 						请不要做处理(接收清零)，否则会导致指定长度接收数据异常。
  * 
  *  \param[out] ptSioBase: 	UARTx寄存器结构体指针，指向UARTx的基地址 
- *  \param[out] eEvent: 	接收回调函数事件，支持定长和超时两种方式
+ *  \param[out] eState: 	接收状态，支持定长和超时两种方式
  *  \param[out] pbyBuf: 	接收buf，指向接收数据缓存数组首地址
  *  \param[out] hwLen: 		接收长度，
  *  \return none
  */ 
-static void user_receive_callback(csp_uart_t *ptUartBase, csi_uart_event_e eEvent, uint8_t *pbyBuf, uint16_t *hwLen)
+static void user_receive_callback(csp_uart_t *ptUartBase, csi_uart_state_e eState, uint8_t *pbyBuf, uint16_t *hwLen)
 {
 	volatile uint16_t hwRecvLen = *hwLen;								//获取接收长度
 	
-	switch(eEvent) 
+	switch(eState) 
 	{
-		case UART_EVENT_RX_DNE:											//指定长度接收
+		case UART_STATE_RX_DNE:											//指定长度接收
 			//添加用户处理
 			csi_uart_send(ptUartBase,(void *)pbyBuf, hwRecvLen);		//UART发送采用轮询方式
 			csi_uart_receive_int(UART1, pbyBuf, 18);					//重新开启接收
 			break;
-		case UART_EVENT_RX_TO:											//动态长度接收
+		case UART_STATE_RX_TO:											//动态长度接收
 			//添加用户处理
 //			*hwLen = 0;													//清除接收长度，准备下次接收；此模式必须执行清零操作
 //			csi_uart_send(ptUartBase,(void *)pbyBuf, hwRecvLen);		//UART发送采用轮询方式
@@ -148,16 +148,16 @@ int uart_receive_int_callback_demo(void)
 	tUartConfig.hwRecvTo 	= 88;					//UART接收超时时间，单位：bit位周期，8个bytes(11bit*8=88, 115200波特率时=764us)，若参数初始化为0，则关闭超时功能
 	tUartConfig.eRxFifoTrg = UART_RXFIFOTRG_FOUR;	//UART的RXFIFO的中断触发点设置为4，即RXFIFO接收到数据>=4,才会触发RXFIFO中断；支持三种配置(1/2/4)，此参数若不被初始化，则配置为1
 	csi_uart_init(UART1, &tUartConfig);				//初始化串口
-	csi_uart_register_callback(UART1, CALLBACK_ID_RECV, user_receive_callback);		//注册UART1接收中断回调函数
+	csi_uart_register_callback(UART1, UART_CALLBACK_RECV, user_receive_callback);		//注册UART1接收中断回调函数
 	csi_uart_start(UART1, UART_FUNC_RX_TX);			//开启UART的RX和TX功能，也可单独开启RX或者TX功能
 	
 	//指定长度接收
-	//接收到16个字节数据时，会自动调用uart1_recv_callback，用户可在UART_EVENT_RX_DNE的事件中做处理
+	//接收到16个字节数据时，会自动调用uart1_recv_callback，用户可在UART_STATE_RX_DNE状态中做处理
 	csi_uart_receive_int(UART1, byRecvBuf, 16);		//开启接收，指定接收数据长度和数据接收buf,并开启接收FIFO和接收超时中断
 	
 	
 	//动态长度接收
-	//接收到一串字符时，会自动调用uart1_recv_callback，用户可在UART_EVENT_RX_TO的事件中做处理
+	//接收到一串字符时，会自动调用uart1_recv_callback，用户可在UART_STATE_RX_TO状态中做处理
 //	csi_uart_receive_int(UART1, byRecvBuf, 128);	//开启接收，指定数据接收buf和最大接收数据长度，保证接收长度足够大；开启RXFIFO和接收超时中断
 	
 	while(1)

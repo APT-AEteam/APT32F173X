@@ -104,20 +104,19 @@ csi_error_t csi_uart_register_callback(csp_uart_t *ptUartBase, csi_uart_callback
 
 	switch(eCallBkId)
 	{
-		case CALLBACK_ID_RECV:
+		case UART_CALLBACK_RECV:
 			g_tUartCtrl[byIdx].recv_callback = callback;
 			break;
-		case CALLBACK_ID_SEND:
+		case UART_CALLBACK_SEND:
 			g_tUartCtrl[byIdx].send_callback = callback;
 			break;
-		case CALLBACK_ID_ERR:
+		case UART_CALLBACK_ERR:
 			g_tUartCtrl[byIdx].err_callback = callback;
 			break;
 		default:
 			return CSI_ERROR;
 	}
 	return CSI_OK;
-
 }
 /** \brief uart interrupt handler function
  * 
@@ -127,7 +126,8 @@ csi_error_t csi_uart_register_callback(csp_uart_t *ptUartBase, csi_uart_callback
  */ 
 void csi_uart_irqhandler(csp_uart_t *ptUartBase, uint8_t byIdx)
 {
-	switch(csp_uart_get_isr(ptUartBase) & 0x000670)							//RXFIFO/TXFIFO/RXTO/RXBRAK/PAR_ERR中断状态
+	uint16_t hwIsr = csp_uart_get_isr(ptUartBase) & 0x000670;				//RXFIFO/TXFIFO/RXTO/RXBRAK/PAR_ERR中断状态
+	switch(hwIsr)							
 	{
 		case UART_RXFIFO_INT_S:												//使用RXFIFO中断接收数据
 			while(csp_uart_get_sr(ptUartBase) & UART_RNE)					//接收FIFO非空
@@ -140,11 +140,11 @@ void csi_uart_irqhandler(csp_uart_t *ptUartBase, uint8_t byIdx)
 					csp_uart_int_disable(ptUartBase, UART_RXFIFO_INT);		//关闭接收中断 
 					csp_uart_rto_disable(ptUartBase);						//关闭接收超时
 					g_tUartCtrl[byIdx].hwTransNum = 0;						//清除接收计数
-					g_tUartCtrl[byIdx].byRxState = UART_EVENT_RX_DNE;		//接收完成标志，即接收指定长度
+					g_tUartCtrl[byIdx].byRxState = UART_STATE_RX_DNE;		//接收完成标志，即接收指定长度
 					
 					//回调，接收完用户指定长度数据
 					if(g_tUartCtrl[byIdx].recv_callback)
-						g_tUartCtrl[byIdx].recv_callback(ptUartBase, UART_EVENT_RX_DNE, g_tUartCtrl[byIdx].pbyRxBuf, &g_tUartCtrl[byIdx].hwRxSize);
+						g_tUartCtrl[byIdx].recv_callback(ptUartBase, UART_STATE_RX_DNE, g_tUartCtrl[byIdx].pbyRxBuf, &g_tUartCtrl[byIdx].hwRxSize);
 					
 					csp_uart_rto_enable(ptUartBase);						//使能接收超时
 				}
@@ -152,7 +152,7 @@ void csi_uart_irqhandler(csp_uart_t *ptUartBase, uint8_t byIdx)
 			break;
 	
 		case UART_RXTO_INT_S:												 //接收超时中断
-			if(g_tUartCtrl[byIdx].byRxState != UART_EVENT_RX_DNE)
+			if(g_tUartCtrl[byIdx].byRxState != UART_STATE_RX_DNE)
 			{
 				while(csp_uart_get_sr(ptUartBase) & UART_RNE)
 				{
@@ -161,20 +161,20 @@ void csi_uart_irqhandler(csp_uart_t *ptUartBase, uint8_t byIdx)
 				
 				if(g_tUartCtrl[byIdx].hwTransNum  < g_tUartCtrl[byIdx].hwRxSize)	//接收处理
 				{
-					g_tUartCtrl[byIdx].byRxState = UART_EVENT_RX_TO;				//接收超时标志，即接收到一串字符
+					g_tUartCtrl[byIdx].byRxState = UART_STATE_RX_TO;				//接收超时标志，即接收到一串字符
 				
 					//回调，接收完一串字符
 					if(g_tUartCtrl[byIdx].recv_callback)									//用户回调
-						g_tUartCtrl[byIdx].recv_callback(ptUartBase, UART_EVENT_RX_TO, g_tUartCtrl[byIdx].pbyRxBuf, &g_tUartCtrl[byIdx].hwTransNum);
+						g_tUartCtrl[byIdx].recv_callback(ptUartBase, UART_STATE_RX_TO, g_tUartCtrl[byIdx].pbyRxBuf, &g_tUartCtrl[byIdx].hwTransNum);
 				}
 				else																//用户回调,接收完用户指定长度
 				{
 					g_tUartCtrl[byIdx].hwTransNum = 0;								//清除接收计数
-					g_tUartCtrl[byIdx].byRxState = UART_EVENT_RX_DNE;				//接收完成标志，即接收到用户指定长度数据
+					g_tUartCtrl[byIdx].byRxState = UART_STATE_RX_DNE;				//接收完成标志，即接收到用户指定长度数据
 					
 					//回调，接收完指定数据
 					if(g_tUartCtrl[byIdx].recv_callback)
-						g_tUartCtrl[byIdx].recv_callback(ptUartBase, UART_EVENT_RX_DNE, g_tUartCtrl[byIdx].pbyRxBuf, &g_tUartCtrl[byIdx].hwRxSize);
+						g_tUartCtrl[byIdx].recv_callback(ptUartBase, UART_STATE_RX_DNE, g_tUartCtrl[byIdx].pbyRxBuf, &g_tUartCtrl[byIdx].hwRxSize);
 				}
 			}
 			csp_uart_clr_isr(ptUartBase, UART_RXTO_INT_S);							//清除中断标志(状态)
@@ -188,7 +188,7 @@ void csi_uart_irqhandler(csp_uart_t *ptUartBase, uint8_t byIdx)
 			
 			if(g_tUartCtrl[byIdx].hwTxSize == 0)	
 			{	
-				g_tUartCtrl[byIdx].byTxState = UART_EVENT_TX_DNE;					//发送完成标志
+				g_tUartCtrl[byIdx].byTxState = UART_STATE_TX_DNE;					//发送完成标志
 				csp_uart_int_disable(ptUartBase, UART_TXFIFO_INT);					//关闭中断
 				
 				//回调，发送完成
@@ -199,12 +199,12 @@ void csi_uart_irqhandler(csp_uart_t *ptUartBase, uint8_t byIdx)
 		case UART_RXBRK_INT_S:
 			csp_uart_clr_isr(ptUartBase, UART_RXBRK_INT_S);							//清除中断标志(状态)
 			if(g_tUartCtrl[byIdx].err_callback)
-				g_tUartCtrl[byIdx].err_callback(ptUartBase, UART_EVENT_RX_BREAK);
+				g_tUartCtrl[byIdx].err_callback(ptUartBase, hwIsr);
 			break;
 		case UART_PARERR_INT_S:
 			csp_uart_clr_isr(ptUartBase, UART_PARERR_INT_S);						//清除中断标志(状态)
 			if(g_tUartCtrl[byIdx].err_callback)
-				g_tUartCtrl[byIdx].err_callback(ptUartBase, UART_EVENT_PAR_ERR);
+				g_tUartCtrl[byIdx].err_callback(ptUartBase, hwIsr);
 			break;
 		default:
 			csp_uart_clr_isr(ptUartBase, 0x806ff);					
@@ -409,12 +409,12 @@ csi_error_t csi_uart_send_int(csp_uart_t *ptUartBase, const void *pData, uint16_
 {
 	uint8_t byIdx = apt_get_uart_idx(ptUartBase);
 	 
-	if((NULL == pData) || (0 == hwSize) || (g_tUartCtrl[byIdx].byTxState== UART_EVENT_SEND))
+	if((NULL == pData) || (0 == hwSize) || (g_tUartCtrl[byIdx].byTxState== UART_STATE_SEND))
 		return CSI_ERROR;
 	
 	g_tUartCtrl[byIdx].pbyTxBuf = (uint8_t *)pData;					
 	g_tUartCtrl[byIdx].hwTxSize = hwSize;
-	g_tUartCtrl[byIdx].byTxState = UART_EVENT_SEND;
+	g_tUartCtrl[byIdx].byTxState = UART_STATE_SEND;
 	
 	csp_uart_int_enable(ptUartBase, UART_TXFIFO_INT);
 		
@@ -431,13 +431,13 @@ csi_error_t csi_uart_receive_int(csp_uart_t *ptUartBase, void *pData, uint16_t h
 {
 	uint8_t byIdx = apt_get_uart_idx(ptUartBase);
 	
-	if((NULL == pData) || (0 == hwSize) || (g_tUartCtrl[byIdx].byTxState == UART_EVENT_RECV)) 
+	if((NULL == pData) || (0 == hwSize) || (g_tUartCtrl[byIdx].byTxState == UART_STATE_RECV)) 
 		return CSI_ERROR;
 		
 	g_tUartCtrl[byIdx].pbyRxBuf = (uint8_t *)pData;
 	g_tUartCtrl[byIdx].hwRxSize = hwSize;
 	g_tUartCtrl[byIdx].hwTransNum = 0;
-	g_tUartCtrl[byIdx].byRxState = UART_EVENT_RECV;
+	g_tUartCtrl[byIdx].byRxState = UART_STATE_RECV;
 	
 	csp_uart_rxfifo_rst(ptUartBase);										//reset rxfifo
 	csp_uart_rto_enable(ptUartBase);										//enable rto
@@ -570,26 +570,26 @@ bool csi_uart_get_msg(csp_uart_t *ptUartBase, csi_uart_wkmode_e eWkMode, bool bC
 	switch(eWkMode)
 	{
 		case UART_SEND:
-			if(g_tUartCtrl[byIdx].byTxState == UART_EVENT_TX_DNE)
+			if(g_tUartCtrl[byIdx].byTxState == UART_STATE_TX_DNE)
 			{
 				if(bClrEn)
-					g_tUartCtrl[byIdx].byTxState = UART_EVENT_IDLE;		//clear send status
+					g_tUartCtrl[byIdx].byTxState = UART_STATE_IDLE;		//clear send status
 				bRet = true;
 			}
 			break;
 		case UART_RECV:
-			if(g_tUartCtrl[byIdx].byTxState == UART_EVENT_RX_DNE)
+			if(g_tUartCtrl[byIdx].byTxState == UART_STATE_RX_DNE)
 			{
 				if(bClrEn)
-					g_tUartCtrl[byIdx].byRxState = UART_EVENT_IDLE;		//clear receive status
+					g_tUartCtrl[byIdx].byRxState = UART_STATE_IDLE;		//clear receive status
 				bRet = true;
 			}
 			break;
 		case UART_RTO:
-			if(g_tUartCtrl[byIdx].byTxState == UART_EVENT_RX_TO)
+			if(g_tUartCtrl[byIdx].byTxState == UART_STATE_RX_TO)
 			{
 				if(bClrEn)
-					g_tUartCtrl[byIdx].byRxState = UART_EVENT_IDLE;		//clear receive status
+					g_tUartCtrl[byIdx].byRxState = UART_STATE_IDLE;		//clear receive status
 				bRet = true;
 			}
 			break;
@@ -610,8 +610,8 @@ void csi_uart_clr_msg(csp_uart_t *ptUartBase, csi_uart_wkmode_e eWkMode)
 	uint8_t byIdx = apt_get_uart_idx(ptUartBase);
 	
 	if(eWkMode == UART_SEND)
-		g_tUartCtrl[byIdx].byTxState = UART_EVENT_IDLE;		//clear send status
+		g_tUartCtrl[byIdx].byTxState = UART_STATE_IDLE;		//clear send status
 	else
-		g_tUartCtrl[byIdx].byRxState = UART_EVENT_IDLE;		//clear receive status
+		g_tUartCtrl[byIdx].byRxState = UART_STATE_IDLE;		//clear receive status
 }
 

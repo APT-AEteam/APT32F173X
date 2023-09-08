@@ -5,6 +5,7 @@
  * <table>
  * <tr><th> Date  <th>Version  <th>Author  <th>Description
  * <tr><td> 2021-10-14 <td>V0.0  <td>YYM   <td>modify
+ * <tr><td> 2023-09-07 <td>V0.1  <td>LHY   <td>modify
  * </table>
  * *********************************************************************
 */
@@ -29,6 +30,16 @@ extern "C" {
 #define CMP_EDGEDET0_INT         (1<<0)
 #define CMP_EDGEDET1_INT         (1<<1)
 #define CMP_EDGEDET2_INT         (1<<2)
+
+
+/// \struct csi_cnta_ctrl_t
+/// \brief  cnta control handle, not open to users  
+typedef struct 
+{
+    void(*callback)(csp_cmp_t *ptCmpBase, uint8_t byIsr);
+} csi_cmp_ctrl_t;
+
+extern csi_cmp_ctrl_t g_tCmpCtrl[CMP_IDX];
 
 
 typedef enum
@@ -163,8 +174,6 @@ typedef struct
 	uint8_t  byNhystpol;		
 	uint8_t  byPolarity;		
 	uint8_t  byCpoSel;
-	uint32_t wInt;
-	
 }csi_cmp_config_t;
 
 typedef struct
@@ -192,15 +201,6 @@ typedef struct
 	uint16_t hwWcnt;
 	
 }csi_cmp_wfcr_config_t;
-
-
-/**
- *  \brief       Enable cmp power manage
- *  \param[in]   ptCmpBase:pointer of cmp register structure
- *  \param[in]   eIntSrc:cmp interrupt source
- *  \param[in]   bEnable:cmp irq enable or disable
- */
-void csi_cmp_int_enable(csp_cmp_t *ptCmpBase, csi_cmp_intsrc_e eIntSrc,bool bEnable);
 
 /**
  *  \brief       init cmp
@@ -281,6 +281,37 @@ void csi_cmp_int_clear(csp_cmp_t *ptCmpBase,csi_cmp_intsrc_e eIntMode);
  *  \return cmp int status
  */
 uint32_t csi_cmp_get_misr(csp_cmp_t *ptCmpBase);
+
+/** \brief cmp interrupt enable control
+ * 
+ *  \param[in] ptCmpBase: pointer of cmp register structure
+ *  \param[in] eIntSrc: cmp interrupt source \ref csi_cmp_intsrc_e
+ *  \return none
+ */ 
+void csi_cmp_int_enable(csp_cmp_t *ptCmpBase, csi_cmp_intsrc_e eIntSrc);
+
+/** \brief cmp interrupt disable control
+ * 
+ *  \param[in] ptCmpBase: pointer of cmp register structure
+ *  \param[in] eIntSrc: cmp interrupt source \ref csi_cmp_intsrc_e
+ *  \return none
+ */ 
+void csi_cmp_int_disable(csp_cmp_t *ptCmpBase, csi_cmp_intsrc_e eIntSrc);
+
+/** \brief cmp interrupt handle weak function
+ * 
+ *  \param[in] ptCmpBase: pointer of cmp register structure
+ *  \return none
+ */ 
+void csi_cmp_irqhandler(csp_cmp_t *ptCmpBase, uint8_t byIdx);
+
+/** \brief       register cmp interrupt callback function
+ *  \param[in]   ptCmpBase    pointer of cmp register structure
+ *  \param[in]   callback  cmp interrupt handle function
+ *  \return      error code \ref csi_error_t
+ */ 
+csi_error_t csi_cmp_register_callback(csp_cmp_t *ptCmpBase, void  *callback);
+
 
 #ifdef __cplusplus
 }

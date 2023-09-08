@@ -35,9 +35,7 @@ extern void bt_irqhandler0(csp_bt_t *ptBtBase);
 extern void bt_irqhandler1(csp_bt_t *ptBtBase);
 extern void bt_irqhandler2(csp_bt_t *ptBtBase);
 extern void bt_irqhandler3(csp_bt_t *ptBtBase);
-extern void cnta_irqhandler(csp_cnta_t *ptCntaBase);
 extern void wwdt_irqhandler(void);
-extern void cmp_irqhandler(csp_cmp_t *ptCmpBase);
 extern void adc_irqhandler(csp_adc_t *ptAdcBase);
 extern void syscon_irqhandler(csp_syscon_t *ptSysconBase);
 extern void led_irqhandler(csp_led_t *ptLedBase);
@@ -423,12 +421,14 @@ ATTRIBUTE_ISR void __attribute__((weak)) can_int_handler(void)
 
 ATTRIBUTE_ISR __attribute__((weak)) void cnta_int_handler(void)
 {
-#if	CNTA_INT_HANDLE_EN
 	// ISR content ...
 	CSI_INTRPT_ENTER();
-	cnta_irqhandler(CA0);  //this is a weak function defined in cnta_demo.c, for better efficiency, we recommand user directly implement IRQ handler here without any function call.
-	CSI_INTRPT_EXIT();
+#if (USE_CNTA_CALLBACK == 1)
+	csi_cnta_irqhandler(CA0, 0);
+#else
+	csi_pin_toggle(PA10);
 #endif
+	CSI_INTRPT_EXIT();
 }
 
 ATTRIBUTE_ISR __attribute__((weak)) void lpt_int_handler(void)
@@ -453,32 +453,36 @@ ATTRIBUTE_ISR __attribute__((weak)) void rtc_int_handler(void)
 
 ATTRIBUTE_ISR __attribute__((weak)) void cmp0_int_handler(void) 
 {
-#if	CMP0_INT_HANDLE_EN
-    // ISR content ...
+	// ISR content ...
 	CSI_INTRPT_ENTER();
-	cmp_irqhandler(CMP0); //this is a weak function defined in cmp_demo.c, for better efficiency, we recommand user directly implement IRQ handler here without any function call.
-	CSI_INTRPT_EXIT();
+#if (USE_CMP_CALLBACK == 1)
+	csi_cmp_irqhandler(CMP0, 0);
+#else
+	csp_cmp_clr_isr(CMP0, (csp_cmp_int_e)CMP_INTSRC_EDGEDET);
 #endif
+	CSI_INTRPT_EXIT();
 }
 
 ATTRIBUTE_ISR __attribute__((weak)) void cmp1_int_handler(void) 
 {
-#if	CMP1_INT_HANDLE_EN
-    // ISR content ...
+	// ISR content ...
 	CSI_INTRPT_ENTER();
-	cmp_irqhandler(CMP1); //this is a weak function defined in cmp_demo.c, for better efficiency, we recommand user directly implement IRQ handler here without any function call.
-	CSI_INTRPT_EXIT();
+#if (USE_CMP_CALLBACK == 1)
+	csi_cmp_irqhandler(CMP1, 1);
+#else
+	csp_cmp_clr_isr(CMP1, (csp_cmp_int_e)CMP_INTSRC_EDGEDET);
 #endif
+	CSI_INTRPT_EXIT();
 }
 
 ATTRIBUTE_ISR __attribute__((weak)) void cmp2_int_handler(void) 
 {
 	// ISR content ...
 	CSI_INTRPT_ENTER();
-#if (USE_CMP2_CALLBACK == 1)
-	
+#if (USE_CMP_CALLBACK == 1)
+	csi_cmp_irqhandler(CMP2, 2);
 #else
-	
+	csp_cmp_clr_isr(CMP2, (csp_cmp_int_e)CMP_INTSRC_EDGEDET);
 #endif
 	CSI_INTRPT_EXIT();
 }

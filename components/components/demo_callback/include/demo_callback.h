@@ -110,9 +110,7 @@ extern void iic_master_demo(void);
 extern void iic_slave_demo(void);
 
 //cnta demo
-extern int cnta_timer_demo(void);
-extern int cnta_pwm_demo(void);
-extern int cnta_envelope_demo(void);
+extern int cnta_timer_callback_demo(void);
 
 //spi demo
 extern int spi_master_send_demo(void);
@@ -125,9 +123,7 @@ extern int spi_etcb_dma_send_demo(void);
 extern int spi_etcb_dma_send_receive_demo(void);
 
 //cmp demo
-extern int cmp_base_demo(void);
-extern int cmp_dfcr_demo(void);
-extern int cmp_wfcr_demo(void);
+extern int cmp_base_callback_demo(void);
 
 //gpta demo
 extern int gpta_timer_demo(void);

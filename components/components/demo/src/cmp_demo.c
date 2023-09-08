@@ -5,6 +5,7 @@
  * <table>
  * <tr><th> Date  <th>Version  <th>Author  <th>Description
  * <tr><td> 2021-11-25 <td>V0.0 <td>YYM     <td>initial
+ * <tr><td> 2023-09-07 <td>V0.1 <td>LHY     <td>modify
  * </table>
  * *********************************************************************
 */
@@ -20,6 +21,27 @@
 /* externs variablesr------------------------------------------------------*/
 /* Private macro-----------------------------------------------------------*/
 /* Private variablesr------------------------------------------------------*/
+
+
+/** \brief        cnta_int_handler: cnta中断服务函数
+ * 
+ *  \brief         CNTA发生中断时会调用此函数，函数在interrupt.c里定义为弱(weak)属性，默认不做处理；用户用到CNTA中
+ *                         断时，请重新定义此函数，在此函数中进行对应中断处理，也可直接在interrupt.c里的函数里进行处理
+ * 
+ *  \param[in] none
+ *  \return none
+ */
+ATTRIBUTE_ISR  void cmp0_int_handler(void)
+{
+	//用户直接在中断服务接口函数里处理中断，建议客户使用此模式
+	volatile uint32_t wMisr = csp_cmp_get_misr(CMP0);
+	
+	if(wMisr & CMP_EDGEDET0_INT)					//EDGEDET interrupt
+	{
+		csp_cmp_clr_isr(CMP0, CMP_INTSRC_EDGEDET);
+	}
+}
+
 
 /** \brief 比较器基本功能测试demo
  *  \brief N-和P+输入不同的电平值，如果P+大于N-，将输出高电平，如果P+小于N-，将输出低电平
@@ -46,9 +68,9 @@ int cmp_base_demo(void)
 	tCmpCfg.byNhystpol = CMP_PHYST_POL_0mv;	          //比较器输入迟滞特性极性选择
 	tCmpCfg.byPolarity = CMP_POL_OUT_DIRECT;          //比较器输出极性选择 0:不反向
 	tCmpCfg.byCpoSel  = CMP_CPOS_OUT_IN;	          //CMP_OUT管脚上输出信号选择 0h：滤波前信号直接输出 	1h：滤波后信号输出 
-	tCmpCfg.wInt = CMP_INTSRC_EDGEDET;	      	  //中断模式
 	csi_cmp_init(CMP0,&tCmpCfg);
 	csi_cmp_start(CMP0);
+	csi_cmp_int_enable(CMP0, CMP_INTSRC_EDGEDET);     //若需使用中断，请调该接口使能对应中断，这里使用PENDL中断
 	return iRet;	
 }
 
@@ -82,7 +104,6 @@ int cmp_dfcr_demo(void)
 	tCmpCfg.byNhystpol = CMP_PHYST_POL_0mv;	          //比较器输入迟滞特性极性选择
 	tCmpCfg.byPolarity = CMP_POL_OUT_DIRECT;           //比较器输出极性选择 0:不反向
 	tCmpCfg.byCpoSel = CMP_CPOS_OUT_IN;	              //CMP_OUT管脚上输出信号选择 0h：滤波前信号直接输出 	1h：滤波后信号输出 
-	tCmpCfg.wInt = CMP_INTSRC_NONE;	      		      //中断模式
 	csi_cmp_init(CMP0,&tCmpCfg);
 	
 	csi_cmp_dflt1_config_t tCmpDflt1Cfg;
@@ -132,7 +153,6 @@ int cmp_wfcr_demo(void)
 	tCmpCfg.byNhystpol = CMP_PHYST_POL_0mv;	          //比较器输入迟滞特性极性选择
 	tCmpCfg.byPolarity = CMP_POL_OUT_DIRECT;           //比较器输出极性选择 0:不反向
 	tCmpCfg.byCpoSel = CMP_CPOS_OUT_IN;	              //CMP_OUT管脚上输出信号选择 0h：滤波前信号直接输出 	1h：滤波后信号输出 
-	tCmpCfg.wInt = CMP_INTSRC_NONE;	      //中断模式
 	csi_cmp_init(CMP0,&tCmpCfg);	
 	
 	csi_cmp_wfcr_config_t tCmpWfcrCfg;
@@ -150,11 +170,11 @@ int cmp_wfcr_demo(void)
 //	csi_bt_timer_init(BT0, 2000);		//初始化BT0, 定时2000us； BT定时，默认采用PEND中断
 	csi_bt_start(BT0);					//启动定时器  
 	csi_bt_set_evtrg(BT0, BT_TRGSRC_PEND,ENABLE);	  
-  
-	csi_etb_config_t tEtbConfig;	                 //ETB 参数配置结构体	  	
-	tEtbConfig.eChType = ETB_ONE_TRG_ONE;  		 //单个源触发单个目标
+	
+	csi_etb_config_t tEtbConfig;                         //ETB 参数配置结构体                  
+	tEtbConfig.eChType = ETB_ONE_TRG_ONE;                   //单个源触发单个目标
 	tEtbConfig.eSrcIp  = ETB_BT0_TRGOUT ; 
-	tEtbConfig.eDstIp =  ETB_CMP0_SYNCIN;   	     //CMP0 同步输入作为目标事件
+	tEtbConfig.eDstIp =  ETB_CMP0_SYNCIN;                //CMP0 同步输入作为目标事件
 	tEtbConfig.eTrgMode = ETB_HARDWARE_TRG;
    
 	csi_etb_init();
@@ -170,26 +190,4 @@ int cmp_wfcr_demo(void)
 	}	
 
 	return iRet;	
-}
-
-/** \brief CMP interrupt handle function
- * 
- *  \param[in] none
- *  \return none
- */ 
-__attribute__((weak)) void cmp_irqhandler(csp_cmp_t *ptCmpBase)
-{
-    // ISR content ...
-	if(csp_cmp_get_misr(ptCmpBase) & CMP_EDGEDET0_INT)
-	{
-		csp_cmp_int_clear(ptCmpBase,CMP_EDGEDET_INT);
-	}
-	else if(csp_cmp_get_misr(ptCmpBase) & CMP_EDGEDET1_INT)
-	{
-		csp_cmp_int_clear(ptCmpBase,CMP_EDGEDET_INT);
-	}
-	else if(csp_cmp_get_misr(ptCmpBase) & CMP_EDGEDET2_INT)
-	{
-		csp_cmp_int_clear(ptCmpBase,CMP_EDGEDET_INT);
-	}
 }

@@ -98,17 +98,14 @@ typedef enum{
  * \brief    UART working event(state)
  */
 typedef enum {
-	UART_EVENT_IDLE		= 0,		//uart idle(rx/tx)
-	UART_EVENT_RECV,				//uart receiving 
-	UART_EVENT_SEND,				//uart sending 
-	UART_EVENT_RX_TO,				//uart receive timeout(dynamic end)
-	UART_EVENT_RX_DNE,				//uart receive complete
-	UART_EVENT_TX_DNE,				//uart send complete
-	UART_EVENT_RX_BREAK,			//uart receive break
-	UART_EVENT_PAR_ERR,				//uart PARITY ERROR
-} csi_uart_event_e;
+	UART_STATE_IDLE		= 0,		//uart idle(rx/tx)
+	UART_STATE_RECV,				//uart receiving 
+	UART_STATE_SEND,				//uart sending 
+	UART_STATE_RX_TO,				//uart receive timeout(dynamic end)
+	UART_STATE_RX_DNE,				//uart receive complete
+	UART_STATE_TX_DNE				//uart send complete
+} csi_uart_state_e;
 
-typedef csi_uart_event_e  csi_uart_state_e ;
 
 /**
  * \enum     csi_uart_intsrc_e
@@ -136,9 +133,9 @@ typedef enum
  * \brief    UART callback id
  */
 typedef enum{
-	CALLBACK_ID_RECV	=	0,		//uart rteceive callback id
-	CALLBACK_ID_SEND,				//uart send callback id
-	CALLBACK_ID_ERR,				//uart error callback id
+	UART_CALLBACK_RECV	=	0,		//uart rteceive callback id
+	UART_CALLBACK_SEND,				//uart send callback id
+	UART_CALLBACK_ERR,				//uart error callback id
 }csi_uart_callback_id_e;
 
 /// \struct csi_uart_config_t
@@ -160,16 +157,14 @@ typedef struct {
 	uint16_t			hwTransNum;			//send/receive data num
 	uint8_t 			byTxState;			//send state
 	uint8_t 			byRxState;			//receive state	
-	//CallBack
-#if	!defined(CSI_UART_CALLBACK)				
-	void(*recv_callback)(csp_uart_t *ptUartBase, csi_uart_event_e eEvent, uint8_t *pbyBuf, uint16_t *hwSzie);
+	//CallBack		
+	void(*recv_callback)(csp_uart_t *ptUartBase, csi_uart_state_e eState, uint8_t *pbyBuf, uint16_t *hwSzie);
 	void(*send_callback)(csp_uart_t *ptUartBase);
-	void(*err_callback)(csp_uart_t *ptUartBase, csi_uart_event_e eEvent);
-#endif
-
+	void(*err_callback)(csp_uart_t *ptUartBase, uint16_t hwIsr);
 } csi_uart_ctrl_t;
 
 extern csi_uart_ctrl_t g_tUartCtrl[UART_IDX];	
+
 
 /**
   \brief       initializes the resources needed for the UART interface.
@@ -208,20 +203,20 @@ void csi_uart_send_callback(csp_uart_t *ptUartBase);
 /** 
   \brief  	   uart receive interrupt callback function
   \param[in]   ptUartBase	pointer of uart register structure
-  \param[in]   eEvent		uart interrupt callback state event, \ref csi_uart_event_e
+  \param[in]   eState		uart interrupt callback state event, \ref csi_uart_state_e
   \param[in]   pbyBuf		pointer of uart interrupt receive data buffer
   \param[in]   hwLen		length receive data
   \return 	   none
  */ 
-void csi_uart_recv_callback(csp_uart_t *ptUartBase, csi_uart_event_e eEvent, uint8_t *pbyBuf, uint16_t *hwLen);
+void csi_uart_recv_callback(csp_uart_t *ptUartBase, csi_uart_state_e eState, uint8_t *pbyBuf, uint16_t *hwLen);
 
 /** 
   \brief  	   uart send interrupt callback function
   \param[in]   ptUartBase	pointer of uart register structure
-  \param[in]   eEvent		uart err interrupt callback event event, \ref csi_uart_event_e
+  \param[in]   eState		uart err interrupt callback state event, \ref csi_uart_state_e
   \return 	   none
  */ 
-__attribute__((weak)) void csi_uart_err_callback(csp_uart_t *ptUartBase, csi_uart_event_e eEvent);
+void csi_uart_err_callback(csp_uart_t *ptUartBase, csi_uart_state_e eState);
 
 /** 
   \brief  	   uart interrupt handler function
