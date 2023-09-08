@@ -18,10 +18,10 @@
 extern "C" {
 #endif
 typedef struct {
-	uint8_t				byClkDiv;		//adc clkdiv, adc clk = PCLK/(2*byClkDiv)
-	uint8_t				byRefsel;		//adc sample hold period, sample time = (bySmpHold + 16) clk period
-	uint16_t			byDatarset;		//adc conversion  mode, continuous/one shot
-	uint8_t				byBufsel;		//adc reference voltage
+	uint8_t				byClkDiv;		//dac clkdiv, dac clk = FHCLK/(byClkDiv+1)
+	uint8_t				byRefsel;		//dac reference select
+	uint16_t			byDatarset;		//dac output voltage data set
+	uint8_t				byBufsel;		//dac buf enable
 } csi_dac_config_t;
 
 typedef enum{

@@ -9,26 +9,62 @@
  * </table>
  * *********************************************************************
 */
-//#include <csi_config.h>
-#include <drv/adc.h>
-#include <drv/irq.h>
-#include <drv/clk.h>
-#include <sys_clk.h>
-#include "csp_common.h"
-#include "drv/gpio.h"
-#include <drv/pin.h>
-#include "csp_adc.h"
+#include "drv/adc.h"
 /* Private macro-----------------------------------------------------------*/
 #define	ADC_SAMP_TIMEOUT		0xFFFF
-
 /* externs function--------------------------------------------------------*/
 /* externs variablesr------------------------------------------------------*/
 /* Private variablesr------------------------------------------------------*/
+csi_adc_ctrl_t g_tAdcCtrl[ADC_IDX];
 
-
-csi_adc_samp_t	g_tAdcSamp;
-
-
+/** \brief get adc number 
+ * 
+ *  \param[in] ptAdcBase: pointer of adc register structure
+ *  \return adc number 0/1
+ */ 
+static uint8_t apt_get_adc_idx(csp_adc_t *ptAdcBase)
+{
+	switch((uint32_t)ptAdcBase)
+	{
+		case APB_ADC0_BASE:		//adc0
+			return 0;		
+		case APB_ADC1_BASE:		//adc1
+			return 1;
+		default:
+			return 0xff;		//error
+	}
+}
+/** \brief  register adc interrupt callback function
+ * 
+ *  \param[in] ptAdcBase: pointer of adc register structure
+ *  \param[in] callback: adc interrupt handle function
+ *  \return error code \ref csi_error_t
+ */ 
+csi_error_t csi_adc_register_callback(csp_adc_t *ptAdcBase, void  *callback)
+{
+	uint8_t byIdx = apt_get_adc_idx(ptAdcBase);
+	if(byIdx == 0xff)
+		return CSI_ERROR;
+		
+	g_tAdcCtrl[byIdx].callback = callback;
+	
+	return CSI_OK;
+}
+/** \brief adc interrupt handler function
+ * 
+ *  \param[in] ptAdcBase: pointer of adc register structure
+ *  \param[in] byIdx: acd idx(0/1)
+ *  \return none
+ */ 
+void csi_adc_irqhandler(csp_adc_t *ptAdcBase, uint8_t byIdx)
+{
+	uint8_t byIsr = csp_adc_get_isr(ptAdcBase);
+	
+	if(g_tAdcCtrl[byIdx].callback)
+			g_tAdcCtrl[byIdx].callback(ptAdcBase, byIsr);
+			
+	csp_adc_clr_sr(ptAdcBase, byIsr);
+}
 /** \brief initialize adc data structure
  * 
  *  \param[in] ptAdcBase: pointer of adc register structure
@@ -64,13 +100,13 @@ csi_error_t csi_adc_init(csp_adc_t *ptAdcBase, csi_adc_config_t *ptAdcCfg)
 	{
 		csp_adc_int_enable(ptAdcBase, ptAdcCfg->wInt, ENABLE);	//enable adc interrupt
 		csi_irq_enable((uint32_t *)ptAdcBase);						//enable adc irq	
-	}
-	
+	}	
 	return ret;
 }
 /** \brief config adc sample sequence
  * 
  *  \param[in] ptAdcBase: pointer of adc register structure
+ *  \param[in] ptSeqx: pointer of adc seq parameter config structure
  *  \param[in] byChNum: channel number of sequence
  *  \return error code \ref csi_error_t
  */ 
@@ -92,28 +128,9 @@ csi_error_t csi_adc_set_seqx(csp_adc_t *ptAdcBase, csi_adc_seq_t *ptSeqx, uint8_
 		ptSeqx ++;
 	}
 	
-	g_tAdcSamp.byChnlNum = byChNum;				//get number of channel  			
-	g_tAdcSamp.byConvStat = ADC_STATE_IDLE;		//adc conversion status 
 	csp_adc_set_seq_num(ptAdcBase, byChNum);	//config number of channel  
 
 	return CSI_OK;
-}
-/** \brief set adc sample value buffer
- * 
- *  \param[in] phwData: pointer of read adc data buffer
- *  \param[in] hwRdLen: read adc data length(number of samples per channel/sample depth) 
- *  \return error code \ref csi_error_t
- */ 
-csi_error_t csi_adc_set_buffer(uint16_t *phwData, uint16_t hwRdLen)
-{
-	if(NULL == phwData || hwRdLen == 0)
-		return CSI_ERROR;
-	
-	g_tAdcSamp.hwChnlDep = hwRdLen;
-	g_tAdcSamp.hwSampCnt = g_tAdcSamp.hwChnlDep;
-	g_tAdcSamp.phwData = phwData;
-	
- return CSI_OK;
 }
 /** \brief start adc 
  * 
@@ -152,7 +169,7 @@ csi_error_t csi_adc_stop(csp_adc_t *ptAdcBase)
 /** \brief set adc conversion mode, continue/one shot
  * 
  *  \param[in] ptAdcBase: pointer of adc register structure
- *  \param[in] eConvMode: conversion mode, continuous/one shot
+ *  \param[in] eConvMode: conversion mode, continuous/one shot/wait
  *  \return none
  */
 void csi_adc_conv_mode(csp_adc_t *ptAdcBase, csi_adc_conv_mode_e eConvMode)
@@ -200,62 +217,11 @@ int16_t csi_adc_read_channel(csp_adc_t *ptAdcBase, uint8_t byChIdx)
 	
 	return ret;
 }
-/** \brief get adc value of sequence 
- * 
- *  \param[in] ptAdcBase: pointer of adc register structure
- *  \param[in] byChNum: total channel number of sequence
- *  \return error code \ref csi_error_t or adc value
- */
-csi_error_t csi_adc_read_seqx(csp_adc_t *ptAdcBase)
-{
-	uint8_t i;
-	uint32_t wTimeOut = ADC_SAMP_TIMEOUT;
-	
-	switch(g_tAdcSamp.hwSampCnt)
-	{
-		case 1:
-			for(i = 0; i < g_tAdcSamp.byChnlNum; i ++)								//data length(length = 1) of channel
-			{
-				while(!(csp_adc_get_sr(ptAdcBase) & ADC12_SEQ(i)) && wTimeOut--);	//channel of sequence sample complete?
-				
-				if(wTimeOut)
-				{
-					g_tAdcSamp.phwData[i] = csp_adc_get_data(ptAdcBase, i);			//get adc channel value
-					csp_adc_clr_sr(ptAdcBase, ADC12_SEQ(i));						//clr channel status
-				}
-				else
-					return CSI_TIMEOUT;
-					
-				wTimeOut = ADC_SAMP_TIMEOUT;
-			}
-			break;
-		default:
-			while(g_tAdcSamp.hwChnlDep)
-			{
-				for(i = 0; i < g_tAdcSamp.byChnlNum; i++)								//data length(length > 1) of channel
-				{
-					while(!(csp_adc_get_sr(ptAdcBase) & ADC12_SEQ(i)) && wTimeOut--);	//channel of sequence sample complete?
-					
-					if(wTimeOut)														//sequence channel sample complete?
-					{
-						*(g_tAdcSamp.phwData + i*g_tAdcSamp.hwSampCnt + g_tAdcSamp.hwChnlDep -1) = csp_adc_get_data(ptAdcBase, i);	
-						csp_adc_clr_sr(ptAdcBase, ADC12_SEQ(i));						//clr channel status
-					}
-					else
-						return CSI_TIMEOUT;
-						
-					wTimeOut = ADC_SAMP_TIMEOUT;
-				}
-				g_tAdcSamp.hwChnlDep --;
-			}
-	}
-	
-	return CSI_OK;
-}
+
 /** \brief set adc vref
  * 
- *  \param[in] adc: ADC handle to operate
- *  \param[in] adc_vref: source of adc reference voltage
+ *  \param[in] ptAdcBase: pointer of adc register structure
+ *  \param[in] eVrefSrc: source of adc reference voltage
  *  \return none
  */  
 void csi_adc_set_vref(csp_adc_t *ptAdcBase, csi_adc_vref_e eVrefSrc)
@@ -346,24 +312,7 @@ csi_error_t csi_adc_set_cmp1(csp_adc_t *ptAdcBase, uint8_t byCmpChnl, uint32_t w
 	
 	return CSI_OK;
 }
-/** \brief get adc convison state
- * 
- *  \param[in] ptAdcBase: pointer of adc register structure
- *  \return convison state
- */
-csi_adc_state_e csi_adc_get_status(csp_adc_t *ptAdcBase)
-{
-	return g_tAdcSamp.byConvStat;
-}
-/** \brief get adc convison state
- * 
- *  \param[in] ptAdcBase: pointer of adc register structure
- *  \return convison state
- */
-void csi_adc_clr_status(csp_adc_t *ptAdcBase)
-{
-	 g_tAdcSamp.byConvStat = ADC_STATE_IDLE;
-}
+
 /** \brief set adc sync 
  * 
  *  \param[in] ptAdcBase: pointer of adc register structure
@@ -407,7 +356,7 @@ void csi_adc_rearm_sync(csp_adc_t *ptAdcBase, csi_adc_trgin_e eTrgIn)
  * 
  *  \param[in] ptAdcBase: pointer of adc register structure
  *  \param[in] byTrgOut: adc evtrg out port (0~1)
- *  \param[in] adc_trgsrc: adc evtrg source(0~23) 
+ *  \param[in] eTrgSrc: adc evtrg source(0~23) 
  *  \return error code \ref csi_error_t
  */
 csi_error_t csi_adc_set_evtrg(csp_adc_t *ptAdcBase, csi_adc_trgout_e eTrgOut, csi_adc_trgsrc_e eTrgSrc)
@@ -430,8 +379,8 @@ csi_error_t csi_adc_set_evtrg(csp_adc_t *ptAdcBase, csi_adc_trgout_e eTrgOut, cs
 /** \brief set adc epvs 
  * 
  *  \param[in] ptAdcBase: pointer of adc register structure
- *  \param[in] byTrgOut: adc evtrg out port (0~1)
- *  \param[in] adc_trgsrc: The event triggers the count 
+ *  \param[in] eTrgOut: adc evtrg out port (0~1)
+ *  \param[in] byPeriod: The event triggers the count 
  *  \return error code \ref csi_error_t
  */
 csi_error_t csi_adc_set_epvs(csp_adc_t *ptAdcBase, csi_adc_trgout_e eTrgOut, uint8_t byPeriod)
@@ -451,8 +400,8 @@ csi_error_t csi_adc_set_epvs(csp_adc_t *ptAdcBase, csi_adc_trgout_e eTrgOut, uin
 }
 /** \brief enable/disable adc INT status
  * 
- *  \param[in] adc: ADC handle to operate
- *  \param[in] wInt:  INT
+ *  \param[in] ptAdcBase: ADC handle to operate
+ *  \param[in] eIntSrc:  INT
  */
 void csi_adc_int_enable(csp_adc_t *ptAdcBase, csi_adc_intsrc_e eIntSrc, bool bEnable)
 {
@@ -465,8 +414,8 @@ void csi_adc_int_enable(csp_adc_t *ptAdcBase, csi_adc_intsrc_e eIntSrc, bool bEn
 }
 /** \brief select adc clock
  * 
- *  \param[in] adc: ADC handle to operate
- *  \param[in] wInt:  INT
+ *  \param[in] ptAdcBase: ADC handle to operate
+ *  \param[in] eClksel:  ADC clock select
  */
 void csi_adc_set_clk(csp_adc_t *ptAdcBase,csi_adc_clksel_e eClksel)
 {

@@ -311,6 +311,29 @@ typedef struct {
 	csi_adc_seq_t		*ptSeqCfg;		//pointer of send buf sequence config 
 } csi_adc_config_t;
 
+/// \struct csi_adc_ctrl_t
+/// \brief  adc control handle, not open to users  
+typedef struct 
+{
+    void(*callback)(csp_adc_t *ptAdcBase, uint8_t byIsr);
+} csi_adc_ctrl_t;
+
+/** \brief  register adc interrupt callback function
+ * 
+ *  \param[in] ptAdcBase: pointer of adc register structure
+ *  \param[in] callback: adc interrupt handle function
+ *  \return error code \ref csi_error_t
+ */ 
+csi_error_t csi_adc_register_callback(csp_adc_t *ptAdcBase, void  *callback);
+
+/** \brief adc interrupt handler function
+ * 
+ *  \param[in] ptAdcBase: pointer of adc register structure
+ *  \param[in] byIdx: acd idx(0/1)
+ *  \return none
+ */ 
+void csi_adc_irqhandler(csp_adc_t *ptAdcBase, uint8_t byIdx);
+
 /**
   \brief       Initialize adc Interface. Initialize the resources needed for the adc interface
   \param[in]   ptAdcBase	pointer of adc register structure

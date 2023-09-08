@@ -32,7 +32,7 @@ void dac_callback(csp_dac_t *ptDacBase, uint8_t byIsr)
 {
 	if(byIsr & DAC_EOC)
 	{
-		csi_gpio_toggle(GPIOA,PA6);						//PA6翻转
+		nop;						//user code
 	}
 }
 /** \brief	dac_timer_callback_demo：dac转换结束功能demo，使用callback

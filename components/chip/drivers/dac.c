@@ -56,7 +56,8 @@ csi_error_t csi_dac_register_callback(csp_dac_t *ptDacBase, void  *callback)
 void csi_dac_irqhandler(csp_dac_t *ptDacBase, uint8_t byIdx)
 {
 	uint8_t byIsr = csp_dac_get_isr(ptDacBase);
-	g_tDacCtrl[byIdx].callback(ptDacBase, byIsr);
+	if(g_tDacCtrl[byIdx].callback)
+		g_tDacCtrl[byIdx].callback(ptDacBase, byIsr);
 			
 	csp_dac_clr_isr(ptDacBase, byIsr);
 }
@@ -65,22 +66,26 @@ void csi_dac_irqhandler(csp_dac_t *ptDacBase, uint8_t byIdx)
  * 
  *  \param[in] ptDacBase: pointer of dac register structure
  *  \param[in] ptDacCfg: pointer of dac parameter config structure
+	byClkDiv;		:dac clkdiv, dac clk = FHCLK/(byClkDiv+1)
+	byRefsel;		:dac reference select
+	byDatarset;		:dac output voltage data set
+	byBufsel;		:dac buf enable
  *  \return error code \ref csi_error_t
  */ 
 void csi_dac_init(csp_dac_t *ptDacBase, csi_dac_config_t *ptDacCfg)
 {	
-	csp_dac_clr_da(ptDacBase);//清除转换数据
-	csp_dac_set_clk_div(ptDacBase,ptDacCfg->byClkDiv);//设置时钟16分频
-	csp_dac_refsel_enable(ptDacBase,ptDacCfg->byRefsel);//关闭REF
-	csp_dac_set_datar(ptDacBase,ptDacCfg->byDatarset);//在DATAR中写入数据
+	csp_dac_clr_da(ptDacBase);//clear data
+	csp_dac_set_clk_div(ptDacBase,ptDacCfg->byClkDiv);//set clk div
+	csp_dac_refsel_enable(ptDacBase,ptDacCfg->byRefsel);//set reference
+	csp_dac_set_datar(ptDacBase,ptDacCfg->byDatarset);//set voltage data
 	
 	if(ptDacCfg->byBufsel == ENABLE)
 	{	
-	csp_dac_buff_enable(DAC0,1);
+	csp_dac_buff_enable(DAC0,ENABLE);
 	}
 	if(ptDacCfg->byBufsel == DISABLE)
 	{
-	csp_dac_buff_enable(DAC0,0);
+	csp_dac_buff_enable(DAC0,DISABLE);
 	}
 }
 
