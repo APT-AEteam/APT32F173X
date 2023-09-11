@@ -11,11 +11,13 @@
 #include <drv/uart.h>
 #include <drv/tick.h>
 
-/* Private macro------------------------------------------------------*/
+/* private macro------------------------------------------------------*/
 /* externs function---------------------------------------------------*/
-/* externs variablesr-------------------------------------------------*/
-/* Private variablesr-------------------------------------------------*/
+/* global variablesr--------------------------------------------------*/
 csi_uart_ctrl_t g_tUartCtrl[UART_IDX];	
+
+/* private variablesr-------------------------------------------------*/
+
 
 //static uint32_t s_wCtrlRegBack = 0;	
 
