@@ -53,8 +53,8 @@ typedef enum {
 }csi_led_intsrc_e;
 
 typedef struct csi_led_config {
-	csi_led_ledclk_e 	byClkDiv;		//clk configure
-	csi_led_brt_e 		byBrt;			//brightness configure
+	csi_led_ledclk_e 	eClkDiv;		//clk configure
+	csi_led_brt_e 		eBrt;			//brightness configure
 	uint16_t 			hwComMask;		//COM enable
 	uint16_t 			hwOnTime;		//scanning timing: COM on cycles(range:56~2096).Tcom = byOnTime * Tledclk, needs to be a multiple of 8, otherwise the timing will NOT be accurate
 	uint16_t 			hwBreakTime;	//scanning timing: cycles between COMs(range:14~524).Tbreak = byBreakTime * Tledclk.

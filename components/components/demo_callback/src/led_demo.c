@@ -22,7 +22,6 @@
 /* device instance --------------------------------------------------------*/
 /* Private variablesr------------------------------------------------------*/ 
 uint8_t g_byLedData[4] = {0x06,0x5b,0x4f,0x66};//数码管编码：1,2,3,4 
-csi_led_config_t ptLedCfg;
 
 /** \brief  user_led_callback：led中断回调函数
  * 
@@ -35,7 +34,7 @@ csi_led_config_t ptLedCfg;
  */ 
 static void user_led_callback(csp_led_t *ptLedBase, uint8_t byIsr)
 {
-	csp_led_clr_isr(LED, csp_led_get_misr(LED));
+	csp_led_clr_isr(LED, csp_led_get_isr(LED));
 }
 
 /** \brief  apt_io_config: LED相关IO配置，包括SEG脚与COM脚的配置
@@ -83,7 +82,7 @@ void led_io_config(void)
 * \brief 2、闪烁控制：关闭COM0，显示2，3，4
 * \brief 3、闪烁控制：关闭COM0/1，显示3，4
 * \brief 4、闪烁控制：关闭COM0/1/2，显示4
-* \return  csi_error_t
+* \return  error code
 * 四位一体共阴数码管(SM420564W32U3A/AB092716)引脚图：
 					  COM1  a   f COM2 COM3 b
 						|	|	|	|	|	|
@@ -99,20 +98,25 @@ void led_io_config(void)
 						|	|	|	|	|	|
 					    e   d   dp  c   g  COM4
 */
-csi_error_t led_callback_demo(void)
+int led_callback_demo(void)
 {	
+	int iRet = 0;
 	uint8_t byDisplayStatus=0;
 	
 	led_io_config();
 	
-	ptLedCfg.byClkDiv 	  = LED_PCLK_DIV8;	//LED时钟为系统时钟8分频
-	ptLedCfg.hwComMask 	  = 0x0f;			//COM0~3打开
-	ptLedCfg.byBrt 		  = LED_100;		//LED显示亮度50%
-	ptLedCfg.hwOnTime 	  = 120;			//显示周期时间(单位：Tledclk)
-	ptLedCfg.hwBreakTime  = 50;				//Non-Overlap时间(单位：Tledclk)
-	csi_led_init(LED, &ptLedCfg);			
+	csi_led_config_t ptLedCfg;
+	ptLedCfg.eClkDiv 	  = LED_PCLK_DIV8;				//LED时钟为系统时钟8分频
+	ptLedCfg.hwComMask 	  = 0x0f;						//COM0~3打开
+	ptLedCfg.eBrt 		  = LED_100;					//LED显示亮度50%
+	ptLedCfg.hwOnTime 	  = 120;						//显示周期时间(单位：Tledclk)
+	ptLedCfg.hwBreakTime  = 50;							//Non-Overlap时间(单位：Tledclk)
+	csi_led_init(LED, &ptLedCfg);		
+	
 	csi_led_int_enable(LED, LED_INTSRC_ICEND);			//若需使用中断，请调该接口使能对应中断，这里使用LED_INTSRC_ICEND中断
 	csi_led_register_callback(LED, user_led_callback);	//注册中断回调函数
+	
+	csi_led_light_on(LED);								//开启LED自动扫描
 	
 	while(1)
 	{
@@ -120,7 +124,6 @@ csi_error_t led_callback_demo(void)
 		{
 			//display status 0:正常控制，依次显示1，2，3，4
 			case 0:
-				csi_led_light_on(LED);
 				for(uint8_t i = 0; i < 4; i++)
 				{
 					csi_led_write_data(LED, i, g_byLedData[i]);
@@ -128,12 +131,10 @@ csi_error_t led_callback_demo(void)
 				}
 				byDisplayStatus++;
 				mdelay(1000);
-				csi_led_light_off(LED);
 			break;
 			
 			//display status 1:闪烁控制，关闭COM0，依次显示2，3，4
 			case 1:
-				csi_led_light_on(LED);
 				csi_led_blink_control(LED, LED_BLK_OFF,(0x01&LED_BLK_MSK));//disable COM0
 				for(uint8_t i = 0; i < 4; i++)
 				{
@@ -142,12 +143,10 @@ csi_error_t led_callback_demo(void)
 				}
 				byDisplayStatus++;
 				mdelay(1000);
-				csi_led_light_off(LED);
 			break;
 				
 			//display status 2:闪烁控制，关闭COM0/1，依次显示3，4
 			case 2:
-				csi_led_light_on(LED);
 				csi_led_blink_control(LED, LED_BLK_OFF,(0x02&LED_BLK_MSK));//disable COM1
 				for(uint8_t i = 0; i < 4; i++)
 				{
@@ -156,12 +155,10 @@ csi_error_t led_callback_demo(void)
 				}
 				byDisplayStatus++;
 				mdelay(1000);
-				csi_led_light_off(LED);
 			break;
 				
 			//display status 3:闪烁控制，关闭COM0/1/2，显示4
 			case 3:
-				csi_led_light_on(LED);
 				csi_led_blink_control(LED, LED_BLK_OFF,(0x04&LED_BLK_MSK));//disable COM2
 				for(uint8_t i = 0; i < 4; i++)
 				{
@@ -170,7 +167,6 @@ csi_error_t led_callback_demo(void)
 				}
 				byDisplayStatus = 0;
 				mdelay(1000);
-				csi_led_light_off(LED);
 				csi_led_blink_control(LED, LED_BLK_ON,(0x07&LED_BLK_MSK));//enable COM0/1/2
 			break;
 			
@@ -181,4 +177,5 @@ csi_error_t led_callback_demo(void)
 		for(uint8_t i = 0;i<4;i++)
 			csi_led_write_data(LED, i, 0x00);
 	}
+	return iRet;
 }

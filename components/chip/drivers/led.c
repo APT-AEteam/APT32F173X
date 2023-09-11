@@ -32,8 +32,8 @@ csi_led_ctrl_t g_tLedCtrl[LED_IDX];
 csi_error_t csi_led_init(csp_led_t *ptLedBase, csi_led_config_t *ptLedCfg) 
 {
 	csi_clk_enable((uint32_t *)ptLedBase);	
-	csi_led_set_bright(ptLedBase, ptLedCfg->byBrt);
-	csp_led_set_clk(ptLedBase, (csp_led_ledclk_e)(ptLedCfg->byClkDiv));
+	csi_led_set_bright(ptLedBase, ptLedCfg->eBrt);
+	csp_led_set_clk(ptLedBase, (csp_led_ledclk_e)(ptLedCfg->eClkDiv));
 	csp_led_set_commask(ptLedBase, (ptLedCfg->hwComMask & 0x3ff));
 	if(ptLedCfg->hwOnTime > 2096 || ptLedCfg->hwBreakTime > 524)
 		return CSI_ERROR;
@@ -176,7 +176,7 @@ csi_error_t csi_led_register_callback(csp_led_t *ptLedBase, void  *callback)
  */ 
 void csi_led_irqhandler(csp_led_t *ptLedBase, uint8_t byIdx)
 {
-	uint8_t byIsr = csp_led_get_misr(ptLedBase);
+	uint8_t byIsr = csp_led_get_isr(ptLedBase);
 	
 	if(g_tLedCtrl[byIdx].callback)
 			g_tLedCtrl[byIdx].callback(ptLedBase, byIsr);

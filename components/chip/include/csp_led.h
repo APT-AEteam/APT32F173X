@@ -171,7 +171,7 @@ static inline void csp_led_clr_isr(csp_led_t *ptLedBase,csp_led_int_e eInt)
 	ptLedBase -> ICR  =  eInt;
 }	
 
-static inline uint32_t csp_led_get_misr(csp_led_t *ptLedBase)	
+static inline uint32_t csp_led_get_isr(csp_led_t *ptLedBase)	
 {
 	return ptLedBase -> MISR;
 }				 
