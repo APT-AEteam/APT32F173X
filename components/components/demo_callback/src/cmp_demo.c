@@ -5,6 +5,7 @@
  * <table>
  * <tr><th> Date  <th>Version  <th>Author  <th>Description
  * <tr><td> 2021-11-25 <td>V0.0 <td>YYM     <td>initial
+ * <tr><td> 2023-09-07 <td>V0.1 <td>LHY     <td>modify
  * </table>
  * *********************************************************************
 */
@@ -25,7 +26,7 @@
  * 
  *  \param[in] ptCmpBase:  CMP0寄存器结构体指针，指向CMP的基地址 
  *  \param[in] byIsr: 	   CMP0中断状态
- *  \return none
+ *  \return    无返回
  */ 
 void cmp0_callback(csp_cmp_t *ptCmpBase, uint8_t byIsr)
 {
@@ -36,11 +37,11 @@ void cmp0_callback(csp_cmp_t *ptCmpBase, uint8_t byIsr)
 }
 
 
-/** \brief 比较器基本功能测试demo
- *  \brief N-和P+输入不同的电平值，如果P+大于N-，将输出高电平，如果P+小于N-，将输出低电平
+/** \brief     比较器基本功能测试demo
+ *  \brief     N-和P+输入不同的电平值，如果P+大于N-，将输出高电平，如果P+小于N-，将输出低电平
  * 
- *  \param[in] none
- *  \return error code
+ *  \param[in] 无参数
+ *  \return    错误码
  */
 int cmp_base_callback_demo(void)
 {
@@ -63,8 +64,8 @@ int cmp_base_callback_demo(void)
 	tCmpCfg.byCpoSel  = CMP_CPOS_OUT_IN;	          //CMP_OUT管脚上输出信号选择 0h：滤波前信号直接输出 	1h：滤波后信号输出 
 	csi_cmp_init(CMP0,&tCmpCfg);
 	csi_cmp_register_callback(CMP0, cmp0_callback);	  //注册中断回调函数
-	csi_cmp_start(CMP0);
 	csi_cmp_int_enable(CMP0, CMP_INTSRC_EDGEDET);     //若需使用中断，请调该接口使能对应中断，这里使用PENDL中断
+	csi_cmp_start(CMP0);
 	
 	return iRet;	
 }

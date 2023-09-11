@@ -40,9 +40,9 @@ ATTRIBUTE_ISR  void cnta_int_handler(void)
 
 
 
-/**
-  \brief       CounterA 定时中断示例
-  \return      int
+/** \brief       CounterA 定时中断示例
+ *  \param[in]   无参数
+ *  \return      返回int类型
 */
 int cnta_timer_demo(void)
 {	
@@ -55,12 +55,12 @@ int cnta_timer_demo(void)
 	csi_gpio_set_high(GPIOA, PA10);					    //初始为高，在cnta的中断中翻转
 #endif
 	
-	tTimerCfg.eClkDiv = CNTA_CK_DIV8;
-	tTimerCfg.wTime = 1000;                             //1000us,if cnta clk is 3M,the timeout for timer((0.333us * 1) ->(0.333us * 65535): 0.3333us -> 21.845ms)
-	tTimerCfg.eRunMode = CNTA_REPEAT_MODE;
+	tTimerCfg.eClkDiv = CNTA_CK_DIV8;                   //时钟8分频
+	tTimerCfg.wTime = 1000;                             //周期1000us,if cnta clk is 3M,the timeout for timer((0.333us * 1) ->(0.333us * 65535): 0.3333us -> 21.845ms)
+	tTimerCfg.eRunMode = CNTA_REPEAT_MODE;              //重复模式
 	csi_cnta_timer_init(CA0,&tTimerCfg);                //初始化CountA
 	csi_cnta_start(CA0);                                //启动CountA
-	csi_cnta_int_enable(CA0, CNTA_INTSRC_PENDL);        //若需使用中断，请调该接口使能对应中断，这里使用PENDL中断
+	csi_cnta_int_enable(CA0, CNTA_INTSRC_PENDL);        //若需使用中断，使能对应中断，这里使用CNTA_INTSRC_PENDL中断
 	while(1)
 	{
 		nop;
@@ -68,10 +68,10 @@ int cnta_timer_demo(void)
 	return iRet;
 }
 
-/**
-  \brief       CounterA pwm示例
-  \return      int
-*/
+/** \brief       CounterA pwm示例
+ *  \param[in]   无参数
+ *  \return      返回int类型
+ */
 int cnta_pwm_demo(void)
 {		
 	int iRet = 0;
@@ -99,36 +99,36 @@ int cnta_pwm_demo(void)
 	return iRet;
 }
 
-/** \brief CounterA 和BT0搭配包络输出PWM示例
- *  \param[in] none
- *  \return error code
+/** \brief     CounterA 和BT0搭配包络输出PWM示例
+ *  \param[in] 无参数
+ *  \return    错误码
  */
 int cnta_envelope_demo(void)
 {
 	int iRet = 0;
 	csi_cnta_pwm_config_t tPwmCfg;
-	csi_bt_pwm_config_t tBTPwmCfg;							//BT PWM输出参数初始化配置结构体
+	csi_bt_pwm_config_t tBTPwmCfg;					   //BT PWM输出参数初始化配置结构体
 	
 	//BT0 初始化
 #if (USE_GUI == 0)	
-	csi_gpio_set_mux(GPIOA, PA0, PA0_BT0_OUT);			    //PA0  作为BT0 PWM输出引脚
+	csi_gpio_set_mux(GPIOA, PA0, PA0_BT0_OUT);		   //PA0  作为BT0 PWM输出引脚
 #endif
 
 	//init timer pwm para config
-	tBTPwmCfg.eIdleLevel = BT_PWM_IDLE_HIGH;				//PWM 输出空闲电平
-	tBTPwmCfg.eStartLevel= BT_PWM_START_HIGH;				//PWM 输出起始电平
-	tBTPwmCfg.byDutyCycle = 50;								//PWM 输出占空比(0 < DutyCycle < 100)		
-	tBTPwmCfg.wFreq 	  = 100;							//PWM 输出频率
+	tBTPwmCfg.eIdleLevel = BT_PWM_IDLE_HIGH;		   //PWM 输出空闲电平
+	tBTPwmCfg.eStartLevel= BT_PWM_START_HIGH;		   //PWM 输出起始电平
+	tBTPwmCfg.byDutyCycle = 50;						   //PWM 输出占空比(0 < DutyCycle < 100)		
+	tBTPwmCfg.wFreq 	  = 100;					   //PWM 输出频率
 
-	csi_bt_pwm_init(BT0, &tBTPwmCfg);						//初始化BT0 PWM输出
-	csi_bt_start(BT0);										//启动BT0	
+	csi_bt_pwm_init(BT0, &tBTPwmCfg);				   //初始化BT0 PWM输出
+	csi_bt_start(BT0);								   //启动BT0	
 	
 	//CountA 初始化
-	tPwmCfg.eClkDiv      = CNTA_CK_DIV1;                    //时钟8分频
-	tPwmCfg.byStartLevel = CNTA_POLAR_LOW;	                //开始极性低
-	tPwmCfg.byStopLevel  = CNTA_STOP_LOW;                   //结束极性低
-	tPwmCfg.byDutyCycle  = 60;                              //占空比
-	tPwmCfg.wFreq        = 380000;                          //频率(hz)
+	tPwmCfg.eClkDiv      = CNTA_CK_DIV1;               //时钟8分频
+	tPwmCfg.byStartLevel = CNTA_POLAR_LOW;	           //开始极性低
+	tPwmCfg.byStopLevel  = CNTA_STOP_LOW;              //结束极性低
+	tPwmCfg.byDutyCycle  = 60;                         //占空比
+	tPwmCfg.wFreq        = 380000;                     //频率(hz)
 
 #if (USE_GUI == 0)		
 	csi_gpio_set_mux(GPIOA, PA10,PA10_CNTA_BUZ);

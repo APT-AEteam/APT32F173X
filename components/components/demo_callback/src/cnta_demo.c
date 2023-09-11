@@ -23,13 +23,13 @@
 /* device instance ------------------------------------------------------*/
 
 
-/** \brief  cnta_callback：cnta中断回调函数
+/** \brief     cnta_callback：cnta中断回调函数
  * 
- * 	\brief	用户定义，使用csi标准库，中断发生时会自动调用用户注册的回调函
- * 			数，用户可在回调函数里做自己的处理，而不需要关注具体的底层中断处理。
+ * 	\brief	   用户定义，使用csi标准库，中断发生时会自动调用用户注册的回调函
+ * 			   数，用户可在回调函数里做自己的处理，而不需要关注具体的底层中断处理。
  * 
  *  \param[in] ptCntaBase: CNTA寄存器结构体指针，指向CNTA的基地址 
- *  \return none
+ *  \return    无返回
  */ 
 void cnta_callback(csp_cnta_t *ptCntaBase)
 {
@@ -38,10 +38,10 @@ void cnta_callback(csp_cnta_t *ptCntaBase)
 
 
 
-/**
-  \brief       CounterA 定时中断示例
-  \return      int
-*/
+/** \brief      CounterA 定时中断示例
+ *  \param[in]  无参数
+ *  \return     返回int类型
+ */
 int cnta_timer_callback_demo(void)
 {	
 	int iRet = 0;
@@ -53,9 +53,9 @@ int cnta_timer_callback_demo(void)
 	csi_gpio_set_high(GPIOA, PA10);					         //初始为高，在cnta的中断中翻转
 #endif
 	
-	tTimerCfg.eClkDiv = CNTA_CK_DIV8;
-	tTimerCfg.wTime = 1000;                                  //1000us,if cnta clk is 3M,the timeout for timer((0.333us * 1) ->(0.333us * 65535): 0.3333us -> 21.845ms)
-	tTimerCfg.eRunMode = CNTA_REPEAT_MODE;
+	tTimerCfg.eClkDiv = CNTA_CK_DIV8;                        //8分频
+	tTimerCfg.wTime = 1000;                                  //周期1000us,if cnta clk is 3M,the timeout for timer((0.333us * 1) ->(0.333us * 65535): 0.3333us -> 21.845ms)
+	tTimerCfg.eRunMode = CNTA_REPEAT_MODE;                   //重复模式
 	csi_cnta_timer_init(CA0,&tTimerCfg);                     //初始化CountA
 	csi_cnta_int_enable(CA0, CNTA_INTSRC_PENDL);             //若需使用中断，请调该接口使能对应中断，这里使用PENDL中断
 	csi_cnta_register_callback(CA0, cnta_callback);	         //注册中断回调函数
