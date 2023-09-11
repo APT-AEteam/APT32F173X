@@ -3,11 +3,11 @@
  * \brief CNTA description and static inline functions at register level 
  * \copyright Copyright (C) 2015-2021 @ APTCHIP
  * <table>
- * <tr><th> Date  <th>Version   <th>Author  <th>Description
- * <tr><td> 2020-9-10 <td>V0.0  <td>ZJY     <td>initial
- * <tr><td> 2021-1-9 <td>V0.1   <td>ZJY     <td>modify
- * <tr><td> 2021-5-27 <td>V0.2  <td>LQ      <td>modify
- * <tr><td> 2023-09-07 <td>V0.1  <td>LHY    <td>modify
+ * <tr><th> Date       <th>Version   <th>Author  <th>Description
+ * <tr><td> 2020-9-10  <td>V0.0      <td>ZJY     <td>initial
+ * <tr><td> 2021-1-9   <td>V0.1      <td>ZJY     <td>modify
+ * <tr><td> 2021-5-27  <td>V0.2      <td>LQ      <td>modify
+ * <tr><td> 2023-09-07 <td>V0.1      <td>LHY     <td>modify
  * </table>
  * *********************************************************************
 */

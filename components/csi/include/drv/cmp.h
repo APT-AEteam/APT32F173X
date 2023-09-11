@@ -13,7 +13,6 @@
 #ifndef _DRV_CMP_H_
 #define _DRV_CMP_H_
 
-#include <drv/common.h>
 #include "csp.h"
 
 #ifdef __cplusplus
@@ -50,7 +49,7 @@ typedef enum
 
 typedef enum
 {
-	CMP_PHYST_POL_0mv			=	0x00,
+	CMP_PHYST_POL_0mv	     =	0x00,
 	CMP_PHYST_POL_10mv,
 	CMP_PHYST_POL_15mv,
 	CMP_PHYST_POL_25mv,
@@ -63,20 +62,20 @@ typedef enum
 
 typedef enum
 {
-    CMP_POL_OUT_DIRECT          = 0x00,
+    CMP_POL_OUT_DIRECT       = 0x00,
 	CMP_POL_OUT_UNDIRECT 
 }csi_polarity_e;
 
 
 typedef enum
 {
-	CMP_CPOS_OUT_DIRECT			=	0x00,
-	CMP_CPOS_OUT_IN				=	0x01
+	CMP_CPOS_OUT_DIRECT		 =	0x00,
+	CMP_CPOS_OUT_IN			 =	0x01
 }csi_cr_cpos_e;
 
 typedef enum
 {
-	CMP_EVE_DOWN		    	=	0x00,
+	CMP_EVE_DOWN		     =	0x00,
 	CMP_EVE_UP,
 	CMP_EVE_DOWN_UP,
 	CMP_EVE_UP1
@@ -112,13 +111,13 @@ typedef enum
 
 typedef enum
 {
-	CMP_WFCR_ALIGN_DISALLOW   = 0x00,
-	CMP_WFCR_ALIGN_ALLOW      = 0x01
+	CMP_WFCR_ALIGN_DISALLOW  = 0x00,
+	CMP_WFCR_ALIGN_ALLOW     = 0x01
 }csi_wfcr_align_e;
 
 typedef enum
 {
-	CMP_WFCR_OSET_DIS			=	0x00,
+	CMP_WFCR_OSET_DIS		 =	0x00,
 	CMP_WFCR_OSET_HIGH,
 	CMP_WFCR_OSET_LOW,
 	CMP_WFCR_OSET_DIS1
@@ -126,7 +125,7 @@ typedef enum
 
 typedef enum
 {
-	CMP_N_SEL_CP0        =  0x00,
+	CMP_N_SEL_CP0            =  0x00,
 	CMP_N_SEL_CP1,
 	CMP_N_SEL_CP2,
 	CMP_N_SEL_CP3,	
@@ -146,7 +145,7 @@ typedef enum
 
 typedef enum
 {
-	CMP_P_SEL_CP0       = 0x00,
+	CMP_P_SEL_CP0            = 0x00,
 	CMP_P_SEL_CP1,
 	CMP_P_SEL_CP2,
 	CMP_P_SEL_CP3,	
@@ -168,7 +167,7 @@ typedef enum
 
 typedef struct
 {
-	uint8_t  byNsel;                  //N- pin
+	uint8_t  byNsel;                 //N- pin
 	uint8_t  byPsel;	             //P+ pin
 	uint8_t  byPhystpol;		     
 	uint8_t  byNhystpol;		
@@ -231,7 +230,7 @@ void csi_cmp_stop(csp_cmp_t *ptCmpBase);
  *  \param[in] ptCmpDfltCfg: pointer of cmp dlft config structure
  *  \return error code \ref csi_error_t
  */
-csi_error_t csi_cmp_dflt1_config(csp_cmp_t *ptCmpBase,bool bEnable,csi_cmp_dflt1_config_t *ptCmpDfltCfg);
+csi_error_t csi_cmp_dflt1_config(csp_cmp_t *ptCmpBase,csi_cmp_dflt1_config_t *ptCmpDfltCfg,bool bEnable);
 
 /** \brief cmp dflt2 config
  * 
@@ -240,7 +239,7 @@ csi_error_t csi_cmp_dflt1_config(csp_cmp_t *ptCmpBase,bool bEnable,csi_cmp_dflt1
  *  \param[in] ptCmpDfltCfg: pointer of cmp dlft config structure
  *  \return error code \ref csi_error_t
  */
-csi_error_t csi_cmp_dflt2_config(csp_cmp_t *ptCmpBase,bool bEnable,csi_cmp_dflt2_config_t *ptCmpDfltCfg);
+csi_error_t csi_cmp_dflt2_config(csp_cmp_t *ptCmpBase,csi_cmp_dflt2_config_t *ptCmpDfltCfg,bool bEnable);
 
 /**
  *  \brief       cmp wflt config
@@ -254,10 +253,22 @@ csi_error_t csi_cmp_wfcr_config(csp_cmp_t *ptCmpBase,csi_cmp_wfcr_config_t *ptCm
  * 
  *  \param[in] ptCmpBase:pointer of cmp register structure
  *  \param[in] eEveSel: evtrg eve sel(0~3) 
- *  \param[in] bEnable: cmp evtrg enable or disable
  *  \return none
  */
-void csi_cmp_set_evtrg(csp_cmp_t *ptCmpBase, csi_eve_sel_e eEveSel, bool bEnable);
+void csi_cmp_set_evtrg(csp_cmp_t *ptCmpBase, csi_eve_sel_e eEveSel);
+
+/** \brief cmp evtrg syncoe enable
+ * 
+ *  \param[in] ptCmpBase: pointer of cmp register structure
+ *  \return none
+ */
+void csi_cmp_syncoe_enable(csp_cmp_t *ptCmpBase);
+/** \brief cmp evtrg syncoe disable
+ * 
+ *  \param[in] ptCmpBase: pointer of cmp register structure
+ *  \return none
+ */
+void csi_cmp_syncoe_disable(csp_cmp_t *ptCmpBase);
 
 /** \brief cmp out status
  * 

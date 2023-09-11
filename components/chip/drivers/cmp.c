@@ -48,7 +48,7 @@ csi_error_t csi_cmp_init(csp_cmp_t *ptCmpBase,csi_cmp_config_t *ptCmpCfg)
  */
 void csi_cmp_start(csp_cmp_t *ptCmpBase)
 {
-	csp_cmp_enable(ptCmpBase);
+	csp_cmp_start(ptCmpBase);
 }
 
 /** \brief stop cmp
@@ -58,7 +58,7 @@ void csi_cmp_start(csp_cmp_t *ptCmpBase)
  */ 
 void csi_cmp_stop(csp_cmp_t *ptCmpBase)
 {
-    csp_cmp_disable(ptCmpBase);
+    csp_cmp_stop(ptCmpBase);
 }
 
 /** \brief cmp dflt1 config
@@ -68,17 +68,17 @@ void csi_cmp_stop(csp_cmp_t *ptCmpBase)
  *  \param[in] ptCmpDfltCfg: pointer of cmp dlft config structure
  *  \return error code \ref csi_error_t
  */
-csi_error_t csi_cmp_dflt1_config(csp_cmp_t *ptCmpBase,bool bEnable,csi_cmp_dflt1_config_t *ptCmpDfltCfg)
+csi_error_t csi_cmp_dflt1_config(csp_cmp_t *ptCmpBase,csi_cmp_dflt1_config_t *ptCmpDfltCfg,bool bEnable)
 {
 	csi_error_t tRet = CSI_OK;
 	if(bEnable == ENABLE)
 	{
-		csp_cmp_dflt1_enable(ptCmpBase ,ENABLE);
+		csp_cmp_dflt1_enable(ptCmpBase);
 		csp_cmp_dfcr1(ptCmpBase,ptCmpDfltCfg->byDepth1,ptCmpDfltCfg->byDivn1,ptCmpDfltCfg->byDivm1);
 	}
 	else
 	{
-		csp_cmp_dflt1_enable(ptCmpBase ,DISABLE);		
+		csp_cmp_dflt1_disable(ptCmpBase);		
 	}
 	return tRet;
 }
@@ -90,17 +90,17 @@ csi_error_t csi_cmp_dflt1_config(csp_cmp_t *ptCmpBase,bool bEnable,csi_cmp_dflt1
  *  \param[in] ptCmpDfltCfg: pointer of cmp dlft config structure
  *  \return error code \ref csi_error_t
  */
-csi_error_t csi_cmp_dflt2_config(csp_cmp_t *ptCmpBase,bool bEnable,csi_cmp_dflt2_config_t *ptCmpDfltCfg)
+csi_error_t csi_cmp_dflt2_config(csp_cmp_t *ptCmpBase,csi_cmp_dflt2_config_t *ptCmpDfltCfg,bool bEnable)
 {
 	csi_error_t tRet = CSI_OK;
 	if(bEnable == ENABLE)
 	{	
-		csp_cmp_dflt2_enable(ptCmpBase ,ENABLE);
+		csp_cmp_dflt2_enable(ptCmpBase);
 		csp_cmp_dfcr2(ptCmpBase,ptCmpDfltCfg->byDepth2,ptCmpDfltCfg->byDivn2,ptCmpDfltCfg->byDivm2);
 	}
 	else
 	{
-		csp_cmp_dflt2_enable(ptCmpBase ,DISABLE);
+		csp_cmp_dflt2_disable(ptCmpBase);
 	}
 	return tRet;
 }
@@ -115,8 +115,8 @@ csi_error_t csi_cmp_wfcr_config(csp_cmp_t *ptCmpBase,csi_cmp_wfcr_config_t *ptCm
 {
 	csi_error_t tRet = CSI_OK;
 
-	csp_cmp_wf_set(ptCmpBase,ENABLE,ptCmpWfcrCfg->byWfalign,ptCmpWfcrCfg->byWoset);
-	csp_cmp_wfcr(ptCmpBase , ptCmpWfcrCfg->hwWcnt,ptCmpWfcrCfg->byClkDiv,ptCmpWfcrCfg->byDcnt);
+	csp_cmp_set_wf(ptCmpBase, ptCmpWfcrCfg->byWfalign, ptCmpWfcrCfg->byWoset, ENABLE);
+	csp_cmp_wfcr(ptCmpBase, ptCmpWfcrCfg->hwWcnt, ptCmpWfcrCfg->byClkDiv, ptCmpWfcrCfg->byDcnt);
 	
 	return tRet;
 }
@@ -125,13 +125,33 @@ csi_error_t csi_cmp_wfcr_config(csp_cmp_t *ptCmpBase,csi_cmp_wfcr_config_t *ptCm
  * 
  *  \param[in] ptCmpBase: pointer of cmp register structure
  *  \param[in] eEveSel: evtrg eve sel(0~3) 
- *  \param[in] bEnable: cmp evtrg enable or disable
  *  \return none
  */
-void csi_cmp_set_evtrg(csp_cmp_t *ptCmpBase,csi_eve_sel_e eEveSel, bool bEnable)
+void csi_cmp_set_evtrg(csp_cmp_t *ptCmpBase,csi_eve_sel_e eEveSel)
 {
-	csp_cmp_evtrg(ptCmpBase , bEnable,(csp_cmp_eve_sel_e)eEveSel);
+	csp_cmp_evtrg(ptCmpBase,(csp_cmp_eve_sel_e)eEveSel);
 }
+
+/** \brief cmp evtrg syncoe enable
+ * 
+ *  \param[in] ptCmpBase: pointer of cmp register structure
+ *  \return none
+ */
+void csi_cmp_syncoe_enable(csp_cmp_t *ptCmpBase)
+{
+	csp_cmp_syncoe_enable(ptCmpBase);
+}
+
+/** \brief cmp evtrg syncoe disable
+ * 
+ *  \param[in] ptCmpBase: pointer of cmp register structure
+ *  \return none
+ */
+void csi_cmp_syncoe_disable(csp_cmp_t *ptCmpBase)
+{
+	csp_cmp_syncoe_disable(ptCmpBase);
+}
+
 
 /** \brief cmp out status
  * 

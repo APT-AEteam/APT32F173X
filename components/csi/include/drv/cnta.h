@@ -14,8 +14,7 @@
 #ifndef _DRV_CNTA_H_
 #define _DRV_CNTA_H_
 
-#include <drv/common.h>
-#include <csp_cnta.h>
+#include "csp.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -166,7 +165,7 @@ void csi_cnta_pwm_para_updata(csp_cnta_t *ptCntaBase, uint16_t hwDatah, uint16_t
  *  \param[in] hw_updata: cadata reg auto updata control
  *  \return error code \ref csi_error_t
  */
-csi_error_t csi_cnta_bt0_sync(csp_cnta_t *ptCntaBase, csi_cnta_tcpend_e tcpend_rem, csi_cnta_tcmatch_e tcmatch_rem,csi_cnta_hw_updata_e hw_updata);
+csi_error_t csi_cnta_bt0_set_sync(csp_cnta_t *ptCntaBase, csi_cnta_tcpend_e tcpend_rem, csi_cnta_tcmatch_e tcmatch_rem,csi_cnta_hw_updata_e hw_updata);
 
 /** \brief CNTA interrupt enable control
  * 
