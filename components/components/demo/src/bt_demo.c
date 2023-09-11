@@ -172,7 +172,7 @@ int bt_sync_trg_start_demo(void)
 	tTimConfig.wTimeVal = 1000;											//BT定时值 = 1000us
 	tTimConfig.eWkMode  = BT_CNT_CONTINU;								//BT计数器工作模式
 	csi_bt_timer_init(BT0,&tTimConfig);									//BT0 定时	
-	csi_bt_set_sync(BT0, BT_TRGIN_SYNCEN0, BT_TRG_CONTINU, BT_TRG_SYCAREARM);	//外部触发bt0启动(SYNCIN0)
+	csi_bt_set_sync(BT0, BT_SYNCIN0, BT_TRG_CONTINU, BT_TRG_SYCAREARM);	//外部触发bt0启动(SYNCIN0)
 	
 	// ETCB 初始化
 	tEtbConfig.eChType = ETB_ONE_TRG_ONE;  		//单个源触发单个目标
@@ -220,7 +220,7 @@ int bt_sync_trg_stop_demo(void)
 	tTimConfig.wTimeVal = 1000;										//BT定时值 = 1000us
 	tTimConfig.eWkMode  = BT_CNT_CONTINU;							//BT计数器工作模式
 	csi_bt_timer_init(BT0,&tTimConfig);								//BT0 定时	
-	csi_bt_set_sync(BT0, BT_TRGIN_SYNCEN1, BT_TRG_CONTINU, BT_TRG_AUTOAREARM);		//外部触发BT0停止(SYNCIN1)，连续模式
+	csi_bt_set_sync(BT0, BT_SYNCIN1, BT_TRG_CONTINU, BT_TRG_AUTOAREARM);		//外部触发BT0停止(SYNCIN1)，连续模式
 	csi_bt_start(BT0);	    						//启动BT0
 	
 	tEtbConfig.eChType = ETB_ONE_TRG_ONE;  			//单个源触发单个目标
@@ -270,7 +270,7 @@ int bt_sync_trg_count_demo(void)
 	tTimConfig.wTimeVal = 100;										//BT定时值 = 100us
 	tTimConfig.eWkMode  = BT_CNT_CONTINU;							//BT计数器工作模式
 	csi_bt_timer_init(BT1,&tTimConfig);								//BT0 定时	
-	csi_bt_set_sync(BT1, BT_TRGIN_SYNCEN2, BT_TRG_CONTINU, BT_TRG_AUTOAREARM);		//外部触发BT1计数(SYNCIN2)
+	csi_bt_set_sync(BT1, BT_SYNCIN2, BT_TRG_CONTINU, BT_TRG_AUTOAREARM);		//外部触发BT1计数(SYNCIN2)
 	csi_bt_start(BT1);	    			 							//启动BT1
 	
 	// ETCB 初始化
@@ -334,7 +334,7 @@ int bt_trg_out_demo(void)
 	tPwmCfg.byDutyCycle = 60;								//PWM 输出占空比(0 < DutyCycle < 100)		
 	tPwmCfg.wFreq 		= 1000;								//PWM 输出频率
 	csi_bt_pwm_init(BT1, &tPwmCfg);							//初始化BT1 PWM输出
-	csi_bt_set_sync(BT1, BT_TRGIN_SYNCEN0, BT_TRG_ONCE, BT_TRG_AUTOAREARM);	//外部触发bt启动(SYNCIN0)
+	csi_bt_set_sync(BT1, BT_SYNCIN0, BT_TRG_ONCE, BT_TRG_AUTOAREARM);	//外部触发bt启动(SYNCIN0)
 
 	tEtbConfig.eChType  = ETB_ONE_TRG_ONE;  		//单个源触发单个目标
 	tEtbConfig.eSrcIp   = ETB_BT0_TRGOUT;   		//BT0_TRGOUT作为触发源

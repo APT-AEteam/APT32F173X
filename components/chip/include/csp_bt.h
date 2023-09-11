@@ -169,7 +169,7 @@ typedef enum{
 	BT_SYNCEN0		= 0,
 	BT_SYNCEN1,
 	BT_SYNCEN2		
-}bt_evtrg_in_e;
+}bt_sync_in_e;
 /******************************************************************************
 * EVTRG : BT EVTRG Register
 ******************************************************************************/
@@ -327,7 +327,7 @@ static inline void csp_bt_int_disable(csp_bt_t *ptBtBase, bt_int_e eInt)
 //}
 
 //sync and event 
-static inline void csp_bt_sync_rearm(csp_bt_t *ptBtBase, bt_evtrg_in_e eTrgIn)	
+static inline void csp_bt_sync_rearm(csp_bt_t *ptBtBase, bt_sync_in_e eTrgIn)	
 { 
 	ptBtBase->CR |= (0x01 << BT_REARM_POS(eTrgIn));
 }

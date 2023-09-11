@@ -128,7 +128,7 @@ int lpt_trg_out_demo(void)
 	csp_lpt_set_trgprd(LPT,0xf);
 	csp_lpt_set_trgcnt(LPT,0xf);
 //	csi_bt_timer_init(BT1,5000);									//BT定时1ms
-	csi_bt_set_sync(BT1, BT_TRGIN_SYNCEN0, BT_TRG_ONCE, DISABLE);		//外部触发bt启动(SYNCIN0)
+	csi_bt_set_sync(BT1, BT_SYNCIN0, BT_TRG_ONCE, DISABLE);		//外部触发bt启动(SYNCIN0)
 
 	
 	tEtbConfig.eChType = ETB_ONE_TRG_ONE;  						//单个源触发单个目标
@@ -159,7 +159,7 @@ int lpt_soft_trg_out_demo(void)
 	csi_etb_config_t tEtbConfig;				    				//ETB 参数配置结构体
 	
 //	csi_bt_timer_init(BT1,5000);									//BT定时1ms
-	csi_bt_set_sync(BT1,BT_TRGIN_SYNCEN0, BT_TRG_ONCE, DISABLE);		//外部触发bt启动(SYNCIN0)
+	csi_bt_set_sync(BT1,BT_SYNCIN0, BT_TRG_ONCE, DISABLE);		//外部触发bt启动(SYNCIN0)
 	
 	tEtbConfig.eChType = ETB_ONE_TRG_ONE;  						//单个源触发单个目标
 	tEtbConfig.eSrcIp  = ETB_LPT_TRGOUT0;  	    					//LPT作为触发源

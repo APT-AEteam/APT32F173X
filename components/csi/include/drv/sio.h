@@ -255,7 +255,7 @@ typedef struct {
 	
 	uint32_t		*pwData;			//transport data buffer
 	uint16_t        hwSize;				//transport data buffer size
-	uint16_t        hwTranLen;			//transport data size
+	uint16_t        hwTransNum;			//transport data size
 	uint8_t			byRxStat;			//sio receive status
 	uint8_t			byTxStat;			//sio send status
 	//CallBack		
@@ -354,15 +354,6 @@ csi_error_t csi_sio_set_samp_timeout(csp_sio_t *ptSioBase, uint8_t byToCnt ,bool
 */
 int32_t csi_sio_send(csp_sio_t *ptSioBase, const uint32_t *pwData, uint16_t hwSize);
 
-
-/**
-  \brief	   send data from sio, this function is polling and interrupt mode     
-  \param[in]   pwData    	pointer to buffer with data to send 
-  \param[in]   hwSize    	send data size
-  \return      error code \ref csi_error_t or data size
-*/
-//int32_t csi_sio_send_async(uint32_t *pwData, uint16_t hwSize);
-
 /** 
   \brief 	   set sio receive data buffer
   \param[in]   pwData		pointer of sio transport data buffer
@@ -379,6 +370,15 @@ csi_error_t csi_sio_set_buffer(uint32_t *pwData, uint16_t hwLen);
   \return      error code \ref csi_error_t or receive data len
 */
 int32_t csi_sio_receive(csp_sio_t *ptSioBase, uint32_t *pwRecv, uint16_t hwLen);
+
+/** 
+  \brief receive data to sio transmitter, asynchronism mode
+  \param[in] ptSioBase: pointer of sio register structure
+  \param[in] pwRecv: pointer of sio receive data
+  \param[in] hwSize: receive data size
+  \return error code \ref csi_error_t or receive data len
+ */
+int32_t csi_sio_receive_int(csp_sio_t *ptSioBase, uint32_t *pwRecv, uint16_t hwSize);
 
 /** 
   \brief send data from sio, this function is dma mode

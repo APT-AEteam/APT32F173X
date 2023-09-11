@@ -24,7 +24,7 @@
 /* externs function--------------------------------------------------------*/
 // rgb led display
 void led_rgb_display(uint8_t *byColData, uint16_t hwLedNum);
-static void set_led_rgb_store(uint32_t *pwLeddData,uint16_t hwLedNum);
+static void set_led_rgb_store(uint32_t *pwLeddData,uint8_t *pbyDisp, uint16_t hwLedNum);
 //ti hdq transfer
 uint32_t sio_hdq_addr_conver(uint8_t byAddr);
 uint32_t sio_data_conver(uint8_t byTxData);
@@ -58,10 +58,9 @@ uint32_t	g_wSioRxBuf[24];		//接收缓存
 int sio_led_rgb_demo(void)
 {
 	int iRet = 0;
-	volatile uint8_t byRecv;
 	csi_sio_tx_config_t tSioTxCfg;
 	
-#if !defined(USE_GUI)							//用户未选择图形化编程	
+#if (USE_GUI == 0)							//用户未选择图形化编程	
 	//配置为SIO模式
 	csi_pin_set_mux(PB0, PB0_SIO0);	
 //	csi_pin_set_mux(PC0, PC0_SIO0);	
@@ -85,20 +84,13 @@ int sio_led_rgb_demo(void)
 	tSioTxCfg.byTxCnt 		= 24;				//SIO一次发送总的数据长度(bit个数 = 24)，byTxCnt >= byTxBufLen，byTxCnt < 256(最大32bytes)
 	tSioTxCfg.eIdleLev 		= SIO_IDLE_L;		//SIO空闲时刻IO管脚输出电平
 	tSioTxCfg.eTxDir 		= SIO_TXDIR_LSB;	//LSB->MSB, txbuf 数据按照bit[1:0]...[31:30]方式移出
-	tSioTxCfg.wTxFreq 		= 500000;			//tx clk =500KHz, Ttxshift = 1/0.5 = 2us；发送每bit时间是2us
-	
+	tSioTxCfg.wTxFreq 		= 4000000;			//tx clk =500KHz, Ttxshift = 1/0.5 = 250us；发送每bit时间是1us
 	csi_sio_tx_init(SIO0, &tSioTxCfg);
-	//mdelay(10);
 	
 	while(1)
 	{
-		byRecv = csi_uart_getc(UART2);
-		if(byRecv)
-		{ 
-			led_rgb_display(byDipData, 8);
-		}
-		//mdelay(20);
-		nop;
+		led_rgb_display(byDipData, 8);
+		mdelay(20);
 	}
 	
 	return iRet;
@@ -143,7 +135,7 @@ int sio_led_rgb_int_demo(void)
 	
 	for(byCount = 0; byCount < 8; byCount++ )
 	{
-		set_led_rgb_store(byDipDataEnd,byCount);
+		set_led_rgb_store(byDipDataEnd, byDipData, byCount);
 	}
 	
 	while(1)
@@ -224,7 +216,7 @@ int sio_led_rgb_send_dma_demo(void)
 	
 	for(byCount = 0; byCount < 8; byCount++ )
 	{
-		set_led_rgb_store(wDipDataEnd, byCount);		//24*16byte
+		set_led_rgb_store(wDipDataEnd, byDipData,byCount);		//24*16byte
 	}
 	
 	for(uint8_t i = 0; i < 24; i++)
@@ -706,12 +698,12 @@ static uint32_t sio_led_data_conver(uint8_t byData)
 	return wData;
 }
 
-static void set_led_rgb_store(uint32_t *pwLeddData,uint16_t hwLedNum)
+static void set_led_rgb_store(uint32_t *pwLeddData, uint8_t *pbyDisp, uint16_t hwLedNum)
 {
 	//led
-	*(pwLeddData+hwLedNum*3) = sio_led_data_conver(byDipData[hwLedNum*3+1]) ;		//G
-	*(pwLeddData+hwLedNum*3+1) = sio_led_data_conver(byDipData[hwLedNum*3]);		//R		
-	*(pwLeddData+hwLedNum*3+2) = sio_led_data_conver(byDipData[hwLedNum*3+2]);		//B	
+	*(pwLeddData+hwLedNum*3) = sio_led_data_conver(pbyDisp[hwLedNum*3+1]) ;		//G
+	*(pwLeddData+hwLedNum*3+1) = sio_led_data_conver(pbyDisp[hwLedNum*3]);		//R		
+	*(pwLeddData+hwLedNum*3+2) = sio_led_data_conver(pbyDisp[hwLedNum*3+2]);		//B	
 }
 
 void led_rgb_display(uint8_t *byColData, uint16_t hwLedNum)
@@ -720,7 +712,7 @@ void led_rgb_display(uint8_t *byColData, uint16_t hwLedNum)
 	uint32_t wRgbData[24];
 	for(i = 0; i < hwLedNum; i++)
 	{
-		set_led_rgb_store(wRgbData,i);
+		set_led_rgb_store(wRgbData,byColData, i);
 	}
 	for(i = 0; i < hwLedNum; i++)
 	{

@@ -41,14 +41,23 @@ typedef enum{
 }csi_bt_wkmode_e;
 
 /**
- * \enum     csi_bt_trgin_e
+ * \enum     csi_bt_syncin_e
  * \brief    BT sync trigger input 
  */
 typedef enum{
-	BT_TRGIN_SYNCEN0	= 0,		//BT sync trigger input0		
-	BT_TRGIN_SYNCEN1,				//BT sync trigger input1	
-	BT_TRGIN_SYNCEN2				//BT sync trigger input2		
-}csi_bt_trgin_e;
+	BT_SYNCIN0	= 0,		//BT sync trigger input0		
+	BT_SYNCIN1,				//BT sync trigger input1	
+	BT_SYNCIN2				//BT sync trigger input2		
+}csi_bt_syncin_e;
+
+
+/**
+ * \enum     csi_bt_trgout_e
+ * \brief    BT trigger out
+ */
+typedef enum{
+	BT_TRGOUT0	= 0,		//BT trigger out0		
+}csi_bt_trgout_e;
 
 /**
  * \enum     csi_bt_trgmode_e
@@ -261,29 +270,29 @@ void csi_bt_pwm_updata(csp_bt_t *ptBtBase, uint32_t wfreq, uint8_t byDutyCycle);
 /** 
   \brief 	   bt sync evtrg config  
   \param[in]   ptBtBase		pointer of bt register structure
-  \param[in]   eTrgin		bt evtrg input channel, \ref csi_bt_trgin_e 
+  \param[in]   eTrgin		bt evtrg input channel, \ref csi_bt_syncin_e 
   \param[in]   eTrgMode 	bt evtrg mode, \ref csi_bt_trgmode_e 
   \param[in]   bAutoRearm 	auto rearm, \ref csi_bt_trgmode_e  
   \return      none
 */
-csi_error_t csi_bt_set_sync(csp_bt_t *ptBtBase,csi_bt_trgin_e eTrgin, csi_bt_trgmode_e eTrgMode, csi_bt_arearm_e bAutoRearm);
+csi_error_t csi_bt_set_sync(csp_bt_t *ptBtBase,csi_bt_syncin_e eTrgin, csi_bt_trgmode_e eTrgMode, csi_bt_arearm_e bAutoRearm);
 
 /** 
   \brief 	   restart bt sync evtrg 
   \param[in]   ptBtBase		pointer of bt register structure
-  \param[in]   eTrgin		bt evtrg input channel, \ref csi_bt_trgin_e 
+  \param[in]   eTrgin		bt evtrg input channel, \ref csi_bt_syncin_e 
   \return      none
  */
-void csi_bt_rearm_sync(csp_bt_t *ptBtBase,csi_bt_trgin_e eTrgin);
+void csi_bt_rearm_sync(csp_bt_t *ptBtBase,csi_bt_syncin_e eTrgin);
 
 /** 
   \brief 	   bt evtrg output config
   \param[in]   ptBtBase		pointer of bt register structure
+  \param[in]   eTrgOut 		bt evtrg out \ref csi_bt_trgout_e 
   \param[in]   eTrgSrc 		bt evtrg source, \ref csi_bt_trgsrc_e 
-  \param[in]   bTrgoe		evtrg out enable
   \return 	   error code \ref csi_error_t
  */
-csi_error_t csi_bt_set_evtrg(csp_bt_t *ptBtBase,csi_bt_trgsrc_e eTrgSrc, bool bTrgoe);
+csi_error_t csi_bt_set_evtrg(csp_bt_t *ptBtBase, csi_bt_trgout_e eTrgOut, csi_bt_trgsrc_e eTrgSrc);
 
 /** \brief bt software generates a trigger event
  * 

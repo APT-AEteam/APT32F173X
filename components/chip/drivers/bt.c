@@ -285,25 +285,25 @@ void csi_bt_pwm_updata(csp_bt_t *ptBtBase, uint32_t wFreq, uint8_t byDutyCycle)
 /** \brief bt sync input evtrg config  
  * 
  *  \param[in] ptBtBase: pointer of bt register structure
- *  \param[in] eTrgin: bt sync evtrg input channel, \ref csi_bt_trgin_e
+ *  \param[in] eSyncIn: bt sync evtrg input channel, \ref csi_bt_trgin_e
  *  \param[in] eTrgMode: bt evtrg mode, \ref csi_bt_trgmode_e
  *  \param[in] eAutoRearm: auto rearm, \ref \ref csi_bt_trgmode_e
  *  \return none
  */
-csi_error_t csi_bt_set_sync(csp_bt_t *ptBtBase, csi_bt_trgin_e eTrgin, csi_bt_trgmode_e eTrgMode, csi_bt_arearm_e eAutoRearm)
+csi_error_t csi_bt_set_sync(csp_bt_t *ptBtBase, csi_bt_syncin_e eSyncIn, csi_bt_trgmode_e eTrgMode, csi_bt_arearm_e eAutoRearm)
 {
-	if(eTrgin > BT_TRGIN_SYNCEN2)
+	if(eSyncIn > BT_SYNCIN2)
 		return CSI_ERROR;
 	
-	ptBtBase->CR = ptBtBase->CR & ~(BT_SYNCCMD_MSK | BT_OSTMD_MSK(eTrgin));
-	ptBtBase->CR |=  ((BT_SYNC_EN << BT_SYNC_POS(eTrgin)) | (BT_SYNCMD_EN << BT_SYNCCMD_POS) | (eTrgMode << BT_OSTMD_POS(eTrgin)));
-	if((eTrgin == BT_TRGIN_SYNCEN0) || (eTrgin == BT_TRGIN_SYNCEN1))
+	ptBtBase->CR = ptBtBase->CR & ~(BT_SYNCCMD_MSK | BT_OSTMD_MSK(eSyncIn));
+	ptBtBase->CR |=  ((BT_SYNC_EN << BT_SYNC_POS(eSyncIn)) | (BT_SYNCMD_EN << BT_SYNCCMD_POS) | (eTrgMode << BT_OSTMD_POS(eSyncIn)));
+	if((eSyncIn == BT_SYNCIN0) || (eSyncIn == BT_SYNCIN1))
 	{
-		ptBtBase->CR = ptBtBase->CR & ~(BT_AREARM_MSK(eTrgin));
-		ptBtBase->CR |= (eAutoRearm << BT_AREARM_POS(eTrgin));
+		ptBtBase->CR = ptBtBase->CR & ~(BT_AREARM_MSK(eSyncIn));
+		ptBtBase->CR |= (eAutoRearm << BT_AREARM_POS(eSyncIn));
 	}
 	
-	if(eTrgin == BT_TRGIN_SYNCEN2)
+	if(eSyncIn == BT_SYNCIN2)
 	{
 		ptBtBase->CR |= BT_EXTCKM_MSK;		//selecet count clk source
 	}
@@ -315,26 +315,27 @@ csi_error_t csi_bt_set_sync(csp_bt_t *ptBtBase, csi_bt_trgin_e eTrgin, csi_bt_tr
 /** \brief rearm bt sync evtrg  
  * 
  *  \param[in] ptBtBase: pointer of bt register structure
- *  \param[in] eTrgin: bt sync evtrg input channel, \ref csi_bt_trgin_e
+ *  \param[in] eSyncIn: bt sync evtrg input channel, \ref csi_bt_trgin_e
  *  \return none
  */
-void csi_bt_sync_rearm(csp_bt_t *ptBtBase,csi_bt_trgin_e eTrgin)
+void csi_bt_sync_rearm(csp_bt_t *ptBtBase,csi_bt_syncin_e eSyncIn)
 {
-	csp_bt_sync_rearm(ptBtBase, (bt_evtrg_in_e)eTrgin);
+	csp_bt_sync_rearm(ptBtBase, (bt_sync_in_e)eSyncIn);
 }
 /** \brief bt evtrg output config
  * 
  *  \param[in] ptBtBase:pointer of bt register structure
+ *  \param[in] eTrgOut: evtrg out, \ref csi_bt_trgout_e
  *  \param[in] eTrgSrc: evtrg source, \ref csi_bt_trgsrc_e
  *  \param[in] bEnable: ENABLE/DISABLE
  *  \return error code \ref csi_error_t
  */
-csi_error_t csi_bt_set_evtrg(csp_bt_t *ptBtBase, csi_bt_trgsrc_e eTrgSrc, bool bEnable)
+csi_error_t csi_bt_set_evtrg(csp_bt_t *ptBtBase, csi_bt_trgout_e eTrgOut, csi_bt_trgsrc_e eTrgSrc)
 {
 	if(eTrgSrc == BT_TRGSRC_DIS)
 		csp_bt_set_evtrg(ptBtBase,0x00);
 	else
-		csp_bt_set_evtrg(ptBtBase,(eTrgSrc | (bEnable << BT_TRGOE_POS)));
+		csp_bt_set_evtrg(ptBtBase,(eTrgSrc | (BT_TRGOE_DIS << BT_TRGOE_POS)));
 		
 	return CSI_OK;
 }

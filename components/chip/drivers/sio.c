@@ -88,11 +88,11 @@ void csi_sio_irqhandler(csp_sio_t *ptSioBase, uint8_t byIdx)
 			}
 			else
 			{
-				*(g_tSioCtrl[byIdx].pwData + g_tSioCtrl[byIdx].hwTranLen) = csp_sio_get_rxbuf(ptSioBase);	//receive data
-				g_tSioCtrl[byIdx].hwTranLen ++;
-				if(g_tSioCtrl[byIdx].hwTranLen >= g_tSioCtrl[byIdx].hwSize)
+				*(g_tSioCtrl[byIdx].pwData + g_tSioCtrl[byIdx].hwTransNum) = csp_sio_get_rxbuf(ptSioBase);	//receive data
+				g_tSioCtrl[byIdx].hwTransNum ++;
+				if(g_tSioCtrl[byIdx].hwTransNum >= g_tSioCtrl[byIdx].hwSize)
 				{
-					g_tSioCtrl[byIdx].byRxStat = SIO_STATE_FULL;			//receive buf full, g_tSioCtrl.hwTranLen = receive data len = receive buf len
+					g_tSioCtrl[byIdx].byRxStat = SIO_STATE_FULL;			//receive buf full, g_tSioCtrl.hwTransNum = receive data len = receive buf len
 					csp_sio_woke_rst(ptSioBase);
 					
 					if(g_tSioCtrl[byIdx].recv_callback)
@@ -106,12 +106,12 @@ void csi_sio_irqhandler(csp_sio_t *ptSioBase, uint8_t byIdx)
 			csp_sio_clr_isr(ptSioBase, SIO_TXBUFEMPT);
 		 	ptSioBase->TXBUF = *(g_tSioCtrl[byIdx].pwData);
 			g_tSioCtrl[byIdx].pwData++;
-			g_tSioCtrl[byIdx].hwTranLen++;
+			g_tSioCtrl[byIdx].hwTransNum++;
 			
-			if(g_tSioCtrl[byIdx].hwTranLen >= g_tSioCtrl[byIdx].hwSize)
+			if(g_tSioCtrl[byIdx].hwTransNum >= g_tSioCtrl[byIdx].hwSize)
 			{
 				csp_sio_int_disable(ptSioBase, (sio_int_e)SIO_INTSRC_TXBUFEMPT);
-				g_tSioCtrl[byIdx].hwTranLen = 0;
+				g_tSioCtrl[byIdx].hwTransNum = 0;
 				g_tSioCtrl[byIdx].byTxStat = SIO_STATE_IDLE;
 				
 				//call back
@@ -290,18 +290,18 @@ int32_t csi_sio_send(csp_sio_t *ptSioBase, const uint32_t *pwData, uint16_t hwSi
  * \param[in] hwSize: send data size
  * \return error code \ref csi_error_t or receive data size
  */
-csi_error_t csi_sio_send_int(csp_sio_t *ptSioBase, const uint32_t *pwData, uint16_t hwSize)
+csi_error_t csi_sio_send_int(csp_sio_t *ptSioBase, const uint32_t *pwSend, uint16_t hwSize)
 {
 	uint8_t byIdx = apt_get_sio_idx(ptSioBase);
 	
-	if(NULL == pwData || 0 == hwSize)
+	if(NULL == pwSend || 0 == hwSize)
 		return CSI_ERROR;
 		
-	g_tSioCtrl[byIdx].pwData	= (uint32_t *)pwData;
-	g_tSioCtrl[byIdx].hwSize 	= hwSize;
-	g_tSioCtrl[byIdx].hwTranLen = 0;
-	g_tSioCtrl[byIdx].byTxStat  = SIO_STATE_SEND;
-	csp_sio_int_enable(SIO0,(sio_int_e)SIO_INTSRC_TXBUFEMPT);
+	g_tSioCtrl[byIdx].pwData = (uint32_t *)pwSend;
+	g_tSioCtrl[byIdx].hwSize = hwSize;
+	g_tSioCtrl[byIdx].hwTransNum = 0;
+	g_tSioCtrl[byIdx].byTxStat = SIO_STATE_SEND;
+	csp_sio_int_enable(SIO0, SIO_TXBUFEMPT);;
 	
 	return CSI_OK;
 }
@@ -313,12 +313,13 @@ csi_error_t csi_sio_send_int(csp_sio_t *ptSioBase, const uint32_t *pwData, uint1
  */ 
 csi_error_t csi_sio_set_buffer(uint32_t *pwData, uint16_t hwLen)
 {
+	
 	if(NULL == pwData || hwLen == 0)
 		return CSI_ERROR;
 	
 //	g_tSioTran.pwData 	 = pwData;
 //	g_tSioTran.hwSize 	 = hwLen;
-//	g_tSioTran.hwTranLen = 0;
+//	g_tSioTran.hwTransNum = 0;
 //	g_tSioTran.byRxStat  = SIO_STATE_IDLE;
 //	g_tSioTran.byTxStat  = SIO_STATE_IDLE;
 	
@@ -328,28 +329,23 @@ csi_error_t csi_sio_set_buffer(uint32_t *pwData, uint16_t hwLen)
  * 
  * \param[in] ptSioBase: pointer of sio register structure
  * \param[in] pwRecv: pointer of sio receive data
- * \param[in] hwLen: length receive data
+ * \param[in] hwSize: receive data size
  * \return error code \ref csi_error_t or receive data len
  */
-int32_t csi_sio_receive(csp_sio_t *ptSioBase, uint32_t *pwRecv, uint16_t hwLen)
+int32_t csi_sio_receive_int(csp_sio_t *ptSioBase, uint32_t *pwRecv, uint16_t hwSize)
 {
-	switch(hwLen)
-	{
-//		case SIO_RX_MODE_INT:
-//			if(g_tSioTran.hwTranLen >= hwLen)		//sio receive interrupt 		
-//			{
-//				memcpy((void *)pwRecv, (void *)g_tSioTran.pwData, 4 * hwLen);
-//				g_tSioTran.hwTranLen = 0;
-//				g_tSioTran.byRxStat  = SIO_STATE_IDLE;
-//				return hwLen;
-//			}
-//			else
-//				return 0;
-//			case SIO_RX_MODE_POLL:	
-//				return CSI_UNSUPPORTED;;			//sio receive polling mode, unsupport
-		default:
-			return CSI_UNSUPPORTED;;
-	}
+	uint8_t byIdx = apt_get_sio_idx(ptSioBase);
+	
+	if(NULL == pwRecv || hwSize == 0)
+		return CSI_ERROR;
+	
+	g_tSioCtrl[byIdx].pwData	= pwRecv;
+	g_tSioCtrl[byIdx].hwSize 	= hwSize;
+	g_tSioCtrl[byIdx].hwTransNum = 0;
+	g_tSioCtrl[byIdx].byRxStat  = SIO_STATE_RECV;
+	csp_sio_int_enable(SIO0, SIO_TXBUFEMPT);
+	
+	return CSI_OK;
 }
 /** \brief send data from sio, this function is dma mode
  * 

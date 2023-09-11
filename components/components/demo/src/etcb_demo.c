@@ -41,7 +41,7 @@ int etcb_one_trg_one_demo(void)
 	csi_exi_set_evtrg(0, TRGSRC_EXI0, 0);						//EXI0(PB00) 触发EXI_TRGOUT0(PB00用EXI0触发输出)
 	
 	csi_bt_start_sync(BT0, 200);
-	csi_bt_set_sync(BT0,BT_TRGIN_SYNCEN0, BT_TRG_ONCE, BT_TRG_AUTOAREARM);  
+	csi_bt_set_sync(BT0, BT_SYNCIN0, BT_TRG_ONCE, BT_TRG_AUTOAREARM);  
 	csi_bt_set_evtrg(BT0, BT_TRGSRC_PEND, ENABLE);
 	
 	csi_lpt_start_sync(LPT,LPT_CLK_PCLK_DIV4,50);
@@ -101,14 +101,14 @@ int etcb_one_trg_more_demo(void)
 	#endif
 	
 	csi_bt_start_sync(BT0, 200);
-	csi_bt_set_sync(BT0,BT_TRGIN_SYNCEN0, BT_TRG_ONCE, BT_TRG_AUTOAREARM);  
+	csi_bt_set_sync(BT0,BT_SYNCIN0, BT_TRG_ONCE, BT_TRG_AUTOAREARM);  
 	
 	csi_bt_start_sync(BT1, 200);
-	csi_bt_set_sync(BT1,BT_TRGIN_SYNCEN0, BT_TRG_ONCE, BT_TRG_AUTOAREARM);  
+	csi_bt_set_sync(BT1,BT_SYNCIN0, BT_TRG_ONCE, BT_TRG_AUTOAREARM);  
 
 	
 	csi_bt_start_sync(BT2, 200);
-	csi_bt_set_sync(BT2,BT_TRGIN_SYNCEN0, BT_TRG_ONCE, BT_TRG_AUTOAREARM);  	
+	csi_bt_set_sync(BT2,BT_SYNCIN0, BT_TRG_ONCE, BT_TRG_AUTOAREARM);  	
 	
 	
 	tEtbConfig.eChType = ETB_ONE_TRG_MORE;  		//单个源触发单个目标
