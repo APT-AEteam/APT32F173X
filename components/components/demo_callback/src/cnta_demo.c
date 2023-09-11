@@ -28,7 +28,7 @@
  * 	\brief	用户定义，使用csi标准库，中断发生时会自动调用用户注册的回调函
  * 			数，用户可在回调函数里做自己的处理，而不需要关注具体的底层中断处理。
  * 
- *  \param[out] ptCntaBase: CNTA寄存器结构体指针，指向CNTA的基地址 
+ *  \param[in] ptCntaBase: CNTA寄存器结构体指针，指向CNTA的基地址 
  *  \return none
  */ 
 void cnta_callback(csp_cnta_t *ptCntaBase)

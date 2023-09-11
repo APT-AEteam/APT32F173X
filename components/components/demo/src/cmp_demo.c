@@ -36,7 +36,7 @@ ATTRIBUTE_ISR  void cmp0_int_handler(void)
 	
 	if(wMisr & CMP_EDGEDET0_INT)					//EDGEDET interrupt
 	{
-		csp_cmp_clr_isr(CMP0, CMP_INTSRC_EDGEDET);
+		csp_cmp_clr_isr(CMP0, (csp_cmp_int_e)CMP_INTSRC_EDGEDET);
 	}
 }
 
@@ -108,13 +108,13 @@ int cmp_dfcr_demo(void)
 	tCmpDflt1Cfg.byDepth1 = CMP_DFCR_DEPTH1_16;       //数字滤波1深度
 	tCmpDflt1Cfg.byDivn1  = 2;                        //分频系数N
 	tCmpDflt1Cfg.byDivm1  = 119;	                  //分频系数M
-	csi_cmp_dflt1_config(CMP0,ENABLE,&tCmpDflt1Cfg);
+	csi_cmp_dflt1_config(CMP0,&tCmpDflt1Cfg,ENABLE);
 	
 	csi_cmp_dflt2_config_t tCmpDflt2Cfg;
 	tCmpDflt2Cfg.byDepth2 = CMP_DFCR_DEPTH2_16;       //数字滤波2深度
 	tCmpDflt2Cfg.byDivn2  = 2;                        //分频系数N
 	tCmpDflt2Cfg.byDivm2  = 119;	                  //分频系数M
-	csi_cmp_dflt2_config(CMP0,DISABLE,&tCmpDflt2Cfg);
+	csi_cmp_dflt2_config(CMP0,&tCmpDflt2Cfg,DISABLE);
 	
 	csi_cmp_start(CMP0);
 	return iRet;	
@@ -161,7 +161,8 @@ int cmp_wfcr_demo(void)
 	tCmpWfcrCfg.hwWcnt    = 200;                    //窗口计数
 	csi_cmp_wfcr_config(CMP0,&tCmpWfcrCfg);
 	
-	csi_cmp_set_evtrg(CMP0, CMP_EVE_DOWN_UP, ENABLE);
+	csi_cmp_set_evtrg(CMP0, CMP_EVE_DOWN_UP);
+	csi_cmp_syncoe_enable(CMP0);
 	
 	csi_cmp_start(CMP0);	
 

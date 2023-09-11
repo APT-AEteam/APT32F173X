@@ -138,9 +138,9 @@ int cnta_envelope_demo(void)
 
 	csi_cnta_pwm_init(CA0,&tPwmCfg);
 
-//	csi_cnta_bt0_sync(CA0, PEND_CARRIERON_CLR, MATCH_CARRIERON_SET,CNTA_HW_TCPEND);//BT脉冲匹配中断发生时，CARRIERON位会被硬件自动置位
-	csi_cnta_bt0_sync(CA0, CNTA_PEND_CARRIERON_SET, CNTA_MATCH_CARRIERON_CLR,CNTA_HW_TCPEND);//BT周期结束中断发生时，CARRIERON位会被硬件自动置位
-//	csi_cnta_bt0_sync(CA0, PEND_CARRIERON_DIS, MATCH_CARRIERON_DIS,CNTA_HW_TCPEND);//禁止CARRIERON的硬件自动触发
+//	csi_cnta_bt0_set_sync(CA0, PEND_CARRIERON_CLR, MATCH_CARRIERON_SET,CNTA_HW_TCPEND);//BT脉冲匹配中断发生时，CARRIERON位会被硬件自动置位
+	csi_cnta_bt0_set_sync(CA0, CNTA_PEND_CARRIERON_SET, CNTA_MATCH_CARRIERON_CLR,CNTA_HW_TCPEND);//BT周期结束中断发生时，CARRIERON位会被硬件自动置位
+//	csi_cnta_bt0_set_sync(CA0, PEND_CARRIERON_DIS, MATCH_CARRIERON_DIS,CNTA_HW_TCPEND);//禁止CARRIERON的硬件自动触发
 	
 	csi_cnta_start(CA0);  //启动CountA
 	while(1)

@@ -177,7 +177,7 @@ void csi_cnta_pwm_para_updata(csp_cnta_t *ptCntaBase, uint16_t hwDatah, uint16_t
  *  \param[in] hw_updata: cadata reg auto updata control
  *  \return error code \ref csi_error_t
  */
-csi_error_t csi_cnta_bt0_sync(csp_cnta_t *ptCntaBase, csi_cnta_tcpend_e eTcpendRem, csi_cnta_tcmatch_e eTcmatchRem,csi_cnta_hw_updata_e eHwUpdata)
+csi_error_t csi_cnta_bt0_set_sync(csp_cnta_t *ptCntaBase, csi_cnta_tcpend_e eTcpendRem, csi_cnta_tcmatch_e eTcmatchRem,csi_cnta_hw_updata_e eHwUpdata)
 {
 	csp_cnta_set_sync(ptCntaBase, (csp_cnta_pendrem_e) eTcpendRem, (csp_cnta_matchrem_e)eTcmatchRem, (csp_cnta_hwstrobe_e)eHwUpdata);	
 	return CSI_OK;
