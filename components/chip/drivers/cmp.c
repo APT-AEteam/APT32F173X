@@ -9,20 +9,17 @@
  * </table>
  * *********************************************************************
 */
-#include <sys_clk.h>
-#include <drv/lpt.h>
-#include <drv/irq.h>
-#include <drv/gpio.h>
-#include <drv/pin.h>
 #include <drv/tick.h>
 #include <drv/cmp.h>
-#include "board_config.h"
+
+
+csi_cmp_ctrl_t g_tCmpCtrl[CMP_IDX];
 
 /* Private macro-----------------------------------------------------------*/
 /* externs function--------------------------------------------------------*/
 /* externs variablesr------------------------------------------------------*/
 /* Private variablesr------------------------------------------------------*/
-csi_cmp_ctrl_t g_tCmpCtrl[CMP_IDX];
+
 
 /** \brief init cmp
  * 

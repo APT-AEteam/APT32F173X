@@ -11,21 +11,18 @@
  * </table>
  * *********************************************************************
 */
-
 #include <sys_clk.h>
 #include <drv/cnta.h>
-#include <drv/irq.h>
-#include <drv/gpio.h>
-#include <drv/pin.h>
-//#include <drv/porting.h>
 #include <drv/tick.h>
 
-#include "csp_cnta.h"
+
+csi_cnta_ctrl_t g_tCntaCtrl[CNTA_IDX];
+//#include "csp_cnta.h"
 /* Private macro------------------------------------------------------*/
 /* externs function---------------------------------------------------*/
 /* externs variablesr-------------------------------------------------*/
 /* Private variablesr-------------------------------------------------*/
-csi_cnta_ctrl_t g_tCntaCtrl[CNTA_IDX];
+
 
 /** \brief initialize cnta data structure
  * 

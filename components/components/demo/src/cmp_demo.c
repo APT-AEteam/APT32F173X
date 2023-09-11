@@ -10,26 +10,24 @@
  * *********************************************************************
 */
 /* Includes ---------------------------------------------------------------*/
-#include <string.h>
-#include <drv/cmp.h>
-#include <drv/pin.h>
-#include <drv/etb.h>
-#include <drv/lpt.h>
-#include <drv/bt.h>
-#include "demo.h"
+#include "drv/etb.h"
+#include "drv/bt.h"
+#include "drv/cmp.h"
+#include "drv/gpio.h"
+#include "board_config.h"
 /* externs function--------------------------------------------------------*/
 /* externs variablesr------------------------------------------------------*/
 /* Private macro-----------------------------------------------------------*/
 /* Private variablesr------------------------------------------------------*/
 
 
-/** \brief        cnta_int_handler: cnta中断服务函数
+/** \brief     cmp0_int_handler: cmp中断服务函数
  * 
- *  \brief         CNTA发生中断时会调用此函数，函数在interrupt.c里定义为弱(weak)属性，默认不做处理；用户用到CNTA中
- *                         断时，请重新定义此函数，在此函数中进行对应中断处理，也可直接在interrupt.c里的函数里进行处理
+ *  \brief     CMP0发生中断时会调用此函数，函数在interrupt.c里定义为弱(weak)属性，默认不做处理；用户用到CMP0中
+ *             断时，请重新定义此函数，在此函数中进行对应中断处理，也可直接在interrupt.c里的函数里进行处理
  * 
  *  \param[in] none
- *  \return none
+ *  \return    none
  */
 ATTRIBUTE_ISR  void cmp0_int_handler(void)
 {
@@ -54,12 +52,12 @@ int cmp_base_demo(void)
 	int iRet = 0;
 	csi_cmp_config_t tCmpCfg;
 	
-	csi_pin_set_mux(PA2, PA2_OUTPUT);	  
+	csi_gpio_set_mux(GPIOA, PA2, PA2_OUTPUT);	  
 
-#if !defined(USE_GUI)	
-	csi_pin_set_mux(PA8,PA8_CPIN1P);		
-	csi_pin_set_mux(PA9,PA9_CPIN1N);	
-	csi_pin_set_mux(PB2,PB2_CP0_OUT);	
+#if (USE_GUI == 0)		
+	csi_gpio_set_mux(GPIOA, PA8,PA8_CPIN1P);		
+	csi_gpio_set_mux(GPIOA, PA9,PA9_CPIN1N);	
+	csi_gpio_set_mux(GPIOB, PB2,PB2_CP0_OUT);	
 #endif
 	
 	tCmpCfg.byNsel = CMP_N_SEL_CP1;                   //N- 端口选择
@@ -91,29 +89,29 @@ int cmp_dfcr_demo(void)
 {
 	int iRet = 0;
 
-#if !defined(USE_GUI)		
-	csi_pin_set_mux(PA8,PA8_CPIN1P);		
-	csi_pin_set_mux(PA9,PA9_CPIN1N);	
-	csi_pin_set_mux(PB2,PB2_CP0_OUT);	
+#if (USE_GUI == 0)		
+	csi_gpio_set_mux(GPIOA, PA8,PA8_CPIN1P);		
+	csi_gpio_set_mux(GPIOA, PA9,PA9_CPIN1N);	
+	csi_gpio_set_mux(GPIOB, PB2,PB2_CP0_OUT);	
 #endif
 	
 	csi_cmp_config_t tCmpCfg;
-	tCmpCfg.byNsel = CMP_N_SEL_CP1;                    //N- 端口选择
+	tCmpCfg.byNsel = CMP_N_SEL_CP1;                   //N- 端口选择
 	tCmpCfg.byPsel = CMP_P_SEL_CP1;	                  //P+ 端口选择
-	tCmpCfg.byPhystpol = CMP_PHYST_POL_0mv;               //比较器输入迟滞 10mv
+	tCmpCfg.byPhystpol = CMP_PHYST_POL_0mv;           //比较器输入迟滞 10mv
 	tCmpCfg.byNhystpol = CMP_PHYST_POL_0mv;	          //比较器输入迟滞特性极性选择
-	tCmpCfg.byPolarity = CMP_POL_OUT_DIRECT;           //比较器输出极性选择 0:不反向
+	tCmpCfg.byPolarity = CMP_POL_OUT_DIRECT;          //比较器输出极性选择 0:不反向
 	tCmpCfg.byCpoSel = CMP_CPOS_OUT_IN;	              //CMP_OUT管脚上输出信号选择 0h：滤波前信号直接输出 	1h：滤波后信号输出 
 	csi_cmp_init(CMP0,&tCmpCfg);
 	
 	csi_cmp_dflt1_config_t tCmpDflt1Cfg;
-	tCmpDflt1Cfg.byDepth1 = CMP_DFCR_DEPTH1_16;         //数字滤波1深度
-	tCmpDflt1Cfg.byDivn1  = 2;                          //分频系数N
-	tCmpDflt1Cfg.byDivm1  = 119;	                    //分频系数M
+	tCmpDflt1Cfg.byDepth1 = CMP_DFCR_DEPTH1_16;       //数字滤波1深度
+	tCmpDflt1Cfg.byDivn1  = 2;                        //分频系数N
+	tCmpDflt1Cfg.byDivm1  = 119;	                  //分频系数M
 	csi_cmp_dflt1_config(CMP0,ENABLE,&tCmpDflt1Cfg);
 	
 	csi_cmp_dflt2_config_t tCmpDflt2Cfg;
-	tCmpDflt2Cfg.byDepth2 = CMP_DFCR_DEPTH2_16;        //数字滤波2深度
+	tCmpDflt2Cfg.byDepth2 = CMP_DFCR_DEPTH2_16;       //数字滤波2深度
 	tCmpDflt2Cfg.byDivn2  = 2;                        //分频系数N
 	tCmpDflt2Cfg.byDivm2  = 119;	                  //分频系数M
 	csi_cmp_dflt2_config(CMP0,DISABLE,&tCmpDflt2Cfg);
@@ -136,45 +134,45 @@ int cmp_wfcr_demo(void)
 	uint8_t ch;
 	int iRet = 0;
 	
-	csi_pin_set_mux(PA2, PA2_OUTPUT);	  
-	csi_pin_set_mux(PA3, PA3_OUTPUT);	 
-	csi_pin_set_low(PA2);	
+	csi_gpio_set_mux(GPIOA, PA2, PA2_OUTPUT);	  
+	csi_gpio_set_mux(GPIOA, PA3, PA3_OUTPUT);	 
+	csi_gpio_set_low(GPIOA, PA2);	
 
-#if !defined(USE_GUI)		
-	csi_pin_set_mux(PA8,PA8_CPIN1P);		
-	csi_pin_set_mux(PA9,PA9_CPIN1N);	
-	csi_pin_set_mux(PB2,PB2_CP0_OUT);	
+#if (USE_GUI == 0)			
+	csi_gpio_set_mux(GPIOA, PA8,PA8_CPIN1P);		
+	csi_gpio_set_mux(GPIOA, PA9,PA9_CPIN1N);	
+	csi_gpio_set_mux(GPIOB, PB2,PB2_CP0_OUT);	
 #endif
 	
 	csi_cmp_config_t tCmpCfg;
-	tCmpCfg.byNsel = CMP_N_SEL_CP1;                    //N- 端口选择
-	tCmpCfg.byPsel = CMP_P_SEL_CP1;	                  //P+ 端口选择
-	tCmpCfg.byPhystpol = CMP_PHYST_POL_0mv;               //比较器输入迟滞 10mv
-	tCmpCfg.byNhystpol = CMP_PHYST_POL_0mv;	          //比较器输入迟滞特性极性选择
-	tCmpCfg.byPolarity = CMP_POL_OUT_DIRECT;           //比较器输出极性选择 0:不反向
-	tCmpCfg.byCpoSel = CMP_CPOS_OUT_IN;	              //CMP_OUT管脚上输出信号选择 0h：滤波前信号直接输出 	1h：滤波后信号输出 
+	tCmpCfg.byNsel = CMP_N_SEL_CP1;                 //N- 端口选择
+	tCmpCfg.byPsel = CMP_P_SEL_CP1;	                //P+ 端口选择
+	tCmpCfg.byPhystpol = CMP_PHYST_POL_0mv;         //比较器输入迟滞 10mv
+	tCmpCfg.byNhystpol = CMP_PHYST_POL_0mv;	        //比较器输入迟滞特性极性选择
+	tCmpCfg.byPolarity = CMP_POL_OUT_DIRECT;        //比较器输出极性选择 0:不反向
+	tCmpCfg.byCpoSel = CMP_CPOS_OUT_IN;	            //CMP_OUT管脚上输出信号选择 0h：滤波前信号直接输出 	1h：滤波后信号输出 
 	csi_cmp_init(CMP0,&tCmpCfg);	
 	
 	csi_cmp_wfcr_config_t tCmpWfcrCfg;
-	tCmpWfcrCfg.byWfalign = CMP_WFCR_ALIGN_ALLOW;    //窗口滤波触发事件对齐设置
-	tCmpWfcrCfg.byWoset   = CMP_WFCR_OSET_HIGH;      //窗口滤波设置输出初始化
-	tCmpWfcrCfg.byClkDiv  = 4;                   //时钟分频
-	tCmpWfcrCfg.byDcnt    = 0;                   //窗口延迟
-	tCmpWfcrCfg.hwWcnt    = 200;                 //窗口计数
+	tCmpWfcrCfg.byWfalign = CMP_WFCR_ALIGN_ALLOW;   //窗口滤波触发事件对齐设置
+	tCmpWfcrCfg.byWoset   = CMP_WFCR_OSET_HIGH;     //窗口滤波设置输出初始化
+	tCmpWfcrCfg.byClkDiv  = 4;                      //时钟分频
+	tCmpWfcrCfg.byDcnt    = 0;                      //窗口延迟
+	tCmpWfcrCfg.hwWcnt    = 200;                    //窗口计数
 	csi_cmp_wfcr_config(CMP0,&tCmpWfcrCfg);
 	
 	csi_cmp_set_evtrg(CMP0, CMP_EVE_DOWN_UP, ENABLE);
 	
 	csi_cmp_start(CMP0);	
 
-//	csi_bt_timer_init(BT0, 2000);		//初始化BT0, 定时2000us； BT定时，默认采用PEND中断
-	csi_bt_start(BT0);					//启动定时器  
+//	csi_bt_timer_init(BT0, 2000);		            //初始化BT0, 定时2000us； BT定时，默认采用PEND中断
+	csi_bt_start(BT0);					            //启动定时器  
 	csi_bt_set_evtrg(BT0, BT_TRGSRC_PEND,ENABLE);	  
 	
-	csi_etb_config_t tEtbConfig;                         //ETB 参数配置结构体                  
-	tEtbConfig.eChType = ETB_ONE_TRG_ONE;                   //单个源触发单个目标
+	csi_etb_config_t tEtbConfig;                    //ETB 参数配置结构体                  
+	tEtbConfig.eChType = ETB_ONE_TRG_ONE;           //单个源触发单个目标
 	tEtbConfig.eSrcIp  = ETB_BT0_TRGOUT ; 
-	tEtbConfig.eDstIp =  ETB_CMP0_SYNCIN;                //CMP0 同步输入作为目标事件
+	tEtbConfig.eDstIp =  ETB_CMP0_SYNCIN;           //CMP0 同步输入作为目标事件
 	tEtbConfig.eTrgMode = ETB_HARDWARE_TRG;
    
 	csi_etb_init();
@@ -185,7 +183,7 @@ int cmp_wfcr_demo(void)
 	
 	while(1)
 	{
-		csi_pin_toggle(PA2);
+		csi_gpio_toggle(GPIOA, PA2);
 		udelay(1);
 	}	
 

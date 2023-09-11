@@ -9,26 +9,22 @@
  * *********************************************************************
 */
 /* Includes ---------------------------------------------------------------*/
-#include <string.h>
-#include <drv/cmp.h>
-#include <drv/pin.h>
-#include <drv/etb.h>
-#include <drv/lpt.h>
-#include <drv/bt.h>
-#include "demo.h"
+#include "drv/cmp.h"
+#include "drv/gpio.h"
+#include "board_config.h"
 /* externs function--------------------------------------------------------*/
 /* externs variablesr------------------------------------------------------*/
 /* Private macro-----------------------------------------------------------*/
 /* Private variablesr------------------------------------------------------*/
 
 
-/** \brief  cmp0_callback：cmp中断回调函数
+/** \brief     cmp0_callback：cmp中断回调函数
  * 
- *         \brief        用户定义，使用csi标准库，中断发生时会自动调用用户注册的回调函
- *                         数，用户可在回调函数里做自己的处理，而不需要关注具体的底层中断处理。
+ *  \brief     用户定义，使用csi标准库，中断发生时会自动调用用户注册的回调函
+ *             数，用户可在回调函数里做自己的处理，而不需要关注具体的底层中断处理。
  * 
- *  \param[out] ptCmpBase: CMP0寄存器结构体指针，指向CMP的基地址 
- *  \param[out] byIsr: 	   CMP0中断状态
+ *  \param[in] ptCmpBase:  CMP0寄存器结构体指针，指向CMP的基地址 
+ *  \param[in] byIsr: 	   CMP0中断状态
  *  \return none
  */ 
 void cmp0_callback(csp_cmp_t *ptCmpBase, uint8_t byIsr)
@@ -51,12 +47,12 @@ int cmp_base_callback_demo(void)
 	int iRet = 0;
 	csi_cmp_config_t tCmpCfg;
 	
-	csi_pin_set_mux(PA2, PA2_OUTPUT);	  
+	csi_gpio_set_mux(GPIOA, PA2, PA2_OUTPUT);	  
 
-#if !defined(USE_GUI)	
-	csi_pin_set_mux(PA8,PA8_CPIN1P);		
-	csi_pin_set_mux(PA9,PA9_CPIN1N);	
-	csi_pin_set_mux(PB2,PB2_CP0_OUT);	
+#if (USE_GUI == 0)		
+	csi_gpio_set_mux(GPIOA, PA8, PA8_CPIN1P);		
+	csi_gpio_set_mux(GPIOA, PA9, PA9_CPIN1N);	
+	csi_gpio_set_mux(GPIOB, PB2, PB2_CP0_OUT);	
 #endif
 	
 	tCmpCfg.byNsel = CMP_N_SEL_CP1;                   //N- 端口选择
