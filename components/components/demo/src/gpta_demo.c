@@ -64,7 +64,7 @@ int gpta_capture_sync_demo0(void)
 	csi_pin_pull_mode(PA1, GPIO_PULLUP);						 //PA1 上拉
 	csi_pin_irq_mode(PA1, EXI_GRP16, GPIO_IRQ_FALLING_EDGE);     //PA1 下降沿产生中断，选择中断组16
 	csi_pin_irq_enable(PA1, ENABLE);                            //PA1 中断使能                                    
-	csi_exi_set_evtrg(5, TRGSRC_EXI16, 1);	 
+	csi_exi_set_evtrg(5, EXI_TRGSRC_GRP16, 1);	 
 	
 //------------------------------------------------------------------------------------------------------------------------		
 	csi_etb_config_t tEtbConfig;				//ETB 参数配置结构体	
@@ -134,11 +134,11 @@ int gpta_capture_sync_demo1(void)
 	
 	csi_pin_irq_mode(PA1,EXI_GRP1, GPIO_IRQ_FALLING_EDGE);		//PA1 下降沿产生中断 
 	csi_pin_irq_enable(PA1, ENABLE);	
-	csi_exi_set_evtrg(0, TRGSRC_EXI1, 1);		
+	csi_exi_set_evtrg(0, EXI_TRGSRC_GRP1, 1);		
 	
 	csi_pin_irq_mode(PA1, EXI_GRP16, GPIO_IRQ_RISING_EDGE);     //PA1 上升沿产生中断，选择中断组16
 	csi_pin_irq_enable(PA1, ENABLE);                            //PA1 中断使能                                    
-	csi_exi_set_evtrg(5, TRGSRC_EXI16, 1);	 
+	csi_exi_set_evtrg(5, EXI_TRGSRC_GRP16, 1);	 
 
 	csi_etb_config_t tEtbConfig;
 	
@@ -222,11 +222,11 @@ int gpta_capture_sync_demo2(void)
 	
 	csi_pin_irq_mode(PA3,EXI_GRP3, GPIO_IRQ_RISING_EDGE);		//PA3 上升沿产生中断  GPIO_IRQ_FALLING_EDGE  GPIO_IRQ_RISING_EDGE
 	csi_pin_irq_enable(PA3, ENABLE);	
-	csi_exi_set_evtrg(0, TRGSRC_EXI3, 1);	
+	csi_exi_set_evtrg(0, EXI_TRGSRC_GRP3, 1);	
 
 	csi_pin_irq_mode(PA3, EXI_GRP16, GPIO_IRQ_FALLING_EDGE);     //PA3 下降沿产生中断，选择中断组16
 	csi_pin_irq_enable(PA3, ENABLE);                            //PA3 中断使能                                   
-	csi_exi_set_evtrg(5, TRGSRC_EXI16, 1);	   
+	csi_exi_set_evtrg(5, EXI_TRGSRC_GRP16, 1);	   
 	
 //------------------------------------------------------------------------------------------------------------------------		
 	csi_etb_config_t tEtbConfig;				//ETB 参数配置结构体	

@@ -116,9 +116,6 @@ typedef enum
 
 #define BT_SYNC_POS(n)	(8 + n)
 #define BT_SYNC_MSK(n)	(0x01ul << BT_SYNC_POS(n))
-
-//#define BT_SYNC_POS		(8)
-//#define BT_SYNC_MSK		(0x03ul << BT_SYNC_POS)
 typedef enum
 {
     BT_SYNC_DIS		= 0,    
@@ -327,13 +324,17 @@ static inline void csp_bt_int_disable(csp_bt_t *ptBtBase, bt_int_e eInt)
 //}
 
 //sync and event 
-static inline void csp_bt_sync_rearm(csp_bt_t *ptBtBase, bt_sync_in_e eTrgIn)	
+static inline void csp_bt_sync_rearm(csp_bt_t *ptBtBase, bt_sync_in_e eSyncIn)	
 { 
-	ptBtBase->CR |= (0x01 << BT_REARM_POS(eTrgIn));
+	ptBtBase->CR |= (0x01 << BT_REARM_POS(eSyncIn));
 }
-static inline void csp_bt_soft_evtrg(csp_bt_t *ptBtBase)			
+static inline void csp_bt_sync_enable(csp_bt_t *ptBtBase, bt_sync_in_e eSyncIn)
 {
-	ptBtBase->EVSWF = BT_EVSWF_EN;
+	ptBtBase->CR |= BT_SYNC_MSK(eSyncIn);
+}
+static inline void csp_bt_sync_disable(csp_bt_t *ptBtBase, bt_sync_in_e eSyncIn)
+{
+		ptBtBase->CR &= ~BT_SYNC_MSK(eSyncIn);
 }
 static inline void csp_bt_evtrg_enable(csp_bt_t *ptBtBase)
 {
@@ -343,6 +344,9 @@ static inline void csp_bt_evtrg_disable(csp_bt_t *ptBtBase)
 {
 		ptBtBase->EVTRG &= ~BT_TRGOE_MSK;
 }
-
+static inline void csp_bt_soft_evtrg(csp_bt_t *ptBtBase)			
+{
+	ptBtBase->EVSWF = BT_EVSWF_EN;
+}
 
 #endif

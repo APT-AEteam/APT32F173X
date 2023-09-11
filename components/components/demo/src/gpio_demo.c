@@ -118,13 +118,13 @@ ATTRIBUTE_ISR  void exi0_int_handler(void)
 {
 	volatile uint32_t wExiSta = csp_exi_get_isr(SYSCON); 		//get interrupt status
 	
-	if(wExiSta & STATUS_EXI0)				//exi group0
+	if(wExiSta & EXI_STATUS_GRP0)				//exi group0
 	{
 		//用户添加处理
 		nop;
 	}
 	
-	if(STATUS_EXI0 & STATUS_EXI16)			//exigroup16			
+	if(wExiSta & EXI_STATUS_GRP16)			//exigroup16			
 	{
 		//用户添加处理
 		nop;

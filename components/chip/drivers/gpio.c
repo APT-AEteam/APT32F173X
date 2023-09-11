@@ -550,7 +550,7 @@ csi_error_t csi_exi_set_evtrg(csi_exi_trgout_e eTrgOut, csi_exi_trgsrc_e eExiTrg
 	
 	return CSI_OK;
 }
-/** \brief exi evtrg output enable/disable
+/** \brief exi evtrg output enable
  * 
  *  \param[in] eTrgOut: output event select \ref csi_exi_trgout_e
  *  \param[in] bEnable: ENABLE/DISABLE
@@ -558,9 +558,9 @@ csi_error_t csi_exi_set_evtrg(csi_exi_trgout_e eTrgOut, csi_exi_trgsrc_e eExiTrg
  */
 void csi_exi_evtrg_enable(csi_exi_trgout_e eTrgOut)
 {
-	csp_exi_trg_enable(SYSCON, eTrgOut);
+	csp_exi_evtrg_enable(SYSCON, eTrgOut);
 }
-/** \brief exi evtrg output enable/disable
+/** \brief exi evtrg output disable
  * 
  *  \param[in] eTrgOut: output event select \ref csi_exi_trgout_e
  *  \param[in] bEnable: ENABLE/DISABLE
@@ -568,7 +568,7 @@ void csi_exi_evtrg_enable(csi_exi_trgout_e eTrgOut)
  */
 void csi_exi_evtrg_disable(csi_exi_trgout_e eTrgOut)
 {
-	csp_exi_trg_enable(SYSCON, eTrgOut);
+	csp_exi_evtrg_enable(SYSCON, eTrgOut);
 }
 
 /** \brief  exi software trigger event 
