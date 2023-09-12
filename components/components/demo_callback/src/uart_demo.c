@@ -90,7 +90,7 @@ int uart_send_int_callback_demo(void)
  * @ 注意：				实际使用中，两种接收方式请选择一种，若选择了指定长度，回调函数UART_STATE_RX_TO事件
  * 						请不要做处理(接收清零)，否则会导致指定长度接收数据异常。
  * 
- *  \param[out] ptSioBase: 	UARTx寄存器结构体指针，指向UARTx的基地址 
+ *  \param[out] ptUartBase: UARTx寄存器结构体指针，指向UARTx的基地址 
  *  \param[out] eState: 	接收状态，支持定长和超时两种方式
  *  \param[out] pbyBuf: 	接收buf，指向接收数据缓存数组首地址
  *  \param[out] hwLen: 		接收长度，

@@ -278,6 +278,22 @@ void csi_bt_pwm_updata(csp_bt_t *ptBtBase, uint32_t wfreq, uint8_t byDutyCycle);
 csi_error_t csi_bt_set_sync(csp_bt_t *ptBtBase,csi_bt_syncin_e eTrgin, csi_bt_trgmode_e eTrgMode, csi_bt_arearm_e bAutoRearm);
 
 /** 
+  \brief bt sync enable
+  \param[in] ptBtBase: pointer of bt register structure
+  \param[in] eSyncIn: bt sync evtrg input channel, \ref csi_bt_syncin_e
+  \return none
+ */
+void csi_bt_sync_enable(csp_bt_t *ptBtBase, csi_bt_syncin_e eSyncIn);
+
+/** 
+  \brief bt sync disable
+  \param[in] ptBtBase: pointer of bt register structure
+  \param[in] eSyncIn: bt sync evtrg input channel, \ref csi_bt_syncin_e
+  \return none
+ */
+void csi_bt_sync_disable(csp_bt_t *ptBtBase, csi_bt_syncin_e eSyncIn);
+
+/** 
   \brief 	   restart bt sync evtrg 
   \param[in]   ptBtBase		pointer of bt register structure
   \param[in]   eTrgin		bt evtrg input channel, \ref csi_bt_syncin_e 
@@ -294,10 +310,24 @@ void csi_bt_rearm_sync(csp_bt_t *ptBtBase,csi_bt_syncin_e eTrgin);
  */
 csi_error_t csi_bt_set_evtrg(csp_bt_t *ptBtBase, csi_bt_trgout_e eTrgOut, csi_bt_trgsrc_e eTrgSrc);
 
-/** \brief bt software generates a trigger event
- * 
- *  \param[in] ptBtBase:pointer of bt register structure
- *  \return error code \ref csi_error_t
+/** 
+  \brief bt evtrg output enable
+  \param[in] ptBtBase: pointer of bt register structure
+  \return none
+ */
+void csi_bt_evtrg_enable(csp_bt_t *ptBtBase);
+
+/** 
+  \brief bt evtrg output disable
+  \param[in] ptBtBase: pointer of bt register structure
+  \return none
+ */
+void csi_bt_evtrg_disable(csp_bt_t *ptBtBase);
+
+/** 
+  \brief bt software generates a trigger event
+  \param[in] ptBtBase:pointer of bt register structure
+  \return error code \ref csi_error_t
  */
 void csi_bt_soft_evtrg(csp_bt_t *ptBtBase);
 
@@ -306,7 +336,7 @@ void csi_bt_soft_evtrg(csp_bt_t *ptBtBase);
   \param[in]   wTimeOut 	the timeout for bt, unit: us
   \return      none
  */ 
-void csi_bt_start_sync(csp_bt_t *ptBtBase, uint32_t wTimeOut);
+//void csi_bt_start_sync(csp_bt_t *ptBtBase, uint32_t wTimeOut);
 
 #ifdef __cplusplus
 }

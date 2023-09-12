@@ -61,7 +61,7 @@ ATTRIBUTE_ISR void nmi_int_handler(void)
 		nop;
 		csp_syscon_clr_isr(SYSCON, LVD_INT);
 	}
-	if(csp_exi_get_isr(SYSCON) & STATUS_EXI0)
+	if(csp_exi_get_isr(SYSCON) & EXI_STATUS_GRP0)
 	{
 		nop;
 		//gpio_irqhandler(0);

@@ -10,11 +10,13 @@
 */
 #include "drv/bt.h"
 
-/* Private macro------------------------------------------------------*/
+/* private macro------------------------------------------------------*/
 /* externs function---------------------------------------------------*/
-/* externs variablesr-------------------------------------------------*/
-/* Private variablesr-------------------------------------------------*/
+/* global variablesr--------------------------------------------------*/
 csi_bt_ctrl_t g_tBtCtrl[BT_IDX];
+
+/* Private variablesr-------------------------------------------------*/
+
 
 /** \brief get bt number 
  * 
@@ -285,7 +287,7 @@ void csi_bt_pwm_updata(csp_bt_t *ptBtBase, uint32_t wFreq, uint8_t byDutyCycle)
 /** \brief bt sync input evtrg config  
  * 
  *  \param[in] ptBtBase: pointer of bt register structure
- *  \param[in] eSyncIn: bt sync evtrg input channel, \ref csi_bt_trgin_e
+ *  \param[in] eSyncIn: bt sync evtrg input channel, \ref csi_bt_syncin_e
  *  \param[in] eTrgMode: bt evtrg mode, \ref csi_bt_trgmode_e
  *  \param[in] eAutoRearm: auto rearm, \ref \ref csi_bt_trgmode_e
  *  \return none
@@ -296,26 +298,44 @@ csi_error_t csi_bt_set_sync(csp_bt_t *ptBtBase, csi_bt_syncin_e eSyncIn, csi_bt_
 		return CSI_ERROR;
 	
 	ptBtBase->CR = ptBtBase->CR & ~(BT_SYNCCMD_MSK | BT_OSTMD_MSK(eSyncIn));
-	ptBtBase->CR |=  ((BT_SYNC_EN << BT_SYNC_POS(eSyncIn)) | (BT_SYNCMD_EN << BT_SYNCCMD_POS) | (eTrgMode << BT_OSTMD_POS(eSyncIn)));
+	ptBtBase->CR |=  ((BT_SYNCMD_EN << BT_SYNCCMD_POS) | (eTrgMode << BT_OSTMD_POS(eSyncIn)));
 	if((eSyncIn == BT_SYNCIN0) || (eSyncIn == BT_SYNCIN1))
 	{
-		ptBtBase->CR = ptBtBase->CR & ~(BT_AREARM_MSK(eSyncIn));
-		ptBtBase->CR |= (eAutoRearm << BT_AREARM_POS(eSyncIn));
+		ptBtBase->CR = (ptBtBase->CR & ~BT_AREARM_MSK(eSyncIn)) | (eAutoRearm << BT_AREARM_POS(eSyncIn));
 	}
 	
 	if(eSyncIn == BT_SYNCIN2)
-	{
 		ptBtBase->CR |= BT_EXTCKM_MSK;		//selecet count clk source
-	}
 	else
 		ptBtBase->CR &= ~BT_EXTCKM_MSK;		//selecet count clk source
 		
 	return CSI_OK; 
 }
+
+/** \brief bt sync enable
+ * 
+ *  \param[in] ptBtBase: pointer of bt register structure
+ *  \param[in] eSyncIn: bt sync evtrg input channel, \ref csi_bt_syncin_e
+ *  \return none
+ */
+void csi_bt_sync_enable(csp_bt_t *ptBtBase, csi_bt_syncin_e eSyncIn)
+{
+	csp_bt_sync_enable(ptBtBase, (bt_sync_in_e)eSyncIn);
+}
+/** \brief bt sync disable
+ * 
+ *  \param[in] ptBtBase: pointer of bt register structure
+ *  \param[in] eSyncIn: bt sync evtrg input channel, \ref csi_bt_syncin_e
+ *  \return none
+ */
+void csi_bt_sync_disable(csp_bt_t *ptBtBase, csi_bt_syncin_e eSyncIn)
+{
+	csp_bt_sync_disable(ptBtBase, (bt_sync_in_e)eSyncIn);
+}
 /** \brief rearm bt sync evtrg  
  * 
  *  \param[in] ptBtBase: pointer of bt register structure
- *  \param[in] eSyncIn: bt sync evtrg input channel, \ref csi_bt_trgin_e
+ *  \param[in] eSyncIn: bt sync evtrg input channel, \ref csi_bt_syncin_e
  *  \return none
  */
 void csi_bt_sync_rearm(csp_bt_t *ptBtBase,csi_bt_syncin_e eSyncIn)
@@ -327,7 +347,6 @@ void csi_bt_sync_rearm(csp_bt_t *ptBtBase,csi_bt_syncin_e eSyncIn)
  *  \param[in] ptBtBase:pointer of bt register structure
  *  \param[in] eTrgOut: evtrg out, \ref csi_bt_trgout_e
  *  \param[in] eTrgSrc: evtrg source, \ref csi_bt_trgsrc_e
- *  \param[in] bEnable: ENABLE/DISABLE
  *  \return error code \ref csi_error_t
  */
 csi_error_t csi_bt_set_evtrg(csp_bt_t *ptBtBase, csi_bt_trgout_e eTrgOut, csi_bt_trgsrc_e eTrgSrc)
@@ -339,7 +358,24 @@ csi_error_t csi_bt_set_evtrg(csp_bt_t *ptBtBase, csi_bt_trgout_e eTrgOut, csi_bt
 		
 	return CSI_OK;
 }
-
+/** \brief bt evtrg output enable
+ * 
+ *  \param[in] ptBtBase: pointer of bt register structure
+ *  \return none
+ */
+void csi_bt_evtrg_enable(csp_bt_t *ptBtBase)
+{
+	csp_bt_evtrg_enable(ptBtBase);
+}
+/** \brief bt evtrg output disable
+ * 
+ *  \param[in] ptBtBase: pointer of bt register structure
+ *  \return none
+ */
+void csi_bt_evtrg_disable(csp_bt_t *ptBtBase)
+{
+	csp_bt_evtrg_enable(ptBtBase);
+}
 /** \brief bt software generates a trigger event
  * 
  *  \param[in] ptBtBase:pointer of bt register structure
