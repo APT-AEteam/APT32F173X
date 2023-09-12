@@ -63,8 +63,8 @@ license: Apache license v2.0
 #     toolchain_prefix: csky-abiv2-elf     # <可选项> 编译器前缀
 board:
   chip_name: chip_apt32f173
-  #ld_script: ./gcc_sram.ld
-  ld_script: ./gcc_flash.ld
+  ld_script: gcc_flash_1732.ld
+#ld_script: ./gcc_sram.ld
 ## 第四部分：编译连接信息
 # build_config:                            # <可选项> 编译配置项
 #   include:                               # <可选项> 编译时，影响编译器的-I 参数 ,全局有效
@@ -86,13 +86,13 @@ board:
 build_config:
   include:
     - include
-  internal_include: ~
+  internal_include: 
   cflag: -Og  -g  -Wall  -ffunction-sections -nostdlib -Wpointer-arith -Wl,-EL -fdata-sections -fdata-sections -g
   cxxflag: -Og  -g  -Wall  -ffunction-sections -nostdlib -Wpointer-arith -Wl,-EL -fdata-sections -fdata-sections -g
   asmflag: -Wa,--gdwarf2
-  define: ~
-  libs: ~
-  libpath: ~
+  define: 
+  libs: 
+  libpath: 
 #source_file:                              # <可选项> 指定参与编译的源代码文件，支持通配符，采用相对路径
 #   - src/*.c                              # 例：组件 src 目录下所有的扩展名为 c 的源代码文件                  
 ## 第五部分：配置信息
@@ -121,22 +121,22 @@ export:
   - dest: <SOLUTION_PATH>
     source:
       - bootimgs/danica_flash.elf
-keywords: ~
+keywords: 
 author: ""
-depends: 
+depends:
   - apt32f173x_chip: v1.2.0
   - apt_csi: v1.2.0
-defconfig: ~
+defconfig: 
 source_file:
   - src/*.c
   - gcc_flash.ld
 link_config:
-  path: ~
-  library: ~
-install: ~
-hidden: ~
-homepage: ~
-soc_config: ~
+  path: 
+  library: 
+install: 
+hidden: 
+homepage: 
+soc_config: 
 depends_forward:
   - apt32f173x_chip: v1.2.0
   - apt_csi: v1.2.0
