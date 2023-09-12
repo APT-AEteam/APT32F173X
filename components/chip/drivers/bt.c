@@ -74,7 +74,7 @@ void csi_bt_irqhandler(csp_bt_t *ptBtBase, uint8_t byIdx)
 /** \brief initialize bt data structure
  * 
  *  \param[in] ptBtBase: pointer of bt register structure
- *  \param[in] ptBtTimCfg: ptBtTimCfg: pointer of bt timing parameter config structure
+ *  \param[in] ptBtTimCfg：pointer of bt timing parameter config structure
  * 			   	- wTimeVal: timing value, unit: us
  * 			   	- eWkMode: bt count work mode, \ref csi_bt_wkmode_e
  *  \return error code \ref csi_error_t

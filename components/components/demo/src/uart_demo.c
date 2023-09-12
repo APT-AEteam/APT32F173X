@@ -1,10 +1,10 @@
 /***********************************************************************//** 
  * \file  uart_demo.c
  * \brief  UART_DEMO description and static inline functions at register level 
- * \copyright Copyright (C) 2015-2020 @ APTCHIP
+ * \copyright Copyright (C) 2015-2023 @ APTCHIP
  * <table>
  * <tr><th> Date  <th>Version  <th>Author  <th>Description
- * <tr><td> 2021-5-28 <td>V0.0 <td>ZJY     <td>initial
+ * <tr><td> 2023-9-12 <td>V0.0 <td>ZJY     <td>initial
  * </table>
  * *********************************************************************
 */
@@ -17,12 +17,12 @@
 /* externs variablesr------------------------------------------------------*/
 /* Private macro-----------------------------------------------------------*/
 /* Private variablesr------------------------------------------------------*/
-
-#if (USE_BT_CALLBACK == 0)	
-
 uint8_t byRecvBuf[64]={0};			//receive buf
 uint8_t bySendBuf[30]={1,2,3,4,5,6,7,8,9,21,22,23,24,25,26,27,28,29,30,10,11,12,13,14,15,16,17,18,19};	
 
+
+#if (USE_BT_CALLBACK == 0)	
+	
 static uint16_t hwSendLen = 0;	
 
 /** \brief  uartx_int_handler: UART中断服务函数
@@ -63,6 +63,7 @@ ATTRIBUTE_ISR void uart1_int_handler(void)
 		csp_uart_rto_enable(UART1);								//使能接收超时
 	}
 }
+#endif
 
 /**	\brief	uart_send_demo： UART发送demo，不使用中断
  * 
@@ -301,4 +302,3 @@ int uart_receive_dma_demo(void)
 	return iRet;
 }
 
-#endif

@@ -1,10 +1,10 @@
 /***********************************************************************//** 
  * \file  timer_demo.c
  * \brief  TIMER_DEMO description and static inline functions at register level 
- * \copyright Copyright (C) 2015-2020 @ APTCHIP
+ * \copyright Copyright (C) 2015-2023 @ APTCHIP
  * <table>
  * <tr><th> Date  <th>Version  <th>Author  <th>Description
- * <tr><td> 2021-5-11 <td>V0.0 <td>ZJY     <td>initial
+ * <tr><td> 2023-9-12 <td>V0.0 <td>ZJY     <td>initial
  * </table>
  * *********************************************************************
 */
@@ -20,8 +20,8 @@
 
 /* Private variablesr------------------------------------------------------*/
 
-
-#if (USE_BT_CALLBACK == 1)					
+				
+#if (USE_BT_CALLBACK == 0)		
 	
 /** \brief	btx_int_handler: BT中断服务函数
  * 
@@ -50,6 +50,9 @@ ATTRIBUTE_ISR  void bt1_int_handler(void)
 		csp_bt_clr_isr(BT1, BT_EVTRG_INT);
 	}
 }
+
+#endif
+
 /** \brief	bt_timer_demo: BT做基本定时器功能，默认使用PEND中断
  * 
  *  \brief	csi初始化使用(开启)周期结束中断，并在中断里面翻转IO(需要打开PA6IO配置注释)；若不需要开启中断,
@@ -118,6 +121,8 @@ int bt_pwm_demo(void)
 	return iRet;
 }
 
+#if (USE_BT_CALLBACK == 0)	
+	
 /** \brief	btx_int_handler: BT中断服务函数
  * 
  *  \brief 	BT发生中断时会调用此函数，函数在interrupt.c里定义为弱(weak)属性，默认不做处理；用户用到BT中
@@ -145,6 +150,8 @@ ATTRIBUTE_ISR  void bt0_int_handler(void)
 		csp_bt_clr_isr(BT0, BT_EVTRG_INT);
 	}
 }
+#endif
+
 /** \brief	bt sync trg count: EXI同步触发BT计数值加1，即同步触发信号作为BT的计数时钟节拍
  * 
  *  \brief	EXI通过BT1同步输入端口2触发BT1计数值加1，即用PB01的下降沿通过ETCB触发BT1计数；开启BT0的PWM输出，将
@@ -265,4 +272,3 @@ int bt_trg_out_demo(void)
 	return iRet;
 }
 
-#endif

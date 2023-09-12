@@ -1,10 +1,10 @@
 /***********************************************************************//** 
- * \file  timer_demo.c
+ * \file  bt_demo.c
  * \brief  TIMER_DEMO description and static inline functions at register level 
- * \copyright Copyright (C) 2015-2020 @ APTCHIP
+ * \copyright Copyright (C) 2015-2023 @ APTCHIP
  * <table>
  * <tr><th> Date  <th>Version  <th>Author  <th>Description
- * <tr><td> 2021-5-11 <td>V0.0 <td>ZJY     <td>initial
+ * <tr><td> 2023-9-12 <td>V0.0 <td>ZJY     <td>initial
  * </table>
  * *********************************************************************
 */
@@ -22,7 +22,7 @@
 
 #if (USE_BT_CALLBACK == 1)									
 
-/** \brief  bt0_callback：BT0中断回调函数
+/** \brief  user_bt0_callback：BT0中断回调函数
  * 
  * 	\brief	用户定义，支持指PEND/CMP/EVTRG三种中断处理，使用csi标准库，中断发生时会自动调用用户注册的回调函
  * 			数，用户可在回调函数里做自己的处理，而不需要关注具体的底层中断处理。

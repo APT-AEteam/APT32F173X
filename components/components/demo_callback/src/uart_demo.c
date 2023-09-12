@@ -1,10 +1,10 @@
 /***********************************************************************//** 
  * \file  uart_demo.c
  * \brief  UART_DEMO description and static inline functions at register level 
- * \copyright Copyright (C) 2015-2020 @ APTCHIP
+ * \copyright Copyright (C) 2015-2023 @ APTCHIP
  * <table>
  * <tr><th> Date  <th>Version  <th>Author  <th>Description
- * <tr><td> 2021-5-28 <td>V0.0 <td>ZJY     <td>initial
+ * <tr><td> 2023-9-12 <td>V0.0 <td>ZJY     <td>initial
  * </table>
  * *********************************************************************
 */
@@ -25,7 +25,7 @@ uint8_t byRecvBuf[128]={0};			//receive buf
 uint8_t bySendBuf[30]={1,2,3,4,5,6,7,8,9,21,22,23,24,25,26,27,28,29,30,10,11,12,13,14,15,16,17,18,19};
 
 
-/** \brief  send_callback：串口中断发送回调函数
+/** \brief  user_send_callback：串口中断发送回调函数
  * 
  * 	\brief	用户定义，使用csi标准库进行中断发送时，发送完毕后回自动调用用户注册的回调函数；用户可在回调
  * 			函数里做自己的处理，而不需要关注具体的底层中断处理。
