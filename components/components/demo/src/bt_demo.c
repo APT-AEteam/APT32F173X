@@ -228,7 +228,7 @@ int bt_trg_out_demo(void)
 	tTimConfig.wTimeVal = 10000;							//BT定时值 = 1000us
 	tTimConfig.eWkMode  = BT_CNT_CONTINU;					//BT计数器工作模式
 	csi_bt_timer_init(BT0,&tTimConfig);						//BT0 定时
-	csi_bt_set_evtrg(BT0, BT_TRGOUT0, BT_TRGSRC_PEND);		//BT0 PEND事件触发输出
+	csi_bt_set_evtrg(BT0, BT_TRGSRC_PEND);					//BT0 PEND事件触发输出
 	csi_bt_evtrg_enable(BT0);								//BT0 事件触发输出使能
 	
 	csi_gpio_set_mux(GPIOC,PC11, PC11_BT1_OUT);				//PC11 作为BT1 PWM输出引脚

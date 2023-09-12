@@ -440,7 +440,7 @@ int sio_hdq_send_demo(void)
 												//					          |_|	 |
 	tHdqTxCfg.byTxBufLen 	= 11;				//发送数据缓存长度(bit个数 = 8)，txbuf 一次发送bit数量，len <= 16
 	tHdqTxCfg.byTxCnt 		= 19;				//SIO一次发送总的数据长度(bit个数 = 24)，byTxCnt >= byTxBufLen，byTxCnt < 256(最大32bytes)
-	tHdqTxCfg.eIdleLev 	= SIO_IDLE_H;		//SIO空闲时刻IO管脚输出电平
+	tHdqTxCfg.eIdleLev 		= SIO_IDLE_H;		//SIO空闲时刻IO管脚输出电平
 	tHdqTxCfg.eTxDir 		= SIO_TXDIR_LSB;	//MSB->LSB, txbuf 数据按照bit[1:0]...[31:30]方式移出
 	tHdqTxCfg.wTxFreq 		= 25000;			//tx clk =25kHz, Ttxshift = 1/4 = 40us；发送每bit时间是40us
 	

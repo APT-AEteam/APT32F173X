@@ -216,7 +216,7 @@ int lpt_window_demo(void)
 #endif
 //	csi_bt_timer_init(BT0, 1000);	//初始化BT0, 定时2000us； BT定时，默认采用PEND中断
 	csi_bt_start(BT0);					//启动定时器  
-	csi_bt_set_evtrg(BT0, 0, BT_TRGSRC_PEND);   
+	csi_bt_set_evtrg(BT0, BT_TRGSRC_PEND);   
 
 	csi_pin_set_mux(PB6, PB6_LPT_OUT);	                           //将PB6设为LPT_OUT
 	tLptPwmCfg.byClksrc = LPT_CLK_PCLK_DIV4;                //PWM 时钟选择

@@ -169,7 +169,7 @@ int cmp_wfcr_demo(void)
 
 //	csi_bt_timer_init(BT0, 2000);		            //初始化BT0, 定时2000us； BT定时，默认采用PEND中断
 	csi_bt_start(BT0);					            //启动定时器  
-	csi_bt_set_evtrg(BT0, BT_TRGSRC_PEND,ENABLE);	  	
+	csi_bt_set_evtrg(BT0, BT_TRGSRC_PEND);	  	
 	
 	csi_etb_config_t tEtbConfig;                    //ETB 参数配置结构体                  
 	tEtbConfig.eChType = ETB_ONE_TRG_ONE;           //单个源触发单个目标

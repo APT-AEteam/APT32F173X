@@ -349,7 +349,7 @@ void csi_bt_sync_rearm(csp_bt_t *ptBtBase,csi_bt_syncin_e eSyncIn)
  *  \param[in] eTrgSrc: evtrg source, \ref csi_bt_trgsrc_e
  *  \return error code \ref csi_error_t
  */
-csi_error_t csi_bt_set_evtrg(csp_bt_t *ptBtBase, csi_bt_trgout_e eTrgOut, csi_bt_trgsrc_e eTrgSrc)
+csi_error_t csi_bt_set_evtrg(csp_bt_t *ptBtBase, csi_bt_trgsrc_e eTrgSrc)
 {
 	if(eTrgSrc == BT_TRGSRC_DIS)
 		csp_bt_set_evtrg(ptBtBase,0x00);

@@ -304,11 +304,10 @@ void csi_bt_rearm_sync(csp_bt_t *ptBtBase,csi_bt_syncin_e eTrgin);
 /** 
   \brief 	   bt evtrg output config
   \param[in]   ptBtBase		pointer of bt register structure
-  \param[in]   eTrgOut 		bt evtrg out \ref csi_bt_trgout_e 
   \param[in]   eTrgSrc 		bt evtrg source, \ref csi_bt_trgsrc_e 
   \return 	   error code \ref csi_error_t
  */
-csi_error_t csi_bt_set_evtrg(csp_bt_t *ptBtBase, csi_bt_trgout_e eTrgOut, csi_bt_trgsrc_e eTrgSrc);
+csi_error_t csi_bt_set_evtrg(csp_bt_t *ptBtBase, csi_bt_trgsrc_e eTrgSrc);
 
 /** 
   \brief bt evtrg output enable
