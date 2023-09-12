@@ -48,11 +48,11 @@ extern int etcb_one_trg_more_demo(void);
 extern int uart_char_demo(void);
 extern int uart_send_demo(void);
 extern int uart_send_int_demo(void);
+extern int uart_send_dma_demo(void);
 //uart receive
 extern int uart_receive_demo(void);
-extern int uart_recv_int_demo(void);
-extern int uart_recv_dynamic_demo(void);
-extern int uart_recv_dynamic_int_demo(void);
+extern int uart_receive_int_demo(void);
+extern int uart_receive_dma_demo(void);
 
 //usart demo
 extern int usart_send_demo(void);

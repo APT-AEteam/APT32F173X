@@ -21,7 +21,7 @@
 /* Private variablesr------------------------------------------------------*/
 
 
-#if (USE_BT_CALLBACK == 0)					
+#if (USE_BT_CALLBACK == 1)					
 	
 /** \brief	btx_int_handler: BT中断服务函数
  * 
@@ -55,8 +55,8 @@ ATTRIBUTE_ISR  void bt1_int_handler(void)
  *  \brief	csi初始化使用(开启)周期结束中断，并在中断里面翻转IO(需要打开PA6IO配置注释)；若不需要开启中断,
  * 			需调用csi_bt_int_disable接口函数，关闭周期结束中断
  * 
- * @工作模式: BT_CNT_CONTINU: 连续工作模式, 指计数结束，计数器重新开始计数，周期执行
- * 			  BT_CNT_ONCE: 单次工作模式，指计数结束，计数器停止工作
+ * @ 工作模式:	BT_RUN_CONT: 连续工作模式, 指计数结束，计数器重新开始计数，周期执行
+ * 				BT_RUN_ONCE: 单次工作模式，指计数结束，计数器停止工作
  * 
  *  \param[in] none
  *  \return error code
@@ -85,8 +85,8 @@ int bt_timer_demo(void)
 
 /** \brief	bt_pwm_demo: BT做PWM输出demo，默认不开启中断
  * 
- * @工作模式: BT_CNT_CONTINU: 连续工作模式, 指计数结束，计数器重新开始计数，周期执行
- * 			  BT_CNT_ONCE: 单次工作模式，指计数结束，计数器停止工作
+ * @ 工作模式:	BT_RUN_CONT: 连续工作模式, 指计数结束，计数器重新开始计数，周期执行
+ * 				BT_RUN_ONCE: 单次工作模式，指计数结束，计数器停止工作
  *  
  *  \param[in] none
  *  \return error code
@@ -164,7 +164,7 @@ int bt_sync_trg_count_demo(void)
 #if (USE_GUI == 0)			
 	csi_gpio_set_mux(GPIOB, PB1, PB1_INPUT);								//PB1 配置为输入
 	csi_gpio_pull_mode(GPIOB, PB1, GPIO_PULLUP);							//PB1 上拉
-	csi_gpio_irq_enable(GPIOB, PB1);										//PB1 中断使能	
+	csi_gpio_int_enable(GPIOB, PB1);										//PB1 中断使能	
 	csi_gpio_irq_mode(GPIOB, PB1, EXI_GRP1, GPIO_IRQ_FALLING_EDGE);			//PB1 下降沿产生中断，选择中断组1
 	csi_exi_set_evtrg(EXI_TRGOUT1, EXI_TRGSRC_GRP1, 0);						//EXI1 触发EXI_TRGOUT1
 	

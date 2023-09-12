@@ -150,7 +150,8 @@ typedef enum{
 	UART_RXFIFO_OV_INT_S	= (0x01ul << 7),	//Receiver FIFO Over INT Status 
 	UART_RXTO_INT_S     	= (0x01ul << 9),	//Receiver FIFO INT Status 
 	UART_RXBRK_INT_S		= (0x01ul << 10),	//Receiver FIFO Over INT Status 
-	UART_TXDONE_INT_S     	= (0x01ul << 19)	//Transmitter Complete INT Status
+	UART_TXDONE_INT_S     	= (0x01ul << 19),	//Transmitter Complete INT Status
+	UART_ALL_INT_S     		= (0x806FFul << 0)	//All INT Status 
 }uart_isr_e;
 
 /******************************************************************************
@@ -317,11 +318,6 @@ static inline uint16_t csp_uart_get_sr(csp_uart_t *ptUartBase)
 {
 	return (uint16_t)ptUartBase->SR;
 }
-//clr sr
-//static inline void csp_uart_clr_all_sr(csp_uart_t *ptUartBase)	
-//{
-//	ptUartBase->SR = 0x01ff;				
-//}
 
 //interrupt
 static inline uint32_t csp_uart_get_isr(csp_uart_t *ptUartBase)				
@@ -375,14 +371,14 @@ static inline void csp_uart_set_fifo(csp_uart_t *ptUartBase, uart_fifo_bit_e eFi
 }		
 	
 
-static inline void csp_uart_set_rxdma(csp_uart_t *ptUartBase, uart_rdma_en_e eRxDmaEn, uart_rdma_md_e eRxDmaMode)
+static inline void csp_uart_set_rxdma(csp_uart_t *ptUartBase,  uart_rdma_md_e eRxDmaMode, bool bEnable)
 {
-	ptUartBase->DMACR = (ptUartBase->DMACR & ~(UART_RDMA_EN_MSK | UART_RDMA_MD_MSK)) | (eRxDmaEn << UART_RDMA_EN_POS) | (eRxDmaMode << UART_RDMA_MD_POS);
+	ptUartBase->DMACR = (ptUartBase->DMACR & ~(UART_RDMA_EN_MSK | UART_RDMA_MD_MSK)) | (bEnable << UART_RDMA_EN_POS) | (eRxDmaMode << UART_RDMA_MD_POS);
 }
 
-static inline void csp_uart_set_txdma(csp_uart_t *ptUartBase, uart_tdma_en_e eTxDmaEn, uart_tdma_md_e eTxDmaMode)	
+static inline void csp_uart_set_txdma(csp_uart_t *ptUartBase, uart_tdma_md_e eTxDmaMode, bool bEnable)	
 {
-	ptUartBase->DMACR = (ptUartBase->DMACR & ~(UART_TDMA_EN_MSK | UART_TDMA_MD_MSK)) | (eTxDmaEn << UART_TDMA_EN_POS) | (eTxDmaMode << UART_TDMA_MD_POS);
+	ptUartBase->DMACR = (ptUartBase->DMACR & ~(UART_TDMA_EN_MSK | UART_TDMA_MD_MSK)) | (bEnable << UART_TDMA_EN_POS) | (eTxDmaMode << UART_TDMA_MD_POS);
 }
 	
 	

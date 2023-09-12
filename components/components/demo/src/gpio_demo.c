@@ -27,7 +27,7 @@
 #define		PINMASK_PB05		(0x01ul << 5)
 /* Private variablesr------------------------------------------------------*/
 
-/** \brief gpio port output demo 
+/** \brief gpio_ouput_demo: GPIO输出demo
  * 
  *  \param[in] none
  *  \return error code
@@ -36,6 +36,7 @@ int gpio_ouput_demo(void)
 {
 	int iRet = 0;
 
+#if (USE_GUI == 0)	
 	csi_gpio_set_mux(GPIOA, PA2, PA2_OUTPUT);			//PA2输出
 	csi_gpio_set_high(GPIOA, PA2);						//输出高
 	mdelay(100);
@@ -59,12 +60,12 @@ int gpio_ouput_demo(void)
 	mdelay(100);
 	csi_gpio_set_high(GPIOA, PA2);						//输出高
 	mdelay(100);
-	
+#endif	
 	
 	return iRet;
 }
 
-/** \brief gpio port output demo 
+/** \brief gpio_input_demo： GPIO输入demo
  * 
  *  \param[in] none
  *  \return error code
@@ -72,7 +73,8 @@ int gpio_ouput_demo(void)
 int gpio_input_demo(void)
 {
 	int iRet = 0;
-	
+
+#if (USE_GUI == 0)	
 	csi_gpio_set_mux(GPIOA, PA0, PA0_INPUT);			//PA0配置为输入
 	csi_gpio_pull_mode(GPIOA, PA0, GPIO_PULLNONE);		//无上下拉
 	mdelay(100);
@@ -82,11 +84,12 @@ int gpio_input_demo(void)
 
 	csi_gpio_pull_mode(GPIOA, PA0, GPIO_PULLDOWN);		//下拉
 	mdelay(100);
+#endif
 
 	return iRet;
 }
 
- /** \brief gpio port interrupt
+ /** \brief gpio_irq_demo： GPIO中断demo
  * 
  *  \param[in] none
  *  \return error code
@@ -96,16 +99,18 @@ int gpio_irq_demo(void)
 {
 	int iRet = 0;
 	
+#if (USE_GUI == 0)		
 	csi_gpio_set_mux(GPIOA, PA0, PA0_INPUT);						//PA0配置为输入
 	csi_gpio_pull_mode(GPIOA, PA0, GPIO_PULLUP);					//上拉
 	csi_gpio_int_enable(GPIOA,PA0);									//使能PA0端口对应外部中断
 	csi_gpio_irq_mode(GPIOA, PA0, EXI_GRP0,GPIO_IRQ_FALLING_EDGE);	//下降沿
 	csi_gpio_vic_irq_enable(EXI_GRP0, ENABLE);						//GPIOA端口对应VIC中断使能
+#endif
 	
 	return iRet;
 }
 
-/** \brief  exi0_int_handler: EXI0 中断服务函数,支持EXI GROUP0和GROUP16
+/** \brief  exi0_int_handler: EXI0中断服务函数,支持EXI GROUP0和GROUP16
  * 
  *  \brief 	支持EXI的中断GROUP0和GROUP16，两者中任一产生中断，会调用该函数；函数在interrupt.c里定义为弱(weak)
  * 			属性，默认处理仅清除状态，使用EXI中断时，请用户重定义此函数，完成对应的中断处理
@@ -116,18 +121,16 @@ int gpio_irq_demo(void)
  */ 
 ATTRIBUTE_ISR  void exi0_int_handler(void) 
 {
-	volatile uint32_t wExiSta = csp_exi_get_isr(SYSCON); 		//get interrupt status
+	volatile uint32_t wExiSta = csp_exi_get_isr(SYSCON); 		//获取EXI中断状态
 	
-	if(wExiSta & EXI_STATUS_GRP0)				//exi group0
+	if(wExiSta & EXI_STATUS_GRP0)								//EXI group0
 	{
 		//用户添加处理
-		nop;
 	}
 	
-	if(wExiSta & EXI_STATUS_GRP16)			//exigroup16			
+	if(wExiSta & EXI_STATUS_GRP16)								//EXI group16			
 	{
 		//用户添加处理
-		nop;
 	}
-	csp_exi_clr_isr(SYSCON, wExiSta);		//clear interrput 
+	csp_exi_clr_isr(SYSCON, wExiSta);							//清除中断状态 
 }

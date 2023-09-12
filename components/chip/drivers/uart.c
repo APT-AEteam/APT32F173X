@@ -44,10 +44,10 @@ static uint8_t apt_get_uart_idx(csp_uart_t *ptUartBase)
  * 
  *  \param[in] ptUartBase: pointer of uart register structure
  *  \param[in] ptUartCfg: pointer of uart parameter config structure
- * 			   - wBaudRate: baud rate
- * 			   - hwRecvTo: rx byte timeout
- * 			   - eParity: parity bit, \ref csi_uart_rxfifo_trg_e
- * 			   - eRxFifoTrg: rx FIFO level to trigger UART_RNE interrupt, \ref csi_uart_rxfifo_trg_e
+ * 			   	- wBaudRate: baud rate
+ * 			   	- hwRecvTo: rx byte timeout
+ * 			   	- eParity: parity bit, \ref csi_uart_rxfifo_trg_e
+ * 			   	- eRxFifoTrg: rx FIFO level to trigger UART_RNE interrupt, \ref csi_uart_rxfifo_trg_e
  *  \return error code \ref csi_error_t
  */ 
 csi_error_t csi_uart_init(csp_uart_t *ptUartBase, csi_uart_config_t *ptUartCfg)
@@ -129,29 +129,29 @@ void csi_uart_irqhandler(csp_uart_t *ptUartBase, uint8_t byIdx)
 	uint16_t hwIsr = csp_uart_get_isr(ptUartBase) & 0x000670;				//RXFIFO/TXFIFO/RXTO/RXBRAK/PAR_ERR中断状态
 	switch(hwIsr)							
 	{
-		case UART_RXFIFO_INT_S:												//使用RXFIFO中断接收数据
-			while(csp_uart_get_sr(ptUartBase) & UART_RNE)					//接收FIFO非空
+		case UART_RXFIFO_INT_S:												//RXFIFO interrupt
+			while(csp_uart_get_sr(ptUartBase) & UART_RNE)					
 			{
 				if(g_tUartCtrl[byIdx].hwTransNum < g_tUartCtrl[byIdx].hwRxSize)
-					g_tUartCtrl[byIdx].pbyRxBuf[g_tUartCtrl[byIdx].hwTransNum ++] = csp_uart_get_data(ptUartBase);		//读数据
-				else														//接收完成											
+					g_tUartCtrl[byIdx].pbyRxBuf[g_tUartCtrl[byIdx].hwTransNum ++] = csp_uart_get_data(ptUartBase);		//read data
+				else														//receive complete										
 				{
-					csp_uart_rxfifo_rst(ptUartBase);						//复位rxfifo
-					csp_uart_int_disable(ptUartBase, UART_RXFIFO_INT);		//关闭接收中断 
-					csp_uart_rto_disable(ptUartBase);						//关闭接收超时
-					g_tUartCtrl[byIdx].hwTransNum = 0;						//清除接收计数
-					g_tUartCtrl[byIdx].byRxState = UART_STATE_RX_DNE;		//接收完成标志，即接收指定长度
+					csp_uart_rxfifo_rst(ptUartBase);						//reset rxfifo
+					csp_uart_int_disable(ptUartBase, UART_RXFIFO_INT);		//disable RXFIFO interrupt
+					csp_uart_rto_disable(ptUartBase);						//disable receive timeout 
+					g_tUartCtrl[byIdx].hwTransNum = 0;						
+					g_tUartCtrl[byIdx].byRxState = UART_STATE_RX_DNE;		
 					
-					//回调，接收完用户指定长度数据
+					//receive complete, callback
 					if(g_tUartCtrl[byIdx].recv_callback)
 						g_tUartCtrl[byIdx].recv_callback(ptUartBase, UART_STATE_RX_DNE, g_tUartCtrl[byIdx].pbyRxBuf, &g_tUartCtrl[byIdx].hwRxSize);
 					
-					csp_uart_rto_enable(ptUartBase);						//使能接收超时
+					csp_uart_rto_enable(ptUartBase);						//disable receive timeout 
 				}
 			}
 			break;
 	
-		case UART_RXTO_INT_S:												 //接收超时中断
+		case UART_RXTO_INT_S:												 //receive timeout interrupt
 			if(g_tUartCtrl[byIdx].byRxState != UART_STATE_RX_DNE)
 			{
 				while(csp_uart_get_sr(ptUartBase) & UART_RNE)
@@ -159,50 +159,50 @@ void csi_uart_irqhandler(csp_uart_t *ptUartBase, uint8_t byIdx)
 					g_tUartCtrl[byIdx].pbyRxBuf[g_tUartCtrl[byIdx].hwTransNum ++] = csp_uart_get_data(ptUartBase);
 				}
 				
-				if(g_tUartCtrl[byIdx].hwTransNum  < g_tUartCtrl[byIdx].hwRxSize)	//接收处理
+				if(g_tUartCtrl[byIdx].hwTransNum  < g_tUartCtrl[byIdx].hwRxSize)	
 				{
-					g_tUartCtrl[byIdx].byRxState = UART_STATE_RX_TO;				//接收超时标志，即接收到一串字符
+					g_tUartCtrl[byIdx].byRxState = UART_STATE_RX_TO;				//receive timeout flag
 				
-					//回调，接收完一串字符
-					if(g_tUartCtrl[byIdx].recv_callback)									//用户回调
+					//receive complete, callback
+					if(g_tUartCtrl[byIdx].recv_callback)							
 						g_tUartCtrl[byIdx].recv_callback(ptUartBase, UART_STATE_RX_TO, g_tUartCtrl[byIdx].pbyRxBuf, &g_tUartCtrl[byIdx].hwTransNum);
 				}
-				else																//用户回调,接收完用户指定长度
+				else																
 				{
-					g_tUartCtrl[byIdx].hwTransNum = 0;								//清除接收计数
-					g_tUartCtrl[byIdx].byRxState = UART_STATE_RX_DNE;				//接收完成标志，即接收到用户指定长度数据
+					g_tUartCtrl[byIdx].hwTransNum = 0;								
+					g_tUartCtrl[byIdx].byRxState = UART_STATE_RX_DNE;				//receive complete flag
 					
-					//回调，接收完指定数据
+					//receive complete, callback
 					if(g_tUartCtrl[byIdx].recv_callback)
 						g_tUartCtrl[byIdx].recv_callback(ptUartBase, UART_STATE_RX_DNE, g_tUartCtrl[byIdx].pbyRxBuf, &g_tUartCtrl[byIdx].hwRxSize);
 				}
 			}
-			csp_uart_clr_isr(ptUartBase, UART_RXTO_INT_S);							//清除中断标志(状态)
-			csp_uart_rto_enable(ptUartBase);										//使能字节接收超时
+			csp_uart_clr_isr(ptUartBase, UART_RXTO_INT_S);							//clear interrupt status 
+			csp_uart_rto_enable(ptUartBase);										//enable receive timeout 
 			
 			break;
-		case UART_TXFIFO_INT_S:														//TXFIFO中断	
-			csp_uart_set_data(ptUartBase, *g_tUartCtrl[byIdx].pbyTxBuf);			//发送数据
+		case UART_TXFIFO_INT_S:														//TXFIFO disable receive timeout 
+			csp_uart_set_data(ptUartBase, *g_tUartCtrl[byIdx].pbyTxBuf);			//send data
 			g_tUartCtrl[byIdx].hwTxSize --;
 			g_tUartCtrl[byIdx].pbyTxBuf ++;
 			
 			if(g_tUartCtrl[byIdx].hwTxSize == 0)	
 			{	
-				g_tUartCtrl[byIdx].byTxState = UART_STATE_TX_DNE;					//发送完成标志
-				csp_uart_int_disable(ptUartBase, UART_TXFIFO_INT);					//关闭中断
+				g_tUartCtrl[byIdx].byTxState = UART_STATE_TX_DNE;					//send complete
+				csp_uart_int_disable(ptUartBase, UART_TXFIFO_INT);					//disable interrupt
 				
-				//回调，发送完成
+				//send complete, callback
 				if(g_tUartCtrl[byIdx].send_callback)
 					g_tUartCtrl[byIdx].send_callback(ptUartBase);
 			}
 			break;
 		case UART_RXBRK_INT_S:
-			csp_uart_clr_isr(ptUartBase, UART_RXBRK_INT_S);							//清除中断标志(状态)
+			csp_uart_clr_isr(ptUartBase, UART_RXBRK_INT_S);							//clear interrupt status 
 			if(g_tUartCtrl[byIdx].err_callback)
 				g_tUartCtrl[byIdx].err_callback(ptUartBase, hwIsr);
 			break;
 		case UART_PARERR_INT_S:
-			csp_uart_clr_isr(ptUartBase, UART_PARERR_INT_S);						//清除中断标志(状态)
+			csp_uart_clr_isr(ptUartBase, UART_PARERR_INT_S);						//clear interrupt status 
 			if(g_tUartCtrl[byIdx].err_callback)
 				g_tUartCtrl[byIdx].err_callback(ptUartBase, hwIsr);
 			break;
@@ -217,7 +217,7 @@ void csi_uart_irqhandler(csp_uart_t *ptUartBase, uint8_t byIdx)
  *  \param[in] bEnable: enable/disable receive timeout function
  *  \return none
  */
-void csi_uart_rto_enable(csp_uart_t *ptUartBase, uint16_t hwTimeOut, bool bEnable)
+void csi_uart_rto_enable(csp_uart_t *ptUartBase, bool bEnable)
 {
 	if(bEnable)
 		csp_uart_rto_enable(ptUartBase);
@@ -242,7 +242,6 @@ void csi_uart_rxfifo_enable(csp_uart_t *ptUartBase, bool bEnable)
  * 
  *  \param[in] ptUartBase: pointer of uart register structure
  *  \param[in] eIntSrc: uart interrupt source, \ref csi_uart_intsrc_e
- *  \param[in] bEnable: enable interrupt
  *  \return none
  */
 void csi_uart_int_enable(csp_uart_t *ptUartBase, csi_uart_intsrc_e eIntSrc)
@@ -253,12 +252,21 @@ void csi_uart_int_enable(csp_uart_t *ptUartBase, csi_uart_intsrc_e eIntSrc)
  * 
  *  \param[in] ptUartBase: pointer of uart register structure
  *  \param[in] eIntSrc: uart interrupt source, \ref csi_uart_intsrc_e
- *  \param[in] bEnable: disable interrupt
  *  \return none
  */
 void csi_uart_int_disable(csp_uart_t *ptUartBase, csi_uart_intsrc_e eIntSrc)
 {
 	csp_uart_int_disable(ptUartBase, (uart_int_e)eIntSrc);
+}
+/** \brief clear uart interrupt status
+ * 
+ *  \param[in] ptUartBase: pointer of uart register structure
+ *  \param[in] eIntSta: uart interrupt status, \ref csi_uart_intsta_e
+ *  \return none
+ */
+void csi_uart_clr_isr(csp_uart_t *ptUartBase, csi_uart_intsta_e eIntSta)
+{
+	csp_uart_clr_isr(ptUartBase, (uart_isr_e)eIntSta);
 }
 /** \brief start(enable) uart rx/tx
  * 
@@ -322,7 +330,7 @@ void csi_uart_putc(csp_uart_t *ptUartBase, uint8_t byData)
 }
 /** \brief uart get character
  * 
- *  \param[in] uart: pointer of uart register structure
+ *  \param[in] ptUartBase: pointer of uart register structure
  *  \return  the character to get
  */
 uint8_t csi_uart_getc(csp_uart_t *ptUartBase)
@@ -445,115 +453,54 @@ csi_error_t csi_uart_receive_int(csp_uart_t *ptUartBase, void *pData, uint16_t h
 	
 	return CSI_OK;
 }
-/** \brief uart dma receive mode init
+/** \brief set uart tx dma mode and enable
  * 
  *  \param[in] ptUartBase: pointer of uart register structure
- *  \param[in] eDmaCh: channel number of dma, eDmaCh: DMA_CH0` DMA_CH3
- *  \param[in] eEtbCh: channel id number of etb, eEtbCh >= ETB_CH8
- *  \return  error code \ref csi_error_t
+ *  \param[in] eDmaMode: ctx dma mode, \ref csi_uart_dma_md_e
+ *  \param[in] bEnable: tx dma enable/diaable
+ *  \return  none
  */
-//csi_error_t csi_uart_dma_rx_init(csp_uart_t *ptUartBase, csi_dma_reload_e eReload, csp_dma_t *ptDmaBase, csi_dma_ch_e eDmaCh, csi_etb_ch_e eEtbCh)
-csi_error_t csi_uart_dma_rx_init(csp_uart_t *ptUartBase, csi_dma_ch_e eDmaCh, csi_etb_ch_e eEtbCh)
+void csi_uart_set_txdma(csp_uart_t *ptUartBase, csi_uart_dma_md_e eDmaMode, bool bEnable)
 {
-	csi_error_t ret = CSI_OK;
-	csi_dma_ch_config_t tDmaConfig;				
-	csi_etb_config_t 	tEtbConfig;				
-	uint8_t byUartIdx = apt_get_uart_idx(ptUartBase);	
-	
-	//dma config
-	tDmaConfig.bySrcLinc 	= DMA_ADDR_CONSTANT;		//低位传输原地址固定不变
-	tDmaConfig.bySrcHinc 	= DMA_ADDR_CONSTANT;		//高位传输原地址固定不变
-	tDmaConfig.byDetLinc 	= DMA_ADDR_CONSTANT;		//低位传输目标地址固定不变
-	tDmaConfig.byDetHinc 	= DMA_ADDR_INC;				//高位传输目标地址自增
-	tDmaConfig.byDataWidth 	= DMA_DSIZE_8_BITS;			//传输数据宽度8bit
-	tDmaConfig.byReload 	= DMA_RELOAD_ENABLE;		//禁止自动重载
-	tDmaConfig.byTransMode 	= DMA_TRANS_CONTINU;			//DMA服务模式(传输模式)，连续服务
-	tDmaConfig.byTsizeMode  = DMA_TSIZE_ONE_DSIZE;		//传输数据大小，一个 DSIZE , 即DSIZE定义大小
-	tDmaConfig.byReqMode	= DMA_REQ_HARDWARE;			//DMA请求模式，硬件请求
-	tDmaConfig.wInt			= DMA_INTSRC_TCIT;			//使用TCIT中断
-	
-	//etb config
-	tEtbConfig.eChType = ETB_ONE_TRG_ONE_DMA;					//单个源触发单个目标，DMA方式
-	tEtbConfig.eSrcIp 	= ETB_UART0_RXSRC + (byUartIdx << 1);	//UART TXSRC作为触发源
-	tEtbConfig.eDstIp 	= ETB_DMA0_CH0 + eDmaCh;					//ETB DMA通道 作为目标实际
-	tEtbConfig.eTrgMode = ETB_HARDWARE_TRG;					//通道触发模式采样硬件触发
-	
-	ret = csi_etb_ch_config(eEtbCh, &tEtbConfig);				//初始化ETB，DMA ETB CHANNEL > ETB_CH19_ID
-	if(ret < CSI_OK)
-		return CSI_ERROR;
-	ret = csi_dma_ch_init(DMA0, eDmaCh, &tDmaConfig);			//初始化DMA
-	csp_uart_set_rxdma(ptUartBase, UART_RDMA_EN, UART_RDMA_FIFO_NSPACE);
-	return ret;
+	csp_uart_set_txdma(ptUartBase, (uart_tdma_md_e)eDmaMode ,bEnable);
 }
-/** \brief uart dma send mode init
+/** \brief set uart rx dma mode and enable
  * 
  *  \param[in] ptUartBase: pointer of uart register structure
- *  \param[in] ptDmaBase: pointer of dma register structure
- *  \param[in] eDmaCh: channel number of dma, eDmaCh: DMA_CH0` DMA_CH3
- *  \param[in] eEtbCh: channel id number of etb, eEtbCh >= ETB_CH8
- *  \return  error code \ref csi_error_t
+ *  \param[in] eDmaMode: rx dma mode, \ref csi_uart_dma_md_e
+ *  \param[in] bEnable: rx dma enable/diaable
+ *  \return  none
  */
-csi_error_t csi_uart_dma_tx_init(csp_uart_t *ptUartBase, csi_dma_ch_e eDmaCh, csi_etb_ch_e eEtbCh)
+void csi_uart_set_rxdma(csp_uart_t *ptUartBase, csi_uart_dma_md_e eDmaMode, bool bEnable)
 {
-	csi_error_t ret = CSI_OK;
-	csi_dma_ch_config_t tDmaConfig;				
-	csi_etb_config_t 	tEtbConfig;	
-	uint8_t byUartIdx = apt_get_uart_idx(ptUartBase);				
+	csp_uart_set_rxdma(ptUartBase, (uart_rdma_md_e)eDmaMode ,bEnable);
+}
 
-	//dma config
-	tDmaConfig.bySrcLinc 	= DMA_ADDR_CONSTANT;		//低位传输原地址固定不变
-	tDmaConfig.bySrcHinc 	= DMA_ADDR_INC;				//高位传输原地址自增
-	tDmaConfig.byDetLinc 	= DMA_ADDR_CONSTANT;		//低位传输目标地址固定不变
-	tDmaConfig.byDetHinc 	= DMA_ADDR_CONSTANT;		//高位传输目标地址固定不变
-	tDmaConfig.byDataWidth 	= DMA_DSIZE_8_BITS;			//传输数据宽度8bit
-	tDmaConfig.byReload 	= DMA_RELOAD_DISABLE;		//禁止自动重载
-	tDmaConfig.byTransMode 	= DMA_TRANS_CONTINU;			//DMA服务模式(传输模式)，连续服务
-	tDmaConfig.byTsizeMode  = DMA_TSIZE_ONE_DSIZE;		//传输数据大小，一个 DSIZE , 即DSIZE定义大小
-	tDmaConfig.byReqMode	= DMA_REQ_HARDWARE;			//DMA请求模式，软件请求（软件触发）
-	tDmaConfig.wInt			= DMA_INTSRC_TCIT;		//使用TCIT中断
-	
-	//etb config
-	tEtbConfig.eChType = ETB_ONE_TRG_ONE_DMA;					//单个源触发单个目标，DMA方式
-	tEtbConfig.eSrcIp 	= ETB_UART0_TXSRC + (byUartIdx << 1);	//UART TXSRC作为触发源
-	tEtbConfig.eSrcIp1 = 0xff;						
-	tEtbConfig.eSrcIp2 = 0xff;
-	tEtbConfig.eDstIp 	= ETB_DMA0_CH0 + eDmaCh;					//ETB DMA通道 作为目标实际
-	tEtbConfig.eDstIp1 = 0xff;
-	tEtbConfig.eDstIp2 = 0xff;
-	tEtbConfig.eTrgMode = ETB_HARDWARE_TRG;					//通道触发模式采样硬件触发
-	
-	ret = csi_etb_ch_config(eEtbCh, &tEtbConfig);				//初始化ETB，DMA ETB CHANNEL > ETB_CH19_ID
-	if(ret < CSI_OK)
-		return CSI_ERROR;
-	ret = csi_dma_ch_init(DMA0, eDmaCh, &tDmaConfig);		//初始化DMA
-	csp_uart_set_txdma(ptUartBase, UART_TDMA_EN, UART_TDMA_FIFO_NFULL);
-	return ret;
-}
 /** \brief send data from uart, this function is dma mode
  * 
  *  \param[in] ptUartBase: pointer of uart register structure
  *  \param[in] ptDmaBase: pointer of dma register structure
- *  \param[in] eDmaCh: channel number of dma, eDmaCh: DMA_CH0` DMA_CH3
+ *  \param[in] eDmaCh: channel number of dma(20~31), \ref csi_dma_ch_e
  *  \param[in] pData: pointer to buffer with data to send to uart transmitter.
  *  \param[in] hwSize: number of data to send (byte).
  *  \return  none
  */
-void csi_uart_send_dma(csp_uart_t *ptUartBase, csi_dma_ch_e eDmaCh, const void *pData, uint16_t hwSize)
-{
-	csi_dma_ch_start(DMA0, eDmaCh, (void *)pData, (void *)&(ptUartBase->DATA), hwSize,1);
+void csi_uart_send_dma(csp_uart_t *ptUartBase, csp_dma_t *ptDmaBase, csi_dma_ch_e eDmaCh, const void *pData, uint16_t hwSize)
+{	
+	csi_dma_ch_start(ptDmaBase, eDmaCh, (void *)pData, (void *)&(ptUartBase->DATA), hwSize,1);
 }
 /** \brief receive data from uart, this function is dma mode
  * 
  *  \param[in] ptUartBase: pointer of uart register structure
  *  \param[in] ptDmaBase: pointer of dma register structure
- *  \param[in] eDmaCh: channel number of dma, eDmaCh: DMA_CH0` DMA_CH3
+ *  \param[in] eDmaCh: channel number of dma(20~31), \ref csi_dma_ch_e
  *  \param[in] pData: pointer to buffer with data to receive to uart transmitter.
  *  \param[in] hwSize: number of data to receive (byte).
  *  \return  none
  */
-void csi_uart_recv_dma(csp_uart_t *ptUartBase, csi_dma_ch_e eDmaCh, void *pData, uint16_t hwSize)
+void csi_uart_recv_dma(csp_uart_t *ptUartBase, csp_dma_t *ptDmaBase, csi_dma_ch_e eDmaCh, void *pData, uint16_t hwSize)
 {
-	csi_dma_ch_start(DMA0, eDmaCh, (void *)&(ptUartBase->DATA), (void *)pData, hwSize,1);
+	csi_dma_ch_start(ptDmaBase, eDmaCh, (void *)&(ptUartBase->DATA), (void *)pData, hwSize,1);
 }
 /** \brief get uart receive/send complete message and (Do not) clear message
  * 

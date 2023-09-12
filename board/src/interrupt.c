@@ -448,12 +448,13 @@ ATTRIBUTE_ISR __attribute__((weak)) void lpt_int_handler(void)
 
 ATTRIBUTE_ISR __attribute__((weak)) void rtc_int_handler(void)
 {
-#if	RTC_INT_HANDLE_EN
-	// ISR content ...
 	CSI_INTRPT_ENTER();
-	rtc_irqhandler(RTC); //this is a weak function defined in rtc_demo.c, for better efficiency, we recommand user directly implement IRQ handler here without any function call.
-	CSI_INTRPT_EXIT();
+#if (USE_RTC_CALLBACK == 1)
+	
+#else
+	csp_rtc_clr_isr(RTC, csp_rtc_get_isr(RTC));
 #endif
+	CSI_INTRPT_EXIT();
 }
 
 ATTRIBUTE_ISR __attribute__((weak)) void cmp0_int_handler(void) 

@@ -127,6 +127,33 @@ typedef enum
 	UART_INTSRC_RXBRK  		= (0x01ul << 22) 		//RX BREAK
 }csi_uart_intsrc_e;
 
+typedef enum{
+	UART_INTSTA_TX  		= (0x01ul << 0),	//Transmitter INT Status      
+	UART_INTSTA_RX			= (0x01ul << 1),	//Receiver INT Status          
+	UART_INTSTA_TX_OV   	= (0x01ul << 2),	//Transmitter Over INT Status  
+	UART_INTSTA_RX_OV  	 	= (0x01ul << 3),	//Receiver Over INT Status   
+	UART_INTSTA_PARERR    	= (0x01ul << 4),	//Parity Error INT Status  
+	UART_INTSTA_TXFIFO    	= (0x01ul << 5),	//Transmitter FIFO INT Status      
+	UART_INTSTA_RXFIFO    	= (0x01ul << 6),	//Receiver FIFO INT Status 
+	UART_INTSTA_RXFIFO_OV_	= (0x01ul << 7),	//Receiver FIFO Over INT Status 
+	UART_INTSTA_RXTO    	= (0x01ul << 9),	//Receiver FIFO INT Status 
+	UART_INTSTA_RXBRK_		= (0x01ul << 10),	//Receiver FIFO Over INT Status 
+	UART_INTSTA_TXDONE    	= (0x01ul << 19),	//Transmitter Complete INT Status
+	UART_INTSTA_ALL    		= (0x806FFul << 0)	//All INT Status 
+}csi_uart_intsta_e;
+
+/**
+ * \enum     csi_uart_dma_md_e
+ * \brief    UART dma mode 
+ */
+typedef enum{
+	//rx
+	UART_DMA_RXFIFO_NSPACE 	= 0,	//RXFIFO no space
+	UART_DMA_RXFIFO_TRG		= 1,	//RXFIFO receive trigger piont
+	//tx
+	UART_DMA_TXFIFO_NFULL 	= 0,	//TXFIFO no full
+	UART_DMA_TXFIFO_TRG		= 1		//TXFIFO <= 1/2
+}csi_uart_dma_md_e;
 
 /**
  * \enum     csi_uart_callbackid_e
@@ -176,10 +203,10 @@ extern csi_uart_ctrl_t g_tUartCtrl[UART_IDX];
   \brief 	   initialize uart parameter structure
   \param[in]   ptUartBase	pointer of uart register structure
   \param[in]   ptUartCfg	pointer of uart parameter config structure
-  			   - wBaudRate	baud rate
-  			   - hwRecvTo	rx byte timeout
-  			   - eParity	parity bit, \ref csi_uart_rxfifo_trg_e
-  			   - eRxFifoTrg rx FIFO level to trigger UART_RNE interrupt, \ref csi_uart_rxfifo_trg_e
+				- wBaudRate	baud rate
+				- hwRecvTo	rx byte timeout
+				- eParity	parity bit, \ref csi_uart_rxfifo_trg_e
+				- eRxFifoTrg rx FIFO level to trigger UART_RNE interrupt, \ref csi_uart_rxfifo_trg_e
  *  \return error code \ref csi_error_t
  */ 
 csi_error_t csi_uart_init(csp_uart_t *ptUartBase, csi_uart_config_t *ptUartCfg);
@@ -243,6 +270,13 @@ void csi_uart_int_enable(csp_uart_t *ptUartBase, csi_uart_intsrc_e eIntSrc);
 void csi_uart_int_disable(csp_uart_t *ptUartBase, csi_uart_intsrc_e eIntSrc);
 
 /** 
+  \brief clear uart interrupt status
+  \param[in] ptUartBase: pointer of uart register structure
+  \param[in] eIntSta: uart interrupt status, \ref csi_uart_intsta_e
+  \return none
+ */
+void csi_uart_clr_isr(csp_uart_t *ptUartBase, csi_uart_intsta_e eIntSta);
+/** 
   \brief 	   start(enable) uart rx/tx
   \param[in]   ptUartBase	pointer of uart register structure
   \param[in]   eFunc: rx/tx function, \ref csi_uart_func_e
@@ -277,44 +311,43 @@ int32_t csi_uart_send(csp_uart_t *ptUartBase, const void *pData, uint16_t hwSize
 csi_error_t csi_uart_send_int(csp_uart_t *ptUartBase, const void *pData, uint16_t hwSize);
 
 /** 
-  \brief 	   uart dma receive mode init
+  \brief 	   set uart tx dma mode and enable
   \param[in]   ptUartBase	pointer of uart register structure
-  \param[in]   eDmaCh		channel id number of dma, eDmaCh: DMA_CH0 ` DMA_CH3
-  \param[in]   eEtbCh		channel id number of etb, eEtbCh >= ETB_CH8
-  \return      error code \ref csi_error_t
+  \param[in]   eDmaMode		ctx dma mode, \ref csi_uart_dma_md_e
+  \param[in]   bEnable		tx dma enable/diaable
+  \return  	   none
  */
-//csi_error_t csi_uart_dma_rx_init(csp_uart_t *ptUartBase, csi_dma_reload_e eReload, csi_dma_ch_e eDmaCh, csi_etb_ch_e eEtbCh);
-csi_error_t csi_uart_dma_rx_init(csp_uart_t *ptUartBase, csi_dma_ch_e eDmaCh, csi_etb_ch_e eEtbCh);
+void csi_uart_set_txdma(csp_uart_t *ptUartBase, csi_uart_dma_md_e eDmaMode, bool bEnable);
 
 /** 
-  \brief 	   uart dma send mode init
+  \brief 	   set uart rx dma mode and enable
   \param[in]   ptUartBase	pointer of uart register structure
-  \param[in]   ptDmaBase	pointer of dma register structure
-  \param[in]   eDmaCh		channel id number of dma, eDmaCh: DMA_CH0` DMA_CH3
-  \param[in]   eEtbCh		channel id number of etb, eEtbCh >= ETB_CH8
-  \return  	   error code \ref csi_error_t
+  \param[in]   eDmaMode		rx dma mode, \ref csi_uart_dma_md_e
+  \param[in]   bEnable		rx dma enable/diaable
+  \return  	   none
  */
-csi_error_t csi_uart_dma_tx_init(csp_uart_t *ptUartBase, csi_dma_ch_e eDmaCh, csi_etb_ch_e eEtbCh);
+void csi_uart_set_rxdma(csp_uart_t *ptUartBase, csi_uart_dma_md_e eDmaMode, bool bEnable);
 
 /** 
   \brief 	   send data from uart, this function is dma mode
   \param[in]   ptUartBase	pointer of uart register structure
-  \param[in]   eDmaCh		channel number of dma, eDmaCh: DMA_CH0` DMA_CH3
+  \param[in]   eDmaCh	    channel number of dma(20~31), \ref csi_dma_ch_e
   \param[in]   pData		pointer to buffer with data to send to uart transmitter.
   \param[in]   hwSize		number of data to send (byte).
   \return  	   none
  */
-void csi_uart_send_dma(csp_uart_t *ptUartBase, csi_dma_ch_e eDmaCh, const void *pData, uint16_t hwSize);
+void csi_uart_send_dma(csp_uart_t *ptUartBase, csp_dma_t *ptDmaBase, csi_dma_ch_e eDmaCh, const void *pData, uint16_t hwSize);
 
 /** 
   \brief 	   receive data from uart, this function is dma mode
   \param[in]   ptUartBase	pointer of uart register structure
-  \param[in]   eDmaCh		channel number of dma, eDmaCh: DMA_CH0` DMA_CH3
+  \param[in]   ptDmaBase	pointer of dma register structure
+  \param[in]   eDmaCh	    channel number of dma(20~31), \ref csi_dma_ch_e
   \param[in]   pData		pointer to buffer with data to receive to uart transmitter.
   \param[in]   hwSize		number of data to receive (byte).
   \return  	   none
  */
-void csi_uart_recv_dma(csp_uart_t *ptUartBase, csi_dma_ch_e eDmaCh, void *pData, uint16_t hwSize);
+void csi_uart_recv_dma(csp_uart_t *ptUartBase, csp_dma_t *ptDmaBase, csi_dma_ch_e eDmaCh, void *pData, uint16_t hwSize);
 
 /**
   \brief       Query data from UART receiver FIFO, this function is blocking.

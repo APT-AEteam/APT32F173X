@@ -390,13 +390,13 @@ csi_error_t csi_pin_pull_mode(pin_name_e ePinName, csi_gpio_pull_mode_e ePullMod
 	switch(ePullMode)
 	{
 		case GPIO_PULLNONE:
-			csp_gpio_pullnone(ptGpioBase, ePinName);		//pull none
+			csp_gpio_pullnone_enable(ptGpioBase, ePinName);		//pull none
 			break;
 		case GPIO_PULLUP:
-			csp_gpio_pullup(ptGpioBase, ePinName);			//pull up
+			csp_gpio_pullup_enable(ptGpioBase, ePinName);			//pull up
 			break;
 		case GPIO_PULLDOWN:
-			csp_gpio_pulldown(ptGpioBase, ePinName);		//pull down
+			csp_gpio_pulldown_enable(ptGpioBase, ePinName);		//pull down
 			break;
 		default:
 			ret = CSI_ERROR;
@@ -462,14 +462,14 @@ csi_error_t csi_pin_input_mode(pin_name_e ePinName, csi_gpio_input_mode_e eInput
 	switch (eInputMode)
 	{
 		case (GPIO_INPUT_TTL2):	
-			csp_gpio_ccm_ttl(ptGpioBase, ePinName);
+			csp_gpio_ttl_enable(ptGpioBase, ePinName);
 			csp_gpio_set_ttl2(ptGpioBase, ePinName);
 			break;
 		case (GPIO_INPUT_TTL1): 
-			csp_gpio_ccm_ttl(ptGpioBase, ePinName);
+			csp_gpio_pullnone_enable(ptGpioBase, ePinName);
 			csp_gpio_set_ttl2(ptGpioBase, ePinName);
 			break;
-		case (GPIO_INPUT_CMOS):	csp_gpio_ccm_cmos(ptGpioBase, ePinName);
+		case (GPIO_INPUT_CMOS):	csp_gpio_cmos_enable(ptGpioBase, ePinName);
 			break;
 		default:
 			ret = CSI_ERROR;

@@ -16,8 +16,10 @@
 /* externs function--------------------------------------------------------*/
 /* externs variablesr------------------------------------------------------*/
 /* Private macro-----------------------------------------------------------*/
-
 /* Private variablesr------------------------------------------------------*/
+
+#if (USE_BT_CALLBACK == 0)	
+
 uint8_t byRecvBuf[64]={0};			//receive buf
 uint8_t bySendBuf[30]={1,2,3,4,5,6,7,8,9,21,22,23,24,25,26,27,28,29,30,10,11,12,13,14,15,16,17,18,19};	
 
@@ -42,7 +44,7 @@ ATTRIBUTE_ISR void uart1_int_handler(void)
 		else
 		{
 			hwSendLen = 0;
-			csi_uart_int_disable(UART1, UART_INTSRC_TXFIFO);	//关闭中断	
+			csp_uart_int_disable(UART1, UART_RXFIFO_INT);		//关闭rxfifo/中断	
 		}
 	}
 	
@@ -70,17 +72,17 @@ ATTRIBUTE_ISR void uart1_int_handler(void)
 int uart_send_demo(void)
 {
 	int iRet = 0;
-	csi_uart_config_t tUartConfig;				//UART1 参数配置结构体
+	csi_uart_config_t tUartConfig;					//UART1 参数配置结构体
 	
 #if (USE_GUI == 0)	
-	csi_gpio_set_mux(GPIOA, PA4, PA4_UART1_TX);	//TX	
-	csi_gpio_set_mux(GPIOA, PA5, PA5_UART1_RX);	//RX
-	csi_gpio_pull_mode(GPIOA, PA5, GPIO_PULLUP);//RX管脚上拉使能, 建议配置
+	csi_gpio_set_mux(GPIOA, PA4, PA4_UART1_TX);		//TX	
+	csi_gpio_set_mux(GPIOA, PA5, PA5_UART1_RX);		//RX
+	csi_gpio_pull_mode(GPIOA, PA5, GPIO_PULLUP);	//RX管脚上拉使能, 建议配置
 #endif	
-	tUartConfig.eParity 	= UART_PARITY_ODD;	//校验位，奇校验
-	tUartConfig.wBaudRate 	= 115200;			//波特率，115200
-	csi_uart_init(UART1, &tUartConfig);			//初始化串口
-	csi_uart_start(UART1, UART_FUNC_RX_TX);		//开启UART的RX和TX功能，也可单独开启RX或者TX功能
+	tUartConfig.eParity 	= UART_PARITY_ODD;		//校验位，奇校验
+	tUartConfig.wBaudRate 	= 115200;				//波特率，115200
+	csi_uart_init(UART1, &tUartConfig);				//初始化串口
+	csi_uart_start(UART1, UART_FUNC_RX_TX);			//开启UART的RX和TX功能，也可单独开启RX或者TX功能
 	
 	while(1)
 	{
@@ -120,7 +122,6 @@ int uart_send_int_demo(void)
 	csi_uart_start(UART1, UART_FUNC_RX_TX);			//开启UART的RX和TX功能，也可单独开启RX或者TX功能
 	csi_uart_int_enable(UART1, UART_INTSRC_TXFIFO);	//开启TXFIFO中断
 	
-	
 	//使用中断方式发送，发送在UART1的中断服务函数(uart1_int_handler)里处理
 	while(1)
 	{
@@ -134,9 +135,9 @@ int uart_send_int_demo(void)
  * 
  *  \brief  使用RXFIFO中断接收，用户直接在中断服务函数(uart1_int_handler)里处理
  * 
- * @接收超时:	即接收字节超时，指接收数据时，两个字节之间的时间，超过设定值，产生超时中断；
+ * @ 接收超时:	即接收字节超时，指接收数据时，两个字节之间的时间，超过设定值，产生超时中断；
  * 
- * @接收fifo触发点:接收FIFO中断触发点，支持1/2/4这三种模式，即FIFO收到1个字节还是多个字节才会触发RXFIFO中
+ * @ 接收fifo触发点:接收FIFO中断触发点，支持1/2/4这三种模式，即FIFO收到1个字节还是多个字节才会触发RXFIFO中
  * 				断；初始化时选择1，即FIFO中有数据则产生中断。
  * 				
  * 
@@ -180,38 +181,57 @@ int uart_recv_int_demo(void)
 int uart_send_dma_demo(void)
 {
 	int iRet = 0;
-	uint8_t bySdData[36]={31,32,33,34,5,6,7,8,9,10,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,1,2,3};
-	volatile uint8_t byRecv;
-	csi_uart_config_t tUartConfig;				//UART1 参数配置结构体
+	csi_uart_config_t tUartConfig;								//UART1 参数配置结构体
+	csi_dma_ch_config_t tDmaConfig;								//DMA 通道配置结构体			
+	csi_etb_config_t 	tEtbConfig;								//ETCB 配置结构体
 	
 #if (USE_GUI == 0)		
-	csi_gpio_set_mux(GPIOA,PA4, PA4_UART1_TX);	//TX	
-	csi_gpio_set_mux(GPIOA, PA5, PA5_UART1_RX);	//RX
-	csi_gpio_pull_mode(GPIOA, PA5,GPIO_PULLUP);	//RX管脚上拉使能, 建议配置
+	csi_gpio_set_mux(GPIOA,PA4, PA4_UART1_TX);					//TX	
+	csi_gpio_set_mux(GPIOA, PA5, PA5_UART1_RX);					//RX
+	csi_gpio_pull_mode(GPIOA, PA5,GPIO_PULLUP);					//RX管脚上拉使能, 建议配置
 #endif	
-
-	tUartConfig.eParity = UART_PARITY_ODD;		//校验位，奇校验
-	tUartConfig.wBaudRate = 115200;				//波特率，115200
-	csi_uart_init(UART1, &tUartConfig);			//初始化串口
-	csi_uart_start(UART1, UART_FUNC_RX_TX);		//开启UART的RX和TX功能，也可单独开启RX或者TX功能
 	
-	csi_etb_init();								//使能ETB模块
+	//UART 初始化
+	tUartConfig.eParity = UART_PARITY_ODD;						//校验位，奇校验
+	tUartConfig.wBaudRate = 115200;								//波特率，115200
+	csi_uart_init(UART1, &tUartConfig);							//初始化串口
 	
-	csi_uart_dma_tx_init(UART1, DMA_CH1, ETB_CH20);	
+	csi_uart_set_txdma(UART1, UART_DMA_TXFIFO_NFULL, ENABLE);	//设置TX DMA工作模式并使能
+	csi_uart_start(UART1, UART_FUNC_RX_TX);						//开启UART的RX和TX功能，也可单独开启RX或者TX功能
+	
+	//DMA配置初始化
+	tDmaConfig.bySrcLinc 	= DMA_ADDR_CONSTANT;				//低位传输原地址固定不变
+	tDmaConfig.bySrcHinc 	= DMA_ADDR_INC;						//高位传输原地址自增
+	tDmaConfig.byDetLinc 	= DMA_ADDR_CONSTANT;				//低位传输目标地址固定不变
+	tDmaConfig.byDetHinc 	= DMA_ADDR_CONSTANT;				//高位传输目标地址固定不变
+	tDmaConfig.byDataWidth 	= DMA_DSIZE_8_BITS;					//传输数据宽度8bit
+	tDmaConfig.byReload 	= DMA_RELOAD_DISABLE;				//禁止自动重载
+	tDmaConfig.byTransMode 	= DMA_TRANS_CONTINU;				//DMA服务模式(传输模式)，连续服务
+	tDmaConfig.byTsizeMode  = DMA_TSIZE_ONE_DSIZE;				//传输数据大小，一个 DSIZE , 即DSIZE定义大小
+	tDmaConfig.byReqMode	= DMA_REQ_HARDWARE;					//DMA请求模式，软件请求（软件触发）
+	tDmaConfig.wInt			= DMA_INTSRC_TCIT;					//使用TCIT中断
+	csi_dma_ch_init(DMA0, DMA_CH1, &tDmaConfig);				//初始化DMA0，选择CH1
+	
+	csi_etb_init();												//使能ETB模块
+	//ETCB 配置初始化
+	tEtbConfig.eChType 	= ETB_ONE_TRG_ONE_DMA;					//单个源触发单个目标，DMA方式
+	tEtbConfig.eSrcIp 	= ETB_UART1_TXSRC;						//UART TXSRC作为触发源
+	tEtbConfig.eDstIp 	= ETB_DMA0_CH1;							//ETB DMA通道 作为目标实际
+	tEtbConfig.eTrgMode = ETB_HARDWARE_TRG;						//通道触发模式采样硬件触发
+	iRet = csi_etb_ch_config(ETB_CH20, &tEtbConfig);			//初始化ETB，DMA ETB CHANNEL > ETB_CH19
+	if(iRet < CSI_OK)
+		return CSI_ERROR;
 	
 	while(1)
 	{
-		byRecv = csi_uart_getc(UART1);
-		if(byRecv)
-			csi_uart_send_dma(UART1, DMA_CH1, (void *)bySdData, 26);	
-		mdelay(10);
-		if(csi_dma_get_msg(DMA0,DMA_CH1, ENABLE))	//获取发送完成消息，并清除消息
+		csi_uart_send_dma(UART1, DMA0, DMA_CH1, (void *)bySendBuf, 26);	
+		mdelay(50);
+		
+		if(csi_dma_get_msg(DMA0, DMA_CH1, ENABLE))				//获取发送完成消息，并清除消息
 		{
 			//添加用户代码
 			nop;
 		}
-		nop;
-		nop;
 	}
 	
 	return iRet;
@@ -222,27 +242,53 @@ int uart_send_dma_demo(void)
  *  \param[in] none
  *  \return error code
  */
-int uart_recv_dma_demo(void)
+int uart_receive_dma_demo(void)
 {
 	int iRet = 0;
-	csi_uart_config_t tUartConfig;				//UART1 参数配置结构体
+	csi_uart_config_t tUartConfig;								//UART1 参数配置结构体
+	csi_dma_ch_config_t tDmaConfig;								//DMA 通道配置结构体			
+	csi_etb_config_t 	tEtbConfig;								//ETCB 配置结构体
+	
 #if (USE_GUI == 0)		
-	csi_gpio_set_mux(GPIOA,PA4, PA4_UART1_TX);	//TX	
-	csi_gpio_set_mux(GPIOA, PA5, PA5_UART1_RX);	//RX
-	csi_gpio_pull_mode(GPIOA, PA5,GPIO_PULLUP);	//RX管脚上拉使能, 建议配置
+	csi_gpio_set_mux(GPIOA,PA4, PA4_UART1_TX);					//TX	
+	csi_gpio_set_mux(GPIOA, PA5, PA5_UART1_RX);					//RX
+	csi_gpio_pull_mode(GPIOA, PA5,GPIO_PULLUP);					//RX管脚上拉使能, 建议配置
 #endif	
-	tUartConfig.eParity = UART_PARITY_ODD;		//校验位，奇校验
-	tUartConfig.wBaudRate = 115200;				//波特率，115200
-	csi_uart_init(UART1, &tUartConfig);			//初始化串口
-	csi_uart_start(UART1, UART_FUNC_RX_TX);		//开启UART的RX和TX功能，也可单独开启RX或者TX功能
+	tUartConfig.eParity = UART_PARITY_ODD;						//校验位，奇校验
+	tUartConfig.wBaudRate = 115200;								//波特率，115200
+	csi_uart_init(UART1, &tUartConfig);							//初始化串口
+	
+	csi_uart_set_rxdma(UART1, UART_DMA_RXFIFO_NSPACE, ENABLE);	//设置RX DMA工作模式并使能	
+	csi_uart_start(UART1, UART_FUNC_RX_TX);						//开启UART的RX和TX功能，也可单独开启RX或者TX功能
 
-	csi_etb_init();								//使能ETB模块
-	csi_uart_dma_rx_init(UART1, DMA_CH3, ETB_CH20);
-	csi_uart_recv_dma(UART1, DMA_CH3, (void*)byRecvBuf,22);
+	//DMA配置初始化
+	tDmaConfig.bySrcLinc 	= DMA_ADDR_CONSTANT;				//低位传输原地址固定不变
+	tDmaConfig.bySrcHinc 	= DMA_ADDR_CONSTANT;				//高位传输原地址固定不变
+	tDmaConfig.byDetLinc 	= DMA_ADDR_CONSTANT;				//低位传输目标地址固定不变
+	tDmaConfig.byDetHinc 	= DMA_ADDR_INC;						//高位传输目标地址自增
+	tDmaConfig.byDataWidth 	= DMA_DSIZE_8_BITS;					//传输数据宽度8bit
+	tDmaConfig.byReload 	= DMA_RELOAD_ENABLE;				//禁止自动重载
+	tDmaConfig.byTransMode 	= DMA_TRANS_CONTINU;				//DMA服务模式(传输模式)，连续服务
+	tDmaConfig.byTsizeMode  = DMA_TSIZE_ONE_DSIZE;				//传输数据大小，一个 DSIZE , 即DSIZE定义大小
+	tDmaConfig.byReqMode	= DMA_REQ_HARDWARE;					//DMA请求模式，硬件请求
+	tDmaConfig.wInt			= DMA_INTSRC_TCIT;					//使用TCIT中断
+	csi_dma_ch_init(DMA0, DMA_CH0, &tDmaConfig);				//初始化DMA,选择CH0
+	
+	csi_etb_init();												//使能ETB模块
+	//ETB 配置初始化
+	tEtbConfig.eChType 	= ETB_ONE_TRG_ONE_DMA;					//单个源触发单个目标，DMA方式
+	tEtbConfig.eSrcIp 	= ETB_UART1_RXSRC;						//UART RXSRC作为触发源
+	tEtbConfig.eDstIp 	= ETB_DMA0_CH0;							//ETB DMA通道 作为目标实际
+	tEtbConfig.eTrgMode = ETB_HARDWARE_TRG;						//通道触发模式采样硬件触发
+	iRet = csi_etb_ch_config(ETB_CH21, &tEtbConfig);			//初始化ETB，DMA ETB CHANNEL > ETB_CH19
+	if(iRet < CSI_OK)
+		return CSI_ERROR;
+	
+	csi_uart_recv_dma(UART1, DMA0, DMA_CH0, (void*)byRecvBuf,22);
 	
 	while(1)
 	{
-		if(csi_dma_get_msg(DMA0,DMA_CH3, ENABLE))	//获取接收完成消息，并清除消息
+		if(csi_dma_get_msg(DMA0,DMA_CH0, ENABLE))				//获取接收完成消息，并清除消息
 		{
 			//添加用户代码
 			csi_uart_send(UART1, (void*)byRecvBuf, 22);
@@ -254,3 +300,5 @@ int uart_recv_dma_demo(void)
 	
 	return iRet;
 }
+
+#endif

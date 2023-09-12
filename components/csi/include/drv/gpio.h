@@ -213,7 +213,8 @@ typedef enum {
 	EXI_STATUS_GRP16	= (0x01ul << 16),      
 	EXI_STATUS_GRP17 	= (0x01ul << 17),
     EXI_STATUS_GRP18	= (0x01ul << 18),
-	EXI_STATUS_GRP19	= (0x01ul << 19)
+	EXI_STATUS_GRP19	= (0x01ul << 19),
+	EXI_STATUS_ALL		= (0xFFFFFul << 0)
 }csi_exi_status_e;
 
 
@@ -401,6 +402,14 @@ void csi_gpio_int_disable(csp_gpio_t *ptGpioBase, pin_name_e ePinName);
   \return 	   error code \ref csi_error_t
  */ 
 csi_error_t csi_gpio_vic_irq_enable(csi_exi_grp_e eExiGrp, bool bEnable);
+
+/** 
+  \brief 	   clear exi status
+  \param[in]   ptGpioBase	pointer of gpio register structure  
+  \param[in]   eExiStatus	exi status, \ref csi_exi_status_e
+  \return 	   error code \ref csi_error_t
+ */ 
+void csi_exi_clr_isr(csi_exi_status_e eExiStatus);
 
 /** \brief  set exi as trigger Event(EV0~5) 
   \param[in]   eTrgOut		output Event select(TRGOUT0~5)

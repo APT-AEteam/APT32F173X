@@ -43,8 +43,8 @@ void user_bt0_callback(csp_bt_t *ptBtBase, uint8_t byIsr)
  * 	\brief  csi接口默认使用(开启)周期结束中断，并在中断里面翻转IO(需要打开PA6IO配置），若不需要开启中断，可调
  * 			用csi_bt_int_disable接口函数，关闭周期结束中断
  *  
- * @ 工作模式:	BT_CNT_CONTINU: 连续工作模式, 指计数结束，计数器重新开始计数，周期执行
- * 				BT_CNT_ONCE:	单次工作模式，指计数结束，计数器停止工作
+ * @ 工作模式:	BT_RUN_CONT: 连续工作模式, 指计数结束，计数器重新开始计数，周期执行
+ * 				BT_RUN_ONCE: 单次工作模式，指计数结束，计数器停止工作
  * 
  *  \param[in] none
  *  \return 0/-1
@@ -89,8 +89,8 @@ void user_bt1_callback(csp_bt_t *ptBtBase, uint8_t byIsr)
 
 /** \brief  bt_pwm_callback_demo: BT0 PWM输出，中断使用callback
  * 
- * @ 工作模式:	BT_CNT_CONTINU: 连续工作模式, 指计数结束，计数器重新开始计数，周期执行
- * 			  	BT_CNT_ONCE:	单次工作模式，指计数结束，计数器停止工作
+ * @ 工作模式:	BT_RUN_CONT: 连续工作模式, 指计数结束，计数器重新开始计数，周期执行
+ * 				BT_RUN_ONCE: 单次工作模式，指计数结束，计数器停止工作
  * 
  *  \param[in] none
  *  \return error code

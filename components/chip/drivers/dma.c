@@ -116,7 +116,7 @@ csi_error_t csi_dma_ch_init(csp_dma_t *ptDmaBase, csi_dma_ch_e eDmaCh, csi_dma_c
 	if(ptChCfg->wInt)
 	{
 		csp_dma_int_enable(ptDmaChBase, ptChCfg->wInt);		//nable dma xxx interrupt
-		csi_irq_enable((uint32_t *)ptDmaBase);						//enable dma irq		
+		//csi_irq_enable((uint32_t *)ptDmaBase);				//enable dma irq		
 	}
 	
 	return CSI_OK;	

@@ -190,15 +190,15 @@ typedef enum
 /*************************************************************************
  * @brief  gpio pull set 
 ****************************************************************************/
-static inline void csp_gpio_pullnone(csp_gpio_t *ptGpioBase, uint8_t byPinNum)	
+static inline void csp_gpio_pullnone_enable(csp_gpio_t *ptGpioBase, uint8_t byPinNum)	
 {
 	ptGpioBase->PUDR &= ~(0x03 << (byPinNum*2));
 }
-static inline void csp_gpio_pullup(csp_gpio_t *ptGpioBase, uint8_t byPinNum)	
+static inline void csp_gpio_pullup_enable(csp_gpio_t *ptGpioBase, uint8_t byPinNum)	
 { 
 	ptGpioBase->PUDR = (ptGpioBase->PUDR & ~(0x03 << (byPinNum*2))) | (0x01 << (byPinNum*2));
 }
-static inline void csp_gpio_pulldown(csp_gpio_t *ptGpioBase, uint8_t byPinNum)
+static inline void csp_gpio_pulldown_enable(csp_gpio_t *ptGpioBase, uint8_t byPinNum)
 {
 	ptGpioBase->PUDR = (ptGpioBase->PUDR & ~(0x03 << (byPinNum*2))) | (0x02 << (byPinNum*2));
 }
@@ -257,11 +257,11 @@ static inline void csp_gpio_opendrain_disable(csp_gpio_t *ptGpioBase, uint16_t h
 /*************************************************************************
  * @brief  gpio pin coms/ttl/driver/speed/
 ****************************************************************************/
-static inline void csp_gpio_ccm_ttl(csp_gpio_t *ptGpioBase, uint8_t byPinNum)
+static inline void csp_gpio_ttl_enable(csp_gpio_t *ptGpioBase, uint8_t byPinNum)
 {
 	ptGpioBase->DSCR |= (0x02ul << (2*byPinNum));	
 }
-static inline void csp_gpio_ccm_cmos(csp_gpio_t *ptGpioBase, uint8_t byPinNum)
+static inline void csp_gpio_cmos_enable(csp_gpio_t *ptGpioBase, uint8_t byPinNum)
 {
 	ptGpioBase->DSCR &= ~(0x02ul << (2*byPinNum));
 }

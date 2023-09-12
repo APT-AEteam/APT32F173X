@@ -236,13 +236,13 @@ csi_error_t csi_gpio_pull_mode(csp_gpio_t *ptGpioBase, pin_name_e ePinName, csi_
 	switch(ePullMode)
 	{
 		case GPIO_PULLNONE:
-			csp_gpio_pullnone(ptGpioBase, byPinNum);		//pull none
+			csp_gpio_pullnone_enable(ptGpioBase, byPinNum);		//pull none
 			break;
 		case GPIO_PULLUP:
-			csp_gpio_pullup(ptGpioBase, byPinNum);			//pull up
+			csp_gpio_pullup_enable(ptGpioBase, byPinNum);			//pull up
 			break;
 		case GPIO_PULLDOWN:
-			csp_gpio_pulldown(ptGpioBase, byPinNum);		//pull down
+			csp_gpio_pulldown_enable(ptGpioBase, byPinNum);		//pull down
 			break;
 		default:
 			ret = CSI_ERROR;
@@ -269,14 +269,14 @@ csi_error_t csi_gpio_input_mode(csp_gpio_t *ptGpioBase, pin_name_e ePinName, csi
 	switch (eInputMode)
 	{
 		case (GPIO_INPUT_TTL2):	
-			csp_gpio_ccm_ttl(ptGpioBase, byPinNum);
+			csp_gpio_ttl_enable(ptGpioBase, byPinNum);
 			csp_gpio_set_ttl2(ptGpioBase, byPinNum);
 			break;
 		case (GPIO_INPUT_TTL1): 
-			csp_gpio_ccm_ttl(ptGpioBase, byPinNum);
+			csp_gpio_ttl_enable(ptGpioBase, byPinNum);
 			csp_gpio_set_ttl1(ptGpioBase, byPinNum);
 			break;
-		case (GPIO_INPUT_CMOS):	csp_gpio_ccm_cmos(ptGpioBase, byPinNum);
+		case (GPIO_INPUT_CMOS):	csp_gpio_cmos_enable(ptGpioBase, byPinNum);
 			break;
 		default:
 			ret = CSI_ERROR;
@@ -454,7 +454,6 @@ csi_error_t csi_gpio_irq_mode(csp_gpio_t *ptGpioBase, pin_name_e ePinName, csi_e
  *
  *  \param[in] ptGpioBase: pointer of gpio register structure  
  *  \param[in] ePinName: pin name, \ref pin_name_e
- *  \param[in] bEnable: ENABLE OR DISABLE
  *  \return error code \ref csi_error_t
  */ 
 void csi_gpio_int_enable(csp_gpio_t *ptGpioBase, pin_name_e ePinName)
@@ -466,14 +465,12 @@ void csi_gpio_int_enable(csp_gpio_t *ptGpioBase, pin_name_e ePinName)
  *
  *  \param[in] ptGpioBase: pointer of gpio register structure  
  *  \param[in] ePinName: pin name, \ref pin_name_e
- *  \param[in] bEnable: ENABLE OR DISABLE
  *  \return error code \ref csi_error_t
  */ 
 void csi_gpio_int_disable(csp_gpio_t *ptGpioBase,pin_name_e ePinName)
 {
 	csp_gpio_int_disable(ptGpioBase, ePinName);
 }
-
 /** \brief gpio vic irq enable
  * 
  *  \param[in] eExiGrp: exi group(exi line), \ref csi_exi_grp_e
@@ -517,6 +514,16 @@ csi_error_t csi_gpio_vic_irq_enable(csi_exi_grp_e eExiGrp, bool bEnable)
 		csi_vic_disable_irq(byIrqNum);
 	
 	return CSI_OK;
+}
+/** \brief clear exi status
+ *
+ *  \param[in] ptGpioBase: pointer of gpio register structure  
+ *  \param[in] eExiStatus: exi status, \ref csi_exi_status_e
+ *  \return error code \ref csi_error_t
+ */ 
+void csi_exi_clr_isr(csi_exi_status_e eExiStatus)
+{
+	csp_exi_clr_isr(SYSCON, eExiStatus);
 }
 
 /** \brief  set exi as trigger event(EV0~5) 
