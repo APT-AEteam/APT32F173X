@@ -126,7 +126,7 @@ ATTRIBUTE_ISR __attribute__((weak)) void adc1_int_handler(void)
 ATTRIBUTE_ISR __attribute__((weak)) void dma0_int_handler(void)
 {
 	CSI_INTRPT_ENTER();
-	//dma_irqhandler(DMA0);//this is a weak function defined in dma.c, for better efficiency, we recommand user directly implement IRQ handler here without any function call.
+	dma_irqhandler(DMA0);//this is a weak function defined in dma.c, for better efficiency, we recommand user directly implement IRQ handler here without any function call.
 	CSI_INTRPT_EXIT();
 }
 
@@ -135,7 +135,7 @@ ATTRIBUTE_ISR __attribute__((weak)) void dma1_int_handler(void)
 {
 	// ISR content ...
 	CSI_INTRPT_ENTER();
-	//dma_irqhandler(DMA1);//this is a weak function defined in dma.c, for better efficiency, we recommand user directly implement IRQ handler here without any function call.
+	dma_irqhandler(DMA1);//this is a weak function defined in dma.c, for better efficiency, we recommand user directly implement IRQ handler here without any function call.
 	CSI_INTRPT_EXIT();
 }
 
@@ -264,21 +264,24 @@ ATTRIBUTE_ISR __attribute__((weak)) void dac0_int_handler(void)
 
 ATTRIBUTE_ISR __attribute__((weak)) void usart0_int_handler(void) 
 {
-#if	USART0_INT_HANDLE_EN	
 	CSI_INTRPT_ENTER();
-	usart_irqhandler(USART0, 0);//this is a weak function defined in usart_demo.c, for better efficiency, we recommand user directly implement IRQ handler here without any function call.
+#if (USE_USART_CALLBACK == 1)
+	csi_usart_irqhandler(USART0, 0);
+#else
+	csp_usart_clr_isr(USART0, csp_usart_get_isr(USART0))
+#endif
 	CSI_INTRPT_EXIT();
-#endif	
 }
 
 ATTRIBUTE_ISR __attribute__((weak)) void usart1_int_handler(void) 
 {
-#if	USART0_INT_HANDLE_EN	
-    // ISR content ...
 	CSI_INTRPT_ENTER();
-	usart_irqhandler(USART1, 1);//this is a weak function defined in usart_demo.c, for better efficiency, we recommand user directly implement IRQ handler here without any function call.
-	CSI_INTRPT_EXIT();
+#if (USE_USART_CALLBACK == 1)
+	csi_usart_irqhandler(USART1, 1);
+#else
+	csp_usart_clr_isr(USART1, csp_usart_get_isr(USART1))
 #endif
+	CSI_INTRPT_EXIT();
 }
 
 ATTRIBUTE_ISR __attribute__((weak)) void uart0_int_handler(void) 

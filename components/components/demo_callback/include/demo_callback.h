@@ -49,6 +49,11 @@ extern int etcb_one_trg_more_demo(void);
 extern int uart_send_int_callback_demo(void);
 extern int uart_receive_int_callback_demo(void);
 
+
+//usart demo
+extern int usart_send_int_callback_demo(void);
+extern int usart_receive_int_callback_demo(void);
+
 //adc demo
 //normal mode(no interrupt)
 extern int adc_samp_oneshot_demo(void);

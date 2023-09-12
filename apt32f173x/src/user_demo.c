@@ -167,15 +167,17 @@ void user_demo(void)
 /// ***************************************************
 ///  USART相关的示例代码
 /// ***************************************************
-//	usart_char_demo();
+
 //	usart_send_demo();
 //	usart_send_int_demo();
-//	usart_recv_demo();
 //	usart_recv_int_demo();
-//	usart_recv_dynamic_demo();
 //	usart_send_dma_demo();  
 //	usart_recv_dma_demo();
-//	
+//
+
+//	usart_send_int_callback_demo();	
+	usart_receive_int_callback_demo();
+	
 //	lin_send_test();        
 //	lin_send_recv_test();
 

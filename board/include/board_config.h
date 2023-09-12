@@ -66,6 +66,8 @@ extern "C" {
 #define USE_CMP_CALLBACK		1		//CMP(0/1/2)
 #define USE_GPTA_CALLBACK		1		//GPTA(0/1/2/3)
 #define USE_DAC_CALLBACK		1		//DAC(0)
+#define USE_USART_CALLBACK		1		//USART(0/1)
+
 //csi GUI Handling Enable, 1/0(OPEN/CLOSE)
 //可视化编程，通过宏USE_GUI来实现功能选择
 #define USE_GUI					0						

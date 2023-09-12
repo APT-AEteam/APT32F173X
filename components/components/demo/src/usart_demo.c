@@ -17,15 +17,197 @@
 #include "demo.h"
 
 /* externs function--------------------------------------------------------*/
-/* externs variablesr------------------------------------------------------*/
+/* externs variable------------------------------------------------------*/
 /* Private macro-----------------------------------------------------------*/
-/* Private variablesr------------------------------------------------------*/
+/* Private variable------------------------------------------------------*/
 
-static uint8_t s_byRecvBuf[64];					//接收缓存
-static uint8_t s_byRecvLen = 0;	
+uint8_t byRecvBuf[64] = {0};					//接收缓存
+uint8_t bySendBuf[30]={1,2,3,4,5,6,7,8,9,21,22,23,24,25,26,27,28,29,30,10,11,12,13,14,15,16,17,18,19};	
 
-/** \brief usart dma send data
- *  	 - USART通过DMA发送数据
+static uint16_t hwSendLen = 0;	
+
+/** \brief  usart0_int_handler: USART中断服务函数
+ * 
+    \brief  USART发生中断时会调用此函数，函数在interrupt.c里定义为弱(weak)属性，默认不做处理;用户用到中断
+ * 			时，请重新定义此函数，在此函数中进行对应中断处理，也可直接在interrupt.c里的函数里进行处理。
+ * 
+ *  \param[in] none
+ *  \return none
+ */
+ATTRIBUTE_ISR void usart0_int_handler(void) 
+{
+	//TXFIFO中断
+	if(csp_usart_get_isr(USART0)&US_TXFIFO_INT)				//TXFIFO中断
+	{
+		//发送16字节数据，发送完毕关闭中断(停止发送)
+		if(hwSendLen < 16)
+			csp_usart_set_data(USART0, bySendBuf[hwSendLen++]);
+		else
+		{
+			hwSendLen = 0;
+			csi_usart_int_disable(USART0, USART_INTSRC_TXFIFO);	//关闭中断	
+		}
+	}
+	
+	//RXFIFO中断
+	if(csp_usart_get_isr(USART0)&US_RXFIFO_INT)				//RXFIFO中断
+	{
+		//接收1字节数据
+		byRecvBuf[0] = csp_usart_get_data(USART0);				//接收数据,RXFIFO中断状态不需要专门清除，读数据时自动清除
+	}
+	
+	//接收超时中断
+	if(csp_usart_get_isr(USART0)& US_RXTO_INT)				//接收超时中断
+	{
+		//添加用户处理(若开启此中断)
+		csp_usart_clr_isr(USART0, US_RXTO_INT);				//清除接收超时中断状态
+		csp_usart_cr_cmd(USART0,US_STTTO);					//使能接收超时
+	}
+}
+
+/** \brief usart_send_demo: USART0 轮询发送18个字节数据
+ *  	 
+ *  \param[in] none
+ *  \return error code
+ */
+ 
+int usart_send_demo(void)
+{
+	int iRet = 0;
+	csi_usart_config_t tUsartCfg;						//USART0 参数配置结构体
+	
+#if !defined(USE_GUI)	
+
+	csi_gpio_set_mux(GPIOA, PA9, PA9_USART0_TX);		//USART0 TX管脚配置	
+	csi_gpio_set_mux(GPIOA, PA10, PA10_USART0_RX);		//USART0 RX管脚配置
+	csi_gpio_pull_mode(GPIOA, PA10, GPIO_PULLUP);		//RX管脚上拉使能, 建议配置
+	
+#endif	
+	tUsartCfg.byClkSrc 		= USART_CLKSRC_DIV1;		//clk = PCLK
+	tUsartCfg.byMode		= USART_MODE_ASYNC;			//异步模式
+	tUsartCfg.byDatabit 	= USART_DATA_BITS_8;		//字节长度，8bit
+	tUsartCfg.byStopbit 	= USART_STOP_BITS_1;		//停止位，1个
+	tUsartCfg.byParity		= USART_PARITY_EVEN;		//偶校验
+	tUsartCfg.wBaudRate 	= 115200;					//波特率：115200
+
+	
+	csi_usart_init(USART0, &tUsartCfg);					//初始化串口	
+	csi_usart_start(USART0, USART_FUNC_RX_TX);			//开启USART的RX和TX功能，也可单独开启RX或者TX功能
+	
+	while(1)
+	{
+
+		if(csi_usart_send(USART0,(void *)bySendBuf,18) != 18)
+			return -1;
+		
+		mdelay(100);
+	}
+
+	return iRet;
+}
+
+
+/** \brief usart_send_int_demo : USART中断发送数据
+ * 
+ *  \brief  使用TXFIFO中断发送，用户直接在中断服务函数(usart0_int_handler)里处理；TXFIFO中断，即TXFIFO空
+ * 			产生中断，开启时若TXFIFO中无数据，则产生中断 
+ * 
+ *  \param[in] none
+ *  \return error code
+ */
+int usart_send_int_demo(void)
+{
+	int iRet = 0;
+	csi_usart_config_t tUsartCfg;						//USART0 参数配置结构体
+	
+	
+#if !defined(USE_GUI)
+
+	csi_gpio_set_mux(GPIOA, PA9, PA9_USART0_TX);		//USART0 TX管脚配置	
+	csi_gpio_set_mux(GPIOA, PA10, PA10_USART0_RX);		//USART0 RX管脚配置
+	csi_gpio_pull_mode(GPIOA, PA10, GPIO_PULLUP);		//RX管脚上拉使能, 建议配置
+	
+#endif	
+
+	tUsartCfg.byClkSrc 		= USART_CLKSRC_DIV1;		//clk = PCLK
+	tUsartCfg.byMode		= USART_MODE_ASYNC;			//异步模式
+	tUsartCfg.byDatabit 	= USART_DATA_BITS_8;		//字节长度，8bit
+	tUsartCfg.byStopbit 	= USART_STOP_BITS_1;		//停止位，1个
+	tUsartCfg.byParity		= USART_PARITY_EVEN;		//偶校验
+	tUsartCfg.wBaudRate 	= 115200;					//波特率：115200
+	
+	csi_usart_init(USART0, &tUsartCfg);					//初始化串口	
+	csi_usart_start(USART0, USART_FUNC_RX_TX);			//开启USART的RX和TX功能，也可单独开启RX或者TX功能
+
+	csi_usart_int_enable(USART0, USART_INTSRC_TXFIFO);  //使能TXFIFO中断
+	
+	while(1)
+	{
+		mdelay(100);
+	}
+
+
+	return iRet;	
+}
+
+
+
+/** \brief  usart_recv_int_demo：usart中断接收数据
+ * 
+ *  \brief  使用RXFIFO中断接收，用户直接在中断服务函数(usart0_int_handler)里处理
+ * 
+ * @ 接收超时:	即接收字节超时，指接收数据时，两个字节之间的时间，超过设定值，产生超时中断；
+ * 
+ * @ eRxFifoTrg: 接收FIFO触发点 \ref csi_usart_rxfifo_trg_e
+ * 
+ * 					USART_RXFIFOTRG_ONE  - FIFO收到1个字节数据触发中断
+ * 					USART_RXFIFOTRG_TWO  - FIFO收到2个字节数据触发中断
+ * 					USART_RXFIFOTRG_FOUR - FIFO收到4个字节数据触发中断
+ * 
+ * 				Notes:接收FIFO触发点设置为2/4时，一定要开启接收超时中断，否则可能会因为数据长度不能达到触发点而收不到数据
+ * 
+ *  \param[in] none
+ *  \return error code
+ */
+int usart_recv_int_demo(void)
+{
+	int iRet = 0;
+	csi_usart_config_t tUsartCfg;							//USART0 参数配置结构体
+	
+	
+#if !defined(USE_GUI)
+	
+	csi_gpio_set_mux(GPIOA, PA9, PA9_USART0_TX);			//USART0 TX管脚配置	
+	csi_gpio_set_mux(GPIOA, PA10, PA10_USART0_RX);			//USART0 RX管脚配置
+	csi_gpio_pull_mode(GPIOA, PA10, GPIO_PULLUP);			//RX管脚上拉使能, 建议配置
+	
+#endif	
+
+	tUsartCfg.byClkSrc 		= USART_CLKSRC_DIV1;			//clk = PCLK
+	tUsartCfg.byMode		= USART_MODE_ASYNC;				//异步模式
+	tUsartCfg.byDatabit 	= USART_DATA_BITS_8;			//字节长度，8bit
+	tUsartCfg.byStopbit 	= USART_STOP_BITS_1;			//停止位，1个
+	tUsartCfg.byParity		= USART_PARITY_EVEN;			//偶校验
+	tUsartCfg.wBaudRate 	= 115200;						//波特率：115200
+	tUsartCfg.hwRecvTo		= 88;							//USART接收超时时间，单位：bit位周期，8个bytes(11bit*8=88, 115200波特率时=764us)
+	tUsartCfg.eRxFifoTrg    = USART_RXFIFOTRG_ONE;
+	
+	csi_usart_init(USART0, &tUsartCfg);						//初始化串口
+	csi_usart_start(USART0, USART_FUNC_RX_TX);				//开启USART的RX和TX功能，也可单独开启RX或者TX功能
+	
+	csi_usart_int_enable(USART0, USART_INTSRC_RXFIFO);  	//使能RXFIFO中断
+	//csi_usart_int_enable(USART0, USART_INTSRC_TIMEOUT);	//开启字节接收超时中断
+	
+	while(1)
+	{
+		mdelay(100);
+	}
+	
+	return iRet;
+}
+
+/** \brief USART通过DMA发送数据
+ *  	 
  * 
  *  \param[in] none
  *  \return error code
@@ -33,60 +215,67 @@ static uint8_t s_byRecvLen = 0;
 int usart_send_dma_demo(void)
 {
 	int iRet = 0;
-	uint8_t bySdData[36]={31,32,33,34,5,6,7,8,9,10,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,1,2,3};
-	volatile uint8_t byRecv;
 	csi_usart_config_t tUsartCfg;						//USART0 参数配置结构体
+	csi_dma_ch_config_t tDmaConfig;						//DMA 参数配置结构体			
+	csi_etb_config_t 	tEtbConfig;						//ETCB 参数配置结构体
 	
 #if !defined(USE_GUI)
-	csi_pin_set_mux(PB10, PB10_USART0_TX);				//USART0 TX管脚配置	
-	csi_pin_set_mux(PB11, PB11_USART0_RX);				//USART0 RX管脚配置
-	csi_pin_set_mux(PB2, PB2_USART0_CK);				//CK，同步模式时使用
-	csi_pin_pull_mode(PB11,GPIO_PULLUP);				//RX管脚上拉使能, 建议配置
-	
-//	csi_pin_set_mux(PA8, PA8_USART0_CK);				//CK，同步模式时使用
-//	csi_pin_set_mux(PA9, PA9_USART0_TX);				//USART0 TX管脚配置	
-//	csi_pin_set_mux(PA10, PA10_USART0_RX);				//USART0 RX管脚配置
-//	csi_pin_set_mux(PB12, PB12_USART0_CK);				//CK，同步模式时使用
-//	csi_pin_pull_mode(PA10,GPIO_PULLUP);				//RX管脚上拉使能, 建议配置
-//
-//	csi_pin_set_mux(PC10, PC10_USART0_TX);				//USART0 TX管脚配置	
-//	csi_pin_set_mux(PC11, PC11_USART0_RX);				//USART0 RX管脚配置
-//	csi_pin_set_mux(PC12, PC12_USART0_CK);				//CK，同步模式时使用
-//	csi_pin_pull_mode(PC11,GPIO_PULLUP);				//RX管脚上拉使能, 建议配置
+
+	csi_gpio_set_mux(GPIOA, PA9, PA9_USART0_TX);		//USART0 TX管脚配置	
+	csi_gpio_set_mux(GPIOA, PA10, PA10_USART0_RX);		//USART0 RX管脚配置
+	csi_gpio_pull_mode(GPIOA, PA10, GPIO_PULLUP);		//RX管脚上拉使能, 建议配置
+
 #endif	
-	tUsartCfg.byClkSrc 		= USART_CLKSRC_DIV8;		//clk = PCLK
+
+	//usart 参数配置
+	tUsartCfg.byClkSrc 		= USART_CLKSRC_DIV1;		//clk = PCLK
 	tUsartCfg.byMode		= USART_MODE_ASYNC;			//异步模式
 	tUsartCfg.byDatabit 	= USART_DATA_BITS_8;		//字节长度，8bit
 	tUsartCfg.byStopbit 	= USART_STOP_BITS_1;		//停止位，1个
 	tUsartCfg.byParity		= USART_PARITY_EVEN;		//偶校验
-	tUsartCfg.bClkOutEn		= DISABLE;					//禁止USARTCLK输出；同步模式时，USARTCLK可以给另外设备上的USART提供clk，作为同步输入时钟使用
 	tUsartCfg.wBaudRate 	= 115200;					//波特率：115200
-	tUsartCfg.hwRecvTo		= 88;						//USART接收超时时间，单位：bit位周期，8个bytes(11bit*8=88, 115200波特率时=764us)
-	tUsartCfg.bRecvToEn		= DISABLE;					//禁止接收超时
-	tUsartCfg.wInt			= USART_INTSRC_NONE;		//使用TXFIFO中断（默认推荐）
-	tUsartCfg.byTxMode		= USART_TX_MODE_POLL;		//发送模式：轮询/中断模式
-	tUsartCfg.byRxMode		= USART_RX_MODE_POLL;		//接收模式：轮询模式
 	
 	csi_usart_init(USART0, &tUsartCfg);					//初始化串口
 	csi_usart_start(USART0, USART_FUNC_RX_TX);			//开启USART的RX和TX功能，也可单独开启RX或者TX功能
 	
-	csi_etb_init();										//使能ETB模块
 
-	csi_usart_dma_tx_init(USART0, DMA_CH0, ETB_CH20);	//发送DMA初始化，选择DMA通道和ETB触发通道，DMA_CH: 0~3; ETB_CH: 8~11
+	//dma 参数配置
+	tDmaConfig.bySrcLinc 	= DMA_ADDR_CONSTANT;		//低位传输原地址固定不变
+	tDmaConfig.bySrcHinc 	= DMA_ADDR_INC;				//高位传输原地址自增
+	tDmaConfig.byDetLinc 	= DMA_ADDR_CONSTANT;		//低位传输目标地址固定不变
+	tDmaConfig.byDetHinc 	= DMA_ADDR_CONSTANT;		//高位传输目标地址固定不变
+	tDmaConfig.byDataWidth 	= DMA_DSIZE_8_BITS;			//传输数据宽度8bit
+	tDmaConfig.byReload 	= DMA_RELOAD_DISABLE;		//禁止自动重载
+	tDmaConfig.byTransMode 	= DMA_TRANS_CONTINU;		//DMA服务模式(传输模式)，连续服务
+	tDmaConfig.byTsizeMode  = DMA_TSIZE_ONE_DSIZE;		//传输数据大小，一个 DSIZE , 即DSIZE定义大小
+	tDmaConfig.byReqMode	= DMA_REQ_HARDWARE;			//DMA请求模式，软件请求（软件触发）
+	tDmaConfig.wInt			= DMA_INTSRC_LTCIT;			//使用TCIT中断
 	
+	csi_dma_ch_init(DMA0, DMA_CH0, &tDmaConfig);	    //初始化DMA
+	csi_usart_set_txdma(USART0, USDMA_TX_FIF0_TRG,ENABLE);
+	
+	
+	//etb 参数配置
+	csi_etb_init();										//使能ETB模块
+		
+	tEtbConfig.eChType = ETB_ONE_TRG_ONE_DMA;			//单个源触发单个目标，DMA方式
+	tEtbConfig.eSrcIp 	= ETB_USART0_TXSRC;				//UART TXSRC作为触发源
+	tEtbConfig.eDstIp 	= ETB_DMA0_CH0 + DMA_CH0;		//ETB DMA通道 作为目标实际
+	tEtbConfig.eTrgMode = ETB_HARDWARE_TRG;				//通道触发模式采样硬件触发
+	
+	iRet = csi_etb_ch_config(ETB_CH20, &tEtbConfig);	//初始化ETB，DMA ETB CHANNEL > ETB_CH19_ID
+
 	while(1)
 	{
-		byRecv = csi_usart_getc(USART0);
-		if(byRecv)
-			csi_usart_send_dma(USART0,(void *)bySdData, DMA_CH0, 31);	//采用DMA方式发送
-		mdelay(10);
-		if(csi_dma_get_msg(DMA0,DMA_CH0, ENABLE))			//获取发送完成消息，并清除消息
+		csi_usart_send_dma(USART0,(void *)bySendBuf, DMA_CH0, 31);	//采用DMA方式发送
+		
+		mdelay(100);
+		if(csi_dma_get_msg(DMA0,DMA_CH0, ENABLE))		//获取发送完成消息，并清除消息
 		{
 			//添加用户代码
 			nop;
 		}
-		nop;
-		nop;
+		mdelay(10);
 	}
 	
 	return iRet;
@@ -102,452 +291,73 @@ int usart_recv_dma_demo(void)
 {
 	int iRet = 0;
 	csi_usart_config_t tUsartCfg;						//USART0 参数配置结构体
+	csi_dma_ch_config_t tDmaConfig;						//DMA 参数配置结构体
+	csi_etb_config_t 	tEtbConfig;						//ETCB 参数配置结构体
+	
 	
 #if !defined(USE_GUI)
-	csi_pin_set_mux(PB10, PB10_USART0_TX);				//USART0 TX管脚配置	
-	csi_pin_set_mux(PB11, PB11_USART0_RX);				//USART0 RX管脚配置
-	csi_pin_set_mux(PB2, PB2_USART0_CK);				//CK，同步模式时使用
-	csi_pin_pull_mode(PB11,GPIO_PULLUP);				//RX管脚上拉使能, 建议配置
-	
-//	csi_pin_set_mux(PA8, PA8_USART0_CK);				//CK，同步模式时使用
-//	csi_pin_set_mux(PA9, PA9_USART0_TX);				//USART0 TX管脚配置	
-//	csi_pin_set_mux(PA10, PA10_USART0_RX);				//USART0 RX管脚配置
-//	csi_pin_set_mux(PB12, PB12_USART0_CK);				//CK，同步模式时使用
-//	csi_pin_pull_mode(PA10,GPIO_PULLUP);				//RX管脚上拉使能, 建议配置
-//
-//	csi_pin_set_mux(PC10, PC10_USART0_TX);				//USART0 TX管脚配置	
-//	csi_pin_set_mux(PC11, PC11_USART0_RX);				//USART0 RX管脚配置
-//	csi_pin_set_mux(PC12, PC12_USART0_CK);				//CK，同步模式时使用
-//	csi_pin_pull_mode(PC11,GPIO_PULLUP);				//RX管脚上拉使能, 建议配置
-	
+
+	csi_gpio_set_mux(GPIOA, PA9, PA9_USART0_TX);		//USART0 TX管脚配置	
+	csi_gpio_set_mux(GPIOA, PA10, PA10_USART0_RX);		//USART0 RX管脚配置
+	csi_gpio_pull_mode(GPIOA, PA10, GPIO_PULLUP);		//RX管脚上拉使能, 建议配置
+		
 #endif	
+
+	//usart 参数配置
 	tUsartCfg.byClkSrc 		= USART_CLKSRC_DIV1;		//clk = PCLK
 	tUsartCfg.byMode		= USART_MODE_ASYNC;			//异步模式
 	tUsartCfg.byDatabit 	= USART_DATA_BITS_8;		//字节长度，8bit
 	tUsartCfg.byStopbit 	= USART_STOP_BITS_1;		//停止位，1个
 	tUsartCfg.byParity		= USART_PARITY_EVEN;		//偶校验
-	tUsartCfg.bClkOutEn		= DISABLE;					//禁止USARTCLK输出；同步模式时，USARTCLK可以给另外设备上的USART提供clk，作为同步输入时钟使用
 	tUsartCfg.wBaudRate 	= 115200;					//波特率：115200
-	tUsartCfg.hwRecvTo		= 88;						//USART接收超时时间，单位：bit位周期，8个bytes(11bit*8=88, 115200波特率时=764us)
-	tUsartCfg.bRecvToEn		= DISABLE;					//禁止接收超时
-	tUsartCfg.wInt			= USART_INTSRC_NONE;		//使用TXFIFO中断（默认推荐）
-	tUsartCfg.byTxMode		= USART_TX_MODE_POLL;		//发送模式：轮询/中断模式
-	tUsartCfg.byRxMode		= USART_RX_MODE_POLL;		//接收模式：轮询模式
 	
 	csi_usart_init(USART0, &tUsartCfg);					//初始化串口
 	csi_usart_start(USART0, USART_FUNC_RX_TX);			//开启USART的RX和TX功能，也可单独开启RX或者TX功能
 	
+	
+	
+	//dma 参数配置
+	tDmaConfig.bySrcLinc 	= DMA_ADDR_CONSTANT;		//低位传输原地址固定不变
+	tDmaConfig.bySrcHinc 	= DMA_ADDR_CONSTANT;		//高位传输原地址固定不变
+	tDmaConfig.byDetLinc 	= DMA_ADDR_CONSTANT;		//低位传输目标地址固定不变
+	tDmaConfig.byDetHinc 	= DMA_ADDR_INC;				//高位传输目标地址自增
+	tDmaConfig.byDataWidth 	= DMA_DSIZE_8_BITS;			//传输数据宽度8bit
+	tDmaConfig.byReload 	= DMA_RELOAD_DISABLE;		//自动重载
+	tDmaConfig.byTransMode 	= DMA_TRANS_CONTINU;		//DMA服务模式(传输模式)，连续服务
+	tDmaConfig.byTsizeMode  = DMA_TSIZE_ONE_DSIZE;		//传输数据大小，一个 DSIZE , 即DSIZE定义大小
+	tDmaConfig.byReqMode	= DMA_REQ_HARDWARE;			//DMA请求模式，硬件请求
+	tDmaConfig.wInt			= DMA_INTSRC_TCIT;			//使用TCIT中断
+	
+	csi_dma_ch_init(DMA0, DMA_CH3, &tDmaConfig);		//初始化DMA
+	csi_usart_set_rxdma(USART0, USDMA_RX_FIFO_NSPACE, US_RDMA_EN);
+	
+	
+	//etb 参数配置
 	csi_etb_init();										//使能ETB模块
+	
+	tEtbConfig.eChType = ETB_ONE_TRG_ONE_DMA;			//单个源触发单个目标，DMA方式
+	tEtbConfig.eSrcIp 	= ETB_USART0_RXSRC;				//UART TXSRC作为触发源
+	tEtbConfig.eDstIp 	= ETB_DMA0_CH0 + DMA_CH3;		//ETB DMA通道 作为目标实际
+	tEtbConfig.eTrgMode = ETB_HARDWARE_TRG;				//通道触发模式采样硬件触发
+										
+	csi_etb_ch_config(ETB_CH20, &tEtbConfig);			//初始化ETB，DMA ETB CHANNEL > ETB_CH19_ID
 
-	csi_usart_dma_rx_init(USART0, DMA_CH3, ETB_CH20);			//DMA接收初始化，选择DMA通道和ETB触发通道，DMA_CH: 0~3; ETB_CH: 8~11
-	csi_usart_recv_dma(USART0,(void*)s_byRecvBuf, DMA_CH3, 25);	//DMA接收
+
+	csi_usart_recv_dma(USART0,(void*)byRecvBuf, DMA_CH3, 25);	//DMA接收
 	
 	while(1)
 	{
-		if(csi_dma_get_msg(DMA0,DMA_CH3, ENABLE))						//获取接收完成消息，并清除消息
+		if(csi_dma_get_msg(DMA0,DMA_CH3, ENABLE))		//获取接收完成消息，并清除消息
 		{
 			//添加用户代码
-			csi_usart_send(USART0, (void*)s_byRecvBuf, 25);
-			nop;
-			break;
-		}
-		mdelay(10);
-		nop;
-	}
-	
-	return iRet;
-}
-
-/** \brief usart char receive and send 
- *  	 - USART接收一个字符，并发送出去，轮询方式
- * 
- *  \param[in] none
- *  \return error code
- */
-int usart_char_demo(void)
-{
-	int iRet = 0;
-	volatile uint8_t byRecv;
-	csi_usart_config_t tUsartCfg;						//USART0 参数配置结构体
-#if !defined(USE_GUI)
-	csi_pin_set_mux(PB10, PB10_USART0_TX);				//USART0 TX管脚配置	
-	csi_pin_set_mux(PB11, PB11_USART0_RX);				//USART0 RX管脚配置
-	csi_pin_set_mux(PB2, PB2_USART0_CK);				//CK，同步模式时使用
-	csi_pin_pull_mode(PB11,GPIO_PULLUP);				//RX管脚上拉使能, 建议配置
-	
-//	csi_pin_set_mux(PA8, PA8_USART0_CK);				//CK，同步模式时使用
-//	csi_pin_set_mux(PA9, PA9_USART0_TX);				//USART0 TX管脚配置	
-//	csi_pin_set_mux(PA10, PA10_USART0_RX);				//USART0 RX管脚配置
-//	csi_pin_set_mux(PB12, PB12_USART0_CK);				//CK，同步模式时使用
-//	csi_pin_pull_mode(PA10,GPIO_PULLUP);				//RX管脚上拉使能, 建议配置
-//
-//	csi_pin_set_mux(PC10, PC10_USART0_TX);				//USART0 TX管脚配置	
-//	csi_pin_set_mux(PC11, PC11_USART0_RX);				//USART0 RX管脚配置
-//	csi_pin_set_mux(PC12, PC12_USART0_CK);				//CK，同步模式时使用
-//	csi_pin_pull_mode(PC11,GPIO_PULLUP);				//RX管脚上拉使能, 建议配置
-#endif	
-	tUsartCfg.byClkSrc 		= USART_CLKSRC_DIV1;		//clk = PCLK
-	tUsartCfg.byMode		= USART_MODE_ASYNC;			//异步模式
-	tUsartCfg.byDatabit 	= USART_DATA_BITS_8;		//字节长度，8bit
-	tUsartCfg.byStopbit 	= USART_STOP_BITS_1;		//停止位，1个
-	tUsartCfg.byParity		= USART_PARITY_EVEN;		//偶校验
-	tUsartCfg.bClkOutEn		= DISABLE;					//禁止USARTCLK输出；同步模式时，USARTCLK可以给另外设备上的USART提供clk，作为同步输入时钟使用
-	tUsartCfg.wBaudRate 	= 115200;					//波特率：115200
-	tUsartCfg.hwRecvTo		= 88;						//USART接收超时时间，单位：bit位周期，8个bytes(11bit*8=88, 115200波特率时=764us)
-	tUsartCfg.bRecvToEn		= DISABLE;					//禁止接收超时
-	tUsartCfg.wInt			= USART_INTSRC_NONE;		//使用TXFIFO中断（默认推荐）
-	tUsartCfg.byTxMode		= USART_TX_MODE_POLL;		//发送模式：轮询/中断模式
-	tUsartCfg.byRxMode		= USART_RX_MODE_POLL;		//接收模式：轮询模式
-	
-	csi_usart_init(USART0, &tUsartCfg);					//初始化串口	
-	csi_usart_start(USART0, USART_FUNC_RX_TX);			//开启USART的RX和TX功能，也可单独开启RX或者TX功能
-	
-	while(1)
-	{
-		byRecv = csi_usart_getc(USART0);
-		csi_usart_putc(USART0, byRecv+1);
-		
-		mdelay(10);
-	}
-	
-	return iRet;
-}
-
-/** \brief usart send a bunch of data; polling(sync,no interrupt)mode
- *  	 - USART发送一串数据，TX使用轮询
- * 
- *  \param[in] none
- *  \return error code
- */
-int usart_send_demo(void)
-{
-	int iRet = 0;
-	uint8_t bySdData[30]={31,25,20,34,55,6,7,8,9,10,21,22,23,24,25,26,10,11,12,13,14,15,16,17,18,19,1,2,3};
-	volatile uint8_t byRecv;
-	csi_usart_config_t tUsartCfg;						//USART0 参数配置结构体
-#if !defined(USE_GUI)	
-	csi_pin_set_mux(PB10, PB10_USART0_TX);				//USART0 TX管脚配置	
-	csi_pin_set_mux(PB11, PB11_USART0_RX);				//USART0 RX管脚配置
-	csi_pin_set_mux(PB2, PB2_USART0_CK);				//CK，同步模式时使用
-	csi_pin_pull_mode(PB11,GPIO_PULLUP);				//RX管脚上拉使能, 建议配置
-	
-//	csi_pin_set_mux(PA8, PA8_USART0_CK);				//CK，同步模式时使用
-//	csi_pin_set_mux(PA9, PA9_USART0_TX);				//USART0 TX管脚配置	
-//	csi_pin_set_mux(PA10, PA10_USART0_RX);				//USART0 RX管脚配置
-//	csi_pin_set_mux(PB12, PB12_USART0_CK);				//CK，同步模式时使用
-//	csi_pin_pull_mode(PA10,GPIO_PULLUP);				//RX管脚上拉使能, 建议配置
-//
-//	csi_pin_set_mux(PC10, PC10_USART0_TX);				//USART0 TX管脚配置	
-//	csi_pin_set_mux(PC11, PC11_USART0_RX);				//USART0 RX管脚配置
-//	csi_pin_set_mux(PC12, PC12_USART0_CK);				//CK，同步模式时使用
-//	csi_pin_pull_mode(PC11,GPIO_PULLUP);				//RX管脚上拉使能, 建议配置
-#endif	
-	tUsartCfg.byClkSrc 		= USART_CLKSRC_DIV1;		//clk = PCLK
-	tUsartCfg.byMode		= USART_MODE_ASYNC;			//异步模式
-	tUsartCfg.byDatabit 	= USART_DATA_BITS_8;		//字节长度，8bit
-	tUsartCfg.byStopbit 	= USART_STOP_BITS_1;		//停止位，1个
-	tUsartCfg.byParity		= USART_PARITY_EVEN;		//偶校验
-	tUsartCfg.bClkOutEn		= DISABLE;					//禁止USARTCLK输出；同步模式时，USARTCLK可以给另外设备上的USART提供clk，作为同步输入时钟使用
-	tUsartCfg.wBaudRate 	= 115200;					//波特率：115200
-	tUsartCfg.hwRecvTo		= 88;						//USART接收超时时间，单位：bit位周期，8个bytes(11bit*8=88, 115200波特率时=764us)
-	tUsartCfg.bRecvToEn		= DISABLE;					//禁止接收超时
-	tUsartCfg.wInt			= USART_INTSRC_NONE;		//不使用中断
-	tUsartCfg.byTxMode		= USART_TX_MODE_POLL;		//发送模式：轮询/中断模式
-	tUsartCfg.byRxMode		= USART_RX_MODE_POLL;		//接收模式：轮询模式
-	
-	csi_usart_init(USART0, &tUsartCfg);					//初始化串口	
-	csi_usart_start(USART0, USART_FUNC_RX_TX);			//开启USART的RX和TX功能，也可单独开启RX或者TX功能
-	
-	while(1)
-	{
-		byRecv = csi_usart_getc(USART0);
-		if(byRecv)
-			byRecv = csi_usart_send(USART0,(void *)bySdData,18);		//采用轮询方式,调用该函数时，UART发送中断关闭
-		
-		nop;
-	}
-
-	return iRet;
-}
-
-/** \brief usart send a bunch of data; interrupt(nsync) mode
- *  	 - USART发送一串数据，TX使用中断
- * 
- *  \param[in] none
- *  \return error code
- */
-int usart_send_int_demo(void)
-{
-	int iRet = 0;
-	uint8_t bySdData[30]={31,25,20,34,55,6,7,8,9,10,21,22,23,24,25,26,10,11,12,13,14,15,16,17,18,19,1,2,3};
-	volatile uint8_t byRecv;
-	csi_usart_config_t tUsartCfg;						//USART0 参数配置结构体
-#if !defined(USE_GUI)
-	csi_pin_set_mux(PB10, PB10_USART0_TX);				//USART0 TX管脚配置	
-	csi_pin_set_mux(PB11, PB11_USART0_RX);				//USART0 RX管脚配置
-	csi_pin_set_mux(PB2, PB2_USART0_CK);				//CK，同步模式时使用
-	csi_pin_pull_mode(PB11,GPIO_PULLUP);				//RX管脚上拉使能, 建议配置
-	
-//	csi_pin_set_mux(PA8, PA8_USART0_CK);				//CK，同步模式时使用
-//	csi_pin_set_mux(PA9, PA9_USART0_TX);				//USART0 TX管脚配置	
-//	csi_pin_set_mux(PA10, PA10_USART0_RX);				//USART0 RX管脚配置
-//	csi_pin_set_mux(PB12, PB12_USART0_CK);				//CK，同步模式时使用
-//	csi_pin_pull_mode(PA10,GPIO_PULLUP);				//RX管脚上拉使能, 建议配置
-//
-//	csi_pin_set_mux(PC10, PC10_USART0_TX);				//USART0 TX管脚配置	
-//	csi_pin_set_mux(PC11, PC11_USART0_RX);				//USART0 RX管脚配置
-//	csi_pin_set_mux(PC12, PC12_USART0_CK);				//CK，同步模式时使用
-//	csi_pin_pull_mode(PC11,GPIO_PULLUP);				//RX管脚上拉使能, 建议配置
-#endif	
-	tUsartCfg.byClkSrc 		= USART_CLKSRC_DIV1;		//clk = PCLK
-	tUsartCfg.byMode		= USART_MODE_ASYNC;			//异步模式
-	tUsartCfg.byDatabit 	= USART_DATA_BITS_8;		//字节长度，8bit
-	tUsartCfg.byStopbit 	= USART_STOP_BITS_1;		//停止位，1个
-	tUsartCfg.byParity		= USART_PARITY_EVEN;		//偶校验
-	tUsartCfg.bClkOutEn		= DISABLE;					//禁止USARTCLK输出；同步模式时，USARTCLK可以给另外设备上的USART提供clk，作为同步输入时钟使用
-	tUsartCfg.wBaudRate 	= 115200;					//波特率：115200
-	tUsartCfg.hwRecvTo		= 88;						//USART接收超时时间，单位：bit位周期，8个bytes(11bit*8=88, 115200波特率时=764us)
-	tUsartCfg.bRecvToEn		= DISABLE;					//禁止接收超时
-	tUsartCfg.wInt			= USART_INTSRC_TXRIS;		//使用TXFIFO中断（默认推荐）
-	tUsartCfg.byTxMode		= USART_TX_MODE_INT;		//发送模式：轮询/中断模式
-	tUsartCfg.byRxMode		= USART_RX_MODE_POLL;		//接收模式：轮询模式
-	
-	csi_usart_init(USART0, &tUsartCfg);					//初始化串口	
-	csi_usart_start(USART0, USART_FUNC_RX_TX);			//开启USART的RX和TX功能，也可单独开启RX或者TX功能
-
-
-	while(1)
-	{
-		byRecv = csi_usart_getc(USART0);
-		if(byRecv)
-		{
-			csi_usart_send(USART0,(void *)bySdData,18);		//采用中断方式。调用改函数时，UART发送中断使能
-			while(1)			
-			{
-				//如果有需要，可用于判断发送是否完成；
-				if(csi_usart_get_msg(USART0, USART_SEND, ENABLE))		//获取发送完成消息，并清除状态(设置为idle)，串口发送一串数据
-				{
-					//发送状态有三种，IDLE(空闲)/SEND(发送中)/DONE(发送完成)
-					//具体定义参考：uart.h中csi_uart_state_e,
-					nop;;
-					break;
-				}
-			}
-		}
-		nop;
-	}
-
-	return iRet;	
-}
-
-/** \brief usart receive a bunch of data; polling(sync) mode
- *  	 - USART接收指定长度数据（16）
- * 		 - RX使用轮询(不使用中断)
- * 		 - 带超时处理(单位：ms)，超时时间通过tUsartCfg.hwRecvTo配置
- * 
- *  \param[in] none
- *  \return error code
- */
-int usart_recv_demo(void)
-{
-	int iRet = 0;
-	volatile uint8_t byRxBuf[32] = {0};
-	csi_usart_config_t tUsartCfg;						//USART0 参数配置结构体
-	volatile uint8_t byRecv;
-#if !defined(USE_GUI)	
-	csi_pin_set_mux(PB10, PB10_USART0_TX);				//USART0 TX管脚配置	
-	csi_pin_set_mux(PB11, PB11_USART0_RX);				//USART0 RX管脚配置
-	csi_pin_set_mux(PB2, PB2_USART0_CK);				//CK，同步模式时使用
-	csi_pin_pull_mode(PB11,GPIO_PULLUP);				//RX管脚上拉使能, 建议配置
-	
-//	csi_pin_set_mux(PA8, PA8_USART0_CK);				//CK，同步模式时使用
-//	csi_pin_set_mux(PA9, PA9_USART0_TX);				//USART0 TX管脚配置	
-//	csi_pin_set_mux(PA10, PA10_USART0_RX);				//USART0 RX管脚配置
-//	csi_pin_set_mux(PB12, PB12_USART0_CK);				//CK，同步模式时使用
-//	csi_pin_pull_mode(PA10,GPIO_PULLUP);				//RX管脚上拉使能, 建议配置
-//
-//	csi_pin_set_mux(PC10, PC10_USART0_TX);				//USART0 TX管脚配置	
-//	csi_pin_set_mux(PC11, PC11_USART0_RX);				//USART0 RX管脚配置
-//	csi_pin_set_mux(PC12, PC12_USART0_CK);				//CK，同步模式时使用
-//	csi_pin_pull_mode(PC11,GPIO_PULLUP);				//RX管脚上拉使能, 建议配置
-#endif
-	
-	tUsartCfg.byClkSrc 		= USART_CLKSRC_DIV1;		//clk = PCLK
-	tUsartCfg.byMode		= USART_MODE_ASYNC;			//异步模式
-	tUsartCfg.byDatabit 	= USART_DATA_BITS_8;		//字节长度，8bit
-	tUsartCfg.byStopbit 	= USART_STOP_BITS_1;		//停止位，1个
-	tUsartCfg.byParity		= USART_PARITY_EVEN;		//偶校验
-	tUsartCfg.bClkOutEn		= DISABLE;					//禁止USARTCLK输出；同步模式时，USARTCLK可以给另外设备上的USART提供clk，作为同步输入时钟使用
-	tUsartCfg.wBaudRate 	= 115200;					//波特率：115200
-	tUsartCfg.hwRecvTo		= 88;						//USART接收超时时间，单位：bit位周期，8个bytes(11bit*8=88, 115200波特率时=764us)
-	tUsartCfg.bRecvToEn		= DISABLE;					//禁止接收超时
-	tUsartCfg.wInt			= USART_INTSRC_NONE; 		//不/使用中断
-	tUsartCfg.byTxMode		= USART_TX_MODE_POLL;		//发送模式：轮询模式
-	tUsartCfg.byRxMode		= USART_RX_MODE_POLL;		//接收模式：轮询模式
-	
-	csi_usart_init(USART0, &tUsartCfg);					//初始化串口
-	csi_usart_start(USART0, USART_FUNC_RX_TX);			//开启USART的RX和TX功能，也可单独开启RX或者TX功能
-	
-	while(1)
-	{
-		byRecv = csi_usart_receive(USART0, (void *)byRxBuf,16,1000);	//UART接收采用轮询方式(同步)	
-		if(byRecv == 16)
-			csi_usart_send(USART0,(void *)byRxBuf,byRecv);				//UART发送采用轮询方式(同步)	
-	}
-
-	return iRet;
-}
- 
-/** \brief USART接收中断，RX使用接收中断，TX不使用中断
- * 
- *  \param[in] none
- *  \return error code
- */
-int usart_recv_rx_int_demo(void)
-{
-	int iRet = 0;
-	csi_usart_config_t tUsartCfg;						//USART0 参数配置结构体
-#if !defined(USE_GUI)	
-	csi_pin_set_mux(PB10, PB10_USART0_TX);				//USART0 TX管脚配置	
-	csi_pin_set_mux(PB11, PB11_USART0_RX);				//USART0 RX管脚配置
-	csi_pin_set_mux(PB2, PB2_USART0_CK);				//CK，同步模式时使用
-	csi_pin_pull_mode(PB11,GPIO_PULLUP);				//RX管脚上拉使能, 建议配置
-	
-//	csi_pin_set_mux(PA8, PA8_USART0_CK);				//CK，同步模式时使用
-//	csi_pin_set_mux(PA9, PA9_USART0_TX);				//USART0 TX管脚配置	
-//	csi_pin_set_mux(PA10, PA10_USART0_RX);				//USART0 RX管脚配置
-//	csi_pin_set_mux(PB12, PB12_USART0_CK);				//CK，同步模式时使用
-//	csi_pin_pull_mode(PA10,GPIO_PULLUP);				//RX管脚上拉使能, 建议配置
-//
-//	csi_pin_set_mux(PC10, PC10_USART0_TX);				//USART0 TX管脚配置	
-//	csi_pin_set_mux(PC11, PC11_USART0_RX);				//USART0 RX管脚配置
-//	csi_pin_set_mux(PC12, PC12_USART0_CK);				//CK，同步模式时使用
-//	csi_pin_pull_mode(PC11,GPIO_PULLUP);				//RX管脚上拉使能, 建议配置
-#endif	
-	tUsartCfg.byClkSrc 		= USART_CLKSRC_DIV1;		//clk = PCLK
-	tUsartCfg.byMode		= USART_MODE_ASYNC;			//异步模式
-	tUsartCfg.byDatabit 	= USART_DATA_BITS_8;		//字节长度，8bit
-	tUsartCfg.byStopbit 	= USART_STOP_BITS_1;		//停止位，1个
-	tUsartCfg.byParity		= USART_PARITY_EVEN;		//偶校验
-	tUsartCfg.bClkOutEn		= DISABLE;					//禁止USARTCLK输出；同步模式时，USARTCLK可以给另外设备上的USART提供clk，作为同步输入时钟使用
-	tUsartCfg.wBaudRate 	= 115200;					//波特率：115200
-	tUsartCfg.hwRecvTo		= 88;						//USART接收超时时间，单位：bit位周期，8个bytes(11bit*8=88, 115200波特率时=764us)
-	tUsartCfg.bRecvToEn		= DISABLE;					//禁止接收超时
-	tUsartCfg.wInt			= USART_INTSRC_RXRDY; 		//使用RX接收中断
-	tUsartCfg.byTxMode		= USART_TX_MODE_POLL;		//发送模式：轮询/中断模式
-	tUsartCfg.byRxMode		= USART_RX_MODE_INT;		//接收模式：中断接收模式
-	
-	csi_usart_init(USART0, &tUsartCfg);					//初始化串口
-	csi_usart_start(USART0, USART_FUNC_RX_TX);			//开启USART的RX和TX功能，也可单独开启RX或者TX功能
-
-	return iRet;
-}
-
-/** \brief USART接收FIFO中断，RX使用FIFO中断，TX不使用中断
- * 
- *  \param[in] none
- *  \return error code
- */
-int usart_recv_rxfifo_int_demo(void)
-{
-	int iRet = 0;
-	csi_usart_config_t tUsartCfg;						//USART0 参数配置结构体
-#if !defined(USE_GUI)	
-	csi_pin_set_mux(PB10, PB10_USART0_TX);				//USART0 TX管脚配置	
-	csi_pin_set_mux(PB11, PB11_USART0_RX);				//USART0 RX管脚配置
-	csi_pin_set_mux(PB2, PB2_USART0_CK);				//CK，同步模式时使用
-	csi_pin_pull_mode(PB11,GPIO_PULLUP);				//RX管脚上拉使能, 建议配置
-	
-//	csi_pin_set_mux(PA8, PA8_USART0_CK);				//CK，同步模式时使用
-//	csi_pin_set_mux(PA9, PA9_USART0_TX);				//USART0 TX管脚配置	
-//	csi_pin_set_mux(PA10, PA10_USART0_RX);				//USART0 RX管脚配置
-//	csi_pin_set_mux(PB12, PB12_USART0_CK);				//CK，同步模式时使用
-//	csi_pin_pull_mode(PA10,GPIO_PULLUP);				//RX管脚上拉使能, 建议配置
-//
-//	csi_pin_set_mux(PC10, PC10_USART0_TX);				//USART0 TX管脚配置	
-//	csi_pin_set_mux(PC11, PC11_USART0_RX);				//USART0 RX管脚配置
-//	csi_pin_set_mux(PC12, PC12_USART0_CK);				//CK，同步模式时使用
-//	csi_pin_pull_mode(PC11,GPIO_PULLUP);				//RX管脚上拉使能, 建议配置
-#endif	
-	tUsartCfg.byClkSrc 		= USART_CLKSRC_DIV1;		//clk = PCLK
-	tUsartCfg.byMode		= USART_MODE_ASYNC;			//异步模式
-	tUsartCfg.byDatabit 	= USART_DATA_BITS_8;		//字节长度，8bit
-	tUsartCfg.byStopbit 	= USART_STOP_BITS_1;		//停止位，1个
-	tUsartCfg.byParity		= USART_PARITY_EVEN;		//偶校验
-	tUsartCfg.bClkOutEn		= DISABLE;					//禁止USARTCLK输出；同步模式时，USARTCLK可以给另外设备上的USART提供clk，作为同步输入时钟使用
-	tUsartCfg.wBaudRate 	= 115200;					//波特率：115200
-	tUsartCfg.hwRecvTo		= 88;						//USART接收超时时间，单位：bit位周期，8个bytes(11bit*8=88, 115200波特率时=764us)
-	tUsartCfg.bRecvToEn		= ENABLE;					//使能接收超时
-	tUsartCfg.wInt			= USART_INTSRC_RXRIS 
-					| USART_INTSRC_TIMEOUT;				//使用RXFIFO中断（默认推荐）和接收超时中断
-	tUsartCfg.byTxMode		= USART_TX_MODE_POLL;		//发送模式：轮询/中断模式
-	tUsartCfg.byRxMode		= USART_RX_MODE_INT;		//接收模式：中断接收模式
-	
-	csi_usart_init(USART0, &tUsartCfg);					//初始化串口
-	csi_usart_start(USART0, USART_FUNC_RX_TX);			//开启USART的RX和TX功能，也可单独开启RX或者TX功能
-
-	return iRet;
-}
-
-/** \brief USART中断函数，接收数据使用中断方式(FIFO/RX两种中断)，在此中断函数中接收数据
- * 
- *  \param[in] ptUsartBase: pointer of usart register structure
- *  \param[in] byIdx: usart id number(0)
- */
-__attribute__((weak)) void usart_irqhandler(csp_usart_t *ptUsartBase,uint8_t byIdx)
-{
-	//此中断例程支持RXFIFO/RX/TXDONE/RXTO四种中断
-	switch(csp_usart_get_isr(ptUsartBase) & 0x5101)								//获取rxfifo/tx/txfifo/rxtimeout中断状态
-	{
-		case US_RXRIS_INT:					
-			//使用接收FIFO中断接收数据
-			while(csp_usart_get_sr(ptUsartBase) & US_RNE)						//接收FIFO非空
-			{
-				s_byRecvBuf[s_byRecvLen] = csp_usart_get_data(ptUsartBase);
-				s_byRecvLen ++;
-				if(s_byRecvLen > 31)											//接收完32个bytes，接收buf从头开始接收										
-				{
-					csi_usart_send(ptUsartBase,(void *)s_byRecvBuf, s_byRecvLen);//UART发送采用轮询方式，发送接收到的32bytes
-					s_byRecvLen = 0;
-				}
-			}
-			break;
-		case US_RXRDY_INT:	
-			//使用RX接收中断接收数据
-			s_byRecvBuf[s_byRecvLen] = csp_usart_get_data(ptUsartBase);
-			s_byRecvLen ++;
-			if(s_byRecvLen > 31)												//接收完32个bytes，接收buf从头开始接收										
-			{
-				csi_usart_send(ptUsartBase,(void *)s_byRecvBuf, s_byRecvLen);	//UART发送采用轮询方式，发送接收到的32bytes
-				s_byRecvLen = 0;
-			}
-			break;
-		case US_TXRIS_INT:					
-			//使用发送FIFO中断发送数据，下面处理支持csi_usart_send接口
-			//用户可按自己习惯方式处理中断发送（此时不支持csi_usart_send接口）
-			csp_usart_set_data(ptUsartBase, *g_tUsartTran[byIdx].pbyTxData);	//发送数据
-			g_tUsartTran[byIdx].hwTxSize --;
-			g_tUsartTran[byIdx].pbyTxData ++;
+			csi_usart_send(USART0, (void*)byRecvBuf, 25);
 			
-			if(g_tUsartTran[byIdx].hwTxSize == 0)
-			{	
-				csp_usart_int_disable(ptUsartBase, US_TXRIS_INT);		//关闭发送FIFO中断		
-				g_tUsartTran[byIdx].bySendStat = USART_STATE_DONE;				//发送完成
-			}
 			break;
-		case US_TIMEOUT_INT:				
-			//字节接收超时中断，可以作为一串字符是否结束的依据
-			//使用接收FIFO中断时，为了效率FIFO接收中断触发点初始化默认配置为FIFO的1/2(4个字节)，达不到4个字节时，不能触发FIFO接收中断
-			//使能接收超时中断可以接收到达不到触发FIFO中断的数据
-			while(csp_usart_get_sr(ptUsartBase) & US_RNE)						//接收FIFO非空
-			{
-				s_byRecvBuf[s_byRecvLen] = csp_usart_get_data(ptUsartBase);
-				s_byRecvLen ++;
-			}
-			csp_usart_clr_isr(ptUsartBase,US_TIMEOUT_INT);						//清除中断标志(状态)
-			csp_usart_cr_cmd(USART0, US_STTTO | US_FIFO_EN | US_RXFIFO_1_2);	//使能字节接收超时和FIFO配置
-			break;
-		default:
-			break;
+		}
+		mdelay(10);
 	}
+	
+	return iRet;
 }
+
+

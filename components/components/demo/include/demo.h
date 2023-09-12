@@ -54,6 +54,16 @@ extern int uart_recv_int_demo(void);
 extern int uart_recv_dynamic_demo(void);
 extern int uart_recv_dynamic_int_demo(void);
 
+//usart demo
+extern int usart_send_demo(void);
+extern int usart_send_int_demo(void);
+extern int usart_recv_int_demo(void);
+extern int usart_send_dma_demo(void);
+extern int usart_recv_dma_demo(void);
+
+extern int usart_send_int_callback_demo(void);
+extern int usart_receive_int_callback_demo(void);
+
 //adc demo
 //normal mode(no interrupt)
 extern int adc_samp_oneshot_demo(void);
