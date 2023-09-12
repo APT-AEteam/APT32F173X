@@ -66,8 +66,12 @@ extern "C" {
 #define CMP_IDX  			3		//CMPx id number
 #define GPTA_IDX  			4		//GPTAx id number
 #define DAC_IDX   			1		//DACx id number
-#define ADC_IDX   			2		//ADCx id number
 
+#if	defined(IS_CHIP_1732)
+#define ADC_IDX   			2		//ADCx id number
+#else
+#define ADC_IDX   			1		//ADCx id number
+#endif
 //DMA  id number
 //max channel number
 #define DMA_IDX_NUM			2
