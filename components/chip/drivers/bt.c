@@ -75,8 +75,8 @@ void csi_bt_irqhandler(csp_bt_t *ptBtBase, uint8_t byIdx)
  * 
  *  \param[in] ptBtBase: pointer of bt register structure
  *  \param[in] ptBtTimCfg: ptBtTimCfg: pointer of bt timing parameter config structure
- * 			   - wTimeVal: timing value, unit: us
- * 			   - eWkMode: bt count work mode, \ref csi_bt_wkmode_e
+ * 			   	- wTimeVal: timing value, unit: us
+ * 			   	- eWkMode: bt count work mode, \ref csi_bt_wkmode_e
  *  \return error code \ref csi_error_t
  */ 
 csi_error_t csi_bt_timer_init(csp_bt_t *ptBtBase, csi_bt_time_config_t *ptBtTimCfg)
@@ -95,13 +95,12 @@ csi_error_t csi_bt_timer_init(csp_bt_t *ptBtBase, csi_bt_time_config_t *ptBtTimC
 	if(wTmLoad > 0xffff)
 		wTmLoad = 0xffff;
 		
-	csp_bt_set_cr(ptBtBase, (BT_SHDOW << BT_SHDW_POS) | (ptBtTimCfg->eWkMode << BT_OPM_POS) |		//bt work mode
+	csp_bt_set_cr(ptBtBase, (BT_SHDOW << BT_SHDW_POS) | (ptBtTimCfg->eRunMode << BT_OPM_POS) |		//bt work mode
 			(BT_PCLKDIV << BT_EXTCKM_POS) | (BT_CNTRLD_EN << BT_CNTRLD_POS) | BT_CLK_EN );
 	
 	csp_bt_set_pscr(ptBtBase, (uint16_t)wClkDiv - 1);				//bt clk div	
 	csp_bt_set_prdr(ptBtBase, (uint16_t)wTmLoad);					//bt prdr load value
 	csp_bt_set_cmp(ptBtBase, (uint16_t)(wTmLoad >> 1));				//bt prdr load value
-	csi_irq_enable((uint32_t *)ptBtBase);							//enable bt vic irq
 	csp_bt_int_enable(ptBtBase, BT_PEND_INT);						//enable PEND interrupt
 	
 	return CSI_OK;
@@ -144,7 +143,16 @@ void csi_bt_int_disable(csp_bt_t *ptBtBase, csi_bt_intsrc_e eIntSrc)
 {
 	csp_bt_int_disable(ptBtBase, (bt_int_e)eIntSrc);	
 }
-
+/** \brief clear bt interrupt 
+ * 
+ *  \param[in] ptBtBase: pointer of bt register structure
+ *  \param[in] eIntSrc: bt interrupt source
+ *  \return none
+ */ 
+void csi_bt_clr_isr(csp_bt_t *ptBtBase, csi_bt_intsrc_e eIntSrc)
+{
+	csp_bt_clr_isr(ptBtBase, (bt_int_e)eIntSrc);	
+}
 /** \brief get bt remaining value
  * 
  *  \param[in] ptBtBase: pointer of bt register structure
@@ -184,11 +192,11 @@ bool csi_bt_is_running(csp_bt_t *ptBtBase)
  * 
  *  \param[in] ptBtBase: pointer of bt register structure
  *  \param[in] ptBtPwmCfg: pointer of bt pwm parameter config structure
- *             - eIdleLevel: pwm output level of bt idel, \ref csi_bt_pwmlev_e
- *             - eStartLevel: pwm output level of bt start, \ref csi_bt_wkmode_e
- * 			   - eWkMode: bt count work mode, \ref csi_bt_pwmlev_e
- * 			   - byDutyCycle: pwm duty cycle, 0~100
- *             - wFreq: pwm frequency
+ *             	- eIdleLevel: pwm output level of bt idel, \ref csi_bt_pwmlev_e
+ *             	- eStartLevel: pwm output level of bt start, \ref csi_bt_wkmode_e
+ * 			   	- eWkMode: bt count work mode, \ref csi_bt_pwmlev_e
+ * 			   	- byDutyCycle: pwm duty cycle, 0~100
+ *             	- wFreq: pwm frequency
  * 			   
  *  \return error code \ref csi_error_t
  */ 
@@ -215,13 +223,12 @@ csi_error_t csi_bt_pwm_init(csp_bt_t *ptBtBase, csi_bt_pwm_config_t *ptBtPwmCfg)
 	else
 		wCmpLoad = wPrdrLoad * ptBtPwmCfg->byDutyCycle / 100;			//cmp load value	
 	
-	wCrVal = BT_CLK_EN | (BT_SHDOW << BT_SHDW_POS) | (ptBtPwmCfg->eWkMode << BT_OPM_POS) | (BT_PCLKDIV << BT_EXTCKM_POS) |
+	wCrVal = BT_CLK_EN | (BT_SHDOW << BT_SHDW_POS) | (ptBtPwmCfg->eRunMode << BT_OPM_POS) | (BT_PCLKDIV << BT_EXTCKM_POS) |
 				(BT_CNTRLD_EN << BT_CNTRLD_POS) | (ptBtPwmCfg->eIdleLevel << BT_IDLEST_POS) | (ptBtPwmCfg->eStartLevel << BT_STARTST_POS);
 	csp_bt_set_cr(ptBtBase, wCrVal);									//set bt work mode
 	csp_bt_set_pscr(ptBtBase, (uint16_t)wClkDiv - 1);					//bt clk div
 	csp_bt_set_prdr(ptBtBase, (uint16_t)wPrdrLoad);						//bt prdr load value
 	csp_bt_set_cmp(ptBtBase, (uint16_t)wCmpLoad);						//bt cmp load value
-	csi_irq_enable((uint32_t *)ptBtBase);								//enable bt irq
 		
 	return CSI_OK;
 }

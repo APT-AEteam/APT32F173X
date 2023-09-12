@@ -85,8 +85,6 @@ csi_error_t csi_uart_init(csp_uart_t *ptUartBase, csi_uart_config_t *ptUartCfg)
 	}
 	else
 		csp_uart_rto_disable(ptUartBase);					
-	
-	csi_irq_enable((uint32_t *)ptUartBase);							//enable uart vic interrupt		
 
 	return CSI_OK;
 }

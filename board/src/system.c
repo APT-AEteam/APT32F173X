@@ -132,7 +132,14 @@ __attribute__((weak)) void system_init(void)
 
     for (i = 0; i < 64; i++) {
         CLIC->CLICINT[i].IP = 0;
-        CLIC->CLICINT[i].ATTR = 1; /* use vector interrupt */
+        CLIC->CLICINT[i].ATTR = 1; 		/* use vector interrupt */
+		
+		/* enable vector interrupt without exi*/
+		if(i > 15)						/* interrupt number = 16~63 */					
+		{
+			if((i != 22) && (i != 23) && (i != 48) && (i != 49) && (i != 50))
+				CLIC->CLICINT[i].IE |= CLIC_INTIE_IE_Msk;
+		}
     }
 	
 	/* tspend use positive interrupt */

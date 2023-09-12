@@ -457,7 +457,7 @@ csi_error_t csi_gpio_irq_mode(csp_gpio_t *ptGpioBase, pin_name_e ePinName, csi_e
  *  \param[in] bEnable: ENABLE OR DISABLE
  *  \return error code \ref csi_error_t
  */ 
-void csi_gpio_irq_enable(csp_gpio_t *ptGpioBase, pin_name_e ePinName)
+void csi_gpio_int_enable(csp_gpio_t *ptGpioBase, pin_name_e ePinName)
 {
 	csp_gpio_int_enable(ptGpioBase, ePinName);
 }
@@ -469,7 +469,7 @@ void csi_gpio_irq_enable(csp_gpio_t *ptGpioBase, pin_name_e ePinName)
  *  \param[in] bEnable: ENABLE OR DISABLE
  *  \return error code \ref csi_error_t
  */ 
-void csi_gpio_irq_disable(csp_gpio_t *ptGpioBase,pin_name_e ePinName)
+void csi_gpio_int_disable(csp_gpio_t *ptGpioBase,pin_name_e ePinName)
 {
 	csp_gpio_int_disable(ptGpioBase, ePinName);
 }

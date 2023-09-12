@@ -10,12 +10,12 @@
  * *********************************************************************
 */
 /* Includes ---------------------------------------------------------------*/
-#include <string.h>
-#include "drv/etb.h"
-#include "drv/pin.h"
-#include "drv/bt.h"
-#include "drv/lpt.h"
-#include "drv/adc.h"
+//#include "drv/etb.h"
+//#include "drv/pin.h"
+//#include "drv/bt.h"
+//#include "drv/lpt.h"
+//#include "drv/adc.h"
+#include "csi_drv.h"
 #include "board_config.h"
 
 /* externs function--------------------------------------------------------*/
@@ -41,7 +41,7 @@ int bt_sync_trg_start_demo(void)
 #if (USE_GUI == 0)			
 	csi_gpio_set_mux(GPIOB, PB1, PB1_INPUT);							//PB1 配置为输入
 	csi_gpio_pull_mode(GPIOB, PB1, GPIO_PULLUP);						//PB1 上拉
-	csi_gpio_irq_enable(GPIOB, PB1);									//PB1 中断使能	
+	csi_gpio_int_enable(GPIOB, PB1);									//PB1 中断使能	
 	csi_gpio_irq_mode(GPIOB, PB1, EXI_GRP1, GPIO_IRQ_FALLING_EDGE);		//PB1 下降沿产生中断，选择中断组1
 	csi_exi_set_evtrg(EXI_TRGOUT1, EXI_TRGSRC_GRP1, 0);					//EXI GRP1 触发EXI_TRGOUT1
 #endif
@@ -50,20 +50,20 @@ int bt_sync_trg_start_demo(void)
 	csi_gpio_set_high(GPIOA, PA6);										//PA6 output high;		
 	
 	tTimConfig.wTimeVal = 1000;											//BT定时值 = 1000us
-	tTimConfig.eWkMode  = BT_CNT_CONTINU;								//BT计数器工作模式
+	tTimConfig.eRunMode  = BT_RUN_CONT;									//BT计数器工作模式
 	csi_bt_timer_init(BT0,&tTimConfig);									//BT0 定时	
 	csi_bt_set_sync(BT0, BT_SYNCIN0, BT_TRG_CONTINU, BT_TRG_SYCAREARM);	//外部触发bt0启动(SYNCIN0)
 	csi_bt_sync_enable(BT0, BT_SYNCIN0);								//BT0 同步输入2使能
 	
-	// ETCB 初始化
-	tEtbConfig.eChType = ETB_ONE_TRG_ONE;  			//单个源触发单个目标
-	tEtbConfig.eSrcIp  = ETB_EXI_TRGOUT1;  	    	//EXI_TRGOUT1作为触发源
-	tEtbConfig.eDstIp =  ETB_BT0_SYNCIN0;   	    //BT0 同步输入作为目标事件
+	//ETCB 初始化
+	tEtbConfig.eChType = ETB_ONE_TRG_ONE;  								//单个源触发单个目标
+	tEtbConfig.eSrcIp  = ETB_EXI_TRGOUT1;  	    						//EXI_TRGOUT1作为触发源
+	tEtbConfig.eDstIp =  ETB_BT0_SYNCIN0;   	   						//BT0 同步输入作为目标事件
 	tEtbConfig.eTrgMode = ETB_HARDWARE_TRG;
 	csi_etb_init();
-	ch = csi_etb_ch_alloc(tEtbConfig.eChType);	    //自动获取空闲通道号,ch >= 0 获取成功
+	ch = csi_etb_ch_alloc(tEtbConfig.eChType);	    					//自动获取空闲通道号,ch >= 0 获取成功
 	if(ch < 0)
-		return -1;								    //ch < 0,则获取通道号失败
+		return -1;								    					//ch < 0,则获取通道号失败
 	iRet = csi_etb_ch_config(ch, &tEtbConfig);
 	
 	while(1)
@@ -92,7 +92,7 @@ int bt_sync_trg_stop_demo(void)
 #if (USE_GUI == 0)			
 	csi_gpio_set_mux(GPIOB, PB1, PB1_INPUT);								//PB1 配置为输入
 	csi_gpio_pull_mode(GPIOB, PB1, GPIO_PULLUP);							//PB1 上拉
-	csi_gpio_irq_enable(GPIOB, PB1);										//PB1 中断使能	
+	csi_gpio_int_enable(GPIOB, PB1);										//PB1 中断使能	
 	csi_gpio_irq_mode(GPIOB, PB1, EXI_GRP1, GPIO_IRQ_FALLING_EDGE);			//PB1 下降沿产生中断，选择中断组1
 	csi_exi_set_evtrg(EXI_TRGOUT1, EXI_TRGSRC_GRP1, 0);						//EXI GRP1 触发EXI_TRGOUT1
 #endif	
@@ -101,20 +101,20 @@ int bt_sync_trg_stop_demo(void)
 	csi_gpio_set_high(GPIOA, PA6);											//PA6 output high;		
 	
 	tTimConfig.wTimeVal = 1000;												//BT定时值 = 1000us
-	tTimConfig.eWkMode  = BT_CNT_CONTINU;									//BT计数器工作模式
+	tTimConfig.eRunMode  = BT_RUN_CONT;										//BT计数器工作模式
 	csi_bt_timer_init(BT0,&tTimConfig);										//BT0 定时	
 	csi_bt_set_sync(BT0, BT_SYNCIN1, BT_TRG_CONTINU, BT_TRG_AUTOAREARM);	//外部触发BT0停止(SYNCIN1)，连续模式
 	csi_bt_sync_enable(BT0, BT_SYNCIN1);									//BT0 同步输入1使能
-	csi_bt_start(BT0);	    						//启动BT0
+	csi_bt_start(BT0);	    												//启动BT0
 	
-	tEtbConfig.eChType = ETB_ONE_TRG_ONE;  			//单个源触发单个目标
-	tEtbConfig.eSrcIp  = ETB_EXI_TRGOUT1;  	    	//EXI_TRGOUT1作为触发源
-	tEtbConfig.eDstIp =  ETB_BT0_SYNCIN1;   	    //BT0 同步输入作为目标事件
+	tEtbConfig.eChType = ETB_ONE_TRG_ONE;  									//单个源触发单个目标
+	tEtbConfig.eSrcIp  = ETB_EXI_TRGOUT1;  	    							//EXI_TRGOUT1作为触发源
+	tEtbConfig.eDstIp =  ETB_BT0_SYNCIN1;   	    						//BT0 同步输入作为目标事件
 	tEtbConfig.eTrgMode = ETB_HARDWARE_TRG;
 	csi_etb_init();
-	ch = csi_etb_ch_alloc(tEtbConfig.eChType);	    //自动获取空闲通道号,ch >= 0 获取成功
+	ch = csi_etb_ch_alloc(tEtbConfig.eChType);	    						//自动获取空闲通道号,ch >= 0 获取成功
 	if(ch < 0)
-		return -1;								    //ch < 0,则获取通道号失败
+		return -1;								    						//ch < 0,则获取通道号失败
 	iRet = csi_etb_ch_config(ch, &tEtbConfig);
 	
 	while(1)

@@ -98,7 +98,7 @@ int gpio_irq_demo(void)
 	
 	csi_gpio_set_mux(GPIOA, PA0, PA0_INPUT);						//PA0配置为输入
 	csi_gpio_pull_mode(GPIOA, PA0, GPIO_PULLUP);					//上拉
-	csi_gpio_irq_enable(GPIOA,PA0);									//使能PA0端口对应外部中断
+	csi_gpio_int_enable(GPIOA,PA0);									//使能PA0端口对应外部中断
 	csi_gpio_irq_mode(GPIOA, PA0, EXI_GRP0,GPIO_IRQ_FALLING_EDGE);	//下降沿
 	csi_gpio_vic_irq_enable(EXI_GRP0, ENABLE);						//GPIOA端口对应VIC中断使能
 	

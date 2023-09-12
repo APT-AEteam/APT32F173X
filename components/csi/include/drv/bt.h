@@ -36,9 +36,9 @@ typedef enum
  * \brief    BT count mode  
  */
 typedef enum{
-	BT_CNT_CONTINU	= 0,			//continuous count mode	
-	BT_CNT_ONCE 					//once count mode	
-}csi_bt_wkmode_e;
+	BT_RUN_CONT	= 0,				//continuous count mode	
+	BT_RUN_ONCE 					//once count mode	
+}csi_bt_runmode_e;
 
 /**
  * \enum     csi_bt_syncin_e
@@ -100,37 +100,26 @@ typedef enum
 	BT_INTSRC_PEND   =	(0x01ul << 0),		//PEND interrupt
 	BT_INTSRC_CMP    =	(0x01ul << 1),		//CMP interrupt   
 	BT_INTSRC_OVF    =	(0x01ul << 2), 		//OVF interrupt
-	BT_INTSRC_EVTRG  =	(0x01ul << 3)		//EVTRG interrupt
+	BT_INTSRC_EVTRG  =	(0x01ul << 3),		//EVTRG interrupt
+	BT_INTSRC_ALL  =	(0x0Ful << 0)		//ALL interrupt
 }csi_bt_intsrc_e;
-
-/**
- * \enum     csi_bt_event_e
- * \brief    BT callback event 
- */
-typedef enum
-{
-	BT_EVENT_PEND   =	0, 			//PEND
-	BT_EVENT_CMP,
-//	BT_EVENT_OVF,   
-	BT_EVENT_EVTRG
-}csi_bt_event_e;
 
 
 /// \struct csi_bt_time_config_t
 /// \brief  bt timer parameter configuration, open to users  
 typedef struct {
 	uint32_t			wTimeVal;			//TIMER Timing Value
-	csi_bt_wkmode_e		eWkMode;			//TIMER WorkMode: continuous/once
+	csi_bt_runmode_e	eRunMode;			//TIMER RunMode: continuous/once
 } csi_bt_time_config_t;
 
 /// \struct csi_bt_pwm_config_t
 /// \brief  bt pwm parameter configuration, open to users  
 typedef struct {
-	csi_bt_pwmlev_e	eIdleLevel;			//TIMER PWM OUTPUT idel level
-	csi_bt_pwmlev_e	eStartLevel;		//TIMER PWM OUTPUT start Level
-	csi_bt_wkmode_e	eWkMode;			//TIMER WorkMode: continuous/once
-	uint8_t			byDutyCycle;		//TIMER PWM OUTPUT duty cycle
-	uint32_t		wFreq;				//TIMER PWM OUTPUT frequency
+	csi_bt_pwmlev_e		eIdleLevel;			//TIMER PWM OUTPUT idel level
+	csi_bt_pwmlev_e		eStartLevel;		//TIMER PWM OUTPUT start Level
+	csi_bt_runmode_e	eRunMode;			//TIMER RunMode: continuous/once
+	uint8_t				byDutyCycle;		//TIMER PWM OUTPUT duty cycle
+	uint32_t			wFreq;				//TIMER PWM OUTPUT frequency
 } csi_bt_pwm_config_t;
 
 
@@ -160,12 +149,12 @@ csi_error_t csi_bt_register_callback(csp_bt_t *ptBtBase, void  *callback);
 void csi_bt_irqhandler(csp_bt_t *ptBtBase, uint8_t byIdx);
 
 /** 
-  \brief initialize bt data structure
-  \param[in] ptBtBase		pointer of bt register structure
-  \param[in] ptBtTimCfg		ptBtTimCfg: pointer of bt timing parameter config structure
+  \brief 	   initialize bt data structure
+  \param[in]   ptBtBase		pointer of bt register structure
+  \param[in]   ptBtTimCfg		ptBtTimCfg: pointer of bt timing parameter config structure
 				- wTimeVal	timing value, unit: us
 				- eWkMode	bt count work mode, \ref csi_bt_wkmode_e
-   \return error code \ref csi_error_t
+  \return error code \ref csi_error_t
 */ 
 csi_error_t csi_bt_timer_init(csp_bt_t *ptBtBase, csi_bt_time_config_t *ptBtTimCfg);
 
@@ -175,7 +164,7 @@ csi_error_t csi_bt_timer_init(csp_bt_t *ptBtBase, csi_bt_time_config_t *ptBtTimC
   \param[in]   eCntMode		bt count mode, one pulse/continuous
   \return 	   none
  */ 
-void csi_bt_count_mode(csp_bt_t *ptBtBase, csi_bt_wkmode_e eWkMode);
+void csi_bt_count_mode(csp_bt_t *ptBtBase, csi_bt_runmode_e eWkMode);
 
 /** 
   \brief 	   start bt
@@ -200,12 +189,20 @@ void csi_bt_stop(csp_bt_t *ptBtBase);
 void csi_bt_int_enable(csp_bt_t *ptBtBase, csi_bt_intsrc_e eIntSrc);
 
 /** 
-  \brief 	   isable bt interrupt
+  \brief 	   disable bt interrupt
   \param[in]   ptBtBase	 	pointer of bt register structure
   \param[in]   eIntSrc		bt interrupt source
   \return 	   none
  */ 
 void csi_bt_int_disable(csp_bt_t *ptBtBase, csi_bt_intsrc_e eIntSrc);
+
+/** 
+  \brief 	   clear bt interrupt
+  \param[in]   ptBtBase	 	pointer of bt register structure
+  \param[in]   eIntSrc		bt interrupt source
+  \return 	   none
+ */ 
+void csi_bt_clr_isr(csp_bt_t *ptBtBase, csi_bt_intsrc_e eIntSrc);
 
 /**
   \brief       Get bt remaining value
@@ -229,15 +226,15 @@ uint32_t csi_bt_get_load_value(csp_bt_t *ptBtBase);
 bool csi_bt_is_running(csp_bt_t *ptBtBase);
 
 /** 
-  \brief bt pwm init 
-  \param[in] ptBtBase		pointer of bt register structure
-  \param[in] ptBtPwmCfg		pointer of bt pwm parameter config structure
+  \brief 	   bt pwm init 
+  \param[in]   ptBtBase		pointer of bt register structure
+  \param[in]   ptBtPwmCfg		pointer of bt pwm parameter config structure
 				- eIdleLevel	pwm output level of bt idel, \ref csi_bt_pwmlev_e
 				- eStartLevel	pwm output level of bt start, \ref csi_bt_wkmode_e
 				- eWkMode		bt count work mode, \ref csi_bt_pwmlev_e
 				- byDutyCycle	pwm duty cycle, 0~100
 				- wFreq: pwm frequency
-  \return error code \ref csi_error_t
+  \return 	   error code \ref csi_error_t
  */ 
 csi_error_t csi_bt_pwm_init(csp_bt_t *ptBtBase, csi_bt_pwm_config_t *ptBtPwmCfg);
 

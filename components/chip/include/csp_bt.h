@@ -196,7 +196,8 @@ typedef enum
 	BT_PEND_INT    	=	(0x01ul << 0), 
 	BT_CMP_INT    	=	(0x01ul << 1),     
 	BT_OVF_INT     	=	(0x01ul << 2),  
-	BT_EVTRG_INT    =	(0x01ul << 3)
+	BT_EVTRG_INT    =	(0x01ul << 3),
+	BT_ALL_INT    	=	(0x0Ful << 0)
 }bt_int_e;
 
 /******************************************************************************
@@ -318,10 +319,6 @@ static inline void csp_bt_int_disable(csp_bt_t *ptBtBase, bt_int_e eInt)
 {
 	ptBtBase->IMCR &= ~eInt;
 }
-//static inline void csp_bt_clr_all_isr(csp_bt_t *ptBtBase)			
-//{
-//	ptBtBase->ICR = 0x0f;
-//}
 
 //sync and event 
 static inline void csp_bt_sync_rearm(csp_bt_t *ptBtBase, bt_sync_in_e eSyncIn)	
