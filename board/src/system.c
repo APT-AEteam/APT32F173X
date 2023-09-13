@@ -141,6 +141,12 @@ __attribute__((weak)) void system_init(void)
 			if((i != 22) && (i != 23) && (i != 48) && (i != 49) && (i != 50))
 				CLIC->CLICINT[i].IE |= CLIC_INTIE_IE_Msk;
 		}
+		
+		/* cnta */
+		if(i == 51)
+		{
+			CLIC->CLICINT[51].ATTR |= (0x1UL << CLIC_INTATTR_TRIG_Pos);
+		}
     }
 	
 	/* tspend use positive interrupt */

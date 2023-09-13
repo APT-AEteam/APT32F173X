@@ -47,7 +47,6 @@ csi_error_t csi_cnta_timer_init(csp_cnta_t *ptCntaBase,csi_cnta_timer_config_t *
 	csp_cnta_set_datal(ptCntaBase, wTempLoad);				//set CADATAL data
 //    csp_cnta_set_datah(ptCntaBase, wTempLoad);			    //set CADATAH data
 
-	apt_cnta_int_arrt_set(CLIC_INTATTR_TRIG_UP); ////////////////////////////////////////////////////////////////////
 	csp_cnta_soft_update(ptCntaBase);	                    //updata CADATAH CADATAL value 
 	
 	return CSI_OK;
@@ -164,7 +163,7 @@ csi_error_t csi_cnta_pwm_init(csp_cnta_t *ptCntaBase,csi_cnta_pwm_config_t *ptCo
 
 	csp_cnta_set_datah(ptCntaBase, wDatahLoad);
 	csp_cnta_set_datal(ptCntaBase, wDatalLoad);	
-	apt_cnta_int_arrt_set(CLIC_INTATTR_TRIG_UP); 
+
 	csp_cnta_soft_update(ptCntaBase);
 	
 	return ret;
