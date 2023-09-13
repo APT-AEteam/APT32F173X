@@ -38,11 +38,12 @@ int exi_etcb_bt_start_demo(void)
 	csi_gpio_pull_mode(GPIOB, PB1, GPIO_PULLUP);						//PB1 上拉
 	csi_gpio_int_enable(GPIOB, PB1);									//PB1 中断使能	
 	csi_gpio_irq_mode(GPIOB, PB1, EXI_GRP1, GPIO_IRQ_FALLING_EDGE);		//PB1 下降沿产生中断，选择中断组1
-	csi_exi_set_evtrg(EXI_TRGOUT1, EXI_TRGSRC_GRP1, 0);					//EXI GRP1 触发EXI_TRGOUT1
-#endif
+	csi_exi_set_evtrg(EXI_TRGOUT1, EXI_TRGSRC_GRP1, 0);					//EXI 触发输出配置
+	csi_exi_evtrg_enable(EXI_TRGOUT1);									//使能 EXI_TRGOUT1触发输出
 	
 	csi_gpio_set_mux(GPIOA, PA6, PA6_OUTPUT);							//PA6 output ，并在BT0中断里面翻转IO
 	csi_gpio_set_high(GPIOA, PA6);										//PA6 output high;		
+#endif
 	
 	tTimConfig.wTimeVal = 1000;											//BT定时值 = 1000us
 	tTimConfig.eRunMode  = BT_RUN_CONT;									//BT计数器工作模式
@@ -88,21 +89,23 @@ int exi_etcb_bt_stop_demo(void)
 	csi_gpio_pull_mode(GPIOB, PB1, GPIO_PULLUP);							//PB1 上拉
 	csi_gpio_int_enable(GPIOB, PB1);										//PB1 中断使能	
 	csi_gpio_irq_mode(GPIOB, PB1, EXI_GRP1, GPIO_IRQ_FALLING_EDGE);			//PB1 下降沿产生中断，选择中断组1
-	csi_exi_set_evtrg(EXI_TRGOUT1, EXI_TRGSRC_GRP1, 0);						//EXI GRP1 触发EXI_TRGOUT1
-#endif	
+	csi_exi_set_evtrg(EXI_TRGOUT1, EXI_TRGSRC_GRP1, 0);						//EXI 触发输出配置
+	csi_exi_evtrg_enable(EXI_TRGOUT1);										//使能 EXI_TRGOUT1触发输出
 	
 	csi_gpio_set_mux(GPIOA, PA6, PA6_OUTPUT);								//PA6 output ，并在BT0中断里面翻转IO
-	csi_gpio_set_high(GPIOA, PA6);											//PA6 output high;		
+	csi_gpio_set_high(GPIOA, PA6);											//PA6 output high;	
+#endif	
 	
 	tTimConfig.wTimeVal = 1000;												//BT定时值 = 1000us
 	tTimConfig.eRunMode  = BT_RUN_CONT;										//BT计数器工作模式
 	csi_bt_timer_init(BT0,&tTimConfig);										//BT0 定时	
 	csi_bt_set_sync(BT0, BT_SYNCIN1, BT_TRG_CONTINU, BT_TRG_AUTOAREARM);	//外部触发BT0停止(SYNCIN1)，连续模式
 	csi_bt_sync_enable(BT0, BT_SYNCIN1);									//BT0 同步输入1使能
+	
 	csi_bt_start(BT0);	    												//启动BT0
 	
-	tEtbConfig.eChType = ETCB_ONE_TRG_ONE;  									//单个源触发单个目标
-	tEtbConfig.eSrcIp  = ETCB_EXI_TRGOUT1;  	    							//EXI_TRGOUT1作为触发源
+	tEtbConfig.eChType = ETCB_ONE_TRG_ONE;  								//单个源触发单个目标
+	tEtbConfig.eSrcIp  = ETCB_EXI_TRGOUT1;  	    						//EXI_TRGOUT1作为触发源
 	tEtbConfig.eDstIp =  ETCB_BT0_SYNCIN1;   	    						//BT0 同步输入作为目标事件
 	tEtbConfig.eTrgMode = ETCB_HARDWARE_TRG;
 	ch = csi_etcb_ch_alloc(tEtbConfig.eChType);	    						//自动获取空闲通道号,ch >= 0 获取成功

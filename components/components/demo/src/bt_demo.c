@@ -173,7 +173,8 @@ int bt_sync_trg_count_demo(void)
 	csi_gpio_pull_mode(GPIOB, PB1, GPIO_PULLUP);							//PB1 上拉
 	csi_gpio_int_enable(GPIOB, PB1);										//PB1 中断使能	
 	csi_gpio_irq_mode(GPIOB, PB1, EXI_GRP1, GPIO_IRQ_FALLING_EDGE);			//PB1 下降沿产生中断，选择中断组1
-	csi_exi_set_evtrg(EXI_TRGOUT1, EXI_TRGSRC_GRP1, 0);						//EXI1 触发EXI_TRGOUT1
+	csi_exi_set_evtrg(EXI_TRGOUT1, EXI_TRGSRC_GRP1, 0);						//EXI 触发配置
+	csi_exi_evtrg_enable(EXI_TRGOUT1);										//使能 EXI_TRGOUT1触发输出
 	
 	csi_gpio_set_mux(GPIOA, PA0, PA0_BT0_OUT);								//PA0  作为BT0 PWM输出引脚
 	csi_gpio_set_mux(GPIOA, PA6, PA6_OUTPUT);								//PA6 output ，并在BT0中断里面翻转IO
@@ -186,6 +187,7 @@ int bt_sync_trg_count_demo(void)
 	csi_bt_timer_init(BT1,&tTimConfig);										//BT1 定时	
 	csi_bt_set_sync(BT1, BT_SYNCIN2, BT_TRG_CONTINU, BT_TRG_AUTOAREARM);	//外部触发BT1计数(SYNCIN2)
 	csi_bt_sync_enable(BT1, BT_SYNCIN2);									//BT1 同步输入2使能
+	
 	csi_bt_start(BT1);	    			 									//启动BT1
 	
 	// ETCB 初始化
@@ -230,11 +232,11 @@ int bt_trg_out_demo(void)
 	csi_bt_pwm_config_t tPwmCfg;							//BT PWM输出参数初始化配置结构体
 	csi_bt_time_config_t tTimConfig;						//BT 定时初始化参数结构体	
 	
-	csi_gpio_set_mux(GPIOA, PA6, PA6_OUTPUT);				//PA6 output ，并在BT中断里面翻转IO
-	csi_gpio_set_low(GPIOA, PA6);							//PA6 output high;	
-	
 #if (USE_GUI == 0)	
 	csi_gpio_set_mux(GPIOC,PC11, PC11_BT1_OUT);				//PC11 作为BT1 PWM输出引脚
+	
+	csi_gpio_set_mux(GPIOA, PA6, PA6_OUTPUT);				//PA6 output ，并在BT中断里面翻转IO
+	csi_gpio_set_low(GPIOA, PA6);							//PA6 output high;	
 #endif
 	//BT0初始化
 	tTimConfig.wTimeVal = 10000;							//BT定时值 = 1000us
@@ -249,7 +251,10 @@ int bt_trg_out_demo(void)
 	tPwmCfg.byDutyCycle = 60;								//PWM 输出占空比(0 < DutyCycle < 100)		
 	tPwmCfg.wFreq 		= 1000;								//PWM 输出频率
 	csi_bt_pwm_init(BT1, &tPwmCfg);							//初始化BT1 PWM输出
-	csi_bt_set_sync(BT1, BT_SYNCIN0, BT_TRG_ONCE, BT_TRG_AUTOAREARM);	//外部触发bt启动(SYNCIN0)
+	
+	//外部触发bt启动(SYNCIN0)
+	csi_bt_set_sync(BT1, BT_SYNCIN0, BT_TRG_ONCE, BT_TRG_AUTOAREARM);	
+	csi_bt_sync_enable(BT1, BT_SYNCIN0);					//BT1 同步输入2使能
 	
 	//ETCB初始化
 	tEtbConfig.eChType  = ETCB_ONE_TRG_ONE;  				//单个源触发单个目标
