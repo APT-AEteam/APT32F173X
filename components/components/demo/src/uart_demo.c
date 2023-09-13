@@ -84,6 +84,7 @@ int uart_send_demo(void)
 	tUartConfig.eParity 	= UART_PARITY_ODD;		//校验位，奇校验
 	tUartConfig.wBaudRate 	= 115200;				//波特率，115200
 	csi_uart_init(UART1, &tUartConfig);				//初始化串口
+	
 	csi_uart_start(UART1, UART_FUNC_RX_TX);			//开启UART的RX和TX功能，也可单独开启RX或者TX功能
 	
 	while(1)
@@ -121,8 +122,9 @@ int uart_send_int_demo(void)
 	tUartConfig.eParity 	= UART_PARITY_ODD;		//校验位，奇校验
 	tUartConfig.wBaudRate 	= 115200;				//波特率，115200
 	csi_uart_init(UART1, &tUartConfig);				//初始化串口
-	csi_uart_start(UART1, UART_FUNC_RX_TX);			//开启UART的RX和TX功能，也可单独开启RX或者TX功能
+	
 	csi_uart_int_enable(UART1, UART_INTSRC_TXFIFO);	//开启TXFIFO中断
+	csi_uart_start(UART1, UART_FUNC_RX_TX);			//开启UART的RX和TX功能，也可单独开启RX或者TX功能
 	
 	//使用中断方式发送，发送在UART1的中断服务函数(uart1_int_handler)里处理
 	while(1)
@@ -162,10 +164,12 @@ int uart_recv_int_demo(void)
 	tUartConfig.hwRecvTo 	= 88;					//UART接收超时时间，单位：bit位周期，8个bytes(11bit*8=88, 115200波特率时=764us)
 	tUartConfig.eRxFifoTrg  = UART_RXFIFOTRG_ONE;	//UART的RXFIFO的中断触发点设置为1，即RXFIFO接收到数据,就会触发RXFIFO中断；支持三种配置(1/2/4)
 	csi_uart_init(UART1, &tUartConfig);				//初始化串口
-	csi_uart_start(UART1, UART_FUNC_RX_TX);			//开启UART的RX和TX功能，也可单独开启RX或者TX功能
 	
 	csi_uart_int_enable(UART1, UART_INTSRC_RXFIFO);	//开启RXFIFO中断，字节接收超时中断不开启(用户可根据具体处理需要是否开启）
 	//csi_uart_int_enable(UART1, UART_INTSRC_RXTO);	//开启字节接收超时中断
+	csi_uart_start(UART1, UART_FUNC_RX_TX);			//开启UART的RX和TX功能，也可单独开启RX或者TX功能
+	
+	
 	
 	//接收在用户在中断服务函数(uart1_int_handler)里处理
 	while(1)
@@ -212,6 +216,7 @@ int uart_send_dma_demo(void)
 	tDmaConfig.eTsizeMode   = DMA_TSIZE_ONE_DSIZE;				//传输数据大小，一个 DSIZE , 即DSIZE定义大小
 	tDmaConfig.eReqMode		= DMA_REQ_HARDWARE;					//DMA请求模式，硬件请求
 	csi_dma_ch_init(DMA0, DMA_CH1, &tDmaConfig);				//初始化DMA0，选择CH1
+	
 	csi_dma_int_enable(DMA0, DMA_CH0,DMA_INTSRC_TCIT);			//使用TCIT中断
 	
 	//ETCB 配置初始化
@@ -273,6 +278,7 @@ int uart_receive_dma_demo(void)
 	tDmaConfig.eTsizeMode  = DMA_TSIZE_ONE_DSIZE;				//传输数据大小，一个 DSIZE , 即DSIZE定义大小
 	tDmaConfig.eReqMode		= DMA_REQ_HARDWARE;					//DMA请求模式，硬件请求
 	csi_dma_ch_init(DMA0, DMA_CH0, &tDmaConfig);				//初始化DMA,选择CH0
+	
 	csi_dma_int_enable(DMA0, DMA_CH0,DMA_INTSRC_TCIT);			//使用TCIT中断
 	
 	//ETCB 配置初始化
