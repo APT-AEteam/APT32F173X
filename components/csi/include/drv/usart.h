@@ -13,7 +13,7 @@
 #ifndef _DRV_USART_H_
 #define _DRV_USART_H_
 
-#include <drv/etb.h>
+#include <drv/etcb.h>
 #include <drv/dma.h>
 #include <tick.h>
 #include <csp.h>

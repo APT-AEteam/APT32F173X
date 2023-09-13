@@ -11,16 +11,15 @@
  * </table>
  * *********************************************************************
 */
-#include <sys_clk.h>
-#include <drv/etb.h>
+#include <drv/etcb.h>
 
 /* Private macro------------------------------------------------------*/
 /* externs function---------------------------------------------------*/
 /* externs variablesr-------------------------------------------------*/
 /* Private variablesr-------------------------------------------------*/
 
-#define ETB_BUF_LEN        ((ETB_CH_MAX_NUM-1)/ETB_CH_ALLOC_LEN +1)
-static uint32_t s_wEtbAllocStatus[ETB_BUF_LEN] = {0};
+#define ETCB_BUF_LEN        ((ETCB_CH_MAX_NUM-1)/ETCB_CH_ALLOC_LEN +1)
+static uint32_t s_wEtbAllocStatus[ETCB_BUF_LEN] = {0};
 
 
 /** \brief etcb channel[0->31] check
@@ -33,8 +32,8 @@ static int32_t check_is_alloced(csi_etcb_ch_e eEtbCh)
     uint8_t byChOffset, byChGroup;
 	uint32_t wStatus = 0U;
     int32_t ret = 0;
-    byChGroup =   (uint8_t)(eEtbCh / ETB_CH_ALLOC_LEN);
-    byChOffset =  (uint8_t)(eEtbCh % ETB_CH_ALLOC_LEN);
+    byChGroup =   (uint8_t)(eEtbCh / ETCB_CH_ALLOC_LEN);
+    byChOffset =  (uint8_t)(eEtbCh % ETCB_CH_ALLOC_LEN);
 
     wStatus = s_wEtbAllocStatus[byChGroup];
     wStatus &= (uint32_t)(1U << byChOffset);
@@ -54,8 +53,8 @@ static void set_ch_alloc_status(csi_etcb_ch_e eEtbCh, uint32_t wStatus)
 {
     uint8_t byChOffset, byChGroup;
 
-    byChGroup =  (uint8_t)(eEtbCh / ETB_CH_ALLOC_LEN);
-    byChOffset = (uint8_t)(eEtbCh % ETB_CH_ALLOC_LEN);
+    byChGroup =  (uint8_t)(eEtbCh / ETCB_CH_ALLOC_LEN);
+    byChOffset = (uint8_t)(eEtbCh % ETCB_CH_ALLOC_LEN);
 
     if (wStatus == 1U) 
         s_wEtbAllocStatus[byChGroup] |= (uint32_t)(1U << byChOffset);
@@ -65,7 +64,7 @@ static void set_ch_alloc_status(csi_etcb_ch_e eEtbCh, uint32_t wStatus)
 }
 /** \brief etcb channel[0->31] enable/disable 
  * 
- *  \param[in] ptEtbBase: pionter of ETB reg structure.
+ *  \param[in] ptEtbBase: pionter of ETCB reg structure.
  *  \param[in] eEtbCh: channel number, \ref csi_etcb_ch_e
  *  \param[in] bEnable: enable/disable
  *  \return none
@@ -74,18 +73,18 @@ static void etcb_channel_enable(csp_etcb_t *ptEtbBase, csi_etcb_ch_e eEtbCh, boo
 {
 	switch(eEtbCh)
 	{
-		case ETB_CH0:		
-			ptEtbBase->CFG1_CH0 =((ptEtbBase->CFG1_CH0 & (~ETB_CH_EN_MSK)) | (uint8_t)bEnable);
+		case ETCB_CH0:		
+			ptEtbBase->CFG1_CH0 =((ptEtbBase->CFG1_CH0 & (~ETCB_CH_EN_MSK)) | (uint8_t)bEnable);
 			break;
-		case ETB_CH1:
-			ptEtbBase->CH1_2[0].CFG1 =((ptEtbBase->CH1_2[0].CFG1 & (~ETB_CH_EN_MSK)) | (uint8_t)bEnable);
+		case ETCB_CH1:
+			ptEtbBase->CH1_2[0].CFG1 =((ptEtbBase->CH1_2[0].CFG1 & (~ETCB_CH_EN_MSK)) | (uint8_t)bEnable);
 			break;
-		case ETB_CH2:
-			ptEtbBase->CH1_2[1].CFG1 =((ptEtbBase->CH1_2[1].CFG1 & (~ETB_CH_EN_MSK)) | (uint8_t)bEnable);
+		case ETCB_CH2:
+			ptEtbBase->CH1_2[1].CFG1 =((ptEtbBase->CH1_2[1].CFG1 & (~ETCB_CH_EN_MSK)) | (uint8_t)bEnable);
 			break;
 		default:
-			if(eEtbCh <= ETB_CH31)
-				ptEtbBase->CFG_CHX[eEtbCh-3] = ((ptEtbBase->CFG_CHX[eEtbCh-3] & (~ETB_CH_EN_MSK)) | (uint8_t)bEnable);
+			if(eEtbCh <= ETCB_CH31)
+				ptEtbBase->CFG_CHX[eEtbCh-3] = ((ptEtbBase->CFG_CHX[eEtbCh-3] & (~ETCB_CH_EN_MSK)) | (uint8_t)bEnable);
 			break;
 	}
 }
@@ -101,24 +100,24 @@ static void etcb_channel_enable(csp_etcb_t *ptEtbBase, csi_etcb_ch_e eEtbCh, boo
  */ 
 //static void etcb_set_more_trg_one(csp_etcb_t *ptEtbBase, uint8_t bySrc0, uint8_t bySrc1, uint8_t bySrc2,uint8_t byDst, etcb_ch_trg_mode_e eTrgMode)
 //{
-//	ptEtbBase->CFG0_CH0 = (ETB_CH0_TRG_SRC0(bySrc0) | ETB_CH0_TRG_SRC1(bySrc1) | ETB_CH0_TRG_SRC2(bySrc2)); 
-//	if(bySrc0 != ETB_SRC_NOT_USE)
-//		ptEtbBase->CFG0_CH0 |= ETB_CH0_SRC0_EN;
+//	ptEtbBase->CFG0_CH0 = (ETCB_CH0_TRG_SRC0(bySrc0) | ETCB_CH0_TRG_SRC1(bySrc1) | ETCB_CH0_TRG_SRC2(bySrc2)); 
+//	if(bySrc0 != ETCB_SRC_NOT_USE)
+//		ptEtbBase->CFG0_CH0 |= ETCB_CH0_SRC0_EN;
 //	else
-//		ptEtbBase->CFG0_CH0 &= ~ETB_CH0_SRC0_EN_MSK;
+//		ptEtbBase->CFG0_CH0 &= ~ETCB_CH0_SRC0_EN_MSK;
 //	
-//	if(bySrc1 != ETB_SRC_NOT_USE)
-//		ptEtbBase->CFG0_CH0 |= (ETB_CH0_SRC1_EN << ETB_CH0_SRC1_EN_POS);
+//	if(bySrc1 != ETCB_SRC_NOT_USE)
+//		ptEtbBase->CFG0_CH0 |= (ETCB_CH0_SRC1_EN << ETCB_CH0_SRC1_EN_POS);
 //	else
-//		ptEtbBase->CFG0_CH0 &= ~ETB_CH0_SRC1_EN_MSK;
+//		ptEtbBase->CFG0_CH0 &= ~ETCB_CH0_SRC1_EN_MSK;
 //		
-//	if(bySrc1 != ETB_SRC_NOT_USE)
-//		ptEtbBase->CFG0_CH0 |= (ETB_CH0_SRC2_EN << ETB_CH0_SRC2_EN_POS);
+//	if(bySrc1 != ETCB_SRC_NOT_USE)
+//		ptEtbBase->CFG0_CH0 |= (ETCB_CH0_SRC2_EN << ETCB_CH0_SRC2_EN_POS);
 //	else
-//		ptEtbBase->CFG0_CH0 &= ~ETB_CH0_SRC2_EN_MSK;
+//		ptEtbBase->CFG0_CH0 &= ~ETCB_CH0_SRC2_EN_MSK;
 //		
-//	ptEtbBase->CFG1_CH0 = (eTrgMode << ETB_CH_TRG_MODE_POS) | ETB_CH0_TRG_DST(byDst); 
-//	ptEtbBase->CFG1_CH0  |= ETB_CH_EN;		//enable etcb channel
+//	ptEtbBase->CFG1_CH0 = (eTrgMode << ETCB_CH_TRG_MODE_POS) | ETCB_CH0_TRG_DST(byDst); 
+//	ptEtbBase->CFG1_CH0  |= ETCB_CH_EN;		//enable etcb channel
 //}
 /** \brief etcb one source trigger more destination
  * 
@@ -133,34 +132,24 @@ static void etcb_channel_enable(csp_etcb_t *ptEtbBase, csi_etcb_ch_e eEtbCh, boo
  */ 
 static void etcb_set_one_trg_more(csp_etcb_t *ptEtbBase, uint8_t byChNum, uint8_t bySrc, uint8_t byDst0, uint8_t byDst1, uint8_t byDst2, etcb_ch_trg_mode_e eTrgMode)
 {
-	ptEtbBase->CH1_2[byChNum-1].CFG0 = (ETB_CH1_2_TRG_DST0(byDst0) | ETB_CH1_2_TRG_DST1(byDst1) | ETB_CH1_2_TRG_DST2(byDst2)); 
-	if(byDst0 != ETB_DST_NOT_USE)
-		ptEtbBase->CH1_2[byChNum-1].CFG0 |= (ETB_CH1_2_DST0_EN << ETB_CH1_2_DST0_EN_POS);
+	ptEtbBase->CH1_2[byChNum-1].CFG0 = (ETCB_CH1_2_TRG_DST0(byDst0) | ETCB_CH1_2_TRG_DST1(byDst1) | ETCB_CH1_2_TRG_DST2(byDst2)); 
+	if(byDst0 != ETCB_DST_NOT_USE)
+		ptEtbBase->CH1_2[byChNum-1].CFG0 |= (ETCB_CH1_2_DST0_EN << ETCB_CH1_2_DST0_EN_POS);
 	else
-		ptEtbBase->CH1_2[byChNum-1].CFG0 &= ~ETB_CH1_2_DST0_EN_MSK;
+		ptEtbBase->CH1_2[byChNum-1].CFG0 &= ~ETCB_CH1_2_DST0_EN_MSK;
 	
-	if(byDst1 != ETB_DST_NOT_USE)
-		ptEtbBase->CH1_2[byChNum-1].CFG0 |= (ETB_CH1_2_DST1_EN << ETB_CH1_2_DST1_EN_POS);
+	if(byDst1 != ETCB_DST_NOT_USE)
+		ptEtbBase->CH1_2[byChNum-1].CFG0 |= (ETCB_CH1_2_DST1_EN << ETCB_CH1_2_DST1_EN_POS);
 	else
-		ptEtbBase->CH1_2[byChNum-1].CFG0 &= ~ETB_CH1_2_DST1_EN_MSK;
+		ptEtbBase->CH1_2[byChNum-1].CFG0 &= ~ETCB_CH1_2_DST1_EN_MSK;
 	
-	if(byDst2 != ETB_DST_NOT_USE)
-		ptEtbBase->CH1_2[byChNum-1].CFG0 |= (ETB_CH1_2_DST2_EN << ETB_CH1_2_DST2_EN_POS);
+	if(byDst2 != ETCB_DST_NOT_USE)
+		ptEtbBase->CH1_2[byChNum-1].CFG0 |= (ETCB_CH1_2_DST2_EN << ETCB_CH1_2_DST2_EN_POS);
 	else
-		ptEtbBase->CH1_2[byChNum-1].CFG0 &= ~ETB_CH1_2_DST2_EN_MSK;
+		ptEtbBase->CH1_2[byChNum-1].CFG0 &= ~ETCB_CH1_2_DST2_EN_MSK;
 		
-	ptEtbBase->CH1_2[byChNum-1].CFG1 = (eTrgMode << ETB_CH_TRG_MODE_POS) | ETB_CH1_2_TRG_SRC(bySrc);
-	ptEtbBase->CH1_2[byChNum-1].CFG1 |= ETB_CH_EN;	//enable etcb channel
-}
-/** \brief initialize etcb; enable etcb and etcb clk
- * 
- *  \param[in] none
- *  \return none
- */ 
-void csi_etcb_init(void)
-{
-	soc_clk_enable(ETCB_SYS_CLK);			//enable peripheral clk
-    csp_etcb_enable(ETCB);					//enable etcb module
+	ptEtbBase->CH1_2[byChNum-1].CFG1 = (eTrgMode << ETCB_CH_TRG_MODE_POS) | ETCB_CH1_2_TRG_SRC(bySrc);
+	ptEtbBase->CH1_2[byChNum-1].CFG1 |= ETCB_CH_EN;	//enable etcb channel
 }
 /** \brief alloc an etcb channel
  * 
@@ -174,7 +163,7 @@ int32_t csi_etcb_ch_alloc(csi_etcb_ch_type_e eChType)
 
     switch (eChType) 
 	{
-        case ETB_ONE_TRG_MORE:
+        case ETCB_ONE_TRG_MORE:
             for (ret_ch = 0; ret_ch < 3; ret_ch++) 
 			{
                 if (check_is_alloced(ret_ch) != -1) 
@@ -185,25 +174,25 @@ int32_t csi_etcb_ch_alloc(csi_etcb_ch_type_e eChType)
                 ret_ch = CSI_ERROR;
 				
             break;
-        case ETB_ONE_TRG_ONE:
-            for (ret_ch = 3; ret_ch < ETB_CH_DMA_STAR; ret_ch++) 
+        case ETCB_ONE_TRG_ONE:
+            for (ret_ch = 3; ret_ch < ETCB_CH_DMA_STAR; ret_ch++) 
 			{
                 if (check_is_alloced(ret_ch) != -1)
                     break;
             }
 
-            if (ret_ch >= ETB_CH_DMA_STAR) 
+            if (ret_ch >= ETCB_CH_DMA_STAR) 
                 ret_ch = CSI_ERROR;
 				
             break;
-		case ETB_ONE_TRG_ONE_DMA:
-			for (ret_ch = ETB_CH_DMA_STAR; ret_ch < ETB_CH_MAX_NUM; ret_ch++) 
+		case ETCB_ONE_TRG_ONE_DMA:
+			for (ret_ch = ETCB_CH_DMA_STAR; ret_ch < ETCB_CH_MAX_NUM; ret_ch++) 
 			{
                 if (check_is_alloced(ret_ch) != -1)
                     break;
             }
 
-            if (ret_ch >= ETB_CH_MAX_NUM) 
+            if (ret_ch >= ETCB_CH_MAX_NUM) 
                ret_ch = CSI_ERROR;
 			
 			break;
@@ -251,8 +240,8 @@ csi_error_t csi_etcb_ch_init(csi_etcb_ch_e eEtbCh, csi_etcb_config_t *ptConfig)
 	
 	switch(ptConfig->eChType)
 	{
-		case ETB_ONE_TRG_ONE:						//channel num = [3:32]
-			if(eEtbCh > ETB_CH2)
+		case ETCB_ONE_TRG_ONE:						//channel num = [3:32]
+			if(eEtbCh > ETCB_CH2)
 			{
 				csp_etcb_set_one_trg_one(ETCB, eEtbCh, ptConfig->eSrcIp, ptConfig->eDstIp, (etcb_ch_trg_mode_e)ptConfig->eTrgMode);
 				csp_etcb_chx_enable(ETCB, eEtbCh);	//enable etcb channel 
@@ -261,15 +250,15 @@ csi_error_t csi_etcb_ch_init(csi_etcb_ch_e eEtbCh, csi_etcb_config_t *ptConfig)
 				ret = CSI_ERROR;
 
 			break;
-		case ETB_ONE_TRG_MORE:						//channel num = [0:2]		
-			if(eEtbCh < ETB_CH3)
+		case ETCB_ONE_TRG_MORE:						//channel num = [0:2]		
+			if(eEtbCh < ETCB_CH3)
 				etcb_set_one_trg_more(ETCB, eEtbCh, ptConfig->eSrcIp, ptConfig->eDstIp, ptConfig->eDstIp1, ptConfig->eDstIp2, (etcb_ch_trg_mode_e)ptConfig->eTrgMode);
 			else
 				ret = CSI_ERROR;
 				
 			break;
-		case ETB_ONE_TRG_ONE_DMA:					//channel num = [20:31]
-			if((eEtbCh >= ETB_CH_DMA_STAR) && (eEtbCh < ETB_CH_MAX_NUM))
+		case ETCB_ONE_TRG_ONE_DMA:					//channel num = [20:31]
+			if((eEtbCh >= ETCB_CH_DMA_STAR) && (eEtbCh < ETCB_CH_MAX_NUM))
 			{
 				csp_etcb_set_one_trg_one(ETCB, eEtbCh, ptConfig->eSrcIp, ptConfig->eDstIp, (etcb_ch_trg_mode_e)ptConfig->eTrgMode);
 				csp_etcb_dma_enable(ETCB, eEtbCh);	//enable etcb dma

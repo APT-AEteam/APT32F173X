@@ -11,7 +11,7 @@
 /* Includes ---------------------------------------------------------------*/
 #include "drv/bt.h"
 #include "drv/gpio.h"
-#include "drv/etb.h"
+#include "drv/etcb.h"
 #include "board_config.h"
 
 /* externs function--------------------------------------------------------*/
@@ -164,7 +164,7 @@ int bt_sync_trg_count_demo(void)
 {
 	int iRet = 0;
 	volatile uint8_t ch = 0;
-	csi_etcb_config_t tEtbConfig;				            				//ETB 参数配置结构体
+	csi_etcb_config_t tEtbConfig;				            				//ETCB 参数配置结构体
 	csi_bt_pwm_config_t tPwmCfg;											//BT PWM输出参数初始化配置结构体
 	csi_bt_time_config_t tTimConfig;										//BT 定时初始化参数结构体	
 
@@ -189,14 +189,14 @@ int bt_sync_trg_count_demo(void)
 	csi_bt_start(BT1);	    			 									//启动BT1
 	
 	// ETCB 初始化
-	tEtbConfig.eChType  = ETB_ONE_TRG_ONE;  		//单个源触发单个目标
-	tEtbConfig.eSrcIp   = ETB_EXI_TRGOUT1;  	    //EXI_TRGOUT1作为触发源
-	tEtbConfig.eDstIp   = ETB_BT1_SYNCIN2;   	    //BT1 同步输入作为目标事件
-	tEtbConfig.eTrgMode = ETB_HARDWARE_TRG;
+	tEtbConfig.eChType  = ETCB_ONE_TRG_ONE;  		//单个源触发单个目标
+	tEtbConfig.eSrcIp   = ETCB_EXI_TRGOUT1;  	    //EXI_TRGOUT1作为触发源
+	tEtbConfig.eDstIp   = ETCB_BT1_SYNCIN2;   	    //BT1 同步输入作为目标事件
+	tEtbConfig.eTrgMode = ETCB_HARDWARE_TRG;
 	ch = csi_etcb_ch_alloc(tEtbConfig.eChType);	    //自动获取空闲通道号,ch >= 0 获取成功
 	if(ch < 0)
 		return -1;								   	//ch < 0,则获取通道号失败
-	iRet = csi_etcb_ch_i(ch, &tEtbConfig);
+	iRet = csi_etcb_ch_init(ch, &tEtbConfig);
 	
 	//BT0 PWM初始化
 	tPwmCfg.eIdleLevel = BT_PWM_IDLE_HIGH;			//PWM 输出空闲电平
@@ -226,7 +226,7 @@ int bt_trg_out_demo(void)
 {
 	int iRet = 0;
 	volatile uint8_t ch = 0;
-	csi_etcb_config_t tEtbConfig;				            //ETB 参数配置结构体		
+	csi_etcb_config_t tEtbConfig;				            //ETCB 参数配置结构体		
 	csi_bt_pwm_config_t tPwmCfg;							//BT PWM输出参数初始化配置结构体
 	csi_bt_time_config_t tTimConfig;						//BT 定时初始化参数结构体	
 	
@@ -252,15 +252,14 @@ int bt_trg_out_demo(void)
 	csi_bt_set_sync(BT1, BT_SYNCIN0, BT_TRG_ONCE, BT_TRG_AUTOAREARM);	//外部触发bt启动(SYNCIN0)
 	
 	//ETCB初始化
-	tEtbConfig.eChType  = ETB_ONE_TRG_ONE;  				//单个源触发单个目标
-	tEtbConfig.eSrcIp   = ETB_BT0_TRGOUT;   				//BT0_TRGOUT作为触发源
-	tEtbConfig.eDstIp   = ETB_BT1_SYNCIN0;  				//BT1 同步输入作为目标事件
-	tEtbConfig.eTrgMode = ETB_HARDWARE_TRG; 				//硬件触发模式
-	csi_etcb_init();
+	tEtbConfig.eChType  = ETCB_ONE_TRG_ONE;  				//单个源触发单个目标
+	tEtbConfig.eSrcIp   = ETCB_BT0_TRGOUT;   				//BT0_TRGOUT作为触发源
+	tEtbConfig.eDstIp   = ETCB_BT1_SYNCIN0;  				//BT1 同步输入作为目标事件
+	tEtbConfig.eTrgMode = ETCB_HARDWARE_TRG; 				//硬件触发模式
 	ch = csi_etcb_ch_alloc(tEtbConfig.eChType);	   			//自动获取空闲通道号,ch >= 0 获取成功
 	if(ch < 0)
 		return -1;								    		//ch < 0,则获取通道号失败
-	iRet = csi_etcb_ch_config(ch, &tEtbConfig);
+	iRet = csi_etcb_ch_init(ch, &tEtbConfig);
 	
 	csi_bt_start(BT0);										//启动BT0					
 	

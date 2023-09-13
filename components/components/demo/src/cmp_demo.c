@@ -10,7 +10,7 @@
  * *********************************************************************
 */
 /* Includes ---------------------------------------------------------------*/
-#include "drv/etb.h"
+#include "drv/etcb.h"
 #include "drv/bt.h"
 #include "drv/cmp.h"
 #include "drv/gpio.h"
@@ -171,16 +171,16 @@ int cmp_wfcr_demo(void)
 	csi_bt_start(BT0);					            //启动定时器  
 	csi_bt_set_evtrg(BT0, BT_TRGSRC_PEND);	  	
 	
-	csi_etcb_config_t tEtbConfig;                    //ETB 参数配置结构体                  
-	tEtbConfig.eChType = ETB_ONE_TRG_ONE;           //单个源触发单个目标
-	tEtbConfig.eSrcIp  = ETB_BT0_TRGOUT ; 
-	tEtbConfig.eDstIp =  ETB_CMP0_SYNCIN;           //CMP0 同步输入作为目标事件
-	tEtbConfig.eTrgMode = ETB_HARDWARE_TRG;
+	csi_etcb_config_t tEtbConfig;                    //ETCB 参数配置结构体                  
+	tEtbConfig.eChType = ETCB_ONE_TRG_ONE;           //单个源触发单个目标
+	tEtbConfig.eSrcIp  = ETCB_BT0_TRGOUT ; 
+	tEtbConfig.eDstIp =  ETCB_CMP0_SYNCIN;           //CMP0 同步输入作为目标事件
+	tEtbConfig.eTrgMode = ETCB_HARDWARE_TRG;
    
 	ch = csi_etcb_ch_alloc(tEtbConfig.eChType);	    //自动获取空闲通道号,ch >= 0 获取成功
 	if(ch < 0)
 		return -1;								    //ch < 0,则获取通道号失败
-	iRet = csi_etcb_ch_config(ch, &tEtbConfig);	
+	iRet = csi_etcb_ch_init(ch, &tEtbConfig);	
 	
 	while(1)
 	{

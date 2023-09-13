@@ -13,7 +13,7 @@
 #include <string.h>
 #include <drv/sio.h>
 #include <drv/pin.h>
-#include <drv/etb.h>
+#include <drv/etcb.h>
 #include <drv/uart.h>
 #include <drv/tick.h>
 #include <iostring.h>
@@ -188,13 +188,12 @@ int sio_led_rgb_send_dma_demo(void)
 //	tDmaConfig.wInt			= DMA_INTSRC_TCIT;			//使用TCIT中断
 	
 	//etcb config
-	tEtbConfig.eChType = ETB_ONE_TRG_ONE_DMA;			//单个源触发单个目标，DMA方式
-	tEtbConfig.eSrcIp 	= ETB_SIO0_TXSRC;				//SIO TXSRC作为触发源
-	tEtbConfig.eDstIp 	= ETB_DMA0_CH1;					//ETB DMA通道 作为目标实际
-	tEtbConfig.eTrgMode = ETB_HARDWARE_TRG;			//通道触发模式采样硬件触发
+	tEtbConfig.eChType = ETCB_ONE_TRG_ONE_DMA;			//单个源触发单个目标，DMA方式
+	tEtbConfig.eSrcIp 	= ETCB_SIO0_TXSRC;				//SIO TXSRC作为触发源
+	tEtbConfig.eDstIp 	= ETCB_DMA0_CH1;					//ETCB DMA通道 作为目标实际
+	tEtbConfig.eTrgMode = ETCB_HARDWARE_TRG;			//通道触发模式采样硬件触发
 	
-	csi_etcb_init();										//使能ETB模块
-	ret = csi_etcb_ch_config(ETB_CH21, &tEtbConfig);		//初始化ETB
+	ret = csi_etcb_ch_init(ETCB_CH21, &tEtbConfig);		//初始化ETCB
 	if(ret < CSI_OK)
 		return CSI_ERROR;
 	ret = csi_dma_ch_init(DMA0, DMA_CH1, &tDmaConfig);	//初始化DMA
@@ -272,13 +271,13 @@ int sio_led_rgb_recv_dma_demo(void)
 //	tDmaConfig.wInt			= DMA_INTSRC_TCIT;			//使用TCIT中断
 	
 	//etcb config
-	tEtbConfig.eChType = ETB_ONE_TRG_ONE_DMA;			//单个源触发单个目标，DMA方式
-	tEtbConfig.eSrcIp 	= ETB_SIO0_RXSRC;				//SIO RXSRC作为触发源
-	tEtbConfig.eDstIp 	= ETB_DMA0_CH2;					//ETB DMA通道 作为目标实际
-	tEtbConfig.eTrgMode = ETB_HARDWARE_TRG;			//通道触发模式采样硬件触发
+	tEtbConfig.eChType = ETCB_ONE_TRG_ONE_DMA;			//单个源触发单个目标，DMA方式
+	tEtbConfig.eSrcIp 	= ETCB_SIO0_RXSRC;				//SIO RXSRC作为触发源
+	tEtbConfig.eDstIp 	= ETCB_DMA0_CH2;					//ETCB DMA通道 作为目标实际
+	tEtbConfig.eTrgMode = ETCB_HARDWARE_TRG;			//通道触发模式采样硬件触发
 	
-	csi_etcb_init();										//使能ETB模块
-	ret = csi_etcb_ch_config(ETB_CH20, &tEtbConfig);		//初始化ETB，DMA ETB CHANNEL > ETB_CH19_ID
+
+	ret = csi_etcb_ch_init(ETCB_CH20, &tEtbConfig);		//初始化ETCB，DMA ETCB CHANNEL > ETCB_CH19_ID
 	if(ret < CSI_OK)
 		return CSI_ERROR;
 	ret = csi_dma_ch_init(DMA0, DMA_CH2, &tDmaConfig);	//初始化DMA

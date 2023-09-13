@@ -18,7 +18,7 @@
 /* Private macro-----------------------------------------------------------*/
 /* Private variablesr------------------------------------------------------*/
 
-/** \brief	bt sync trg start：EXI通过ETCB触发BT启动的demo
+/** \brief	exi trg bt start：EXI通过ETCB触发BT启动的demo
  * 
  *  \brief	PB1外部下降沿触发BT0启动，对应VIC中断不开启，即不进入PB1的外部中断；若需要进入PB1外部中断，需
  * 			开启对应的VIC中断，调用csi_gpio_vic_irq_enable接口函数
@@ -30,7 +30,7 @@ int exi_etcb_bt_start_demo(void)
 {
 	int iRet = 0;
 	volatile uint8_t ch = 0;
-	csi_etcb_config_t tEtbConfig;				               			//ETB 参数配置结构体	
+	csi_etcb_config_t tEtbConfig;				               			//ETCB 参数配置结构体	
 	csi_bt_time_config_t tTimConfig;									//BT 定时初始化参数结构体	
 
 #if (USE_GUI == 0)			
@@ -51,14 +51,14 @@ int exi_etcb_bt_start_demo(void)
 	csi_bt_sync_enable(BT0, BT_SYNCIN0);								//BT0 同步输入2使能
 	
 	//ETCB 初始化
-	tEtbConfig.eChType = ETB_ONE_TRG_ONE;  								//单个源触发单个目标
-	tEtbConfig.eSrcIp  = ETB_EXI_TRGOUT1;  	    						//EXI_TRGOUT1作为触发源
-	tEtbConfig.eDstIp =  ETB_BT0_SYNCIN0;   	   						//BT0 同步输入作为目标事件
-	tEtbConfig.eTrgMode = ETB_HARDWARE_TRG;
+	tEtbConfig.eChType = ETCB_ONE_TRG_ONE;  								//单个源触发单个目标
+	tEtbConfig.eSrcIp  = ETCB_EXI_TRGOUT1;  	    						//EXI_TRGOUT1作为触发源
+	tEtbConfig.eDstIp =  ETCB_BT0_SYNCIN0;   	   						//BT0 同步输入作为目标事件
+	tEtbConfig.eTrgMode = ETCB_HARDWARE_TRG;
 	ch = csi_etcb_ch_alloc(tEtbConfig.eChType);	    					//自动获取空闲通道号,ch >= 0 获取成功
 	if(ch < 0)
 		return -1;								    					//ch < 0,则获取通道号失败
-	iRet = csi_etcb_ch_int(ch, &tEtbConfig);
+	iRet = csi_etcb_ch_init(ch, &tEtbConfig);
 	
 	while(1)
 	{
@@ -68,7 +68,7 @@ int exi_etcb_bt_start_demo(void)
 }
 
 
-/** \brief bt sync trg stop: EXI同步触发BT停止/启动demo
+/** \brief exi trg bt stop/start: EXI通过ETCB触发BT停止/启动demo
  * 
  *  \brief	PB1外部下降沿触发BT0停止/启动，当BT处于运行状态时才有效，即第一次触发关闭BT，再次触发开启BT，
  * 			依次类推。
@@ -80,7 +80,7 @@ int exi_etcb_bt_stop_demo(void)
 {
 	int iRet = 0;
 	volatile uint8_t ch = 0;
-	csi_etcb_config_t tEtbConfig;				               				//ETB 参数配置结构体
+	csi_etcb_config_t tEtbConfig;				               				//ETCB 参数配置结构体
 	csi_bt_time_config_t tTimConfig;										//BT 定时初始化参数结构体				
 
 #if (USE_GUI == 0)			
@@ -101,10 +101,10 @@ int exi_etcb_bt_stop_demo(void)
 	csi_bt_sync_enable(BT0, BT_SYNCIN1);									//BT0 同步输入1使能
 	csi_bt_start(BT0);	    												//启动BT0
 	
-	tEtbConfig.eChType = ETB_ONE_TRG_ONE;  									//单个源触发单个目标
-	tEtbConfig.eSrcIp  = ETB_EXI_TRGOUT1;  	    							//EXI_TRGOUT1作为触发源
-	tEtbConfig.eDstIp =  ETB_BT0_SYNCIN1;   	    						//BT0 同步输入作为目标事件
-	tEtbConfig.eTrgMode = ETB_HARDWARE_TRG;
+	tEtbConfig.eChType = ETCB_ONE_TRG_ONE;  									//单个源触发单个目标
+	tEtbConfig.eSrcIp  = ETCB_EXI_TRGOUT1;  	    							//EXI_TRGOUT1作为触发源
+	tEtbConfig.eDstIp =  ETCB_BT0_SYNCIN1;   	    						//BT0 同步输入作为目标事件
+	tEtbConfig.eTrgMode = ETCB_HARDWARE_TRG;
 	ch = csi_etcb_ch_alloc(tEtbConfig.eChType);	    						//自动获取空闲通道号,ch >= 0 获取成功
 	if(ch < 0)
 		return -1;								    						//ch < 0,则获取通道号失败

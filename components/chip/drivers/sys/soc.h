@@ -79,8 +79,8 @@ extern "C" {
 
 //ETB dma start channel number
 //ETB max channel  number
-#define ETB_CH_DMA_STAR		ETB_CH20
-#define ETB_CH_MAX_NUM		32
+#define ETCB_CH_DMA_STAR	ETCB_CH20
+#define ETCB_CH_MAX_NUM		32
 
 //FLASH
 #define PFLASHBASE			0x00000000

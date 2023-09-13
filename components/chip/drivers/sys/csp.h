@@ -19,7 +19,7 @@
 #include "csp_bt.h"
 #include "csp_cnta.h"
 #include "csp_crc.h"
-#include "csp_etb.h"
+#include "csp_etcb.h"
 #include "csp_gpio.h"
 #include "csp_gpta.h"
 #include "csp_i2c.h"

@@ -14,7 +14,7 @@
 #include <drv/pin.h>
 #include <iostring.h>
 //#include "demo.h"
-#include "drv/etb.h"
+#include "drv/etcb.h"
 #include <drv/gpta.h>
 /* externs function--------------------------------------------------------*/
 //ADC通道采样深度(每通道采样数据次数)，连续转换模式时支持

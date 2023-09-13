@@ -15,7 +15,7 @@
 #include "irq.h"
 #include "pin.h"
 #include "demo.h"
-#include "etb.h"
+#include "etcb.h"
 
 
 csi_iic_master_config_t  g_tIicMasterCfg;	//主机初始化结构体变量
@@ -208,16 +208,15 @@ void iic_multi_slave_address_demo(void)
 	csi_pin_pull_mode(PC5, GPIO_PULLUP);
 #endif		
 	// tx etcb config
-	csi_etcb_init();      //使能ETB模块
-	tEtbConfig.eChType = ETB_ONE_TRG_ONE_DMA;     //单个源触发单个目标，DMA方式
-	tEtbConfig.eSrcIp  = ETB_I2C0_TXSRC;			//I2C0_TXSRC作为触发源
+	tEtbConfig.eChType = ETCB_ONE_TRG_ONE_DMA;     //单个源触发单个目标，DMA方式
+	tEtbConfig.eSrcIp  = ETCB_I2C0_TXSRC;			//I2C0_TXSRC作为触发源
 	tEtbConfig.eSrcIp1 = 0xff;      
 	tEtbConfig.eSrcIp2 = 0xff;
-	tEtbConfig.eDstIp  = ETB_DMA0_CH0 ; //ETB DMA通道 作为目标实际
+	tEtbConfig.eDstIp  = ETCB_DMA0_CH0 ; //ETCB DMA通道 作为目标实际
 	tEtbConfig.eDstIp1 = 0xff;
 	tEtbConfig.eDstIp2 = 0xff;
-	tEtbConfig.eTrgMode = ETB_HARDWARE_TRG;     //通道触发模式采样硬件触发
-	csi_etcb_ch_config(ETB_CH21, &tEtbConfig);    //初始化ETB，DMA ETB CHANNEL > ETB_CH19_ID 
+	tEtbConfig.eTrgMode = ETCB_HARDWARE_TRG;     //通道触发模式采样硬件触发
+	csi_etcb_ch_init(ETCB_CH21, &tEtbConfig);    //初始化ETCB，DMA ETCB CHANNEL > ETCB_CH19_ID 
 	csi_dma_sw_rst(DMA0);    //复位DMA模块
 	
 	//iic tx dma config
@@ -274,17 +273,16 @@ void iic_multi_slave_address_demo(void)
 	csi_pin_pull_mode(PC5, GPIO_PULLUP);
 #endif
 	// rx etcb config
-	csi_etcb_init();      //使能ETB模块
-	tEtbConfig.eChType = ETB_ONE_TRG_ONE_DMA;     //单个源触发单个目标，DMA方式
-	tEtbConfig.eSrcIp  = ETB_I2C0_RXSRC;			//I2C0_TXSRC作为触发源
+	tEtbConfig.eChType = ETCB_ONE_TRG_ONE_DMA;     //单个源触发单个目标，DMA方式
+	tEtbConfig.eSrcIp  = ETCB_I2C0_RXSRC;			//I2C0_TXSRC作为触发源
 	tEtbConfig.eSrcIp1 = 0xff;      
 	tEtbConfig.eSrcIp2 = 0xff;
-	tEtbConfig.eDstIp  = ETB_DMA0_CH1; //ETB DMA通道 作为目标实际
+	tEtbConfig.eDstIp  = ETCB_DMA0_CH1; //ETCB DMA通道 作为目标实际
 	tEtbConfig.eDstIp1 = 0xff;
 	tEtbConfig.eDstIp2 = 0xff;
-	tEtbConfig.eTrgMode = ETB_HARDWARE_TRG;     //通道触发模式采样硬件触发
+	tEtbConfig.eTrgMode = ETCB_HARDWARE_TRG;     //通道触发模式采样硬件触发
 	
-	csi_etcb_ch_config(ETB_CH22, &tEtbConfig);    //初始化ETB，DMA ETB CHANNEL > ETB_CH19_ID 
+	csi_etcb_ch_init(ETCB_CH22, &tEtbConfig);    //初始化ETCB，DMA ETCB CHANNEL > ETCB_CH19_ID 
 	csi_dma_sw_rst(DMA0);    //复位DMA模块
 	
 	// ic rx dma config

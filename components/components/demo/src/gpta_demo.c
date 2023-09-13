@@ -13,7 +13,7 @@
 #include <string.h>
 #include <drv/gpta.h>
 #include <drv/pin.h>
-#include <drv/etb.h>
+#include <drv/etcb.h>
 
 //#include "demo.h"
 /* externs function--------------------------------------------------------*/
@@ -67,14 +67,13 @@ int gpta_capture_sync_demo0(void)
 	csi_exi_set_evtrg(5, EXI_TRGSRC_GRP16, 1);	 
 	
 //------------------------------------------------------------------------------------------------------------------------		
-	csi_etcb_config_t tEtbConfig;				//ETB 参数配置结构体	
-	tEtbConfig.eChType  = ETB_ONE_TRG_ONE;  	//单个源触发单个目标
-	tEtbConfig.eSrcIp   = ETB_EXI_TRGOUT5 ;  	//...作为触发源
-	tEtbConfig.eDstIp   =  ETB_GPTA0_SYNCIN3;  //GPTB0 同步输入2作为目标事件
-	tEtbConfig.eTrgMode = ETB_HARDWARE_TRG;
-	csi_etcb_init();
+	csi_etcb_config_t tEtbConfig;				//ETCB 参数配置结构体	
+	tEtbConfig.eChType  = ETCB_ONE_TRG_ONE;  	//单个源触发单个目标
+	tEtbConfig.eSrcIp   = ETCB_EXI_TRGOUT5 ;  	//...作为触发源
+	tEtbConfig.eDstIp   =  ETCB_GPTA0_SYNCIN3;  //GPTB0 同步输入2作为目标事件
+	tEtbConfig.eTrgMode = ETCB_HARDWARE_TRG;
 	ch = csi_etcb_ch_alloc(tEtbConfig.eChType);	//自动获取空闲通道号,ch >= 0 获取成功						//ch < 0,则获取通道号失败		
-	iRet = csi_etcb_ch_config(ch, &tEtbConfig);	
+	iRet = csi_etcb_ch_init(ch, &tEtbConfig);	
 //------------------------------------------------------------------------------------------------------------------------	
 	csi_gpta_captureconfig_t tPwmCfg;								  
 	tPwmCfg.byWorkmod       = GPTA_CAPTURE;                     //WAVE or CAPTURE    //计数或捕获	
@@ -143,23 +142,21 @@ int gpta_capture_sync_demo1(void)
 	csi_etcb_config_t tEtbConfig;
 	
 //------------------------------------------------------------------------------------------------------------------------		
-	//ETB 参数配置结构体	
-	tEtbConfig.eChType  = ETB_ONE_TRG_ONE;  	//单个源触发单个目标
-	tEtbConfig.eSrcIp   = ETB_EXI_TRGOUT0 ;  	//...作为触发源
-	tEtbConfig.eDstIp   =  ETB_GPTA0_SYNCIN0;  //GPTA0 同步输入0作为目标事件
-	tEtbConfig.eTrgMode = ETB_HARDWARE_TRG;
-	csi_etcb_init();
+	//ETCB 参数配置结构体	
+	tEtbConfig.eChType  = ETCB_ONE_TRG_ONE;  	//单个源触发单个目标
+	tEtbConfig.eSrcIp   = ETCB_EXI_TRGOUT0 ;  	//...作为触发源
+	tEtbConfig.eDstIp   =  ETCB_GPTA0_SYNCIN0;  //GPTA0 同步输入0作为目标事件
+	tEtbConfig.eTrgMode = ETCB_HARDWARE_TRG;
 	ch = csi_etcb_ch_alloc(tEtbConfig.eChType);	//自动获取空闲通道号,ch >= 0 获取成功						//ch < 0,则获取通道号失败		
-	iRet = csi_etcb_ch_config(ch, &tEtbConfig);			
+	iRet = csi_etcb_ch_init(ch, &tEtbConfig);			
 	
 //------------------------------------------------------------------------------------------------------------------------		
-	tEtbConfig.eChType  = ETB_ONE_TRG_ONE;  	//单个源触发单个目标
-	tEtbConfig.eSrcIp   = ETB_EXI_TRGOUT5 ;  	//...作为触发源
-	tEtbConfig.eDstIp   =  ETB_GPTA0_SYNCIN3;  //GPTB0 同步输入2作为目标事件
-	tEtbConfig.eTrgMode = ETB_HARDWARE_TRG;
-	csi_etcb_init();
+	tEtbConfig.eChType  = ETCB_ONE_TRG_ONE;  	//单个源触发单个目标
+	tEtbConfig.eSrcIp   = ETCB_EXI_TRGOUT5 ;  	//...作为触发源
+	tEtbConfig.eDstIp   =  ETCB_GPTA0_SYNCIN3;  //GPTB0 同步输入2作为目标事件
+	tEtbConfig.eTrgMode = ETCB_HARDWARE_TRG;
 	ch = csi_etcb_ch_alloc(tEtbConfig.eChType);	//自动获取空闲通道号,ch >= 0 获取成功						//ch < 0,则获取通道号失败		
-	iRet = csi_etcb_ch_config(ch, &tEtbConfig);	
+	iRet = csi_etcb_ch_init(ch, &tEtbConfig);	
 //------------------------------------------------------------------------------------------------------------------------	
 	csi_gpta_captureconfig_t tPwmCfg;								  
 	tPwmCfg.byWorkmod       = GPTA_CAPTURE;                     //WAVE or CAPTURE    //计数或捕获	
@@ -229,23 +226,21 @@ int gpta_capture_sync_demo2(void)
 	csi_exi_set_evtrg(5, EXI_TRGSRC_GRP16, 1);	   
 	
 //------------------------------------------------------------------------------------------------------------------------		
-	csi_etcb_config_t tEtbConfig;				//ETB 参数配置结构体	
-	tEtbConfig.eChType  = ETB_ONE_TRG_ONE;  	//单个源触发单个目标
-	tEtbConfig.eSrcIp   = ETB_EXI_TRGOUT0 ;  	//...作为触发源
-	tEtbConfig.eDstIp   =  ETB_GPTA0_SYNCIN2;  //GPTA0 同步输入2作为目标事件
-	tEtbConfig.eTrgMode = ETB_HARDWARE_TRG;
-	csi_etcb_init();
+	csi_etcb_config_t tEtbConfig;				//ETCB 参数配置结构体	
+	tEtbConfig.eChType  = ETCB_ONE_TRG_ONE;  	//单个源触发单个目标
+	tEtbConfig.eSrcIp   = ETCB_EXI_TRGOUT0 ;  	//...作为触发源
+	tEtbConfig.eDstIp   =  ETCB_GPTA0_SYNCIN2;  //GPTA0 同步输入2作为目标事件
+	tEtbConfig.eTrgMode = ETCB_HARDWARE_TRG;
 	ch = csi_etcb_ch_alloc(tEtbConfig.eChType);	//自动获取空闲通道号,ch >= 0 获取成功						//ch < 0,则获取通道号失败		
-	iRet = csi_etcb_ch_config(ch, &tEtbConfig);	
+	iRet = csi_etcb_ch_init(ch, &tEtbConfig);	
 	
 //------------------------------------------------------------------------------------------------------------------------		
-	tEtbConfig.eChType  = ETB_ONE_TRG_ONE;  	//单个源触发单个目标
-	tEtbConfig.eSrcIp   = ETB_EXI_TRGOUT5 ;  	//...作为触发源
-	tEtbConfig.eDstIp   =  ETB_GPTA0_SYNCIN3;  //GPTA0 同步输入3作为目标事件
-	tEtbConfig.eTrgMode = ETB_HARDWARE_TRG;
-	csi_etcb_init();
+	tEtbConfig.eChType  = ETCB_ONE_TRG_ONE;  	//单个源触发单个目标
+	tEtbConfig.eSrcIp   = ETCB_EXI_TRGOUT5 ;  	//...作为触发源
+	tEtbConfig.eDstIp   =  ETCB_GPTA0_SYNCIN3;  //GPTA0 同步输入3作为目标事件
+	tEtbConfig.eTrgMode = ETCB_HARDWARE_TRG;
 	ch = csi_etcb_ch_alloc(tEtbConfig.eChType);	//自动获取空闲通道号,ch >= 0 获取成功						//ch < 0,则获取通道号失败		
-	iRet = csi_etcb_ch_config(ch, &tEtbConfig);		
+	iRet = csi_etcb_ch_init(ch, &tEtbConfig);		
 	
 //------------------------------------------------------------------------------------------------------------------------	
 	csi_gpta_captureconfig_t tPwmCfg;								  

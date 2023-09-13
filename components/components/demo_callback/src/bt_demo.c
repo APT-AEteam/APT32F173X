@@ -11,7 +11,7 @@
 /* Includes ---------------------------------------------------------------*/
 #include "drv/bt.h"
 #include "drv/gpio.h"
-#include "drv/etb.h"
+#include "drv/etcb.h"
 #include "board_config.h"
 
 /* externs function--------------------------------------------------------*/

@@ -27,7 +27,7 @@
 #include <drv/pin.h>
 #include <drv/gpio.h>
 #include <drv/dma.h>
-#include <drv/etb.h>
+#include <drv/etcb.h>
 #include <drv/bt.h>
 #include <drv/lpt.h>
 #include <drv/cnta.h>
