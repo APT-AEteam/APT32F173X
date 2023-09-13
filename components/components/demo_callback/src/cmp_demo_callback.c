@@ -18,7 +18,7 @@
 /* Private macro-----------------------------------------------------------*/
 /* Private variablesr------------------------------------------------------*/
 
-
+#if (USE_CMP_CALLBACK == 1)	
 /** \brief     cmp0_callback：cmp中断回调函数
  * 
  *  \brief     用户定义，使用csi标准库，中断发生时会自动调用用户注册的回调函
@@ -48,7 +48,7 @@ int cmp_base_callback_demo(void)
 	int iRet = 0;
 	csi_cmp_config_t tCmpCfg;
 	
-	csi_gpio_set_mux(GPIOA, PA2, PA2_OUTPUT);	  
+	csi_gpio_set_mux(GPIOA, PA2, PA2_OUTPUT);
 
 #if (USE_GUI == 0)		
 	csi_gpio_set_mux(GPIOA, PA8, PA8_CPIN1P);		
@@ -65,9 +65,10 @@ int cmp_base_callback_demo(void)
 	csi_cmp_init(CMP0,&tCmpCfg);
 	csi_cmp_register_callback(CMP0, cmp0_callback);	  //注册中断回调函数
 	csi_cmp_int_enable(CMP0, CMP_INTSRC_EDGEDET);     //若需使用中断，请调该接口使能对应中断，这里使用PENDL中断
+	
 	csi_cmp_start(CMP0);
 	
 	return iRet;	
 }
 
-
+#endif

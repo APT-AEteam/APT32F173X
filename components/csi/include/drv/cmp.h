@@ -57,30 +57,29 @@ typedef enum
 	CMP_PHYST_POL_45mv,	
 	CMP_PHYST_POL_55mv,	
 	CMP_PHYST_POL_65mv				
-}csi_pnhystpol_e;
+}csi_cmp_pnhystpol_e;
 
 
 typedef enum
 {
     CMP_POL_OUT_DIRECT       = 0x00,
 	CMP_POL_OUT_UNDIRECT 
-}csi_polarity_e;
+}csi_cmp_polarity_e;
 
 
 typedef enum
 {
 	CMP_CPOS_OUT_DIRECT		 =	0x00,
 	CMP_CPOS_OUT_IN			 =	0x01
-}csi_cr_cpos_e;
+}csi_cmp_cr_cpos_e;
 
 typedef enum
 {
-	CMP_EVE_DOWN		     =	0x00,
-	CMP_EVE_UP,
-	CMP_EVE_DOWN_UP,
-	CMP_EVE_UP1
-			
-}csi_eve_sel_e;
+	CMP_TRGSRC_DOWN		     =	0x00,
+	CMP_TRGSRC_UP,
+	CMP_TRGSRC_DOWN_UP,
+	CMP_TRGSRC_UP1
+}csi_cmp_trgsrc_e;
 
 typedef enum
 {
@@ -93,7 +92,7 @@ typedef enum
 	CMP_DFCR_DEPTH1_512      =   6,
 	CMP_DFCR_DEPTH1_1024     =   7
 			
-}csi_dfcr1_depth_e;
+}csi_cmp_dfcr1_depth_e;
 
 typedef enum
 {
@@ -106,14 +105,14 @@ typedef enum
 	CMP_DFCR_DEPTH2_1024,
 	CMP_DFCR_DEPTH2_2048
 			
-}csi_dfcr2_depth_e;
+}csi_cmp_dfcr2_depth_e;
 
 
 typedef enum
 {
 	CMP_WFCR_ALIGN_DISALLOW  = 0x00,
 	CMP_WFCR_ALIGN_ALLOW     = 0x01
-}csi_wfcr_align_e;
+}csi_cmp_wfcr_align_e;
 
 typedef enum
 {
@@ -121,7 +120,7 @@ typedef enum
 	CMP_WFCR_OSET_HIGH,
 	CMP_WFCR_OSET_LOW,
 	CMP_WFCR_OSET_DIS1
-}csi_wfcr_oset_e;
+}csi_cmp_wfcr_oset_e;
 
 typedef enum
 {
@@ -141,7 +140,7 @@ typedef enum
 	CMP_N_SEL_3_4INPUT,	
 	CMP_N_SEL_4_4INPUT,		
 	CMP_N_SEL_DAC		
-}csi_nsel_e;
+}csi_cmp_nsel_e;
 
 typedef enum
 {
@@ -162,7 +161,7 @@ typedef enum
 	CMP_P_SEL_CP14,
 	CMP_P_SEL_CP15	
 	
-}csi_psel_e;
+}csi_cmp_psel_e;
 
 
 typedef struct
@@ -223,52 +222,52 @@ void csi_cmp_start(csp_cmp_t *ptCmpBase);
  */ 
 void csi_cmp_stop(csp_cmp_t *ptCmpBase);
 
-/** \brief cmp dflt1 config
+/** \brief cmp dflt1 set
  * 
  *  \param[in] ptCmpBase: pointer of cmp register structure
  *  \param[in] bEnable: dflt1 enable or disable
  *  \param[in] ptCmpDfltCfg: pointer of cmp dlft config structure
  *  \return error code \ref csi_error_t
  */
-csi_error_t csi_cmp_dflt1_config(csp_cmp_t *ptCmpBase,csi_cmp_dflt1_config_t *ptCmpDfltCfg,bool bEnable);
+csi_error_t csi_cmp_set_dflt1(csp_cmp_t *ptCmpBase,csi_cmp_dflt1_config_t *ptCmpDfltCfg,bool bEnable);
 
-/** \brief cmp dflt2 config
+/** \brief cmp dflt2 set
  * 
  *  \param[in] ptCmpBase: pointer of cmp register structure
  *  \param[in] bEnable: dflt2 enable or disable
  *  \param[in] ptCmpDfltCfg: pointer of cmp dlft config structure
  *  \return error code \ref csi_error_t
  */
-csi_error_t csi_cmp_dflt2_config(csp_cmp_t *ptCmpBase,csi_cmp_dflt2_config_t *ptCmpDfltCfg,bool bEnable);
+csi_error_t csi_cmp_set_dflt2(csp_cmp_t *ptCmpBase,csi_cmp_dflt2_config_t *ptCmpDfltCfg,bool bEnable);
 
 /**
- *  \brief       cmp wflt config
+ *  \brief       cmp wflt set
  *  \param[in]   ptCmpBase:pointer of cmp register structure
  *  \param[in]   ptCmpWfcrCfg:pointer of cmp wflt config structure
  *  \return error code \ref csi_error_t
  */
-csi_error_t csi_cmp_wfcr_config(csp_cmp_t *ptCmpBase,csi_cmp_wfcr_config_t *ptCmpWfcrCfg);
+csi_error_t csi_cmp_set_wfcr(csp_cmp_t *ptCmpBase,csi_cmp_wfcr_config_t *ptCmpWfcrCfg);
 
 /** \brief cmp evtrg output config
  * 
  *  \param[in] ptCmpBase:pointer of cmp register structure
- *  \param[in] eEveSel: evtrg eve sel(0~3) 
+ *  \param[in] eTrgSrc: evtrg eve sel(0~3) 
  *  \return none
  */
-void csi_cmp_set_evtrg(csp_cmp_t *ptCmpBase, csi_eve_sel_e eEveSel);
+void csi_cmp_set_evtrg(csp_cmp_t *ptCmpBase,csi_cmp_trgsrc_e eTrgSrc);
 
 /** \brief cmp evtrg syncoe enable
  * 
  *  \param[in] ptCmpBase: pointer of cmp register structure
  *  \return none
  */
-void csi_cmp_syncoe_enable(csp_cmp_t *ptCmpBase);
+void csi_cmp_sync_enable(csp_cmp_t *ptCmpBase);
 /** \brief cmp evtrg syncoe disable
  * 
  *  \param[in] ptCmpBase: pointer of cmp register structure
  *  \return none
  */
-void csi_cmp_syncoe_disable(csp_cmp_t *ptCmpBase);
+void csi_cmp_sync_disable(csp_cmp_t *ptCmpBase);
 
 /** \brief cmp out status
  * 
@@ -284,14 +283,7 @@ uint8_t csi_cmp_get_out(csp_cmp_t *ptCmpBase,uint8_t byOutCh);
  *  \param[in] eIntMode:EDGEDET_MODE or RAWDET_MODE
  *  \return none
  */
-void csi_cmp_int_clear(csp_cmp_t *ptCmpBase,csi_cmp_intsrc_e eIntMode);
-
-/** \brief get cmp status
- * 
- *  \param[in] ptCmpBase:pointer of cmp register structure
- *  \return cmp int status
- */
-uint32_t csi_cmp_get_misr(csp_cmp_t *ptCmpBase);
+void csi_cmp_clr_isr(csp_cmp_t *ptCmpBase,csi_cmp_intsrc_e eIntMode);
 
 /** \brief cmp interrupt enable control
  * 

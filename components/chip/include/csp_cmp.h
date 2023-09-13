@@ -96,12 +96,11 @@ typedef enum
 #define	CMP_EVE_SEL_MSK		    (0x03ul << CMP_EVE_SEL_POS)
 typedef enum
 {
-	EVE_SEL_DOWN	   = 0x00,
-	EVE_SEL_UP,
-	EVE_SEL_DOWN_UP,
-	EVE_SEL_UP1
-			
-}csp_cmp_eve_sel_e;
+	TRGSRC_DOWN		     =	0x00,
+	TRGSRC_UP,
+	TRGSRC_DOWN_UP,
+	TRGSRC_UP1
+}csp_cmp_trgsrc_e;
 
 #define	CMP_DFLT1EN_POS		    (10)
 #define	CMP_DFLT1EN_MSK		    (0x01ul << CMP_DFLT1EN_POS)
@@ -246,7 +245,7 @@ typedef enum
 #define	CMP_WFCR_DCNT_MSK		    (0xfful << CMP_WFCR_DCNT_POS)
 
 /******************************************************************************
-* INPCR : captures the window control register 
+* INPCR : 
 ******************************************************************************/
 //CMP_INPCR register
 #define	CMP_INPCR_NSEL_POS		    (0)
@@ -329,6 +328,7 @@ csp_cmp_int_e;
 /******************************************************************************
 ********************** CMP inline Functions Declaration ***********************
 ******************************************************************************/
+//clk
 static inline void csp_cmp_clk_enable(csp_cmp_t *ptCmpBase)
 {
 	ptCmpBase->CEDR |=  CMP_CLK_MSK;	
@@ -339,11 +339,13 @@ static inline void csp_cmp_clk_disable(csp_cmp_t *ptCmpBase)
 	ptCmpBase->CEDR &= ~CMP_CLK_MSK;
 }
 
+//software reset
 static inline void  csp_cmp_software_reset(csp_cmp_t *ptCmpBase)
 {
 	ptCmpBase->CEDR |= CMP_SOFTRESET;
 }
 
+//start/stop
 static inline void csp_cmp_start(csp_cmp_t *ptCmpBase)
 {
 	ptCmpBase->CR |= CMP_CMPEN_MSK;
@@ -354,32 +356,36 @@ static inline void csp_cmp_stop(csp_cmp_t *ptCmpBase)
 	ptCmpBase->CR &= ~CMP_CMPEN_MSK;	
 }
 
-static inline void  csp_cmp_hystpol(csp_cmp_t *ptCmpBase , csp_cmp_phystpol_e ePhystpol,csp_cmp_phystpol_e eNhystpol)
+//hystpol
+static inline void  csp_cmp_set_hystpol(csp_cmp_t *ptCmpBase , csp_cmp_phystpol_e ePhystpol,csp_cmp_phystpol_e eNhystpol)
 {
 	ptCmpBase->CR = (ptCmpBase->CR&~(CMP_PHYSTPOL_MSK|CMP_NHYSTPOL_MSK))|(ePhystpol<<CMP_PHYSTPOL_POS)|(eNhystpol<<CMP_NHYSTPOL_POS	);
 }
 
-static inline void  csp_cmp_polarity(csp_cmp_t *ptCmpBase , csp_cmp_polarity_e ePolarity)
+//polarity
+static inline void  csp_cmp_set_polarity(csp_cmp_t *ptCmpBase , csp_cmp_polarity_e ePolarity)
 {
 	ptCmpBase->CR = (ptCmpBase->CR&~(CMP_POLARITY_MSK))|(ePolarity<<CMP_POLARITY_POS);
 }
 
-static inline void  csp_cmp_evtrg(csp_cmp_t *ptCmpBase , csp_cmp_eve_sel_e eEveSel)
+//evtrg
+static inline void  csp_cmp_evtrg(csp_cmp_t *ptCmpBase , csp_cmp_trgsrc_e eTrgSrc)
 {
-	ptCmpBase->CR = (ptCmpBase->CR&~(CMP_SYNCOE_MSK|CMP_EVE_SEL_MSK))|(eEveSel<<CMP_EVE_SEL_POS);
+	ptCmpBase->CR = (ptCmpBase->CR&~(CMP_EVE_SEL_MSK))|(eTrgSrc<<CMP_EVE_SEL_POS);
 }
 
-static inline void csp_cmp_syncoe_enable(csp_cmp_t *ptCmpBase)
+//syncoe en/dis
+static inline void csp_cmp_sync_enable(csp_cmp_t *ptCmpBase)
 {
 	ptCmpBase->CR |= CMP_SYNCOE_MSK;
 }
 
-static inline void csp_cmp_syncoe_disable(csp_cmp_t *ptCmpBase)
+static inline void csp_cmp_sync_disable(csp_cmp_t *ptCmpBase)
 {
 	ptCmpBase->CR &= ~CMP_SYNCOE_MSK;
 }
 
-
+//dflt en/dis
 static inline void  csp_cmp_dflt1_enable(csp_cmp_t *ptCmpBase)
 {
 	ptCmpBase->CR = (ptCmpBase->CR&~CMP_DFLT1EN_MSK)|(1<<CMP_DFLT1EN_POS);
@@ -400,22 +406,26 @@ static inline void  csp_cmp_dflt2_disable(csp_cmp_t *ptCmpBase)
 	ptCmpBase->CR = (ptCmpBase->CR&~CMP_DFLT2EN_MSK)|(0<<CMP_DFLT2EN_POS);
 }
 
+//set windowfilter 
 static inline void  csp_cmp_set_wf(csp_cmp_t *ptCmpBase, csp_cmp_wfalign_e eWfalign, csp_cmp_wfoset_e eWfoset, bool bEnable)
 {
 	ptCmpBase->CR = (ptCmpBase->CR&~(CMP_WFLTEN_MSK|CMP_WFALIGN_MSK|CMP_WFOSET_MSK))|(bEnable<<CMP_WFLTEN_POS)|(eWfalign<<CMP_WFALIGN_POS)|(eWfoset<<CMP_WFOSET_POS);
 }
 
-static inline void  csp_cmp_speedup(csp_cmp_t *ptCmpBase , csp_cmp_speedup_e eSpeedup)
+//set cr rsvd1
+static inline void  csp_cmp_set_speedup(csp_cmp_t *ptCmpBase , csp_cmp_speedup_e eSpeedup)
 {
 	ptCmpBase->CR = (ptCmpBase->CR&~(CMP_SPEEDUP_MSK))|(eSpeedup<<CMP_SPEEDUP_POS);
 }
 
-static inline void  csp_cmp_doublei(csp_cmp_t *ptCmpBase , csp_cmp_doublei_e eDoublei)
+//set cr rsvd2
+static inline void  csp_cmp_set_doublei(csp_cmp_t *ptCmpBase , csp_cmp_doublei_e eDoublei)
 {
 	ptCmpBase->CR = (ptCmpBase->CR&~(CMP_DOUBLEI_MSK))|(eDoublei<<CMP_DOUBLEI_POS);
 }
 
-static inline void  csp_cmp_out(csp_cmp_t *ptCmpBase , csp_cmp_cr_cpos_e ePos_Sel)
+//cmp out
+static inline void  csp_cmp_set_cposel(csp_cmp_t *ptCmpBase , csp_cmp_cr_cpos_e ePos_Sel)
 {
 	ptCmpBase->CR = (ptCmpBase->CR&~(CMP_CPOSEL_MSK))|(ePos_Sel<<CMP_CPOSEL_POS);
 }
@@ -440,22 +450,25 @@ static inline uint8_t csp_cmp_get_out3(csp_cmp_t *ptCmpBase)
 	return (uint8_t)((ptCmpBase->CR & CMP_CPOUT3_MSK) >> CMP_CPOUT3_POS);
 }
 
-static inline void  csp_cmp_dfcr1(csp_cmp_t *ptCmpBase , csp_dfcr1_depth_e eDepth,uint8_t byDivn,uint8_t byDivm)
+//dfcr 
+static inline void  csp_cmp_set_dfcr1(csp_cmp_t *ptCmpBase , csp_dfcr1_depth_e eDepth,uint8_t byDivn,uint8_t byDivm)
 {
 	ptCmpBase->DFCR1 = (ptCmpBase->DFCR1&~(CMP_DFCR1_DEPTH_MSK|CMP_DFCR1_DIVN_MSK|CMP_DFCR1_DIVM_MSK))|(eDepth<<CMP_DFCR1_DEPTH_POS)|(byDivn<<CMP_DFCR1_DIVN_POS)|(byDivm<<CMP_DFCR1_DIVM_POS);
 }
 
-static inline void  csp_cmp_dfcr2(csp_cmp_t *ptCmpBase , csp_dfcr2_depth_e eDepth,uint8_t byDivn,uint8_t byDivm)
+static inline void  csp_cmp_set_dfcr2(csp_cmp_t *ptCmpBase , csp_dfcr2_depth_e eDepth,uint8_t byDivn,uint8_t byDivm)
 {
 	ptCmpBase->DFCR2 = (ptCmpBase->DFCR2&~(CMP_DFCR2_DEPTH_MSK|CMP_DFCR2_DIVN_MSK|CMP_DFCR2_DIVM_MSK))|(eDepth<<CMP_DFCR2_DEPTH_POS)|(byDivn<<CMP_DFCR2_DIVN_POS)|(byDivm<<CMP_DFCR2_DIVM_POS);
 }
 
-static inline void  csp_cmp_wfcr(csp_cmp_t *ptCmpBase, uint16_t hwWcnt,uint8_t byClkDiv,uint8_t byDcnt)
+//wfcr
+static inline void  csp_cmp_set_wfcr(csp_cmp_t *ptCmpBase, uint16_t hwWcnt,uint8_t byClkDiv,uint8_t byDcnt)
 {
 	ptCmpBase->WFCR = (ptCmpBase->WFCR&~(CMP_WFCR_WCNT_MSK|CMP_WFCR_CLKDIV_MSK|CMP_WFCR_DCNT_MSK))|(hwWcnt<<CMP_WFCR_WCNT_POS)|(byClkDiv<<CMP_WFCR_CLKDIV_POS)|(byDcnt<<CMP_WFCR_DCNT_POS);
 }
 
-static inline void  csp_cmp_inpcr(csp_cmp_t *ptCmpBase , csp_nsel_e eNsel, csp_psel_e ePsel)
+//inpcr
+static inline void  csp_cmp_set_inpcr(csp_cmp_t *ptCmpBase , csp_nsel_e eNsel, csp_psel_e ePsel)
 {
 	ptCmpBase->INPCR = (ptCmpBase->INPCR&~(CMP_INPCR_NSEL_MSK|CMP_INPCR_PSEL_MSK))|(eNsel<<CMP_INPCR_NSEL_POS)|(ePsel<<CMP_INPCR_PSEL_POS);
 }
@@ -470,6 +483,7 @@ static inline void  csp_cmp_n_inpcr_fitler_disable(csp_cmp_t *ptCmpBase)
 	ptCmpBase->INPCR &= ~CMP_N_INPCR_FITLER_ENABLE_MSK; 	
 }
 
+//int
 static inline uint8_t csp_cmp_get_risr(csp_cmp_t *ptCmpBase)
 {
 	return (uint8_t)((ptCmpBase-> RISR)&0x03);
@@ -495,12 +509,12 @@ static inline void csp_cmp_int_disable(csp_cmp_t *ptCmpBase, csp_cmp_int_e eCmpI
 //	ptCmpBase->IMCR = (ptCmpBase->IMCR & ~CMP_INT_MSK) | bEnable;
 //}
 
-static inline uint32_t csp_cmp_get_imcr(csp_cmp_t *ptCmpBase)
-{
-	return (uint32_t)(ptCmpBase-> IMCR);
-}
+//static inline uint32_t csp_cmp_get_imcr(csp_cmp_t *ptCmpBase)
+//{
+//	return (uint32_t)(ptCmpBase-> IMCR);
+//}
 
-static inline uint32_t csp_cmp_get_misr(csp_cmp_t *ptCmpBase)
+static inline uint32_t csp_cmp_get_isr(csp_cmp_t *ptCmpBase)
 {
 	return (uint32_t)(ptCmpBase-> MISR);
 }
@@ -510,9 +524,9 @@ static inline uint32_t csp_cmp_get_misr(csp_cmp_t *ptCmpBase)
 //	ptCmpBase->ICR|= 0x01;
 //}
 
-static inline void csp_cmp_clr_isr(csp_cmp_t *ptCmpBase, csp_cmp_int_e eInt)
+static inline void csp_cmp_clr_isr(csp_cmp_t *ptCmpBase, csp_cmp_int_e eCmpInt)
 {
-	ptCmpBase -> ICR =  eInt;
+	ptCmpBase -> ICR =  eCmpInt;
 }
 
 #endif

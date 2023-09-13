@@ -21,6 +21,7 @@
 /* Private variablesr------------------------------------------------------*/
 
 
+#if (USE_CMP_CALLBACK == 0)	
 /** \brief     cmp0_int_handler: cmp中断服务函数
  * 
  *  \brief     CMP0发生中断时会调用此函数，函数在interrupt.c里定义为弱(weak)属性，默认不做处理；用户用到CMP0中
@@ -32,14 +33,14 @@
 ATTRIBUTE_ISR  void cmp0_int_handler(void)
 {
 	//用户直接在中断服务接口函数里处理中断，建议客户使用此模式
-	volatile uint8_t byIsr = csp_cmp_get_misr(CMP0);
+	volatile uint8_t byIsr = csp_cmp_get_isr(CMP0);
 	
 	if(byIsr & CMP_EDGEDET0_INT)		
 	{
-		csp_cmp_clr_isr(CMP0, (csp_cmp_int_e)CMP_INTSRC_EDGEDET);
+		csp_cmp_clr_isr(CMP0, CMP_EDGEDET_INT);
 	}
 }
-
+#endif
 
 /** \brief     比较器基本功能测试demo
  * 
@@ -68,8 +69,10 @@ int cmp_base_demo(void)
 	tCmpCfg.byPolarity = CMP_POL_OUT_DIRECT;          //比较器输出极性选择 0:不反向
 	tCmpCfg.byCpoSel  = CMP_CPOS_OUT_IN;	          //CMP_OUT管脚上输出信号选择 0h：滤波前信号直接输出 	1h：滤波后信号输出 
 	csi_cmp_init(CMP0,&tCmpCfg);
-	csi_cmp_start(CMP0);
 	csi_cmp_int_enable(CMP0, CMP_INTSRC_EDGEDET);     //若需使用中断，请调该接口使能对应中断，这里使用PENDL中断
+	
+	csi_cmp_start(CMP0);
+
 	return iRet;	
 }
 
@@ -109,13 +112,13 @@ int cmp_dfcr_demo(void)
 	tCmpDflt1Cfg.byDepth1 = CMP_DFCR_DEPTH1_16;       //数字滤波1深度
 	tCmpDflt1Cfg.byDivn1  = 2;                        //分频系数N
 	tCmpDflt1Cfg.byDivm1  = 119;	                  //分频系数M
-	csi_cmp_dflt1_config(CMP0,&tCmpDflt1Cfg,ENABLE);
+	csi_cmp_set_dflt1(CMP0,&tCmpDflt1Cfg,ENABLE);
 	
 	csi_cmp_dflt2_config_t tCmpDflt2Cfg;
 	tCmpDflt2Cfg.byDepth2 = CMP_DFCR_DEPTH2_16;       //数字滤波2深度
 	tCmpDflt2Cfg.byDivn2  = 2;                        //分频系数N
 	tCmpDflt2Cfg.byDivm2  = 119;	                  //分频系数M
-	csi_cmp_dflt2_config(CMP0,&tCmpDflt2Cfg,DISABLE);
+	csi_cmp_set_dflt2(CMP0,&tCmpDflt2Cfg,DISABLE);
 	
 	csi_cmp_start(CMP0);
 	return iRet;	
@@ -160,18 +163,19 @@ int cmp_wfcr_demo(void)
 	tCmpWfcrCfg.byClkDiv  = 4;                      //时钟分频
 	tCmpWfcrCfg.byDcnt    = 0;                      //窗口延迟
 	tCmpWfcrCfg.hwWcnt    = 200;                    //窗口计数
-	csi_cmp_wfcr_config(CMP0,&tCmpWfcrCfg);
+	csi_cmp_set_wfcr(CMP0,&tCmpWfcrCfg);
 	
-	csi_cmp_set_evtrg(CMP0, CMP_EVE_DOWN_UP);
-	csi_cmp_syncoe_enable(CMP0);
+	csi_cmp_set_evtrg(CMP0, CMP_TRGSRC_DOWN_UP);
+	csi_cmp_sync_enable(CMP0);
 	
 	csi_cmp_start(CMP0);	
 
 //	csi_bt_timer_init(BT0, 2000);		            //初始化BT0, 定时2000us； BT定时，默认采用PEND中断
 	csi_bt_start(BT0);					            //启动定时器  
 	csi_bt_set_evtrg(BT0, BT_TRGSRC_PEND);	  	
+
 	
-	csi_etcb_config_t tEtbConfig;                    //ETCB 参数配置结构体                  
+	csi_etcb_config_t tEtbConfig;                    //ETB 参数配置结构体                  
 	tEtbConfig.eChType = ETCB_ONE_TRG_ONE;           //单个源触发单个目标
 	tEtbConfig.eSrcIp  = ETCB_BT0_TRGOUT ; 
 	tEtbConfig.eDstIp =  ETCB_CMP0_SYNCIN;           //CMP0 同步输入作为目标事件

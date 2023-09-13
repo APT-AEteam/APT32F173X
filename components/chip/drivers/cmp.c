@@ -9,8 +9,7 @@
  * </table>
  * *********************************************************************
 */
-#include <drv/tick.h>
-#include <drv/cmp.h>
+#include "drv/cmp.h"
 
 
 csi_cmp_ctrl_t g_tCmpCtrl[CMP_IDX];
@@ -32,12 +31,11 @@ csi_error_t csi_cmp_init(csp_cmp_t *ptCmpBase,csi_cmp_config_t *ptCmpCfg)
 	csi_error_t tRet = CSI_OK;
 	csi_clk_enable((uint32_t *)ptCmpBase);
 	csp_cmp_clk_enable(ptCmpBase);
-	csp_cmp_inpcr(ptCmpBase ,ptCmpCfg->byNsel,ptCmpCfg->byPsel);
-	csp_cmp_hystpol(ptCmpBase , ptCmpCfg->byPhystpol,ptCmpCfg->byNhystpol);
-	csp_cmp_speedup(ptCmpBase , SPEEDUP_FAST);
-	csp_cmp_polarity(ptCmpBase , ptCmpCfg->byPolarity);
-	csp_cmp_out(ptCmpBase , ptCmpCfg->byCpoSel);
-	csi_irq_enable((uint32_t *)ptCmpBase);
+	csp_cmp_set_inpcr(ptCmpBase ,ptCmpCfg->byNsel,ptCmpCfg->byPsel);
+	csp_cmp_set_hystpol(ptCmpBase , ptCmpCfg->byPhystpol,ptCmpCfg->byNhystpol);
+	csp_cmp_set_speedup(ptCmpBase , SPEEDUP_FAST);
+	csp_cmp_set_polarity(ptCmpBase , ptCmpCfg->byPolarity);
+	csp_cmp_set_cposel(ptCmpBase , ptCmpCfg->byCpoSel);
 	return tRet;
 }
 
@@ -61,20 +59,20 @@ void csi_cmp_stop(csp_cmp_t *ptCmpBase)
     csp_cmp_stop(ptCmpBase);
 }
 
-/** \brief cmp dflt1 config
+/** \brief cmp dflt1 set
  * 
  *  \param[in] ptCmpBase: pointer of cmp register structure
  *  \param[in] bEnable: dflt1 enable or disable
  *  \param[in] ptCmpDfltCfg: pointer of cmp dlft config structure
  *  \return error code \ref csi_error_t
  */
-csi_error_t csi_cmp_dflt1_config(csp_cmp_t *ptCmpBase,csi_cmp_dflt1_config_t *ptCmpDfltCfg,bool bEnable)
+csi_error_t csi_cmp_set_dflt1(csp_cmp_t *ptCmpBase,csi_cmp_dflt1_config_t *ptCmpDfltCfg,bool bEnable)
 {
 	csi_error_t tRet = CSI_OK;
 	if(bEnable == ENABLE)
 	{
 		csp_cmp_dflt1_enable(ptCmpBase);
-		csp_cmp_dfcr1(ptCmpBase,ptCmpDfltCfg->byDepth1,ptCmpDfltCfg->byDivn1,ptCmpDfltCfg->byDivm1);
+		csp_cmp_set_dfcr1(ptCmpBase,ptCmpDfltCfg->byDepth1,ptCmpDfltCfg->byDivn1,ptCmpDfltCfg->byDivm1);
 	}
 	else
 	{
@@ -83,20 +81,20 @@ csi_error_t csi_cmp_dflt1_config(csp_cmp_t *ptCmpBase,csi_cmp_dflt1_config_t *pt
 	return tRet;
 }
 
-/** \brief cmp dflt2 config
+/** \brief cmp dflt2 set
  * 
  *  \param[in] ptCmpBase: pointer of cmp register structure
  *  \param[in] bEnable: dflt2 enable or disable
  *  \param[in] ptCmpDfltCfg: pointer of cmp dlft config structure
  *  \return error code \ref csi_error_t
  */
-csi_error_t csi_cmp_dflt2_config(csp_cmp_t *ptCmpBase,csi_cmp_dflt2_config_t *ptCmpDfltCfg,bool bEnable)
+csi_error_t csi_cmp_set_dflt2(csp_cmp_t *ptCmpBase,csi_cmp_dflt2_config_t *ptCmpDfltCfg,bool bEnable)
 {
 	csi_error_t tRet = CSI_OK;
 	if(bEnable == ENABLE)
 	{	
 		csp_cmp_dflt2_enable(ptCmpBase);
-		csp_cmp_dfcr2(ptCmpBase,ptCmpDfltCfg->byDepth2,ptCmpDfltCfg->byDivn2,ptCmpDfltCfg->byDivm2);
+		csp_cmp_set_dfcr2(ptCmpBase,ptCmpDfltCfg->byDepth2,ptCmpDfltCfg->byDivn2,ptCmpDfltCfg->byDivm2);
 	}
 	else
 	{
@@ -111,12 +109,12 @@ csi_error_t csi_cmp_dflt2_config(csp_cmp_t *ptCmpBase,csi_cmp_dflt2_config_t *pt
  *  \param[in] ptCmpWfcrCfg: pointer of cmp wflt config structure
  *  \return error code \ref csi_error_t
  */
-csi_error_t csi_cmp_wfcr_config(csp_cmp_t *ptCmpBase,csi_cmp_wfcr_config_t *ptCmpWfcrCfg)
+csi_error_t csi_cmp_set_wfcr(csp_cmp_t *ptCmpBase,csi_cmp_wfcr_config_t *ptCmpWfcrCfg)
 {
 	csi_error_t tRet = CSI_OK;
 
 	csp_cmp_set_wf(ptCmpBase, ptCmpWfcrCfg->byWfalign, ptCmpWfcrCfg->byWoset, ENABLE);
-	csp_cmp_wfcr(ptCmpBase, ptCmpWfcrCfg->hwWcnt, ptCmpWfcrCfg->byClkDiv, ptCmpWfcrCfg->byDcnt);
+	csp_cmp_set_wfcr(ptCmpBase, ptCmpWfcrCfg->hwWcnt, ptCmpWfcrCfg->byClkDiv, ptCmpWfcrCfg->byDcnt);
 	
 	return tRet;
 }
@@ -124,12 +122,12 @@ csi_error_t csi_cmp_wfcr_config(csp_cmp_t *ptCmpBase,csi_cmp_wfcr_config_t *ptCm
 /** \brief cmp evtrg output config
  * 
  *  \param[in] ptCmpBase: pointer of cmp register structure
- *  \param[in] eEveSel: evtrg eve sel(0~3) 
+ *  \param[in] eTrgSrc: evtrg eve sel(0~3) 
  *  \return none
  */
-void csi_cmp_set_evtrg(csp_cmp_t *ptCmpBase,csi_eve_sel_e eEveSel)
+void csi_cmp_set_evtrg(csp_cmp_t *ptCmpBase,csi_cmp_trgsrc_e eTrgSrc)
 {
-	csp_cmp_evtrg(ptCmpBase,(csp_cmp_eve_sel_e)eEveSel);
+	csp_cmp_evtrg(ptCmpBase,(csp_cmp_trgsrc_e)eTrgSrc);
 }
 
 /** \brief cmp evtrg syncoe enable
@@ -137,9 +135,9 @@ void csi_cmp_set_evtrg(csp_cmp_t *ptCmpBase,csi_eve_sel_e eEveSel)
  *  \param[in] ptCmpBase: pointer of cmp register structure
  *  \return none
  */
-void csi_cmp_syncoe_enable(csp_cmp_t *ptCmpBase)
+void csi_cmp_sync_enable(csp_cmp_t *ptCmpBase)
 {
-	csp_cmp_syncoe_enable(ptCmpBase);
+	csp_cmp_sync_enable(ptCmpBase);
 }
 
 /** \brief cmp evtrg syncoe disable
@@ -147,9 +145,9 @@ void csi_cmp_syncoe_enable(csp_cmp_t *ptCmpBase)
  *  \param[in] ptCmpBase: pointer of cmp register structure
  *  \return none
  */
-void csi_cmp_syncoe_disable(csp_cmp_t *ptCmpBase)
+void csi_cmp_sync_disable(csp_cmp_t *ptCmpBase)
 {
-	csp_cmp_syncoe_disable(ptCmpBase);
+	csp_cmp_sync_disable(ptCmpBase);
 }
 
 
@@ -177,21 +175,10 @@ uint8_t csi_cmp_get_out(csp_cmp_t *ptCmpBase,uint8_t byOutCh)
  *  \param[in] eIntMode: EDGEDET_MODE or RAWDET_MODE
  *  \return none
  */
-void csi_cmp_int_clear(csp_cmp_t *ptCmpBase,csi_cmp_intsrc_e eIntMode)
+void csi_cmp_clr_isr(csp_cmp_t *ptCmpBase,csi_cmp_intsrc_e eIntMode)
 {
 	csp_cmp_clr_isr(ptCmpBase,(csp_cmp_int_e)eIntMode);
 }
-
-/** \brief get cmp status
- * 
- *  \param[in] ptCmpBase: pointer of cmp register structure
- *  \return cmp int status
- */
-uint32_t csi_cmp_get_misr(csp_cmp_t *ptCmpBase)
-{
-	return csp_cmp_get_misr(ptCmpBase);
-}
-
 
 /** \brief CMP interrupt enable control
  * 
@@ -201,7 +188,7 @@ uint32_t csi_cmp_get_misr(csp_cmp_t *ptCmpBase)
  */ 
 void csi_cmp_int_enable(csp_cmp_t *ptCmpBase, csi_cmp_intsrc_e eIntSrc)
 {
-        csp_cmp_int_enable(ptCmpBase, (csp_cmp_int_e)eIntSrc);
+	csp_cmp_int_enable(ptCmpBase, (csp_cmp_int_e)eIntSrc);
 }
 
 /** \brief CMP interrupt disable control
@@ -212,8 +199,9 @@ void csi_cmp_int_enable(csp_cmp_t *ptCmpBase, csi_cmp_intsrc_e eIntSrc)
  */ 
 void csi_cmp_int_disable(csp_cmp_t *ptCmpBase, csi_cmp_intsrc_e eIntSrc)
 {
-        csp_cmp_int_disable(ptCmpBase, (csp_cmp_int_e)eIntSrc);
+	csp_cmp_int_disable(ptCmpBase, (csp_cmp_int_e)eIntSrc);
 }
+
 
 /** \brief get cmp number 
  * 
@@ -222,18 +210,17 @@ void csi_cmp_int_disable(csp_cmp_t *ptCmpBase, csi_cmp_intsrc_e eIntSrc)
  */ 
 static uint8_t apt_get_cmp_idx(csp_cmp_t *ptCmpBase)
 {
-        switch((uint32_t)ptCmpBase)
-        {
-			case APB_CMP0_BASE:                //CMP0
-					return 0;     
-			case APB_CMP1_BASE:                //CMP1
-					return 1; 
-			case APB_CMP2_BASE:                //CMP2
-					return 2;            
-
-			default:
-					return 0xff;                //error
-        }
+	switch((uint32_t)ptCmpBase)
+	{
+		case APB_CMP0_BASE:                //CMP0
+			return 0;     
+		case APB_CMP1_BASE:                //CMP1
+			return 1; 
+		case APB_CMP2_BASE:                //CMP2
+			return 2;            
+		default:
+			return 0xff;                //error
+	}
 }
 
 /** \brief  register cmp interrupt callback function
@@ -244,13 +231,13 @@ static uint8_t apt_get_cmp_idx(csp_cmp_t *ptCmpBase)
  */ 
 csi_error_t csi_cmp_register_callback(csp_cmp_t *ptCmpBase, void  *callback)
 {
-        uint8_t byIdx = apt_get_cmp_idx(ptCmpBase);
-        if(byIdx == 0xff)
-                return CSI_ERROR;
-                
-        g_tCmpCtrl[byIdx].callback = callback;
-        
-        return CSI_OK;
+	uint8_t byIdx = apt_get_cmp_idx(ptCmpBase);
+	if(byIdx == 0xff)
+		return CSI_ERROR;
+			
+	g_tCmpCtrl[byIdx].callback = callback;
+	
+	return CSI_OK;
 }
 
 /** \brief cmp interrupt handler function
@@ -261,10 +248,10 @@ csi_error_t csi_cmp_register_callback(csp_cmp_t *ptCmpBase, void  *callback)
  */ 
 void csi_cmp_irqhandler(csp_cmp_t *ptCmpBase,  uint8_t byIdx)
 {
-	uint8_t byIsr = csp_cmp_get_misr(ptCmpBase);
+	uint8_t byIsr = csp_cmp_get_isr(ptCmpBase);
 	
 	if(g_tCmpCtrl[byIdx].callback)
 		g_tCmpCtrl[byIdx].callback(ptCmpBase, byIsr);
 			
-	csp_cmp_clr_isr(ptCmpBase, (csp_cmp_int_e)CMP_INTSRC_EDGEDET);
+	csp_cmp_clr_isr(ptCmpBase, CMP_EDGEDET_INT);
 }
