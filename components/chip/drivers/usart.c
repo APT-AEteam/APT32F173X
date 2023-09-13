@@ -111,7 +111,7 @@ csi_error_t csi_usart_init(csp_usart_t *ptUsartBase, csi_usart_config_t *ptUsart
 		csp_usart_cr_cmd(ptUsartBase, US_STTTO);
 	}
 
-	csi_irq_enable((uint32_t *)ptUsartBase);							//enable usart interrupt
+//	csi_irq_enable((uint32_t *)ptUsartBase);							//enable usart interrupt
 	return CSI_OK;
 }
 
@@ -480,9 +480,9 @@ csi_error_t csi_usart_receive_int(csp_usart_t *ptUsartBase, void *pData, uint16_
  *  \param[in] bEnable: ENABLE/DISABLE
  *  \return  error code \ref csi_error_t
  */
-void csi_usart_set_txdma(csp_usart_t *ptUsartBase, csi_usdma_txfifo_md_e eTxDmaMode , bool bEnable) 
+void csi_usart_set_txdma(csp_usart_t *ptUsartBase, csi_usdma_txfifo_md_e eTxDmaMode ) 
 {
-	csp_usart_set_txdma(ptUsartBase, (usart_tdma_md_e)eTxDmaMode, bEnable); 
+	csp_usart_set_txdma(ptUsartBase, (usart_tdma_md_e)eTxDmaMode, ENABLE); 
 }
 
 /** \brief usart dma rx mode set
@@ -492,9 +492,9 @@ void csi_usart_set_txdma(csp_usart_t *ptUsartBase, csi_usdma_txfifo_md_e eTxDmaM
  *  \param[in] bEnable: ENABLE/DISABLE
  *  \return  error code \ref csi_error_t
  */
-void csi_usart_set_rxdma(csp_usart_t *ptUsartBase, csi_usdma_rxfifo_md_e eRxDmaMode , bool bEnable) 
+void csi_usart_set_rxdma(csp_usart_t *ptUsartBase, csi_usdma_rxfifo_md_e eRxDmaMode ) 
 {
-	csp_usart_set_rxdma(ptUsartBase, (usart_rdma_md_e)eRxDmaMode, bEnable); 
+	csp_usart_set_rxdma(ptUsartBase, (usart_rdma_md_e)eRxDmaMode,ENABLE); 
 }
 
 /** \brief send data from usart, this function is dma transfer

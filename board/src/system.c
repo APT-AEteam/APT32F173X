@@ -28,7 +28,8 @@
 
 extern void irq_vectors_init(void);
 
-#ifdef CODE_REMAP_TO_IRAM
+#if ((USE_SRAM1_8K_AS_IRAM == 1) | (USE_SRAM1_16K_AS_IRAM == 1))
+	
 extern char _end_rodata[];
 extern char _start_data[],_end_data[];
 extern char _start_fastfunc[],_end_fastfunc[];
@@ -114,7 +115,7 @@ __attribute__((weak)) void system_init(void)
 	system_map_config();
 	csi_icache_enable ();
 	
-#ifdef CODE_REMAP_TO_IRAM
+#if ((USE_SRAM1_8K_AS_IRAM == 1) | (USE_SRAM1_16K_AS_IRAM == 1))
 	csi_iram_init();  //Need to work with gcc_flash_dram16k_iram16k.ld or gcc_flash_dram24k_iram8k.ld
 #endif	
 	

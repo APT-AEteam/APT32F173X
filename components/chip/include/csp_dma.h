@@ -216,18 +216,19 @@ typedef enum{
 * ICR: Interrupt Clear Register
 ******************************************************************************/
 typedef enum{
-	DMA_CH0_IT		= (0x01ul << 0),
-	DMA_CH1_IT		= (0x01ul << 1),
-	DMA_CH2_IT		= (0x01ul << 2),
-	DMA_CH3_IT		= (0x01ul << 3),
-	DMA_CH4_IT		= (0x01ul << 4),
-	DMA_CH5_IT		= (0x01ul << 5),
+	DMA_CH0_INT		= (0x01ul << 0),
+	DMA_CH1_INT		= (0x01ul << 1),
+	DMA_CH2_INT		= (0x01ul << 2),
+	DMA_CH3_INT		= (0x01ul << 3),
+	DMA_CH4_INT		= (0x01ul << 4),
+	DMA_CH5_INT		= (0x01ul << 5),
+	DMA_ALL_INT		= 0x3F
 }dma_icr_e;
 
 /******************************************************************************
 ********************** DMA define Functions 			***********************
 ******************************************************************************/
-static inline void csp_dma_soft_rst(csp_dma_t *ptDmaBase) 										
+static inline void csp_dma_sw_rst(csp_dma_t *ptDmaBase) 										
 { 
 	ptDmaBase->SRR = DMA_SWRST_MSK;
 }

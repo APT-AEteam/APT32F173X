@@ -1,160 +1,87 @@
 
 /* include ----------------------------------------------------------------*/
+
+#include "gpio.h"
 #include "reliability.h"
-#include "iostring.h"
+#include "board_config.h"
 
 /* externs function--------------------------------------------------------*/
 /* private function--------------------------------------------------------*/
 /* externs variablesr------------------------------------------------------*/
 /* Private variablesr------------------------------------------------------*/
 
-#define SRAMSTARTADD      (0X20006100)
-#define SRAMENDADD        (0X20007FFF)
-#define SRAM_TEST_DATA0    0x55
-#define SRAM_TEST_DATA1    0xAA
 
-static uint8_t   *s_pbySramBase = (uint8_t *)(0X20006000);
-static volatile  uint8_t byCh;
-
-/** \brief SRAM测试，SRAM0 24K + SRAM1 8K 均为DSRAM使用
- *   此函数使用，需要配置相应的linker文件gcc_flash_dram24k_iram8k_1732.ld,指定代码区域
- *   分区为：SRAM 分区控制配置0表示： SRAM0 24K。 地址范围0x20000000~0x20005FFF
- *                                     SRAM1 8K。 地址范围0x20006000~0x20007FFF    
- *   		
- *    SRAM1指令存取功能控制，配置为0，表示SRAM1作为DSRAM用（作为普通SRAM使用） 		
- *          
+/** \brief user_fast_func，本函数会被写到SRAM1中，从而加速代码运行	
+ *	
+ *  	   此处用PA6翻转作为简单示例，用户可替换成		
+ *
+ * 	注意：SRAM1最大可配置为16K ISRAM。
+ *      
  *  \param[in] none
  *  \return error code
  */
-__attribute__((section("func")))void sram_dsram24k_dsram8k_demo0(void)
+__attribute__((section("func")))void user_fast_func(void)
 {  
-	csi_set_sram(SRAM_24KRAM0_8KRAM1_CTRL,SRAM1_DSARM_CTRL);
-	while (1){
-		  NOP;
-		  byCh = 2;
-		  mdelay(100);	
-	}		
+	//用户需要加速的代码
+	csi_gpio_set_mux(GPIOA, PA6, PA6_OUTPUT);
 	
-}
-/** \brief SRAM测试,对SRAM 0X20006000区域进行相应的读写操作
- * 
- *    SRAM0 24K 均为DSRAM使用,SRAM1 8K 均为ISRAM使用,配置为DSRAM，可对0x20006000~0x20007FF区域进行写操作
- * 
- *    分区为：SRAM 分区控制配置0表示： SRAM0 24K。 地址范围0x20000000~0x20005FFF
- *                                     SRAM1 8K。 地址范围0x20006000~0x20007FFF    
- *   		
- *    SRAM1指令存取功能控制，配置为0，表示SRAM1作为DSRAM用（作为普通SRAM使用） 	
- * 
- *    测试结果：SRAM 0X20006000区域配置成ISRAM后，此区域不能进行相应的读写操作         
- *  \param[in] none
- *  \return error code
- */
-void sram_dsram24k_dsram8k_demo1(void)
-{
-	uint32_t i, wDataLeng;
-	
-	csi_set_sram(SRAM_24KRAM0_8KRAM1_CTRL,SRAM1_DSARM_CTRL);
-	wDataLeng=SRAMENDADD - SRAMSTARTADD;																   
-										
-	for(i=0;i<=wDataLeng;i++)
-	{ 
-		s_pbySramBase[i]=SRAM_TEST_DATA0;                                
-		//NOP;
-	}	 
-	for(i=0;i<=wDataLeng;i++)
-    { 
-		if(s_pbySramBase[i] != SRAM_TEST_DATA0){break;}			 
-	}		
-	if(i!=wDataLeng+1)
+	while(1)
 	{
-		while (1){
-				NOP;
-				byCh=0;
-		}
-	}else{			
-		for(i=0;i<=wDataLeng;i++)
-			{ 
-				s_pbySramBase[i]=SRAM_TEST_DATA1;						
-				NOP;
-			}
-		i=0;	 
-		for(i=0;i<=wDataLeng;i++)
-			{ 
-				if(s_pbySramBase[i] != SRAM_TEST_DATA1){break;}			 
-			}		
-		if(i!=wDataLeng+1)
-		{
-			while (1){
-				NOP;
-				byCh=1;
-			}
-		}
-						
-	}
-	while (1){
-		NOP;
-		byCh=2;
+		csi_gpio_toggle(GPIOA, PA6);
+		mdelay(100);
+	
 	}		
+	
 }
 
-/** \brief SRAM测试，对SRAM 0X20006000区域进行相应的读写操作
+
+/** \brief  1. 1732芯片有两块SRAM:SRAM0和SRAM1。
  * 
- *    SRAM0 24K 均为DSRAM使用,SRAM1 8K 均为ISRAM使用,配置为ISRAM，将不能对0x20006000~0x20007FF区域进行写操作
+ * 				1）SRAM0和SRAM1大小有以下两种选择：
  * 
- *    分区为：SRAM 分区控制配置0表示： SRAM0 24K。 地址范围0x20000000~0x20005FFF
- *                                     SRAM1 8K。 地址范围0x20006000~0x20007FFF    
- *   		
- *    SRAM1指令存取功能控制，配置为1，SRAM1作为ISRAM用，不可写（作为指令空间使用）	
+ * 					SRAM_24KRAM0_8KRAM1_CTRL ： SRAM0 24K。 地址范围0x20000000~0x20005FFF
+ *                                         		SRAM1 8K。  地址范围0x20006000~0x20007FFF   
+ * 				
+ *    				SRAM_16KRAM0_16KRAM1_CTRL : SRAM0 16K。 地址范围0x20000000~0x20003FFF
+ *                                          	SRAM1 16K。 地址范围0x20006000~0x20009FFF   
+ * 				
+ * 				2）SRAM0只能作为DSRAM
+ *      
+ *   			3）SRAM1可作为DSRAM，也可以作为ISRAM
  * 
- *    测试结果：SRAM 0X20006000区域配置成ISRAM后，此区域不能进行相应的读写操作     
+ * 					SRAM1_ISRAM ：SRAM1 作为ISRAM使用
+ *    
+ * 					SRAM1_DSRAM ：SRAM1 作为DSRAM使用
+ *            
+ * 			
+ * 			2.本例程提供了两种情况： SRAM1 8k作为ISRAM 和 SRAM1 16k作为ISRAM。
+ * 			
+ * 			3.例程使用步骤：
+ * 
+ * 				1）在board_config.h中打开USE_SRAM1_8K_AS_IRAM（或者USE_SRAM1_16K_AS_IRAM）定义
+ * 				
+ * 				2）链接文件选择gcc_flash_dram24k_iram8k_1732.ld（或者gcc_flash_dram24k_iram16k_1732.ld）
+ * 
+ * 				3）在user_fast_func中添加需要加速的代码。
+ * 
  *  \param[in] none
  *  \return error code
  */
-void sram_dsram24k_iram8k_demo(void)
+ 
+
+
+void use_sram1_as_isram_demo(void)
 {
-	uint32_t i, wDataLeng;
+
+#if(USE_SRAM1_8K_AS_IRAM ==1)
+
+	csi_set_sram(SRAM_24KRAM0_8KRAM1_CTRL,SRAM1_ISRAM);  
+  
+#elif(USE_SRAM1_16K_AS_IRAM ==1)
+	csi_set_sram(SRAM_16KRAM0_16KRAM1_CTRL,SRAM1_ISRAM);	
 	
-	csi_set_sram(SRAM_24KRAM0_8KRAM1_CTRL,SRAM1_ISRAM_CTRL);
+#endif
+
+	user_fast_func();
 	
-	wDataLeng=SRAMENDADD - SRAMSTARTADD;																   
-										
-	for(i=0;i<=wDataLeng;i++)
-	{ 
-		s_pbySramBase[i]=SRAM_TEST_DATA0;                                  //程序将会异常
-		//NOP;
-	}	 
-	for(i=0;i<=wDataLeng;i++)
-    { 
-		if(s_pbySramBase[i] != SRAM_TEST_DATA0){break;}			 
-	}		
-	if(i!=wDataLeng+1)
-	{
-		while (1){
-				NOP;
-				byCh=0;
-		}
-	}else{			
-		for(i=0;i<=wDataLeng;i++)
-			{ 
-				s_pbySramBase[i]=SRAM_TEST_DATA1;						
-				NOP;
-			}
-		i=0;	 
-		for(i=0;i<=wDataLeng;i++)
-			{ 
-				if(s_pbySramBase[i] != SRAM_TEST_DATA1){break;}			 
-			}		
-		if(i!=wDataLeng+1)
-		{
-			while (1){
-				NOP;
-				byCh=1;
-			}
-		}
-						
-	}
-	while (1){
-		NOP;
-		byCh=2;
-	}		
 }

@@ -227,17 +227,17 @@ int spi_etcb_dma_send_demo(void)
 	}
 	//DMA para config
 	csi_dma_ch_config_t tDmaConfig;					//DMA 配置初始化
-	tDmaConfig.bySrcLinc 	= DMA_ADDR_INC;			//低位传输原地址自增
-	tDmaConfig.bySrcHinc 	= DMA_ADDR_CONSTANT;	//高位传输原地址固定不变
-	tDmaConfig.byDetLinc 	= DMA_ADDR_CONSTANT;	//低位传输目标地址固定不变
-	tDmaConfig.byDetHinc 	= DMA_ADDR_CONSTANT;	//高位传输目标地址固定不变
-	tDmaConfig.byDataWidth 	= DMA_DSIZE_8_BITS;		//传输数据宽度8bit
-	tDmaConfig.byReload 	= DMA_RELOAD_DISABLE;	//禁止自动重载
-	tDmaConfig.byTransMode 	= DMA_TRANS_ONCE;		//DMA服务模式(传输模式)，连续服务
-	tDmaConfig.byTsizeMode  = DMA_TSIZE_ONE_DSIZE;	//传输数据大小，一个 DSIZE , 即DSIZE定义大小
-	tDmaConfig.byReqMode	= DMA_REQ_HARDWARE;		//DMA请求模式，硬件请求（硬件触发）
-	tDmaConfig.wInt 		= DMA_INTSRC_NONE;		//不使用中断
-	csi_dma_soft_rst(DMA0);
+	tDmaConfig.eSrcLinc 	= DMA_ADDR_INC;			//低位传输原地址自增
+	tDmaConfig.eSrcHinc 	= DMA_ADDR_CONSTANT;	//高位传输原地址固定不变
+	tDmaConfig.eDetLinc 	= DMA_ADDR_CONSTANT;	//低位传输目标地址固定不变
+	tDmaConfig.eDetHinc 	= DMA_ADDR_CONSTANT;	//高位传输目标地址固定不变
+	tDmaConfig.eDataWidth 	= DMA_DSIZE_8_BITS;		//传输数据宽度8bit
+	tDmaConfig.eReload 	= DMA_RELOAD_DISABLE;	//禁止自动重载
+	tDmaConfig.eTransMode 	= DMA_TRANS_ONCE;		//DMA服务模式(传输模式)，连续服务
+	tDmaConfig.eTsizeMode  = DMA_TSIZE_ONE_DSIZE;	//传输数据大小，一个 DSIZE , 即DSIZE定义大小
+	tDmaConfig.eReqMode	= DMA_REQ_HARDWARE;		//DMA请求模式，硬件请求（硬件触发）
+//	tDmaConfig.wInt 		= DMA_INTSRC_NONE;		//不使用中断
+	csi_dma_sw_rst(DMA0);
 	csi_dma_ch_init(DMA0, 0, &tDmaConfig);			//初始化DMA
 	csp_dma_t *ptDmaChBase = (csp_dma_t *)DMA_REG_BASE(DMA0, 0);
 	
@@ -298,32 +298,32 @@ int spi_etcb_dma_send_receive_demo(void)
 	
 	//send dma para config
 	csi_dma_ch_config_t tDmaConfigSend;
-	tDmaConfigSend.bySrcLinc 	= DMA_ADDR_INC;		      	//低位传输原地址自增
-	tDmaConfigSend.bySrcHinc 	= DMA_ADDR_CONSTANT;		//高位传输原地址固定不变
-	tDmaConfigSend.byDetLinc 	= DMA_ADDR_CONSTANT;		//低位传输目标地址固定不变
-	tDmaConfigSend.byDetHinc 	= DMA_ADDR_CONSTANT;		//高位传输目标地址固定不变
-	tDmaConfigSend.byDataWidth 	= DMA_DSIZE_8_BITS;		    //传输数据宽度8bit
-	tDmaConfigSend.byReload 	= DMA_RELOAD_DISABLE;		//禁止自动重载
-	tDmaConfigSend.byTransMode 	= DMA_TRANS_ONCE;			//DMA服务模式(传输模式)，连续服务
-	tDmaConfigSend.byTsizeMode  = DMA_TSIZE_ONE_DSIZE;		//传输数据大小，一个 DSIZE , 即DSIZE定义大小
-	tDmaConfigSend.byReqMode	= DMA_REQ_HARDWARE;			//DMA请求模式，硬件请求（硬件触发）
-	tDmaConfigSend.wInt 		= DMA_INTSRC_NONE;			//不使用中断
+	tDmaConfigSend.eSrcLinc 	= DMA_ADDR_INC;		      	//低位传输原地址自增
+	tDmaConfigSend.eSrcHinc 	= DMA_ADDR_CONSTANT;		//高位传输原地址固定不变
+	tDmaConfigSend.eDetLinc 	= DMA_ADDR_CONSTANT;		//低位传输目标地址固定不变
+	tDmaConfigSend.eDetHinc 	= DMA_ADDR_CONSTANT;		//高位传输目标地址固定不变
+	tDmaConfigSend.eDataWidth 	= DMA_DSIZE_8_BITS;		    //传输数据宽度8bit
+	tDmaConfigSend.eReload 	= DMA_RELOAD_DISABLE;		//禁止自动重载
+	tDmaConfigSend.eTransMode 	= DMA_TRANS_ONCE;			//DMA服务模式(传输模式)，连续服务
+	tDmaConfigSend.eTsizeMode  = DMA_TSIZE_ONE_DSIZE;		//传输数据大小，一个 DSIZE , 即DSIZE定义大小
+	tDmaConfigSend.eReqMode	= DMA_REQ_HARDWARE;			//DMA请求模式，硬件请求（硬件触发）
+//	tDmaConfigSend.wInt 		= DMA_INTSRC_NONE;			//不使用中断
 	
 	//receive dma para config
 	csi_dma_ch_config_t tDmaConfigRecv;
-	tDmaConfigRecv.bySrcLinc 	= DMA_ADDR_CONSTANT;		//低位传输原地址固定不变
-	tDmaConfigRecv.bySrcHinc 	= DMA_ADDR_CONSTANT;		//高位传输原地址固定不变
-	tDmaConfigRecv.byDetLinc 	= DMA_ADDR_INC;				//低位传输目标地址自增
-	tDmaConfigRecv.byDetHinc 	= DMA_ADDR_CONSTANT;		//高位传输目标地址固定不变
-	tDmaConfigRecv.byDataWidth  = DMA_DSIZE_8_BITS;		    //传输数据宽度8bit
-	tDmaConfigRecv.byReload 	= DMA_RELOAD_DISABLE;		//禁止自动重载
-	tDmaConfigRecv.byTransMode  = DMA_TRANS_ONCE;			//DMA服务模式(传输模式)，连续服务
-	tDmaConfigRecv.byTsizeMode  = DMA_TSIZE_ONE_DSIZE;		//传输数据大小，一个 DSIZE , 即DSIZE定义大小
-	tDmaConfigRecv.byReqMode	= DMA_REQ_HARDWARE;			//DMA请求模式，硬件请求
-	tDmaConfigRecv.wInt		    = DMA_INTSRC_NONE;			//不使用中断
+	tDmaConfigRecv.eSrcLinc 	= DMA_ADDR_CONSTANT;		//低位传输原地址固定不变
+	tDmaConfigRecv.eSrcHinc 	= DMA_ADDR_CONSTANT;		//高位传输原地址固定不变
+	tDmaConfigRecv.eDetLinc 	= DMA_ADDR_INC;				//低位传输目标地址自增
+	tDmaConfigRecv.eDetHinc 	= DMA_ADDR_CONSTANT;		//高位传输目标地址固定不变
+	tDmaConfigRecv.eDataWidth  = DMA_DSIZE_8_BITS;		    //传输数据宽度8bit
+	tDmaConfigRecv.eReload 	= DMA_RELOAD_DISABLE;		//禁止自动重载
+	tDmaConfigRecv.eTransMode  = DMA_TRANS_ONCE;			//DMA服务模式(传输模式)，连续服务
+	tDmaConfigRecv.eTsizeMode  = DMA_TSIZE_ONE_DSIZE;		//传输数据大小，一个 DSIZE , 即DSIZE定义大小
+	tDmaConfigRecv.eReqMode	= DMA_REQ_HARDWARE;			//DMA请求模式，硬件请求
+//	tDmaConfigRecv.wInt		    = DMA_INTSRC_NONE;			//不使用中断
 	
 	//DMA init
-	csi_dma_soft_rst(DMA0);
+	csi_dma_sw_rst(DMA0);
 	csi_dma_ch_init(DMA0, byDMAChnlSend, &tDmaConfigSend);
 	csi_dma_ch_init(DMA0, byDMAChnlRecv, &tDmaConfigRecv);
 	csp_dma_t *ptDmaChBaseCh0 = (csp_dma_t *)DMA_REG_BASE(DMA0, 0);

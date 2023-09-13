@@ -176,7 +176,7 @@ void user_demo(void)
 //
 
 //	usart_send_int_callback_demo();	
-	usart_receive_int_callback_demo();
+//	usart_receive_int_callback_demo();
 	
 //	lin_send_test();        
 //	lin_send_recv_test();
@@ -238,7 +238,7 @@ void user_demo(void)
 /// ***************************************************
 ///  sram相关的示例代码
 /// ***************************************************
-//	sram_dsram24k_dsram8k_demo0();
+//	use_sram1_as_isram_demo();
 //	sram_dsram24k_dsram8k_demo1();
 //	sram_dsram24k_iram8k_demo();
 

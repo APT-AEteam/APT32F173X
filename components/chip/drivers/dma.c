@@ -108,16 +108,16 @@ csi_error_t csi_dma_ch_init(csp_dma_t *ptDmaBase, csi_dma_ch_e eDmaCh, csi_dma_c
 	if(eDmaCh >= DMA_CH_MAX_NUM)
 		return CSI_ERROR;
 	
-	csp_dma_set_ch_saddr_mode(ptDmaChBase, ptChCfg->bySrcLinc, ptChCfg->bySrcHinc);										///Src addr control mode
-	csp_dma_set_ch_daddr_mode(ptDmaChBase, ptChCfg->byDetLinc, ptChCfg->byDetHinc);										///Det addr control mode
-	csp_dma_set_ch(ptDmaChBase, ptChCfg->byDataWidth, ptChCfg->byReload, ptChCfg->byTransMode, ptChCfg->byTsizeMode);	///dma ch para config
-	csp_dma_set_ch_req(ptDmaChBase, ptChCfg->byReqMode);																///software or hardware request
+	csp_dma_set_ch_saddr_mode(ptDmaChBase, ptChCfg->eSrcLinc, ptChCfg->eSrcHinc);										///Src addr control mode
+	csp_dma_set_ch_daddr_mode(ptDmaChBase, ptChCfg->eDetLinc, ptChCfg->eDetHinc);										///Det addr control mode
+	csp_dma_set_ch(ptDmaChBase, ptChCfg->eDataWidth, ptChCfg->eReload, ptChCfg->eTransMode, ptChCfg->eTsizeMode);	///dma ch para config
+	csp_dma_set_ch_req(ptDmaChBase, ptChCfg->eReqMode);																///software or hardware request
 	
-	if(ptChCfg->wInt)
-	{
-		csp_dma_int_enable(ptDmaChBase, ptChCfg->wInt);		//nable dma xxx interrupt
-		//csi_irq_enable((uint32_t *)ptDmaBase);				//enable dma irq		
-	}
+//	if(ptChCfg->wInt)
+//	{
+//		csp_dma_int_enable(ptDmaChBase, ptChCfg->wInt);		//nable dma xxx interrupt
+//		//csi_irq_enable((uint32_t *)ptDmaBase);				//enable dma irq		
+//	}
 	
 	return CSI_OK;	
 }
@@ -184,7 +184,6 @@ void csi_dma_int_enable(csp_dma_t *ptDmaBase, csi_dma_ch_e eDmaCh, csi_dma_intsr
 	csp_dma_t *ptDmaChBase = (csp_dma_t *)DMA_REG_BASE(ptDmaBase, eDmaCh);
 	
 	csp_dma_int_enable(ptDmaChBase, (dma_int_e)eIntSrc);
-	csi_irq_enable((uint32_t *)ptDmaBase);
 }
 
 /** \brief disable dma interrupt 
@@ -199,7 +198,6 @@ void csi_dma_int_disable(csp_dma_t *ptDmaBase, csi_dma_ch_e eDmaCh, csi_dma_ints
 	csp_dma_t *ptDmaChBase = (csp_dma_t *)DMA_REG_BASE(ptDmaBase, eDmaCh); 
 	
 	csp_dma_int_disable(ptDmaChBase, (dma_int_e)eIntSrc);
-	csi_irq_disable((uint32_t *)ptDmaBase);
 	
 }
 /** \brief dma channel transfer stop
@@ -219,9 +217,9 @@ void csi_dma_ch_stop(csp_dma_t *ptDmaBase, csi_dma_ch_e eDmaCh)
  *  \param[in] ptDmaBase: pointer of dma reg structure.
  *  \return none
  */ 
-void csi_dma_soft_rst(csp_dma_t *ptDmaBase)
+void csi_dma_sw_rst(csp_dma_t *ptDmaBase)
 {
-	csp_dma_soft_rst(ptDmaBase);
+	csp_dma_sw_rst(ptDmaBase);
 }
 
 /** \brief get dma interrupt message and (D0 not)clear message

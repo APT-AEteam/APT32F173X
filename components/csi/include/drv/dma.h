@@ -131,16 +131,16 @@ typedef enum
 /// \brief  dma parameter configuration, open to users  
 typedef struct
 {
-	uint8_t		bySrcLinc;		//low transfer count src addr inc control
-	uint8_t		bySrcHinc;		//high transfer count src addr inc control
-	uint8_t		byDetLinc;		//lowtransfer count det addr inc control
-	uint8_t		byDetHinc;		//high transfer count det addr inc control
-	uint8_t		byDataWidth;	//transfer data size width
-	uint8_t		byReload;		//auto reload	
-	uint8_t		byTransMode;	//dma serve(transfer) mode
-	uint8_t		byTsizeMode;	//Tsize transfer mode
-	uint8_t		byReqMode;		//request mode
-	uint32_t	wInt;			//interrupt  
+	csi_dma_addr_inc_e		eSrcLinc;		//low transfer count src addr inc control
+	csi_dma_addr_inc_e		eSrcHinc;		//high transfer count src addr inc control
+	csi_dma_addr_inc_e		eDetLinc;		//lowtransfer count det addr inc control
+	csi_dma_addr_inc_e		eDetHinc;		//high transfer count det addr inc control
+	csi_dma_dsize_e			eDataWidth;	//transfer data size width
+	csi_dma_reload_e		eReload;		//auto reload	
+	csi_dma_smode_e			eTransMode;	//dma serve(transfer) mode
+	csi_dma_tsize_e			eTsizeMode;	//Tsize transfer mode
+	csi_dma_req_e			eReqMode;		//request mode
+//	uint32_t	wInt;			//interrupt  
 } csi_dma_ch_config_t;
 
 /** 
@@ -206,7 +206,7 @@ void csi_dma_ch_stop(csp_dma_t *ptDmaBase, csi_dma_ch_e eDmaCh);
   \param[in]   ptDmaBase	pointer of dma register structure
   \return      none
 */
-void csi_dma_soft_rst(csp_dma_t *ptDmaBase);
+void csi_dma_sw_rst(csp_dma_t *ptDmaBase);
 
 
 /** 
