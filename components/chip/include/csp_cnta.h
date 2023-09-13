@@ -17,34 +17,34 @@
 #define _CSP_CNTA_H
 
 /* Includes ------------------------------------------------------------------*/
-#include <soc.h>
+#include "soc.h"
 
-/// \struct csp_adc_t
-/// \brief SPI reg description   
+/// \struct csp_cnta_t
+/// \brief cnta reg description   
 typedef struct
 {
-	volatile unsigned int      CADATAH;        /**< DATA High Register        */
-    volatile unsigned int      CADATAL;        /**< DATA Low Register         */
-    volatile unsigned int      CACON;          /**< Control Register          */
-    volatile unsigned int      INTMASK;        /**< Interrupt Mask CR         */
+	__IOM uint32_t      CADATAH;        //0x0000 DATA High Register        
+    __IOM uint32_t      CADATAL;        //0x0004 DATA Low Register        
+    __IOM uint32_t      CACON;          //0x0008 Control Register         
+    __IOM uint32_t      INTMASK;        //0x000C Interrupt Mask CR        
 } csp_cnta_t ;  
 
 /*****************************************************************************
-************************** ssp Function defined *****************************
+************************** Cnta Function defined *****************************
 ******************************************************************************/
 #define	CNTA_RESET_VALUE	(0x00000000)
 
 /******************************************************************************
 * CADATAH : Cnta Output High Level Length Register 
 ******************************************************************************/
-#define	ICNTA_CADATAH_POS	(0)
-#define	ICNTA_CADATAH_MSK	(0xFFFFul << ICNTA_CADATAH_POS)
+#define	CNTA_CADATAH_POS	(0)
+#define	CNTA_CADATAH_MSK	(0xFFFFul << CNTA_CADATAH_POS)
 
 /******************************************************************************
 * CADATAL : Cnta Output Low Level Length Register 
 ******************************************************************************/
-#define	ICNTA_CADATAL_POS	(0)
-#define	ICNTA_CADATAL_MSK	(0xFFFFul << ICNTA_CADATAL_POS)
+#define	CNTA_CADATAL_POS	(0)
+#define	CNTA_CADATAL_MSK	(0xFFFFul << CNTA_CADATAL_POS)
 
 /******************************************************************************
 * CACON : Cnta Control Register 
@@ -61,9 +61,9 @@ typedef enum
 #define	CNTA_MODE_MSK		(0x01ul << CNTA_MODE_POS)
 typedef enum
 {
-	CNTA_ONCE_MODE		= 0,
-	CNTA_REPEAT_MODE          
-}csp_cnta_mode_e;
+	CNTA_RUN_ONCE		= 0, //one shot
+	CNTA_RUN_CONT            //continuous
+}csp_cnta_runmode_e; 
 
 #define	CNTA_START_POS		(2)
 #define	CNTA_START_MSK		(0x01ul << CNTA_START_POS)
@@ -146,40 +146,55 @@ typedef enum
 	CNTA_NONE_INT		= (0x00ul << 0),
 	CNTA_PENDH_INT		= (0x01ul << 0),
 	CNTA_PENDL_INT		= (0x01ul << 1),
-	CNTA_PENDHL_INT		= (0x03ul << 0),
+	CNTA_ALL_INT		= (0x03ul << 0),
 }csp_cnta_int_e;
 
-
+/////////////////////////////////////////////////////////////////////////////////////
 #define CLIC_INTATTR_TRIG_LEVE                  (0x0UL << CLIC_INTATTR_TRIG_Pos)  
 #define CLIC_INTATTR_TRIG_UP                    (0x1UL << CLIC_INTATTR_TRIG_Pos)  
 #define CLIC_INTATTR_TRIG_DOWN                  (0x3UL << CLIC_INTATTR_TRIG_Pos)  
 
-#define apt_cnta_int_arrt_set(x)                 CLIC->CLICINT[51].ATTR |= x
+#define apt_cnta_int_arrt_set(x)                CLIC->CLICINT[51].ATTR |= x
+////////////////////////////////////////////////////////////////////////////////////////
 
 /******************************************************************************
 ********************* CNTA inline Functions Declaration ***********************
-******************************************************************************/																			
+******************************************************************************/	
+//datah																		
 static inline void csp_cnta_set_datah(csp_cnta_t *ptCntaBase,uint16_t hwData)
 {
 	ptCntaBase->CADATAH = hwData;
 }
+
+static inline uint16_t csp_cnta_get_datah(csp_cnta_t *ptCntaBase)
+{
+	return (uint16_t)(ptCntaBase->CADATAH & CNTA_CADATAH_MSK);
+}
+
+//datal
 static inline void csp_cnta_set_datal(csp_cnta_t *ptCntaBase,uint16_t hwData)
 {
 	ptCntaBase->CADATAL = hwData;
 }
-static inline uint16_t csp_cnta_get_datah(csp_cnta_t *ptCntaBase)
-{
-	return (uint16_t)(ptCntaBase->CADATAH & ICNTA_CADATAH_MSK);
-}
+
 static inline uint16_t csp_cnta_get_datal(csp_cnta_t *ptCntaBase)
 {
-	return (uint16_t)(ptCntaBase->CADATAL & ICNTA_CADATAL_MSK);
+	return (uint16_t)(ptCntaBase->CADATAL & CNTA_CADATAL_MSK);
 }
+
+//ckdiv
 static inline uint8_t csp_cnta_get_ckdiv(csp_cnta_t *ptCntaBase)
 {
 	return (uint8_t)((ptCntaBase->CACON & CNTA_CKDIV_MSK) >> CNTA_CKDIV_POS);
 }
-//
+
+static inline void csp_cnta_set_ckdiv(csp_cnta_t *ptCntaBase,csp_cnta_ckdiv_e eClkDiv, csp_cnta_runmode_e eMode)
+{
+	ptCntaBase->CACON = (ptCntaBase->CACON & ~(CNTA_CKDIV_MSK | CNTA_MODE_MSK));
+	ptCntaBase->CACON |= (eClkDiv << CNTA_CKDIV_POS) | (eMode << CNTA_MODE_POS);
+}
+
+//start/stop
 static inline void csp_cnta_start(csp_cnta_t *ptCntaBase)
 {
 	ptCntaBase->CACON = (ptCntaBase->CACON & 0xfffffff3) | (CNTA_START << CNTA_START_POS);
@@ -188,19 +203,9 @@ static inline void csp_cnta_stop(csp_cnta_t *ptCntaBase)
 {
 	ptCntaBase->CACON = (ptCntaBase->CACON & 0xfffffff7) | (CNTA_STOP << CNTA_STOP_POS);
 }
-//static inline void csp_cnta_vic_irq_en(void)
-//{
-//	NVIC_EnableIRQ(CNTA_IRQn);
-//}
 
-//lin add
-static inline void csp_cnta_set_ckdiv(csp_cnta_t *ptCntaBase,csp_cnta_ckdiv_e eClkDiv, csp_cnta_mode_e eMode)
-{
-	ptCntaBase->CACON = (ptCntaBase->CACON & ~(CNTA_CKDIV_MSK | CNTA_MODE_MSK));
-	ptCntaBase->CACON |= (eClkDiv << CNTA_CKDIV_POS) | (eMode << CNTA_MODE_POS);
-}
-
-static inline void csp_cnta_soft_rst(csp_cnta_t *ptCntaBase)
+//software reset
+static inline void csp_cnta_sw_rst(csp_cnta_t *ptCntaBase)
 {
 	ptCntaBase->CADATAH = CNTA_RESET_VALUE;             //default init valu
     ptCntaBase->CADATAL = CNTA_RESET_VALUE;				//default init valu
@@ -208,16 +213,18 @@ static inline void csp_cnta_soft_rst(csp_cnta_t *ptCntaBase)
     ptCntaBase->INTMASK = CNTA_RESET_VALUE;				//default init valu
 }
 
-static inline void csp_cnta_int_enable(csp_cnta_t *ptCntaBase, csp_cnta_int_e eBtInt)
+//int enable/disable
+static inline void csp_cnta_int_enable(csp_cnta_t *ptCntaBase, csp_cnta_int_e eCntaInt)
 {
-	ptCntaBase->INTMASK |= eBtInt; 
+	ptCntaBase->INTMASK |= eCntaInt; 
 }
 
-static inline void csp_cnta_int_disable(csp_cnta_t *ptCntaBase, csp_cnta_int_e eBtInt)
+static inline void csp_cnta_int_disable(csp_cnta_t *ptCntaBase, csp_cnta_int_e eCntaInt)
 {
-	ptCntaBase->INTMASK  &= ~eBtInt; 
+	ptCntaBase->INTMASK  &= ~eCntaInt; 
 }
 
+//set carrier
 static inline void csp_cnta_set_carrier(csp_cnta_t *ptCntaBase, csp_cnta_carrier_e eCarCtrl, csp_cnta_envelope_e eEnvelope, 
 						csp_cnta_remstat_e eRemsta, csp_cnta_osp_e eOsp)
 {
@@ -225,11 +232,13 @@ static inline void csp_cnta_set_carrier(csp_cnta_t *ptCntaBase, csp_cnta_carrier
 	ptCntaBase->CACON |= (eCarCtrl << CNTA_CARRIER_POS) | (eEnvelope << CNTA_ENVELOPE_POS) | (eRemsta << CNTA_REMSTAT_POS) | (eOsp << CNTA_OSP_POS);
 }
 
-static inline void csp_cnta_soft_updata(csp_cnta_t *ptCntaBase)
+//software update
+static inline void csp_cnta_soft_update(csp_cnta_t *ptCntaBase)
 {
 	ptCntaBase->CACON |= (CNTA_SW_STROBE << CNTA_SW_STROBE_POS);	
 }
 
+//sync
 static inline void csp_cnta_set_sync(csp_cnta_t *ptCntaBase, csp_cnta_pendrem_e eTcPend, csp_cnta_matchrem_e eTcMatch, csp_cnta_hwstrobe_e eHwstrobe)
 {
 	ptCntaBase->CACON = (ptCntaBase->CACON & ~(CNTA_PEND_REM_MSK | CNTA_MATCH_REM_MSK | CNTA_HW_STROBE_MSK));

@@ -16,6 +16,7 @@
 #include "drv/cnta.h"
 #include "board_config.h"
 
+#if (USE_CNTA_CALLBACK == 1)
 /* externs function--------------------------------------------------------*/
 /* private function--------------------------------------------------------*/
 /* externs variablesr------------------------------------------------------*/
@@ -55,16 +56,18 @@ int cnta_timer_callback_demo(void)
 	
 	tTimerCfg.eClkDiv = CNTA_CK_DIV8;                        //8分频
 	tTimerCfg.wTime = 1000;                                  //周期1000us,if cnta clk is 3M,the timeout for timer((0.333us * 1) ->(0.333us * 65535): 0.3333us -> 21.845ms)
-	tTimerCfg.eRunMode = CNTA_REPEAT_MODE;                   //重复模式
+	tTimerCfg.eRunMode = CNTA_RUN_CONT;                      //重复模式
 	csi_cnta_timer_init(CA0,&tTimerCfg);                     //初始化CountA
+	
 	csi_cnta_int_enable(CA0, CNTA_INTSRC_PENDL);             //若需使用中断，请调该接口使能对应中断，这里使用PENDL中断
 	csi_cnta_register_callback(CA0, cnta_callback);	         //注册中断回调函数
+	
 	csi_cnta_start(CA0);                                     //启动CountA
+	
 	while(1)
 	{
 		nop;
 	}
 	return iRet;
 }
-
-
+#endif

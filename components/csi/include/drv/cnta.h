@@ -21,47 +21,47 @@ extern "C" {
 #endif
 
 /// \struct csi_cnta_timer_config_t
-/// \brief  conta timer parameter configuration
+/// \brief  cnta timer parameter configuration
 typedef struct {
-	csp_cnta_ckdiv_e eClkDiv;  //时钟分频
-	csp_cnta_mode_e  eRunMode; //单次还是重复
-	uint32_t	     wTime;	   //周期（us）
+	csp_cnta_ckdiv_e eClkDiv;       //clock divide
+	csp_cnta_runmode_e  eRunMode;      //one shot or continuous
+	uint32_t	     wTime;	        //period（us）
 } csi_cnta_timer_config_t;
 
 /// \struct csi_cnta_pwm_config_t
-/// \brief  conta pwm parameter configuration
+/// \brief  cnta pwm parameter configuration
 typedef struct {
-	csp_cnta_ckdiv_e eClkDiv;    //时钟分频选择
-	uint8_t		     byStartLevel;//计数器pwm初始电平
-	uint8_t		     byStopLevel; //计数器pwm结束电平
-	uint8_t		     byDutyCycle; //占空比(0-100)
-	uint32_t	     wFreq;	     //频率（hz）	
+	csp_cnta_ckdiv_e eClkDiv;       //Clock frequency division selection
+	uint8_t		     byStartLevel;  //counter pwm start level
+	uint8_t		     byStopLevel;   //counter pwm stop  level
+	uint8_t		     byDutyCycle;   //dutycycle(0-100)
+	uint32_t	     wFreq;	        //frequency（hz）	
 } csi_cnta_pwm_config_t;
 
 typedef enum {
 	CNTA_INTSRC_NONE	= (0x00ul << 0),
 	CNTA_INTSRC_PENDH	= (0x01ul << 0),
 	CNTA_INTSRC_PENDL	= (0x01ul << 1),
-	CNTA_INTSRC_PENDHL	= (0x03ul << 0),
+	CNTA_INTSRC_ALL  	= (0x03ul << 0),
 }csi_cnta_intsrc_e;
 
 typedef enum
 {
-	CNTA_POLAR_LOW	= 0,
+	CNTA_POLAR_LOW	    = 0,
     CNTA_POLAR_HIGH,       
-	CNTA_STOP_LOW    = 0,	
+	CNTA_STOP_LOW       = 0,	
     CNTA_STOP_HIGH   	    
 }csi_cnta_pwmlev_t;
 
 typedef enum
 {
-	CNTA_PWM_CARRIER		= 0,
+	CNTA_PWM_CARRIER	= 0,
     CNTA_PWM_ENVELOPE    
 }csi_cnta_pwmout_t;
 
 typedef enum
 {
-	CNTA_REM_STAT_LOW		= 0,
+	CNTA_REM_STAT_LOW	= 0,
     CNTA_REM_STAT_HIGH    
 }csi_cnta_remstat_t;
 
@@ -83,7 +83,7 @@ typedef enum
 {
 	CNTA_SW_DIS			= (0x00ul),
 	CNTA_SW_EN			= (0x01ul)  
-}csi_cnta_sw_updata_e;
+}csi_cnta_sw_update_e;
 
 typedef enum
 {
@@ -91,7 +91,7 @@ typedef enum
 	CNTA_HW_TCMATCH			= (0x01ul), 
 	CNTA_HW_TCPEND			= (0x02ul),
     CNTA_HW_TCMATCH_TCPEND	= (0x03ul)   
-}csi_cnta_hw_updata_e;
+}csi_cnta_hw_update_e;
 
 
 /// \struct csi_cnta_ctrl_t
@@ -126,19 +126,20 @@ void csi_cnta_start(csp_cnta_t *ptCntaBase);
 */
 void csi_cnta_stop(csp_cnta_t *ptCntaBase);
 
-/**
-  \brief       Get cnta datah value
-  \param[in]   ptCntaBase    pointer of cnta register structure
-  \return      cnta datah load value
-*/
-uint32_t csi_cnta_get_datah_value(csp_cnta_t *cnta);
 
-/** \brief get cnta datal load value
+/** \brief set cnta datah load value
  * 
  *  \param[in] ptCntaBase: pointer of cnta register structure
- *  \return cnta datal load value
+ *  \return none
  */ 
-uint32_t csi_cnta_get_datal_value(csp_cnta_t *ptCntaBase);
+void csi_cnta_set_datah(csp_cnta_t *ptCntaBase, uint16_t hwData);
+
+/** \brief set cnta datal load value
+ * 
+ *  \param[in] ptCntaBase: pointer of cnta register structure
+ *  \return none
+ */ 
+void csi_cnta_set_datal(csp_cnta_t *ptCntaBase, uint16_t hwData);
 
 /** \brief cnta pwm init 
  * 
@@ -156,7 +157,7 @@ csi_error_t csi_cnta_pwm_init(csp_cnta_t *ptCntaBase,csi_cnta_pwm_config_t *ptCo
  *  \param[in] eUpdata: data reg soft updata control
  *  \return none
  */
-void csi_cnta_pwm_para_updata(csp_cnta_t *ptCntaBase, uint16_t hwDatah, uint16_t hwDatal, csi_cnta_sw_updata_e eUpdata);
+void csi_cnta_pwm_para_update(csp_cnta_t *ptCntaBase, uint16_t hwDatah, uint16_t hwDatal, csi_cnta_sw_update_e eUpdate);
 
 /** \brief set cnta tc sync 
  *  \param[in] ptCntaBase: pointer of cnta register structure
@@ -165,9 +166,9 @@ void csi_cnta_pwm_para_updata(csp_cnta_t *ptCntaBase, uint16_t hwDatah, uint16_t
  *  \param[in] hw_updata: cadata reg auto updata control
  *  \return error code \ref csi_error_t
  */
-csi_error_t csi_cnta_bt0_set_sync(csp_cnta_t *ptCntaBase, csi_cnta_tcpend_e tcpend_rem, csi_cnta_tcmatch_e tcmatch_rem,csi_cnta_hw_updata_e hw_updata);
+csi_error_t csi_cnta_bt0_set_sync(csp_cnta_t *ptCntaBase, csi_cnta_tcpend_e tcpend_rem, csi_cnta_tcmatch_e tcmatch_rem,csi_cnta_hw_update_e hw_update);
 
-/** \brief CNTA interrupt enable control
+/** \brief cnta interrupt enable control
  * 
  *  \param[in] ptCntaBase: pointer of cnta register structure
  *  \param[in] eIntSrc: cnta interrupt source \ref csi_cnta_intsrc_e
@@ -175,7 +176,7 @@ csi_error_t csi_cnta_bt0_set_sync(csp_cnta_t *ptCntaBase, csi_cnta_tcpend_e tcpe
  */ 
 void csi_cnta_int_enable(csp_cnta_t *ptCntaBase, csi_cnta_intsrc_e eIntSrc);
 
-/** \brief CNTA interrupt disable control
+/** \brief cnta interrupt disable control
  * 
  *  \param[in] ptCntaBase: pointer of cnta register structure
  *  \param[in] eIntSrc: cnta interrupt source \ref csi_cnta_intsrc_e
@@ -192,7 +193,7 @@ void csi_cnta_irqhandler(csp_cnta_t *ptCntaBase, uint8_t byIdx);
 
 /** 
   \brief  	   register cnta interrupt callback function
-  \param[in]   ptLedBase    pointer of cnta register structure
+  \param[in]   ptCntaBase    pointer of cnta register structure
   \param[in]   callback		cnta interrupt handle function
   \return      error code \ref csi_error_t
  */ 

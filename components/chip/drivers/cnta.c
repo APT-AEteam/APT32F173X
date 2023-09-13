@@ -11,13 +11,16 @@
  * </table>
  * *********************************************************************
 */
-#include <sys_clk.h>
-#include <drv/cnta.h>
-#include <drv/tick.h>
+//#include <sys_clk.h>
+//#include <drv/cnta.h>
+//#include <drv/tick.h>
+
+#include "drv/cnta.h"
+
 
 
 csi_cnta_ctrl_t g_tCntaCtrl[CNTA_IDX];
-//#include "csp_cnta.h"
+
 /* Private macro------------------------------------------------------*/
 /* externs function---------------------------------------------------*/
 /* externs variablesr-------------------------------------------------*/
@@ -38,16 +41,14 @@ csi_error_t csi_cnta_timer_init(csp_cnta_t *ptCntaBase,csi_cnta_timer_config_t *
 	wTempLoad  = (csi_get_pclk_freq() / (byDivTemp * 1000000)) * ptContaTimerCfg->wTime - 1; // (timeout_us / 1000000) = (byDivTemp / pclk) * (tmp_load + 1)
 	
 	csi_clk_enable((uint32_t *)ptCntaBase);		//cnta clk enable
-    csp_cnta_soft_rst(ptCntaBase);				//default init valu
-	csp_cnta_set_ckdiv(ptCntaBase,(csp_cnta_ckdiv_e)ptContaTimerCfg->eClkDiv,(csp_cnta_mode_e)ptContaTimerCfg->eRunMode);	//cnta clk = pclk/eClkDiv
+    csp_cnta_sw_rst(ptCntaBase);				//default init valu
+	csp_cnta_set_ckdiv(ptCntaBase,(csp_cnta_ckdiv_e)ptContaTimerCfg->eClkDiv,(csp_cnta_runmode_e)ptContaTimerCfg->eRunMode);	//cnta clk = pclk/eClkDiv
 	
 	csp_cnta_set_datal(ptCntaBase, wTempLoad);				//set CADATAL data
 //    csp_cnta_set_datah(ptCntaBase, wTempLoad);			    //set CADATAH data
 
-	
-	apt_cnta_int_arrt_set(CLIC_INTATTR_TRIG_UP); 
-	csp_cnta_soft_updata(ptCntaBase);	                    //updata CADATAH CADATAL value 
-	csi_irq_enable((uint32_t *)ptCntaBase);					//enable cnta irq
+	apt_cnta_int_arrt_set(CLIC_INTATTR_TRIG_UP); ////////////////////////////////////////////////////////////////////
+	csp_cnta_soft_update(ptCntaBase);	                    //updata CADATAH CADATAL value 
 	
 	return CSI_OK;
 }
@@ -72,6 +73,16 @@ void csi_cnta_stop(csp_cnta_t *ptCntaBase)
     csp_cnta_stop(ptCntaBase);
 }
 
+/** \brief set cnta datah load value
+ * 
+ *  \param[in] ptCntaBase: pointer of cnta register structure
+ *  \return none
+ */ 
+void csi_cnta_set_datah_value(csp_cnta_t *ptCntaBase, uint16_t hwData)
+{	
+	csp_cnta_set_datah(ptCntaBase, hwData);
+}
+
 /** \brief get cnta datah load value
  * 
  *  \param[in] ptCntaBase: pointer of cnta register structure
@@ -82,12 +93,22 @@ uint32_t csi_cnta_get_datah_value(csp_cnta_t *ptCntaBase)
 	return csp_cnta_get_datah(ptCntaBase);
 }
 
+/** \brief set cnta datal load value
+ * 
+ *  \param[in] ptCntaBase: pointer of cnta register structure
+ *  \return none
+ */ 
+void csi_cnta_set_datal(csp_cnta_t *ptCntaBase, uint16_t hwData)
+{	
+	csp_cnta_set_datal(ptCntaBase, hwData);
+}
+
 /** \brief get cnta datal load value
  * 
  *  \param[in] ptCntaBase: pointer of cnta register structure
  *  \return cnta datal load value
  */ 
-uint32_t csi_cnta_get_datal_value(csp_cnta_t *ptCntaBase)
+uint32_t csi_cnta_get_datal(csp_cnta_t *ptCntaBase)
 {	
 	return csp_cnta_get_datal(ptCntaBase);
 }
@@ -112,7 +133,7 @@ csi_error_t csi_cnta_pwm_init(csp_cnta_t *ptCntaBase,csi_cnta_pwm_config_t *ptCo
 		return CSI_ERROR;
 		
 	csi_clk_enable((uint32_t *)ptCntaBase);		//cnta clk enable
-    csp_cnta_soft_rst(ptCntaBase);				//default init valu
+    csp_cnta_sw_rst(ptCntaBase);				//default init valu
 	
 	//byClkDiv = ptContaPwmCfg->eClkDiv;
 	wPeriod = (csi_get_pclk_freq() / ptContaPwmCfg->wFreq) >> ptContaPwmCfg->eClkDiv;
@@ -137,15 +158,14 @@ csi_error_t csi_cnta_pwm_init(csp_cnta_t *ptCntaBase,csi_cnta_pwm_config_t *ptCo
 	else if(ptContaPwmCfg->byStopLevel == CNTA_STOP_HIGH)
 		eRemStat = CNTA_REMSTAT_HIGH;
 			
-	csp_cnta_set_ckdiv(ptCntaBase, (csp_cnta_ckdiv_e)ptContaPwmCfg->eClkDiv,(csp_cnta_mode_e)CNTA_REPEAT_MODE);		//cnta clk = pclk/eClkDiv	
+	csp_cnta_set_ckdiv(ptCntaBase, (csp_cnta_ckdiv_e)ptContaPwmCfg->eClkDiv,(csp_cnta_runmode_e)CNTA_RUN_CONT);		//cnta clk = pclk/eClkDiv	
 	csp_cnta_set_carrier(ptCntaBase, (csp_cnta_carrier_e)CNTA_CARRIER_EN, (csp_cnta_envelope_e)CNTA_PWM_CARRIER, (csp_cnta_remstat_e)eRemStat,(csp_cnta_osp_e) eOsp); //载波输出	
 	//csp_cnta_set_carrier(ptCntaBase, (cnta_carrier_e)CNTA_CARRIER_EN, (cnta_envelope_e)PWM_ENVELOPE,(cnta_remstat_e) eRemStat, (cnta_osp_e)eOsp);  //包络输出
 
 	csp_cnta_set_datah(ptCntaBase, wDatahLoad);
 	csp_cnta_set_datal(ptCntaBase, wDatalLoad);	
 	apt_cnta_int_arrt_set(CLIC_INTATTR_TRIG_UP); 
-	csp_cnta_soft_updata(ptCntaBase);
-	csi_irq_enable((uint32_t *)ptCntaBase);					    //enable cnta irq
+	csp_cnta_soft_update(ptCntaBase);
 	
 	return ret;
 }
@@ -158,14 +178,13 @@ csi_error_t csi_cnta_pwm_init(csp_cnta_t *ptCntaBase,csi_cnta_pwm_config_t *ptCo
  *  \param[in] eUpdata: data reg soft updata control
  *  \return none
  */
-void csi_cnta_pwm_para_updata(csp_cnta_t *ptCntaBase, uint16_t hwDatah, uint16_t hwDatal, csi_cnta_sw_updata_e eUpdata)
+void csi_cnta_pwm_para_update(csp_cnta_t *ptCntaBase, uint16_t hwDatah, uint16_t hwDatal, csi_cnta_sw_update_e eUpdate)
 {	
-	
 	csp_cnta_set_datah(ptCntaBase,hwDatah);	
 	csp_cnta_set_datal(ptCntaBase,hwDatal);
-	if(eUpdata == CNTA_SW_EN)
+	if(eUpdate == CNTA_SW_EN)
 	{
-		csp_cnta_soft_updata(ptCntaBase);
+		csp_cnta_soft_update(ptCntaBase);
 	}
 }
 
@@ -177,9 +196,9 @@ void csi_cnta_pwm_para_updata(csp_cnta_t *ptCntaBase, uint16_t hwDatah, uint16_t
  *  \param[in] hw_updata: cadata reg auto updata control
  *  \return error code \ref csi_error_t
  */
-csi_error_t csi_cnta_bt0_set_sync(csp_cnta_t *ptCntaBase, csi_cnta_tcpend_e eTcpendRem, csi_cnta_tcmatch_e eTcmatchRem,csi_cnta_hw_updata_e eHwUpdata)
+csi_error_t csi_cnta_bt0_set_sync(csp_cnta_t *ptCntaBase, csi_cnta_tcpend_e eTcpendRem, csi_cnta_tcmatch_e eTcmatchRem,csi_cnta_hw_update_e eHwUpdate)
 {
-	csp_cnta_set_sync(ptCntaBase, (csp_cnta_pendrem_e) eTcpendRem, (csp_cnta_matchrem_e)eTcmatchRem, (csp_cnta_hwstrobe_e)eHwUpdata);	
+	csp_cnta_set_sync(ptCntaBase, (csp_cnta_pendrem_e) eTcpendRem, (csp_cnta_matchrem_e)eTcmatchRem, (csp_cnta_hwstrobe_e)eHwUpdate);	
 	return CSI_OK;
 }
 
@@ -208,7 +227,7 @@ void csi_cnta_int_disable(csp_cnta_t *ptCntaBase, csi_cnta_intsrc_e eIntSrc)
 /** \brief get cnta number 
  * 
  *  \param[in] ptCntaBase: pointer of cnta register structure
- *  \return cnta number 0/1
+ *  \return cnta number 0
  */ 
 static uint8_t apt_get_cnta_idx(csp_cnta_t *ptCntaBase)
 {
