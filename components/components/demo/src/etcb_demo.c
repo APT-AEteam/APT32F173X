@@ -10,11 +10,6 @@
  * *********************************************************************
 */
 /* Includes ---------------------------------------------------------------*/
-//#include "drv/etb.h"
-//#include "drv/pin.h"
-//#include "drv/bt.h"
-//#include "drv/lpt.h"
-//#include "drv/adc.h"
 #include "csi_drv.h"
 #include "board_config.h"
 
@@ -35,7 +30,7 @@ int exi_etcb_bt_start_demo(void)
 {
 	int iRet = 0;
 	volatile uint8_t ch = 0;
-	csi_etb_config_t tEtbConfig;				               			//ETB 参数配置结构体	
+	csi_etcb_config_t tEtbConfig;				               			//ETB 参数配置结构体	
 	csi_bt_time_config_t tTimConfig;									//BT 定时初始化参数结构体	
 
 #if (USE_GUI == 0)			
@@ -60,11 +55,10 @@ int exi_etcb_bt_start_demo(void)
 	tEtbConfig.eSrcIp  = ETB_EXI_TRGOUT1;  	    						//EXI_TRGOUT1作为触发源
 	tEtbConfig.eDstIp =  ETB_BT0_SYNCIN0;   	   						//BT0 同步输入作为目标事件
 	tEtbConfig.eTrgMode = ETB_HARDWARE_TRG;
-	csi_etb_init();
-	ch = csi_etb_ch_alloc(tEtbConfig.eChType);	    					//自动获取空闲通道号,ch >= 0 获取成功
+	ch = csi_etcb_ch_alloc(tEtbConfig.eChType);	    					//自动获取空闲通道号,ch >= 0 获取成功
 	if(ch < 0)
 		return -1;								    					//ch < 0,则获取通道号失败
-	iRet = csi_etb_ch_config(ch, &tEtbConfig);
+	iRet = csi_etcb_ch_int(ch, &tEtbConfig);
 	
 	while(1)
 	{
@@ -86,7 +80,7 @@ int exi_etcb_bt_stop_demo(void)
 {
 	int iRet = 0;
 	volatile uint8_t ch = 0;
-	csi_etb_config_t tEtbConfig;				               				//ETB 参数配置结构体
+	csi_etcb_config_t tEtbConfig;				               				//ETB 参数配置结构体
 	csi_bt_time_config_t tTimConfig;										//BT 定时初始化参数结构体				
 
 #if (USE_GUI == 0)			
@@ -111,11 +105,10 @@ int exi_etcb_bt_stop_demo(void)
 	tEtbConfig.eSrcIp  = ETB_EXI_TRGOUT1;  	    							//EXI_TRGOUT1作为触发源
 	tEtbConfig.eDstIp =  ETB_BT0_SYNCIN1;   	    						//BT0 同步输入作为目标事件
 	tEtbConfig.eTrgMode = ETB_HARDWARE_TRG;
-	csi_etb_init();
-	ch = csi_etb_ch_alloc(tEtbConfig.eChType);	    						//自动获取空闲通道号,ch >= 0 获取成功
+	ch = csi_etcb_ch_alloc(tEtbConfig.eChType);	    						//自动获取空闲通道号,ch >= 0 获取成功
 	if(ch < 0)
 		return -1;								    						//ch < 0,则获取通道号失败
-	iRet = csi_etb_ch_config(ch, &tEtbConfig);
+	iRet = csi_etcb_ch_init(ch, &tEtbConfig);
 	
 	while(1)
 	{

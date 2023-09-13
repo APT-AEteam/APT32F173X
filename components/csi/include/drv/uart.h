@@ -12,8 +12,6 @@
 #ifndef _DRV_UART_H_
 #define _DRV_UART_H_
 
-#include <drv/etb.h>
-#include <drv/dma.h>
 #include "csp.h"
 
 #ifdef __cplusplus
@@ -187,7 +185,7 @@ typedef struct {
 	//CallBack		
 	void(*recv_callback)(csp_uart_t *ptUartBase, csi_uart_state_e eState, uint8_t *pbyBuf, uint16_t *hwSzie);
 	void(*send_callback)(csp_uart_t *ptUartBase);
-	void(*err_callback)(csp_uart_t *ptUartBase, uint16_t hwIsr);
+	void(*err_callback)(csp_uart_t *ptUartBase, uart_isr_e eIsr);
 } csi_uart_ctrl_t;
 
 extern csi_uart_ctrl_t g_tUartCtrl[UART_IDX];	

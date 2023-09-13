@@ -217,7 +217,7 @@ int usart_send_dma_demo(void)
 	int iRet = 0;
 	csi_usart_config_t tUsartCfg;						//USART0 参数配置结构体
 	csi_dma_ch_config_t tDmaConfig;						//DMA 参数配置结构体			
-	csi_etb_config_t 	tEtbConfig;						//ETCB 参数配置结构体
+	csi_etcb_config_t 	tEtbConfig;						//ETCB 参数配置结构体
 	
 #if !defined(USE_GUI)
 
@@ -256,15 +256,15 @@ int usart_send_dma_demo(void)
 	csi_usart_set_txdma(USART0, USDMA_TX_FIF0_TRG);
 	
 	
-	//etb 参数配置
-	csi_etb_init();										//使能ETB模块
+	//etcb 参数配置
+	csi_etcb_init();										//使能ETB模块
 		
 	tEtbConfig.eChType = ETB_ONE_TRG_ONE_DMA;			//单个源触发单个目标，DMA方式
 	tEtbConfig.eSrcIp 	= ETB_USART0_TXSRC;				//UART TXSRC作为触发源
 	tEtbConfig.eDstIp 	= ETB_DMA0_CH0 + DMA_CH0;		//ETB DMA通道 作为目标实际
 	tEtbConfig.eTrgMode = ETB_HARDWARE_TRG;				//通道触发模式采样硬件触发
 	
-	iRet = csi_etb_ch_config(ETB_CH20, &tEtbConfig);	//初始化ETB，DMA ETB CHANNEL > ETB_CH19_ID
+	iRet = csi_etcb_ch_config(ETB_CH20, &tEtbConfig);	//初始化ETB，DMA ETB CHANNEL > ETB_CH19_ID
 
 	while(1)
 	{
@@ -293,7 +293,7 @@ int usart_recv_dma_demo(void)
 	int iRet = 0;
 	csi_usart_config_t tUsartCfg;						//USART0 参数配置结构体
 	csi_dma_ch_config_t tDmaConfig;						//DMA 参数配置结构体
-	csi_etb_config_t 	tEtbConfig;						//ETCB 参数配置结构体
+	csi_etcb_config_t 	tEtbConfig;						//ETCB 参数配置结构体
 	
 	
 #if !defined(USE_GUI)
@@ -333,15 +333,15 @@ int usart_recv_dma_demo(void)
 	csi_usart_set_rxdma(USART0, USDMA_RX_FIFO_NSPACE);
 	
 	
-	//etb 参数配置
-	csi_etb_init();										//使能ETB模块
+	//etcb 参数配置
+	csi_etcb_init();										//使能ETB模块
 	
 	tEtbConfig.eChType = ETB_ONE_TRG_ONE_DMA;			//单个源触发单个目标，DMA方式
 	tEtbConfig.eSrcIp 	= ETB_USART0_RXSRC;				//UART TXSRC作为触发源
 	tEtbConfig.eDstIp 	= ETB_DMA0_CH0 + DMA_CH3;		//ETB DMA通道 作为目标实际
 	tEtbConfig.eTrgMode = ETB_HARDWARE_TRG;				//通道触发模式采样硬件触发
 										
-	csi_etb_ch_config(ETB_CH20, &tEtbConfig);			//初始化ETB，DMA ETB CHANNEL > ETB_CH19_ID
+	csi_etcb_ch_config(ETB_CH20, &tEtbConfig);			//初始化ETB，DMA ETB CHANNEL > ETB_CH19_ID
 
 
 	csi_usart_recv_dma(USART0,(void*)byRecvBuf, DMA_CH3, 25);	//DMA接收

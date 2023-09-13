@@ -198,7 +198,7 @@ void iic_multi_slave_address_demo(void)
 {
 	
 	csi_dma_ch_config_t tDmaConfig;    
-	csi_etb_config_t  tEtbConfig;
+	csi_etcb_config_t  tEtbConfig;
 #if !defined (USE_GUI)	
 	csi_pin_output_mode(PC4,GPIO_OPEN_DRAIN);
 	csi_pin_output_mode(PC5,GPIO_OPEN_DRAIN);
@@ -208,7 +208,7 @@ void iic_multi_slave_address_demo(void)
 	csi_pin_pull_mode(PC5, GPIO_PULLUP);
 #endif		
 	// tx etcb config
-	csi_etb_init();      //使能ETB模块
+	csi_etcb_init();      //使能ETB模块
 	tEtbConfig.eChType = ETB_ONE_TRG_ONE_DMA;     //单个源触发单个目标，DMA方式
 	tEtbConfig.eSrcIp  = ETB_I2C0_TXSRC;			//I2C0_TXSRC作为触发源
 	tEtbConfig.eSrcIp1 = 0xff;      
@@ -217,7 +217,7 @@ void iic_multi_slave_address_demo(void)
 	tEtbConfig.eDstIp1 = 0xff;
 	tEtbConfig.eDstIp2 = 0xff;
 	tEtbConfig.eTrgMode = ETB_HARDWARE_TRG;     //通道触发模式采样硬件触发
-	csi_etb_ch_config(ETB_CH21, &tEtbConfig);    //初始化ETB，DMA ETB CHANNEL > ETB_CH19_ID 
+	csi_etcb_ch_config(ETB_CH21, &tEtbConfig);    //初始化ETB，DMA ETB CHANNEL > ETB_CH19_ID 
 	csi_dma_sw_rst(DMA0);    //复位DMA模块
 	
 	//iic tx dma config
@@ -264,7 +264,7 @@ void iic_multi_slave_address_demo(void)
 {
 	
 	csi_dma_ch_config_t tDmaConfig;    
-	csi_etb_config_t  tEtbConfig;
+	csi_etcb_config_t  tEtbConfig;
 #if !defined (USE_GUI)	
 	csi_pin_output_mode(PC4,GPIO_OPEN_DRAIN);
 	csi_pin_output_mode(PC5,GPIO_OPEN_DRAIN);
@@ -274,7 +274,7 @@ void iic_multi_slave_address_demo(void)
 	csi_pin_pull_mode(PC5, GPIO_PULLUP);
 #endif
 	// rx etcb config
-	csi_etb_init();      //使能ETB模块
+	csi_etcb_init();      //使能ETB模块
 	tEtbConfig.eChType = ETB_ONE_TRG_ONE_DMA;     //单个源触发单个目标，DMA方式
 	tEtbConfig.eSrcIp  = ETB_I2C0_RXSRC;			//I2C0_TXSRC作为触发源
 	tEtbConfig.eSrcIp1 = 0xff;      
@@ -284,7 +284,7 @@ void iic_multi_slave_address_demo(void)
 	tEtbConfig.eDstIp2 = 0xff;
 	tEtbConfig.eTrgMode = ETB_HARDWARE_TRG;     //通道触发模式采样硬件触发
 	
-	csi_etb_ch_config(ETB_CH22, &tEtbConfig);    //初始化ETB，DMA ETB CHANNEL > ETB_CH19_ID 
+	csi_etcb_ch_config(ETB_CH22, &tEtbConfig);    //初始化ETB，DMA ETB CHANNEL > ETB_CH19_ID 
 	csi_dma_sw_rst(DMA0);    //复位DMA模块
 	
 	// ic rx dma config

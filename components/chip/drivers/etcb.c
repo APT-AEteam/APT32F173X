@@ -1,6 +1,6 @@
 
 /***********************************************************************//** 
- * \file  etb.c
+ * \file  etcb.c
  * \brief  ETCB(event trigger control block) driver
  * \copyright Copyright (C) 2015-2020 @ APTCHIP
  * <table>
@@ -23,12 +23,12 @@
 static uint32_t s_wEtbAllocStatus[ETB_BUF_LEN] = {0};
 
 
-/** \brief etb channel[0->31] check
+/** \brief etcb channel[0->31] check
  * 
- *  \param[in] eEtbCh: channel number, \ref csi_etb_ch_e
+ *  \param[in] eEtbCh: channel number, \ref csi_etcb_ch_e
  *  \return none
  */ 
-static int32_t check_is_alloced(csi_etb_ch_e eEtbCh)
+static int32_t check_is_alloced(csi_etcb_ch_e eEtbCh)
 {
     uint8_t byChOffset, byChGroup;
 	uint32_t wStatus = 0U;
@@ -44,13 +44,13 @@ static int32_t check_is_alloced(csi_etb_ch_e eEtbCh)
 
     return ret;
 }
-/** \brief etb channel[0:31] status 
+/** \brief etcb channel[0:31] status 
  * 
- *  \param[in] eEtbCh: channel number, \ref csi_etb_ch_e
+ *  \param[in] eEtbCh: channel number, \ref csi_etcb_ch_e
  *  \param[in] status: status
  *  \return none
  */ 
-static void set_ch_alloc_status(csi_etb_ch_e eEtbCh, uint32_t wStatus)
+static void set_ch_alloc_status(csi_etcb_ch_e eEtbCh, uint32_t wStatus)
 {
     uint8_t byChOffset, byChGroup;
 
@@ -63,14 +63,14 @@ static void set_ch_alloc_status(csi_etb_ch_e eEtbCh, uint32_t wStatus)
         s_wEtbAllocStatus[byChGroup] &= ~(uint32_t)(1U << byChOffset);
 		
 }
-/** \brief etb channel[0->31] enable/disable 
+/** \brief etcb channel[0->31] enable/disable 
  * 
  *  \param[in] ptEtbBase: pionter of ETB reg structure.
- *  \param[in] eEtbCh: channel number, \ref csi_etb_ch_e
+ *  \param[in] eEtbCh: channel number, \ref csi_etcb_ch_e
  *  \param[in] bEnable: enable/disable
  *  \return none
  */ 
-static void etb_channel_enable(csp_etb_t *ptEtbBase, csi_etb_ch_e eEtbCh, bool bEnable)
+static void etcb_channel_enable(csp_etcb_t *ptEtbBase, csi_etcb_ch_e eEtbCh, bool bEnable)
 {
 	switch(eEtbCh)
 	{
@@ -89,9 +89,9 @@ static void etb_channel_enable(csp_etb_t *ptEtbBase, csi_etb_ch_e eEtbCh, bool b
 			break;
 	}
 }
-/** \brief etb more source trigger one destination
+/** \brief etcb more source trigger one destination
  * 
- *  \param[in] ptEtbBase: pionter of etb reg structure.
+ *  \param[in] ptEtbBase: pionter of etcb reg structure.
  *  \param[in] bySrc0: trigger source 0
  *  \param[in] bySrc1: trigger source 1
  *  \param[in] bySrc2: trigger source 2
@@ -99,7 +99,7 @@ static void etb_channel_enable(csp_etb_t *ptEtbBase, csi_etb_ch_e eEtbCh, bool b
  *  \param[in] eTrgMode: hard/soft trigger
  *  \return none
  */ 
-//static void etb_set_more_trg_one(csp_etb_t *ptEtbBase, uint8_t bySrc0, uint8_t bySrc1, uint8_t bySrc2,uint8_t byDst, etb_ch_trg_mode_e eTrgMode)
+//static void etcb_set_more_trg_one(csp_etcb_t *ptEtbBase, uint8_t bySrc0, uint8_t bySrc1, uint8_t bySrc2,uint8_t byDst, etcb_ch_trg_mode_e eTrgMode)
 //{
 //	ptEtbBase->CFG0_CH0 = (ETB_CH0_TRG_SRC0(bySrc0) | ETB_CH0_TRG_SRC1(bySrc1) | ETB_CH0_TRG_SRC2(bySrc2)); 
 //	if(bySrc0 != ETB_SRC_NOT_USE)
@@ -118,20 +118,20 @@ static void etb_channel_enable(csp_etb_t *ptEtbBase, csi_etb_ch_e eEtbCh, bool b
 //		ptEtbBase->CFG0_CH0 &= ~ETB_CH0_SRC2_EN_MSK;
 //		
 //	ptEtbBase->CFG1_CH0 = (eTrgMode << ETB_CH_TRG_MODE_POS) | ETB_CH0_TRG_DST(byDst); 
-//	ptEtbBase->CFG1_CH0  |= ETB_CH_EN;		//enable etb channel
+//	ptEtbBase->CFG1_CH0  |= ETB_CH_EN;		//enable etcb channel
 //}
-/** \brief etb one source trigger more destination
+/** \brief etcb one source trigger more destination
  * 
- *  \param[in] ptEtbBase: pionter of etb reg structure.
+ *  \param[in] ptEtbBase: pionter of etcb reg structure.
  *  \param[in] byChNum: channel number= [1:2]
  *  \param[in] bySrc: trigger source
  *  \param[in] byDst0: trigger destination 0
  *  \param[in] byDst1: trigger destination 1
  *  \param[in] byDst2: trigger destination 2
- *  \param[in] eTrgMode: trigger mode(hard/soft), \ref csi_etb_ch_e
+ *  \param[in] eTrgMode: trigger mode(hard/soft), \ref csi_etcb_ch_e
  *  \return none
  */ 
-static void etb_set_one_trg_more(csp_etb_t *ptEtbBase, uint8_t byChNum, uint8_t bySrc, uint8_t byDst0, uint8_t byDst1, uint8_t byDst2, etb_ch_trg_mode_e eTrgMode)
+static void etcb_set_one_trg_more(csp_etcb_t *ptEtbBase, uint8_t byChNum, uint8_t bySrc, uint8_t byDst0, uint8_t byDst1, uint8_t byDst2, etcb_ch_trg_mode_e eTrgMode)
 {
 	ptEtbBase->CH1_2[byChNum-1].CFG0 = (ETB_CH1_2_TRG_DST0(byDst0) | ETB_CH1_2_TRG_DST1(byDst1) | ETB_CH1_2_TRG_DST2(byDst2)); 
 	if(byDst0 != ETB_DST_NOT_USE)
@@ -150,24 +150,24 @@ static void etb_set_one_trg_more(csp_etb_t *ptEtbBase, uint8_t byChNum, uint8_t 
 		ptEtbBase->CH1_2[byChNum-1].CFG0 &= ~ETB_CH1_2_DST2_EN_MSK;
 		
 	ptEtbBase->CH1_2[byChNum-1].CFG1 = (eTrgMode << ETB_CH_TRG_MODE_POS) | ETB_CH1_2_TRG_SRC(bySrc);
-	ptEtbBase->CH1_2[byChNum-1].CFG1 |= ETB_CH_EN;	//enable etb channel
+	ptEtbBase->CH1_2[byChNum-1].CFG1 |= ETB_CH_EN;	//enable etcb channel
 }
-/** \brief initialize etb; enable etb and etb clk
+/** \brief initialize etcb; enable etcb and etcb clk
  * 
  *  \param[in] none
  *  \return none
  */ 
-void csi_etb_init(void)
+void csi_etcb_init(void)
 {
 	soc_clk_enable(ETCB_SYS_CLK);			//enable peripheral clk
-    csp_etb_enable(ETCB);					//enable etcb module
+    csp_etcb_enable(ETCB);					//enable etcb module
 }
-/** \brief alloc an etb channel
+/** \brief alloc an etcb channel
  * 
- *  \param[in] eChType: etb channel woke mode, \ref csi_etb_ch_type_e
+ *  \param[in] eChType: etcb channel woke mode, \ref csi_etcb_ch_type_e
  *  \return channel id or CSI_ERROR
 */
-int32_t csi_etb_ch_alloc(csi_etb_ch_type_e eChType)
+int32_t csi_etcb_ch_alloc(csi_etcb_ch_type_e eChType)
 {
     int32_t ret_ch = 0;
     uint32_t result = csi_irq_save();
@@ -217,43 +217,45 @@ int32_t csi_etb_ch_alloc(csi_etb_ch_type_e eChType)
     csi_irq_restore(result);
     return ret_ch;
 }
-/** \brief free an etb channel
+/** \brief free an etcb channel
  * 
- *  \param[in] eEtbCh: channel number, \ref csi_etb_ch_e
+ *  \param[in] eEtbCh: channel number, \ref csi_etcb_ch_e
  *  \return none
 */
-void csi_etb_ch_free(csi_etb_ch_e eEtbCh)
+void csi_etcb_ch_free(csi_etcb_ch_e eEtbCh)
 {
     uint32_t result = csi_irq_save();
     set_ch_alloc_status(eEtbCh, 0U);
     csi_irq_restore(result);
 }
-/** \brief config etb channel
- *  \param[in] eEtbCh: channel number, \ref csi_etb_ch_e
- *  \param[in] ptConfig: the config structure pointer for etb channel
- * 				- eSrcIp: trigger source0, \ref csi_etb_src_e
- * 				- eSrcIp1: trigger source1, \ref csi_etb_src_e
- * 				- eSrcIp2: trigger source2, \ref csi_etb_src_e
- * 				- eDstIp: trigger destination0, \ref csi_etb_dst_e
- * 				- eDstIp1: trigger destination1, \ref csi_etb_dst_e
- * 				- eDstIp2: trigger destination2, \ref csi_etb_dst_e
- * 				- eTrgMode: trigger mode, \ref csi_etb_trg_mode_e
- * 				- byChType: trigger source0, \ref csi_etb_ch_type_e
+/** \brief config etcb channel
+ *  \param[in] eEtbCh: channel number, \ref csi_etcb_ch_e
+ *  \param[in] ptConfig: the config structure pointer for etcb channel
+ * 				- eSrcIp: trigger source0, \ref csi_etcb_src_e
+ * 				- eSrcIp1: trigger source1, \ref csi_etcb_src_e
+ * 				- eSrcIp2: trigger source2, \ref csi_etcb_src_e
+ * 				- eDstIp: trigger destination0, \ref csi_etcb_dst_e
+ * 				- eDstIp1: trigger destination1, \ref csi_etcb_dst_e
+ * 				- eDstIp2: trigger destination2, \ref csi_etcb_dst_e
+ * 				- eTrgMode: trigger mode, \ref csi_etcb_trg_mode_e
+ * 				- byChType: trigger source0, \ref csi_etcb_ch_type_e
  * 
  *  \return csi error code
 */
-csi_error_t csi_etb_ch_config(csi_etb_ch_e eEtbCh, csi_etb_config_t *ptConfig)
+csi_error_t csi_etcb_ch_init(csi_etcb_ch_e eEtbCh, csi_etcb_config_t *ptConfig)
 {
-    CSI_PARAM_CHK(ptConfig, CSI_ERROR);
 	csi_error_t ret = CSI_OK;
+	
+	soc_clk_enable(ETCB_SYS_CLK);			//enable peripheral clk
+    csp_etcb_enable(ETCB);					//enable etcb module
 	
 	switch(ptConfig->eChType)
 	{
 		case ETB_ONE_TRG_ONE:						//channel num = [3:32]
 			if(eEtbCh > ETB_CH2)
 			{
-				csp_etb_set_one_trg_one(ETCB, eEtbCh, ptConfig->eSrcIp, ptConfig->eDstIp, (etb_ch_trg_mode_e)ptConfig->eTrgMode);
-				csp_etb_chx_enable(ETCB, eEtbCh);	//enable etb channel 
+				csp_etcb_set_one_trg_one(ETCB, eEtbCh, ptConfig->eSrcIp, ptConfig->eDstIp, (etcb_ch_trg_mode_e)ptConfig->eTrgMode);
+				csp_etcb_chx_enable(ETCB, eEtbCh);	//enable etcb channel 
 			}
 			else
 				ret = CSI_ERROR;
@@ -261,7 +263,7 @@ csi_error_t csi_etb_ch_config(csi_etb_ch_e eEtbCh, csi_etb_config_t *ptConfig)
 			break;
 		case ETB_ONE_TRG_MORE:						//channel num = [0:2]		
 			if(eEtbCh < ETB_CH3)
-				etb_set_one_trg_more(ETCB, eEtbCh, ptConfig->eSrcIp, ptConfig->eDstIp, ptConfig->eDstIp1, ptConfig->eDstIp2, (etb_ch_trg_mode_e)ptConfig->eTrgMode);
+				etcb_set_one_trg_more(ETCB, eEtbCh, ptConfig->eSrcIp, ptConfig->eDstIp, ptConfig->eDstIp1, ptConfig->eDstIp2, (etcb_ch_trg_mode_e)ptConfig->eTrgMode);
 			else
 				ret = CSI_ERROR;
 				
@@ -269,9 +271,9 @@ csi_error_t csi_etb_ch_config(csi_etb_ch_e eEtbCh, csi_etb_config_t *ptConfig)
 		case ETB_ONE_TRG_ONE_DMA:					//channel num = [20:31]
 			if((eEtbCh >= ETB_CH_DMA_STAR) && (eEtbCh < ETB_CH_MAX_NUM))
 			{
-				csp_etb_set_one_trg_one(ETCB, eEtbCh, ptConfig->eSrcIp, ptConfig->eDstIp, (etb_ch_trg_mode_e)ptConfig->eTrgMode);
-				csp_etb_dma_enable(ETCB, eEtbCh);	//enable etb dma
-				csp_etb_chx_enable(ETCB, eEtbCh);	//enable etb channel 
+				csp_etcb_set_one_trg_one(ETCB, eEtbCh, ptConfig->eSrcIp, ptConfig->eDstIp, (etcb_ch_trg_mode_e)ptConfig->eTrgMode);
+				csp_etcb_dma_enable(ETCB, eEtbCh);	//enable etcb dma
+				csp_etcb_chx_enable(ETCB, eEtbCh);	//enable etcb channel 
 			}
 			else
 				ret = CSI_ERROR;
@@ -284,30 +286,30 @@ csi_error_t csi_etb_ch_config(csi_etb_ch_e eEtbCh, csi_etb_config_t *ptConfig)
 
     return ret;
 }
-/** \brief etb channel sw force triger
+/** \brief etcb channel sw force triger
  * 
- *  \param[in] eEtbCh: channel number, \ref csi_etb_ch_e
+ *  \param[in] eEtbCh: channel number, \ref csi_etcb_ch_e
  *  \return none
 */
-void csi_etb_ch_swtrg(csi_etb_ch_e eEtbCh)
+void csi_etcb_ch_sw_trg(csi_etcb_ch_e eEtbCh)
 {
-	csp_etb_soft_trg_enable(ETCB, eEtbCh);
+	csp_etcb_sw_trg(ETCB, eEtbCh);
 }
 /**
- * \brief start an etb channel
- * \param[in] eEtbCh: channel number, \ref csi_etb_ch_e
+ * \brief start an etcb channel
+ * \param[in] eEtbCh: channel number, \ref csi_etcb_ch_e
  * \return none
 */
-void csi_etb_ch_start(csi_etb_ch_e eEtbCh)
+void csi_etcb_ch_start(csi_etcb_ch_e eEtbCh)
 {
-	etb_channel_enable(ETCB,eEtbCh, ENABLE);
+	etcb_channel_enable(ETCB,eEtbCh, ENABLE);
 }
 /**
- * \brief stop an etb channel
- * \param[in] eEtbCh: channel number, \ref csi_etb_ch_e
+ * \brief stop an etcb channel
+ * \param[in] eEtbCh: channel number, \ref csi_etcb_ch_e
  * \return none
 */
-void csi_etb_ch_stop(csi_etb_ch_e eEtbCh)
+void csi_etcb_ch_stop(csi_etcb_ch_e eEtbCh)
 {
-    etb_channel_enable(ETCB, eEtbCh, DISABLE);
+    etcb_channel_enable(ETCB, eEtbCh, DISABLE);
 }

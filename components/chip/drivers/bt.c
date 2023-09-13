@@ -63,12 +63,12 @@ csi_error_t csi_bt_register_callback(csp_bt_t *ptBtBase, void  *callback)
  */ 
 void csi_bt_irqhandler(csp_bt_t *ptBtBase, uint8_t byIdx)
 {
-	uint8_t byIsr = csp_bt_get_isr(ptBtBase);
+	bt_int_e eIsr = csp_bt_get_isr(ptBtBase);
 	
 	if(g_tBtCtrl[byIdx].callback)
-			g_tBtCtrl[byIdx].callback(ptBtBase, byIsr);
+			g_tBtCtrl[byIdx].callback(ptBtBase, eIsr);
 			
-	csp_bt_clr_isr(ptBtBase, byIsr);
+	csp_bt_clr_isr(ptBtBase, eIsr);
 }
 
 /** \brief initialize bt data structure

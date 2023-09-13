@@ -11,6 +11,7 @@
 /* Includes ---------------------------------------------------------------*/
 #include "drv/uart.h"
 #include "drv/gpio.h"
+#include <drv/etb.h>
 #include "board_config.h"
 
 /* externs function--------------------------------------------------------*/
@@ -184,7 +185,7 @@ int uart_send_dma_demo(void)
 	int iRet = 0;
 	csi_uart_config_t tUartConfig;								//UART1 参数配置结构体
 	csi_dma_ch_config_t tDmaConfig;								//DMA 通道配置结构体			
-	csi_etb_config_t 	tEtbConfig;								//ETCB 配置结构体
+	csi_etcb_config_t 	tEtbConfig;								//ETCB 配置结构体
 	
 #if (USE_GUI == 0)		
 	csi_gpio_set_mux(GPIOA,PA4, PA4_UART1_TX);					//TX	
@@ -213,13 +214,13 @@ int uart_send_dma_demo(void)
 	csi_dma_ch_init(DMA0, DMA_CH1, &tDmaConfig);				//初始化DMA0，选择CH1
 	csi_dma_int_enable(DMA0, DMA_CH0,DMA_INTSRC_TCIT);			//使用TCIT中断
 	
-	csi_etb_init();												//使能ETB模块
+	csi_etcb_init();												//使能ETB模块
 	//ETCB 配置初始化
 	tEtbConfig.eChType 	= ETB_ONE_TRG_ONE_DMA;					//单个源触发单个目标，DMA方式
 	tEtbConfig.eSrcIp 	= ETB_UART1_TXSRC;						//UART TXSRC作为触发源
 	tEtbConfig.eDstIp 	= ETB_DMA0_CH1;							//ETB DMA通道 作为目标实际
 	tEtbConfig.eTrgMode = ETB_HARDWARE_TRG;						//通道触发模式采样硬件触发
-	iRet = csi_etb_ch_config(ETB_CH20, &tEtbConfig);			//初始化ETB，DMA ETB CHANNEL > ETB_CH19
+	iRet = csi_etcb_ch_config(ETB_CH20, &tEtbConfig);			//初始化ETB，DMA ETB CHANNEL > ETB_CH19
 	if(iRet < CSI_OK)
 		return CSI_ERROR;
 	
@@ -238,7 +239,7 @@ int uart_send_dma_demo(void)
 	return iRet;
 }
 /** \brief uart dma receive data
- *  \brief 串口通过DMA接收数据，使用时请确认ETCB已初始化(使能)，ETCB初始化调用csi_etb_init()函数
+ *  \brief 串口通过DMA接收数据，使用时请确认ETCB已初始化(使能)，ETCB初始化调用csi_etcb_init()函数
  * 
  *  \param[in] none
  *  \return error code
@@ -248,7 +249,7 @@ int uart_receive_dma_demo(void)
 	int iRet = 0;
 	csi_uart_config_t tUartConfig;								//UART1 参数配置结构体
 	csi_dma_ch_config_t tDmaConfig;								//DMA 通道配置结构体			
-	csi_etb_config_t 	tEtbConfig;								//ETCB 配置结构体
+	csi_etcb_config_t 	tEtbConfig;								//ETCB 配置结构体
 	
 #if (USE_GUI == 0)		
 	csi_gpio_set_mux(GPIOA,PA4, PA4_UART1_TX);					//TX	
@@ -275,13 +276,13 @@ int uart_receive_dma_demo(void)
 	csi_dma_ch_init(DMA0, DMA_CH0, &tDmaConfig);				//初始化DMA,选择CH0
 	csi_dma_int_enable(DMA0, DMA_CH0,DMA_INTSRC_TCIT);			//使用TCIT中断
 	
-	csi_etb_init();												//使能ETB模块
+	csi_etcb_init();												//使能ETB模块
 	//ETB 配置初始化
 	tEtbConfig.eChType 	= ETB_ONE_TRG_ONE_DMA;					//单个源触发单个目标，DMA方式
 	tEtbConfig.eSrcIp 	= ETB_UART1_RXSRC;						//UART RXSRC作为触发源
 	tEtbConfig.eDstIp 	= ETB_DMA0_CH0;							//ETB DMA通道 作为目标实际
 	tEtbConfig.eTrgMode = ETB_HARDWARE_TRG;						//通道触发模式采样硬件触发
-	iRet = csi_etb_ch_config(ETB_CH21, &tEtbConfig);			//初始化ETB，DMA ETB CHANNEL > ETB_CH19
+	iRet = csi_etcb_ch_config(ETB_CH21, &tEtbConfig);			//初始化ETB，DMA ETB CHANNEL > ETB_CH19
 	if(iRet < CSI_OK)
 		return CSI_ERROR;
 	

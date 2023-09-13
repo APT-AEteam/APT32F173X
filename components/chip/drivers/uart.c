@@ -199,12 +199,12 @@ void csi_uart_irqhandler(csp_uart_t *ptUartBase, uint8_t byIdx)
 		case UART_RXBRK_INT_S:
 			csp_uart_clr_isr(ptUartBase, UART_RXBRK_INT_S);							//clear interrupt status 
 			if(g_tUartCtrl[byIdx].err_callback)
-				g_tUartCtrl[byIdx].err_callback(ptUartBase, hwIsr);
+				g_tUartCtrl[byIdx].err_callback(ptUartBase, (uart_isr_e)hwIsr);
 			break;
 		case UART_PARERR_INT_S:
 			csp_uart_clr_isr(ptUartBase, UART_PARERR_INT_S);						//clear interrupt status 
 			if(g_tUartCtrl[byIdx].err_callback)
-				g_tUartCtrl[byIdx].err_callback(ptUartBase, hwIsr);
+				g_tUartCtrl[byIdx].err_callback(ptUartBase, (uart_isr_e)hwIsr);
 			break;
 		default:
 			csp_uart_clr_isr(ptUartBase, 0x806ff);					

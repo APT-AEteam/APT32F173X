@@ -126,7 +126,7 @@ typedef struct {
 /// \brief  bt control handle, not open to users  
 typedef struct 
 {
-    void(*callback)(csp_bt_t *ptBtBase, uint8_t byIsr);
+    void(*callback)(csp_bt_t *ptBtBase, bt_int_e eIsr);
 } csi_bt_ctrl_t;
 
 extern csi_bt_ctrl_t g_tBtCtrl[BT_IDX];

@@ -1,5 +1,5 @@
 /***********************************************************************//** 
- * \file  csp_etb.h
+ * \file  csp_etcb.h
  * \brief ETB description and static inline functions at register level 
  * \copyright Copyright (C) 2015-2020 @ APTCHIP
  * <table>
@@ -26,11 +26,11 @@
  *      5)ETB enable
  *      6)softtrigger if need
  * 3. Configure source trigger generator IP2, and enable the IP2
- * For example, etb channel3 for timer trigger adc working, and etb channel4 for adc trigger dma to carry data
+ * For example, etcb channel3 for timer trigger adc working, and etb channel4 for adc trigger dma to carry data
  * 1)configure adc and dma IP first and waiting trigger signal.
- * 2)configure etb channel3 and channel4 include source,dest,mode select.
- * 3)enable etb channel3 and channel4
- * 4)enable etb
+ * 2)configure etcb channel3 and channel4 include source,dest,mode select.
+ * 3)enable etcb channel3 and channel4
+ * 4)enable etcb
  * 5)configure timer and enable
  * Note:The GPIO can be configured as level or edge mode. when using GPIO trigger, the GPIO must be level mode.
  */
@@ -42,19 +42,19 @@ extern "C" {
 typedef struct {
     __IOM uint32_t CFG0;
     __IOM uint32_t CFG1;
-} wj_etb_ch1_2_regs_t;
+} wj_etcb_ch1_2_regs_t;
 
-/// \struct csp_etb_t
+/// \struct csp_etcb_t
 /// \brief ETB Reg Description     
 typedef struct {
     __IOM uint32_t ETB_EN;          //0x00 (R/W) ETB enable Register                   
     __IOM uint32_t SOFTTRIG;        //0x04 (R/W) Software trigger Configure Register   
     __IOM uint32_t CFG0_CH0;        //0x08 (R/W) ETB Channel0 Configure0 Register       
     __IOM uint32_t CFG1_CH0;        //0x0c (R/W) ETB Channel0 Configure1 Register      
-    wj_etb_ch1_2_regs_t CH1_2[2];   //0x10 ~ 0x14 (R/W) ETB Channel1 Configure0~1 Register; 0x18 ~ 0x1C (R/W) ETB Channel2 Configure0~1 Register 
+    wj_etcb_ch1_2_regs_t CH1_2[2];   //0x10 ~ 0x14 (R/W) ETB Channel1 Configure0~1 Register; 0x18 ~ 0x1C (R/W) ETB Channel2 Configure0~1 Register 
     uint32_t RESERVED0[4];
     __IOM uint32_t CFG_CHX[29];     // 0x30~0xa0 (R/W) ETB CH_3~CH_31 Configure Register */
-} csp_etb_t;
+} csp_etcb_t;
 
 /******************************************************************************
 * XXX : ETB trigger mode and channel enable
@@ -65,7 +65,7 @@ typedef enum
 {
 	ETB_CH_DIS			= 0,	
 	ETB_CH_EN	
-}etb_ch_en_e;
+}etcb_ch_en_e;
 
 #define	ETB_CH_TRG_MODE_POS	(1U)		//CH(0->7) trigger mode select
 #define	ETB_CH_TRG_MODE_MSK	(0x01ul << ETB_CH_TRG_MODE_POS)
@@ -73,7 +73,7 @@ typedef enum
 {
 	ETB_CH_TRG_HARD	= 0,				//Hardware trigger	
 	ETB_CH_TRG_SOFT						//Software trigger	
-}etb_ch_trg_mode_e;
+}etcb_ch_trg_mode_e;
 
 /******************************************************************************
 * ENABLE : ETB Enable Register
@@ -84,7 +84,7 @@ typedef enum
 {
 	ETB_DISABLE			= 0,	
 	ETB_ENABLE	
-}etb_enable_e;
+}etcb_enable_e;
 
 /******************************************************************************
 *SWTRG : ETB Software Trigger Register
@@ -103,7 +103,7 @@ typedef enum
 {
 	ETB_CH0_SRC0_DIS	= 0,	
 	ETB_CH0_SRC0_EN	
-}etb_ch0_src0_en_e;
+}etcb_ch0_src0_en_e;
 #define	ETB_CH0_TRG_SRC0_POS	(1U)	//CH0 trigger source0 select
 #define	ETB_CH0_TRG_SRC0_MSK	(0xFFul << ETB_CH0_TRG_SRC0_POS)
 #define	ETB_CH0_TRG_SRC0(val)	(((val) & 0xFFul) << ETB_CH0_TRG_SRC0_POS)
@@ -115,7 +115,7 @@ typedef enum
 {
 	ETB_CH0_SRC1_DIS	= 0,	
 	ETB_CH0_SRC1_EN	
-}etb_ch0_src1_en_e;
+}etcb_ch0_src1_en_e;
 #define	ETB_CH0_TRG_SRC1_POS	(11U)	//CH0 trigger source1 select
 #define	ETB_CH0_TRG_SRC1_MSK	(0xFFul << ETB_CH0_TRG_SRC1_POS)
 #define	ETB_CH0_TRG_SRC1(val)	(((val) & 0xFFul) << ETB_CH0_TRG_SRC1_POS)
@@ -127,7 +127,7 @@ typedef enum
 {
 	ETB_CH0_SRC2_DIS	= 0,	
 	ETB_CH0_SRC2_EN	
-}etb_ch0_src2_en_e;
+}etcb_ch0_src2_en_e;
 #define	ETB_CH0_TRG_SRC2_POS	(21U)	//CH0 trigger source2 select
 #define	ETB_CH0_TRG_SRC2_MSK	(0xFFul << ETB_CH0_TRG_SRC2_POS)
 #define	ETB_CH0_TRG_SRC2(val)	(((val) & 0xFFul) << ETB_CH0_TRG_SRC2_POS)
@@ -141,7 +141,7 @@ typedef enum
 //{
 //	ETB_CH0_DIS			= 0,	
 //	ETB_CH0_EN	
-//}etb_ch0_en_e;
+//}etcb_ch0_en_e;
 //
 //#define	ETB_CH0_TRG_MODE_POS	(1U)	//CH0 trigger mode select
 //#define	ETB_CH0_TRG_MODE_MSK	(0x01ul << ETB_CH0_TRG_MODE_POS)
@@ -149,7 +149,7 @@ typedef enum
 //{
 //	ETB_CH0_TRG_HARD	= 0,			//Hardware trigger	
 //	ETB_CH0_TRG_SOFT					//Software trigger	
-//}etb_ch0_trg_mode_e;
+//}etcb_ch0_trg_mode_e;
 
 #define	ETB_CH0_TRG_DST_POS		(25U)	//CH0 trigger destination select
 #define	ETB_CH0_TRG_DST_MSK		(0x7Ful << ETB_CH0_TRG_DST_POS)
@@ -165,7 +165,7 @@ typedef enum
 {
 	ETB_CH1_2_DST0_DIS	= 0,	
 	ETB_CH1_2_DST0_EN	
-}etb_chx_dst0_en_e;
+}etcb_chx_dst0_en_e;
 #define	ETB_CH1_2_TRG_DST0_POS	(1U)	//CH1_2trigger destination0 select
 #define	ETB_CH1_2_TRG_DST0_MSK	(0xFFul << ETB_CH1_2_TRG_DST0_POS)
 #define	ETB_CH1_2_TRG_DST0(val)	(((val) & 0xFFul) << ETB_CH1_2_TRG_DST0_POS)
@@ -177,7 +177,7 @@ typedef enum
 {
 	ETB_CH1_2_DST1_DIS	= 0,	
 	ETB_CH1_2_DST1_EN	
-}etb_chx_dst1_en_e;
+}etcb_chx_dst1_en_e;
 #define	ETB_CH1_2_TRG_DST1_POS	(11U)	//CH1_2 trigger destination1 select
 #define	ETB_CH1_2_TRG_DST1_MSK	(0xFFul << ETB_CH1_2_TRG_DST1_POS)
 #define	ETB_CH1_2_TRG_DST1(val)	(((val) & 0xFFul) << ETB_CH1_2_TRG_DST1_POS)
@@ -189,7 +189,7 @@ typedef enum
 {
 	ETB_CH1_2_DST2_DIS	= 0,	
 	ETB_CH1_2_DST2_EN	
-}etb_chx_dst2_en_e;
+}etcb_chx_dst2_en_e;
 #define	ETB_CH1_2_TRG_DST2_POS	(21U)	//CH1_2 trigger destination2 select
 #define	ETB_CH1_2_TRG_DST2_MSK	(0xFFul << ETB_CH1_2_TRG_DST2_POS)
 #define	ETB_CH1_2_TRG_DST2(val)	(((val) & 0xFFul) << ETB_CH1_2_TRG_DST2_POS)
@@ -203,7 +203,7 @@ typedef enum
 //{
 //	ETB_CH1_2_DIS		= 0,	
 //	ETB_CH1_2_EN	
-//}etb_ch1_2_en_e;
+//}etcb_ch1_2_en_e;
 //
 //#define	ETB_CH1_2_TRG_MODE_POS	(1U)	//CH1_2 trigger mode select
 //#define	ETB_CH1_2_TRG_MODE_MSK	(0x01ul << ETB_CH1_2_TRG_MODE_POS)
@@ -211,7 +211,7 @@ typedef enum
 //{
 //	ETB_CH1_2_TRG_HARD	= 0,			//Hardware trigger	
 //	ETB_CH1_2_TRG_SOFT					//Software trigger	
-//}etb_ch1_2_trg_mode_e;
+//}etcb_ch1_2_trg_mode_e;
 
 #define	ETB_CH1_2_TRG_SRC_POS	(25U)	//CH1_2 trigger source select
 #define	ETB_CH1_2_TRG_SRC_MSK	(0x7Ful << ETB_CH1_2_TRG_SRC_POS)
@@ -238,47 +238,47 @@ typedef enum
 /******************************************************************************
 ********************** ETCB inline Functions Declaration **********************
 ******************************************************************************/
-static inline void csp_etb_enable(csp_etb_t *ptEtbBase)				
+static inline void csp_etcb_enable(csp_etcb_t *ptEtbBase)				
 { 
 	ptEtbBase->ETB_EN |= ETB_ENABLE_MSK;	
 }
-static inline void csp_etb_disable(csp_etb_t *ptEtbBase)		
+static inline void csp_etcb_disable(csp_etcb_t *ptEtbBase)		
 {
 	ptEtbBase->ETB_EN &= ~ETB_ENABLE_MSK;	
 }
 
 //chx enable: x > 2; channel num > 2
-static inline void csp_etb_chx_enable(csp_etb_t *ptEtbBase, uint8_t byChNum)	
+static inline void csp_etcb_chx_enable(csp_etcb_t *ptEtbBase, uint8_t byChNum)	
 {
 	ptEtbBase->CFG_CHX[byChNum-3] |= ETB_CH_EN_MSK;
 }
 
 //dma channel: 20~31
-static inline void csp_etb_dma_enable(csp_etb_t *ptEtbBase, uint8_t byChNum)
+static inline void csp_etcb_dma_enable(csp_etcb_t *ptEtbBase, uint8_t byChNum)
 {
 	ptEtbBase->CFG_CHX[byChNum-3] |= ETB_CHX_DMA_EN_MSK;	
 }
-static inline void csp_etb_dma_disable(csp_etb_t *ptEtbBase, uint8_t byChNum)
+static inline void csp_etcb_dma_disable(csp_etcb_t *ptEtbBase, uint8_t byChNum)
 {
 	ptEtbBase->CFG_CHX[byChNum-3] &= ~ETB_CHX_DMA_EN_MSK;	
 }
 
 //trg mode
-static inline void csp_etb_soft_trg_mode(csp_etb_t *ptEtbBase, uint8_t byChNum)
+static inline void csp_etcb_soft_trg_mode(csp_etcb_t *ptEtbBase, uint8_t byChNum)
 {
 	ptEtbBase->CFG_CHX[byChNum-3] |= ETB_CH_TRG_MODE_MSK;
 }
-static inline void csp_etb_hart_trg_mode(csp_etb_t *ptEtbBase, uint8_t byChNum)
+static inline void csp_etcb_hart_trg_mode(csp_etcb_t *ptEtbBase, uint8_t byChNum)
 {
 	ptEtbBase->CFG_CHX[byChNum-3] &= ~ETB_CH_TRG_MODE_MSK;
 }
-static inline void csp_etb_soft_trg_enable(csp_etb_t *ptEtbBase, uint8_t byChNum)	
+static inline void csp_etcb_sw_trg(csp_etcb_t *ptEtbBase, uint8_t byChNum)	
 {
 	ptEtbBase->SOFTTRIG |= ETB_SWTRG_CH_SET(byChNum);
 }
 
 //one trg one
-static inline void csp_etb_set_one_trg_one(csp_etb_t *ptEtbBase, uint8_t byChNum, uint8_t bySrc, uint8_t byDst, etb_ch_trg_mode_e eTrgMode)
+static inline void csp_etcb_set_one_trg_one(csp_etcb_t *ptEtbBase, uint8_t byChNum, uint8_t bySrc, uint8_t byDst, etcb_ch_trg_mode_e eTrgMode)
 {
 	ptEtbBase->CFG_CHX[byChNum-3] = (eTrgMode << ETB_CH_TRG_MODE_POS) | ETB_CHX_TRG_SRC(bySrc) | ETB_CHX_TRG_DST(byDst);
 }

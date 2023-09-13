@@ -13,6 +13,7 @@
 #include <string.h>
 #include <drv/sio.h>
 #include <drv/pin.h>
+#include <drv/etb.h>
 #include <drv/uart.h>
 #include <drv/tick.h>
 #include <iostring.h>
@@ -165,7 +166,7 @@ int sio_led_rgb_send_dma_demo(void)
 	uint16_t hwDmaSendData[24];
 	
 	csi_dma_ch_config_t tDmaConfig;				
-	csi_etb_config_t 	tEtbConfig;	
+	csi_etcb_config_t 	tEtbConfig;	
 	csi_sio_tx_config_t tSioTxCfg;
 
 #if !defined(USE_GUI)									//用户未选择图形化编程		
@@ -186,14 +187,14 @@ int sio_led_rgb_send_dma_demo(void)
 	tDmaConfig.eReqMode	= DMA_REQ_HARDWARE;			//DMA请求模式，硬件触发
 //	tDmaConfig.wInt			= DMA_INTSRC_TCIT;			//使用TCIT中断
 	
-	//etb config
+	//etcb config
 	tEtbConfig.eChType = ETB_ONE_TRG_ONE_DMA;			//单个源触发单个目标，DMA方式
 	tEtbConfig.eSrcIp 	= ETB_SIO0_TXSRC;				//SIO TXSRC作为触发源
 	tEtbConfig.eDstIp 	= ETB_DMA0_CH1;					//ETB DMA通道 作为目标实际
 	tEtbConfig.eTrgMode = ETB_HARDWARE_TRG;			//通道触发模式采样硬件触发
 	
-	csi_etb_init();										//使能ETB模块
-	ret = csi_etb_ch_config(ETB_CH21, &tEtbConfig);		//初始化ETB
+	csi_etcb_init();										//使能ETB模块
+	ret = csi_etcb_ch_config(ETB_CH21, &tEtbConfig);		//初始化ETB
 	if(ret < CSI_OK)
 		return CSI_ERROR;
 	ret = csi_dma_ch_init(DMA0, DMA_CH1, &tDmaConfig);	//初始化DMA
@@ -251,7 +252,7 @@ int sio_led_rgb_recv_dma_demo(void)
 	int ret = 0;
 	uint8_t byLedRxBuf[24];
 	csi_dma_ch_config_t tDmaConfig;				
-	csi_etb_config_t 	tEtbConfig;	
+	csi_etcb_config_t 	tEtbConfig;	
 	csi_sio_rx_config_t tSioRxCfg;
 
 #if !defined(USE_GUI)									//用户未选择图形化编程			
@@ -270,14 +271,14 @@ int sio_led_rgb_recv_dma_demo(void)
 	tDmaConfig.eReqMode	= DMA_REQ_HARDWARE;			//DMA请求模式，硬件请求
 //	tDmaConfig.wInt			= DMA_INTSRC_TCIT;			//使用TCIT中断
 	
-	//etb config
+	//etcb config
 	tEtbConfig.eChType = ETB_ONE_TRG_ONE_DMA;			//单个源触发单个目标，DMA方式
 	tEtbConfig.eSrcIp 	= ETB_SIO0_RXSRC;				//SIO RXSRC作为触发源
 	tEtbConfig.eDstIp 	= ETB_DMA0_CH2;					//ETB DMA通道 作为目标实际
 	tEtbConfig.eTrgMode = ETB_HARDWARE_TRG;			//通道触发模式采样硬件触发
 	
-	csi_etb_init();										//使能ETB模块
-	ret = csi_etb_ch_config(ETB_CH20, &tEtbConfig);		//初始化ETB，DMA ETB CHANNEL > ETB_CH19_ID
+	csi_etcb_init();										//使能ETB模块
+	ret = csi_etcb_ch_config(ETB_CH20, &tEtbConfig);		//初始化ETB，DMA ETB CHANNEL > ETB_CH19_ID
 	if(ret < CSI_OK)
 		return CSI_ERROR;
 	ret = csi_dma_ch_init(DMA0, DMA_CH2, &tDmaConfig);	//初始化DMA

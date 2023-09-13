@@ -242,13 +242,13 @@ int spi_etcb_dma_send_demo(void)
 	csp_dma_t *ptDmaChBase = (csp_dma_t *)DMA_REG_BASE(DMA0, 0);
 	
 	//ETCB para config
-	csi_etb_config_t 	tEtbConfig;					//ETB 参数配置结构体
+	csi_etcb_config_t 	tEtbConfig;					//ETB 参数配置结构体
 	tEtbConfig.eChType  = ETB_ONE_TRG_ONE_DMA;		//单个源触发单个目标，DMA方式
 	tEtbConfig.eSrcIp 	 = ETB_SPI0_TXSRC;			//SPI0 TXSRC作为触发源
 	tEtbConfig.eDstIp 	 = ETB_DMA0_CH0;			//ETB DMA0通道0作为目标实际
 	tEtbConfig.eTrgMode = ETB_HARDWARE_TRG;		//通道触发模式采样硬件触发
-	csi_etb_init();									//使能ETB模块
-	csi_etb_ch_config(ETB_CH20, &tEtbConfig);		//初始化ETB，DMA ETB CHANNEL > ETB_CH19_ID
+	csi_etcb_init();									//使能ETB模块
+	csi_etcb_ch_config(ETB_CH20, &tEtbConfig);		//初始化ETB，DMA ETB CHANNEL > ETB_CH19_ID
 
 #if !defined(USE_GUI)	
 	//SPI端口配置	
@@ -330,23 +330,23 @@ int spi_etcb_dma_send_receive_demo(void)
 	csp_dma_t *ptDmaChBaseCh1 = (csp_dma_t *)DMA_REG_BASE(DMA0, 1);
 	
 	//send etcb para config
-	csi_etb_config_t 	tEtbConfigSend;						//ETB 参数配置结构体
+	csi_etcb_config_t 	tEtbConfigSend;						//ETB 参数配置结构体
 	tEtbConfigSend.eChType = ETB_ONE_TRG_ONE_DMA;			//单个源触发单个目标，DMA方式
 	tEtbConfigSend.eSrcIp 	= ETB_SPI0_TXSRC;				//SPI0 TXSRC作为触发源
 	tEtbConfigSend.eDstIp 	= ETB_DMA0_CH0;					//ETB DMA0通道0作为目标实际
 	tEtbConfigSend.eTrgMode = ETB_HARDWARE_TRG;			//通道触发模式采样软件触发
 	
 	//receive etcb para config
-	csi_etb_config_t 	tEtbConfigRecv;						//ETB 参数配置结构体
+	csi_etcb_config_t 	tEtbConfigRecv;						//ETB 参数配置结构体
 	tEtbConfigRecv.eChType = ETB_ONE_TRG_ONE_DMA;			//单个源触发单个目标，DMA方式
 	tEtbConfigRecv.eSrcIp 	= ETB_SPI0_RXSRC;				//SPI0 RXSRC作为触发源
 	tEtbConfigRecv.eDstIp 	= ETB_DMA0_CH1;					//ETB DMA0通道0作为目标实际
 	tEtbConfigRecv.eTrgMode = ETB_HARDWARE_TRG;			//通道触发模式采样软件触发
 	
 	//ETCB init
-	csi_etb_init();									    	//使能ETB模块
-	csi_etb_ch_config(ETB_CH20, &tEtbConfigSend);			//初始化ETB，DMA ETB CHANNEL 大于 ETB_CH19_ID
-	csi_etb_ch_config(ETB_CH21, &tEtbConfigRecv);			//初始化ETB，DMA ETB CHANNEL 大于 ETB_CH19_ID
+	csi_etcb_init();									    	//使能ETB模块
+	csi_etcb_ch_config(ETB_CH20, &tEtbConfigSend);			//初始化ETB，DMA ETB CHANNEL 大于 ETB_CH19_ID
+	csi_etcb_ch_config(ETB_CH21, &tEtbConfigRecv);			//初始化ETB，DMA ETB CHANNEL 大于 ETB_CH19_ID
 	
 	//SPI端口配置		
 //	csi_pin_set_mux(SPI_NSS_PIN, PIN_OUTPUT);                       //gpio_port as output

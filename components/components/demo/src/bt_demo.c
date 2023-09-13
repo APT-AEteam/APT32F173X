@@ -34,18 +34,18 @@
 ATTRIBUTE_ISR  void bt1_int_handler(void)
 {
 	//用户直接在中断服务接口函数里处理中断，建议客户使用此模式
-	volatile uint32_t wMisr = csp_bt_get_isr(BT1);
+	volatile uint32_t byIsr = csp_bt_get_isr(BT1);
 	
-	if(wMisr & BT_PEND_INT)					//PEND interrupt
+	if(byIsr & BT_PEND_INT)					//PEND interrupt
 	{
 		csp_bt_clr_isr(BT1, BT_PEND_INT);
 		csi_gpio_toggle(GPIOA, PA6);		//PA6翻转
 	}
-	if(wMisr & BT_CMP_INT)					//CMP interrupt
+	if(byIsr & BT_CMP_INT)					//CMP interrupt
 	{
 		csp_bt_clr_isr(BT1, BT_CMP_INT);	
 	}
-	if(wMisr & BT_EVTRG_INT)				//EVTRG interrupt
+	if(byIsr & BT_EVTRG_INT)				//EVTRG interrupt
 	{
 		csp_bt_clr_isr(BT1, BT_EVTRG_INT);
 	}
@@ -134,18 +134,18 @@ int bt_pwm_demo(void)
 ATTRIBUTE_ISR  void bt0_int_handler(void)
 {
 	//用户直接在中断服务接口函数里处理中断，建议客户使用此模式
-	volatile uint32_t wMisr = csp_bt_get_isr(BT0);
+	volatile uint8_t byIsr = csp_bt_get_isr(BT0);
 	
-	if(wMisr & BT_PEND_INT)					//PEND interrupt
+	if(byIsr & BT_PEND_INT)					//PEND interrupt
 	{
 		csp_bt_clr_isr(BT0, BT_PEND_INT);
 		csi_gpio_toggle(GPIOA, PA6);		//PA6翻转
 	}
-	if(wMisr & BT_CMP_INT)					//CMP interrupt
+	if(byIsr & BT_CMP_INT)					//CMP interrupt
 	{
 		csp_bt_clr_isr(BT0, BT_CMP_INT);	
 	}
-	if(wMisr & BT_EVTRG_INT)				//EVTRG interrupt
+	if(byIsr & BT_EVTRG_INT)				//EVTRG interrupt
 	{
 		csp_bt_clr_isr(BT0, BT_EVTRG_INT);
 	}
@@ -164,7 +164,7 @@ int bt_sync_trg_count_demo(void)
 {
 	int iRet = 0;
 	volatile uint8_t ch = 0;
-	csi_etb_config_t tEtbConfig;				            				//ETB 参数配置结构体
+	csi_etcb_config_t tEtbConfig;				            				//ETB 参数配置结构体
 	csi_bt_pwm_config_t tPwmCfg;											//BT PWM输出参数初始化配置结构体
 	csi_bt_time_config_t tTimConfig;										//BT 定时初始化参数结构体	
 
@@ -193,11 +193,10 @@ int bt_sync_trg_count_demo(void)
 	tEtbConfig.eSrcIp   = ETB_EXI_TRGOUT1;  	    //EXI_TRGOUT1作为触发源
 	tEtbConfig.eDstIp   = ETB_BT1_SYNCIN2;   	    //BT1 同步输入作为目标事件
 	tEtbConfig.eTrgMode = ETB_HARDWARE_TRG;
-	csi_etb_init();
-	ch = csi_etb_ch_alloc(tEtbConfig.eChType);	    //自动获取空闲通道号,ch >= 0 获取成功
+	ch = csi_etcb_ch_alloc(tEtbConfig.eChType);	    //自动获取空闲通道号,ch >= 0 获取成功
 	if(ch < 0)
 		return -1;								   	//ch < 0,则获取通道号失败
-	iRet = csi_etb_ch_config(ch, &tEtbConfig);
+	iRet = csi_etcb_ch_i(ch, &tEtbConfig);
 	
 	//BT0 PWM初始化
 	tPwmCfg.eIdleLevel = BT_PWM_IDLE_HIGH;			//PWM 输出空闲电平
@@ -227,7 +226,7 @@ int bt_trg_out_demo(void)
 {
 	int iRet = 0;
 	volatile uint8_t ch = 0;
-	csi_etb_config_t tEtbConfig;				            //ETB 参数配置结构体		
+	csi_etcb_config_t tEtbConfig;				            //ETB 参数配置结构体		
 	csi_bt_pwm_config_t tPwmCfg;							//BT PWM输出参数初始化配置结构体
 	csi_bt_time_config_t tTimConfig;						//BT 定时初始化参数结构体	
 	
@@ -257,11 +256,11 @@ int bt_trg_out_demo(void)
 	tEtbConfig.eSrcIp   = ETB_BT0_TRGOUT;   				//BT0_TRGOUT作为触发源
 	tEtbConfig.eDstIp   = ETB_BT1_SYNCIN0;  				//BT1 同步输入作为目标事件
 	tEtbConfig.eTrgMode = ETB_HARDWARE_TRG; 				//硬件触发模式
-	csi_etb_init();
-	ch = csi_etb_ch_alloc(tEtbConfig.eChType);	   			//自动获取空闲通道号,ch >= 0 获取成功
+	csi_etcb_init();
+	ch = csi_etcb_ch_alloc(tEtbConfig.eChType);	   			//自动获取空闲通道号,ch >= 0 获取成功
 	if(ch < 0)
 		return -1;								    		//ch < 0,则获取通道号失败
-	iRet = csi_etb_ch_config(ch, &tEtbConfig);
+	iRet = csi_etcb_ch_config(ch, &tEtbConfig);
 	
 	csi_bt_start(BT0);										//启动BT0					
 	
