@@ -77,7 +77,6 @@ typedef enum{
 	BT_TRG_SYCAREARM	                //1x：SYNCIN[1]时，自动AREARM			
 }csi_bt_arearm_e;					    //BT  sync arearm mode 
 
-
 /**
  * \enum     csi_bt_trgsrc_e
  * \brief    BT event trigger source
@@ -239,22 +238,21 @@ bool csi_bt_is_running(csp_bt_t *ptBtBase);
 csi_error_t csi_bt_pwm_init(csp_bt_t *ptBtBase, csi_bt_pwm_config_t *ptBtPwmCfg);
 
 /** 
-  \brief  	   updata bt para and cmp reg value
+  \brief  	   updata bt cmp reg value
   \param[in]   ptBtBase		pointer of bt register structure
-  \param[in]   hwPrdr		bt prdr reg value
   \param[in]   hwCmp  		bt cmp reg value
   \return      none
  */
-void csi_bt_prdr_cmp_updata(csp_bt_t *ptBtBase, uint16_t hwPrdr, uint16_t hwCmp);
+void csi_bt_cmp_update(csp_bt_t *ptBtBase, uint16_t hwCmp);
 
 /** 
-  \brief  	   updata bt pwm duty cycle
+  \brief  	   updata bt para and cmp reg value
   \param[in]   ptBtBase		pointer of bt register structure
-  \param[in]   byDutyCycle	duty cycle(0 -> 100)
-  \return 	   none
+  \param[in]   hwPrdr		bt prdr reg value
+  \return      none
  */
-void csi_bt_pwm_duty_cycle_updata(csp_bt_t *ptBtBase, uint8_t byDutyCycle); 
-
+void csi_bt_prdr_update(csp_bt_t *ptBtBase, uint16_t hwPrdr);
+ 
 /** 
   \brief  	   updata bt pwm freq and duty cycle
   \param[in]   ptBtBase		pointer of bt register structure
@@ -262,7 +260,7 @@ void csi_bt_pwm_duty_cycle_updata(csp_bt_t *ptBtBase, uint8_t byDutyCycle);
   \param[in]   byDutyCycle	pwm duty cycle(0 -> 100)
   \return 	   none
  */
-void csi_bt_pwm_updata(csp_bt_t *ptBtBase, uint32_t wfreq, uint8_t byDutyCycle); 
+void csi_bt_pwm_update(csp_bt_t *ptBtBase, uint32_t wfreq, uint8_t byDutyCycle); 
 
 /** 
   \brief 	   bt sync evtrg config  
@@ -325,7 +323,7 @@ void csi_bt_evtrg_disable(csp_bt_t *ptBtBase);
   \param[in] ptBtBase:pointer of bt register structure
   \return error code \ref csi_error_t
  */
-void csi_bt_soft_evtrg(csp_bt_t *ptBtBase);
+void csi_bt_sw_evtrg(csp_bt_t *ptBtBase);
 
 /** \brief     start bt by sync event
   \param[in]   ptBtBase		pointer of bt register structure

@@ -21,7 +21,7 @@ csi_bt_ctrl_t g_tBtCtrl[BT_IDX];
 /** \brief get bt number 
  * 
  *  \param[in] ptBtBase: pointer of bt register structure
- *  \return bt number 0/1
+ *  \return bt number 0/1/2/3
  */ 
 static uint8_t apt_get_bt_idx(csp_bt_t *ptBtBase)
 {
@@ -85,7 +85,7 @@ csi_error_t csi_bt_timer_init(csp_bt_t *ptBtBase, csi_bt_time_config_t *ptBtTimC
 	uint32_t wClkDiv;
 	
 	csi_clk_enable((uint32_t *)ptBtBase);			//bt clk enable
-	csp_bt_soft_rst(ptBtBase);						//reset bt
+	csp_bt_sw_rst(ptBtBase);						//reset bt
 	
 	wClkDiv = (csi_get_pclk_freq() / 100000 * ptBtTimCfg->wTimeVal / 600000);			//bt clk div value
 	if(wClkDiv < 0xfffe)	
@@ -211,7 +211,7 @@ csi_error_t csi_bt_pwm_init(csp_bt_t *ptBtBase, csi_bt_pwm_config_t *ptBtPwmCfg)
 		return CSI_ERROR;
 	
 	csi_clk_enable((uint32_t *)ptBtBase);								//bt clk enable
-	csp_bt_soft_rst(ptBtBase);											//reset bt
+	csp_bt_sw_rst(ptBtBase);											//reset bt
 		
 	wClkDiv = (csi_get_pclk_freq() / ptBtPwmCfg->wFreq / 30000);		//bt clk div value
 	if(wClkDiv == 0)
@@ -232,35 +232,36 @@ csi_error_t csi_bt_pwm_init(csp_bt_t *ptBtBase, csi_bt_pwm_config_t *ptBtPwmCfg)
 		
 	return CSI_OK;
 }
-/** \brief  updata bt para and cmp reg value
+/** \brief  updata bt cmp reg value
  * 
  *  \param[in] ptBtBase: pointer of bt register structure
- *  \param[in] hwPrdr: bt padr reg  value
  *  \param[in] hwCmp: bt cmp reg value
  *  \return none
  */
-void csi_bt_prdr_cmp_updata(csp_bt_t *ptBtBase, uint16_t hwPrdr, uint16_t hwCmp) 
+void csi_bt_cmp_update(csp_bt_t *ptBtBase, uint16_t hwCmp) 
 {
-	csp_bt_set_prdr(ptBtBase, hwPrdr);						//bt prdr load value
 	csp_bt_set_cmp(ptBtBase, hwCmp);						//bt cmp load value
 }
-/** \brief  updata bt pwm duty cycle
+/** \brief  updata bt prdr reg value
  * 
  *  \param[in] ptBtBase: pointer of bt register structure
- *  \param[in] byDutyCycle: duty cycle(0 -> 100)
+ *  \param[in] hwPrdr: bt padr reg  value
  *  \return none
  */
-void csi_bt_pwm_duty_cycle_updata(csp_bt_t *ptBtBase, uint8_t byDutyCycle) 
+void csi_bt_prdr_update(csp_bt_t *ptBtBase, uint16_t hwPrdr) 
 {
-	uint32_t wCmpLoad;			
-	
-	if(byDutyCycle >= 100)
-		wCmpLoad = csp_bt_get_prdr(ptBtBase) + 1;
-	else
-		wCmpLoad = csp_bt_get_prdr(ptBtBase) * byDutyCycle / 100;	
-	
-	csp_bt_set_cmp(ptBtBase, (uint16_t)wCmpLoad);
-	//csp_bt_updata_enable(ptBtBase);
+	csp_bt_set_prdr(ptBtBase, hwPrdr);						//bt prdr load value
+}
+
+/** \brief  immediately updata bt parameter
+ * 
+ *  \param[in] ptBtBase: pointer of bt register structure
+ *  \param[in] hwPrdr: bt padr reg  value
+ *  \return none
+ */
+void csi_bt_immediate_update(csp_bt_t *ptBtBase) 
+{
+	csp_bt_immediate_updata(ptBtBase);						//immediately updata
 }
 
 /** \brief  updata bt pwm freq and duty cycle
@@ -270,7 +271,7 @@ void csi_bt_pwm_duty_cycle_updata(csp_bt_t *ptBtBase, uint8_t byDutyCycle)
  *  \param[in] byDutyCycle: pwm duty cycle(0 -> 100)
  *  \return none
  */
-void csi_bt_pwm_updata(csp_bt_t *ptBtBase, uint32_t wFreq, uint8_t byDutyCycle) 
+void csi_bt_pwm_update(csp_bt_t *ptBtBase, uint32_t wFreq, uint8_t byDutyCycle) 
 {
 	uint32_t wCmpLoad;
 	uint32_t wPrdrLoad; 
@@ -304,17 +305,15 @@ csi_error_t csi_bt_set_sync(csp_bt_t *ptBtBase, csi_bt_syncin_e eSyncIn, csi_bt_
 	if(eSyncIn > BT_SYNCIN2)
 		return CSI_ERROR;
 	
-	ptBtBase->CR = ptBtBase->CR & ~(BT_SYNCCMD_MSK | BT_OSTMD_MSK(eSyncIn));
-	ptBtBase->CR |=  ((BT_SYNCMD_EN << BT_SYNCCMD_POS) | (eTrgMode << BT_OSTMD_POS(eSyncIn)));
+	csp_bt_set_sync_mode(ptBtBase, (bt_sync_in_e)eSyncIn, (bt_ostmd_e)eTrgMode);				//mode
+	
 	if((eSyncIn == BT_SYNCIN0) || (eSyncIn == BT_SYNCIN1))
-	{
-		ptBtBase->CR = (ptBtBase->CR & ~BT_AREARM_MSK(eSyncIn)) | (eAutoRearm << BT_AREARM_POS(eSyncIn));
-	}
+		csp_bt_set_arearm(ptBtBase ,(bt_sync_in_e)eSyncIn, (bt_arearm_e)eAutoRearm);	//rearm
 	
 	if(eSyncIn == BT_SYNCIN2)
-		ptBtBase->CR |= BT_EXTCKM_MSK;		//selecet count clk source
+		csp_bt_set_clk(ptBtBase, BT_SYNCTRG);		//sync tirgger as clk source
 	else
-		ptBtBase->CR &= ~BT_EXTCKM_MSK;		//selecet count clk source
+		csp_bt_set_clk(ptBtBase, BT_PCLKDIV);;		//pclk div as clk source
 		
 	return CSI_OK; 
 }
@@ -388,8 +387,8 @@ void csi_bt_evtrg_disable(csp_bt_t *ptBtBase)
  *  \param[in] ptBtBase:pointer of bt register structure
  *  \return error code \ref csi_error_t
  */
-void csi_bt_soft_evtrg(csp_bt_t *ptBtBase)
+void csi_bt_sw_evtrg(csp_bt_t *ptBtBase)
 {
-	csp_bt_soft_evtrg(ptBtBase);
+	csp_bt_sw_evtrg(ptBtBase);
 }
 

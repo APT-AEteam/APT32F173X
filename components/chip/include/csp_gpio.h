@@ -316,6 +316,25 @@ static inline uint16_t csp_gpio_read_output(csp_gpio_t *ptGpioBase)
 }
 
 //exi trigger 
+
+static inline void csp_exi_set_evtrg0_3(csp_syscon_t *ptSysconBase, uint8_t byTrgOut, uint8_t byTrgSrc)
+{
+	ptSysconBase->EVTRG = (ptSysconBase->EVTRG & ~(TRG_SRC0_3_MSK(byTrgOut))) | (byTrgSrc << TRG_SRC0_3_POS(byTrgOut));
+}
+static inline void csp_exi_set_evtrg4_5(csp_syscon_t *ptSysconBase, uint8_t byTrgOut, uint8_t byTrgSrc)
+{
+	ptSysconBase->EVTRG = (ptSysconBase->EVTRG & ~(TRG_SRC4_5_MSK(byTrgOut))) | ((byTrgSrc-16) << TRG_SRC4_5_POS(byTrgOut));
+}
+static inline void csp_exi_clr_evtrg_cnt(csp_syscon_t *ptSysconBase, uint8_t byTrgOut)
+{
+	ptSysconBase->EVTRG |= TRG_EVCNT_CLR_MSK(byTrgOut);								//clear TRG EVxCNT
+}
+
+static inline void csp_exi_set_evtrg_cnt(csp_syscon_t *ptSysconBase, uint8_t byTrgOut, uint8_t byTrgPrd)
+{
+	ptSysconBase->EVPS = (ptSysconBase->EVPS & ~(TRG_EVPRD_MSK(byTrgOut))) | ((byTrgPrd - 1) << TRG_EVPRD_POS(byTrgOut));
+}
+
 static inline void csp_exi_evtrg_enable(csp_syscon_t *ptSysconBase, uint8_t byTrgOut)		
 {
 	ptSysconBase->EVTRG |= ENDIS_ESYNC_MSK(byTrgOut); 

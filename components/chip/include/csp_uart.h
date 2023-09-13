@@ -236,15 +236,15 @@ typedef enum{
 ********************* UARTx inline Functions Declaration **********************
 ******************************************************************************/
 //reset
-static inline void csp_uart_soft_rst(csp_uart_t *ptUartBase)		
+static inline void csp_uart_sw_rst(csp_uart_t *ptUartBase)		
 {
 	ptUartBase->SRR = UART_SWRST_MSK;		
 }
-static inline void csp_uart_rxfifo_rst(csp_uart_t *ptUartBase)
+static inline void csp_uart_rxfifo_sw_rst(csp_uart_t *ptUartBase)
 {
 	ptUartBase->SRR = UART_RXFIFO_RST_MSK;	
 }
-static inline void	csp_uart_txfifo_rst(csp_uart_t *ptUartBase)		
+static inline void	csp_uart_txfifo_sw_rst(csp_uart_t *ptUartBase)		
 { 
 	ptUartBase->SRR = UART_TXFIFO_RST_MSK;	
 }
@@ -370,15 +370,14 @@ static inline void csp_uart_set_fifo(csp_uart_t *ptUartBase, uart_fifo_bit_e eFi
 	ptUartBase->CTRL = (ptUartBase->CTRL & ~(UART_RXFIFO_MSK | UART_FIFO_MSK)) | (eFiBit << UART_RXFIFO_POS) | (bEnable << UART_FIFO_POS);
 }		
 	
-
-static inline void csp_uart_set_rxdma(csp_uart_t *ptUartBase,  uart_rdma_md_e eRxDmaMode, bool bEnable)
+static inline void csp_uart_set_rxdma(csp_uart_t *ptUartBase,  uart_rdma_md_e eRxDmaMode)
 {
-	ptUartBase->DMACR = (ptUartBase->DMACR & ~(UART_RDMA_EN_MSK | UART_RDMA_MD_MSK)) | (bEnable << UART_RDMA_EN_POS) | (eRxDmaMode << UART_RDMA_MD_POS);
+	ptUartBase->DMACR = (ptUartBase->DMACR & ~UART_RDMA_MD_MSK) | (UART_RDMA_EN << UART_RDMA_EN_POS) | (eRxDmaMode << UART_RDMA_MD_POS);
 }
 
-static inline void csp_uart_set_txdma(csp_uart_t *ptUartBase, uart_tdma_md_e eTxDmaMode, bool bEnable)	
+static inline void csp_uart_set_txdma(csp_uart_t *ptUartBase, uart_tdma_md_e eTxDmaMode)	
 {
-	ptUartBase->DMACR = (ptUartBase->DMACR & ~(UART_TDMA_EN_MSK | UART_TDMA_MD_MSK)) | (bEnable << UART_TDMA_EN_POS) | (eTxDmaMode << UART_TDMA_MD_POS);
+	ptUartBase->DMACR = (ptUartBase->DMACR & ~UART_TDMA_MD_MSK) | (UART_TDMA_EN << UART_TDMA_EN_POS) | (eTxDmaMode << UART_TDMA_MD_POS);
 }
 	
 	

@@ -56,7 +56,7 @@ csi_error_t csi_uart_init(csp_uart_t *ptUartBase, csi_uart_config_t *ptUartCfg)
 	uint32_t wBrDiv;
 	
 	csi_clk_enable((uint32_t *)ptUartBase);						//uart peripheral clk enable
-	csp_uart_soft_rst(ptUartBase);								//reset ip
+	csp_uart_sw_rst(ptUartBase);								//reset ip
 	
 	wBrDiv = csi_get_pclk_freq()/ptUartCfg->wBaudRate;	
 	if(wBrDiv < 16)
@@ -136,7 +136,7 @@ void csi_uart_irqhandler(csp_uart_t *ptUartBase, uint8_t byIdx)
 					g_tUartCtrl[byIdx].pbyRxBuf[g_tUartCtrl[byIdx].hwTransNum ++] = csp_uart_get_data(ptUartBase);		//read data
 				else														//receive complete										
 				{
-					csp_uart_rxfifo_rst(ptUartBase);						//reset rxfifo
+					csp_uart_rxfifo_sw_rst(ptUartBase);						//reset rxfifo
 					csp_uart_int_disable(ptUartBase, UART_RXFIFO_INT);		//disable RXFIFO interrupt
 					csp_uart_rto_disable(ptUartBase);						//disable receive timeout 
 					g_tUartCtrl[byIdx].hwTransNum = 0;						
@@ -375,7 +375,7 @@ int32_t csi_uart_receive(csp_uart_t *ptUartBase, void *pData, uint16_t hwSize, u
 	uint8_t *pbyRecv = (uint8_t *)pData;
 	volatile int16_t hwRecvNum = 0;
 	
-	csp_uart_rxfifo_rst(ptUartBase);								//reset rxfifo，clear rxfifo
+	csp_uart_rxfifo_sw_rst(ptUartBase);								//reset rxfifo，clear rxfifo
 	if(NULL == pData) 
 		return -1;
 	
@@ -447,7 +447,7 @@ csi_error_t csi_uart_receive_int(csp_uart_t *ptUartBase, void *pData, uint16_t h
 	g_tUartCtrl[byIdx].hwTransNum = 0;
 	g_tUartCtrl[byIdx].byRxState = UART_STATE_RECV;
 	
-	csp_uart_rxfifo_rst(ptUartBase);										//reset rxfifo
+	csp_uart_rxfifo_sw_rst(ptUartBase);										//reset rxfifo
 	csp_uart_rto_enable(ptUartBase);										//enable rto
 	csp_uart_int_enable(ptUartBase, UART_RXFIFO_INT | UART_RXTO_INT);		//rxfifo and receive timeout int
 	
@@ -457,23 +457,21 @@ csi_error_t csi_uart_receive_int(csp_uart_t *ptUartBase, void *pData, uint16_t h
  * 
  *  \param[in] ptUartBase: pointer of uart register structure
  *  \param[in] eDmaMode: ctx dma mode, \ref csi_uart_dma_md_e
- *  \param[in] bEnable: tx dma enable/diaable
  *  \return  none
  */
-void csi_uart_set_txdma(csp_uart_t *ptUartBase, csi_uart_dma_md_e eDmaMode, bool bEnable)
+void csi_uart_set_txdma(csp_uart_t *ptUartBase, csi_uart_dma_md_e eDmaMode)
 {
-	csp_uart_set_txdma(ptUartBase, (uart_tdma_md_e)eDmaMode ,bEnable);
+	csp_uart_set_txdma(ptUartBase, (uart_tdma_md_e)eDmaMode);
 }
 /** \brief set uart rx dma mode and enable
  * 
  *  \param[in] ptUartBase: pointer of uart register structure
  *  \param[in] eDmaMode: rx dma mode, \ref csi_uart_dma_md_e
- *  \param[in] bEnable: rx dma enable/diaable
  *  \return  none
  */
-void csi_uart_set_rxdma(csp_uart_t *ptUartBase, csi_uart_dma_md_e eDmaMode, bool bEnable)
+void csi_uart_set_rxdma(csp_uart_t *ptUartBase, csi_uart_dma_md_e eDmaMode)
 {
-	csp_uart_set_rxdma(ptUartBase, (uart_rdma_md_e)eDmaMode ,bEnable);
+	csp_uart_set_rxdma(ptUartBase, (uart_rdma_md_e)eDmaMode);
 }
 
 /** \brief send data from uart, this function is dma mode

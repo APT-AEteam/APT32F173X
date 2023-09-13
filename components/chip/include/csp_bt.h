@@ -95,7 +95,7 @@ typedef enum
 typedef enum
 {
 	BT_PCLKDIV		= 0,
-    BT_EXTCKM            
+    BT_SYNCTRG            
 }bt_extckm_e;
 
 #define BT_IDLEST_POS	(6)
@@ -124,9 +124,6 @@ typedef enum
 
 #define BT_OSTMD_POS(n)	(24 + n)
 #define BT_OSTMD_MSK(n)	(0x01ul << BT_OSTMD_POS(n))
-
-//#define BT_OSTMD_POS	(10)
-//#define BT_OSTMD_MSK	(0x03ul << BT_OSTMD_POS)
 typedef enum
 {
 	BT_OSTMD_CONTINUOUS = 0,
@@ -137,16 +134,16 @@ typedef enum
 #define BT_AREARM_MSK(n)	(0x01ul << BT_AREARM_POS(n))
 typedef enum
 {
-	BT_AREARM_DIS 	= 0,
-    BT_AREARM_EN            
+	BT_AREARM_AUTO 	= 1,
+    BT_AREARM_SYNC            
 }bt_arearm_e;
 
 #define BT_SYNCCMD_POS	(15)
 #define BT_SYNCCMD_MSK	(0x01ul << BT_SYNCCMD_POS)
 typedef enum
 {
-	BT_SYNCMD_DIS 	= 0,
-    BT_SYNCMD_EN            
+	BT_SYNCMD0 	= 0,
+    BT_SYNCMD1            
 }bt_synccmd_e;
 
 #define BT_CNTRLD_POS	(16)
@@ -237,7 +234,7 @@ static inline void csp_bt_stop(csp_bt_t *ptBtBase)
 {			
 	ptBtBase->RSSR &= ~BT_CTRL_MSK;
 }
-static inline void csp_bt_soft_rst(csp_bt_t *ptBtBase)		
+static inline void csp_bt_sw_rst(csp_bt_t *ptBtBase)		
 {
 	ptBtBase->RSSR |= (BT_SRR_EN << BT_SRR_POS);	
 }
@@ -245,13 +242,17 @@ static inline void csp_bt_clk_enable(csp_bt_t *ptBtBase)
 {
 	ptBtBase->CR |= BT_CLK_EN;	
 }
-static inline void csp_bt_updata_enable(csp_bt_t *ptBtBase)	
+static inline void csp_bt_immediate_updata(csp_bt_t *ptBtBase)	
 {
 	ptBtBase->CR |= BT_UPDATA_MSK;
 }
 static inline void csp_bt_cnt_mode(csp_bt_t *ptBtBase, bt_opm_e eOpm)
 {
 	ptBtBase->CR = (ptBtBase->CR  & ~BT_OPM_MSK) | (eOpm << BT_OPM_POS);
+}
+static inline void csp_bt_set_clk(csp_bt_t *ptBtBase, bt_extckm_e eExtckm)
+{
+	ptBtBase->CR = (ptBtBase->CR  & ~BT_EXTCKM_MSK) | (eExtckm << BT_EXTCKM_POS);		
 }
 
 //set reg
@@ -321,6 +322,14 @@ static inline void csp_bt_int_disable(csp_bt_t *ptBtBase, bt_int_e eInt)
 }
 
 //sync and event 
+static inline void csp_bt_set_sync_mode(csp_bt_t *ptBtBase, bt_sync_in_e eSyncIn, bt_ostmd_e eOstMd)
+{
+	ptBtBase->CR = (ptBtBase->CR & ~(BT_SYNCCMD_MSK | BT_OSTMD_MSK(eSyncIn))) | (BT_SYNCMD1 << BT_SYNCCMD_POS) | (eOstMd << BT_OSTMD_POS(eSyncIn));
+}
+static inline void csp_bt_set_arearm(csp_bt_t *ptBtBase, bt_sync_in_e eSyncIn, bt_arearm_e eArearm)	
+{ 
+	ptBtBase->CR = (ptBtBase->CR & ~BT_AREARM_MSK(eSyncIn)) | (eArearm << BT_AREARM_POS(eSyncIn));
+}
 static inline void csp_bt_sync_rearm(csp_bt_t *ptBtBase, bt_sync_in_e eSyncIn)	
 { 
 	ptBtBase->CR |= (0x01 << BT_REARM_POS(eSyncIn));
@@ -341,7 +350,7 @@ static inline void csp_bt_evtrg_disable(csp_bt_t *ptBtBase)
 {
 		ptBtBase->EVTRG &= ~BT_TRGOE_MSK;
 }
-static inline void csp_bt_soft_evtrg(csp_bt_t *ptBtBase)			
+static inline void csp_bt_sw_evtrg(csp_bt_t *ptBtBase)			
 {
 	ptBtBase->EVSWF = BT_EVSWF_EN;
 }

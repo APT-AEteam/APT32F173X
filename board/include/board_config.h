@@ -23,7 +23,7 @@ extern "C" {
 // Need to work with gcc_flash_dram16k_iram16k.ld or gcc_flash_dram24k_iram8k.ld
 // Otherwise, the project will report an error
 //#define USE_SRAM1_8K_AS_IRAM    1 
-#define USE_SRAM1_16K_AS_IRAM    1 
+//#define USE_SRAM1_16K_AS_IRAM    1 
 
 
 #ifndef EMOSC_VALUE

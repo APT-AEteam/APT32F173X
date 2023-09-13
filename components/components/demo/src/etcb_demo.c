@@ -23,7 +23,7 @@
 /* Private macro-----------------------------------------------------------*/
 /* Private variablesr------------------------------------------------------*/
 
-/** \brief	bt sync trg start：EXI同步触发BT启动demo
+/** \brief	bt sync trg start：EXI通过ETCB触发BT启动的demo
  * 
  *  \brief	PB1外部下降沿触发BT0启动，对应VIC中断不开启，即不进入PB1的外部中断；若需要进入PB1外部中断，需
  * 			开启对应的VIC中断，调用csi_gpio_vic_irq_enable接口函数
@@ -31,7 +31,7 @@
  *  \param[in] none
  *  \return error code
  */
-int bt_sync_trg_start_demo(void)
+int exi_etcb_bt_start_demo(void)
 {
 	int iRet = 0;
 	volatile uint8_t ch = 0;
@@ -82,7 +82,7 @@ int bt_sync_trg_start_demo(void)
  *  \param[in] none
  *  \return error code
 // */
-int bt_sync_trg_stop_demo(void)
+int exi_etcb_bt_stop_demo(void)
 {
 	int iRet = 0;
 	volatile uint8_t ch = 0;

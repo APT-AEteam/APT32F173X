@@ -147,10 +147,6 @@ __attribute__((weak)) void system_init(void)
     CLIC->CLICINT[SOFTWARE_IRQn].ATTR = 0x3;
 	csi_vic_enable_irq(SOFTWARE_IRQn);
 	
-#ifdef	CONFIG_IRQ_LOOKUP		//Table lookup method for interrupt processing 
-	irq_vectors_init();
-#endif
-	
 	csi_iwdt_close();
 	csi_sysclk_config(g_tClkConfig);  //sysclk config	
 	
