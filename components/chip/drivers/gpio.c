@@ -738,7 +738,7 @@ void csi_exi_evtrg_disable(csi_exi_trgout_e eTrgOut)
  *  \param[in] eTrgOut: output event select \ref csi_exi_trgout_e
  *  \return none
  */ 
-void csi_exi_soft_evtrg(csi_exi_trgout_e eTrgOut)
+void csi_exi_sw_evtrg(csi_exi_trgout_e eTrgOut)
 {
-	csp_exi_soft_evtrg(SYSCON, eTrgOut);
+	csp_exi_sw_evtrg(SYSCON, eTrgOut);
 }

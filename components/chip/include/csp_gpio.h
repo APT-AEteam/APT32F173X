@@ -343,7 +343,7 @@ static inline void csp_exi_evtrg_disable(csp_syscon_t *ptSysconBase, uint8_t byT
 {
 	ptSysconBase->EVTRG &= ~ENDIS_ESYNC_MSK(byTrgOut); 
 }
-static inline void csp_exi_soft_evtrg(csp_syscon_t *ptSysconBase, uint8_t byTrgOut)		
+static inline void csp_exi_sw_evtrg(csp_syscon_t *ptSysconBase, uint8_t byTrgOut)		
 {
 	ptSysconBase->EVSWF = (0x01ul << byTrgOut);
 }
