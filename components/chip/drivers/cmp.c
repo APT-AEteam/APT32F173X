@@ -127,7 +127,7 @@ csi_error_t csi_cmp_set_wfcr(csp_cmp_t *ptCmpBase,csi_cmp_wfcr_config_t *ptCmpWf
  */
 void csi_cmp_set_evtrg(csp_cmp_t *ptCmpBase,csi_cmp_trgsrc_e eTrgSrc)
 {
-	csp_cmp_evtrg(ptCmpBase,(csp_cmp_trgsrc_e)eTrgSrc);
+	csp_cmp_evtrg(ptCmpBase,(cmp_trgsrc_e)eTrgSrc);
 }
 
 /** \brief cmp evtrg syncoe enable
@@ -177,7 +177,7 @@ uint8_t csi_cmp_get_out(csp_cmp_t *ptCmpBase,uint8_t byOutCh)
  */
 void csi_cmp_clr_isr(csp_cmp_t *ptCmpBase,csi_cmp_intsrc_e eIntMode)
 {
-	csp_cmp_clr_isr(ptCmpBase,(csp_cmp_int_e)eIntMode);
+	csp_cmp_clr_isr(ptCmpBase,(cmp_int_e)eIntMode);
 }
 
 /** \brief CMP interrupt enable control
@@ -188,7 +188,7 @@ void csi_cmp_clr_isr(csp_cmp_t *ptCmpBase,csi_cmp_intsrc_e eIntMode)
  */ 
 void csi_cmp_int_enable(csp_cmp_t *ptCmpBase, csi_cmp_intsrc_e eIntSrc)
 {
-	csp_cmp_int_enable(ptCmpBase, (csp_cmp_int_e)eIntSrc);
+	csp_cmp_int_enable(ptCmpBase, (cmp_int_e)eIntSrc);
 }
 
 /** \brief CMP interrupt disable control
@@ -199,7 +199,7 @@ void csi_cmp_int_enable(csp_cmp_t *ptCmpBase, csi_cmp_intsrc_e eIntSrc)
  */ 
 void csi_cmp_int_disable(csp_cmp_t *ptCmpBase, csi_cmp_intsrc_e eIntSrc)
 {
-	csp_cmp_int_disable(ptCmpBase, (csp_cmp_int_e)eIntSrc);
+	csp_cmp_int_disable(ptCmpBase, (cmp_int_e)eIntSrc);
 }
 
 

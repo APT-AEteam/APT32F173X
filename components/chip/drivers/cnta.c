@@ -11,13 +11,7 @@
  * </table>
  * *********************************************************************
 */
-//#include <sys_clk.h>
-//#include <drv/cnta.h>
-//#include <drv/tick.h>
-
 #include "drv/cnta.h"
-
-
 
 csi_cnta_ctrl_t g_tCntaCtrl[CNTA_IDX];
 
@@ -42,7 +36,7 @@ csi_error_t csi_cnta_timer_init(csp_cnta_t *ptCntaBase,csi_cnta_timer_config_t *
 	
 	csi_clk_enable((uint32_t *)ptCntaBase);		//cnta clk enable
     csp_cnta_sw_rst(ptCntaBase);				//default init valu
-	csp_cnta_set_ckdiv(ptCntaBase,(csp_cnta_ckdiv_e)ptContaTimerCfg->eClkDiv,(csp_cnta_runmode_e)ptContaTimerCfg->eRunMode);	//cnta clk = pclk/eClkDiv
+	csp_cnta_set_ckdiv(ptCntaBase,(cnta_ckdiv_e)ptContaTimerCfg->eClkDiv,(cnta_runmode_e)ptContaTimerCfg->eRunMode);	//cnta clk = pclk/eClkDiv
 	
 	csp_cnta_set_datal(ptCntaBase, wTempLoad);				//set CADATAL data
 //    csp_cnta_set_datah(ptCntaBase, wTempLoad);			    //set CADATAH data
@@ -82,16 +76,6 @@ void csi_cnta_set_datah_value(csp_cnta_t *ptCntaBase, uint16_t hwData)
 	csp_cnta_set_datah(ptCntaBase, hwData);
 }
 
-/** \brief get cnta datah load value
- * 
- *  \param[in] ptCntaBase: pointer of cnta register structure
- *  \return cnta datah load value
- */ 
-uint32_t csi_cnta_get_datah_value(csp_cnta_t *ptCntaBase)
-{	
-	return csp_cnta_get_datah(ptCntaBase);
-}
-
 /** \brief set cnta datal load value
  * 
  *  \param[in] ptCntaBase: pointer of cnta register structure
@@ -100,16 +84,6 @@ uint32_t csi_cnta_get_datah_value(csp_cnta_t *ptCntaBase)
 void csi_cnta_set_datal(csp_cnta_t *ptCntaBase, uint16_t hwData)
 {	
 	csp_cnta_set_datal(ptCntaBase, hwData);
-}
-
-/** \brief get cnta datal load value
- * 
- *  \param[in] ptCntaBase: pointer of cnta register structure
- *  \return cnta datal load value
- */ 
-uint32_t csi_cnta_get_datal(csp_cnta_t *ptCntaBase)
-{	
-	return csp_cnta_get_datal(ptCntaBase);
 }
 
 /** \brief cnta pwm init 
@@ -125,8 +99,8 @@ csi_error_t csi_cnta_pwm_init(csp_cnta_t *ptCntaBase,csi_cnta_pwm_config_t *ptCo
 	volatile uint32_t wDatalLoad;
 	uint32_t wPeriod;
 	//uint8_t byClkDiv;
-	csp_cnta_osp_e eOsp = 0;
-	csp_cnta_remstat_e eRemStat = 0;	
+	cnta_osp_e eOsp = 0;
+	cnta_remstat_e eRemStat = 0;	
 	
 	if(ptContaPwmCfg->wFreq == 0 || ptContaPwmCfg->byDutyCycle == 0 || ptContaPwmCfg->byDutyCycle == 100)
 		return CSI_ERROR;
@@ -157,8 +131,8 @@ csi_error_t csi_cnta_pwm_init(csp_cnta_t *ptCntaBase,csi_cnta_pwm_config_t *ptCo
 	else if(ptContaPwmCfg->byStopLevel == CNTA_STOP_HIGH)
 		eRemStat = CNTA_REMSTAT_HIGH;
 			
-	csp_cnta_set_ckdiv(ptCntaBase, (csp_cnta_ckdiv_e)ptContaPwmCfg->eClkDiv,(csp_cnta_runmode_e)CNTA_RUN_CONT);		//cnta clk = pclk/eClkDiv	
-	csp_cnta_set_carrier(ptCntaBase, (csp_cnta_carrier_e)CNTA_CARRIER_EN, (csp_cnta_envelope_e)CNTA_PWM_CARRIER, (csp_cnta_remstat_e)eRemStat,(csp_cnta_osp_e) eOsp); //载波输出	
+	csp_cnta_set_ckdiv(ptCntaBase, (cnta_ckdiv_e)ptContaPwmCfg->eClkDiv,(cnta_runmode_e)CNTA_RUN_CONT);		//cnta clk = pclk/eClkDiv	
+	csp_cnta_set_carrier(ptCntaBase, (cnta_carrier_e)CNTA_CARRIER_EN, (cnta_envelope_e)CNTA_PWM_CARRIER, (cnta_remstat_e)eRemStat,(cnta_osp_e) eOsp); //载波输出	
 	//csp_cnta_set_carrier(ptCntaBase, (cnta_carrier_e)CNTA_CARRIER_EN, (cnta_envelope_e)PWM_ENVELOPE,(cnta_remstat_e) eRemStat, (cnta_osp_e)eOsp);  //包络输出
 
 	csp_cnta_set_datah(ptCntaBase, wDatahLoad);
@@ -197,7 +171,7 @@ void csi_cnta_pwm_para_update(csp_cnta_t *ptCntaBase, uint16_t hwDatah, uint16_t
  */
 csi_error_t csi_cnta_bt0_set_sync(csp_cnta_t *ptCntaBase, csi_cnta_tcpend_e eTcpendRem, csi_cnta_tcmatch_e eTcmatchRem,csi_cnta_hw_update_e eHwUpdate)
 {
-	csp_cnta_set_sync(ptCntaBase, (csp_cnta_pendrem_e) eTcpendRem, (csp_cnta_matchrem_e)eTcmatchRem, (csp_cnta_hwstrobe_e)eHwUpdate);	
+	csp_cnta_set_sync(ptCntaBase, (cnta_pendrem_e) eTcpendRem, (cnta_matchrem_e)eTcmatchRem, (cnta_hwstrobe_e)eHwUpdate);	
 	return CSI_OK;
 }
 
@@ -209,7 +183,7 @@ csi_error_t csi_cnta_bt0_set_sync(csp_cnta_t *ptCntaBase, csi_cnta_tcpend_e eTcp
  */ 
 void csi_cnta_int_enable(csp_cnta_t *ptCntaBase, csi_cnta_intsrc_e eIntSrc)
 {
-	csp_cnta_int_enable(ptCntaBase, (csp_cnta_int_e)eIntSrc);
+	csp_cnta_int_enable(ptCntaBase, (cnta_int_e)eIntSrc);
 }
 
 /** \brief CNTA interrupt disable control
@@ -220,7 +194,7 @@ void csi_cnta_int_enable(csp_cnta_t *ptCntaBase, csi_cnta_intsrc_e eIntSrc)
  */ 
 void csi_cnta_int_disable(csp_cnta_t *ptCntaBase, csi_cnta_intsrc_e eIntSrc)
 {
-	csp_cnta_int_disable(ptCntaBase, (csp_cnta_int_e)eIntSrc);
+	csp_cnta_int_disable(ptCntaBase, (cnta_int_e)eIntSrc);
 }
 
 /** \brief get cnta number 
