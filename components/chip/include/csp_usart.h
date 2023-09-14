@@ -14,8 +14,8 @@
 #define _CSP_USART_H
 
 /* Includes ------------------------------------------------------------------*/
-#include <drv/dma.h>
-#include <soc.h>
+
+#include "soc.h"
 
 /// \struct csp_usart_t
 /// \brief USART Reg Description
@@ -90,25 +90,50 @@ typedef struct
 /******************************************************************************
 * CR: USART Control Registers
 ******************************************************************************/
-typedef enum{
-	US_RSTRX		= (0x01ul << 2),
-	US_RSTTX		= (0x01ul << 3),
-	US_RXEN			= (0x01ul << 4),
-	US_RXDIS		= (0x01ul << 5),
-	US_TXEN			= (0x01ul << 6),
-	US_TXDIS		= (0x01ul << 7),
-	US_STTBRK		= (0x01ul << 9),
-	US_STPBRK		= (0x01ul << 10),
-	US_STTTO		= (0x01ul << 11),
-	US_SENDA		= (0x01ul << 12),
-	
-	//LIN
-	LIN_STHEADER	= (0x01ul << 16),		//Lin Start Header
-	LIN_STRESP		= (0x01ul << 17),		//Lin Start Response
-	LIN_STMESSAGE	= (0x01ul << 18),		//Lin Start Message	
-	LIN_RSLIN		= (0x01ul << 19)		//Lin Reset 		
-	
-}usart_cr_e;
+#define US_RSTRX_POS  (2)      
+#define US_RSTRX_MSK  (0x01ul << US_RSTRX_POS)     //Reset RX
+
+#define US_RSTTX_POS  (3)   
+#define US_RSTTX_MSK  (0x01ul << US_RSTTX_POS)     //Reset TX
+
+#define US_RXEN_POS   (4)   
+#define US_RXEN_MSK   (0x01ul << US_RXEN_POS)     //Enable RX
+
+#define US_RXDIS_POS  (5)   
+#define US_RXDIS_MSK  (0x01ul << US_RXDIS_POS)     //Disable RX
+
+#define US_TXEN_POS   (6)   
+#define US_TXEN_MSK   (0x01ul << US_TXEN_POS)     //Enable TX
+
+#define US_TXDIS_POS  (7)   
+#define US_TXDIS_MSK  (0x01ul << US_TXDIS_POS)     //Disable TX
+
+#define US_STTBRK_POS  (9)   
+#define US_STTBRK_MSK  (0x01ul << US_STTBRK_POS)    //Start Break
+
+#define US_STPBRK_POS  (10)   
+#define US_STPBRK_MSK  (0x01ul << US_STPBRK_POS)    //Stop Break
+
+#define US_STTTO_POS  (11)   
+#define US_STTTO_MSK  (0x01ul << US_STTTO_POS)     //Open Overtime
+
+#define US_SENDA_POS  (12)   
+#define US_SENDA_MSK  (0x01ul << US_SENDA_POS)     //Send Addr
+
+
+///lin
+#define LIN_STHEADER_POS (16)
+#define LIN_STHEADER_MSK (0x01ul << LIN_STHEADER_POS)  //Lin Start Header
+
+#define LIN_STRESP_POS  (17)
+#define LIN_STRESP_MSK  (0x01ul << LIN_STRESP_POS)   //Lin Start Response
+
+#define LIN_STMESSAGE_POS (18)
+#define LIN_STMESSAGE_MSK (0x01ul << LIN_STMESSAGE_POS)  //Lin Start Message 
+
+#define LIN_RSLIN_POS  (19)
+#define LIN_RSLIN_MSK  (0x01ul << LIN_RSLIN_POS)   //Lin Reset 
+
 
 /******************************************************************************
 * MR: USART Mode Register 
@@ -234,7 +259,7 @@ typedef enum{
 }usart_rxfifo_e;
 
 /******************************************************************************
-* IMSCR, RISR, MISR, ICR SR: USART Interrupt Registers
+* IMSCR, RISR, MISR: USART Interrupt Registers
 ******************************************************************************/
 typedef enum{
 	US_NONE_INT			= (0x00ul << 0),
@@ -250,6 +275,7 @@ typedef enum{
 	US_RXFIFO_INT		= (0x01ul << 12),
 	US_RXFIFO_OV_INT	= (0x01ul << 13),
 	US_TXFIFO_INT		= (0x01ul << 14),
+	US_ALL_INT			= 0x77E7ul ,			//US all int
 
 	
 	LIN_ENDHEADER_INT	= (0x01ul << 24),		//Ended header Interrupt
@@ -260,12 +286,39 @@ typedef enum{
 	LIN_CHECKSUM_INT	= (0x01ul << 29),		//Checksum error Interrupt
 	LIN_WAKEUP_INT		= (0x01ul << 30),		//Wake up Interrupt		
 	LIN_ALL_INT			= (0x7Ful << 24),		//LIN all int
-	LIN_ERR_INT			= (0x3Cul << 24)		//LIN all int
+	LIN_ERR_INT			= (0x3Cul << 24)		//LIN all err
+	
 }usart_int_e; 
 
 /******************************************************************************
-* IMSCR, RISR, MISR, ICR SR: USART Interrupt Registers and Status Registers 
+* ICR : clear USART Interrupt sttaus Registers
 ******************************************************************************/
+typedef enum{
+
+	US_RXBRK_INT_S			= (0x01ul << 2),
+	US_OVRE_INT_S			= (0x01ul << 5),   //over error
+	US_FRAME_INT_S			= (0x01ul << 6),
+	US_PARE_INT_S			= (0x01ul << 7),
+	US_RXTO_INT_S			= (0x01ul << 8),	//timeout int
+	US_IDLE_INT_S			= (0x01ul << 10),
+	US_ALL_INT_S			= 0x5E4ul ,			//US all int status
+
+	
+	LIN_ENDHEADER_INT_S		= (0x01ul << 24),		//Ended header Interrupt status
+	LIN_ENDMESS_INT_S		= (0x01ul << 25),		//Ended message Interrupt status
+	LIN_NOTREPS_INT_S		= (0x01ul << 26),		//Not responding error Interrupt status
+	LIN_BITERROR_INT_S		= (0x01ul << 27),		//Bit error Interrupt status
+	LIN_IPERROR_INT_S		= (0x01ul << 28),		//Identity parity error Interrupt status
+	LIN_CHECKSUM_INT_S		= (0x01ul << 29),		//Checksum error Interrupt status
+	LIN_WAKEUP_INT_S		= (0x01ul << 30),		//Wake up Interrupt status		
+	LIN_ALL_INT_S			= (0x7Ful << 24),		//LIN all int status
+	LIN_ERR_INT_S			= (0x3Cul << 24)		//LIN all err status
+	
+}usart_isr_e; 
+
+///******************************************************************************
+//* SR Status Registers 
+//******************************************************************************/
 typedef enum{
 
 	US_IDLEFLAG			= (0x01ul << 11),		//STATUS only,can not trigger interrupt
@@ -276,7 +329,7 @@ typedef enum{
 
 	LIN_BUSY			= (0x01ul << 31),		//LIN STATUS only,can not trigger interrupt	
 
-}usart_isr_e; 
+}usart_sr_e; 
 
 
 /******************************************************************************
@@ -423,23 +476,64 @@ static inline void csp_usart_clk_en(csp_usart_t *ptUsartBase)
 	ptUsartBase->CEDR |= US_CLKEN_MSK ; 		//CLK EN
 }
 
-static inline void csp_usart_soft_rst(csp_usart_t *ptUsartBase)
+static inline void csp_usart_sw_rst(csp_usart_t *ptUsartBase)
 {
 	ptUsartBase->SRR  = US_SWRST_MSK; 			//SWRST 
 }
 
-static inline void csp_usart_rxfifo_rst(csp_usart_t *ptUsartBase)
+static inline void csp_usart_rxfifo_sw_rst(csp_usart_t *ptUsartBase)
 {
 	ptUsartBase->SRR  = US_RXFIFO_RST_MSK; 		//rxfifo
 }
-static inline void csp_usart_txfifo_rst(csp_usart_t *ptUsartBase)
+static inline void csp_usart_txfifo_sw_rst(csp_usart_t *ptUsartBase)
 {
 	ptUsartBase->SRR  = US_TXFIFO_RST_MSK; 		//txfifo
 }
 
-static inline void csp_usart_cr_cmd(csp_usart_t *ptUsartBase, usart_cr_e eCrCmd)
+
+static inline void csp_usart_rx_rst(csp_usart_t *ptUsartBase)
 {
-	ptUsartBase->CR |= eCrCmd;
+ ptUsartBase->CR |= US_RSTRX_MSK;
+}
+
+static inline void csp_usart_tx_rst(csp_usart_t *ptUsartBase)
+{
+ ptUsartBase->CR |= US_RSTTX_MSK;
+}
+
+static inline void csp_usart_rx_enable(csp_usart_t *ptUsartBase)
+{
+ ptUsartBase->CR |= US_RXEN_MSK;
+}
+
+static inline void csp_usart_rx_disable(csp_usart_t *ptUsartBase)
+{
+ ptUsartBase->CR |= US_RXDIS_MSK;
+}
+
+static inline void csp_usart_tx_enable(csp_usart_t *ptUsartBase)
+{
+ ptUsartBase->CR |= US_TXEN_MSK;
+}
+
+static inline void csp_usart_tx_disable(csp_usart_t *ptUsartBase)
+{
+ ptUsartBase->CR |= US_TXDIS_MSK;
+}
+
+static inline void csp_usart_break_start(csp_usart_t *ptUsartBase)
+{
+ ptUsartBase->CR |= US_STTBRK_MSK;
+}
+
+static inline void csp_usart_break_stop(csp_usart_t *ptUsartBase)
+{
+ ptUsartBase->CR |= US_STPBRK_MSK;
+}
+
+static inline void csp_usart_rtor_enable(csp_usart_t *ptUsartBase)
+{
+ ptUsartBase->CR |= US_STTTO_MSK;
 }
 
 static inline void csp_usart_set_ckdiv(csp_usart_t *ptUsartBase, usart_clks_e eClk)
@@ -556,7 +650,7 @@ static inline uint32_t csp_usart_get_isr(csp_usart_t *ptUsartBase)
 	return (uint32_t)(ptUsartBase->MISR);
 }
 
-static inline void csp_usart_clr_isr(csp_usart_t *ptUsartBase, usart_int_e eUsartInt)
+static inline void csp_usart_clr_isr(csp_usart_t *ptUsartBase, usart_isr_e eUsartInt)
 {
 	ptUsartBase->ICR = eUsartInt;
 }
@@ -586,20 +680,20 @@ static inline void csp_usart_set_txdma(csp_usart_t *ptUsartBase, usart_tdma_md_e
 ******************************************************************************/
 static inline void csp_usart_lin_rst(csp_usart_t *ptUsartBase)
 {
-	ptUsartBase->CR |= LIN_RSLIN;
+	ptUsartBase->CR |= LIN_RSLIN_MSK;
 }
 
 static inline void csp_usart_lin_start_msg(csp_usart_t *ptUsartBase)
 {
-	ptUsartBase->CR |= LIN_STMESSAGE;
+	ptUsartBase->CR |= LIN_STMESSAGE_MSK;
 }
 static inline void csp_usart_lin_start_resp(csp_usart_t *ptUsartBase)
 {
-	ptUsartBase->CR |= LIN_STRESP;
+	ptUsartBase->CR |= LIN_STRESP_MSK;
 }
 static inline void csp_usart_lin_start_head(csp_usart_t *ptUsartBase)
 {
-	ptUsartBase->CR |= LIN_STHEADER;
+	ptUsartBase->CR |= LIN_STHEADER_MSK;
 }
 
 static inline void csp_usart_lin_set_ver(csp_usart_t *ptUsartBase, lin_ver_e eVer)

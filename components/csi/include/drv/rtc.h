@@ -13,37 +13,37 @@
 #ifndef _DRV_RTC_H_
 #define _DRV_RTC_H_
 
-#include <csp.h>
+#include "csp.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif  
 
 typedef struct  {
-	uint8_t		byClkSrc;	/// clock source
+	uint8_t		byClkSrc;	// clock source
 	uint8_t		byFmt;		//  timer format
 } csi_rtc_config_t;
 
 typedef struct {
-	uint8_t		byAlmMode;	///mode = 0:  day       hour min sec 
-							///mode = 1:  weekday   hour min sec
-							///mode = 2:            hour min sec
+	uint8_t		byAlmMode;	//mode = 0:  day       hour min sec 
+							//mode = 1:  weekday   hour min sec
+							//mode = 2:            hour min sec
 	uint8_t		byAlmSt;	// 0: not yet
 							// 1: time up
 }csi_rtc_alm_t;
 
 /****** RTC time *****/
 typedef struct {
-    int iSec;             ///< Second.      [0-59]
-    int iMin;             ///< Minute.      [0-59]
-    int iHour;            ///< Hour.        [0-23]
-    int iMday;            ///< Day.         [1-31]
-    int iMon;             ///< Month.       [1-12]
-    int iYear;            ///< Year-1900.   [70- ]      !NOTE:100=2000    
-	int iWday;			/// weekday		  [1-7]	     
-    int iYday;            ///< Days in year.[0-365]     !NOTE:January 1st = 0
-	int iIsdst;			/// Non-0 if daylight savings time is in effect
-	int iPm;				///< PM.		  [0/1]
+    int iSec;             //< Second.      [0-59]
+    int iMin;             //< Minute.      [0-59]
+    int iHour;            //< Hour.        [0-23]
+    int iMday;            //< Day.         [1-31]
+    int iMon;             //< Month.       [1-12]
+    int iYear;            //< Year-1900.   [70- ]      !NOTE:100=2000    
+	int iWday;			  // weekday		  [1-7]	     
+    int iYday;            //< Days in year.[0-365]     !NOTE:January 1st = 0
+	int iIsdst;			  // Non-0 if daylight savings time is in effect
+	int iPm;			  //< PM.		  [0/1]
 } csi_rtc_time_t;
 
 /****** definition for rtc *****/

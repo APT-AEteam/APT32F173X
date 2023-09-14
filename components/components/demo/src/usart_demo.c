@@ -9,12 +9,11 @@
  * *********************************************************************
 */
 /* Includes ---------------------------------------------------------------*/
-#include <string.h>
-#include <drv/usart.h>
-#include <drv/pin.h>
 
-
-#include "demo.h"
+#include "drv/usart.h"
+#include "drv/pin.h"
+#include "board_config.h"
+#include "drv/etcb.h"
 
 /* externs function--------------------------------------------------------*/
 /* externs variable------------------------------------------------------*/
@@ -24,8 +23,9 @@
 uint8_t byRecvBuf[64] = {0};					//接收缓存
 uint8_t bySendBuf[30]={1,2,3,4,5,6,7,8,9,21,22,23,24,25,26,27,28,29,30,10,11,12,13,14,15,16,17,18,19};	
 
-static uint16_t hwSendLen = 0;	
 
+#if (USE_USART_CALLBACK == 0)	
+	
 /** \brief  usart0_int_handler: USART中断服务函数
  * 
     \brief  USART发生中断时会调用此函数，函数在interrupt.c里定义为弱(weak)属性，默认不做处理;用户用到中断
@@ -60,10 +60,11 @@ ATTRIBUTE_ISR void usart0_int_handler(void)
 	if(csp_usart_get_isr(USART0)& US_RXTO_INT)				//接收超时中断
 	{
 		//添加用户处理(若开启此中断)
-		csp_usart_clr_isr(USART0, US_RXTO_INT);				//清除接收超时中断状态
-		csp_usart_cr_cmd(USART0,US_STTTO);					//使能接收超时
+		csp_usart_clr_isr(USART0, US_RXTO_INT_S);				//清除接收超时中断状态
+		csp_usart_rtor_enable(USART0);					//使能接收超时
 	}
 }
+#endif
 
 /** \brief usart_send_demo: USART0 轮询发送18个字节数据
  *  	 
@@ -256,12 +257,12 @@ int usart_send_dma_demo(void)
 	csi_usart_set_txdma(USART0, USDMA_TX_FIF0_TRG);
 	
 	
-	//etcb 参数配置
+	//etb 参数配置
 	tEtbConfig.eChType = ETCB_ONE_TRG_ONE_DMA;			//单个源触发单个目标，DMA方式
 	tEtbConfig.eSrcIp 	= ETCB_USART0_TXSRC;				//UART TXSRC作为触发源
-	tEtbConfig.eDstIp 	= ETCB_DMA0_CH0 + DMA_CH0;		//ETCB DMA通道 作为目标实际
+	tEtbConfig.eDstIp 	= ETCB_DMA0_CH0 + DMA_CH0;		//ETB DMA通道 作为目标实际
 	tEtbConfig.eTrgMode = ETCB_HARDWARE_TRG;				//通道触发模式采样硬件触发
-	iRet = csi_etcb_ch_init(ETCB_CH20, &tEtbConfig);	//初始化ETCB，DMA ETCB CHANNEL > ETCB_CH19_ID
+	iRet = csi_etcb_ch_init(ETCB_CH20, &tEtbConfig);	//初始化ETB，DMA ETB CHANNEL > ETB_CH19_ID
 
 	while(1)
 	{
@@ -330,12 +331,13 @@ int usart_recv_dma_demo(void)
 	csi_usart_set_rxdma(USART0, USDMA_RX_FIFO_NSPACE);
 	
 	
-	//etcb 参数配置
+	//etb 参数配置
+
 	tEtbConfig.eChType = ETCB_ONE_TRG_ONE_DMA;			//单个源触发单个目标，DMA方式
 	tEtbConfig.eSrcIp 	= ETCB_USART0_RXSRC;				//UART TXSRC作为触发源
-	tEtbConfig.eDstIp 	= ETCB_DMA0_CH0 + DMA_CH3;		//ETCB DMA通道 作为目标实际
+	tEtbConfig.eDstIp 	= ETCB_DMA0_CH0 + DMA_CH3;		//ETB DMA通道 作为目标实际
 	tEtbConfig.eTrgMode = ETCB_HARDWARE_TRG;				//通道触发模式采样硬件触发
-	csi_etcb_ch_init(ETCB_CH20, &tEtbConfig);			//初始化ETCB，DMA ETCB CHANNEL > ETCB_CH19_ID
+	iRet = csi_etcb_ch_init(ETCB_CH20, &tEtbConfig);			//初始化ETB，DMA ETB CHANNEL > ETB_CH19_ID
 
 
 	csi_usart_recv_dma(USART0,(void*)byRecvBuf, DMA_CH3, 25);	//DMA接收

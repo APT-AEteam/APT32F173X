@@ -17,13 +17,13 @@
 
 typedef struct
 {
-    __IM   uint32_t RSVD;
-	__IOM  uint32_t CEDR;            /**< Clock Enable/Disable Register	     */
-	__OM  uint32_t SRR;             /**< Software Reset Register	     */
-	__IOM uint32_t CR;              /**< Control Register	             */
-	__IOM uint32_t SEED;            /**< Seed Value Register	             */
-	__OM  uint32_t DATAIN;          /**< Data in Value Register	             */
-	__IM  uint32_t DATAOUT;         /**< Data out Value Register	     */
+    __IM	uint32_t RSVD;
+	__IOM	uint32_t CEDR;            /**< Clock Enable/Disable Register	     */
+	__OM	uint32_t SRR;             /**< Software Reset Register	     */
+	__IOM	uint32_t CR;              /**< Control Register	             */
+	__IOM	uint32_t SEED;            /**< Seed Value Register	             */
+	__OM	uint32_t DATAIN;          /**< Data in Value Register	             */
+	__IM	uint32_t DATAOUT;         /**< Data out Value Register	     */
 } csp_crc_t;
 
 /******************************************************************************
@@ -32,15 +32,15 @@ typedef struct
 
 
 
-///CEDR : Clock Enable/Disable Register
+//CEDR : Clock Enable/Disable Register
 #define CRC_CLKEN          (0x01ul << 0)         /**< IP Clock             */
 
 
-///SRR : Software Reset Register
+//SRR : Software Reset Register
 #define CRC_SWRST          (0x01ul << 31)         /**< Software Reset         */
 
 
-///CR : CRC Control Register
+//CR : CRC Control Register
 #define CRC_XORIN_POS	(0ul)
 #define CRC_XORIN_MSK	(0x1)
 #define CRC_XOROUT_POS	(1ul)
@@ -53,61 +53,63 @@ typedef struct
 #define CRC_POLY_MSK	(0x3 << CRC_POLY_POS)
 
 
-///CRC inline functions
+/******************************************************************************
+*************************   CRC inline functions   ****************************
+******************************************************************************/
 
 static inline void csp_crc_clk_enable(csp_crc_t *ptCrcBase)				
 {
-	ptCrcBase -> CEDR = (ptCrcBase -> CEDR & (~CRC_CLKEN)) | 1;
+	ptCrcBase -> CEDR = (ptCrcBase -> CEDR & (~CRC_CLKEN)) | ENABLE;
 }
 
 static inline void csp_crc_clk_disable(csp_crc_t *ptCrcBase)				
 { 
-	ptCrcBase -> CEDR = (ptCrcBase -> CEDR & (~CRC_CLKEN)) | 0;
+	ptCrcBase -> CEDR = (ptCrcBase -> CEDR & (~CRC_CLKEN)) | DISABLE;
 }
 
-static inline void csp_crc_rst(csp_crc_t *ptCrcBase)						
+static inline void csp_crc_sw_rst(csp_crc_t *ptCrcBase)						
 { 
 	ptCrcBase -> SRR = CRC_SWRST;
 }
 
 static inline void csp_crc_xorin_enable(csp_crc_t *ptCrcBase)				
 {	
-	ptCrcBase -> CR = (ptCrcBase -> CR & (~CRC_XORIN_MSK))|(1 << CRC_XORIN_POS);
+	ptCrcBase -> CR = (ptCrcBase -> CR & (~CRC_XORIN_MSK))|(ENABLE << CRC_XORIN_POS);
 }
 
 static inline void csp_crc_xorin_disable(csp_crc_t *ptCrcBase)				
 { 
-	ptCrcBase -> CR = (ptCrcBase -> CR & (~CRC_XORIN_MSK))|(0 << CRC_XORIN_POS);
+	ptCrcBase -> CR = (ptCrcBase -> CR & (~CRC_XORIN_MSK))|(DISABLE << CRC_XORIN_POS);
 }
 
 static inline void csp_crc_xorout_enable(csp_crc_t *ptCrcBase)				
 { 
-	ptCrcBase -> CR = (ptCrcBase -> CR & (~CRC_XOROUT_MSK))|(1 << CRC_XOROUT_POS);
+	ptCrcBase -> CR = (ptCrcBase -> CR & (~CRC_XOROUT_MSK))|(ENABLE << CRC_XOROUT_POS);
 }
 
 static inline void csp_crc_xorout_disable(csp_crc_t *ptCrcBase)			
 { 
-	ptCrcBase -> CR = (ptCrcBase -> CR & (~CRC_XOROUT_MSK))|(0 << CRC_XOROUT_POS);
+	ptCrcBase -> CR = (ptCrcBase -> CR & (~CRC_XOROUT_MSK))|(DISABLE << CRC_XOROUT_POS);
 }
 
 static inline void csp_crc_refin_enable(csp_crc_t *ptCrcBase)				
 { 
-	ptCrcBase -> CR = (ptCrcBase -> CR & (~CRC_REFIN_MSK))|(1 << CRC_REFIN_POS);
+	ptCrcBase -> CR = (ptCrcBase -> CR & (~CRC_REFIN_MSK))|(ENABLE << CRC_REFIN_POS);
 }
 
 static inline void csp_crc_refin_disable(csp_crc_t *ptCrcBase)				
 { 
-	ptCrcBase -> CR = (ptCrcBase -> CR & (~CRC_REFIN_MSK))|(0 << CRC_REFIN_POS);
+	ptCrcBase -> CR = (ptCrcBase -> CR & (~CRC_REFIN_MSK))|(DISABLE << CRC_REFIN_POS);
 }
 
 static inline void csp_crc_refout_enable(csp_crc_t *ptCrcBase)				
 { 
-	ptCrcBase -> CR = (ptCrcBase -> CR & (~CRC_REFOUT_MSK))|(1 << CRC_REFOUT_POS);
+	ptCrcBase -> CR = (ptCrcBase -> CR & (~CRC_REFOUT_MSK))|(ENABLE << CRC_REFOUT_POS);
 }
 
 static inline void csp_crc_refout_disable(csp_crc_t *ptCrcBase)			
 { 
-	ptCrcBase -> CR = (ptCrcBase -> CR & (~CRC_REFOUT_MSK))|(0 << CRC_REFOUT_POS);
+	ptCrcBase -> CR = (ptCrcBase -> CR & (~CRC_REFOUT_MSK))|(DISABLE << CRC_REFOUT_POS);
 }
 
 static inline void csp_crc_set_poly(csp_crc_t *ptCrcBase, uint8_t byPoly)			
@@ -115,7 +117,7 @@ static inline void csp_crc_set_poly(csp_crc_t *ptCrcBase, uint8_t byPoly)
 	ptCrcBase -> CR = (ptCrcBase -> CR & (~CRC_POLY_MSK))|(byPoly << CRC_POLY_POS);
 }
 
-static inline void csp_crc_set_seed(csp_crc_t *ptCrcBase, uint32_t  wSeed)			
+static inline void csp_crc_set_seed(csp_crc_t *ptCrcBase, uint32_t wSeed)			
 { 
 	ptCrcBase -> SEED = wSeed;
 }

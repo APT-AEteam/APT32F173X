@@ -9,11 +9,10 @@
  * *********************************************************************
 */
 
-#include <sys_clk.h>
-#include <drv/irq.h>
-#include <drv/lin.h>
-#include <drv/tick.h>
-#include <drv/usart.h>
+#include "sys_clk.h"
+#include "drv/lin.h"
+#include "drv/tick.h"
+#include "drv/usart.h"
 #include "csp_usart.h"
 
 /* LIN ID introduction------------------------------------------------*/
@@ -150,10 +149,10 @@ csi_error_t csi_lin_init(csp_lin_t *ptLinBase, csi_lin_config_t *ptLinCfg)
 		
 	csi_clk_enable((uint32_t *)ptLinBase);				//usart peripheral clk enable
 	csp_usart_clk_en(ptLinBase);						//usart clk enable
-	csp_usart_soft_rst(ptLinBase);
+	csp_usart_sw_rst(ptLinBase);
 	csp_usart_lin_rst(ptLinBase);
-	csp_usart_rxfifo_rst(ptLinBase);
-	csp_usart_txfifo_rst(ptLinBase);
+	csp_usart_rxfifo_sw_rst(ptLinBase);
+	csp_usart_txfifo_sw_rst(ptLinBase);
 	
 	if(ptLinCfg->byClkSrc > LIN_CLKSRC_DIV8)
 		return CSI_ERROR;
@@ -199,7 +198,9 @@ csi_error_t csi_lin_init(csp_lin_t *ptLinBase, csi_lin_config_t *ptLinCfg)
  */ 
 void csi_lin_start(csp_lin_t *ptLinBase)
 {
-	csp_usart_cr_cmd(ptLinBase, US_RXEN | US_TXEN);			//enable rx and tx 
+//	csp_usart_cr_cmd(ptLinBase, US_RXEN | US_TXEN);			//enable rx and tx 
+	csp_usart_rx_enable(ptLinBase);
+	csp_usart_tx_enable(ptLinBase);
 }
 /** \brief stop(disable) lin 
  * 
@@ -208,7 +209,9 @@ void csi_lin_start(csp_lin_t *ptLinBase)
  */ 
 void csi_lin_stop(csp_lin_t *ptLinBase)
 {
-	csp_usart_cr_cmd(ptLinBase, US_RXDIS | US_TXDIS);		//disable rx/tr
+//	csp_usart_cr_cmd(ptLinBase, US_RXDIS | US_TXDIS);		//disable rx/tr
+	csp_usart_rx_disable(ptLinBase);
+	csp_usart_tx_disable(ptLinBase);
 }
 /** \brief master send a full frame(the Header and the Response consecutively) 
  * 
@@ -234,7 +237,7 @@ csi_error_t csi_lin_send(csp_lin_t *ptLinBase, uint8_t byId, const void *pbyData
 	if(byDataNum)
 	{
 		csp_usart_lin_set_id_num(ptLinBase, byId, byDataNum, byVer);	//identifier and number of data
-		csp_usart_cr_cmd(ptLinBase, LIN_STMESSAGE);						//start message send
+		csp_usart_lin_start_msg(ptLinBase);						//start message send
 		return CSI_OK;
 	}
 	
@@ -262,7 +265,7 @@ int csi_lin_send_recv(csp_lin_t *ptLinBase,  uint8_t byId, void *pbyData, uint8_
 	
 	byDataNum = apt_lin_get_ndata(ptLinBase, bySize, byVer);	
 	csp_usart_lin_set_id_num(ptLinBase, byId, byDataNum, byVer);	//identifier and number of data
-	csp_usart_cr_cmd(ptLinBase, LIN_STHEADER);						//start header send
+	csp_usart_lin_start_head(ptLinBase);						//start header send
 	
 	if(byTimeOut)
 	{

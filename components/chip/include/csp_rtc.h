@@ -291,15 +291,17 @@ typedef enum {
 #define RTC_EV1SWF  (0x2)
 
 
-/// #define functions
+/******************************************************************************
+**************************  RTC inline functions  ****************************
+******************************************************************************/
 static inline void csp_rtc_clk_enable(csp_rtc_t *ptRtcBase)						
 { 
-	ptRtcBase->CCR |= RTC_CLKEN;			///key is needed!
+	ptRtcBase->CCR |= RTC_CLKEN;			//key is needed!
 }
 
 static inline void  csp_rtc_clk_disable(csp_rtc_t *ptRtcBase)						
 { 
-	ptRtcBase->CCR &= (~RTC_CLKEN);		   ///key is needed!
+	ptRtcBase->CCR &= (~RTC_CLKEN);		   //key is needed!
 }
 															
 static inline uint8_t  csp_rtc_update_status(csp_rtc_t *ptRtcBase)						
@@ -319,7 +321,7 @@ static inline void csp_rtc_clr_key(csp_rtc_t *ptRtcBase)
 
 static inline void csp_rtc_set_fmt(csp_rtc_t *ptRtcBase,rtc_fmt_e bFmt)						
 { 
-	ptRtcBase->CR = (ptRtcBase->CR & (~RTC_FMT_MSK)) | (bFmt << RTC_FMT_POS);	///key is needed!
+	ptRtcBase->CR = (ptRtcBase->CR & (~RTC_FMT_MSK)) | (bFmt << RTC_FMT_POS);	//key is needed!
 }
 											
 static inline rtc_fmt_e csp_rtc_get_fmt(csp_rtc_t *ptRtcBase)							
@@ -329,42 +331,42 @@ static inline rtc_fmt_e csp_rtc_get_fmt(csp_rtc_t *ptRtcBase)
 
 static inline void csp_rtc_debug_enable(csp_rtc_t *ptRtcBase)						
 { 
-	ptRtcBase->CCR = (ptRtcBase->CCR &(~RTC_DBGEN)) | (ENABLE << 23); 	///key is needed!
+	ptRtcBase->CCR |= RTC_DBGEN; 	//key is needed!
 }
 
 static inline void csp_rtc_debug_disable(csp_rtc_t *ptRtcBase)						
 { 
-	ptRtcBase->CCR = (ptRtcBase->CCR &(~RTC_DBGEN)) | (DISABLE << 23); 	///key is needed!
+	ptRtcBase->CCR &=(~RTC_DBGEN); 	//key is needed!
 }
 												
 static inline void csp_rtc_rb_enable(csp_rtc_t *ptRtcBase)							
 { 
-	ptRtcBase->CR = (ptRtcBase->CR &(~RTC_RBEN)) | (ENABLE << 16);		///key is needed!
+	ptRtcBase->CR |= RTC_RBEN;		//key is needed!
 }
 												
 static inline void csp_rtc_rb_disable(csp_rtc_t *ptRtcBase)							
 { 
-	ptRtcBase->CR = (ptRtcBase->CR &(~RTC_RBEN)) | (DISABLE << 16);		///key is needed!
+	ptRtcBase->CR &= (~RTC_RBEN);		//key is needed!
 }
 
 static inline void csp_rtc_set_cprd(csp_rtc_t *ptRtcBase, rtc_cprd_e eCprd)					
 { 
-	ptRtcBase->CR  = (ptRtcBase->CR & (~RTC_CPRD_MSK)) | (eCprd << RTC_CPRD_POS);	///key is needed! 
+	ptRtcBase->CR  = (ptRtcBase->CR & (~RTC_CPRD_MSK)) | (eCprd << RTC_CPRD_POS);	//key is needed! 
 }
 
 static inline void csp_rtc_set_osel(csp_rtc_t *ptRtcBase, rtc_osel_e eOsel)					
 { 
-	ptRtcBase->CR  = (ptRtcBase->CR & (~RTC_OSEL_MSK)) | (eOsel << RTC_OSEL_POS);  	///key is needed! 
+	ptRtcBase->CR  = (ptRtcBase->CR & (~RTC_OSEL_MSK)) | (eOsel << RTC_OSEL_POS);  	//key is needed! 
 }
 
 static inline void csp_rtc_stop(csp_rtc_t *ptRtcBase)								
 { 
-	ptRtcBase->CR |= RTC_INIT;			///key is needed!
+	ptRtcBase->CR |= RTC_INIT;			//key is needed!
 }
 
 static inline void csp_rtc_run(csp_rtc_t *ptRtcBase)								
 { 
-	ptRtcBase->CR &= (~RTC_INIT);		///key is needed!
+	ptRtcBase->CR &= (~RTC_INIT);		//key is needed!
 }
 
 static inline void csp_rtc_reset(csp_rtc_t *ptRtcBase)								
@@ -464,12 +466,12 @@ static inline uint8_t csp_rtc_read_sec(csp_rtc_t *ptRtcBase)
 
 static inline void csp_rtc_alm_enable(csp_rtc_t *ptRtcBase,uint8_t byAlm)					
 { 
-	ptRtcBase->CR |= 0x1 << (3 + byAlm);		///key is needed!
+	ptRtcBase->CR |= 0x1 << (3 + byAlm);		//key is needed!
 }
 														
 static inline void csp_rtc_alm_disable(csp_rtc_t *ptRtcBase,uint8_t byAlm)					
 { 
-	ptRtcBase->CR &= ~(0x1 << (3 + byAlm)); 	///key is needed!	
+	ptRtcBase->CR &= ~(0x1 << (3 + byAlm)); 	//key is needed!	
 }
 											
 static inline void csp_rtc_alma_set_day(csp_rtc_t *ptRtcBase, uint8_t byVal)
@@ -583,12 +585,12 @@ static inline bool csp_rtc_almb_read_wdsel(csp_rtc_t *ptRtcBase)
 }
 
 static inline void csp_rtc_alma_set_mode(csp_rtc_t *ptRtcBase, bool bWdsel, bool bDmsk, bool bHmsk, bool bMmsk, bool bSmsk)
-{   ///key is needed!
+{   //key is needed!
 	ptRtcBase->ALRA = (ptRtcBase->ALRA & (~RTC_ALM_MODE)) | bWdsel << RTC_ALM_WDSEL_POS |(bDmsk << RTC_ALM_DMSK_POS) | (bHmsk << RTC_ALM_HMSK_POS) | (bMmsk << RTC_ALM_MINU_POS) |(bSmsk << RTC_ALM_SMSK_POS);
 }  
 
 static inline void csp_rtc_almb_set_mode(csp_rtc_t *ptRtcBase, bool bWdsel, bool bDmsk, bool bHmsk, bool bMmsk, bool bSmsk)
-{	///key is needed!
+{	//key is needed!
 	ptRtcBase->ALRB = (ptRtcBase->ALRB & (~RTC_ALM_MODE)) | bWdsel << RTC_ALM_WDSEL_POS |(bDmsk << RTC_ALM_DMSK_POS) | (bHmsk << RTC_ALM_HMSK_POS) | (bMmsk << RTC_ALM_MINU_POS) |(bSmsk << RTC_ALM_SMSK_POS);
 }
 
