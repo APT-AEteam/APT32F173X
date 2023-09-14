@@ -90,7 +90,12 @@ void lp_lpt_wakeup_deepsleep_demo(void)
 //	csi_pm_clk_enable(DP_EMOSC, ENABLE);
 	
 	//lpt初始化配置
-	csi_lpt_timer_init(LPT,LPT_CLK_ISCLK, 500);       		//初始化lpt,选用内部超低功耗时钟,定时500ms,默认采用PEND中断
+	csi_lpt_time_config_t tTimConfig;
+	tTimConfig.wTimeVal = 500;					//LPT定时值 = 200ms
+	tTimConfig.eWkMode  = LPT_CNT_CONTINU;		//LPT计数器工作模式，连续
+	tTimConfig.eClksrc=LPT_CLK_ISCLK;  		//LPT时钟源  
+	csi_lpt_timer_init(LPT,&tTimConfig);        //初始化lpt,默认采用PEND中断
+
 	csi_lpt_start(LPT);	  
 	delay_ums(200);
 	

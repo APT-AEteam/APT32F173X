@@ -9,12 +9,7 @@
  * </table>
  * *********************************************************************
 */
-
-#include <sys_clk.h>
 #include <drv/wwdt.h>
-#include <drv/irq.h>
-
-#include "math.h"
 
 /* Private macro------------------------------------------------------*/
 /* externs function---------------------------------------------------*/
@@ -22,7 +17,8 @@
 /* Private variablesr-------------------------------------------------*/
 static uint32_t s_wWwdtTimeout = 0; 
 static uint8_t  s_byWwdtCntMax = 0xff;
-
+/* Global variablesr-------------------------------------------------*/
+csi_wwdt_ctrl_t g_tWwdtCtrl[WWDT_IDX];
 
 /** \brief Initialize WWDT Interface. Initializes the resources needed for the WDT interface
  * 
@@ -117,20 +113,31 @@ void csi_wwdt_feed(void)
 
 }
 
-/** \brief iwdt INT enable/disable
+/** \brief iwdt INT enable
  * 
- *  \param[in] bEnable: enable/disable INT
+ *  \param[in] none
  *  \return none
  */
-void csi_wwdt_irq_enable(bool bEnable)
+void csi_wwdt_int_enable(void)
 {
-	csp_wwdt_int_enable(WWDT,bEnable);				//enable wwdt int
-	
-	if(bEnable)
-		csi_vic_enable_irq(WWDT_IRQn);				//enable wwdt irq
-	else
-		csi_vic_disable_irq(WWDT_IRQn);				//disable wwdt irq
+	csp_wwdt_int_enable(WWDT);
+//	csi_vic_enable_irq(WWDT_IRQn);				//enable wwdt irq
+
 }
+
+/** \brief iwdt INT disable
+ * 
+ *  \param[in] none
+ *  \return none
+ */
+void csi_wwdt_int_disable(void)
+{
+	csp_wwdt_int_disable(WWDT);
+//	csi_vic_disable_irq(WWDT_IRQn);				//disable wwdt irq
+
+}
+
+
 /** \brief check if wwdt is running
  * 
  *  \param[in] none
@@ -138,7 +145,7 @@ void csi_wwdt_irq_enable(bool bEnable)
  */
 bool csi_wwdt_is_running(void)
 {
-	return (csp_wwdt_status_get(WWDT));
+	return (csp_wwdt_get_status(WWDT));
 }
 
 /** \brief Get the remaining time to timeout
@@ -155,12 +162,84 @@ uint32_t csi_wwdt_get_remaining_time(void)
 	return wRTime;
 }
 
-/** \brief enable or disable WDT when stop in debug mode
+/** \brief enable  WDT when stop in debug mode
  * 
- *  \param[in] bEnable: enable/disable 
+ *  \param[in] ptWwdtBase:pointer of wwdt register structure
  *  \return  none
  */
-void csi_wwdt_debug_enable(bool bEnable)
+void csi_wwdt_debug_enable(csp_wwdt_t * ptWwdtBase)
 {
-	csp_wwdt_debug_enable(WWDT, bEnable);
+	csp_wwdt_debug_enable(ptWwdtBase);
+}
+
+/** \brief disable WDT when stop in debug mode
+ * 
+ *  \param[in] ptWwdtBase :pointer of wwdt register structure
+ *  \return  none
+ */
+void csi_wwdt_debug_disable(csp_wwdt_t * ptWwdtBase)
+{
+	csp_wwdt_debug_disable(ptWwdtBase);
+}
+
+
+/** \brief get wwdt number 
+ * 
+ *  \param[in] ptWwdtBase: pointer of lpt register structure
+ *  \return wwdt 0/error
+ */ 
+static uint8_t apt_get_wwdt_idx(csp_wwdt_t * ptWwdtBase)
+{
+	switch((uint32_t)ptWwdtBase)
+	{
+		case APB_WWDT_BASE:		//WWDT
+			return 0;		
+		default:
+			return 0xff;		//error
+	}
+}
+
+/** \brief  register wwdt interrupt callback function
+ * 
+ *  \param[in] ptWwdtBase: pointer of wwdt register structure
+ *  \param[in] callback: wwdt interrupt handle function
+ *  \return error code \ref csi_error_t
+ */ 
+csi_error_t csi_wwdt_register_callback(csp_wwdt_t * ptWwdtBase, void  *callback)
+{
+	uint8_t byIdx = apt_get_wwdt_idx(ptWwdtBase);
+	if(byIdx == 0xff)
+		return CSI_ERROR;
+		
+	g_tWwdtCtrl[byIdx].callback = callback;
+	
+	return CSI_OK;
+}
+
+
+/** \brief wwdt interrupt handler function
+ * 
+ *  \param[in] ptWwdtBase: pointer of wwdt register structure
+ *  \param[in] byIdx: wwdt idx 0 
+ *  \return none
+ */ 
+void csi_wwdt_irqhandler(csp_wwdt_t * ptWwdtBase, uint8_t byIdx)
+{
+	uint8_t byIsr = apt_get_wwdt_idx(ptWwdtBase);
+	
+	if(g_tWwdtCtrl[byIdx].callback)
+			g_tWwdtCtrl[byIdx].callback(ptWwdtBase, byIsr);
+			
+	csp_wwdt_clr_isr(WWDT);
+}
+
+/** \brief clear wwdt interrupt 
+ * 
+ *  \param[in] ptWwdtBase: pointer of wwdt register structure
+ *  \param[in] eIntSrc: wwdt interrupt source
+ *  \return none
+ */ 
+void csi_wwdt_clr_isr(csp_wwdt_t * ptWwdtBase)
+{
+	csp_wwdt_clr_isr(ptWwdtBase);	
 }

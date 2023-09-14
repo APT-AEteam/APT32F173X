@@ -10,26 +10,20 @@
  * </table>
  * *********************************************************************
 */
-#include <sys_clk.h>
+
 #include <drv/iic.h>
-#include <drv/irq.h>
-#include <drv/gpio.h>
-#include <drv/pin.h>
-//#include <drv/porting.h>
-#include <drv/tick.h>
-
-
 
 /* Private macro-----------------------------------------------------------*/
 /* externs function--------------------------------------------------------*/
 /* externs variablesr------------------------------------------------------*/
 /* Private variablesr------------------------------------------------------*/
+/* Global variablesr------------------------------------------------------*/
 csi_iic_slave_t g_tSlave;
 volatile uint32_t g_wIicErrorCont = 0;
 volatile uint8_t g_bySendIndex = 0;
 volatile uint8_t g_byWriteIndex = 0;
 volatile uint32_t g_wIicSlaveWriteAddress;
-
+csi_iic_ctrl_t g_tIicCtrl[IIC_IDX];
 
 /** \brief deinit iic 
  * 
@@ -61,6 +55,17 @@ void csi_iic_enable(csp_i2c_t *ptIicBase)
 void csi_iic_disable(csp_i2c_t *ptIicBase)
 {
 	csp_i2c_disable(ptIicBase);
+}
+
+/** \brief iic taddr set
+ * 
+ *  \param[in] ptIicBase: pointer of iic register structure
+ *  \return none
+ */ 
+
+void csi_iic_set_taddr(csp_i2c_t *ptI2cBase, uint32_t wTAddr)
+{
+	csp_i2c_set_taddr(ptI2cBase, wTAddr);
 }
 
 /** \brief SET iic Tsetup  
@@ -141,11 +146,11 @@ csi_error_t csi_iic_slave_init(csp_i2c_t *ptIicBase, csi_iic_slave_config_t *ptI
 
 	wIicClk = csi_get_pclk_freq() / 1000000U;
 	
-	if(ptIicSlaveCfg->bySpeedMode == IIC_BUS_SPEED_STANDARD)
+	if(ptIicSlaveCfg->eSpeedMode == IIC_BUS_SPEED_STANDARD)
 	{
 		if(wIicClk<3)
 			return CSI_ERROR;
-		csp_i2c_set_cr(ptIicBase,(IIC_BUS_SPEED_STANDARD<<1)|(ptIicSlaveCfg->byAddrMode<<3)| I2C_SLAVE);
+		csp_i2c_set_cr(ptIicBase,(IIC_BUS_SPEED_STANDARD<<1)|(ptIicSlaveCfg->eAddrMode<<3)| I2C_SLAVE);
 		if(0 == wIicClk)
 		{
 			hwSclH = 8;
@@ -162,10 +167,10 @@ csi_error_t csi_iic_slave_init(csp_i2c_t *ptIicBase, csi_iic_slave_config_t *ptI
 		csp_i2c_sda_hold(ptIicBase,0xf,0xf);
 		
 		
-	}else if(ptIicSlaveCfg->bySpeedMode == IIC_BUS_SPEED_FAST){
+	}else if(ptIicSlaveCfg->eSpeedMode == IIC_BUS_SPEED_FAST){
 		if(wIicClk<12)
 			return CSI_ERROR;
-		csp_i2c_set_cr(ptIicBase,(IIC_BUS_SPEED_FAST<<1)|(ptIicSlaveCfg->byAddrMode<<3)| I2C_SLAVE);
+		csp_i2c_set_cr(ptIicBase,(IIC_BUS_SPEED_FAST<<1)|(ptIicSlaveCfg->eAddrMode<<3)| I2C_SLAVE);
 		if(0 == wIicClk)
 		{
 			hwSclH = 8;
@@ -182,10 +187,10 @@ csi_error_t csi_iic_slave_init(csp_i2c_t *ptIicBase, csi_iic_slave_config_t *ptI
 		csp_i2c_set_fs_scll(ptIicBase,hwSclL);
 		csp_i2c_sda_setup(ptIicBase,0x2);
 		csp_i2c_sda_hold(ptIicBase,0x8,0x3);
-	}else if(ptIicSlaveCfg->bySpeedMode == IIC_BUS_SPEED_FAST_PLUS){
+	}else if(ptIicSlaveCfg->eSpeedMode == IIC_BUS_SPEED_FAST_PLUS){
 		if(wIicClk<32)
 			return CSI_ERROR;
-		csp_i2c_set_cr(ptIicBase,(IIC_BUS_SPEED_FAST<<1)|(ptIicSlaveCfg->byAddrMode<<3)| I2C_SLAVE);
+		csp_i2c_set_cr(ptIicBase,(IIC_BUS_SPEED_FAST<<1)|(ptIicSlaveCfg->eAddrMode<<3)| I2C_SLAVE);
 		if(0 == wIicClk)
 		{
 			hwSclH = 8;
@@ -206,10 +211,208 @@ csi_error_t csi_iic_slave_init(csp_i2c_t *ptIicBase, csi_iic_slave_config_t *ptI
 	apt_iic_set_rx_flsel(ptIicBase,0x0);
 	apt_iic_set_tx_flsel(ptIicBase,0x7);
 	apt_iic_set_timeout(ptIicBase,ptIicSlaveCfg->wSdaTimeout,ptIicSlaveCfg->wSclTimeout);
-	csp_i2c_set_imcr(ptIicBase,ptIicSlaveCfg->hwInt);
-	csi_irq_enable((uint32_t *)ptIicBase);
+//	csp_i2c_set_imcr(ptIicBase,ptIicSlaveCfg->hwInt);
+//	csi_irq_enable((uint32_t *)ptIicBase);
 	csi_iic_enable(ptIicBase);
     return CSI_OK;
+}
+
+/** \brief get iic number 
+ * 
+ *  \param[in] ptIicBase: pointer of iic register structure
+ *  \return iic number0/ERROR
+ */ 
+static uint8_t apt_get_iic_idx(csp_i2c_t *ptIicBase)
+{
+	switch((uint32_t)ptIicBase)
+	{
+		case APB_I2C0_BASE:		//IIC0
+			return 0;		
+
+		default:
+			return 0xff;		//error
+	}
+}
+
+/** \brief  register iic interrupt callback function
+ * 
+ *  \param[in] ptIicBase: pointer of iic register structure
+ *  \param[in] eCallBkId: iic interrupt callback type, \ref csi_iic_callback_id_e
+ *  \param[in] callback: iic interrupt handle function
+ *  \return error code \ref csi_error_t
+ */ 
+csi_error_t csi_iic_register_callback(csp_i2c_t *ptIicBase, csi_iic_callback_id_e eCallBkId,void  *callback)
+{
+	uint8_t byIdx = apt_get_iic_idx(ptIicBase);
+	if(byIdx == 0xff)
+		return CSI_ERROR;
+		
+	
+	switch(eCallBkId)
+	{
+		case IIC_CALLBACK_RECV:
+			g_tIicCtrl[byIdx].recv_callback = callback;
+			break;
+		case IIC_CALLBACK_SEND:
+			g_tIicCtrl[byIdx].send_callback = callback;
+			break;
+		case IIC_CALLBACK_ERR:
+			g_tIicCtrl[byIdx].other_state_callback = callback;
+			break;
+		default:
+			return CSI_ERROR;
+	}
+	
+	return CSI_OK;
+}
+
+/** \brief iic interrupt handler function
+ * 
+ *  \param[in] ptUartBase: pointer of iic register structure
+ *  \param[in] byIdx: iic idx(0)
+ *  \return none
+ */ 
+void csi_iic_irqhandler(csp_i2c_t *ptIicBase, uint8_t byIdx)
+{
+	uint8_t byIsr = csp_i2c_get_isr(ptIicBase);
+	
+	if((csp_i2c_get_isr(ptIicBase)&I2C_SCL_SLOW_INT)||(csp_i2c_get_isr(ptIicBase)&I2C_TX_ABRT_INT))			 //SCLK锁死,IIC发送中止))
+	{
+//		csp_i2c_clr_isr(ptIicBase,I2C_SCL_SLOW_INT|I2C_TX_ABRT_INT); // 清中断更新后的位置
+
+		csi_iic_disable(ptIicBase);
+		csp_i2c_set_data_cmd(ptIicBase, 0x00);
+		csi_iic_enable(ptIicBase);
+		g_bySendIndex=0;
+		
+		if(g_tIicCtrl[byIdx].other_state_callback)
+			g_tIicCtrl[byIdx].other_state_callback(ptIicBase, byIsr);
+		
+		csp_i2c_clr_isr(ptIicBase,I2C_SCL_SLOW_INT|I2C_TX_ABRT_INT);  // 清中断原来的位置
+		g_wIicErrorCont=0;
+		csp_i2c_int_disable(ptIicBase,I2C_TX_EMPTY_INT);
+		
+	}else
+	{
+		if(csp_i2c_get_isr(ptIicBase)&I2C_RX_FULL_INT)        //有接收到数据    从机接收数据
+		{
+			if(g_bySendIndex == 0)
+			{
+				g_bySendIndex = 1;
+				g_wIicSlaveWriteAddress = csp_i2c_get_data(ptIicBase);
+				g_byWriteIndex = g_wIicSlaveWriteAddress;
+			}
+			else
+			{
+				if(g_wIicSlaveWriteAddress<g_tSlave.hwRxSize)
+				{
+					*(g_tSlave.pbySlaveRxBuf+g_wIicSlaveWriteAddress)= csp_i2c_get_data(ptIicBase);
+				}
+				g_wIicSlaveWriteAddress++;
+			}
+			
+			
+			if(g_tIicCtrl[byIdx].recv_callback)    
+				g_tIicCtrl[byIdx].recv_callback(ptIicBase,g_tSlave.pbySlaveRxBuf ,&g_tSlave.hwRxSize);  
+			
+			csp_i2c_clr_isr(ptIicBase,I2C_RX_FULL_INT);
+			g_wIicErrorCont=0;
+		}
+		
+		if(csp_i2c_get_isr(ptIicBase)&I2C_RD_REQ_INT)			//读请求产生  从机发送数据
+		{
+			if(g_bySendIndex==1)
+			{
+				g_bySendIndex=2;
+//				csp_i2c_imcr_enable(ptIicBase,I2C_TX_EMPTY_INT);
+				csp_i2c_int_enable(ptIicBase,I2C_TX_EMPTY_INT);
+				if(g_byWriteIndex<g_tSlave.hwTxSize)
+				{
+					csp_i2c_set_data_cmd(ptIicBase, *(g_tSlave.pbySlaveTxBuf+g_byWriteIndex));
+					
+				}else{
+					csp_i2c_set_data_cmd(ptIicBase, 0xFF);
+				}
+				g_byWriteIndex++;
+			}
+
+			if(g_tIicCtrl[byIdx].send_callback)   //可以吗
+				g_tIicCtrl[byIdx].send_callback(ptIicBase);
+
+			csp_i2c_clr_isr(ptIicBase,I2C_RD_REQ_INT);
+			g_wIicErrorCont=0;
+		} 
+
+		if(csp_i2c_get_isr(ptIicBase)&I2C_TX_EMPTY_INT)				//IIC发送为空
+		{
+			if(g_bySendIndex==2)
+			{
+				if(g_byWriteIndex<g_tSlave.hwTxSize)
+				{
+					csp_i2c_set_data_cmd(ptIicBase, *(g_tSlave.pbySlaveTxBuf+g_byWriteIndex));
+				}
+				else{
+					csp_i2c_set_data_cmd(ptIicBase, 0xFF);
+				}
+				g_byWriteIndex++;
+			}
+			else
+			{
+				csp_i2c_int_disable(ptIicBase,I2C_TX_EMPTY_INT);
+				if(g_wIicErrorCont>10000)
+				{
+					csi_iic_disable(ptIicBase);
+					csp_i2c_set_data_cmd(ptIicBase, 0x00);
+					csi_iic_enable(ptIicBase);
+					g_wIicErrorCont=0;
+				}
+				else
+				{
+					g_wIicErrorCont++;
+				}
+			}
+			
+			if(g_tIicCtrl[byIdx].send_callback)      
+				g_tIicCtrl[byIdx].send_callback(ptIicBase);
+			
+			
+			csp_i2c_clr_isr(ptIicBase,I2C_TX_EMPTY_INT);
+		}
+		if(csp_i2c_get_isr(ptIicBase)&I2C_STOP_DET_INT)
+		{
+			csp_i2c_int_disable(ptIicBase,I2C_TX_EMPTY_INT);
+			
+			if(g_tIicCtrl[byIdx].other_state_callback)       
+				g_tIicCtrl[byIdx].other_state_callback(ptIicBase, byIsr);		
+			
+			
+			csp_i2c_clr_isr(ptIicBase,I2C_STOP_DET_INT);
+			if(g_bySendIndex!=0)
+			{
+				g_bySendIndex=0;
+			}
+			g_wIicErrorCont=0;
+		}
+	
+	
+	}
+	
+	
+	
+	
+}
+
+
+
+/** \brief IIC interrupt enable control
+ * 
+ *  \param[in] ptLedBase: pointer of bt register structure
+ *  \param[in] eIntSrc: iic interrupt source \ref csi_iic_intsrc_e
+ *  \return none
+ */ 
+void csi_iic_int_enable(csp_i2c_t *ptIicBase, csi_iic_intsrc_e eIntSrc)
+{
+	csp_i2c_int_enable(ptIicBase, eIntSrc);
 }
 
 /** \brief initialize iic slave
@@ -231,11 +434,11 @@ csi_error_t csi_iic_master_init(csp_i2c_t *ptIicBase, csi_iic_master_config_t *p
 	apt_iic_deinit(ptIicBase);
 	wIicClk = csi_get_pclk_freq() / 1000000U;
 	
-	if(ptIicMasterCfg->bySpeedMode == IIC_BUS_SPEED_STANDARD)
+	if(ptIicMasterCfg->eSpeedMode == IIC_BUS_SPEED_STANDARD)
 	{
 		if(wIicClk<3)
 			return CSI_ERROR;
-		csp_i2c_set_cr(ptIicBase,(IIC_BUS_SPEED_STANDARD<<1)|(ptIicMasterCfg->byAddrMode<<4) | I2C_MASTER |(ptIicMasterCfg->byReStart<<5));
+		csp_i2c_set_cr(ptIicBase,(IIC_BUS_SPEED_STANDARD<<1)|(ptIicMasterCfg->eAddrMode<<4) | I2C_MASTER |(ptIicMasterCfg->bReStart<<5));
 		if(0 == wIicClk)
 		{
 			hwSclH = 8;
@@ -251,11 +454,11 @@ csi_error_t csi_iic_master_init(csp_i2c_t *ptIicBase, csi_iic_master_config_t *p
 		csp_i2c_sda_setup(ptIicBase,0xf);
 		csp_i2c_sda_hold(ptIicBase,0xf,0xf);
 		
-	}else if(ptIicMasterCfg->bySpeedMode == IIC_BUS_SPEED_FAST)
+	}else if(ptIicMasterCfg->eSpeedMode == IIC_BUS_SPEED_FAST)
 	{
 		if(wIicClk<12)
 			return CSI_ERROR;
-		csp_i2c_set_cr(ptIicBase,(IIC_BUS_SPEED_FAST<<1)|(ptIicMasterCfg->byAddrMode<<4) | I2C_MASTER |(ptIicMasterCfg->byReStart<<5));
+		csp_i2c_set_cr(ptIicBase,(IIC_BUS_SPEED_FAST<<1)|(ptIicMasterCfg->eAddrMode<<4) | I2C_MASTER |(ptIicMasterCfg->bReStart<<5));
 		if(0 == wIicClk)
 		{
 			hwSclH = 8;
@@ -272,10 +475,10 @@ csi_error_t csi_iic_master_init(csp_i2c_t *ptIicBase, csi_iic_master_config_t *p
 		csp_i2c_set_fs_scll(ptIicBase,hwSclL);
 		csp_i2c_sda_setup(ptIicBase,0x2);
 		csp_i2c_sda_hold(ptIicBase,0x8,0x3);
-	}else if(ptIicMasterCfg->bySpeedMode == IIC_BUS_SPEED_FAST_PLUS){
+	}else if(ptIicMasterCfg->eSpeedMode == IIC_BUS_SPEED_FAST_PLUS){
 		if(wIicClk<32)
 			return CSI_ERROR;
-		csp_i2c_set_cr(ptIicBase,(IIC_BUS_SPEED_FAST<<1)|(ptIicMasterCfg->byAddrMode<<4) | I2C_MASTER |(ptIicMasterCfg->byReStart<<5));
+		csp_i2c_set_cr(ptIicBase,(IIC_BUS_SPEED_FAST<<1)|(ptIicMasterCfg->eAddrMode<<4) | I2C_MASTER |(ptIicMasterCfg->bReStart<<5));
 		if(0 == wIicClk)
 		{
 			hwSclH = 8;
@@ -298,8 +501,8 @@ csi_error_t csi_iic_master_init(csp_i2c_t *ptIicBase, csi_iic_master_config_t *p
 	apt_iic_set_tx_flsel(ptIicBase,0x9);
 	apt_iic_set_timeout(ptIicBase,ptIicMasterCfg->wSdaTimeout,ptIicMasterCfg->wSclTimeout);
 	
-	csp_i2c_set_imcr(ptIicBase,ptIicMasterCfg->hwInt);
-	csi_irq_enable((uint32_t *)ptIicBase);
+//	csp_i2c_set_imcr(ptIicBase,ptIicMasterCfg->hwInt);
+//	csi_irq_enable((uint32_t *)ptIicBase);
 	
     return CSI_OK;
 }
@@ -325,11 +528,8 @@ csi_error_t csi_iic_write_nbyte(csp_i2c_t *ptIicBase,uint32_t wDevAddr, uint32_t
 		return CSI_ERROR;
 	
 	csi_iic_disable(ptIicBase);
-	csp_i2c_set_taddr(ptIicBase,wDevAddr >> 1);
-//	csp_i2c_set_taddr(ptIicBase,wDevAddr >> 1| TADDR_STARTB);
+	csi_iic_set_taddr(ptIicBase, wDevAddr >> 1);
 	csi_iic_enable(ptIicBase);
-
-	
 	
 	switch(byWriteAddrNumByte)
 	{
@@ -422,7 +622,7 @@ csi_error_t csi_iic_read_nbyte(csp_i2c_t *ptIicBase,uint32_t wDevAddr, uint32_t 
 	
 	
 	csi_iic_disable(ptIicBase);
-	csp_i2c_set_taddr(ptIicBase,wDevAddr >> 1);
+	csi_iic_set_taddr(ptIicBase,wDevAddr >> 1);
 	csi_iic_enable(ptIicBase);
 	
 	switch(byReadAddrNumByte)
@@ -529,7 +729,7 @@ csi_error_t csi_iic_read_nbyte_dma(csp_i2c_t *ptIicBase,uint32_t wDevAddr, uint3
 	
 	
 	csi_iic_disable(ptIicBase);
-	csp_i2c_set_taddr(ptIicBase,wDevAddr >> 1);
+	csi_iic_set_taddr(ptIicBase,wDevAddr >> 1);
 	csi_iic_enable(ptIicBase);
 	
 	switch(byReadAddrNumByte)
@@ -621,112 +821,109 @@ void csi_iic_set_slave_buffer(volatile uint8_t *pbyIicRxBuf,uint16_t hwIicRxSize
  * 
  *  \param[in] ptIicBase: pointer of iic register structure
  *  \return none
- */ 
-void csi_iic_slave_receive_send(csp_i2c_t *ptIicBase)
-{
-	if((csp_i2c_get_isr(ptIicBase)&I2C_SCL_SLOW_INT)||(csp_i2c_get_isr(ptIicBase)&I2C_TX_ABRT_INT))			 //SCLK锁死,IIC发送中止))
-	{
-//		csp_i2c_clr_isr(ptIicBase,I2C_SCL_SLOW_INT|I2C_TX_ABRT_INT); // 清中断更新后的位置
-
-		csi_iic_disable(ptIicBase);
-		csp_i2c_set_data_cmd(ptIicBase, 0x00);
-		csi_iic_enable(ptIicBase);
-		g_bySendIndex=0;
-		csp_i2c_clr_isr(ptIicBase,I2C_SCL_SLOW_INT|I2C_TX_ABRT_INT);  // 清中断原来的位置
-		g_wIicErrorCont=0;
-		csp_i2c_imcr_disable(ptIicBase,I2C_TX_EMPTY_INT);
-		
-		
-	}else
-	{
-		if(csp_i2c_get_isr(ptIicBase)&I2C_RX_FULL_INT)        //有接收到数据
-		{
-			if(g_bySendIndex == 0)
-			{
-				g_bySendIndex = 1;
-				g_wIicSlaveWriteAddress = csp_i2c_get_data(ptIicBase);
-				g_byWriteIndex = g_wIicSlaveWriteAddress;
-			}
-			else
-			{
-				if(g_wIicSlaveWriteAddress<g_tSlave.hwRxSize)
-				{
-					*(g_tSlave.pbySlaveRxBuf+g_wIicSlaveWriteAddress)= csp_i2c_get_data(ptIicBase);
-				}
-				g_wIicSlaveWriteAddress++;
-			}
-			csp_i2c_clr_isr(ptIicBase,I2C_RX_FULL_INT);
-			g_wIicErrorCont=0;
-		}
-		
-		if(csp_i2c_get_isr(ptIicBase)&I2C_RD_REQ_INT)			//读请求产生
-		{
-			if(g_bySendIndex==1)
-			{
-				g_bySendIndex=2;
-				csp_i2c_imcr_enable(ptIicBase,I2C_TX_EMPTY_INT);
-				if(g_byWriteIndex<g_tSlave.hwTxSize)
-				{
-					csp_i2c_set_data_cmd(ptIicBase, *(g_tSlave.pbySlaveTxBuf+g_byWriteIndex));
-					
-				}else{
-					csp_i2c_set_data_cmd(ptIicBase, 0xFF);
-				}
-				g_byWriteIndex++;
-			}
-
-			csp_i2c_clr_isr(ptIicBase,I2C_RD_REQ_INT);
-			g_wIicErrorCont=0;
-		} 
-
-		if(csp_i2c_get_isr(ptIicBase)&I2C_TX_EMPTY_INT)				//IIC发送为空
-		{
-			if(g_bySendIndex==2)
-			{
-				if(g_byWriteIndex<g_tSlave.hwTxSize)
-				{
-					csp_i2c_set_data_cmd(ptIicBase, *(g_tSlave.pbySlaveTxBuf+g_byWriteIndex));
-				}
-				else{
-					csp_i2c_set_data_cmd(ptIicBase, 0xFF);
-				}
-				g_byWriteIndex++;
-			}
-			else
-			{
-				csp_i2c_imcr_disable(ptIicBase,I2C_TX_EMPTY_INT);
-				if(g_wIicErrorCont>10000)
-				{
-					csi_iic_disable(ptIicBase);
-					csp_i2c_set_data_cmd(ptIicBase, 0x00);
-					csi_iic_enable(ptIicBase);
-					g_wIicErrorCont=0;
-				}
-				else
-				{
-					g_wIicErrorCont++;
-				}
-			}
-			csp_i2c_clr_isr(ptIicBase,I2C_TX_EMPTY_INT);
-		}
-		if(csp_i2c_get_isr(ptIicBase)&I2C_STOP_DET_INT)
-		{
-			csp_i2c_imcr_disable(ptIicBase,I2C_TX_EMPTY_INT);
-			csp_i2c_clr_isr(ptIicBase,I2C_STOP_DET_INT);
-			if(g_bySendIndex!=0)
-			{
-				g_bySendIndex=0;
-			}
-			g_wIicErrorCont=0;
-		}
-	
-	
-	}
-	
-}
-
-
-
+// */ 
+//void csi_iic_slave_receive_send(csp_i2c_t *ptIicBase)
+//{
+//	if((csp_i2c_get_isr(ptIicBase)&I2C_SCL_SLOW_INT)||(csp_i2c_get_isr(ptIicBase)&I2C_TX_ABRT_INT))			 //SCLK锁死,IIC发送中止))
+//	{
+////		csp_i2c_clr_isr(ptIicBase,I2C_SCL_SLOW_INT|I2C_TX_ABRT_INT); // 清中断更新后的位置
+//
+//		csi_iic_disable(ptIicBase);
+//		csp_i2c_set_data_cmd(ptIicBase, 0x00);
+//		csi_iic_enable(ptIicBase);
+//		g_bySendIndex=0;
+//		csp_i2c_clr_isr(ptIicBase,I2C_SCL_SLOW_INT|I2C_TX_ABRT_INT);  // 清中断原来的位置
+//		g_wIicErrorCont=0;
+//		csp_i2c_imcr_disable(ptIicBase,I2C_TX_EMPTY_INT);
+//		
+//		
+//	}else
+//	{
+//		if(csp_i2c_get_isr(ptIicBase)&I2C_RX_FULL_INT)        //有接收到数据
+//		{
+//			if(g_bySendIndex == 0)
+//			{
+//				g_bySendIndex = 1;
+//				g_wIicSlaveWriteAddress = csp_i2c_get_data(ptIicBase);
+//				g_byWriteIndex = g_wIicSlaveWriteAddress;
+//			}
+//			else
+//			{
+//				if(g_wIicSlaveWriteAddress<g_tSlave.hwRxSize)
+//				{
+//					*(g_tSlave.pbySlaveRxBuf+g_wIicSlaveWriteAddress)= csp_i2c_get_data(ptIicBase);
+//				}
+//				g_wIicSlaveWriteAddress++;
+//			}
+//			csp_i2c_clr_isr(ptIicBase,I2C_RX_FULL_INT);
+//			g_wIicErrorCont=0;
+//		}
+//		
+//		if(csp_i2c_get_isr(ptIicBase)&I2C_RD_REQ_INT)			//读请求产生
+//		{
+//			if(g_bySendIndex==1)
+//			{
+//				g_bySendIndex=2;
+//				csp_i2c_imcr_enable(ptIicBase,I2C_TX_EMPTY_INT);
+//				if(g_byWriteIndex<g_tSlave.hwTxSize)
+//				{
+//					csp_i2c_set_data_cmd(ptIicBase, *(g_tSlave.pbySlaveTxBuf+g_byWriteIndex));
+//					
+//				}else{
+//					csp_i2c_set_data_cmd(ptIicBase, 0xFF);
+//				}
+//				g_byWriteIndex++;
+//			}
+//
+//			csp_i2c_clr_isr(ptIicBase,I2C_RD_REQ_INT);
+//			g_wIicErrorCont=0;
+//		} 
+//
+//		if(csp_i2c_get_isr(ptIicBase)&I2C_TX_EMPTY_INT)				//IIC发送为空
+//		{
+//			if(g_bySendIndex==2)
+//			{
+//				if(g_byWriteIndex<g_tSlave.hwTxSize)
+//				{
+//					csp_i2c_set_data_cmd(ptIicBase, *(g_tSlave.pbySlaveTxBuf+g_byWriteIndex));
+//				}
+//				else{
+//					csp_i2c_set_data_cmd(ptIicBase, 0xFF);
+//				}
+//				g_byWriteIndex++;
+//			}
+//			else
+//			{
+//				csp_i2c_imcr_disable(ptIicBase,I2C_TX_EMPTY_INT);
+//				if(g_wIicErrorCont>10000)
+//				{
+//					csi_iic_disable(ptIicBase);
+//					csp_i2c_set_data_cmd(ptIicBase, 0x00);
+//					csi_iic_enable(ptIicBase);
+//					g_wIicErrorCont=0;
+//				}
+//				else
+//				{
+//					g_wIicErrorCont++;
+//				}
+//			}
+//			csp_i2c_clr_isr(ptIicBase,I2C_TX_EMPTY_INT);
+//		}
+//		if(csp_i2c_get_isr(ptIicBase)&I2C_STOP_DET_INT)
+//		{
+//			csp_i2c_imcr_disable(ptIicBase,I2C_TX_EMPTY_INT);
+//			csp_i2c_clr_isr(ptIicBase,I2C_STOP_DET_INT);
+//			if(g_bySendIndex!=0)
+//			{
+//				g_bySendIndex=0;
+//			}
+//			g_wIicErrorCont=0;
+//		}
+//	
+//	
+//	}
+//	
+//}
 
 /** \brief  set iic slave address qualifier mode
  * 
@@ -750,3 +947,39 @@ void csi_iic_slvqual_set(csp_i2c_t *ptIicBase,uint32_t wSlvqual)
 	csp_i2c_set_slvqual(ptIicBase,wSlvqual);
 }
 
+
+/** \brief  set iic rxdma
+ * 
+ *  \param[in] ptIicBase: pointer of iic register structure
+ *  \param[in] eRxDmaEn: RX DMA enable
+ *  \param[in] eRxDmaSel: RX DMA function select
+ *  \return none
+ */ 
+void csi_i2c_set_rxdma(csp_i2c_t *ptI2cBase, i2c_rdma_en_e eRxDmaEn, i2c_rdma_sel_e eRxDmaSel) 
+{
+	csp_i2c_set_rxdma(ptI2cBase, eRxDmaEn, eRxDmaSel);
+}
+
+/** \brief  set iic txdma
+ * 
+ *  \param[in] ptIicBase: pointer of iic register structure
+ *  \param[in] eTxDmaEn: TX DMA enable
+ *  \param[in] eTxDmaSel: TX DMA function select
+ *  \return none
+ */ 
+void csi_i2c_set_txdma(csp_i2c_t *ptI2cBase, i2c_tdma_en_e eTxDmaEn, i2c_tdma_sel_e eTxDmaSel) 
+{
+	csp_i2c_set_txdma(ptI2cBase,eTxDmaEn,eTxDmaSel);
+}
+
+
+/** \brief clear iic interrupt 
+ * 
+ *  \param[in] ptI2cBase: pointer of iic register structure
+ *  \param[in] eIntSrc: iic interrupt source
+ *  \return none
+ */ 
+void csi_iic_clr_isr(csp_i2c_t *ptI2cBase, csi_iic_intsrc_e eIntSrc)
+{
+	csp_i2c_clr_isr(ptI2cBase, (i2c_int_e)eIntSrc);	
+}
