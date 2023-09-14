@@ -10,10 +10,9 @@
 */
 
 /* include ----------------------------------------------------------------*/
-
+#include "drv/rtc.h"
 #include "rtc_alg.h"
 #include "board_config.h"
-#include <drv/rtc.h>
 
 /* externs function--------------------------------------------------------*/
 /* private function--------------------------------------------------------*/
@@ -25,9 +24,9 @@ static csp_error_t apt_rtc_set_date(csp_rtc_t *ptRtc, uint8_t byYear, uint8_t by
 csp_error_t apt_rtc_set_trgsrc(csp_rtc_t *ptRtc, uint8_t byTrg, csp_rtc_trgsel_e eSrc);
 csp_error_t apt_rtc_set_trgprd(csp_rtc_t *ptRtc, uint8_t byTrg, uint8_t byPrd);
 
-/* externs variablesr------------------------------------------------------*/
-/* Private variablesr------------------------------------------------------*/
-
+/* externs variable------------------------------------------------------*/
+/* Private variable------------------------------------------------------*/
+csp_rtc_time_t tRtcAlarmTime;
 
 
 /**
@@ -36,7 +35,6 @@ csp_error_t apt_rtc_set_trgprd(csp_rtc_t *ptRtc, uint8_t byTrg, uint8_t byPrd);
   \param	   tConfig  rtc basic parameters \ref csi_rtc_config_t
   \return      none
 */
-csp_rtc_time_t tRtcAlarmTime;
 void csi_rtc_init(csp_rtc_t *ptRtc, csi_rtc_config_t *tConfig)
 {
     uint8_t byDiva = 0;
@@ -114,7 +112,6 @@ void csi_rtc_init(csp_rtc_t *ptRtc, csi_rtc_config_t *tConfig)
 	
 	csp_rtc_int_disable(ptRtc, RTC_INT_ALMA|RTC_INT_ALMB|RTC_INT_CPRD|RTC_INT_TRGEV0|RTC_INT_TRGEV1);
 	csp_rtc_clr_isr(ptRtc, RTC_INT_ALMA|RTC_INT_ALMB|RTC_INT_CPRD|RTC_INT_TRGEV0|RTC_INT_TRGEV1);
-
 
 }
 

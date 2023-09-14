@@ -14,7 +14,7 @@
 #include <drv/gpio.h>
 
 
-
+#if (USE_USART_CALLBACK == 1)	
 
 /* externs function--------------------------------------------------------*/
 /* externs variable------------------------------------------------------*/
@@ -186,3 +186,4 @@ int usart_receive_int_callback_demo(void)
 }
 
 
+#endif

@@ -8,8 +8,8 @@
  * </table>
  * *********************************************************************
 */
-#include <drv/usart.h>
-#include <drv/tick.h>
+#include "drv/usart.h"
+#include "tick.h"
 
 /* Private macro------------------------------------------------------*/
 /* externs function---------------------------------------------------*/
@@ -52,9 +52,9 @@ csi_error_t csi_usart_init(csp_usart_t *ptUsartBase, csi_usart_config_t *ptUsart
 	
 	csi_clk_enable((uint32_t *)ptUsartBase);			//usart peripheral clk enable
 	csp_usart_clk_en(ptUsartBase);						//usart clk enable
-	csp_usart_soft_rst(ptUsartBase);
-	csp_usart_rxfifo_rst(ptUsartBase);
-	csp_usart_txfifo_rst(ptUsartBase);
+	csp_usart_sw_rst(ptUsartBase);
+	csp_usart_rxfifo_sw_rst(ptUsartBase);
+	csp_usart_txfifo_sw_rst(ptUsartBase);
 	
 	csp_usart_set_ckdiv(ptUsartBase, ptUsartCfg->byClkSrc);			//clk source
 	csp_usart_set_mode(ptUsartBase, ptUsartCfg->byMode, US_NORMAL);	//work mode normal
@@ -108,10 +108,10 @@ csi_error_t csi_usart_init(csp_usart_t *ptUsartBase, csi_usart_config_t *ptUsart
 	if(ptUsartCfg -> hwRecvTo > 0)	
 	{
 		csp_usart_set_rtor(ptUsartBase, ptUsartCfg->hwRecvTo);			//set receive timeover time
-		csp_usart_cr_cmd(ptUsartBase, US_STTTO);
+//		csp_usart_clr_isr(ptUsartBase, US_RXTO_INT_S);
+		csp_usart_rtor_enable(ptUsartBase);
 	}
 
-//	csi_irq_enable((uint32_t *)ptUsartBase);							//enable usart interrupt
 	return CSI_OK;
 }
 
@@ -162,7 +162,7 @@ void csi_usart_irqhandler(csp_usart_t *ptUsartBase,uint8_t byIdx)
 					g_tUsartCtrl[byIdx].pbyRxBuf[g_tUsartCtrl[byIdx].hwTransNum ++] = csp_usart_get_data(ptUsartBase);		//get data
 				else															//RX completed										
 				{
-					csp_usart_rxfifo_rst(ptUsartBase);							//reset rxfifo
+					csp_usart_rxfifo_sw_rst(ptUsartBase);							//reset rxfifo
 					csp_usart_int_disable(ptUsartBase, US_RXFIFO_INT);			//disable rxfifo int 
 					csp_usart_set_rtor(ptUsartBase,0);							//disable time over by setting OVER_TIME to 0.
 					g_tUsartCtrl[byIdx].hwTransNum = 0;							//clear rx counter
@@ -172,7 +172,8 @@ void csi_usart_irqhandler(csp_usart_t *ptUsartBase,uint8_t byIdx)
 					if(g_tUsartCtrl[byIdx].recv_callback)
 						g_tUsartCtrl[byIdx].recv_callback(ptUsartBase, USART_EVENT_RX_DNE, g_tUsartCtrl[byIdx].pbyRxBuf, &g_tUsartCtrl[byIdx].hwRxSize);
 					
-					csp_usart_cr_cmd(ptUsartBase,US_STTTO);						//enable timeout int
+//					csp_usart_clr_isr(ptUsartBase, US_RXTO_INT_S);
+					csp_usart_rtor_enable(ptUsartBase);					//enable timeout int
 				}
 			}
 			break;
@@ -203,8 +204,8 @@ void csi_usart_irqhandler(csp_usart_t *ptUsartBase,uint8_t byIdx)
 						g_tUsartCtrl[byIdx].recv_callback(ptUsartBase, USART_EVENT_RX_DNE, g_tUsartCtrl[byIdx].pbyRxBuf, &g_tUsartCtrl[byIdx].hwRxSize);
 				}
 			}
-			csp_usart_clr_isr(ptUsartBase, US_RXTO_INT);							//clear interrupt
-			csp_usart_cr_cmd(ptUsartBase,US_STTTO);	
+			csp_usart_clr_isr(ptUsartBase, US_RXTO_INT_S);							//clear interrupt
+			csp_usart_rtor_enable(ptUsartBase);	
 			break;
 			
 		case US_TXFIFO_INT:					
@@ -224,7 +225,7 @@ void csi_usart_irqhandler(csp_usart_t *ptUsartBase,uint8_t byIdx)
 			break;
 
 		default:
-			csp_usart_clr_isr(ptUsartBase, 0x5101);
+			csp_usart_clr_isr(ptUsartBase, US_ALL_INT_S);
 			break;
 	}
 }
@@ -264,6 +265,16 @@ void csi_usart_int_disable(csp_usart_t *ptUsartBase, csi_usart_intsrc_e eIntSrc)
 	csp_usart_int_disable(ptUsartBase, (usart_int_e)eIntSrc);
 }
 
+/** \brief clear usart interrupt status
+ * 
+ *  \param[in] ptUsartBase: pointer of usart register structure
+ *  \param[in] eIntSta: usart interrupt status, \ref csi_usart_intsta_e
+ *  \return none
+ */
+void csi_usart_clr_isr(csp_usart_t *ptUsartBase, csi_usart_intsta_e eIntSta)
+{
+	csp_usart_clr_isr(ptUsartBase, (usart_isr_e)eIntSta);
+}
 /** \brief start(enable) usart rx/tx
  * 
  *  \param[in] ptUsartBase: pointer of usart register structure
@@ -275,13 +286,14 @@ csi_error_t csi_usart_start(csp_usart_t *ptUsartBase, csi_usart_func_e eFunc)
 	switch(eFunc)
 	{
 		case USART_FUNC_RX:
-			csp_usart_cr_cmd(ptUsartBase, US_RXEN );				//enable RX
+			csp_usart_rx_enable(ptUsartBase);				//enable RX
 			break;
 		case USART_FUNC_TX:
-			csp_usart_cr_cmd(ptUsartBase, US_TXEN );				//enable TX
+			csp_usart_tx_enable(ptUsartBase);				//enable TX
 			break;
 		case USART_FUNC_RX_TX:
-			csp_usart_cr_cmd(ptUsartBase, US_RXEN | US_TXEN);
+			csp_usart_rx_enable(ptUsartBase);
+			csp_usart_tx_enable(ptUsartBase);		
 			break;
 		default:
 			return CSI_ERROR;
@@ -300,14 +312,14 @@ csi_error_t csi_usart_stop(csp_usart_t *ptUsartBase, csi_usart_func_e eFunc)
 	switch(eFunc)
 	{
 		case USART_FUNC_RX:
-			csp_usart_cr_cmd(ptUsartBase, US_RXDIS); 				//disable RX
-			
+			csp_usart_rx_disable(ptUsartBase);	 				//disable RX
 			break;
 		case USART_FUNC_TX:
-			csp_usart_cr_cmd(ptUsartBase, US_TXDIS); 				//disable TX
+			csp_usart_tx_disable(ptUsartBase);				//disable TX
 			break;
 		case USART_FUNC_RX_TX:
-			csp_usart_cr_cmd(ptUsartBase, US_RXDIS | US_TXDIS);		//disable TX/RX
+			csp_usart_rx_disable(ptUsartBase);		//disable TX/RX
+			csp_usart_tx_disable(ptUsartBase);
 			break;
 		default:
 			return CSI_ERROR;
@@ -327,7 +339,8 @@ void csi_usart_clkout(csp_usart_t *ptUsartBase, bool bEnable)
 	{
 		csp_usart_clko_enable(ptUsartBase);
 	}
-	else {
+	else 
+	{
 		csp_usart_clko_disable(ptUsartBase);
 	}
 }
@@ -391,7 +404,7 @@ int32_t csi_usart_receive(csp_usart_t *ptUsartBase, void *pData, uint16_t hwSize
 	uint8_t *pbyRecv = (uint8_t *)pData;
  	volatile uint16_t hwRecvNum = 0;
 	
-	csp_usart_rxfifo_rst(ptUsartBase);								//reset rxfifo，clear rxfifo
+	csp_usart_rxfifo_sw_rst(ptUsartBase);								//reset rxfifo，clear rxfifo
 	
 	if(NULL == pData)
 		return CSI_ERROR;
@@ -464,14 +477,13 @@ csi_error_t csi_usart_receive_int(csp_usart_t *ptUsartBase, void *pData, uint16_
 	g_tUsartCtrl[byIdx].hwTransNum = 0;
 	g_tUsartCtrl[byIdx].byRxState = USART_EVENT_RECV;
 	
-	csp_usart_rxfifo_rst(ptUsartBase);									//reset rxfifo
-	csp_usart_cr_cmd(ptUsartBase, US_STTTO);							//enable rto
+	csp_usart_rxfifo_sw_rst(ptUsartBase);									//reset rxfifo
+//	csp_usart_clr_isr(ptUsartBase, US_RXTO_INT_S);
+	csp_usart_rtor_enable(ptUsartBase);								//enable rto
 	csp_usart_int_enable(ptUsartBase, US_RXFIFO_INT | US_RXTO_INT);		//rxfifo and receive timeout int
 	
 	return CSI_OK;
 }
-
-
 
 /** \brief usart dma send mode set
  * 

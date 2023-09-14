@@ -13,10 +13,9 @@
 #ifndef _DRV_USART_H_
 #define _DRV_USART_H_
 
-#include <drv/etcb.h>
-#include <drv/dma.h>
-#include <tick.h>
-#include <csp.h>
+
+#include "drv/dma.h"
+#include "csp.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -170,6 +169,29 @@ typedef enum
 	USART_INTSRC_TXFIFO   		= (0x01ul << 14) 		//TX FIFO interrupt  
 }csi_usart_intsrc_e;
 
+typedef enum{
+
+	USART_INTSTA_RXBRK			= (0x01ul << 2),
+	USART_INTSTA_OVRE			= (0x01ul << 5),
+	USART_INTSTA_FRAME			= (0x01ul << 6),
+	USART_INTSTA_PARE			= (0x01ul << 7),
+	USART_INTSTA_RXTO			= (0x01ul << 8),
+	USART_INTSTA_IDLE			= (0x01ul << 10),
+	USART_INTSTA_ALL			= 0x5E4ul ,			//US all int status
+
+	
+	LIN_INTSTA_ENDHEADER		= (0x01ul << 24),		//Ended header Interrupt status
+	LIN_INTSTA_ENDMESS			= (0x01ul << 25),		//Ended message Interrupt status
+	LIN_INTSTA_NOTREPS			= (0x01ul << 26),		//Not responding error Interrupt status
+	LIN_INTSTA_BITERROR			= (0x01ul << 27),		//Bit error Interrupt status
+	LIN_INTSTA_IPERROR			= (0x01ul << 28),		//Identity parity error Interrupt status
+	LIN_INTSTA_CHECKSUM			= (0x01ul << 29),		//Checksum error Interrupt status
+	LIN_INTSTA_WAKEUP			= (0x01ul << 30),		//Wake up Interrupt status		
+	LIN_INTSTA_ALL				= (0x7Ful << 24),		//LIN all int status
+	LIN_INTSTA_ERR				= (0x3Cul << 24)		//LIN all err status
+	
+}csi_usart_intsta_e; 
+
 
 /**
  * \enum     csi_usart_callbackid_e
@@ -259,6 +281,14 @@ void csi_usart_int_enable(csp_usart_t *ptUsartBase, csi_usart_intsrc_e eIntSrc);
  *  \return none
  */
 void csi_usart_int_disable(csp_usart_t *ptUsartBase, csi_usart_intsrc_e eIntSrc);
+
+/** \brief clear usart interrupt status
+ * 
+ *  \param[in] ptUsartBase: pointer of usart register structure
+ *  \param[in] eIntSta: usart interrupt status, \ref csi_usart_intsta_e
+ *  \return none
+ */
+void csi_usart_clr_isr(csp_usart_t *ptUsartBase, csi_usart_intsta_e eIntSta);
 
 /** 
   \brief 	   start(enable) usart rx/tx

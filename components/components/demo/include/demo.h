@@ -164,7 +164,10 @@ extern int gptb_pwm_dz_demo(void);
 extern int gptb_pwm_dz_em_demo(void);
 
 //crc demo
-extern csi_error_t crc_demo();
+extern csi_error_t crc32_demo(void);
+extern csi_error_t crc16_ccitt_demo(void);
+extern csi_error_t crc16_demo(void);
+extern csi_error_t crc16_xmodem_demo(void);
 
 //led
 extern csi_error_t led_demo(void);
