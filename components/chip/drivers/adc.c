@@ -99,7 +99,6 @@ csi_error_t csi_adc_init(csp_adc_t *ptAdcBase, csi_adc_config_t *ptAdcCfg)
 	if(ptAdcCfg->wInt)
 	{
 		csp_adc_int_enable(ptAdcBase, ptAdcCfg->wInt, ENABLE);	//enable adc interrupt
-		csi_irq_enable((uint32_t *)ptAdcBase);						//enable adc irq	
 	}	
 	return ret;
 }

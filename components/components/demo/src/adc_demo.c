@@ -12,10 +12,8 @@
 #include <string.h>
 #include <drv/adc.h>
 #include <drv/pin.h>
-#include <iostring.h>
-//#include "demo.h"
 #include "drv/etcb.h"
-#include <drv/gpta.h>
+#include "board_config.h"
 /* externs function--------------------------------------------------------*/
 //ADC通道采样深度(每通道采样数据次数)，连续转换模式时支持
 //单次转换模式时，需将次参数配置为1	
@@ -59,7 +57,6 @@ volatile uint8_t byChnlNum = sizeof(tSeqCfg)/sizeof(tSeqCfg[0]);
 int adc_samp_oneshot_demo(void)
 {
 	int iRet = 0;
-	uint8_t i;
 	csi_adc_config_t tAdcConfig;
 #if !defined(USE_GUI)	
 	//adc 输入管脚配置
@@ -78,42 +75,8 @@ int adc_samp_oneshot_demo(void)
 	
 	csi_adc_init(ADC0, &tAdcConfig);							//初始化ADC参数配置	
 	csi_adc_set_seqx(ADC0, tAdcConfig.ptSeqCfg, byChnlNum);		//配置ADC采样序列
-	csi_adc_set_buffer((uint16_t *)g_hwAdcBuf, 1);				//传递ADC采样buffer，ADC采样值存放于此buffer中
 	csi_adc_start(ADC0);										//启动ADC
-	
-	do
-	{
-		//读ADC采样序列，整个采样序列所有通道读到采样buffer 
-		if(csi_adc_read_seqx(ADC0) == CSI_OK)			//采样通道读取完成，ADC value 保持在 buffer中 
-		{
-			for(i = 0; i < byChnlNum; i++)
-				my_printf("ADC channel value of seq: %d \n", g_hwAdcBuf[i]);
-		}
-		else											//采样通道读取超时(异常)									
-		{
-			my_printf("ADC sample timeout...\n");
-		}
-		
-		//单个通道分别读取
-		iRet = csi_adc_start(ADC0);						//单次转换模式，序列转换完成后自动停止。若重新采样序列通道，需要重新启动ADC
-		if(iRet < 0)
-			my_printf("ADC start failure ...\n");
-			
-#if ADC_DATA_DEPTH < 2
-
-		g_hwAdcBuf[0] = csi_adc_read_channel(ADC0, 0);
-		my_printf("ADC channel 0 value of seq: %d \n", g_hwAdcBuf[0]);
-		
-		g_hwAdcBuf[1] = csi_adc_read_channel(ADC0, 1);
-		my_printf("ADC channel 1 value of seq: %d \n", g_hwAdcBuf[1]);
-		
-		g_hwAdcBuf[2] = csi_adc_read_channel(ADC0, 2);
-		my_printf("ADC channel 2 value of seq: %d \n", g_hwAdcBuf[2]);
-#endif
-		nop;
-		nop;
-		
-	}while(0);
+	while(0);
 	
 	return iRet;
 }
@@ -128,7 +91,6 @@ int adc_samp_oneshot_demo(void)
 int adc_samp_continuous_demo(void)
 {
 	int iRet = 0;
-	uint8_t i;
 	
 	csi_adc_config_t tAdcConfig;
 	
@@ -152,135 +114,6 @@ int adc_samp_continuous_demo(void)
 	csi_adc_set_buffer((uint16_t *)g_hwAdcBuf, ADC_DATA_DEPTH);	//传递ADC采样buffer，ADC采样值存放于此buffer中
 	csi_adc_start(ADC0);										//启动ADC
 	
-	do
-	{
-		
-#if	ADC_DATA_DEPTH < 2
-		
-		//ADC采样深度(每通道采样次数=1)
-		if(ADC_DATA_DEPTH == 1)
-		{
-			//读ADC采样序列，整个采样序列所有通道读到采样buffer 
-			if(csi_adc_read_seqx(ADC0) == CSI_OK)			
-			{
-				csi_adc_stop(ADC0);													//停止转换
-				for(i = 0; i < byChnlNum; i++)
-					my_printf("ADC channel value of seq: %d \n", g_hwAdcBuf[i]);	//采样通道读取完成，ADC value 保持在 buffer中 
-			}
-			else																			
-				my_printf("ADC sample timeout...\n");								//采样通道读取超时(异常)	
-				
-			
-			//上面的采样关闭了, 重新启动ADC
-			csi_adc_set_buffer((uint16_t *)g_hwAdcBuf, ADC_DATA_DEPTH);		//传递ADC采样buffer，ADC采样值存放于此buffer中	
-			iRet = csi_adc_start(ADC0);										//再次启动ADC		
-			if(iRet < 0)
-				my_printf("ADC start failure ...\n");
-				
-			do{
-				//读ADC采样序列，整个采样序列所有通道读到采样buffer 
-				if(csi_adc_read_seqx(ADC0) == CSI_OK)			
-				{
-					for(i = 0; i < byChnlNum; i++)
-						my_printf("ADC channel value of seq: %d \n", g_hwAdcBuf[i]);	//采样通道读取完成，ADC value 保持在 buffer中 
-					
-					csi_adc_set_buffer((uint16_t *)g_hwAdcBuf, ADC_DATA_DEPTH);			//传递ADC采样buffer，ADC采样值存放于此buffer中	
-				}
-				else																			
-					my_printf("ADC sample timeout...\n");
-	
-			}while(1);
-		}
-
-#else 
-		//if(ADC_DATA_DEPTH > 1)
-		{
-			uint32_t j;
-			volatile uint32_t wDataMin = 4096;
-			volatile uint32_t wDataMax = 0;
-			volatile uint32_t wDataAve = 0;
-			volatile uint32_t wDataSum = 0;
-			//读ADC采样序列，整个采样序列所有通道读到采样buffer 
-			if(csi_adc_read_seqx(ADC0) == CSI_OK)									//采样通道读取完成，ADC value 保持在 buffer中 
-			{
-				csi_adc_stop(ADC0);													//停止转换
-				for(i = 0; i < byChnlNum; i++)
-				{
-					//my_printf("ADC CHANNEL IDx OF SEQ IS : %d \n", i);
-					for(j = 0; j < ADC_DATA_DEPTH; j++)
-					//my_printf("ADC channel value of seq: %d \n", g_hwAdcBuf[i][j]);	
-					for(j = 0; j < ADC_DATA_DEPTH; j++)
-					{
-						wDataSum = wDataSum + g_hwAdcBuf[i][j];
-						if(wDataMin > g_hwAdcBuf[i][j])
-						{
-							wDataMin = g_hwAdcBuf[i][j];
-						}
-						if(wDataMax < g_hwAdcBuf[i][j])
-						{
-							wDataMax = g_hwAdcBuf[i][j];
-						}
-					}
-					
-					wDataAve = wDataSum / ADC_DATA_DEPTH;
-					my_printf("\nADC max value of seq: %d \n", wDataMax);
-					my_printf("ADC min value of seq: %d \n", wDataMin);
-					my_printf("ADC ave value of seq: %d \n\n", wDataAve);
-				}
-			}
-			else																			
-				my_printf("ADC sample timeout...\n");								//采样通道读取超时(异常)	
-				
-			
-			//上面的采样关闭了,重新启动ADC
-			csi_adc_set_buffer((uint16_t *)g_hwAdcBuf, ADC_DATA_DEPTH);		//传递ADC采样buffer，ADC采样值存放于此buffer中	
-			iRet = csi_adc_start(ADC0);										//再次启动ADC		
-			if(iRet < 0)
-				my_printf("ADC start failure ...\n");
-			
-			do{
-				//读ADC采样序列，整个采样序列所有通道读到采样buffer 
-				wDataMin = 4096;
-				wDataMax = 0;
-				wDataAve = 0;
-				wDataSum = 0;
-				if(csi_adc_read_seqx(ADC0) == CSI_OK)									//采样通道读取完成，ADC value 保持在 buffer中 
-				{
-					for(i = 0; i < byChnlNum; i++)
-					{
-						//my_printf("ADC CHANNEL IDx OF SEQ IS : %d \n", i);
-						for(j = 0; j < ADC_DATA_DEPTH; j++)
-							//my_printf("ADC channel value of seq: %d \n", g_hwAdcBuf[i][j]);
-						
-						for(j = 0; j < ADC_DATA_DEPTH; j++)
-						{
-							wDataSum = wDataSum + g_hwAdcBuf[i][j];
-							if(wDataMin > g_hwAdcBuf[i][j])
-							{
-								wDataMin = g_hwAdcBuf[i][j];
-							}
-							if(wDataMax < g_hwAdcBuf[i][j])
-							{
-								wDataMax = g_hwAdcBuf[i][j];
-							}
-						}						
-						wDataAve = wDataSum / ADC_DATA_DEPTH;
-						my_printf("\nADC max value of seq: %d \n", wDataMax);
-						my_printf("ADC min value of seq: %d \n", wDataMin);						
-						my_printf("ADC ave value of seq: %d \n", wDataAve);
-						mdelay(500);	
-					}
-					csi_adc_set_buffer((uint16_t *)g_hwAdcBuf, ADC_DATA_DEPTH);			//传递ADC采样buffer，ADC采样值存放于此buffer中
-				}
-				else																			
-					my_printf("ADC sample timeout...\n");								//采样通道读取超时(异常)
-	
-			}while(1);	
-		}
-#endif
-
-	}while(0);
-	
 	return iRet;
 }
 
@@ -295,7 +128,6 @@ int adc_samp_continuous_demo(void)
 int adc_samp_oneshot_int_demo(void)
 {
 	int iRet = 0;
-	uint8_t i;
 	csi_adc_config_t tAdcConfig;
 #if !defined(USE_GUI)	
 	//adc 输入管脚配置
@@ -316,40 +148,7 @@ int adc_samp_oneshot_int_demo(void)
 	csi_adc_set_seqx(ADC0, tAdcConfig.ptSeqCfg, byChnlNum);		//配置ADC采样序列
 	csi_adc_set_buffer((uint16_t *)g_hwAdcBuf, 1);				//传递ADC采样buffer，ADC采样值存放于此buffer中
 	csi_adc_start(ADC0);										//启动ADC
-//------------------------------------------------------------------------------------------------------------------------			
-	do
-	{
-		//读ADC采样序列，整个采样序列所有通道读到采样buffer 
-		while(1)
-		{
-			if(csi_adc_get_status(ADC0) == ADC_STATE_DONE)			//采样通道读取完成，ADC value 保持在 buffer中 
-			{
-				csi_adc_clr_status(ADC0);
-				for(i = 0; i < byChnlNum; i++)
-					my_printf("ADC channel value of seq: %d \n", g_hwAdcBuf[i]);
-				break;
-			}
-		}
-		
-		//若继续采样ADC序列，需再次启动ADC
-		iRet = csi_adc_start(ADC0);								//再次启动ADC
 
-		while(1)
-		{
-			if(csi_adc_get_status(ADC0) == ADC_STATE_DONE)			//采样通道读取完成，ADC value 保持在 buffer中 
-			{
-				csi_adc_clr_status(ADC0);
-				for(i = 0; i < byChnlNum; i++)
-					my_printf("ADC channel value of seq: %d \n", g_hwAdcBuf[i]);
-				break;
-			}
-		
-		}
-		
-		nop;
-		
-	}while(0);
-	
 	return iRet;
 }
 
@@ -363,7 +162,6 @@ int adc_samp_oneshot_int_demo(void)
 int adc_samp_continuous_int_demo(void)
 {
 	int iRet = 0;
-	uint8_t i;
 	csi_adc_config_t tAdcConfig;
 	
 #if !defined(USE_GUI)	
@@ -386,74 +184,6 @@ int adc_samp_continuous_int_demo(void)
 	csi_adc_set_seqx(ADC0, tAdcConfig.ptSeqCfg, byChnlNum);		//配置ADC采样序列
 	csi_adc_set_buffer((uint16_t *)g_hwAdcBuf, ADC_DATA_DEPTH);	//传递ADC采样buffer，ADC采样值存放于此buffer中
 	csi_adc_start(ADC0);										//启动ADC
-	
-	do
-	{
-		
-#if	ADC_DATA_DEPTH < 2
-    
-	if(ADC_DATA_DEPTH == 1)
-	{
-		if(csi_adc_get_status(ADC0) == ADC_STATE_DONE)			//采样通道读取完成，ADC value 保持在 buffer中 
-		{
-			csi_adc_stop(ADC0);									//停止ADC
-			csi_adc_clr_status(ADC0);							//清除ADC工作状态
-			for(i = 0; i < byChnlNum; i++)
-				my_printf("ADC channel value of seq: %d \n", g_hwAdcBuf[i]);
-		}
-		
-		//上面已关闭ADC,若继续采样ADC序列，需再次启动ADC
-		iRet = csi_adc_start(ADC0);								//再次启动ADC	
-		while(1)
-		{
-			if(csi_adc_get_status(ADC0) == ADC_STATE_DONE)		//采样通道读取完成，ADC value 保持在 buffer中 
-			{
-				csi_adc_clr_status(ADC0);
-				for(i = 0; i < byChnlNum; i++)
-					my_printf("ADC channel value of seq: %d \n", g_hwAdcBuf[i]);
-			}
-			nop;
-		}
-	}
-
-#else
-	//if(ADC_DATA_DEPTH > 1)
-	{
-		uint32_t j;
-		if(csi_adc_get_status(ADC0) == ADC_STATE_DONE)			//采样通道读取完成，ADC value 保持在 buffer中 
-		{
-			csi_adc_stop(ADC0);									//停止ADC
-			csi_adc_clr_status(ADC0);							//清除ADC工作状态
-			for(i = 0; i < byChnlNum; i++)
-			{
-				my_printf("ADC CHANNEL IDx OF SEQ IS : %d \n", i);
-				for(j = 0; j < ADC_DATA_DEPTH; j++)
-					my_printf("ADC channel value of seq: %d \n", g_hwAdcBuf[i][j]);
-			}
-		}
-		
-		//上面已关闭ADC,若继续采样ADC序列，需再次启动ADC
-		csi_adc_set_buffer((uint16_t *)g_hwAdcBuf, ADC_DATA_DEPTH);		//传递ADC采样buffer，ADC采样值存放于此buffer中	
-		iRet = csi_adc_start(ADC0);										//再次启动ADC	
-		while(1)
-		{
-			if(csi_adc_get_status(ADC0) == ADC_STATE_DONE)				//采样通道读取完成，ADC value 保持在 buffer中 
-			{
-				csi_adc_clr_status(ADC0);
-				for(i = 0; i < byChnlNum; i++)
-				{
-					my_printf("ADC CHANNEL IDx OF SEQ IS : %d \n", i);
-					for(j = 0; j < ADC_DATA_DEPTH; j++)
-						my_printf("ADC channel value of seq: %d \n", g_hwAdcBuf[i][j]);
-				}
-				csi_adc_set_buffer((uint16_t *)g_hwAdcBuf, ADC_DATA_DEPTH);		//传递ADC采样buffer，ADC采样值存放于此buffer中	
-			}
-		}
-	}
-
-#endif
-		
-	}while(0);
 	
 	return iRet;
 }
