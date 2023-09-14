@@ -125,91 +125,29 @@ ATTRIBUTE_ISR __attribute__((weak)) void adc1_int_handler(void)
 
 ATTRIBUTE_ISR __attribute__((weak)) void dma0_int_handler(void)
 {
-    // ISR content ...
 	CSI_INTRPT_ENTER();
-#if (USE_DMA_CALLBACK == 1)
-	csi_dma_irqhandler(DMA0, 0);
-#else
-	volatile uint32_t wIsr = csp_dma_get_isr(DMA0) & 0x003f003f;
-	
-	switch(wIsr)
-	{
-		//LTCIT
-		case DMA_CH0_LTCIT_SR:
-		case DMA_CH1_LTCIT_SR:
-		case DMA_CH2_LTCIT_SR:
-		case DMA_CH3_LTCIT_SR:
-		case DMA_CH4_LTCIT_SR:
-		case DMA_CH5_LTCIT_SR:
-			csp_dma_clr_isr(DMA0, (uint8_t)wIsr);		///clear LTCIT status
-			csi_dma_post_msg(DMA0, wIsr, 1);			//post LTCIT interrupt message
-			break;
-		
-		//TCIT 
-		case DMA_CH0_TCIT_SR:
-		case DMA_CH1_TCIT_SR:
-		case DMA_CH2_TCIT_SR:
-		case DMA_CH3_TCIT_SR:
-		case DMA_CH4_TCIT_SR:
-		case DMA_CH5_TCIT_SR:
-			csp_dma_clr_isr(DMA0, (wIsr >> 16));		//clear LTCIT status
-			csi_dma_post_msg(DMA0, (wIsr >> 10), 1);	//post TCIT interrupt message
-			break;
-		default:
-			break;
-	}
-#endif
+	dma_irqhandler(DMA0);//this is a weak function defined in dma.c, for better efficiency, we recommand user directly implement IRQ handler here without any function call.
 	CSI_INTRPT_EXIT();
 }
 
 
 ATTRIBUTE_ISR __attribute__((weak)) void dma1_int_handler(void) 
 {
-    // ISR content ...
+	// ISR content ...
 	CSI_INTRPT_ENTER();
-#if (USE_DMA_CALLBACK == 1)
-	csi_dma_irqhandler(DMA1, 0);
-#else
-	volatile uint32_t wIsr = csp_dma_get_isr(DMA1) & 0x003f003f;
-	
-	switch(wIsr)
-	{
-		//LTCIT
-		case DMA_CH0_LTCIT_SR:
-		case DMA_CH1_LTCIT_SR:
-		case DMA_CH2_LTCIT_SR:
-		case DMA_CH3_LTCIT_SR:
-		case DMA_CH4_LTCIT_SR:
-		case DMA_CH5_LTCIT_SR:
-			csp_dma_clr_isr(DMA1, (uint8_t)wIsr);		///clear LTCIT status
-			csi_dma_post_msg(DMA1, wIsr, 1);			//post LTCIT interrupt message
-			break;
-		
-		//TCIT 
-		case DMA_CH0_TCIT_SR:
-		case DMA_CH1_TCIT_SR:
-		case DMA_CH2_TCIT_SR:
-		case DMA_CH3_TCIT_SR:
-		case DMA_CH4_TCIT_SR:
-		case DMA_CH5_TCIT_SR:
-			csp_dma_clr_isr(DMA1, (wIsr >> 16));		//clear LTCIT status
-			csi_dma_post_msg(DMA1, (wIsr >> 10), 1);	//post TCIT interrupt message
-			break;
-		default:
-			break;
-	}
-#endif
+	dma_irqhandler(DMA1);//this is a weak function defined in dma.c, for better efficiency, we recommand user directly implement IRQ handler here without any function call.
 	CSI_INTRPT_EXIT();
 }
 
 ATTRIBUTE_ISR __attribute__((weak)) void wwdt_int_handler(void)
 {
-#if WWDT_INT_HANDLE_EN
-	 // ISR content ...
-	 CSI_INTRPT_ENTER();
-	wwdt_irqhandler();//this is a weak function defined in wwdt_demo.c, for better efficiency, we recommand user directly implement IRQ handler here without any function call.
-	CSI_INTRPT_EXIT();
+	CSI_INTRPT_ENTER();
+#if (USE_WWDT_CALLBACK==1)
+	csi_wwdt_irqhandler(WWDT,0);
+#else
+	csp_wwdt_clr_isr(WWDT,csp_wwdt_get_isr(WWDT));
 #endif
+	CSI_INTRPT_EXIT();
 }
 
 ATTRIBUTE_ISR __attribute__((weak)) void gpta0_int_handler(void)
@@ -405,12 +343,13 @@ ATTRIBUTE_ISR __attribute__((weak)) void sio1_int_handler(void)
 
 ATTRIBUTE_ISR __attribute__((weak)) void i2c_int_handler(void) 
 {
-#if	I2C_INT_HANDLE_EN
-    // ISR content ...
 	CSI_INTRPT_ENTER();
-	i2c_irqhandler(I2C0);//this is a weak function defined in iic_demo.c, for better efficiency, we recommand user directly implement IRQ handler here without any function call.
-	CSI_INTRPT_EXIT();
+#if (USE_I2C_CALLBACK==1)
+	csi_iic_irqhandler(I2C0,0);
+#else
+	csp_i2c_clr_isr(I2C0, csp_i2c_get_isr(I2C0));
 #endif
+	CSI_INTRPT_EXIT();
 }
 
 ATTRIBUTE_ISR __attribute__((weak)) void spi0_int_handler(void) 
@@ -501,12 +440,13 @@ ATTRIBUTE_ISR __attribute__((weak)) void cnta_int_handler(void)
 
 ATTRIBUTE_ISR __attribute__((weak)) void lpt_int_handler(void)
 {
-#if	LPT_INT_HANDLE_EN
-    // ISR content ...
 	CSI_INTRPT_ENTER();
-	lpt_irqhandler(LPT); //this is a weak function defined in lpt_demo.c, for better efficiency, we recommand user directly implement IRQ handler here without any function call.
-	CSI_INTRPT_EXIT();
+#if (USE_LPT_CALLBACK==1)
+	csi_lpt_irqhandler(LPT,0);
+#else
+	csp_lpt_clr_isr(LPT,csp_lpt_get_isr(LPT));
 #endif
+	CSI_INTRPT_EXIT();
 }
 
 ATTRIBUTE_ISR __attribute__((weak)) void rtc_int_handler(void)
