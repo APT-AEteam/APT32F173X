@@ -9,13 +9,11 @@
  * *********************************************************************
 */
 /* Includes ---------------------------------------------------------------*/
-#include <string.h>
-#include <drv/usart.h>
-#include <drv/uart.h>
-#include <drv/pin.h>
-#include <drv/lin.h>
+//#include <string.h>
+//#include "drv/usart.h"
+#include "drv/gpio.h"
+#include "drv/lin.h"
 
-#include "demo.h"
 
 /* externs function--------------------------------------------------------*/
 /* externs variablesr------------------------------------------------------*/
@@ -32,22 +30,13 @@
 int lin_send_test(void)
 {
 	int iRet = 0;
-	volatile uint8_t byRecv;
 	uint8_t bySdBuf[8] = {0x45,0x46,3,4,5,6,7,8};
 	csi_lin_config_t tLinCfg;							//lin 初始化参数配置结构体
 
 #if !defined(USE_GUI)	
-	csi_pin_set_mux(PB10, PB10_USART0_TX);				//USART0 TX管脚配置	
-	csi_pin_set_mux(PB11, PB11_USART0_RX);				//USART0 RX管脚配置
-	csi_pin_pull_mode(PB11,GPIO_PULLUP);				//RX管脚上拉使能, 建议配置
-	
-//	csi_pin_set_mux(PA9, PA9_USART0_TX);				//USART0 TX管脚配置	
-//	csi_pin_set_mux(PA10, PA10_USART0_RX);				//USART0 RX管脚配置
-//	csi_pin_pull_mode(PA10,GPIO_PULLUP);				//RX管脚上拉使能, 建议配置
-//
-//	csi_pin_set_mux(PC10, PC10_USART0_TX);				//USART0 TX管脚配置	
-//	csi_pin_set_mux(PC11, PC11_USART0_RX);				//USART0 RX管脚配置
-//	csi_pin_pull_mode(PC11,GPIO_PULLUP);				//RX管脚上拉使能, 建议配置
+	csi_gpio_set_mux(GPIOB, PB10, PB10_USART0_TX);				//USART0 TX管脚配置	
+	csi_gpio_set_mux(GPIOB, PB11, PB11_USART0_RX);				//USART0 RX管脚配置
+	csi_gpio_pull_mode(GPIOB, PB10, GPIO_PULLUP);				//RX管脚上拉使能, 建议配置
 #endif
 	
 	tLinCfg.byClkSrc	= LIN_CLKSRC_DIV8;				//时钟源clk = pclk
@@ -64,26 +53,22 @@ int lin_send_test(void)
 	tLinCfg.byLcp2[2]	= 0xa0;
 	tLinCfg.byLcp2[3]	= 0xaf;
 	tLinCfg.hwBaudRate	= 9600;							//速率 <= 20kpbs
-	tLinCfg.wInt 		= LIN_INTSRC_USER; 				//中断	
-	
 	csi_lin_init(LIN0, &tLinCfg);						//初始化LIN
+	
+	csi_lin_int_enable(LIN0, LIN_INTSRC_USER);			//使能LIN所有中断		
 	csi_lin_start(LIN0);
 
 	mdelay(10);
 
 	while(1)
 	{
-		byRecv = csi_uart_getc(UART0);
-		if(byRecv == 0x06)
+		csi_lin_send(LIN0, 0x0e, (void *)bySdBuf, 8);		//发送完整帧
+		while(1)
 		{
-			csi_lin_send(LIN0, 0x0e, (void *)bySdBuf, 8);		//发送完整帧
-			while(1)
+			if(csi_lin_get_msg(LIN0, ENABLE))
 			{
-				if(csi_lin_get_msg(LIN0, ENABLE))
-				{
-					nop;
-					break;
-				}
+				nop;
+				break;
 			}
 		}
 		nop;
@@ -102,23 +87,14 @@ int lin_send_test(void)
 int lin_send_recv_test(void)
 {
 	volatile int iRet = 0;
-	volatile uint8_t byRecv;
 	uint8_t byReBuf[8] = {0};
 	
 	csi_lin_config_t tLinCfg;							//lin 初始化参数配置结构体
 	
 #if !defined(USE_GUI)		
-	csi_pin_set_mux(PB10, PB10_USART0_TX);				//USART0 TX管脚配置	
-	csi_pin_set_mux(PB11, PB11_USART0_RX);				//USART0 RX管脚配置
-	csi_pin_pull_mode(PB11,GPIO_PULLUP);				//RX管脚上拉使能, 建议配置
-	
-//	csi_pin_set_mux(PA9, PA9_USART0_TX);				//USART0 TX管脚配置	
-//	csi_pin_set_mux(PA10, PA10_USART0_RX);				//USART0 RX管脚配置
-//	csi_pin_pull_mode(PA10,GPIO_PULLUP);				//RX管脚上拉使能, 建议配置
-//
-//	csi_pin_set_mux(PC10, PC10_USART0_TX);				//USART0 TX管脚配置	
-//	csi_pin_set_mux(PC11, PC11_USART0_RX);				//USART0 RX管脚配置
-//	csi_pin_pull_mode(PC11,GPIO_PULLUP);				//RX管脚上拉使能, 建议配置
+	csi_gpio_set_mux(GPIOB, PB10, PB10_USART0_TX);				//USART0 TX管脚配置	
+	csi_gpio_set_mux(GPIOB, PB11, PB11_USART0_RX);				//USART0 RX管脚配置
+	csi_gpio_pull_mode(GPIOB, PB10, GPIO_PULLUP);				//RX管脚上拉使能, 建议配置
 #endif
 	
 	tLinCfg.byClkSrc	= LIN_CLKSRC_DIV1;				//时钟源clk = pclk
@@ -135,27 +111,20 @@ int lin_send_recv_test(void)
 	tLinCfg.byLcp2[2]	= 0xa0;
 	tLinCfg.byLcp2[3]	= 0xaf;
 	tLinCfg.hwBaudRate	= 9600;						//速率 <= 20kpbs
-	tLinCfg.wInt 		= LIN_INTSRC_USER; 				//中断	
-	
 	csi_lin_init(LIN0, &tLinCfg);						//初始化LIN
+	
+	csi_lin_int_enable(LIN0, LIN_INTSRC_USER);			//使能LIN所有中断
 	csi_lin_start(LIN0);
 
 	mdelay(10);
 
-	
 	while(1)
 	{
-		byRecv = csi_uart_getc(UART0);
-		if(byRecv == 0x06)
+		iRet = csi_lin_send_recv(LIN0, 0x0e, (void *)byReBuf, 7);	//发送帧头，等待应答数据
+			
+		if(iRet == 7)		//接收完成
 		{
-			
-			iRet = csi_lin_send_recv(LIN0, 0x0e, (void *)byReBuf, 7);	//发送帧头，等待应答数据
-			
-			if(iRet == 7)		//接收完成
-			{
-				nop;
-			}
-				
+			nop;
 		}
 		
 		mdelay(10);
@@ -179,25 +148,25 @@ __attribute__((weak)) void lin_irqhandler(csp_lin_t *ptLinBase, uint8_t byIdx)
 		if(wLinSr & LIN_CHECKSUM_INT)						//Checksum error 					
 		{
 			g_tLinTran.byWkStat |= LIN_STATE_CHKERR;
-			csp_usart_clr_isr(ptLinBase,LIN_CHECKSUM_INT);	//clear interrupt status
+			csp_usart_clr_isr(ptLinBase,LIN_CHECKSUM_INT_S);	//clear interrupt status
 		}
 		
 		if(wLinSr & LIN_IPERROR_INT)						//Identity parity error 
 		{
 			g_tLinTran.byWkStat |= LIN_STATE_IPERR;
-			csp_usart_clr_isr(ptLinBase,LIN_IPERROR_INT);	//clear interrupt status
+			csp_usart_clr_isr(ptLinBase,LIN_IPERROR_INT_S);	//clear interrupt status
 		}
 		
 		if(wLinSr & LIN_BITERROR_INT)						//Bit error 
 		{
 			g_tLinTran.byWkStat |= LIN_STATE_BITERR;
-			csp_usart_clr_isr(ptLinBase,LIN_BITERROR_INT);	//clear interrupt status
+			csp_usart_clr_isr(ptLinBase,LIN_BITERROR_INT_S);	//clear interrupt status
 		}
 		
 		if(wLinSr & LIN_NOTREPS_INT)						//Bit error 
 		{
 			g_tLinTran.byWkStat |= LIN_STATE_NOTRESP;
-			csp_usart_clr_isr(ptLinBase,LIN_NOTREPS_INT);	//clear interrupt status
+			csp_usart_clr_isr(ptLinBase,LIN_NOTREPS_INT_S);	//clear interrupt status
 		}
 	}
 	else
@@ -206,7 +175,7 @@ __attribute__((weak)) void lin_irqhandler(csp_lin_t *ptLinBase, uint8_t byIdx)
 		{
 			case LIN_WAKEUP_INT:								//LIN Wake up Interrupt	
 				nop;
-				csp_usart_clr_isr(ptLinBase,LIN_WAKEUP_INT);	//clear interrupt status
+				csp_usart_clr_isr(ptLinBase,LIN_WAKEUP_INT_S);	//clear interrupt status
 				break;
 			case LIN_ENDMESS_INT:								//Ended message Interrupt
 				if(!(g_tLinTran.byWkStat & LIN_STATE_ALLERR))	//no error
@@ -235,12 +204,12 @@ __attribute__((weak)) void lin_irqhandler(csp_lin_t *ptLinBase, uint8_t byIdx)
 					g_tLinTran.byWkStat = LIN_STATE_ENDMESS;	
 				}
 					
-				csp_usart_clr_isr(ptLinBase,LIN_ENDMESS_INT);	//clear interrupt status
+				csp_usart_clr_isr(ptLinBase,LIN_ENDMESS_INT_S);	//clear interrupt status
 				break;
 			case LIN_ENDHEADER_INT:								//Ended header Interrupt
 //				if(g_tLinTran.byWkMode == LIN_RECV)
 //					csp_usart_cr_cmd(ptLinBase, LIN_STRESP);	
-				csp_usart_clr_isr(ptLinBase,LIN_ENDHEADER_INT);	//clear interrupt status
+				csp_usart_clr_isr(ptLinBase,LIN_ENDHEADER_INT_S);	//clear interrupt status
 				break;
 			default:
 				break;

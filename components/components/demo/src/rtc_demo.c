@@ -227,7 +227,7 @@ void rtc_timer_demo(void)
 	csi_rtc_init(RTC, &tRtcConfig);				  	//初始化RTC
 	
 	csi_rtc_start_as_timer(RTC, RTC_TIMER_1S);	  	//每1s进一次中断
-	csi_rtc_int_enable(RTC, RTC_INT_CPRD , DISABLE);//不需要中断的话，可以关掉
+	csi_rtc_int_disable(RTC, RTC_INT_CPRD);//不需要中断的话，可以关掉
 	csi_rtc_start(RTC);								//RTC开始工作
 	
 	csi_rtc_set_evtrg(RTC, 0, RTC_TRGOUT_CPRD, 2);  //RTC TRGEV0 每两秒钟输出一次trigger event

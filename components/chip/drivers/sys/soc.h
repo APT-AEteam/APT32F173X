@@ -67,14 +67,15 @@ extern "C" {
 #define GPTA_IDX  			4		//GPTAx id number
 #define DAC_IDX   			1		//DACx id number
 
+
 #if	defined(IS_CHIP_1732)
 #define ADC_IDX   			2		//ADCx id number
 #else
 #define ADC_IDX   			1		//ADCx id number
 #endif
-//DMA  id number
+
 //max channel number
-#define DMA_IDX_NUM			2
+#define DMA_IDX				2		//DMAx id number
 #define DMA_CH_MAX_NUM		6
 
 //ETB dma start channel number

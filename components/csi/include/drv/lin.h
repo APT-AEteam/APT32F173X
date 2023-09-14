@@ -13,7 +13,7 @@
 #ifndef _DRV_LIN_H_
 #define _DRV_LIN_H_
 
-#include <drv/common.h>
+//#include <drv/common.h>
 #include "csp.h"
 
 #ifdef __cplusplus
@@ -26,7 +26,7 @@ extern "C" {
  */
 typedef enum {
     LIN_CLKSRC_DIV1	= 0,	//CLK = PCLK
-    LIN_CLKSRC_DIV8          //CLK = PCLK/8
+    LIN_CLKSRC_DIV8 		//CLK = PCLK/8
 } csi_lin_clksrc_e;
 
 /**
@@ -99,7 +99,6 @@ typedef struct {
 	uint8_t				bySyncBrk;			//lin Synchronous break length
 	uint16_t			hwWkUpTime;         //checksum selection 
 	uint16_t            hwBaudRate;			//baud rate < 20k(200000)
-	uint32_t            wInt;				//interrupt
 	uint8_t				byLcp1[4];			//Limit Counter Protocol0~3		
 	uint8_t				byLcp2[4];			//Limit Counter Protocol4~7			
 } csi_lin_config_t;
@@ -125,6 +124,22 @@ extern csi_lin_trans_t g_tLinTran;
   \return 	   error code \ref csi_error_t
  */ 
 csi_error_t csi_lin_init(csp_lin_t *ptLinBase, csi_lin_config_t *ptLinCfg);
+
+/** \brief enable lin interrupt
+ * 
+ *  \param[in] ptLinBase: pointer of lin register structure
+ * 	\param[in] eIntSrc: interrupt of LIN. \ref csi_lin_intsrc_e
+ *  \return none
+ */ 
+void csi_lin_int_enable(csp_lin_t *ptLinBase, csi_lin_intsrc_e eIntSrc);
+
+/** \brief disable lin interrupt
+ * 
+ *  \param[in] ptLinBase: pointer of lin register structure
+ * 	\param[in] eIntSrc: interrupt of LIN. \ref csi_lin_intsrc_e
+ *  \return none
+ */ 
+void csi_lin_int_disable(csp_lin_t *ptLinBase, csi_lin_intsrc_e eIntSrc);
 
 /** 
   \brief 	   start(enable) lin 

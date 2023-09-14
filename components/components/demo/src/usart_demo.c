@@ -77,30 +77,27 @@ int usart_send_demo(void)
 	int iRet = 0;
 	csi_usart_config_t tUsartCfg;						//USART0 参数配置结构体
 	
-#if !defined(USE_GUI)	
-
+#if(USE_GUI ==0)	
 	csi_gpio_set_mux(GPIOA, PA9, PA9_USART0_TX);		//USART0 TX管脚配置	
 	csi_gpio_set_mux(GPIOA, PA10, PA10_USART0_RX);		//USART0 RX管脚配置
 	csi_gpio_pull_mode(GPIOA, PA10, GPIO_PULLUP);		//RX管脚上拉使能, 建议配置
+#endif
 	
-#endif	
 	tUsartCfg.byClkSrc 		= USART_CLKSRC_DIV1;		//clk = PCLK
 	tUsartCfg.byMode		= USART_MODE_ASYNC;			//异步模式
 	tUsartCfg.byDatabit 	= USART_DATA_BITS_8;		//字节长度，8bit
 	tUsartCfg.byStopbit 	= USART_STOP_BITS_1;		//停止位，1个
 	tUsartCfg.byParity		= USART_PARITY_EVEN;		//偶校验
 	tUsartCfg.wBaudRate 	= 115200;					//波特率：115200
-
-	
 	csi_usart_init(USART0, &tUsartCfg);					//初始化串口	
+	
 	csi_usart_start(USART0, USART_FUNC_RX_TX);			//开启USART的RX和TX功能，也可单独开启RX或者TX功能
 	
 	while(1)
 	{
-
 		if(csi_usart_send(USART0,(void *)bySendBuf,18) != 18)
 			return -1;
-		
+	
 		mdelay(100);
 	}
 
@@ -121,13 +118,11 @@ int usart_send_int_demo(void)
 	int iRet = 0;
 	csi_usart_config_t tUsartCfg;						//USART0 参数配置结构体
 	
-	
-#if !defined(USE_GUI)
-
+#if(USE_GUI ==0)
 	csi_gpio_set_mux(GPIOA, PA9, PA9_USART0_TX);		//USART0 TX管脚配置	
 	csi_gpio_set_mux(GPIOA, PA10, PA10_USART0_RX);		//USART0 RX管脚配置
 	csi_gpio_pull_mode(GPIOA, PA10, GPIO_PULLUP);		//RX管脚上拉使能, 建议配置
-	
+
 #endif	
 
 	tUsartCfg.byClkSrc 		= USART_CLKSRC_DIV1;		//clk = PCLK
@@ -136,17 +131,15 @@ int usart_send_int_demo(void)
 	tUsartCfg.byStopbit 	= USART_STOP_BITS_1;		//停止位，1个
 	tUsartCfg.byParity		= USART_PARITY_EVEN;		//偶校验
 	tUsartCfg.wBaudRate 	= 115200;					//波特率：115200
+	csi_usart_init(USART0, &tUsartCfg);					//初始化串口
 	
-	csi_usart_init(USART0, &tUsartCfg);					//初始化串口	
+	csi_usart_int_enable(USART0, USART_INTSRC_TXFIFO);  //使能TXFIFO中断
 	csi_usart_start(USART0, USART_FUNC_RX_TX);			//开启USART的RX和TX功能，也可单独开启RX或者TX功能
 
-	csi_usart_int_enable(USART0, USART_INTSRC_TXFIFO);  //使能TXFIFO中断
-	
 	while(1)
 	{
 		mdelay(100);
 	}
-
 
 	return iRet;	
 }
@@ -175,13 +168,10 @@ int usart_recv_int_demo(void)
 	int iRet = 0;
 	csi_usart_config_t tUsartCfg;							//USART0 参数配置结构体
 	
-	
-#if !defined(USE_GUI)
-	
+#if(USE_GUI ==0)
 	csi_gpio_set_mux(GPIOA, PA9, PA9_USART0_TX);			//USART0 TX管脚配置	
 	csi_gpio_set_mux(GPIOA, PA10, PA10_USART0_RX);			//USART0 RX管脚配置
-	csi_gpio_pull_mode(GPIOA, PA10, GPIO_PULLUP);			//RX管脚上拉使能, 建议配置
-	
+	csi_gpio_pull_mode(GPIOA, PA10, GPIO_PULLUP);			//RX管脚上拉使能, 建议配置	
 #endif	
 
 	tUsartCfg.byClkSrc 		= USART_CLKSRC_DIV1;			//clk = PCLK
@@ -192,13 +182,12 @@ int usart_recv_int_demo(void)
 	tUsartCfg.wBaudRate 	= 115200;						//波特率：115200
 	tUsartCfg.hwRecvTo		= 88;							//USART接收超时时间，单位：bit位周期，8个bytes(11bit*8=88, 115200波特率时=764us)
 	tUsartCfg.eRxFifoTrg    = USART_RXFIFOTRG_ONE;
-	
 	csi_usart_init(USART0, &tUsartCfg);						//初始化串口
-	csi_usart_start(USART0, USART_FUNC_RX_TX);				//开启USART的RX和TX功能，也可单独开启RX或者TX功能
 	
 	csi_usart_int_enable(USART0, USART_INTSRC_RXFIFO);  	//使能RXFIFO中断
 	//csi_usart_int_enable(USART0, USART_INTSRC_TIMEOUT);	//开启字节接收超时中断
-	
+	csi_usart_start(USART0, USART_FUNC_RX_TX);				//开启USART的RX和TX功能，也可单独开启RX或者TX功能
+
 	while(1)
 	{
 		mdelay(100);
@@ -220,12 +209,10 @@ int usart_send_dma_demo(void)
 	csi_dma_ch_config_t tDmaConfig;						//DMA 参数配置结构体			
 	csi_etcb_config_t 	tEtbConfig;						//ETCB 参数配置结构体
 	
-#if !defined(USE_GUI)
-
+#if(USE_GUI ==0)
 	csi_gpio_set_mux(GPIOA, PA9, PA9_USART0_TX);		//USART0 TX管脚配置	
 	csi_gpio_set_mux(GPIOA, PA10, PA10_USART0_RX);		//USART0 RX管脚配置
 	csi_gpio_pull_mode(GPIOA, PA10, GPIO_PULLUP);		//RX管脚上拉使能, 建议配置
-
 #endif	
 
 	//usart 参数配置
@@ -235,10 +222,10 @@ int usart_send_dma_demo(void)
 	tUsartCfg.byStopbit 	= USART_STOP_BITS_1;		//停止位，1个
 	tUsartCfg.byParity		= USART_PARITY_EVEN;		//偶校验
 	tUsartCfg.wBaudRate 	= 115200;					//波特率：115200
-	
 	csi_usart_init(USART0, &tUsartCfg);					//初始化串口
-	csi_usart_start(USART0, USART_FUNC_RX_TX);			//开启USART的RX和TX功能，也可单独开启RX或者TX功能
 	
+	csi_usart_start(USART0, USART_FUNC_RX_TX);			//开启USART的RX和TX功能，也可单独开启RX或者TX功能
+
 
 	//dma 参数配置
 	tDmaConfig.eSrcLinc 	= DMA_ADDR_CONSTANT;		//低位传输原地址固定不变
@@ -247,10 +234,9 @@ int usart_send_dma_demo(void)
 	tDmaConfig.eDetHinc 	= DMA_ADDR_CONSTANT;		//高位传输目标地址固定不变
 	tDmaConfig.eDataWidth 	= DMA_DSIZE_8_BITS;			//传输数据宽度8bit
 	tDmaConfig.eReload 		= DMA_RELOAD_DISABLE;		//禁止自动重载
-	tDmaConfig.eTransMode 	= DMA_TRANS_CONTINU;		//DMA服务模式(传输模式)，连续服务
+	tDmaConfig.eTransMode 	= DMA_TRANS_CONT;		//DMA服务模式(传输模式)，连续服务
 	tDmaConfig.eTsizeMode  	= DMA_TSIZE_ONE_DSIZE;		//传输数据大小，一个 DSIZE , 即DSIZE定义大小
 	tDmaConfig.eReqMode		= DMA_REQ_HARDWARE;			//DMA请求模式，软件请求（软件触发）
-	
 	csi_dma_ch_init(DMA0, DMA_CH0, &tDmaConfig);	    //初始化DMA
 	
 	csi_dma_int_enable(DMA0, DMA_CH0, DMA_INTSRC_LTCIT);
@@ -293,13 +279,10 @@ int usart_recv_dma_demo(void)
 	csi_dma_ch_config_t tDmaConfig;						//DMA 参数配置结构体
 	csi_etcb_config_t 	tEtbConfig;						//ETCB 参数配置结构体
 	
-	
-#if !defined(USE_GUI)
-
+#if(USE_GUI ==0)
 	csi_gpio_set_mux(GPIOA, PA9, PA9_USART0_TX);		//USART0 TX管脚配置	
 	csi_gpio_set_mux(GPIOA, PA10, PA10_USART0_RX);		//USART0 RX管脚配置
 	csi_gpio_pull_mode(GPIOA, PA10, GPIO_PULLUP);		//RX管脚上拉使能, 建议配置
-		
 #endif	
 
 	//usart 参数配置
@@ -309,10 +292,9 @@ int usart_recv_dma_demo(void)
 	tUsartCfg.byStopbit 	= USART_STOP_BITS_1;		//停止位，1个
 	tUsartCfg.byParity		= USART_PARITY_EVEN;		//偶校验
 	tUsartCfg.wBaudRate 	= 115200;					//波特率：115200
-	
 	csi_usart_init(USART0, &tUsartCfg);					//初始化串口
-	csi_usart_start(USART0, USART_FUNC_RX_TX);			//开启USART的RX和TX功能，也可单独开启RX或者TX功能
 	
+	csi_usart_start(USART0, USART_FUNC_RX_TX);			//开启USART的RX和TX功能，也可单独开启RX或者TX功能
 	
 	
 	//dma 参数配置
@@ -321,10 +303,10 @@ int usart_recv_dma_demo(void)
 	tDmaConfig.eDetLinc 	= DMA_ADDR_CONSTANT;		//低位传输目标地址固定不变
 	tDmaConfig.eDetHinc 	= DMA_ADDR_INC;				//高位传输目标地址自增
 	tDmaConfig.eDataWidth 	= DMA_DSIZE_8_BITS;			//传输数据宽度8bit
-	tDmaConfig.eReload 		= DMA_RELOAD_DISABLE;			//自动重载
-	tDmaConfig.eTransMode 	= DMA_TRANS_CONTINU;		//DMA服务模式(传输模式)，连续服务
+	tDmaConfig.eReload 		= DMA_RELOAD_DISABLE;		//自动重载
+	tDmaConfig.eTransMode 	= DMA_TRANS_CONT;			//DMA服务模式(传输模式)，连续服务
 	tDmaConfig.eTsizeMode  	= DMA_TSIZE_ONE_DSIZE;		//传输数据大小，一个 DSIZE , 即DSIZE定义大小
-	tDmaConfig.eReqMode		= DMA_REQ_HARDWARE;				//DMA请求模式，硬件请求
+	tDmaConfig.eReqMode		= DMA_REQ_HARDWARE;			//DMA请求模式，硬件请求
 	csi_dma_ch_init(DMA0, DMA_CH3, &tDmaConfig);		//初始化DMA
 	
 	csi_dma_int_enable(DMA0, DMA_CH3, DMA_INTSRC_LTCIT);
@@ -332,7 +314,6 @@ int usart_recv_dma_demo(void)
 	
 	
 	//etb 参数配置
-
 	tEtbConfig.eChType = ETCB_ONE_TRG_ONE_DMA;			//单个源触发单个目标，DMA方式
 	tEtbConfig.eSrcIp 	= ETCB_USART0_RXSRC;				//UART TXSRC作为触发源
 	tEtbConfig.eDstIp 	= ETCB_DMA0_CH0 + DMA_CH3;		//ETB DMA通道 作为目标实际

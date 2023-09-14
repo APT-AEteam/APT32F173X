@@ -102,7 +102,7 @@ typedef enum{
 #define DMA_SMODE_MSK		(0x01ul << DMA_SMODE_POS)	
 typedef enum{
 	DMA_SMODE_ONCE	= 0,
-	DMA_SMODE_CNTNU				//continuous
+	DMA_SMODE_CONT				//continuous
 }dma_smode_e;
 
 #define DMA_TSIZE_POS		(28) 			//    					  

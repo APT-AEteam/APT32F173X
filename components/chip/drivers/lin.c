@@ -181,16 +181,50 @@ csi_error_t csi_lin_init(csp_lin_t *ptLinBase, csi_lin_config_t *ptLinCfg)
 	csp_usart_lin_set_lcp1(ptLinBase, ptLinCfg->byLcp1);						//lpc1;
 	csp_usart_lin_set_lcp2(ptLinBase, ptLinCfg->byLcp2);						//lpc2;
 	
-	if(ptLinCfg->wInt >= LIN_INTSRC_ENDHEADER)
-	{
-		csp_usart_int_enable(ptLinBase, ptLinCfg->wInt);				//enable lin interrupt
-		csi_irq_enable((uint32_t *)ptLinBase);									//enable lin irq	
-	}
-	
+//	if(ptLinCfg->wInt >= LIN_INTSRC_ENDHEADER)
+//	{
+//		csp_usart_int_enable(ptLinBase, ptLinCfg->wInt);				//enable lin interrupt
+////		csi_irq_enable((uint32_t *)ptLinBase);									//enable lin irq	
+//	}
+//	
 	csp_usart_lin_enable(ptLinBase);
 	
 	return CSI_OK;
 }
+
+/** \brief enable lin interrupt
+ * 
+ *  \param[in] ptLinBase: pointer of lin register structure
+ * 	\param[in] eIntSrc: interrupt of LIN. \ref csi_lin_intsrc_e
+ *  \return none
+ */ 
+void csi_lin_int_enable(csp_lin_t *ptLinBase, csi_lin_intsrc_e eIntSrc)
+{
+	csp_usart_int_enable(ptLinBase, (usart_int_e)eIntSrc);
+}
+
+/** \brief disable lin interrupt
+ * 
+ *  \param[in] ptLinBase: pointer of lin register structure
+ * 	\param[in] eIntSrc: interrupt of LIN. \ref csi_lin_intsrc_e
+ *  \return none
+ */ 
+void csi_lin_int_disable(csp_lin_t *ptLinBase, csi_lin_intsrc_e eIntSrc)
+{
+	csp_usart_int_disable(ptLinBase, (usart_int_e)eIntSrc);
+}
+
+/** \brief clear usart interrupt status
+ * 
+ *  \param[in] ptLinBase: pointer of lin register structure
+ *  \param[in] eIntSta: lin interrupt status, \ref csi_lin_intsrc_e
+ *  \return none
+ */
+void csi_lin_clr_isr(csp_lin_t *ptLinBase, csi_lin_intsrc_e eIntSta)
+{
+	csp_usart_clr_isr(ptLinBase, (usart_isr_e)eIntSta);
+}
+
 /** \brief start(enable) lin 
  * 
  *  \param[in] ptLinBase: pointer of lin register structure
