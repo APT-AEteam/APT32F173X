@@ -166,7 +166,7 @@ int cmp_wfcr_demo(void)
 	csi_cmp_set_wfcr(CMP0,&tCmpWfcrCfg);
 	
 	csi_cmp_set_evtrg(CMP0, CMP_TRGSRC_FALLING_RISING);
-	csi_cmp_sync_enable(CMP0);
+	csi_cmp_evtrg_enable(CMP0);
 	
 	csi_cmp_start(CMP0);	
 

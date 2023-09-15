@@ -82,16 +82,16 @@ typedef enum
 	CMP_OUT_UNDIRECT            
 }cmp_polarity_e;
 
-#define	CMP_SYNCOE_POS		    (7)
-#define	CMP_SYNCOE_MSK		    (0x01ul << CMP_SYNCOE_POS)
+#define	CMP_TRGOE_POS		    (7)
+#define	CMP_TRGOE_MSK		    (0x01ul << CMP_TRGOE_POS)
 typedef enum
 {
-	SYNCOE_DIS		   = 0x00,
-	SYNCOE_EN,				
-}cmp_syncoe_e;
+	TRGOE_DIS		   = 0x00,
+	TRGOE_EN,				
+}cmp_trgoe_e;
 
-#define	CMP_EVE_SEL_POS		    (8)
-#define	CMP_EVE_SEL_MSK		    (0x03ul << CMP_EVE_SEL_POS)
+#define	CMP_TRGSEL_POS		    (8)
+#define	CMP_TRGSEL_MSK		    (0x03ul << CMP_TRGSEL_POS)
 typedef enum
 {
 	TRGSRC_falling		   = 0x00,
@@ -366,20 +366,20 @@ static inline void  csp_cmp_set_polarity(csp_cmp_t *ptCmpBase , cmp_polarity_e e
 }
 
 //evtrg
-static inline void  csp_cmp_evtrg(csp_cmp_t *ptCmpBase , cmp_trgsrc_e eTrgSrc)
+static inline void  csp_cmp_set_evtrg(csp_cmp_t *ptCmpBase , cmp_trgsrc_e eTrgSrc)
 {
-	ptCmpBase->CR = (ptCmpBase->CR&~(CMP_EVE_SEL_MSK))|(eTrgSrc<<CMP_EVE_SEL_POS);
+	ptCmpBase->CR = (ptCmpBase->CR&~(CMP_TRGSEL_MSK))|(eTrgSrc<<CMP_TRGSEL_POS);
 }
 
-//syncoe en/dis
-static inline void csp_cmp_sync_enable(csp_cmp_t *ptCmpBase)
+//trgoe en/dis
+static inline void csp_cmp_evtrg_enable(csp_cmp_t *ptCmpBase)
 {
-	ptCmpBase->CR |= CMP_SYNCOE_MSK;
+	ptCmpBase->CR |= CMP_TRGOE_MSK;
 }
 
-static inline void csp_cmp_sync_disable(csp_cmp_t *ptCmpBase)
+static inline void csp_cmp_evtrg_disable(csp_cmp_t *ptCmpBase)
 {
-	ptCmpBase->CR &= ~CMP_SYNCOE_MSK;
+	ptCmpBase->CR &= ~CMP_TRGOE_MSK;
 }
 
 //dflt en/dis

@@ -255,18 +255,18 @@ csi_error_t csi_cmp_set_wfcr(csp_cmp_t *ptCmpBase,csi_cmp_wfcr_config_t *ptCmpWf
  */
 void csi_cmp_set_evtrg(csp_cmp_t *ptCmpBase,csi_cmp_trgsrc_e eTrgSrc);
 
-/** \brief cmp evtrg syncoe enable
+/** \brief cmp evtrg enable
  * 
  *  \param[in] ptCmpBase: pointer of cmp register structure
  *  \return none
  */
-void csi_cmp_sync_enable(csp_cmp_t *ptCmpBase);
-/** \brief cmp evtrg syncoe disable
+void csi_cmp_evtrg_enable(csp_cmp_t *ptCmpBase);
+/** \brief cmp evtrg disable
  * 
  *  \param[in] ptCmpBase: pointer of cmp register structure
  *  \return none
  */
-void csi_cmp_sync_disable(csp_cmp_t *ptCmpBase);
+void csi_cmp_evtrg_disable(csp_cmp_t *ptCmpBase);
 
 /** \brief cmp out status
  * 
