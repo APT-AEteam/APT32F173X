@@ -343,7 +343,7 @@ int32_t csi_sio_receive_int(csp_sio_t *ptSioBase, uint32_t *pwRecv, uint16_t hwS
 	g_tSioCtrl[byIdx].hwSize 	= hwSize;
 	g_tSioCtrl[byIdx].hwTransNum = 0;
 	g_tSioCtrl[byIdx].byRxStat  = SIO_STATE_RECV;
-	csp_sio_int_enable(SIO0, SIO_TXBUFEMPT);
+	csp_sio_int_enable(SIO0, SIO_RXBUFFULL);
 	
 	return CSI_OK;
 }

@@ -180,7 +180,7 @@ int lpt_trg_out_demo(void)
 	csp_lpt_set_trgprd(LPT,0xf);
 	csp_lpt_set_trgcnt(LPT,0xf);
 //	csi_bt_timer_init(BT1,5000);									//BT定时
-	csi_bt_set_sync(BT1, BT_SYNCIN0, BT_TRG_ONCE, DISABLE);	//外部触发bt启动(SYNCIN0)
+	csi_bt_set_sync(BT1, BT_SYNCIN0, BT_SYNC_ONCE, DISABLE);	//外部触发bt启动(SYNCIN0)
 
 	tEtbConfig.eChType = ETCB_ONE_TRG_ONE;  						//单个源触发单个目标
 	tEtbConfig.eSrcIp  = ETCB_LPT_TRGOUT0;  	    					//LPT作为触发源
@@ -215,7 +215,7 @@ int lpt_soft_trg_out_demo(void)
 	tTimConfig.eRunMode  = BT_RUN_CONT;		    //BT计数器工作模式
 	csi_bt_timer_init(BT1, &tTimConfig);		//初始化BT	
 		
-	csi_bt_set_sync(BT1,BT_SYNCIN0, BT_TRG_ONCE, DISABLE);		    //外部触发bt启动(SYNCIN0)
+	csi_bt_set_sync(BT1,BT_SYNCIN0, BT_SYNC_ONCE, DISABLE);		    //外部触发bt启动(SYNCIN0)
 	
 	tEtbConfig.eChType = ETCB_ONE_TRG_ONE;  						//单个源触发单个目标
 	tEtbConfig.eSrcIp  = ETCB_LPT_TRGOUT0;  	    					//LPT作为触发源

@@ -186,7 +186,7 @@ typedef struct {
 	//CallBack		
 	void(*recv_callback)(csp_uart_t *ptUartBase, csi_uart_state_e eState, uint8_t *pbyBuf, uint16_t *hwSzie);
 	void(*send_callback)(csp_uart_t *ptUartBase);
-	void(*err_callback)(csp_uart_t *ptUartBase, uart_isr_e eIsr);
+	void(*err_callback)(csp_uart_t *ptUartBase, uint16_t hwIsr);
 } csi_uart_ctrl_t;
 
 extern csi_uart_ctrl_t g_tUartCtrl[UART_IDX];	

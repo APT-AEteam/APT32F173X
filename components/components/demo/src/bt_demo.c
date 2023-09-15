@@ -185,7 +185,7 @@ int bt_sync_trg_count_demo(void)
 	tTimConfig.wTimeVal = 100;												//BT定时值 = 100us
 	tTimConfig.eRunMode  = BT_RUN_CONT;										//BT计数器工作模式
 	csi_bt_timer_init(BT1,&tTimConfig);										//BT1 定时	
-	csi_bt_set_sync(BT1, BT_SYNCIN2, BT_TRG_CONTINU, BT_TRG_AUTOAREARM);	//外部触发BT1计数(SYNCIN2)
+	csi_bt_set_sync(BT1, BT_SYNCIN2, BT_SYNC_CONT, BT_TRG_AUTOAREARM);		//外部触发BT1计数(SYNCIN2)
 	csi_bt_sync_enable(BT1, BT_SYNCIN2);									//BT1 同步输入2使能
 	
 	csi_bt_start(BT1);	    			 									//启动BT1
@@ -253,7 +253,7 @@ int bt_trg_out_demo(void)
 	csi_bt_pwm_init(BT1, &tPwmCfg);							//初始化BT1 PWM输出
 	
 	//外部触发bt启动(SYNCIN0)
-	csi_bt_set_sync(BT1, BT_SYNCIN0, BT_TRG_ONCE, BT_TRG_AUTOAREARM);	
+	csi_bt_set_sync(BT1, BT_SYNCIN0, BT_SYNC_ONCE, BT_TRG_AUTOAREARM);	
 	csi_bt_sync_enable(BT1, BT_SYNCIN0);					//BT1 同步输入2使能
 	
 	//ETCB初始化

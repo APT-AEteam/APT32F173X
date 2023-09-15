@@ -64,9 +64,9 @@ typedef enum{
  * \brief    BT sync trigger mode 
  */
 typedef enum{
-	BT_TRG_CONTINU	= 0,			//BT continuous trigger mode 
-	BT_TRG_ONCE					
-}csi_bt_trgmode_e;					//BT once trigger mode 
+	BT_SYNC_CONT	= 0,			//BT continuous trigger mode 
+	BT_SYNC_ONCE					
+}csi_bt_syncmode_e;					//BT once trigger mode 
 
 /**
  * \enum     csi_bt_arearm_e
@@ -126,7 +126,7 @@ typedef struct {
 /// \brief  bt control handle, not open to users  
 typedef struct 
 {
-    void(*callback)(csp_bt_t *ptBtBase, bt_int_e eIsr);
+    void(*callback)(csp_bt_t *ptBtBase, uint8_t byIsr);
 } csi_bt_ctrl_t;
 
 extern csi_bt_ctrl_t g_tBtCtrl[BT_IDX];
@@ -263,14 +263,14 @@ void csi_bt_prdr_update(csp_bt_t *ptBtBase, uint16_t hwPrdr);
 void csi_bt_pwm_update(csp_bt_t *ptBtBase, uint32_t wfreq, uint8_t byDutyCycle); 
 
 /** 
-  \brief 	   bt sync evtrg config  
+  \brief 	   bt sync trg config  
   \param[in]   ptBtBase		pointer of bt register structure
-  \param[in]   eTrgin		bt evtrg input channel, \ref csi_bt_syncin_e 
-  \param[in]   eTrgMode 	bt evtrg mode, \ref csi_bt_trgmode_e 
-  \param[in]   bAutoRearm 	auto rearm, \ref csi_bt_trgmode_e  
+  \param[in]   eSyncIn		bt sync input channel, \ref csi_bt_syncin_e 
+  \param[in]   eSyncMode 	bt sync trigger mode, \ref csi_bt_syncmode_e 
+  \param[in]   bAutoRearm 	auto rearm, \ref csi_bt_arearm_e  
   \return      none
 */
-csi_error_t csi_bt_set_sync(csp_bt_t *ptBtBase,csi_bt_syncin_e eTrgin, csi_bt_trgmode_e eTrgMode, csi_bt_arearm_e bAutoRearm);
+csi_error_t csi_bt_set_sync(csp_bt_t *ptBtBase,csi_bt_syncin_e eSyncIn, csi_bt_syncmode_e eSyncMode, csi_bt_arearm_e bAutoRearm);
 
 /** 
   \brief bt sync enable

@@ -295,17 +295,17 @@ void csi_bt_pwm_update(csp_bt_t *ptBtBase, uint32_t wFreq, uint8_t byDutyCycle)
 /** \brief bt sync input evtrg config  
  * 
  *  \param[in] ptBtBase: pointer of bt register structure
- *  \param[in] eSyncIn: bt sync evtrg input channel, \ref csi_bt_syncin_e
- *  \param[in] eTrgMode: bt evtrg mode, \ref csi_bt_trgmode_e
- *  \param[in] eAutoRearm: auto rearm, \ref \ref csi_bt_trgmode_e
+ *  \param[in] eSyncIn: bt sync input channel, \ref csi_bt_syncin_e
+ *  \param[in] eSyncMode: bt sync trigger mode, \ref csi_bt_trgmode_e
+ *  \param[in] eAutoRearm: auto rearm, \ref \ref csi_bt_arearm_e
  *  \return none
  */
-csi_error_t csi_bt_set_sync(csp_bt_t *ptBtBase, csi_bt_syncin_e eSyncIn, csi_bt_trgmode_e eTrgMode, csi_bt_arearm_e eAutoRearm)
+csi_error_t csi_bt_set_sync(csp_bt_t *ptBtBase, csi_bt_syncin_e eSyncIn, csi_bt_syncmode_e eSyncMode, csi_bt_arearm_e eAutoRearm)
 {
 	if(eSyncIn > BT_SYNCIN2)
 		return CSI_ERROR;
 	
-	csp_bt_set_sync_mode(ptBtBase, (bt_sync_in_e)eSyncIn, (bt_ostmd_e)eTrgMode);				//mode
+	csp_bt_set_sync_mode(ptBtBase, (bt_sync_in_e)eSyncIn, (bt_ostmd_e)eSyncMode);				//mode
 	
 	if((eSyncIn == BT_SYNCIN0) || (eSyncIn == BT_SYNCIN1))
 		csp_bt_set_arearm(ptBtBase ,(bt_sync_in_e)eSyncIn, (bt_arearm_e)eAutoRearm);	//rearm
