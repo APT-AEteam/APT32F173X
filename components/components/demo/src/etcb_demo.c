@@ -48,7 +48,7 @@ int exi_etcb_bt_start_demo(void)
 	tTimConfig.wTimeVal = 1000;											//BT定时值 = 1000us
 	tTimConfig.eRunMode  = BT_RUN_CONT;									//BT计数器工作模式
 	csi_bt_timer_init(BT0,&tTimConfig);									//BT0 定时	
-	csi_bt_set_sync(BT0, BT_SYNCIN0, BT_TRG_CONTINU, BT_TRG_SYCAREARM);	//外部触发bt0启动(SYNCIN0)
+	csi_bt_set_sync(BT0, BT_SYNCIN0, BT_SYNC_CONT, BT_TRG_SYCAREARM);	//外部触发bt0启动(SYNCIN0)
 	csi_bt_sync_enable(BT0, BT_SYNCIN0);								//BT0 同步输入2使能
 	
 	//ETCB 初始化
@@ -99,7 +99,7 @@ int exi_etcb_bt_stop_demo(void)
 	tTimConfig.wTimeVal = 1000;												//BT定时值 = 1000us
 	tTimConfig.eRunMode  = BT_RUN_CONT;										//BT计数器工作模式
 	csi_bt_timer_init(BT0,&tTimConfig);										//BT0 定时	
-	csi_bt_set_sync(BT0, BT_SYNCIN1, BT_TRG_CONTINU, BT_TRG_AUTOAREARM);	//外部触发BT0停止(SYNCIN1)，连续模式
+	csi_bt_set_sync(BT0, BT_SYNCIN1, BT_SYNC_CONT, BT_TRG_AUTOAREARM);		//外部触发BT0停止(SYNCIN1)，连续模式
 	csi_bt_sync_enable(BT0, BT_SYNCIN1);									//BT0 同步输入1使能
 	
 	csi_bt_start(BT0);	    												//启动BT0
