@@ -63,6 +63,7 @@ extern "C" {
 //csi库函数中断支持回调函数，通过宏USE_XXX_CALLBACK来实现次功能选择，若使能需用
 #define USE_BT_CALLBACK			1		//BT(0/1/2/3)
 #define USE_UART_CALLBACK		1		//UART(0/1/2)
+#define USE_SIO_CALLBACK		1		//SIO(0/1)
 #define USE_LED_CALLBACK		1		//LED(0)
 #define USE_CNTA_CALLBACK		1		//CNTA(0)
 #define USE_CMP_CALLBACK		1		//CMP(0/1/2)

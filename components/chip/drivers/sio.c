@@ -13,13 +13,12 @@
 #include "drv/sio.h"
 
 /* Private macro------------------------------------------------------*/
-#define SIO_RESET_VALUE  (0x00000000)
-#define SIO_RX_TIMEOUT		(0x10ff)
-#define SIO_TX_TIMEOUT		(0x1FFF)
 /* externs function---------------------------------------------------*/
-/* externs variablesr-------------------------------------------------*/
-/* Private variablesr-------------------------------------------------*/
+/* global variablesr--------------------------------------------------*/
 csi_sio_ctrl_t g_tSioCtrl[SIO_IDX];	
+
+/* Private variablesr-------------------------------------------------*/
+
 
 /** \brief get sio idx 
  * 
@@ -30,9 +29,9 @@ static uint8_t apt_get_sio_idx(csp_sio_t *ptSioBase)
 {
 	switch((uint32_t)ptSioBase)
 	{
-		case APB_SPI0_BASE:
+		case APB_SIO0_BASE:
 			return 0;
-		case APB_SPI1_BASE:
+		case APB_SIO1_BASE:
 			return 1;
 		default:
 			return 0xff;		//error
@@ -79,8 +78,8 @@ void csi_sio_irqhandler(csp_sio_t *ptSioBase, uint8_t byIdx)
 	
 	switch(byIsr)
 	{
-		case SIO_RXBUFFULL:										
-		case SIO_RXDNE:
+		case SIO_INT_RXBUFFULL:										
+		case SIO_INT_RXDNE:
 			if(NULL == g_tSioCtrl[byIdx].pwData || 0 == g_tSioCtrl[byIdx].hwSize)
 			{
 				csp_sio_get_rxbuf(ptSioBase);
@@ -99,11 +98,11 @@ void csi_sio_irqhandler(csp_sio_t *ptSioBase, uint8_t byIdx)
 						g_tSioCtrl[byIdx].recv_callback(ptSioBase, g_tSioCtrl[byIdx].pwData, g_tSioCtrl[byIdx].hwSize);
 				}
 			}
-			csp_sio_clr_isr(ptSioBase, SIO_RXDNE | SIO_RXBUFFULL);
+			csp_sio_clr_isr(ptSioBase, SIO_INT_RXDNE | SIO_INT_RXBUFFULL);
 			break;
 	
-		case SIO_TXBUFEMPT:
-			csp_sio_clr_isr(ptSioBase, SIO_TXBUFEMPT);
+		case SIO_INT_TXBUFEMPT:
+			csp_sio_clr_isr(ptSioBase, SIO_INT_TXBUFEMPT);
 		 	ptSioBase->TXBUF = *(g_tSioCtrl[byIdx].pwData);
 			g_tSioCtrl[byIdx].pwData++;
 			g_tSioCtrl[byIdx].hwTransNum++;
@@ -119,18 +118,18 @@ void csi_sio_irqhandler(csp_sio_t *ptSioBase, uint8_t byIdx)
 					g_tSioCtrl[byIdx].send_callback(ptSioBase);	
 			}
 			break;
-		case SIO_TXDNE:
-			csp_sio_clr_isr(ptSioBase, SIO_TXDNE);
+		case SIO_INT_TXDNE:
+			csp_sio_clr_isr(ptSioBase, SIO_INT_TXDNE);
 			break;
-		case SIO_TIMEOUT:
+		case SIO_INT_TIMEOUT:
 			if(g_tSioCtrl[byIdx].err_callback)
 				g_tSioCtrl[byIdx].err_callback(ptSioBase, byIsr);
-			csp_sio_clr_isr(ptSioBase, SIO_TIMEOUT);
+			csp_sio_clr_isr(ptSioBase, SIO_INT_TIMEOUT);
 			break;
-		case SIO_BREAK:												//receive break interrupt ,reset receive module
+		case SIO_INT_BREAK:												//receive break interrupt ,reset receive module
 			if(g_tSioCtrl[byIdx].err_callback)
 				g_tSioCtrl[byIdx].err_callback(ptSioBase, byIsr);
-			csp_sio_clr_isr(ptSioBase, SIO_BREAK);
+			csp_sio_clr_isr(ptSioBase, SIO_INT_BREAK);
 			break;
 		default:
 			csp_sio_clr_isr(ptSioBase, 0x2f);
@@ -160,7 +159,6 @@ csi_error_t csi_sio_tx_init(csp_sio_t *ptSioBase, csi_sio_tx_config_t *ptTxCfg)
 	csp_sio_set_d1(ptSioBase, ptTxCfg->byD1Len - 1);					//set d1 clk len
 	csp_sio_set_dl(ptSioBase, ptTxCfg->byDLLen - 1, ptTxCfg->byDLLsq);	//set dl clk len and lsq
 	csp_sio_set_dh(ptSioBase, ptTxCfg->byDHLen - 1, ptTxCfg->byDHHsq);	//set dl clk len and hsq
-	csi_irq_enable((uint32_t*)ptSioBase);								//enable sio vic interrupt 
 
 	return CSI_OK;
 }
@@ -188,8 +186,6 @@ csi_error_t csi_sio_rx_init(csp_sio_t *ptSioBase, csi_sio_rx_config_t *ptRxCfg)
 	csp_sio_set_sample(ptSioBase, (sio_extract_e)ptRxCfg->eSpExtra, SIO_ALIGN_EN, ptRxCfg->bySpBitLen - 1, ptRxCfg->byHithr);			//set rx samping control
 	csp_sio_set_recv(ptSioBase, (sio_rdir_e)ptRxCfg->eRxDir, ptRxCfg->byRxBufLen - 1, ptRxCfg->byRxCnt - 1);							//set receive para
 	
-	csi_irq_enable((uint32_t*)ptSioBase);		//enable sio vic interrupt 
-	
 	return CSI_OK;
 }
 /** \brief sio receive break reset config
@@ -210,14 +206,14 @@ csi_error_t csi_sio_set_break(csp_sio_t *ptSioBase, csi_sio_bklev_e eBkLev, uint
 	return CSI_OK; 
 }
 
-/** \brief sio receive timeout reset config
+/** \brief sio receive sample timeout reset config
  * 
  *  \param[in] ptSioBase: pointer of sio register structure
  *  \param[in] byToCnt: sample timeout period
  *  \param[in] bEnable: ENABLE/DISABLE sample timeout reset
  *  \return error code \ref csi_error_t
  */
-csi_error_t csi_sio_set_samp_timeout(csp_sio_t *ptSioBase, uint8_t byToCnt ,bool bEnable)
+csi_error_t csi_sio_set_timeout(csp_sio_t *ptSioBase, uint8_t byToCnt ,bool bEnable)
 {
 	if(byToCnt == 0)
 		return CSI_ERROR;
@@ -275,10 +271,10 @@ int32_t csi_sio_send(csp_sio_t *ptSioBase, const uint32_t *pwData, uint16_t hwSi
 	{
 		csp_sio_set_txbuf(ptSioBase,pwData[i]);
 		nop;nop;nop;nop;
-		while(!(csp_sio_get_risr(ptSioBase) & SIO_TXBUFEMPT));
+		while(!(csp_sio_get_risr(ptSioBase) & SIO_INT_TXBUFEMPT));
 	}
-	while(!(csp_sio_get_risr(ptSioBase) & SIO_TXDNE));
-	csp_sio_clr_isr(ptSioBase, SIO_TXDNE);
+	while(!(csp_sio_get_risr(ptSioBase) & SIO_INT_TXDNE));
+	csp_sio_clr_isr(ptSioBase, SIO_INT_TXDNE);
 	
 	return i;
 }
@@ -301,7 +297,7 @@ csi_error_t csi_sio_send_int(csp_sio_t *ptSioBase, const uint32_t *pwSend, uint1
 	g_tSioCtrl[byIdx].hwSize = hwSize;
 	g_tSioCtrl[byIdx].hwTransNum = 0;
 	g_tSioCtrl[byIdx].byTxStat = SIO_STATE_SEND;
-	csp_sio_int_enable(SIO0, SIO_TXBUFEMPT);;
+	csp_sio_int_enable(SIO0, SIO_INT_TXBUFEMPT);;
 	
 	return CSI_OK;
 }
@@ -343,7 +339,7 @@ int32_t csi_sio_receive_int(csp_sio_t *ptSioBase, uint32_t *pwRecv, uint16_t hwS
 	g_tSioCtrl[byIdx].hwSize 	= hwSize;
 	g_tSioCtrl[byIdx].hwTransNum = 0;
 	g_tSioCtrl[byIdx].byRxStat  = SIO_STATE_RECV;
-	csp_sio_int_enable(SIO0, SIO_RXBUFFULL);
+	csp_sio_int_enable(SIO0, SIO_INT_RXBUFFULL);
 	
 	return CSI_OK;
 }

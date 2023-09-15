@@ -50,8 +50,8 @@ uint8_t	byDipData[24] =
 
 uint32_t	g_wSioRxBuf[24];		//接收缓存
 
-/** \brief sio rgb led demo
- *       - sio 驱动RGB LED(ws2812), RGB DATA = 24bit; 驱动数据输出排列方式:GRB
+/**	\brief 	sio_led_rgb_demo: SIO驱动RGB三色LED的demo
+ *	\brief  sio 驱动RGB LED(ws2812), RGB DATA = 24bit; 驱动数据输出排列方式:GRB; 采用非中断方式
  * 
  *  \param[in] none
  *  \return error code
@@ -61,15 +61,9 @@ int sio_led_rgb_demo(void)
 	int iRet = 0;
 	csi_sio_tx_config_t tSioTxCfg;
 	
-#if (USE_GUI == 0)							//用户未选择图形化编程	
+#if (USE_GUI == 0)								//用户未选择图形化编程	
 	//配置为SIO模式
-	csi_pin_set_mux(PB0, PB0_SIO0);	
-//	csi_pin_set_mux(PC0, PC0_SIO0);	
-//	csi_pin_set_mux(PD3, PD3_SIO0);
-//	csi_pin_set_mux(PD4, PD4_SIO0);
-//	
-//	csi_pin_set_mux(PB1, PB1_SIO1);
-//	csi_pin_set_mux(PD3, PD3_SIO1);
+	csi_gpio_set_mux(GPIOB, PB0, PB0_SIO0);	
 #endif
 	
 	//SIO TX 参数配置
@@ -85,19 +79,19 @@ int sio_led_rgb_demo(void)
 	tSioTxCfg.byTxCnt 		= 24;				//SIO一次发送总的数据长度(bit个数 = 24)，byTxCnt >= byTxBufLen，byTxCnt < 256(最大32bytes)
 	tSioTxCfg.eIdleLev 		= SIO_IDLE_L;		//SIO空闲时刻IO管脚输出电平
 	tSioTxCfg.eTxDir 		= SIO_TXDIR_LSB;	//LSB->MSB, txbuf 数据按照bit[1:0]...[31:30]方式移出
-	tSioTxCfg.wTxFreq 		= 4000000;			//tx clk =500KHz, Ttxshift = 1/0.5 = 250us；发送每bit时间是1us
+	tSioTxCfg.wTxFreq 		= 4000000;			//tx clk =4MHz, Ttxshift = 1/4 = 250ns；发送每bit(1/0)是250ns*4 = 1us
 	csi_sio_tx_init(SIO0, &tSioTxCfg);
 	
 	while(1)
 	{
 		led_rgb_display(byDipData, 8);
-		mdelay(20);
+		mdelay(5);
 	}
 	
 	return iRet;
 }
-/** \brief sio rgb led demo,use interrupt
- *   	 - sio 驱动RGB LED(ws2812), RGB DATA = 24bit; 驱动数据输出排列方式:GRB
+/** \brief 	sio_led_rgb_int_demo：SIO驱动RGB三色LED的demo
+ *  \brief	sio 驱动RGB LED(ws2812), RGB DATA = 24bit; 驱动数据输出排列方式:GRB; 采用非中断方式
  * 
  *  \param[in] none
  *  \return error code
@@ -129,7 +123,7 @@ int sio_led_rgb_int_demo(void)
 	tSioTxCfg.byTxCnt 		= 8;					//SIO一次发送总的数据长度(bit个数 = 8)，byTxCnt >= byTxBufLen，byTxCnt < 256(最大32bytes)
 	tSioTxCfg.eIdleLev 		= SIO_IDLE_L;			//SIO空闲时刻IO管脚输出电平
 	tSioTxCfg.eTxDir 		= SIO_TXDIR_LSB;		//MSB->LSB, txbuf 数据按照bit[1:0]...[31:30]方式移出
-	tSioTxCfg.wTxFreq 		= 500000;				//tx clk =500KHz, Ttxshift = 1/0.5 = 2us；发送每bit时间是2us
+	tSioTxCfg.wTxFreq 		= 500000;				//tx clk =4MHz, Ttxshift = 1/4 = 250ns；发送每bit(1/0)是250ns*4 = 1us
 	
 	csi_sio_tx_init(SIO0, &tSioTxCfg);
 	//mdelay(10);
@@ -144,7 +138,7 @@ int sio_led_rgb_int_demo(void)
 		byRecv = csi_uart_getc(UART2);
 		if(byRecv)
 		{ 
-			csi_sio_send(SIO0, byDipDataEnd, 24);
+			csi_sio_send_int(SIO0, byDipDataEnd, 24);
 		}
 		mdelay(200);
 	}
@@ -297,7 +291,7 @@ int sio_led_rgb_recv_dma_demo(void)
 	tSioRxCfg.bySpBitLen	= 8;					//bit采样的长度，每个bit采样次数为8，总得采样时间 = 8*Trxsamp = 1us
 	
 	csi_sio_rx_init(SIO0, &tSioRxCfg);				//初始化SIO接收参数
-	csi_sio_set_samp_timeout(SIO0, 20, ENABLE);			//接收超时复位, timeout cnt > bySpBitLen
+	csi_sio_set_timeout(SIO0, 20, ENABLE);			//接收超时复位, timeout cnt > bySpBitLen
 	
 
 	csi_sio_recv_dma(SIO0, DMA0, DMA_CH2, (void*)byLedRxBuf, 24);
@@ -346,7 +340,7 @@ int sio_led_rgb_recv_rxfull_demo(void)
 	tSioRxCfg.wRxFreq		= 1000000;				//rx clk =1MHz, Trxsamp = 1/1 = 1us；每1us 采样一次
 	tSioRxCfg.bySpBitLen	= 8;					//bit采样的长度，每个bit采样次数为8，总得采样时间 = 8*Trxsamp = 1us
 	csi_sio_rx_init(SIO0, &tSioRxCfg);				//初始化SIO接收参数
-	csi_sio_set_samp_timeout(SIO0, 20, ENABLE);			//接收超时复位, timeout cnt > bySpBitLen
+	csi_sio_set_timeout(SIO0, 20, ENABLE);			//接收超时复位, timeout cnt > bySpBitLen
 	csi_sio_set_buffer(g_wSioRxBuf, 24);			//设置接收数据buf和buf长度len >= (24个byRxBufLen)，将接收到的数据存放于用户定义的buffer中
 	
 	while(1)
@@ -395,7 +389,7 @@ int sio_led_rgb_recv_rxdone_demo(void)
 	tSioRxCfg.bySpBitLen	= 8;					//bit采样的长度，每个bit采样次数为8，总得采样时间 = 8*Trxsamp = 1us
 	
 	csi_sio_rx_init(SIO0, &tSioRxCfg);				//初始化SIO接收参数
-	csi_sio_set_samp_timeout(SIO0, 20, ENABLE);			//接收超时复位, timeout cnt > bySpBitLen
+	csi_sio_set_timeout(SIO0, 20, ENABLE);			//接收超时复位, timeout cnt > bySpBitLen
 	csi_sio_set_buffer(g_wSioRxBuf, 8);				//设置接收数据buf和buf长度，buf长度len >= (byRxCnt * 8)bit ;数据存放于用户定义的buffer中
 	
 	while(1)

@@ -285,11 +285,11 @@ pin_func_e csi_gpio_get_mux(csp_gpio_t *ptGpioBase, pin_name_e ePinName)
 }
 /** \brief set gpio iomap function
  * 
- *  \param[in] ePinName: gpio pin name
- *  \param[in] eIoMap: gpio pin remap function
+ *  \param[in] ePinName: gpio pin name, \ref pin_name_e
+ *  \param[in] eIoMap: gpio pin remap function, \ref csi_gpio_iomap_e
  *  \return error code \ref csi_error_t
  */  
-csi_error_t csi_pin_set_iomap(csp_gpio_t *ptGpioBase, pin_name_e ePinName, csi_gpio_iomap_e eIoMap)
+csi_error_t csi_gpio_set_iomap(csp_gpio_t *ptGpioBase, pin_name_e ePinName, csi_gpio_iomap_e eIoMap)
 {
 	uint8_t byIoMap = 0x0b;
 	uint8_t byPinNum = apt_get_gpio_num(ePinName);

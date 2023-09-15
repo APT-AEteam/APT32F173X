@@ -179,7 +179,8 @@ int uart_recv_int_demo(void)
 	return iRet;
 }
 
-/** \brief 串口通过DMA发送数据，使用时请确认ETCB已初始化(使能)，ETCB初始化调用csi_etb_init()函数
+/** \brief	uart_send_dma_demo: UART通过DMA发送数据demo
+ *  \brief	UART DMA发送数据，需使用ETCB模块，配置对应触发源和触发目标
  * 
  *  \param[in] none
  *  \return error code
@@ -212,7 +213,7 @@ int uart_send_dma_demo(void)
 	tDmaConfig.eDetHinc 	= DMA_ADDR_CONSTANT;				//高位传输目标地址固定不变
 	tDmaConfig.eDataWidth 	= DMA_DSIZE_8_BITS;					//传输数据宽度8bit
 	tDmaConfig.eReload 		= DMA_RELOAD_DISABLE;				//禁止自动重载
-	tDmaConfig.eTransMode 	= DMA_TRANS_CONT;				//DMA服务模式(传输模式)，连续服务
+	tDmaConfig.eTransMode 	= DMA_TRANS_CONT;					//DMA服务模式(传输模式)，连续服务
 	tDmaConfig.eTsizeMode   = DMA_TSIZE_ONE_DSIZE;				//传输数据大小，一个 DSIZE , 即DSIZE定义大小
 	tDmaConfig.eReqMode		= DMA_REQ_HARDWARE;					//DMA请求模式，硬件请求
 	csi_dma_ch_init(DMA0, DMA_CH1, &tDmaConfig);				//初始化DMA0，选择CH1
@@ -242,8 +243,8 @@ int uart_send_dma_demo(void)
 	
 	return iRet;
 }
-/** \brief uart dma receive data
- *  \brief 串口通过DMA接收数据，使用时请确认ETCB已初始化(使能)，ETCB初始化调用csi_etcb_init()函数
+/** \brief	uart_receive_dma_demo: UART通过DMA接收数据demo
+ *  \brief	UART DMA接收数据，需使用ETCB模块，配置对应触发源和触发目标
  * 
  *  \param[in] none
  *  \return error code

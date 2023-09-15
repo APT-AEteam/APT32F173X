@@ -20,6 +20,10 @@
 extern "C" {
 #endif
 
+#define SIO_RESET_VALUE  	(0x00000000)
+#define SIO_RX_TIMEOUT		(0x10ff)
+#define SIO_TX_TIMEOUT		(0x1FFF)
+
 //sio tx 
 /**
  * \enum     csi_sio_idlest_e
@@ -337,22 +341,31 @@ void csi_sio_int_disable(csp_sio_t *ptSioBase, csi_sio_intsrc_e eIntSrc);
 csi_error_t csi_sio_set_break(csp_sio_t *ptSioBase, csi_sio_bklev_e eBkLev, uint8_t byBkCnt, bool bEnable);
 
 /**
-  \brief       sio receive timeout reset config
+  \brief       sio receive sample timeout reset config
   \param[in]   ptSioBase	pointer of sio register structure
   \param[in]   byToCnt    	sample timeout period
   \param[in]   bEnable    	ENABLE/DISABLE sample timeout reset
   \return      error code \ref csi_error_t
 */
-csi_error_t csi_sio_set_samp_timeout(csp_sio_t *ptSioBase, uint8_t byToCnt ,bool bEnable);
+csi_error_t csi_sio_set_timeout(csp_sio_t *ptSioBase, uint8_t byToCnt ,bool bEnable);
 
 /**
-  \brief	   send data from sio, this function is polling and interrupt mode     
+  \brief	   send data from sio, this function is polling  
   \param[in]   ptSioBase	pointer of sio register structure
   \param[in]   pwData    	pointer to buffer with data to send 
   \param[in]   hwSize    	send data size
   \return      error code \ref csi_error_t or data size
 */
 int32_t csi_sio_send(csp_sio_t *ptSioBase, const uint32_t *pwData, uint16_t hwSize);
+
+/** 
+  \brief send data from sio, this function is interrupt mode    
+  \param[in] ptSioBase: pointer of sio register structure
+  \param[in] pwData: pointer to buffer with data to send 
+  \param[in] hwSize: send data size
+  \return error code \ref csi_error_t or receive data size
+ */
+csi_error_t csi_sio_send_int(csp_sio_t *ptSioBase, const uint32_t *pwSend, uint16_t hwSize);
 
 /** 
   \brief 	   set sio receive data buffer

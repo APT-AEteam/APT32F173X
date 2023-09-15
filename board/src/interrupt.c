@@ -387,22 +387,24 @@ ATTRIBUTE_ISR __attribute__((weak)) void uart2_int_handler(void)
 
 ATTRIBUTE_ISR __attribute__((weak)) void sio0_int_handler(void) 
 {
-#if	SIO0_INT_HANDLE_EN
 	CSI_INTRPT_ENTER();
-	sio_irqhandler(SIO0);//this is a weak function defined in sio_demo.c, for better efficiency, we recommand user directly implement IRQ handler here without any function call.
-    CSI_INTRPT_EXIT();
-	// ISR content ...
+#if (USE_SIO_CALLBACK == 1)
+	csi_sio_irqhandler(SIO0,0);
+#else
+	csp_sio_clr_isr(SIO0, csp_sio_get_isr(SIO0));
 #endif
+	CSI_INTRPT_EXIT();
 }
 
 ATTRIBUTE_ISR __attribute__((weak)) void sio1_int_handler(void) 
 {
-#if	SIO1_INT_HANDLE_EN
 	CSI_INTRPT_ENTER();
-	sio_irqhandler(SIO1);//this is a weak function defined in sio_demo.c, for better efficiency, we recommand user directly implement IRQ handler here without any function call.
-    CSI_INTRPT_EXIT();
-	// ISR content ...
+#if (USE_SIO_CALLBACK == 1)
+	csi_sio_irqhandler(SIO1,0);
+#else
+	csp_sio_clr_isr(SIO1, csp_sio_get_isr(SIO1));
 #endif
+	CSI_INTRPT_EXIT();
 }
 
 ATTRIBUTE_ISR __attribute__((weak)) void i2c_int_handler(void) 

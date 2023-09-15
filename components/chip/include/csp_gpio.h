@@ -50,31 +50,6 @@ typedef volatile struct
     __IOM  uint32_t  IO_CLKEN;	//0x000C 	Gpio Group Clk Enable Control Register
 } csp_igrp_t; 
 
-
-/******************************************************************************
-* PIN_NUM: GPIO PIN Number
-******************************************************************************/
-/*
-typedef enum
-{
-  PIN_NUM0    = 0,  	// Pin 0 selected 
-  PIN_NUM1    = 1,  	// Pin 1 selected 
-  PIN_NUM2    = 2,  	// Pin 2 selected 
-  PIN_NUM3    = 3,   	// Pin 3 selected 
-  PIN_NUM4    = 4,  	// Pin 4 selected 
-  PIN_NUM5    = 5,  	// Pin 5 selected 
-  PIN_NUM6    = 6,  	// Pin 6 selected 
-  PIN_NUM7    = 7,  	// Pin 7 selected 
-  PIN_NUM8    = 8,  	// Pin 8 selected 
-  PIN_NUM9    = 9,  	// Pin 9 selected 
-  PIN_NUM10   = 10,  	// Pin 10 selected 
-  PIN_NUM11   = 11,   	// Pin 11 selected 
-  PIN_NUM12   = 12,  	// Pin 12 selected 
-  PIN_NUM13   = 13,  	// Pin 13 selected 
-  PIN_NUM14   = 14,  	// Pin 14 selected 
-  PIN_NUM15   = 15,  	// Pin 15 selected 
-}gpio_pin_e;
-*/
 /******************************************************************************
 * ODSR: PDSR: Output Data and Pin Data Status Register 
 ******************************************************************************/
@@ -108,26 +83,22 @@ typedef enum
 ******************************************************************************/
 typedef enum
 {
-    EXI0 	= 0,
-    EXI1 	= 1,
-    EXI2 	= 2,
-    EXI3 	= 3,
-    EXI4 	= 4,
-    EXI5 	= 5,
-    EXI6 	= 6,
-    EXI7 	= 7,
-    EXI8 	= 8,
-    EXI9 	= 9,
-    EXI10 	= 10,
-    EXI11 	= 11,
-    EXI12 	= 12,
-    EXI13 	= 13,
-	EXI14	= 14,
-	EXI15	= 15,
-	//EXI16	= 16,
-	//EXI17	= 17,
-	//EXI18	= 18,
-	//EXI19	= 19
+    GPIO_INT0 	= 0,
+    GPIO_INT1 	= 1,
+    GPIO_INT2 	= 2,
+    GPIO_INT3 	= 3,
+    GPIO_INT4 	= 4,
+    GPIO_INT5 	= 5,
+    GPIO_INT6 	= 6,
+    GPIO_INT7 	= 7,
+    GPIO_INT8 	= 8,
+    GPIO_INT9 	= 9,
+    GPIO_INT10 	= 10,
+    GPIO_INT11 	= 11,
+    GPIO_INT12 	= 12,
+    GPIO_INT13 	= 13,
+	GPIO_INT14	= 14,
+	GPIO_INT15	= 15,
 }gpio_int_e;
 /******************************************************************************
 * IGRPL: IGRPH: IGRPH: Group Config Register

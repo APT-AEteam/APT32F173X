@@ -122,17 +122,17 @@ typedef enum{
 }uart_dbug_e;
 
 typedef enum{
-	UART_TX_INT     	= (0x01ul << 2),
-	UART_RX_INT     	= (0x01ul << 3),
-	UART_TX_OV_INT    	= (0x01ul << 4),
-	UART_RX_OV_INT     	= (0x01ul << 5),
-	UART_PARERR_INT 	= (0x01ul << 7),
-	UART_TXFIFO_INT     = (0x01ul << 12),
-	UART_RXFIFO_INT     = (0x01ul << 13),
-	UART_RXFIFO_OV_INT	= (0x01ul << 18),
-	UART_TXDONE_INT 	= (0x01ul << 19),
-	UART_RXTO_INT		= (0x01ul << 21),
-	UART_RXBK_INT		= (0x01ul << 22)
+	UART_INT_TX     	= (0x01ul << 2),
+	UART_INT_RX     	= (0x01ul << 3),
+	UART_INT_TX_OV    	= (0x01ul << 4),
+	UART_INT_RX_OV    	= (0x01ul << 5),
+	UART_INT_PARERR 	= (0x01ul << 7),
+	UART_INT_TXFIFO     = (0x01ul << 12),
+	UART_INT_RXFIFO     = (0x01ul << 13),
+	UART_INT_RXFIFO_OV	= (0x01ul << 18),
+	UART_INT_TXDONE 	= (0x01ul << 19),
+	UART_INT_RXTO		= (0x01ul << 21),
+	UART_INT_RXBRK		= (0x01ul << 22)
 }uart_int_e;
 
 /******************************************************************************
@@ -140,18 +140,18 @@ typedef enum{
 ******************************************************************************/
 // ISR : UART Interrupt Status Register									
 typedef enum{
-	UART_TX_INT_S   		= (0x01ul << 0),	//Transmitter INT Status      
-	UART_RX_INT_S			= (0x01ul << 1),	//Receiver INT Status          
-	UART_TX_OV_INT_S    	= (0x01ul << 2),	//Transmitter Over INT Status  
-	UART_RX_OV_INT_S   	 	= (0x01ul << 3),	//Receiver Over INT Status   
-	UART_PARERR_INT_S     	= (0x01ul << 4),	//Parity Error INT Status  
-	UART_TXFIFO_INT_S     	= (0x01ul << 5),	//Transmitter FIFO INT Status      
-	UART_RXFIFO_INT_S     	= (0x01ul << 6),	//Receiver FIFO INT Status 
-	UART_RXFIFO_OV_INT_S	= (0x01ul << 7),	//Receiver FIFO Over INT Status 
-	UART_RXTO_INT_S     	= (0x01ul << 9),	//Receiver FIFO INT Status 
-	UART_RXBRK_INT_S		= (0x01ul << 10),	//Receiver FIFO Over INT Status 
-	UART_TXDONE_INT_S     	= (0x01ul << 19),	//Transmitter Complete INT Status
-	UART_ALL_INT_S     		= (0x806FFul << 0)	//All INT Status 
+	UART_INT_TX_S   		= (0x01ul << 0),	//Transmitter INT Status      
+	UART_INT_RX_S			= (0x01ul << 1),	//Receiver INT Status          
+	UART_INT_TX_OV_S    	= (0x01ul << 2),	//Transmitter Over INT Status  
+	UART_INT_RX_OV_S   	 	= (0x01ul << 3),	//Receiver Over INT Status   
+	UART_INT_PARERR_S     	= (0x01ul << 4),	//Parity Error INT Status  
+	UART_INT_TXFIFO_S     	= (0x01ul << 5),	//Transmitter FIFO INT Status      
+	UART_INT_RXFIFO_S     	= (0x01ul << 6),	//Receiver FIFO INT Status 
+	UART_INT_RXFIFO_OV_S	= (0x01ul << 7),	//Receiver FIFO Over INT Status 
+	UART_INT_RXTO_S     	= (0x01ul << 9),	//Receiver FIFO INT Status 
+	UART_INT_RXBRK_S		= (0x01ul << 10),	//Receiver FIFO Over INT Status 
+	UART_INT_TXDONE_S     	= (0x01ul << 19),	//Transmitter Complete INT Status
+	UART_INT_ALL_S     		= (0x806FFul << 0)	//All INT Status 
 }uart_isr_e;
 
 /******************************************************************************
