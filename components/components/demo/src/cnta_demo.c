@@ -58,9 +58,9 @@ int cnta_timer_demo(void)
 #endif
 	
 	tTimerCfg.eClkDiv = CNTA_CK_DIV8;                   //时钟8分频
-	tTimerCfg.wTime = 1000;                             //周期1000us,(0~7281)
+	tTimerCfg.wTime = 1000;                             //周期1000us
 	tTimerCfg.eRunMode = CNTA_RUN_CONT;                 //重复模式
-	csi_cnta_timer_init(CA0,&tTimerCfg);                //初始化CountA
+	csi_cnta_timer_init(CA0, &tTimerCfg);               //初始化CountA
 	
 	csi_cnta_int_enable(CA0, CNTA_INTSRC_PENDL);        //若需使用中断，使能对应中断，这里使用CNTA_INTSRC_PENDL中断
 	csi_cnta_start(CA0);                                //启动CountA

@@ -296,8 +296,8 @@ typedef enum
 #define	CMP_IMCR_MSK		        (0x1ul << CMP_IMCR_POS)
 typedef enum
 {
-	CMP_NONE_INT      = 0, 
-	CMP_EDGEDET_INT   	
+	CMP_INT_NONE      = 0, 
+	CMP_INT_EDGEDET   	
 }
 cmp_int_e;
 
@@ -503,7 +503,7 @@ static inline uint32_t csp_cmp_get_isr(csp_cmp_t *ptCmpBase)
 
 static inline void csp_cmp_clr_isr(csp_cmp_t *ptCmpBase)
 {
-	ptCmpBase -> ICR =  CMP_EDGEDET_INT;
+	ptCmpBase -> ICR =  CMP_INT_EDGEDET;
 }
 
 #endif
