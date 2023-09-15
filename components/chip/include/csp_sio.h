@@ -389,7 +389,7 @@ static inline void csp_sio_woke_rst(csp_sio_t *ptSioBase)
 //SIO DMA
 static inline void csp_sio_txdma_enable(csp_sio_t *ptSioBase, bool bEnable) 
 {
-	ptSioBase->CR = (ptSioBase->CR & ~SIO_TDMA_EN_MSK) | (bEnable << SIO_TDMA_EN_POS);
+	ptSioBase->CR |= (ptSioBase->CR & ~SIO_TDMA_EN_MSK) | (bEnable << SIO_TDMA_EN_POS);
 }
 
 static inline void csp_sio_rxdma_enable(csp_sio_t *ptSioBase, bool bEnable) 
