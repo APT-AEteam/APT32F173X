@@ -38,7 +38,6 @@ extern void bt_irqhandler3(csp_bt_t *ptBtBase);
 extern void wwdt_irqhandler(void);
 extern void adc_irqhandler(csp_adc_t *ptAdcBase);
 extern void syscon_irqhandler(csp_syscon_t *ptSysconBase);
-extern void led_irqhandler(csp_led_t *ptLedBase);
 extern void i2c_irqhandler(csp_i2c_t *ptIicBase);
 
 extern void gptb_irqhandler(csp_gptb_t *ptGptbBase);

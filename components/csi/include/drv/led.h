@@ -47,9 +47,10 @@ typedef enum {
 }csi_led_ledclk_e;
 
 typedef enum {
-	LED_INTSRC_NONE = 0,
-	LED_INTSRC_ICEND = 0x1<<0,
-	LED_INTSRC_IPEND = 0x1<<1,
+	LED_INTSRC_NONE  = 0,
+	LED_INTSRC_ICEND = 0x1ul<<0,
+	LED_INTSRC_IPEND = 0x1ul<<1,
+	LED_INTSRC_ALL   = 0x0F
 }csi_led_intsrc_e;
 
 typedef struct csi_led_config {
@@ -73,11 +74,11 @@ extern csi_led_ctrl_t g_tLedCtrl[LED_IDX];
  * 
  *  \param[in] ptLedBase: pointer of led register structure
  *  \param[in] ptLedCfg: pointer of led parameter config structure
- * 			   - byClkDiv: LED Clock divider
- * 			   - byBrt: LED brightness control
- * 			   - hwComMask: COM port enable mask
- * 			   - hwOnTime: scanning timing: COM on cycles(range:56~2096).Tcom = byOnTime * Tledclk, needs to be a multiple of 8, otherwise the timing will NOT be accurate
- * 			   - hwBreakTime: scanning timing: cycles between COMs(range:14~524).Tbreak = byBreakTime * Tledclk.
+ * 			    - byClkDiv: LED Clock divider
+ * 			    - byBrt: LED brightness control
+ * 			    - hwComMask: COM port enable mask
+ * 			    - hwOnTime: scanning timing: COM on cycles(range:56~2096).Tcom = byOnTime * Tledclk, needs to be a multiple of 8, otherwise the timing will NOT be accurate
+ * 			    - hwBreakTime: scanning timing: cycles between COMs(range:14~524).Tbreak = byBreakTime * Tledclk.
  *  \return error code \ref csi_error_t
  */
 csi_error_t csi_led_init(csp_led_t *ptLedBase, csi_led_config_t *tLedCfg);
@@ -107,21 +108,13 @@ void csi_led_int_enable(csp_led_t *ptLedBase, csi_led_intsrc_e eIntSrc);
 void csi_led_int_disable(csp_led_t *ptLedBase, csi_led_intsrc_e eIntSrc);
  
 /**
-  \brief   	   write led data
+  \brief   	   set led segment data
   \param[in]   ptLedBase    pointer of LED register structure
   \param[in]   byCom		to select which com
   \param[in]   byData		SEG data for the specific com
   \return  	   None
 */
-void csi_led_write_data(csp_led_t *ptLedBase, uint8_t byCom, uint8_t byData);
-
-/** \brief   set led blink pattern
- * 
- * \param[in] ptLedBase: pointer of LED register structure
- * \param[in] hwOnMsk: on pattern
- * \return  None
- */
-void csi_led_set_blink_pattern(csp_led_t *ptLedBase, uint16_t hwOnMsk);
+void csi_led_set_data(csp_led_t *ptLedBase, uint8_t byCom, uint8_t byData);
 
 /** \brief  led blink control
  * 
@@ -145,6 +138,14 @@ void csi_led_light_on(csp_led_t *ptLedBase);
   \return  	   None
 */
 void csi_led_light_off(csp_led_t *ptLedBase);
+
+/** \brief clear led interrupt
+ * 
+ *  \param[in] ptLedBase: pointer of LED register structure
+ *  \param[in] eInt: interrupt source \ref csi_led_intsrc_e
+ *  \return None
+ */
+void csi_led_clr_isr(csp_led_t *ptLedBase,csi_led_intsrc_e eInt);
 
 /** \brief led interrupt handler function
  * 
