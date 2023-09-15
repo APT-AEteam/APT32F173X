@@ -496,34 +496,14 @@ static inline void csp_cmp_int_disable(csp_cmp_t *ptCmpBase, cmp_int_e eCmpInt)
 	ptCmpBase->IMCR &= ~eCmpInt; 
 }
 
-//static inline void csp_cmp_int_clear(csp_cmp_t *ptCmpBase,csp_cmp_int_e eCmpInt)
-//{
-//	ptCmpBase->ICR|= eCmpInt;
-//}
-
-//static inline  void csp_cmp_edgedet_int_enable(csp_cmp_t *ptCmpBase,bool bEnable)
-//{
-//	ptCmpBase->IMCR = (ptCmpBase->IMCR & ~CMP_INT_MSK) | bEnable;
-//}
-
-//static inline uint32_t csp_cmp_get_imcr(csp_cmp_t *ptCmpBase)
-//{
-//	return (uint32_t)(ptCmpBase-> IMCR);
-//}
-
 static inline uint32_t csp_cmp_get_isr(csp_cmp_t *ptCmpBase)
 {
 	return (uint32_t)(ptCmpBase-> MISR);
 }
 
-//static inline void csp_cmp_edgedet_int_clear(csp_cmp_t *ptCmpBase)
-//{
-//	ptCmpBase->ICR|= 0x01;
-//}
-
-static inline void csp_cmp_clr_isr(csp_cmp_t *ptCmpBase, cmp_int_e eCmpInt)
+static inline void csp_cmp_clr_isr(csp_cmp_t *ptCmpBase)
 {
-	ptCmpBase -> ICR =  eCmpInt;
+	ptCmpBase -> ICR =  CMP_EDGEDET_INT;
 }
 
 #endif

@@ -175,9 +175,9 @@ uint8_t csi_cmp_get_out(csp_cmp_t *ptCmpBase,uint8_t byOutCh)
  *  \param[in] eIntMode: EDGEDET_MODE or RAWDET_MODE
  *  \return none
  */
-void csi_cmp_clr_isr(csp_cmp_t *ptCmpBase,csi_cmp_intsrc_e eIntMode)
+void csi_cmp_clr_isr(csp_cmp_t *ptCmpBase)
 {
-	csp_cmp_clr_isr(ptCmpBase,(cmp_int_e)eIntMode);
+	csp_cmp_clr_isr(ptCmpBase);
 }
 
 /** \brief CMP interrupt enable control
@@ -253,5 +253,5 @@ void csi_cmp_irqhandler(csp_cmp_t *ptCmpBase,  uint8_t byIdx)
 	if(g_tCmpCtrl[byIdx].callback)
 		g_tCmpCtrl[byIdx].callback(ptCmpBase, byIsr);
 			
-	csp_cmp_clr_isr(ptCmpBase, CMP_EDGEDET_INT);
+	csp_cmp_clr_isr(ptCmpBase);
 }

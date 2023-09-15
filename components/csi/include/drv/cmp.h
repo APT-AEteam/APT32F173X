@@ -279,10 +279,9 @@ uint8_t csi_cmp_get_out(csp_cmp_t *ptCmpBase,uint8_t byOutCh);
 /** \brief clear cmp int
  * 
  *  \param[in] ptCmpBase:pointer of cmp register structure
- *  \param[in] eIntMode:EDGEDET_MODE or RAWDET_MODE
  *  \return none
  */
-void csi_cmp_clr_isr(csp_cmp_t *ptCmpBase,csi_cmp_intsrc_e eIntMode);
+void csi_cmp_clr_isr(csp_cmp_t *ptCmpBase);
 
 /** \brief cmp interrupt enable control
  * 

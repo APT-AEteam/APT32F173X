@@ -531,7 +531,7 @@ ATTRIBUTE_ISR __attribute__((weak)) void cmp0_int_handler(void)
 #if (USE_CMP_CALLBACK == 1)
 	csi_cmp_irqhandler(CMP0, 0);
 #else
-	csp_cmp_clr_isr(CMP0, (csp_cmp_int_e)CMP_INTSRC_EDGEDET);
+	csp_cmp_clr_isr(CMP0);
 #endif
 	CSI_INTRPT_EXIT();
 }
@@ -543,7 +543,7 @@ ATTRIBUTE_ISR __attribute__((weak)) void cmp1_int_handler(void)
 #if (USE_CMP_CALLBACK == 1)
 	csi_cmp_irqhandler(CMP1, 1);
 #else
-	csp_cmp_clr_isr(CMP1, (csp_cmp_int_e)CMP_INTSRC_EDGEDET);
+	csp_cmp_clr_isr(CMP1);
 #endif
 	CSI_INTRPT_EXIT();
 }
@@ -555,7 +555,7 @@ ATTRIBUTE_ISR __attribute__((weak)) void cmp2_int_handler(void)
 #if (USE_CMP_CALLBACK == 1)
 	csi_cmp_irqhandler(CMP2, 2);
 #else
-	csp_cmp_clr_isr(CMP2, (csp_cmp_int_e)CMP_INTSRC_EDGEDET);
+	csp_cmp_clr_isr(CMP2);
 #endif
 	CSI_INTRPT_EXIT();
 }
