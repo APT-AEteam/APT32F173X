@@ -75,10 +75,9 @@ typedef enum
 
 typedef enum
 {
-	CMP_TRGSRC_DOWN		     =	0x00,
-	CMP_TRGSRC_UP,
-	CMP_TRGSRC_DOWN_UP,
-	CMP_TRGSRC_UP1
+	CMP_TRGSRC_FALLING		     =	0x00,
+	CMP_TRGSRC_RISING,
+	CMP_TRGSRC_FALLING_RISING
 }csi_cmp_trgsrc_e;
 
 typedef enum

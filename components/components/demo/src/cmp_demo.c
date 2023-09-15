@@ -165,7 +165,7 @@ int cmp_wfcr_demo(void)
 	tCmpWfcrCfg.hwWcnt    = 200;                    //窗口计数
 	csi_cmp_set_wfcr(CMP0,&tCmpWfcrCfg);
 	
-	csi_cmp_set_evtrg(CMP0, CMP_TRGSRC_DOWN_UP);
+	csi_cmp_set_evtrg(CMP0, CMP_TRGSRC_FALLING_RISING);
 	csi_cmp_sync_enable(CMP0);
 	
 	csi_cmp_start(CMP0);	

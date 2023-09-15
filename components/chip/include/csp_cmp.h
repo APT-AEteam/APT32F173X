@@ -94,10 +94,9 @@ typedef enum
 #define	CMP_EVE_SEL_MSK		    (0x03ul << CMP_EVE_SEL_POS)
 typedef enum
 {
-	TRGSRC_DOWN		   = 0x00,
-	TRGSRC_UP,
-	TRGSRC_DOWN_UP,
-	TRGSRC_UP1
+	TRGSRC_falling		   = 0x00,
+	TRGSRC_rising,
+	TRGSRC_falling_rising
 }cmp_trgsrc_e;
 
 #define	CMP_DFLT1EN_POS		    (10)
