@@ -54,6 +54,9 @@ extern int uart_receive_int_callback_demo(void);
 extern int usart_send_int_callback_demo(void);
 extern int usart_receive_int_callback_demo(void);
 
+extern int lin_send_callback_demo(void);
+extern int lin_send_recv_callback_demo(void);
+
 //adc demo
 //normal mode(no interrupt)
 extern int adc_samp_oneshot_demo(void);
@@ -74,8 +77,13 @@ extern int sio_hdq_send_recv_demo(void);
 extern int sio_hdq_recv_rdcmd_demo(void);
 
 //lpt demo
-extern int lpt_timer_callback_demo(void);
-extern int lpt_pwm_callback_demo(void);
+extern int lpt_timer_demo(void);
+extern int lpt_pwm_demo(void);
+extern int lpt_sync_trg_start_demo(void);
+extern int lpt_trg_out_demo(void);
+extern int lpt_soft_trg_out_demo(void);
+extern int lpt_filter_demo(void);
+extern int lpt_window_demo(void);
 
 //reliability demo
 extern void lvd_demo(void);

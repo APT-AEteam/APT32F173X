@@ -159,15 +159,6 @@ typedef struct
 } csi_dma_ch_config_t;
 
 
-/// \struct csi_dma_ctrl_t
-/// \brief  dma control handle, not open to users  
-typedef struct 
-{
-    void(*callback)(csp_dma_t *ptDmaBase, dma_isr_e eIsr);
-} csi_dma_ctrl_t;
-
-extern csi_dma_ctrl_t g_tDmaCtrl[DMA_IDX];
-
 /** 
   \brief 	   Init dma channel parameter config structure
   \param[in]   ptDmaBase	pointer of dma reg structure.
@@ -257,13 +248,6 @@ uint8_t csi_get_dma_idx(csp_dma_t *ptDmaBase);
  */ 
 bool csi_dma_get_msg(csp_dma_t *ptDmaBase, csi_dma_ch_e eDmaCh, bool bClrEn);
 
-/** \brief dma interrupt handle function
- * 
- *  \param[in] eIntMsg: dma interrupt message
- *  \param[in] byPost: dma interrupt message post
- *  \return none
- */ 
-uint8_t csi_dma_post_msg(csp_dma_t *ptDmaBase, csi_dma_int_msg_e eIntMsg, uint8_t byPost);
 /**
   \brief       enable dma power manage
   \param[in]   dma  dma handle to operate.

@@ -69,17 +69,19 @@ typedef enum
 
 
 typedef enum {
-	LIN_STATE_IDLE		= (0x00),				//lin idle(rx/tx)
-	LIN_STATE_WKUP		= (0x01ul << 1),		//lin sending 
-	LIN_STATE_ENDHEADER	= (0x01ul << 2),		//lin receive complete(full)
-	LIN_STATE_ENDMESS	= (0x01ul << 3),		//lin send complete
+	LIN_EVENT_IDLE		= (0x00),				//lin idle(rx/tx)
+	LIN_EVENT_WKUP		= (0x01ul << 1),		//lin sending 
+	LIN_EVENT_ENDHEADER	= (0x01ul << 2),		//lin header complete(full)
+	LIN_EVENT_ENDMESS	= (0x01ul << 3),		//lin message complete
 	//error
-	LIN_STATE_NOTRESP	= (0x01ul << 4),		//lin not responding, master receive
-	LIN_STATE_BITERR	= (0x01ul << 5),		//lin Bit error, master receive
-	LIN_STATE_IPERR		= (0x01ul << 6),		//lin Identity parity error, master receive
-	LIN_STATE_CHKERR	= (0x01ul << 7),		//lin Checksum error master receive
-	LIN_STATE_ALLERR	= (0x0ful << 4)			//all error bit
-} csi_lin_state_e;
+	LIN_EVENT_NOTRESP	= (0x01ul << 4),		//lin not responding, master receive
+	LIN_EVENT_BITERR	= (0x01ul << 5),		//lin Bit error, master receive
+	LIN_EVENT_IPERR		= (0x01ul << 6),		//lin Identity parity error, master receive
+	LIN_EVENT_CHKERR	= (0x01ul << 7),		//lin Checksum error master receive
+	LIN_EVENT_ALLERR	= (0x0ful << 4)			//all error bit
+} csi_lin_event_e;
+
+typedef csi_lin_event_e  csi_lin_state_e ;
 
 /**
  * \enum     csi_lin_wkmode_e
@@ -103,7 +105,7 @@ typedef struct {
 	uint8_t				byLcp2[4];			//Limit Counter Protocol4~7			
 } csi_lin_config_t;
 
-/// \struct csi_usart_transfer_t
+/// \struct csi_lin_ctrl_t
 /// \brief  usart transport handle, not open to users  
 typedef struct {
 //	uint8_t				bySendStat;			//send state
@@ -112,10 +114,24 @@ typedef struct {
 	uint8_t				byWkMode;			//send or receive
 	uint8_t				byRxSize;			//size of receive
 	uint8_t				*pbyRxData;			//pointer of receive buf
-} csi_lin_trans_t;
+	
+	void(*recv_callback)(csp_usart_t *ptUsartBase, csi_lin_event_e eEvent, uint8_t *pbyBuf, uint8_t *hwSzie);
+	void(*send_callback)(csp_usart_t *ptUsartBase);
+	void(*err_callback)(csp_usart_t *ptUsartBase, csi_lin_event_e eEvent);
+	
+} csi_lin_ctrl_t;
 
-extern csi_lin_trans_t g_tLinTran;	
+extern csi_lin_ctrl_t g_tLinCtrl[USART_IDX];	
 
+/**
+ * \enum     csi_usart_callbackid_e
+ * \brief    USART callback id
+ */
+typedef enum{
+	LIN_CALLBACK_ID_RECV	=	0,		//lin rteceive callback id
+	LIN_CALLBACK_ID_SEND,				//lin send callback id
+	LIN_CALLBACK_ID_ERR,				//lin error callback id
+}csi_lin_callback_id_e;
 
 /** 
   \brief 	   initialize lin parameter structure
@@ -189,6 +205,15 @@ bool csi_lin_get_msg(csp_lin_t *ptLinBase, bool bClrEn);
   \return 	   none
  */ 
 void csi_lin_clr_msg(csp_lin_t *ptLinBase);
+
+/** \brief  register lin interrupt callback function
+ * 
+ *  \param[in] ptUsartBase: pointer of uart register structure
+ *  \param[in] eCallBkId: lin interrupt callback type, \ref csi_lin_callback_id_e
+ *  \param[in] callback: lin interrupt handle function
+ *  \return error code \ref csi_error_t
+ */ 
+csi_error_t csi_lin_register_callback(csp_lin_t *ptLinBase, csi_lin_callback_id_e eCallBkId, void  *callback);
 
 #ifdef __cplusplus
 }

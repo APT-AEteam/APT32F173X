@@ -63,17 +63,16 @@ extern "C" {
 //csi库函数中断支持回调函数，通过宏USE_XXX_CALLBACK来实现次功能选择，若使能需用
 #define USE_BT_CALLBACK			1		//BT(0/1/2/3)
 #define USE_UART_CALLBACK		1		//UART(0/1/2)
-#define USE_SIO_CALLBACK		1		//SIO(0/1)
 #define USE_LED_CALLBACK		1		//LED(0)
 #define USE_CNTA_CALLBACK		1		//CNTA(0)
 #define USE_CMP_CALLBACK		1		//CMP(0/1/2)
 #define USE_GPTA_CALLBACK		1		//GPTA(0/1/2/3)
 #define USE_DAC_CALLBACK		1		//DAC(0)
-#define USE_USART_CALLBACK		1		//USART(0/1)
+#define USE_USART_CALLBACK		0		//USART(0/1)
+#define USE_LIN_CALLBACK        0       //LIN(0/1) LIN和USART使用的都是USART模块，同一个USART,使用了普通的USART功能，LIN功能就不能使用了
 #define USE_I2C_CALLBACK		1		//IIC(0)
 #define USE_LPT_CALLBACK		1		//LPT(0)
 #define USE_WWDT_CALLBACK		1		//WWDT(0)
-
 //csi GUI Handling Enable, 1/0(OPEN/CLOSE)
 //可视化编程，通过宏USE_GUI来实现功能选择
 #define USE_GUI					0						

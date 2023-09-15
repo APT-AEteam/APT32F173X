@@ -25,10 +25,12 @@ uint8_t bySendBuf[30]={1,2,3,4,5,6,7,8,9,21,22,23,24,25,26,27,28,29,30,10,11,12,
 
 
 #if (USE_USART_CALLBACK == 0)	
+
+static uint16_t hwSendLen = 0;
 	
 /** \brief  usart0_int_handler: USART中断服务函数
  * 
-    \brief  USART发生中断时会调用此函数，函数在interrupt.c里定义为弱(weak)属性，默认不做处理;用户用到中断
+ *   \brief  USART发生中断时会调用此函数，函数在interrupt.c里定义为弱(weak)属性，默认不做处理;用户用到中断
  * 			时，请重新定义此函数，在此函数中进行对应中断处理，也可直接在interrupt.c里的函数里进行处理。
  * 
  *  \param[in] none
@@ -37,7 +39,7 @@ uint8_t bySendBuf[30]={1,2,3,4,5,6,7,8,9,21,22,23,24,25,26,27,28,29,30,10,11,12,
 ATTRIBUTE_ISR void usart0_int_handler(void) 
 {
 	//TXFIFO中断
-	if(csp_usart_get_isr(USART0)&US_TXFIFO_INT)				//TXFIFO中断
+	if(csp_usart_get_isr(USART0)&US_INT_TXFIFO)				//TXFIFO中断
 	{
 		//发送16字节数据，发送完毕关闭中断(停止发送)
 		if(hwSendLen < 16)
@@ -50,17 +52,17 @@ ATTRIBUTE_ISR void usart0_int_handler(void)
 	}
 	
 	//RXFIFO中断
-	if(csp_usart_get_isr(USART0)&US_RXFIFO_INT)				//RXFIFO中断
+	if(csp_usart_get_isr(USART0)&US_INT_RXFIFO)				//RXFIFO中断
 	{
 		//接收1字节数据
 		byRecvBuf[0] = csp_usart_get_data(USART0);				//接收数据,RXFIFO中断状态不需要专门清除，读数据时自动清除
 	}
 	
 	//接收超时中断
-	if(csp_usart_get_isr(USART0)& US_RXTO_INT)				//接收超时中断
+	if(csp_usart_get_isr(USART0)& US_INT_RXTO)				//接收超时中断
 	{
 		//添加用户处理(若开启此中断)
-		csp_usart_clr_isr(USART0, US_RXTO_INT_S);				//清除接收超时中断状态
+		csp_usart_clr_isr(USART0, US_INT_RXTO_S);				//清除接收超时中断状态
 		csp_usart_rtor_enable(USART0);					//使能接收超时
 	}
 }
@@ -196,8 +198,9 @@ int usart_recv_int_demo(void)
 	return iRet;
 }
 
-/** \brief USART通过DMA发送数据
- *  	 
+/** \brief  usart_send_dma_demo
+ *  	 	USART通过DMA发送数据例程。使用USART0_TX作为触发源，通过ETCB的CH20，触发DMA0的通道CH0，
+ * 			将缓存bySendBuf中的数据搬到usart的发送数据寄存器，完成DMA发送
  * 
  *  \param[in] none
  *  \return error code
@@ -234,7 +237,7 @@ int usart_send_dma_demo(void)
 	tDmaConfig.eDetHinc 	= DMA_ADDR_CONSTANT;		//高位传输目标地址固定不变
 	tDmaConfig.eDataWidth 	= DMA_DSIZE_8_BITS;			//传输数据宽度8bit
 	tDmaConfig.eReload 		= DMA_RELOAD_DISABLE;		//禁止自动重载
-	tDmaConfig.eTransMode 	= DMA_TRANS_CONT;		//DMA服务模式(传输模式)，连续服务
+	tDmaConfig.eTransMode 	= DMA_TRANS_CONT;			//DMA服务模式(传输模式)，连续服务
 	tDmaConfig.eTsizeMode  	= DMA_TSIZE_ONE_DSIZE;		//传输数据大小，一个 DSIZE , 即DSIZE定义大小
 	tDmaConfig.eReqMode		= DMA_REQ_HARDWARE;			//DMA请求模式，软件请求（软件触发）
 	csi_dma_ch_init(DMA0, DMA_CH0, &tDmaConfig);	    //初始化DMA
@@ -244,10 +247,10 @@ int usart_send_dma_demo(void)
 	
 	
 	//etb 参数配置
-	tEtbConfig.eChType = ETCB_ONE_TRG_ONE_DMA;			//单个源触发单个目标，DMA方式
-	tEtbConfig.eSrcIp 	= ETCB_USART0_TXSRC;				//UART TXSRC作为触发源
+	tEtbConfig.eChType  = ETCB_ONE_TRG_ONE_DMA;			//单个源触发单个目标，DMA方式
+	tEtbConfig.eSrcIp 	= ETCB_USART0_TXSRC;			//UART TXSRC作为触发源
 	tEtbConfig.eDstIp 	= ETCB_DMA0_CH0 + DMA_CH0;		//ETB DMA通道 作为目标实际
-	tEtbConfig.eTrgMode = ETCB_HARDWARE_TRG;				//通道触发模式采样硬件触发
+	tEtbConfig.eTrgMode = ETCB_HARDWARE_TRG;			//通道触发模式采样硬件触发
 	iRet = csi_etcb_ch_init(ETCB_CH20, &tEtbConfig);	//初始化ETB，DMA ETB CHANNEL > ETB_CH19_ID
 
 	while(1)
@@ -266,8 +269,10 @@ int usart_send_dma_demo(void)
 	return iRet;
 }
 
-/** \brief usart dma receive data
- *  	 - USART通过DMA接收数据
+/** \brief usart_recv_dma_demo
+ *  	 - USART通过DMA接收数据例程。使用USART0_RX作为触发源，通过ETCB的CH20，触发DMA0的通道CH3，
+ * 			将usart接收数据寄存器中的数据搬到缓存byRecvBuf中，完成DMA接收。并将接收来的数据，
+ * 			通过USART轮询发送出去
  * 
  *  \param[in] none
  *  \return error code
@@ -314,11 +319,11 @@ int usart_recv_dma_demo(void)
 	
 	
 	//etb 参数配置
-	tEtbConfig.eChType = ETCB_ONE_TRG_ONE_DMA;			//单个源触发单个目标，DMA方式
-	tEtbConfig.eSrcIp 	= ETCB_USART0_RXSRC;				//UART TXSRC作为触发源
+	tEtbConfig.eChType  = ETCB_ONE_TRG_ONE_DMA;			//单个源触发单个目标，DMA方式
+	tEtbConfig.eSrcIp 	= ETCB_USART0_RXSRC;			//UART TXSRC作为触发源
 	tEtbConfig.eDstIp 	= ETCB_DMA0_CH0 + DMA_CH3;		//ETB DMA通道 作为目标实际
-	tEtbConfig.eTrgMode = ETCB_HARDWARE_TRG;				//通道触发模式采样硬件触发
-	iRet = csi_etcb_ch_init(ETCB_CH20, &tEtbConfig);			//初始化ETB，DMA ETB CHANNEL > ETB_CH19_ID
+	tEtbConfig.eTrgMode = ETCB_HARDWARE_TRG;			//通道触发模式采样硬件触发
+	iRet = csi_etcb_ch_init(ETCB_CH20, &tEtbConfig);	//初始化ETB，DMA ETB CHANNEL > ETB_CH19_ID
 
 
 	csi_usart_recv_dma(USART0,(void*)byRecvBuf, DMA_CH3, 25);	//DMA接收

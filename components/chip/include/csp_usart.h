@@ -262,31 +262,31 @@ typedef enum{
 * IMSCR, RISR, MISR: USART Interrupt Registers
 ******************************************************************************/
 typedef enum{
-	US_NONE_INT			= (0x00ul << 0),
-	US_RXRDY_INT		= (0x01ul << 0),
-	US_TXRDY_INT		= (0x01ul << 1),
-	US_RXBRK_INT		= (0x01ul << 2),
-	US_OVRE_INT			= (0x01ul << 5),
-	US_FRAME_INT		= (0x01ul << 6),
-	US_PARE_INT			= (0x01ul << 7),
-	US_RXTO_INT			= (0x01ul << 8),
-	US_TXEMPTY_INT		= (0x01ul << 9),
-	US_IDLE_INT			= (0x01ul << 10),
-	US_RXFIFO_INT		= (0x01ul << 12),
-	US_RXFIFO_OV_INT	= (0x01ul << 13),
-	US_TXFIFO_INT		= (0x01ul << 14),
-	US_ALL_INT			= 0x77E7ul ,			//US all int
+	US_INT_NONE			= (0x00ul << 0),
+	US_INT_RXRDY		= (0x01ul << 0),
+	US_INT_TXRDY		= (0x01ul << 1),
+	US_INT_RXBRK		= (0x01ul << 2),
+	US_INT_OVRE			= (0x01ul << 5),
+	US_INT_FRAME		= (0x01ul << 6),
+	US_INT_PARE			= (0x01ul << 7),
+	US_INT_RXTO			= (0x01ul << 8),
+	US_INT_TXEMPTY		= (0x01ul << 9),
+	US_INT_IDLE			= (0x01ul << 10),
+	US_INT_RXFIFO		= (0x01ul << 12),
+	US_INT_RXFIFO_OV	= (0x01ul << 13),
+	US_INT_TXFIFO		= (0x01ul << 14),
+	US_INT_ALL			= 0x77E7ul ,			//US all int
 
 	
-	LIN_ENDHEADER_INT	= (0x01ul << 24),		//Ended header Interrupt
-	LIN_ENDMESS_INT		= (0x01ul << 25),		//Ended message Interrupt
-	LIN_NOTREPS_INT		= (0x01ul << 26),		//Not responding error Interrupt
-	LIN_BITERROR_INT	= (0x01ul << 27),		//Bit error Interrupt
-	LIN_IPERROR_INT		= (0x01ul << 28),		//Identity parity error Interrupt
-	LIN_CHECKSUM_INT	= (0x01ul << 29),		//Checksum error Interrupt
-	LIN_WAKEUP_INT		= (0x01ul << 30),		//Wake up Interrupt		
-	LIN_ALL_INT			= (0x7Ful << 24),		//LIN all int
-	LIN_ERR_INT			= (0x3Cul << 24)		//LIN all err
+	LIN_INT_ENDHEADER	= (0x01ul << 24),		//Ended header Interrupt
+	LIN_INT_ENDMESS		= (0x01ul << 25),		//Ended message Interrupt
+	LIN_INT_NOTREPS		= (0x01ul << 26),		//Not responding error Interrupt
+	LIN_INT_BITERROR	= (0x01ul << 27),		//Bit error Interrupt
+	LIN_INT_IPERROR		= (0x01ul << 28),		//Identity parity error Interrupt
+	LIN_INT_CHECKSUM	= (0x01ul << 29),		//Checksum error Interrupt
+	LIN_INT_WAKEUP		= (0x01ul << 30),		//Wake up Interrupt		
+	LIN_INT_ALL			= (0x7Ful << 24),		//LIN all int
+	LIN_INT_ERR			= (0x3Cul << 24)		//LIN all err
 	
 }usart_int_e; 
 
@@ -295,24 +295,24 @@ typedef enum{
 ******************************************************************************/
 typedef enum{
 
-	US_RXBRK_INT_S			= (0x01ul << 2),
-	US_OVRE_INT_S			= (0x01ul << 5),   //over error
-	US_FRAME_INT_S			= (0x01ul << 6),
-	US_PARE_INT_S			= (0x01ul << 7),
-	US_RXTO_INT_S			= (0x01ul << 8),	//timeout int
-	US_IDLE_INT_S			= (0x01ul << 10),
-	US_ALL_INT_S			= 0x5E4ul ,			//US all int status
+	US_INT_RXBRK_S			= (0x01ul << 2),
+	US_INT_OVRE_S			= (0x01ul << 5),   //over error
+	US_INT_FRAME_S			= (0x01ul << 6),
+	US_INT_PARE_S			= (0x01ul << 7),
+	US_INT_RXTO_S			= (0x01ul << 8),	//timeout int
+	US_INT_IDLE_S			= (0x01ul << 10),
+	US_INT_ALL_S			= 0x5E4ul ,			//US all int status
 
 	
-	LIN_ENDHEADER_INT_S		= (0x01ul << 24),		//Ended header Interrupt status
-	LIN_ENDMESS_INT_S		= (0x01ul << 25),		//Ended message Interrupt status
-	LIN_NOTREPS_INT_S		= (0x01ul << 26),		//Not responding error Interrupt status
-	LIN_BITERROR_INT_S		= (0x01ul << 27),		//Bit error Interrupt status
-	LIN_IPERROR_INT_S		= (0x01ul << 28),		//Identity parity error Interrupt status
-	LIN_CHECKSUM_INT_S		= (0x01ul << 29),		//Checksum error Interrupt status
-	LIN_WAKEUP_INT_S		= (0x01ul << 30),		//Wake up Interrupt status		
-	LIN_ALL_INT_S			= (0x7Ful << 24),		//LIN all int status
-	LIN_ERR_INT_S			= (0x3Cul << 24)		//LIN all err status
+	LIN_INT_ENDHEADER_S		= (0x01ul << 24),		//Ended header Interrupt status
+	LIN_INT_ENDMESS_S		= (0x01ul << 25),		//Ended message Interrupt status
+	LIN_INT_NOTREPS_S		= (0x01ul << 26),		//Not responding error Interrupt status
+	LIN_INT_BITERROR_S		= (0x01ul << 27),		//Bit error Interrupt status
+	LIN_INT_IPERROR_S		= (0x01ul << 28),		//Identity parity error Interrupt status
+	LIN_INT_CHECKSUM_S		= (0x01ul << 29),		//Checksum error Interrupt status
+	LIN_INT_WAKEUP_S		= (0x01ul << 30),		//Wake up Interrupt status		
+	LIN_INT_ALL_S			= (0x7Ful << 24),		//LIN all int status
+	LIN_INT_ERR_S			= (0x3Cul << 24)		//LIN all err status
 	
 }usart_isr_e; 
 

@@ -64,6 +64,9 @@ extern int usart_recv_dma_demo(void);
 extern int usart_send_int_callback_demo(void);
 extern int usart_receive_int_callback_demo(void);
 
+extern int lin_send_demo(void);
+extern int lin_send_recv_demo(void);
+
 //adc demo
 //normal mode(no interrupt)
 extern int adc_samp_oneshot_demo(void);

@@ -9,9 +9,9 @@
  * *********************************************************************
 */
 /* Includes ---------------------------------------------------------------*/
-#include <board_config.h>
-#include <drv/usart.h>
-#include <drv/gpio.h>
+#include "board_config.h"
+#include "drv/usart.h"
+#include "drv/gpio.h"
 
 
 #if (USE_USART_CALLBACK == 1)	

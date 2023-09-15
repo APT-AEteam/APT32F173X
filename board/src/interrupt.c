@@ -124,41 +124,9 @@ ATTRIBUTE_ISR __attribute__((weak)) void adc1_int_handler(void)
 
 ATTRIBUTE_ISR __attribute__((weak)) void dma0_int_handler(void)
 {
-
     // ISR content ...
 	CSI_INTRPT_ENTER();
-#if (USE_DMA_CALLBACK == 1)
-	csi_dma_irqhandler(DMA0, 0);
-#else
-	volatile uint32_t wIsr = csp_dma_get_isr(DMA0) & 0x003f003f;
-	
-	switch(wIsr)
-	{
-		//LTCIT
-		case DMA_CH0_LTCIT_SR:
-		case DMA_CH1_LTCIT_SR:
-		case DMA_CH2_LTCIT_SR:
-		case DMA_CH3_LTCIT_SR:
-		case DMA_CH4_LTCIT_SR:
-		case DMA_CH5_LTCIT_SR:
-			csp_dma_clr_isr(DMA0, (uint8_t)wIsr);		///clear LTCIT status
-			csi_dma_post_msg(DMA0, wIsr, 1);			//post LTCIT interrupt message
-			break;
-		
-		//TCIT 
-		case DMA_CH0_TCIT_SR:
-		case DMA_CH1_TCIT_SR:
-		case DMA_CH2_TCIT_SR:
-		case DMA_CH3_TCIT_SR:
-		case DMA_CH4_TCIT_SR:
-		case DMA_CH5_TCIT_SR:
-			csp_dma_clr_isr(DMA0, (wIsr >> 16));		//clear LTCIT status
-			csi_dma_post_msg(DMA0, (wIsr >> 10), 1);	//post TCIT interrupt message
-			break;
-		default:
-			break;
-	}
-#endif
+	dma_irqhandler(DMA0);
 	CSI_INTRPT_EXIT();
 }
 
@@ -167,38 +135,7 @@ ATTRIBUTE_ISR __attribute__((weak)) void dma1_int_handler(void)
 {
     // ISR content ...
 	CSI_INTRPT_ENTER();
-#if (USE_DMA_CALLBACK == 1)
-	csi_dma_irqhandler(DMA1, 0);
-#else
-	volatile uint32_t wIsr = csp_dma_get_isr(DMA1) & 0x003f003f;
-	
-	switch(wIsr)
-	{
-		//LTCIT
-		case DMA_CH0_LTCIT_SR:
-		case DMA_CH1_LTCIT_SR:
-		case DMA_CH2_LTCIT_SR:
-		case DMA_CH3_LTCIT_SR:
-		case DMA_CH4_LTCIT_SR:
-		case DMA_CH5_LTCIT_SR:
-			csp_dma_clr_isr(DMA1, (uint8_t)wIsr);		///clear LTCIT status
-			csi_dma_post_msg(DMA1, wIsr, 1);			//post LTCIT interrupt message
-			break;
-		
-		//TCIT 
-		case DMA_CH0_TCIT_SR:
-		case DMA_CH1_TCIT_SR:
-		case DMA_CH2_TCIT_SR:
-		case DMA_CH3_TCIT_SR:
-		case DMA_CH4_TCIT_SR:
-		case DMA_CH5_TCIT_SR:
-			csp_dma_clr_isr(DMA1, (wIsr >> 16));		//clear LTCIT status
-			csi_dma_post_msg(DMA1, (wIsr >> 10), 1);	//post TCIT interrupt message
-			break;
-		default:
-			break;
-	}
-#endif
+	dma_irqhandler(DMA1);
 	CSI_INTRPT_EXIT();
 }
 
@@ -331,6 +268,8 @@ ATTRIBUTE_ISR __attribute__((weak)) void usart0_int_handler(void)
 	CSI_INTRPT_ENTER();
 #if (USE_USART_CALLBACK == 1)
 	csi_usart_irqhandler(USART0, 0);
+#elif (USE_LIN_CALLBACK ==1)
+	csi_lin_irqhandler(LIN0,0);
 #else
 	csp_usart_clr_isr(USART0, csp_usart_get_isr(USART0))
 #endif
@@ -342,6 +281,8 @@ ATTRIBUTE_ISR __attribute__((weak)) void usart1_int_handler(void)
 	CSI_INTRPT_ENTER();
 #if (USE_USART_CALLBACK == 1)
 	csi_usart_irqhandler(USART1, 1);
+#elif (USE_LIN_CALLBACK ==1)
+	csi_lin_irqhandler(LIN1,1);
 #else
 	csp_usart_clr_isr(USART1, csp_usart_get_isr(USART1))
 #endif
