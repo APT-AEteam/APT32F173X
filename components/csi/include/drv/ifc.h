@@ -139,7 +139,7 @@ csi_error_t csi_ifc_wr_protection(csp_ifc_t *ptIfcBase, ifc_prot_e eProt);
 
 extern volatile bool g_bFlashCheckPass;
 extern volatile bool g_bFlashPgmDne;
-extern void apt_ifc_step_async(csp_ifc_t * ptIfcBase, ifc_cmd_e eStepn, uint32_t wPageStAddr);
+
 
 
 #endif /* _CSI_EFLASH_H_ */
