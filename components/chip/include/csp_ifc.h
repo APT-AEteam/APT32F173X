@@ -39,9 +39,11 @@ typedef volatile struct {
 
 #define PFLASH	(0x0)
 #define DFLASH  (0x1)
-#define PFLASH_PAGE_SZ	(64)
-#define DFLASH_PAGE_SZ	(16)
+#define PFLASH_PAGE_SZ	(64)		//unit: word
+#define DFLASH_PAGE_SZ	(16)		//unit: word
 
+#define PFLASH_PAGE_MSK	(0xFFFFFF00 ) 
+#define DFLASH_PAGE_MSK	(0xFFFFFFC0 ) 
 
 ///CEDR: clock enable disable reg
 #define  IFC_CLKEN  (0x01ul) 
