@@ -9,9 +9,7 @@
  * *********************************************************************
 */
 /* Includes ---------------------------------------------------------------*/
-#include "drv/bt.h"
-#include "drv/gpio.h"
-#include "drv/etcb.h"
+#include "csi_drv.h"
 #include "board_config.h"
 
 /* externs function--------------------------------------------------------*/
@@ -33,7 +31,7 @@
  */ 
 void user_bt0_callback(csp_bt_t *ptBtBase, uint8_t byIsr)
 {
-	if(byIsr & BT_PEND_INT)
+	if(byIsr & BT_INT_PEND)
 	{
 		csi_gpio_toggle(GPIOA,PA6);						//PA6翻转
 	}

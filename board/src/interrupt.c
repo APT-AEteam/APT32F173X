@@ -38,7 +38,6 @@ extern void bt_irqhandler3(csp_bt_t *ptBtBase);
 extern void wwdt_irqhandler(void);
 extern void adc_irqhandler(csp_adc_t *ptAdcBase);
 extern void syscon_irqhandler(csp_syscon_t *ptSysconBase);
-extern void led_irqhandler(csp_led_t *ptLedBase);
 extern void i2c_irqhandler(csp_i2c_t *ptIicBase);
 
 extern void gptb_irqhandler(csp_gptb_t *ptGptbBase);
@@ -125,28 +124,30 @@ ATTRIBUTE_ISR __attribute__((weak)) void adc1_int_handler(void)
 
 ATTRIBUTE_ISR __attribute__((weak)) void dma0_int_handler(void)
 {
+    // ISR content ...
 	CSI_INTRPT_ENTER();
-	dma_irqhandler(DMA0);//this is a weak function defined in dma.c, for better efficiency, we recommand user directly implement IRQ handler here without any function call.
+	dma_irqhandler(DMA0);
 	CSI_INTRPT_EXIT();
 }
 
 
 ATTRIBUTE_ISR __attribute__((weak)) void dma1_int_handler(void) 
 {
-	// ISR content ...
+    // ISR content ...
 	CSI_INTRPT_ENTER();
-	dma_irqhandler(DMA1);//this is a weak function defined in dma.c, for better efficiency, we recommand user directly implement IRQ handler here without any function call.
+	dma_irqhandler(DMA1);
 	CSI_INTRPT_EXIT();
 }
 
 ATTRIBUTE_ISR __attribute__((weak)) void wwdt_int_handler(void)
 {
-#if WWDT_INT_HANDLE_EN
-	 // ISR content ...
-	 CSI_INTRPT_ENTER();
-	wwdt_irqhandler();//this is a weak function defined in wwdt_demo.c, for better efficiency, we recommand user directly implement IRQ handler here without any function call.
-	CSI_INTRPT_EXIT();
+	CSI_INTRPT_ENTER();
+#if (USE_WWDT_CALLBACK==1)
+	csi_wwdt_irqhandler(WWDT,0);
+#else
+	csp_wwdt_clr_isr(WWDT,csp_wwdt_get_isr(WWDT));
 #endif
+	CSI_INTRPT_EXIT();
 }
 
 ATTRIBUTE_ISR __attribute__((weak)) void gpta0_int_handler(void)
@@ -267,6 +268,8 @@ ATTRIBUTE_ISR __attribute__((weak)) void usart0_int_handler(void)
 	CSI_INTRPT_ENTER();
 #if (USE_USART_CALLBACK == 1)
 	csi_usart_irqhandler(USART0, 0);
+#elif (USE_LIN_CALLBACK ==1)
+	csi_lin_irqhandler(LIN0,0);
 #else
 	csp_usart_clr_isr(USART0, csp_usart_get_isr(USART0))
 #endif
@@ -278,6 +281,8 @@ ATTRIBUTE_ISR __attribute__((weak)) void usart1_int_handler(void)
 	CSI_INTRPT_ENTER();
 #if (USE_USART_CALLBACK == 1)
 	csi_usart_irqhandler(USART1, 1);
+#elif (USE_LIN_CALLBACK ==1)
+	csi_lin_irqhandler(LIN1,1);
 #else
 	csp_usart_clr_isr(USART1, csp_usart_get_isr(USART1))
 #endif
@@ -322,32 +327,35 @@ ATTRIBUTE_ISR __attribute__((weak)) void uart2_int_handler(void)
 
 ATTRIBUTE_ISR __attribute__((weak)) void sio0_int_handler(void) 
 {
-#if	SIO0_INT_HANDLE_EN
 	CSI_INTRPT_ENTER();
-	sio_irqhandler(SIO0);//this is a weak function defined in sio_demo.c, for better efficiency, we recommand user directly implement IRQ handler here without any function call.
-    CSI_INTRPT_EXIT();
-	// ISR content ...
+#if (USE_SIO_CALLBACK == 1)
+	csi_sio_irqhandler(SIO0,0);
+#else
+	csp_sio_clr_isr(SIO0, csp_sio_get_isr(SIO0));
 #endif
+	CSI_INTRPT_EXIT();
 }
 
 ATTRIBUTE_ISR __attribute__((weak)) void sio1_int_handler(void) 
 {
-#if	SIO1_INT_HANDLE_EN
 	CSI_INTRPT_ENTER();
-	sio_irqhandler(SIO1);//this is a weak function defined in sio_demo.c, for better efficiency, we recommand user directly implement IRQ handler here without any function call.
-    CSI_INTRPT_EXIT();
-	// ISR content ...
+#if (USE_SIO_CALLBACK == 1)
+	csi_sio_irqhandler(SIO1,0);
+#else
+	csp_sio_clr_isr(SIO1, csp_sio_get_isr(SIO1));
 #endif
+	CSI_INTRPT_EXIT();
 }
 
 ATTRIBUTE_ISR __attribute__((weak)) void i2c_int_handler(void) 
 {
-#if	I2C_INT_HANDLE_EN
-    // ISR content ...
 	CSI_INTRPT_ENTER();
-	i2c_irqhandler(I2C0);//this is a weak function defined in iic_demo.c, for better efficiency, we recommand user directly implement IRQ handler here without any function call.
-	CSI_INTRPT_EXIT();
+#if (USE_I2C_CALLBACK==1)
+	csi_iic_irqhandler(I2C0,0);
+#else
+	csp_i2c_clr_isr(I2C0, csp_i2c_get_isr(I2C0));
 #endif
+	CSI_INTRPT_EXIT();
 }
 
 ATTRIBUTE_ISR __attribute__((weak)) void spi0_int_handler(void) 
@@ -438,12 +446,13 @@ ATTRIBUTE_ISR __attribute__((weak)) void cnta_int_handler(void)
 
 ATTRIBUTE_ISR __attribute__((weak)) void lpt_int_handler(void)
 {
-#if	LPT_INT_HANDLE_EN
-    // ISR content ...
 	CSI_INTRPT_ENTER();
-	lpt_irqhandler(LPT); //this is a weak function defined in lpt_demo.c, for better efficiency, we recommand user directly implement IRQ handler here without any function call.
-	CSI_INTRPT_EXIT();
+#if (USE_LPT_CALLBACK==1)
+	csi_lpt_irqhandler(LPT,0);
+#else
+	csp_lpt_clr_isr(LPT,csp_lpt_get_isr(LPT));
 #endif
+	CSI_INTRPT_EXIT();
 }
 
 ATTRIBUTE_ISR __attribute__((weak)) void rtc_int_handler(void)
@@ -464,7 +473,7 @@ ATTRIBUTE_ISR __attribute__((weak)) void cmp0_int_handler(void)
 #if (USE_CMP_CALLBACK == 1)
 	csi_cmp_irqhandler(CMP0, 0);
 #else
-	csp_cmp_clr_isr(CMP0, (csp_cmp_int_e)CMP_INTSRC_EDGEDET);
+	csp_cmp_clr_isr(CMP0);
 #endif
 	CSI_INTRPT_EXIT();
 }
@@ -476,7 +485,7 @@ ATTRIBUTE_ISR __attribute__((weak)) void cmp1_int_handler(void)
 #if (USE_CMP_CALLBACK == 1)
 	csi_cmp_irqhandler(CMP1, 1);
 #else
-	csp_cmp_clr_isr(CMP1, (csp_cmp_int_e)CMP_INTSRC_EDGEDET);
+	csp_cmp_clr_isr(CMP1);
 #endif
 	CSI_INTRPT_EXIT();
 }
@@ -488,7 +497,7 @@ ATTRIBUTE_ISR __attribute__((weak)) void cmp2_int_handler(void)
 #if (USE_CMP_CALLBACK == 1)
 	csi_cmp_irqhandler(CMP2, 2);
 #else
-	csp_cmp_clr_isr(CMP2, (csp_cmp_int_e)CMP_INTSRC_EDGEDET);
+	csp_cmp_clr_isr(CMP2);
 #endif
 	CSI_INTRPT_EXIT();
 }

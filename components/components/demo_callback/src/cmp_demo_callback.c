@@ -47,8 +47,6 @@ int cmp_base_callback_demo(void)
 {
 	int iRet = 0;
 	csi_cmp_config_t tCmpCfg;
-	
-	csi_gpio_set_mux(GPIOA, PA2, PA2_OUTPUT);
 
 #if (USE_GUI == 0)		
 	csi_gpio_set_mux(GPIOA, PA8, PA8_CPIN1P);		
@@ -63,6 +61,7 @@ int cmp_base_callback_demo(void)
 	tCmpCfg.byPolarity = CMP_POL_OUT_DIRECT;          //比较器输出极性选择 0:不反向
 	tCmpCfg.byCpoSel  = CMP_CPOS_OUT_IN;	          //CMP_OUT管脚上输出信号选择 0h：滤波前信号直接输出 	1h：滤波后信号输出 
 	csi_cmp_init(CMP0,&tCmpCfg);
+	
 	csi_cmp_register_callback(CMP0, cmp0_callback);	  //注册中断回调函数
 	csi_cmp_int_enable(CMP0, CMP_INTSRC_EDGEDET);     //若需使用中断，请调该接口使能对应中断，这里使用PENDL中断
 	

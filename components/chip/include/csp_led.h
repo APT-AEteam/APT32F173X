@@ -76,8 +76,9 @@ typedef enum {
 
 ///RISR/IMCR/MISR/ICR
 typedef enum {
-	LED_INT_ICEND = 1,
-	LED_INT_IPEND
+	LED_INT_ICEND = (0x01ul << 0),
+	LED_INT_IPEND = (0x01ul << 1),
+	LED_INT_ALL   = 0x0Ful
 }csp_led_int_e;
 
 ///TIMCR
@@ -105,7 +106,7 @@ static inline void csp_led_light_on(csp_led_t *ptLedBase)
 
 static inline void csp_led_light_off(csp_led_t *ptLedBase) 	
 {
-	ptLedBase -> CR = ptLedBase -> CR & (~LED_LIGHTON_MSK);
+	ptLedBase -> CR &= ~LED_LIGHTON_MSK;
 }		
 
 static inline void csp_led_com_on(csp_led_t *ptLedBase,uint16_t hwVal)	
@@ -144,7 +145,7 @@ static inline void csp_led_set_novcnt(csp_led_t *ptLedBase,uint8_t byVal)
 	ptLedBase -> TIMCR = (ptLedBase -> TIMCR & (~LED_NOVCNT_MSK)) | (byVal << LED_NOVCNT_POS);
 }  	 
 
-static inline void csp_led_set_setdata(csp_led_t *ptLedBase,uint8_t byCom,uint8_t byData)
+static inline void csp_led_set_data(csp_led_t *ptLedBase,uint8_t byCom,uint8_t byData)
 {
 	ptLedBase -> SEGDATA[byCom] = byData;
 }

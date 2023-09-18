@@ -267,6 +267,14 @@ csi_error_t csi_gpio_set_iomap(csp_gpio_t *ptGpioBase, pin_name_e ePinName, csi_
 */
 pin_func_e csi_gpio_get_mux(csp_gpio_t *ptGpioBase, pin_name_e ePinName);
 
+/** 
+  \brief 	   set gpio iomap function
+  \param[in]   ePinName: pin name, \ref pin_name_e
+  \param[in]   eIoMap: gpio pin remap function, \ref csi_gpio_iomap_e
+  \return 	   error code \ref csi_error_t
+ */  
+csi_error_t csi_gpio_set_iomap(csp_gpio_t *ptGpioBase, pin_name_e ePinName, csi_gpio_iomap_e eIoMap);
+
 /**
   \brief       set gpio pull mode
   \param[in]   ptGpioBase 	pointer of gpio register structure 

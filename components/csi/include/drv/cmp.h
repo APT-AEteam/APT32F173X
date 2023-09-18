@@ -75,10 +75,9 @@ typedef enum
 
 typedef enum
 {
-	CMP_TRGSRC_DOWN		     =	0x00,
-	CMP_TRGSRC_UP,
-	CMP_TRGSRC_DOWN_UP,
-	CMP_TRGSRC_UP1
+	CMP_TRGSRC_FALLING		     =	0x00,
+	CMP_TRGSRC_RISING,
+	CMP_TRGSRC_FALLING_RISING
 }csi_cmp_trgsrc_e;
 
 typedef enum
@@ -256,18 +255,18 @@ csi_error_t csi_cmp_set_wfcr(csp_cmp_t *ptCmpBase,csi_cmp_wfcr_config_t *ptCmpWf
  */
 void csi_cmp_set_evtrg(csp_cmp_t *ptCmpBase,csi_cmp_trgsrc_e eTrgSrc);
 
-/** \brief cmp evtrg syncoe enable
+/** \brief cmp evtrg enable
  * 
  *  \param[in] ptCmpBase: pointer of cmp register structure
  *  \return none
  */
-void csi_cmp_sync_enable(csp_cmp_t *ptCmpBase);
-/** \brief cmp evtrg syncoe disable
+void csi_cmp_evtrg_enable(csp_cmp_t *ptCmpBase);
+/** \brief cmp evtrg disable
  * 
  *  \param[in] ptCmpBase: pointer of cmp register structure
  *  \return none
  */
-void csi_cmp_sync_disable(csp_cmp_t *ptCmpBase);
+void csi_cmp_evtrg_disable(csp_cmp_t *ptCmpBase);
 
 /** \brief cmp out status
  * 
@@ -280,10 +279,9 @@ uint8_t csi_cmp_get_out(csp_cmp_t *ptCmpBase,uint8_t byOutCh);
 /** \brief clear cmp int
  * 
  *  \param[in] ptCmpBase:pointer of cmp register structure
- *  \param[in] eIntMode:EDGEDET_MODE or RAWDET_MODE
  *  \return none
  */
-void csi_cmp_clr_isr(csp_cmp_t *ptCmpBase,csi_cmp_intsrc_e eIntMode);
+void csi_cmp_clr_isr(csp_cmp_t *ptCmpBase);
 
 /** \brief cmp interrupt enable control
  * 

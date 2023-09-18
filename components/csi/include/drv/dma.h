@@ -34,7 +34,6 @@ extern "C" {
 typedef enum {
     DMA_ADDR_INC    	= 0,
     DMA_ADDR_CONSTANT
-	//DMA_ADDR_DEC
 } csi_dma_addr_inc_e;
 
 /**
@@ -62,7 +61,7 @@ typedef enum{
  */
 typedef enum{
 	DMA_TRANS_ONCE		= 0,
-	DMA_TRANS_CONTINU				
+	DMA_TRANS_CONT				
 }csi_dma_smode_e;
 
 /**
@@ -127,6 +126,23 @@ typedef enum
 	DMA_INTSRC_TCIT   	=	(0x01ul << 30)		//LTICT interrupt
 }csi_dma_intsrc_e;
 
+/**
+ * \enum     csi_dma_intsrc_e
+ * \brief    DMA interrupt source 
+ */
+typedef enum
+{
+	DMA_INTSTA_CH0  	=	(0x01ul << 0),		//CH0 INT STATUS
+	DMA_INTSTA_CH1   	=	(0x01ul << 1),		//CH1 INT STATUS
+	DMA_INTSTA_CH2		=	(0x01ul << 2),		//CH2 INT STATUS
+	DMA_INTSTA_CH3  	=	(0x01ul << 3),		//CH3 INT STATUS
+	DMA_INTSTA_CH4   	=	(0x01ul << 4),		//CH4 INT STATUS
+	DMA_INTSTA_CH5		=	(0x01ul << 5),		//CH5 INT STATUS	
+	DMA_INTSTA_ALL		=	0x3F				//ALL CHs INT STATUS
+	
+}csi_dma_intsta_e;
+
+
 /// \struct csi_dma_ch_config_t
 /// \brief  dma parameter configuration, open to users  
 typedef struct
@@ -135,13 +151,13 @@ typedef struct
 	csi_dma_addr_inc_e		eSrcHinc;		//high transfer count src addr inc control
 	csi_dma_addr_inc_e		eDetLinc;		//lowtransfer count det addr inc control
 	csi_dma_addr_inc_e		eDetHinc;		//high transfer count det addr inc control
-	csi_dma_dsize_e			eDataWidth;	//transfer data size width
+	csi_dma_dsize_e			eDataWidth;		//transfer data size width
 	csi_dma_reload_e		eReload;		//auto reload	
-	csi_dma_smode_e			eTransMode;	//dma serve(transfer) mode
-	csi_dma_tsize_e			eTsizeMode;	//Tsize transfer mode
+	csi_dma_smode_e			eTransMode;		//dma serve(transfer) mode
+	csi_dma_tsize_e			eTsizeMode;		//Tsize transfer mode
 	csi_dma_req_e			eReqMode;		//request mode
-//	uint32_t	wInt;			//interrupt  
 } csi_dma_ch_config_t;
+
 
 /** 
   \brief 	   Init dma channel parameter config structure
@@ -192,6 +208,14 @@ void csi_dma_int_enable(csp_dma_t *ptDmaBase,  csi_dma_ch_e eDmaCh, csi_dma_ints
  *  \return none
  */
 void csi_dma_int_disable(csp_dma_t *ptDmaBase, csi_dma_ch_e eDmaCh, csi_dma_intsrc_e eIntSrc);
+
+/** \brief clear dma interrupt 
+ * 
+ *  \param[in] ptDmaBase: pointer of dma register structure
+ *  \param[in] eIntSta: dma interrupt status
+ *  \return none
+ */
+void csi_dma_clr_isr(csp_dma_t *ptDmaBase,  csi_dma_intsta_e eIntSta);
 
 /**
   \brief       Stop a dma channel

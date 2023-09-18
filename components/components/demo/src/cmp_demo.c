@@ -37,7 +37,7 @@ ATTRIBUTE_ISR  void cmp0_int_handler(void)
 	
 	if(byIsr & CMP_EDGEDET0_INT)		
 	{
-		csp_cmp_clr_isr(CMP0, CMP_EDGEDET_INT);
+		csp_cmp_clr_isr(CMP0);
 	}
 }
 #endif
@@ -53,8 +53,6 @@ int cmp_base_demo(void)
 {
 	int iRet = 0;
 	csi_cmp_config_t tCmpCfg;
-	
-	csi_gpio_set_mux(GPIOA, PA2, PA2_OUTPUT);	  
 
 #if (USE_GUI == 0)		
 	csi_gpio_set_mux(GPIOA, PA8,PA8_CPIN1P);		
@@ -69,8 +67,8 @@ int cmp_base_demo(void)
 	tCmpCfg.byPolarity = CMP_POL_OUT_DIRECT;          //比较器输出极性选择 0:不反向
 	tCmpCfg.byCpoSel  = CMP_CPOS_OUT_IN;	          //CMP_OUT管脚上输出信号选择 0h：滤波前信号直接输出 	1h：滤波后信号输出 
 	csi_cmp_init(CMP0,&tCmpCfg);
-	csi_cmp_int_enable(CMP0, CMP_INTSRC_EDGEDET);     //若需使用中断，请调该接口使能对应中断，这里使用PENDL中断
 	
+	csi_cmp_int_enable(CMP0, CMP_INTSRC_EDGEDET);     //若需使用中断，请调该接口使能对应中断，这里使用PENDL中断
 	csi_cmp_start(CMP0);
 
 	return iRet;	
@@ -165,14 +163,15 @@ int cmp_wfcr_demo(void)
 	tCmpWfcrCfg.hwWcnt    = 200;                    //窗口计数
 	csi_cmp_set_wfcr(CMP0,&tCmpWfcrCfg);
 	
-	csi_cmp_set_evtrg(CMP0, CMP_TRGSRC_DOWN_UP);
-	csi_cmp_sync_enable(CMP0);
+	csi_cmp_set_evtrg(CMP0, CMP_TRGSRC_FALLING_RISING);
+	csi_cmp_evtrg_enable(CMP0);
 	
 	csi_cmp_start(CMP0);	
 
 //	csi_bt_timer_init(BT0, 2000);		            //初始化BT0, 定时2000us； BT定时，默认采用PEND中断
 	csi_bt_start(BT0);					            //启动定时器  
-	csi_bt_set_evtrg(BT0, BT_TRGSRC_PEND);	  	
+	csi_bt_set_evtrg(BT0, BT_TRGSRC_PEND);	
+	csi_bt_evtrg_enable(BT0);	
 
 	
 	csi_etcb_config_t tEtbConfig;                    //ETB 参数配置结构体                  

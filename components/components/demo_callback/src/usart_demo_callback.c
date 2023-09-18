@@ -9,9 +9,9 @@
  * *********************************************************************
 */
 /* Includes ---------------------------------------------------------------*/
-#include <board_config.h>
-#include <drv/usart.h>
-#include <drv/gpio.h>
+#include "board_config.h"
+#include "drv/usart.h"
+#include "drv/gpio.h"
 
 
 #if (USE_USART_CALLBACK == 1)	
@@ -67,12 +67,10 @@ int usart_send_int_callback_demo(void)
 	tUsartConfig.byStopbit 		= USART_STOP_BITS_1;		//停止位，1个
 	tUsartConfig.byParity		= USART_PARITY_EVEN;		//偶校验
 	tUsartConfig.wBaudRate 		= 115200;					//波特率：115200
-	
-	
 	csi_usart_init(USART0, &tUsartConfig);					//初始化串口
+	
 	csi_usart_register_callback(USART0, USART_CALLBACK_ID_SEND, user_send_callback);		//注册USART0发送中断回调函数
 	csi_usart_start(USART0, USART_FUNC_RX_TX);		//开启USART的RX和TX功能，也可单独开启RX或者TX功能
-	
 	
 	//使用中断方式发送，若要知道是否发送完成可使用回调函数
 	while(1)
@@ -161,8 +159,7 @@ int usart_receive_int_callback_demo(void)
 	tUsartConfig.byParity	= USART_PARITY_EVEN;				//偶校验
 	tUsartConfig.wBaudRate 	= 115200;							//波特率：115200
 	tUsartConfig.hwRecvTo 	= 88;								//USART接收超时时间，单位：bit位周期，8个bytes(11bit*8=88, 115200波特率时=764us)，若参数初始化为0，则关闭超时功能
-	tUsartConfig.eRxFifoTrg = USART_RXFIFOTRG_FOUR;				//USART的RXFIFO的中断触发点设置为4，即RXFIFO接收到数据>=4,才会触发RXFIFO中断；支持三种配置(1/2/4)，此参数若不被初始化，则配置为1
-	
+	tUsartConfig.eRxFifoTrg = USART_RXFIFOTRG_FOUR;				//USART的RXFIFO的中断触发点设置为4，即RXFIFO接收到数据>=4,才会触发RXFIFO中断；支持三种配置(1/2/4)，此参数若不被初始化，则配置为1	
 	csi_usart_init(USART0, &tUsartConfig);						//初始化串口
 	
 	csi_usart_register_callback(USART0, USART_CALLBACK_ID_RECV, user_receive_callback);		//注册USART0接收中断回调函数

@@ -13,8 +13,7 @@
 */
 
 /* include ----------------------------------------------------------------*/
-#include "drv/led.h"
-#include "drv/gpio.h"
+#include "csi_drv.h"
 #include "board_config.h"
 
 /* externs function--------------------------------------------------------*/
@@ -25,6 +24,7 @@
 /* Private variablesr-----------------------------------------------------*/ 
 uint8_t g_byLedData[4] = {0x06,0x5b,0x4f,0x66};//数码管编码：1,2,3,4 
 
+#if (USE_LED_CALLBACK == 0)
 /** \brief	led_int_handler: led中断服务函数
  * 
  *  \brief 	LED发生中断时会调用此函数，函数在interrupt.c里定义为弱(weak)属性，默认不做处理；用户用到LED中
@@ -38,6 +38,7 @@ ATTRIBUTE_ISR void led_int_handler(void)
 	//用户直接在中断服务接口函数里处理中断，建议客户使用此模式
 	csp_led_clr_isr(LED, csp_led_get_isr(LED));
 }
+#endif
 
 /** \brief  led_io_config: LED相关IO配置，包括SEG脚与COM脚的配置
  * 
@@ -126,7 +127,7 @@ int led_demo(void)
 				
 				for(uint8_t i = 0; i < 4; i++)
 				{
-					csi_led_write_data(LED, i, g_byLedData[i]);
+					csi_led_set_data(LED, i, g_byLedData[i]);
 					mdelay(5);
 				}
 				byDisplayStatus++;
@@ -138,7 +139,7 @@ int led_demo(void)
 				csi_led_blink_control(LED, LED_BLK_OFF,(0x01&LED_BLK_MSK));//disable COM0
 				for(uint8_t i = 0; i < 4; i++)
 				{
-					csi_led_write_data(LED, i, g_byLedData[i]);
+					csi_led_set_data(LED, i, g_byLedData[i]);
 					mdelay(5);
 				}
 				byDisplayStatus++;
@@ -150,7 +151,7 @@ int led_demo(void)
 				csi_led_blink_control(LED, LED_BLK_OFF,(0x02&LED_BLK_MSK));//disable COM1
 				for(uint8_t i = 0; i < 4; i++)
 				{
-					csi_led_write_data(LED, i, g_byLedData[i]);
+					csi_led_set_data(LED, i, g_byLedData[i]);
 					mdelay(5);
 				}
 				byDisplayStatus++;
@@ -162,7 +163,7 @@ int led_demo(void)
 				csi_led_blink_control(LED, LED_BLK_OFF,(0x04&LED_BLK_MSK));//disable COM2
 				for(uint8_t i = 0; i < 4; i++)
 				{
-					csi_led_write_data(LED, i, g_byLedData[i]);
+					csi_led_set_data(LED, i, g_byLedData[i]);
 					mdelay(5);
 				}
 				byDisplayStatus = 0;
@@ -175,7 +176,7 @@ int led_demo(void)
 		}
 		//clear display buffer
 		for(uint8_t i = 0;i<4;i++)
-			csi_led_write_data(LED, i, 0x00);
+			csi_led_set_data(LED, i, 0x00);
 	}
 	return iRet;
 }

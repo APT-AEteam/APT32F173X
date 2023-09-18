@@ -26,8 +26,21 @@ extern "C" {
 typedef enum
 {
 	WWDT_INTSRC_NONE   =	(0x00ul << 0), 		//NONE interrupt
-	WWDT_INTSRC_EVI    =	(0x01ul << 0)		//EVI interrupt
+	WWDT_INTSRC_EVI    =	(0x01ul << 0),		//EVI interrupt
+	WWDT_INTSRC_ALL    =    (0x01ul << 0)		//ALL interrupt
 }csi_wwdt_intsrc_e;
+
+
+/// \struct csi_wwdt_ctrl_t
+/// \brief  wwdt control handle, not open to users  
+typedef struct 
+{
+    void(*callback)(csp_wwdt_t *ptBtBase, uint8_t byIsr);
+} csi_wwdt_ctrl_t;
+
+extern csi_wwdt_ctrl_t g_tWwdtCtrl[WWDT_IDX];
+
+
 
 /**
   \brief       Initialize wwdt Interface. Initializes the resources needed for the WDT interface 
@@ -78,20 +91,57 @@ uint32_t csi_wwdt_get_remaining_time(void);
 */
 bool csi_wwdt_is_running(void);
 
-/** 
-  \brief 	   wwdt irq enable/disable
-  \param[in]   bEnable		enable/disable irq
-  \return 	   none
+/** \brief iwdt INT enable
+ * 
+ *  \param[in] none
+ *  \return none
  */
-void csi_wwdt_irq_enable(bool bEnable);
+void csi_wwdt_int_enable(void);
 
-/**
-  \brief       enable or disable wwdt when stop in debug mode
-  \param	   bEnable 
-  \return      none
-*/
-void csi_wwdt_debug_enable(bool bEnable);
+/** \brief iwdt INT disable
+ * 
+ *  \param[in] none
+ *  \return none
+ */
+void csi_wwdt_int_disable(void);
 
+/** \brief enable  WDT when stop in debug mode
+ * 
+ *  \param[in] ptWwdtBase:pointer of wwdt register structure
+ *  \return  none
+ */
+void csi_wwdt_debug_enable(csp_wwdt_t * ptWwdtBase);
+
+/** \brief disable WDT when stop in debug mode
+ * 
+ *  \param[in] ptWwdtBase :pointer of wwdt register structure
+ *  \return  none
+ */
+void csi_wwdt_debug_disable(csp_wwdt_t * ptWwdtBase);
+
+/** \brief  register wwdt interrupt callback function
+ * 
+ *  \param[in] ptWwdtBase: pointer of wwdt register structure
+ *  \param[in] callback: wwdt interrupt handle function
+ *  \return error code \ref csi_error_t
+ */ 
+csi_error_t csi_wwdt_register_callback(csp_wwdt_t * ptWwdtBase, void  *callback);
+
+/** \brief wwdt interrupt handler function
+ * 
+ *  \param[in] ptWwdtBase: pointer of wwdt register structure
+ *  \param[in] byIdx: wwdt idx 0 
+ *  \return none
+ */ 
+void csi_wwdt_irqhandler(csp_wwdt_t * ptWwdtBase, uint8_t byIdx);
+
+/** \brief clear wwdt interrupt 
+ * 
+ *  \param[in] ptWwdtBase: pointer of wwdt register structure
+ *  \param[in] eIntSrc: wwdt interrupt source
+ *  \return none
+ */ 
+void csi_wwdt_clr_isr(csp_wwdt_t * ptWwdtBase);
 
 #ifdef __cplusplus
 }

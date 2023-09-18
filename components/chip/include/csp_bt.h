@@ -190,11 +190,11 @@ typedef enum
 ******************************************************************************/
 typedef enum
 {
-	BT_PEND_INT    	=	(0x01ul << 0), 
-	BT_CMP_INT    	=	(0x01ul << 1),     
-	BT_OVF_INT     	=	(0x01ul << 2),  
-	BT_EVTRG_INT    =	(0x01ul << 3),
-	BT_ALL_INT    	=	(0x0Ful << 0)
+	BT_INT_PEND   	=	(0x01ul << 0), 
+	BT_INT_CMP    	=	(0x01ul << 1),     
+	BT_INT_OVF     	=	(0x01ul << 2),  
+	BT_INT_EVTRG    =	(0x01ul << 3),
+	BT_INT_ALL    	=	(0x0Ful << 0)
 }bt_int_e;
 
 /******************************************************************************

@@ -82,22 +82,21 @@ typedef enum
 	CMP_OUT_UNDIRECT            
 }cmp_polarity_e;
 
-#define	CMP_SYNCOE_POS		    (7)
-#define	CMP_SYNCOE_MSK		    (0x01ul << CMP_SYNCOE_POS)
+#define	CMP_TRGOE_POS		    (7)
+#define	CMP_TRGOE_MSK		    (0x01ul << CMP_TRGOE_POS)
 typedef enum
 {
-	SYNCOE_DIS		   = 0x00,
-	SYNCOE_EN,				
-}cmp_syncoe_e;
+	TRGOE_DIS		   = 0x00,
+	TRGOE_EN,				
+}cmp_trgoe_e;
 
-#define	CMP_EVE_SEL_POS		    (8)
-#define	CMP_EVE_SEL_MSK		    (0x03ul << CMP_EVE_SEL_POS)
+#define	CMP_TRGSEL_POS		    (8)
+#define	CMP_TRGSEL_MSK		    (0x03ul << CMP_TRGSEL_POS)
 typedef enum
 {
-	TRGSRC_DOWN		   = 0x00,
-	TRGSRC_UP,
-	TRGSRC_DOWN_UP,
-	TRGSRC_UP1
+	TRGSRC_falling		   = 0x00,
+	TRGSRC_rising,
+	TRGSRC_falling_rising
 }cmp_trgsrc_e;
 
 #define	CMP_DFLT1EN_POS		    (10)
@@ -297,8 +296,8 @@ typedef enum
 #define	CMP_IMCR_MSK		        (0x1ul << CMP_IMCR_POS)
 typedef enum
 {
-	CMP_NONE_INT      = 0, 
-	CMP_EDGEDET_INT   	
+	CMP_INT_NONE      = 0, 
+	CMP_INT_EDGEDET   	
 }
 cmp_int_e;
 
@@ -367,20 +366,20 @@ static inline void  csp_cmp_set_polarity(csp_cmp_t *ptCmpBase , cmp_polarity_e e
 }
 
 //evtrg
-static inline void  csp_cmp_evtrg(csp_cmp_t *ptCmpBase , cmp_trgsrc_e eTrgSrc)
+static inline void  csp_cmp_set_evtrg(csp_cmp_t *ptCmpBase , cmp_trgsrc_e eTrgSrc)
 {
-	ptCmpBase->CR = (ptCmpBase->CR&~(CMP_EVE_SEL_MSK))|(eTrgSrc<<CMP_EVE_SEL_POS);
+	ptCmpBase->CR = (ptCmpBase->CR&~(CMP_TRGSEL_MSK))|(eTrgSrc<<CMP_TRGSEL_POS);
 }
 
-//syncoe en/dis
-static inline void csp_cmp_sync_enable(csp_cmp_t *ptCmpBase)
+//trgoe en/dis
+static inline void csp_cmp_evtrg_enable(csp_cmp_t *ptCmpBase)
 {
-	ptCmpBase->CR |= CMP_SYNCOE_MSK;
+	ptCmpBase->CR |= CMP_TRGOE_MSK;
 }
 
-static inline void csp_cmp_sync_disable(csp_cmp_t *ptCmpBase)
+static inline void csp_cmp_evtrg_disable(csp_cmp_t *ptCmpBase)
 {
-	ptCmpBase->CR &= ~CMP_SYNCOE_MSK;
+	ptCmpBase->CR &= ~CMP_TRGOE_MSK;
 }
 
 //dflt en/dis
@@ -497,34 +496,14 @@ static inline void csp_cmp_int_disable(csp_cmp_t *ptCmpBase, cmp_int_e eCmpInt)
 	ptCmpBase->IMCR &= ~eCmpInt; 
 }
 
-//static inline void csp_cmp_int_clear(csp_cmp_t *ptCmpBase,csp_cmp_int_e eCmpInt)
-//{
-//	ptCmpBase->ICR|= eCmpInt;
-//}
-
-//static inline  void csp_cmp_edgedet_int_enable(csp_cmp_t *ptCmpBase,bool bEnable)
-//{
-//	ptCmpBase->IMCR = (ptCmpBase->IMCR & ~CMP_INT_MSK) | bEnable;
-//}
-
-//static inline uint32_t csp_cmp_get_imcr(csp_cmp_t *ptCmpBase)
-//{
-//	return (uint32_t)(ptCmpBase-> IMCR);
-//}
-
 static inline uint32_t csp_cmp_get_isr(csp_cmp_t *ptCmpBase)
 {
 	return (uint32_t)(ptCmpBase-> MISR);
 }
 
-//static inline void csp_cmp_edgedet_int_clear(csp_cmp_t *ptCmpBase)
-//{
-//	ptCmpBase->ICR|= 0x01;
-//}
-
-static inline void csp_cmp_clr_isr(csp_cmp_t *ptCmpBase, cmp_int_e eCmpInt)
+static inline void csp_cmp_clr_isr(csp_cmp_t *ptCmpBase)
 {
-	ptCmpBase -> ICR =  eCmpInt;
+	ptCmpBase -> ICR =  CMP_INT_EDGEDET;
 }
 
 #endif

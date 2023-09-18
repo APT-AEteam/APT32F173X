@@ -23,15 +23,15 @@ extern "C" {
 /// \struct csi_cnta_timer_config_t
 /// \brief  cnta timer parameter configuration
 typedef struct {
-	cnta_ckdiv_e eClkDiv;       //clock divide
-	cnta_runmode_e  eRunMode;      //one shot or continuous
-	uint32_t	     wTime;	        //period（us）
+	cnta_ckdiv_e eClkDiv;           //clock divide
+	cnta_runmode_e  eRunMode;       //one shot or continuous
+	uint32_t	     wTime;	        //period（us）(0~7281)
 } csi_cnta_timer_config_t;
 
 /// \struct csi_cnta_pwm_config_t
 /// \brief  cnta pwm parameter configuration
 typedef struct {
-	cnta_ckdiv_e eClkDiv;       //Clock frequency division selection
+	cnta_ckdiv_e eClkDiv;           //Clock frequency division selection
 	uint8_t		     byStartLevel;  //counter pwm start level
 	uint8_t		     byStopLevel;   //counter pwm stop  level
 	uint8_t		     byDutyCycle;   //dutycycle(0-100)

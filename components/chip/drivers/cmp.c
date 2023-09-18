@@ -59,7 +59,7 @@ void csi_cmp_stop(csp_cmp_t *ptCmpBase)
     csp_cmp_stop(ptCmpBase);
 }
 
-/** \brief cmp dflt1 set
+/** \brief cmp set dflt1
  * 
  *  \param[in] ptCmpBase: pointer of cmp register structure
  *  \param[in] bEnable: dflt1 enable or disable
@@ -81,7 +81,7 @@ csi_error_t csi_cmp_set_dflt1(csp_cmp_t *ptCmpBase,csi_cmp_dflt1_config_t *ptCmp
 	return tRet;
 }
 
-/** \brief cmp dflt2 set
+/** \brief cmp set dflt2 
  * 
  *  \param[in] ptCmpBase: pointer of cmp register structure
  *  \param[in] bEnable: dflt2 enable or disable
@@ -103,7 +103,7 @@ csi_error_t csi_cmp_set_dflt2(csp_cmp_t *ptCmpBase,csi_cmp_dflt2_config_t *ptCmp
 	return tRet;
 }
 
-/** \brief cmp wflt config
+/** \brief cmp set wflt
  * 
  *  \param[in] ptCmpBase: pointer of cmp register structure
  *  \param[in] ptCmpWfcrCfg: pointer of cmp wflt config structure
@@ -119,7 +119,7 @@ csi_error_t csi_cmp_set_wfcr(csp_cmp_t *ptCmpBase,csi_cmp_wfcr_config_t *ptCmpWf
 	return tRet;
 }
 
-/** \brief cmp evtrg output config
+/** \brief cmp set evtrg output
  * 
  *  \param[in] ptCmpBase: pointer of cmp register structure
  *  \param[in] eTrgSrc: evtrg eve sel(0~3) 
@@ -127,27 +127,27 @@ csi_error_t csi_cmp_set_wfcr(csp_cmp_t *ptCmpBase,csi_cmp_wfcr_config_t *ptCmpWf
  */
 void csi_cmp_set_evtrg(csp_cmp_t *ptCmpBase,csi_cmp_trgsrc_e eTrgSrc)
 {
-	csp_cmp_evtrg(ptCmpBase,(cmp_trgsrc_e)eTrgSrc);
+	csp_cmp_set_evtrg(ptCmpBase,(cmp_trgsrc_e)eTrgSrc);
 }
 
-/** \brief cmp evtrg syncoe enable
+/** \brief cmp evtrg enable
  * 
  *  \param[in] ptCmpBase: pointer of cmp register structure
  *  \return none
  */
-void csi_cmp_sync_enable(csp_cmp_t *ptCmpBase)
+void csi_cmp_evtrg_enable(csp_cmp_t *ptCmpBase)
 {
-	csp_cmp_sync_enable(ptCmpBase);
+	csp_cmp_evtrg_enable(ptCmpBase);
 }
 
-/** \brief cmp evtrg syncoe disable
+/** \brief cmp evtrg disable
  * 
  *  \param[in] ptCmpBase: pointer of cmp register structure
  *  \return none
  */
-void csi_cmp_sync_disable(csp_cmp_t *ptCmpBase)
+void csi_cmp_evtrg_disable(csp_cmp_t *ptCmpBase)
 {
-	csp_cmp_sync_disable(ptCmpBase);
+	csp_cmp_evtrg_disable(ptCmpBase);
 }
 
 
@@ -175,9 +175,9 @@ uint8_t csi_cmp_get_out(csp_cmp_t *ptCmpBase,uint8_t byOutCh)
  *  \param[in] eIntMode: EDGEDET_MODE or RAWDET_MODE
  *  \return none
  */
-void csi_cmp_clr_isr(csp_cmp_t *ptCmpBase,csi_cmp_intsrc_e eIntMode)
+void csi_cmp_clr_isr(csp_cmp_t *ptCmpBase)
 {
-	csp_cmp_clr_isr(ptCmpBase,(cmp_int_e)eIntMode);
+	csp_cmp_clr_isr(ptCmpBase);
 }
 
 /** \brief CMP interrupt enable control
@@ -253,5 +253,5 @@ void csi_cmp_irqhandler(csp_cmp_t *ptCmpBase,  uint8_t byIdx)
 	if(g_tCmpCtrl[byIdx].callback)
 		g_tCmpCtrl[byIdx].callback(ptCmpBase, byIsr);
 			
-	csp_cmp_clr_isr(ptCmpBase, CMP_EDGEDET_INT);
+	csp_cmp_clr_isr(ptCmpBase);
 }

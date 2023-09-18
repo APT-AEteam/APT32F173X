@@ -129,7 +129,7 @@ void csi_uart_irqhandler(csp_uart_t *ptUartBase, uint8_t byIdx)
 	uint16_t hwIsr = csp_uart_get_isr(ptUartBase) & 0x000670;				//RXFIFO/TXFIFO/RXTO/RXBRAK/PAR_ERR中断状态
 	switch(hwIsr)							
 	{
-		case UART_RXFIFO_INT_S:												//RXFIFO interrupt
+		case UART_INT_RXFIFO_S:												//RXFIFO interrupt
 			while(csp_uart_get_sr(ptUartBase) & UART_RNE)					
 			{
 				if(g_tUartCtrl[byIdx].hwTransNum < g_tUartCtrl[byIdx].hwRxSize)
@@ -137,7 +137,7 @@ void csi_uart_irqhandler(csp_uart_t *ptUartBase, uint8_t byIdx)
 				else														//receive complete										
 				{
 					csp_uart_rxfifo_sw_rst(ptUartBase);						//reset rxfifo
-					csp_uart_int_disable(ptUartBase, UART_RXFIFO_INT);		//disable RXFIFO interrupt
+					csp_uart_int_disable(ptUartBase, UART_INT_RXFIFO);		//disable RXFIFO interrupt
 					csp_uart_rto_disable(ptUartBase);						//disable receive timeout 
 					g_tUartCtrl[byIdx].hwTransNum = 0;						
 					g_tUartCtrl[byIdx].byRxState = UART_STATE_RX_DNE;		
@@ -151,7 +151,7 @@ void csi_uart_irqhandler(csp_uart_t *ptUartBase, uint8_t byIdx)
 			}
 			break;
 	
-		case UART_RXTO_INT_S:												 //receive timeout interrupt
+		case UART_INT_RXTO_S:												 //receive timeout interrupt
 			if(g_tUartCtrl[byIdx].byRxState != UART_STATE_RX_DNE)
 			{
 				while(csp_uart_get_sr(ptUartBase) & UART_RNE)
@@ -177,11 +177,11 @@ void csi_uart_irqhandler(csp_uart_t *ptUartBase, uint8_t byIdx)
 						g_tUartCtrl[byIdx].recv_callback(ptUartBase, UART_STATE_RX_DNE, g_tUartCtrl[byIdx].pbyRxBuf, &g_tUartCtrl[byIdx].hwRxSize);
 				}
 			}
-			csp_uart_clr_isr(ptUartBase, UART_RXTO_INT_S);							//clear interrupt status 
+			csp_uart_clr_isr(ptUartBase, UART_INT_RXTO_S);							//clear interrupt status 
 			csp_uart_rto_enable(ptUartBase);										//enable receive timeout 
 			
 			break;
-		case UART_TXFIFO_INT_S:														//TXFIFO disable receive timeout 
+		case UART_INT_TXFIFO_S:														//TXFIFO disable receive timeout 
 			csp_uart_set_data(ptUartBase, *g_tUartCtrl[byIdx].pbyTxBuf);			//send data
 			g_tUartCtrl[byIdx].hwTxSize --;
 			g_tUartCtrl[byIdx].pbyTxBuf ++;
@@ -189,25 +189,25 @@ void csi_uart_irqhandler(csp_uart_t *ptUartBase, uint8_t byIdx)
 			if(g_tUartCtrl[byIdx].hwTxSize == 0)	
 			{	
 				g_tUartCtrl[byIdx].byTxState = UART_STATE_TX_DNE;					//send complete
-				csp_uart_int_disable(ptUartBase, UART_TXFIFO_INT);					//disable interrupt
+				csp_uart_int_disable(ptUartBase, UART_INT_TXFIFO);					//disable interrupt
 				
 				//send complete, callback
 				if(g_tUartCtrl[byIdx].send_callback)
 					g_tUartCtrl[byIdx].send_callback(ptUartBase);
 			}
 			break;
-		case UART_RXBRK_INT_S:
-			csp_uart_clr_isr(ptUartBase, UART_RXBRK_INT_S);							//clear interrupt status 
+		case UART_INT_RXBRK_S:
+			csp_uart_clr_isr(ptUartBase, UART_INT_RXBRK_S);							//clear interrupt status 
 			if(g_tUartCtrl[byIdx].err_callback)
-				g_tUartCtrl[byIdx].err_callback(ptUartBase, (uart_isr_e)hwIsr);
+				g_tUartCtrl[byIdx].err_callback(ptUartBase, hwIsr);
 			break;
-		case UART_PARERR_INT_S:
-			csp_uart_clr_isr(ptUartBase, UART_PARERR_INT_S);						//clear interrupt status 
+		case UART_INT_PARERR_S:
+			csp_uart_clr_isr(ptUartBase, UART_INT_PARERR_S);						//clear interrupt status 
 			if(g_tUartCtrl[byIdx].err_callback)
-				g_tUartCtrl[byIdx].err_callback(ptUartBase, (uart_isr_e)hwIsr);
+				g_tUartCtrl[byIdx].err_callback(ptUartBase, hwIsr);
 			break;
 		default:
-			csp_uart_clr_isr(ptUartBase, 0x806ff);					
+			csp_uart_clr_isr(ptUartBase, UART_INT_ALL_S);					
 			break;
 	}
 }
@@ -424,7 +424,7 @@ csi_error_t csi_uart_send_int(csp_uart_t *ptUartBase, const void *pData, uint16_
 	g_tUartCtrl[byIdx].hwTxSize = hwSize;
 	g_tUartCtrl[byIdx].byTxState = UART_STATE_SEND;
 	
-	csp_uart_int_enable(ptUartBase, UART_TXFIFO_INT);
+	csp_uart_int_enable(ptUartBase, UART_INT_TXFIFO);
 		
 	return CSI_OK;
 }
@@ -449,7 +449,7 @@ csi_error_t csi_uart_receive_int(csp_uart_t *ptUartBase, void *pData, uint16_t h
 	
 	csp_uart_rxfifo_sw_rst(ptUartBase);										//reset rxfifo
 	csp_uart_rto_enable(ptUartBase);										//enable rto
-	csp_uart_int_enable(ptUartBase, UART_RXFIFO_INT | UART_RXTO_INT);		//rxfifo and receive timeout int
+	csp_uart_int_enable(ptUartBase, UART_INT_RXFIFO| UART_INT_RXTO);		//rxfifo and receive timeout int
 	
 	return CSI_OK;
 }

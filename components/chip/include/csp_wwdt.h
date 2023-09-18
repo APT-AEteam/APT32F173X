@@ -21,17 +21,17 @@
 ******************************************************************************/
 /// \struct csp_wwdt_t
 /// \brief WWDT Reg Description
- typedef volatile struct
+ typedef struct
  { 
 
     __IOM uint32_t	CR;              /**< Control Register                   */
     __IOM uint32_t  CFGR;            /**< Mode Register                      */
-    __IM uint32_t   RISR;            /**< Overflow Mode Register             */
-    __IM uint32_t   MISR;            /**< Clear Status Register              */
+    __IM  uint32_t  RISR;            /**< Overflow Mode Register             */
+    __IM  uint32_t  MISR;            /**< Clear Status Register              */
     __IOM uint32_t	IMCR;            /**< Interrupt Enable Register          */
     __OM  uint32_t  ICR;             /**< Interrupt Disable Register         */
 
- } csp_wwdt_t, *csp_wwd_ptr;
+ } csp_wwdt_t;
 
 /******************************************************************************
 ************************** WWDT Registers Definition ****************************
@@ -70,7 +70,7 @@ static inline void csp_wwdt_enable(csp_wwdt_t * ptWwdtBase)
 	ptWwdtBase->CR |= 0x100;
 }
 
-static inline uint32_t csp_wwdt_status_get(csp_wwdt_t *ptWwdtBase)
+static inline uint32_t csp_wwdt_get_status(csp_wwdt_t *ptWwdtBase)
 {
 	return ((ptWwdtBase->CR & WWDT_EN)? (uint32_t)1 : (uint32_t)0);
 }
@@ -90,14 +90,25 @@ static inline uint8_t csp_wwdt_get_psc(csp_wwdt_t *ptWwdtBase)
 	return (ptWwdtBase->CFGR & (WWDT_PSC_MSK)) >> 8;
 }
 
-static inline void csp_wwdt_debug_enable(csp_wwdt_t *ptWwdtBase, bool bEnable)
+static inline void csp_wwdt_debug_enable(csp_wwdt_t *ptWwdtBase)
 {
-	ptWwdtBase->CFGR = (ptWwdtBase->CFGR & (~WWDT_DBGEN_MSK)) | (bEnable << WWDT_DBGEN_POS);
+	ptWwdtBase->CFGR = (ptWwdtBase->CFGR & (~WWDT_DBGEN_MSK)) | (1 << WWDT_DBGEN_POS);
 }
 
-static inline void csp_wwdt_int_enable(csp_wwdt_t *ptWwdtBase, bool bEnable)
+static inline void csp_wwdt_debug_disable(csp_wwdt_t *ptWwdtBase)
 {
-	ptWwdtBase->IMCR = (ptWwdtBase->IMCR & (~WWDT_EVI_MSK)) | (bEnable << WWDT_EVI_POS);
+	ptWwdtBase->CFGR = (ptWwdtBase->CFGR & (~WWDT_DBGEN_MSK)) | (0 << WWDT_DBGEN_POS);
+}
+
+
+static inline void csp_wwdt_int_enable(csp_wwdt_t *ptWwdtBase)
+{
+	ptWwdtBase->IMCR = (ptWwdtBase->IMCR & (~WWDT_EVI_MSK)) | (1 << WWDT_EVI_POS);
+}
+
+static inline void csp_wwdt_int_disable(csp_wwdt_t *ptWwdtBase)
+{
+	ptWwdtBase->IMCR = (ptWwdtBase->IMCR & (~WWDT_EVI_MSK)) | (0 << WWDT_EVI_POS);
 }
 
 static inline void csp_wwdt_clr_isr(csp_wwdt_t *ptWwdtBase)
@@ -105,7 +116,7 @@ static inline void csp_wwdt_clr_isr(csp_wwdt_t *ptWwdtBase)
 	ptWwdtBase->ICR = 0x1 << WWDT_EVI_POS;
 }
 
-static inline uint32_t csp_wwdt_get_misr(csp_wwdt_t *ptWwdtBase)
+static inline uint32_t csp_wwdt_get_isr(csp_wwdt_t *ptWwdtBase)
 {
 	return (ptWwdtBase->MISR);
 }

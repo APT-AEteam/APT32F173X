@@ -256,7 +256,8 @@ typedef enum
 	I2C_START_DET_INT       = (0x01ul <<10),   //I2C Interrupt Status         
 	I2C_GEN_CALL_INT        = (0x01ul <<11),   //I2C Interrupt Status         
 	I2C_RESTART_DET_INT     = (0x01ul <<12),   //I2C Interrupt Status               
-	I2C_SCL_SLOW_INT        = (0x01ul <<14)    //I2C Interrupt Status         
+	I2C_SCL_SLOW_INT        = (0x01ul <<14),    //I2C Interrupt Status 
+	I2C_ALL_INT             = (0xFFFF<<0)		
 }i2c_int_e;
 
 /*****************************************************************************
@@ -635,14 +636,26 @@ static inline void csp_i2c_set_imcr(csp_i2c_t *ptI2cBase,uint32_t wIntNum)
 {
 	ptI2cBase->IMCR = wIntNum;
 }
-static inline void csp_i2c_imcr_enable(csp_i2c_t *ptI2cBase,uint32_t wIntNum)
+//static inline void csp_i2c_imcr_enable(csp_i2c_t *ptI2cBase,uint32_t wIntNum)
+//{
+//	ptI2cBase->IMCR |= wIntNum;
+//}
+//static inline void csp_i2c_imcr_disable(csp_i2c_t *ptI2cBase,uint32_t wIntNum)
+//{
+//	ptI2cBase->IMCR &= (~wIntNum);
+//}
+static inline void csp_i2c_int_enable(csp_i2c_t *ptI2cBase,i2c_int_e eIntNum)
 {
-	ptI2cBase->IMCR |= wIntNum;
+	ptI2cBase->IMCR |= eIntNum;
 }
-static inline void csp_i2c_imcr_disable(csp_i2c_t *ptI2cBase,uint32_t wIntNum)
+static inline void csp_i2c_int_disable(csp_i2c_t *ptI2cBase,i2c_int_e eIntNum)
 {
-	ptI2cBase->IMCR &= (~wIntNum);
+	ptI2cBase->IMCR &= (~eIntNum);
 }
+
+
+
+
 //
 static inline void csp_i2c_restart_en(csp_i2c_t *ptI2cBase)
 {
@@ -680,11 +693,11 @@ static inline void csp_i2c_stop(csp_i2c_t *ptI2cBase)
 }
 //
 
-static inline void csp_i2c_vic_int_en(void)
+static inline void csp_i2c_vic_int_enable(void)
 {
 	csi_vic_enable_irq(I2C_IRQn); 
 }
-static inline void csp_i2c_vic_int_dis(void)
+static inline void csp_i2c_vic_int_disable(void)
 {
 	csi_vic_disable_irq(I2C_IRQn); 
 }
@@ -699,17 +712,17 @@ static inline void csp_i2c_set_txdma(csp_i2c_t *ptI2cBase, i2c_tdma_en_e eTxDmaE
 	ptI2cBase->DMACR = (ptI2cBase->DMACR & ~(I2C_TDMA_EN_MSK | I2C_TDMA_SEL_MSK)) | (eTxDmaEn << I2C_TDMA_EN_POS) | (eTxDmaSel << I2C_TDMA_SEL_POS);
 }
 
-static inline void csp_i2c_register_soft_reset(csp_i2c_t *ptI2cBase)
+static inline void csp_i2c_reg_sw_reset(csp_i2c_t *ptI2cBase)
 {
 	ptI2cBase->SRR |= (I2C_SWRST_R<<I2C_SWRST_R_POS);
 }
 
-static inline void csp_i2c_control_logic_soft_reset(csp_i2c_t *ptI2cBase)
+static inline void csp_i2c_logic_sw_reset(csp_i2c_t *ptI2cBase)
 {
 	ptI2cBase->SRR |= (I2C_SWRST_C<<I2C_SWRST_C_POS);
 }
 
-static inline void csp_i2c_fifo_soft_reset(csp_i2c_t *ptI2cBase)
+static inline void csp_i2c_fifo_sw_reset(csp_i2c_t *ptI2cBase)
 {
 	ptI2cBase->SRR |= (I2C_SWRST_F<<I2C_SWRST_F_POS);
 }

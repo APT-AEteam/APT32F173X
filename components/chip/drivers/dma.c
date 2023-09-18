@@ -20,6 +20,24 @@
 /* Private variablesr------------------------------------------------------*/
 static uint16_t s_hwDmaMsg[2]	= {0, 0};
 
+/** \brief get dma number 
+ * 
+ *  \param[in] ptDmaBase: pointer of dma register structure
+ *  \return dma number 0/1
+ */ 
+static uint8_t apt_get_dma_idx(csp_dma_t *ptDmaBase)
+{
+	switch((uint32_t)ptDmaBase)
+	{
+		case APB_DMA0_BASE:		//dma0
+			return 0;		
+		case APB_DMA1_BASE:		//dma1
+			return 1;
+		default:
+			return 0xff;		//error
+	}
+}
+
 /** \brief dma interrupt handle function
  * 
  *  \param[in] eIntMsg: dma interrupt message
@@ -28,7 +46,7 @@ static uint16_t s_hwDmaMsg[2]	= {0, 0};
  */ 
 static uint8_t apt_dma_post_msg(csp_dma_t *ptDmaBase, csi_dma_int_msg_e eIntMsg, uint8_t byPost)
 {
-	uint8_t byIdx = csi_get_dma_idx(ptDmaBase);
+	uint8_t byIdx = apt_get_dma_idx(ptDmaBase);
 	
 	if(0 == (s_hwDmaMsg[byIdx] & eIntMsg))
 	{
@@ -77,23 +95,7 @@ __attribute__((weak)) void dma_irqhandler(csp_dma_t *ptDmaBase)
 	}
 }
 
-/** \brief get dma idx 
- * 
- *  \param[in] ptDmaBase: pointer of uart register structure
- *  \return dma id number(0~1) or error(0xff)
- */ 
-uint8_t csi_get_dma_idx(csp_dma_t *ptDmaBase)
-{
-	switch((uint32_t)ptDmaBase)
-	{
-		case APB_DMA0_BASE:
-			return 0;
-		case APB_DMA1_BASE:
-			return 1;
-		default:
-			return 0xff;		///error
-	}
-}
+
 /** \brief Init dma channel parameter config structure
  * 
  *  \param[in] ptDmaBase: pointer of dma reg structure.
@@ -198,6 +200,18 @@ void csi_dma_int_disable(csp_dma_t *ptDmaBase, csi_dma_ch_e eDmaCh, csi_dma_ints
 	csp_dma_t *ptDmaChBase = (csp_dma_t *)DMA_REG_BASE(ptDmaBase, eDmaCh); 
 	
 	csp_dma_int_disable(ptDmaChBase, (dma_int_e)eIntSrc);
+	
+}
+
+/** \brief clear dma interrupt 
+ * 
+ *  \param[in] ptDmaBase: pointer of dma register structure
+ *  \param[in] eIntSta: dma interrupt status
+ *  \return none
+ */
+void csi_dma_clr_isr(csp_dma_t *ptDmaBase,  csi_dma_intsta_e eIntSta)
+{
+	csp_dma_clr_isr(ptDmaBase, (dma_icr_e)eIntSta);
 	
 }
 /** \brief dma channel transfer stop

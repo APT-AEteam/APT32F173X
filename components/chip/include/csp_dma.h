@@ -102,7 +102,7 @@ typedef enum{
 #define DMA_SMODE_MSK		(0x01ul << DMA_SMODE_POS)	
 typedef enum{
 	DMA_SMODE_ONCE	= 0,
-	DMA_SMODE_CNTNU				//continuous
+	DMA_SMODE_CONT				//continuous
 }dma_smode_e;
 
 #define DMA_TSIZE_POS		(28) 			//    					  
@@ -216,13 +216,13 @@ typedef enum{
 * ICR: Interrupt Clear Register
 ******************************************************************************/
 typedef enum{
-	DMA_CH0_INT		= (0x01ul << 0),
-	DMA_CH1_INT		= (0x01ul << 1),
-	DMA_CH2_INT		= (0x01ul << 2),
-	DMA_CH3_INT		= (0x01ul << 3),
-	DMA_CH4_INT		= (0x01ul << 4),
-	DMA_CH5_INT		= (0x01ul << 5),
-	DMA_ALL_INT		= 0x3F
+	DMA_INT_CH0		= (0x01ul << 0),
+	DMA_INT_CH1		= (0x01ul << 1),
+	DMA_INT_CH2		= (0x01ul << 2),
+	DMA_INT_CH3		= (0x01ul << 3),
+	DMA_INT_CH4		= (0x01ul << 4),
+	DMA_INT_CH5		= (0x01ul << 5),
+	DMA_INT_ALL		= 0x3F
 }dma_icr_e;
 
 /******************************************************************************

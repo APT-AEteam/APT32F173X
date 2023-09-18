@@ -10,20 +10,15 @@
  * </table>
  * *********************************************************************
 */
-#include <sys_clk.h>
 #include <drv/lpt.h>
-#include <drv/irq.h>
-#include <drv/gpio.h>
-#include <drv/pin.h>
-#include <drv/tick.h>
-#include "csp_syscon.h"
-#include "csp_lpt.h"
 #include "board_config.h"
 
 /* Private macro-----------------------------------------------------------*/
 /* externs function--------------------------------------------------------*/
 /* externs variablesr------------------------------------------------------*/
 /* Private variablesr------------------------------------------------------*/
+/* Global variablesr------------------------------------------------------*/
+csi_lpt_ctrl_t g_tLptCtrl[LPT_IDX];
 
 uint32_t g_wLptPrd = 0;
 
@@ -133,38 +128,41 @@ static uint32_t apt_set_lpt_clk(csp_lpt_t *ptLptBase,csi_lpt_clksrc_e eClk,uint3
 	return hg_wLptPrd;	
 }
 
-
-
 /**
-  \brief       Enable lpt power manage
+  \brief       LPT interrupt enable control
   \param[in]   ptLptBase:pointer of lpt register structure
   \param[in]   eLptInt:irq mode
-  \param[in]   bEnable:lpt irq enable or disable
 */
-void csi_lpt_int_enable(csp_lpt_t *ptLptBase, csi_lpt_intsrc_e eLptInt,bool bEnable)
+void csi_lpt_int_enable(csp_lpt_t *ptLptBase, csi_lpt_intsrc_e eLptInt)
 {
-	csp_lpt_int_enable(ptLptBase, (lpt_int_e)eLptInt, bEnable);
-	
-	if (bEnable) 
-	{
-		csi_irq_enable((uint32_t *)ptLptBase);
-	}
-	else 
-	{
-		if (eLptInt == csp_lpt_get_imcr(ptLptBase)) 
-		{
-			csi_irq_disable((uint32_t *)ptLptBase);
-		}
-	}
+	csp_lpt_int_enable(ptLptBase,(lpt_int_e)eLptInt);
+//	csi_irq_enable((uint32_t *)ptLptBase);
+}
+
+/**
+  \brief       LPT interrupt disable control
+  \param[in]   ptLptBase:pointer of lpt register structure
+  \param[in]   eLptInt:irq mode
+*/
+void csi_lpt_int_disable(csp_lpt_t *ptLptBase, csi_lpt_intsrc_e eLptInt)
+{
+
+	csp_lpt_int_disable(ptLptBase, (lpt_int_e)eLptInt);
+//	if (eLptInt == csp_lpt_get_imcr(ptLptBase)) 
+//	{
+//		csi_irq_disable((uint32_t *)ptLptBase);
+//	}
 }
 
 /** \brief initialize lpt data structure
  *  \param[in] ptLptBase:pointer of lpt register structure
- *  \param[in] eClk: clk source selection
- *  \param[in] wTimeOut: the timeout for bt, unit: ms
+ *  \param[in] ptLptTimCfg: ptLptTimCfg: pointer of lpt timing parameter config structure
+ *             - wTimeVal: timing value, unit: us
+ *             - eWkMode: lpt count work mode, \ref csi_lpt_wkmode_e
+ *             - eClksrc: Clock Source, \ref csi_lpt_clksrc_e
  *  \return error code \ref csi_error_t
  */ 
-csi_error_t csi_lpt_timer_init(csp_lpt_t *ptLptBase,csi_lpt_clksrc_e eClk, uint32_t wTimeOut)
+csi_error_t csi_lpt_timer_init(csp_lpt_t *ptLptBase,csi_lpt_time_config_t *ptLptTimCfg)
 {
 	CSI_PARAM_CHK(ptLptBase, CSI_ERROR);
 	
@@ -175,11 +173,13 @@ csi_error_t csi_lpt_timer_init(csp_lpt_t *ptLptBase,csi_lpt_clksrc_e eClk, uint3
 	csp_lpt_soft_rst(ptLptBase);
 	csp_lpt_clk_enable(ptLptBase, ENABLE);
 	
-	wLptClk = apt_get_lpt_clk(eClk);
+	csp_lpt_set_opmd(ptLptBase, (lpt_opm_e) ptLptTimCfg->eWkMode);
+	
+	wLptClk = apt_get_lpt_clk(ptLptTimCfg->eClksrc);
 //	wLptClk = 2000000;
-	wMult = wLptClk/1000*wTimeOut;
+	wMult = wLptClk/1000*ptLptTimCfg->wTimeVal;
 		
-	g_wLptPrd = apt_set_lpt_clk(ptLptBase,eClk,wMult);
+	g_wLptPrd = apt_set_lpt_clk(ptLptBase,ptLptTimCfg->eClksrc,wMult);
 	if(g_wLptPrd == ERR_LPT_CLK)
 	{
 		tRet = CSI_UNSUPPORTED;
@@ -188,7 +188,9 @@ csi_error_t csi_lpt_timer_init(csp_lpt_t *ptLptBase,csi_lpt_clksrc_e eClk, uint3
 	{
 		csp_lpt_set_prdr(ptLptBase, (uint16_t)g_wLptPrd);
 	}
-	csi_lpt_int_enable(ptLptBase,LPT_TRGEV_INT|LPT_PEND_INT,ENABLE);	 //enable PEND interrupt
+	csi_lpt_int_enable(ptLptBase,LPT_INTSRC_PEND);	 //enable PEND interrupt
+	
+	
 	return tRet;	
 }
 
@@ -255,15 +257,15 @@ bool csi_lpt_is_running(csp_lpt_t *ptLptBase)
     return (csp_lpt_get_work_state(ptLptBase) ? true : false);
 }
 
-/** \brief updata lpt pwm freq para: (prdr and cmp value)
+/** \brief update lpt pwm freq para: (prdr and cmp value)
  * 
  *  \param[in] ptLptBase:pointer of lpt register structure
  *  \param[in] hwCmp: duty cycle
  *  \param[in] hwPrdr: period 
- *  \param[in] eModeUpdata: updata mode 
+ *  \param[in] eModeUpdata: update mode 
  *  \return none
  */
-void csi_lpt_pwm_para_updata(csp_lpt_t *ptLptBase, uint16_t hwCmp, uint16_t hwPrdr, csi_lpt_updata_e eModeUpdata)
+void csi_lpt_pwm_para_update(csp_lpt_t *ptLptBase, uint16_t hwCmp, uint16_t hwPrdr, csi_lpt_update_e eModeUpdata)
 {
 	
 	csp_lpt_data_update(ptLptBase, hwCmp, hwPrdr);
@@ -309,9 +311,28 @@ csi_error_t csi_lpt_set_evtrg(csp_lpt_t *ptLptBase, uint8_t byEvtrg, csi_lpt_trg
 	
 	csp_lpt_set_evtrg(ptLptBase,(lpt_trgsrc_e) eTrgsrc);
 	csp_lpt_set_trgprd(ptLptBase, byTrgprd-1);
-	csp_lpt_trg_enable(ptLptBase, DISABLE);      // DISABLE for test CR[SWSYNEN]
 	
 	return ret;
+}
+
+/** \brief LPT trigger enable control
+ * 
+ *  \param[in] ptLptBase:pointer of lpt register structure
+ *  \return void
+ */
+void csi_lpt_trg_enable(csp_lpt_t *ptLptBase)
+{
+	csp_lpt_trg_enable(ptLptBase);
+}
+
+/** \brief LPT trigger enable control
+ * 
+ *  \param[in] ptLptBase:pointer of lpt register structure
+ *  \return void
+ */
+void csi_lpt_trg_disable(csp_lpt_t *ptLptBase)
+{
+	csp_lpt_trg_disable(ptLptBase);
 }
 
 /** \brief lpt set frequency 
@@ -361,7 +382,7 @@ csi_error_t csi_lpt_pwm_init(csp_lpt_t *ptLptBase, csi_lpt_pwm_config_t *ptLptPa
 	csp_lpt_soft_rst(ptLptBase);
 	csp_lpt_clk_enable(ptLptBase, ENABLE);
 	
-	csp_lpt_set_opmd(ptLptBase, LPT_OPM_CONTINUOUS);
+	csp_lpt_set_opmd(ptLptBase, LPT_OPM_CONT);
 	csp_lpt_stopshadow_enable(ptLptBase, ENABLE);
 	csp_lpt_set_pol(ptLptBase, ptLptPara->byStartpol);
 	csp_lpt_set_idle_st(ptLptBase, ptLptPara->byIdlepol);
@@ -396,10 +417,6 @@ csi_error_t csi_lpt_pwm_init(csp_lpt_t *ptLptBase, csi_lpt_pwm_config_t *ptLptPa
 		}
 		csp_lpt_set_cmp(ptLptBase, (uint16_t)hwCmp);
 		
-		if(ptLptPara->byInt != LPT_NONE_INT)
-		{
-			csi_lpt_int_enable(ptLptBase,ptLptPara->byInt,ENABLE);	 //enable interrupt
-		}
 	}
 	return tRet;	
 		
@@ -487,7 +504,7 @@ csi_error_t csi_lpt_start(csp_lpt_t *ptLptBase)
 {
 	csp_lpt_sw_start(ptLptBase);
 	csp_lpt_set_start_im_enable(ptLptBase, ENABLE);
-	csp_lpt_swsync_enable(ptLptBase, ENABLE);
+	csp_lpt_swsync_enable(ptLptBase);
 	return CSI_OK;
 }
 
@@ -521,7 +538,7 @@ csi_error_t csi_lpt_start_sync(csp_lpt_t *ptLptBase, csi_lpt_clksrc_e eClk, uint
 		csp_lpt_prdr_ldmode(ptLptBase, LPT_PRDLD_IM);
 		csp_lpt_set_prdr(ptLptBase, (uint16_t)g_wLptPrd);
 	}
-	csi_lpt_int_enable(ptLptBase,LPT_INTSRC_PEND,ENABLE);	 //enable PEND interrupt
+	csi_lpt_int_enable(ptLptBase,LPT_INTSRC_PEND);	 //enable PEND interrupt
 	return tRet;
 }
 
@@ -539,21 +556,49 @@ csi_error_t csi_lpt_set_sync(csp_lpt_t *ptLptBase, uint8_t bySync, csi_lpt_syncm
 		return CSI_ERROR;		
 	csp_lpt_set_sync_mode(ptLptBase, (lpt_syncmd_e)eSyncMode);
 	csp_lpt_auto_rearm_enable(ptLptBase, bARearmEnable);
-	csp_lpt_sync_enable(ptLptBase, ENABLE);
 	return CSI_OK;
+}
+
+/** \brief LPT ync enable control
+ * 
+ *  \param[in] ptLptBase:pointer of lpt register structure
+ *  \return void
+ */
+void csi_lpt_sync_enable(csp_lpt_t *ptLptBase)
+{
+	csp_lpt_sync_enable(ptLptBase);
+}
+
+/** \brief LPT ync enable control
+ * 
+ *  \param[in] ptLptBase:pointer of lpt register structure
+ *  \return void
+ */
+void csi_lpt_sync_disable(csp_lpt_t *ptLptBase)
+{
+	csp_lpt_sync_enable(ptLptBase);
+}
+
+
+/** \brief LPT software sync enable control
+ * 
+ *  \param[in] ptLptBase:pointer of lpt register structure
+ *  \return void
+ */
+void csi_lpt_swsync_enable(csp_lpt_t *ptLptBase)
+{
+	csp_lpt_swsync_enable(ptLptBase);
 }
 
 /** \brief LPT software sync enable control
  * 
  *  \param[in] ptLptBase:pointer of lpt register structure
- *  \param[in] bEnable: ENABLE/DISABLE
  *  \return void
  */
-void csi_lpt_swsync_enable(csp_lpt_t *ptLptBase, bool bEnable)
+void csi_lpt_swsync_disable(csp_lpt_t *ptLptBase)
 {
-	csp_lpt_swsync_enable(ptLptBase, bEnable);
+	csp_lpt_swsync_disable(ptLptBase);
 }
-
 
 /** \brief lpt software generates a trigger event
  * 
@@ -563,7 +608,7 @@ void csi_lpt_swsync_enable(csp_lpt_t *ptLptBase, bool bEnable)
 void csi_lpt_soft_evtrg(csp_lpt_t *ptLptBase)
 {
 	csi_clk_enable((uint32_t *)ptLptBase);										
-	csp_lpt_trg_enable(ptLptBase, ENABLE);
+	csp_lpt_trg_enable(ptLptBase);
 	csp_lpt_evswf_en(ptLptBase);
 }
 
@@ -610,4 +655,85 @@ csi_error_t csi_lpt_set_sync_window(csp_lpt_t *ptLptBase, bool bCrossEnable, boo
 //	csp_lpt_sync_window_enable(ptLptBase, ENABLE);
 
 
+}
+
+/** \brief get lpt number 
+ * 
+ *  \param[in] ptLptBase: pointer of lpt register structure
+ *  \return lpt 0/error
+ */ 
+static uint8_t apt_get_lpt_idx(csp_lpt_t *ptLptBase)
+{
+	switch((uint32_t)ptLptBase)
+	{
+		case APB_LPT_BASE:		//LPT
+			return 0;		
+		default:
+			return 0xff;		//error
+	}
+}
+
+
+/** \brief  register lpt interrupt callback function
+ * 
+ *  \param[in] ptLptBase: pointer of lpt register structure
+ *  \param[in] callback: bt interrupt handle function
+ *  \return error code \ref csi_error_t
+ */ 
+csi_error_t csi_lpt_register_callback(csp_lpt_t *ptLptBase, void  *callback)
+{
+	uint8_t byIdx = apt_get_lpt_idx(ptLptBase);
+	if(byIdx == 0xff)
+		return CSI_ERROR;
+		
+	g_tLptCtrl[byIdx].callback = callback;
+	
+	return CSI_OK;
+}
+
+/** \brief lpt interrupt handler function
+ * 
+ *  \param[in] ptLptBase: pointer of bt register structure
+ *  \param[in] byIdx: lpt idx(0)
+ *  \return none
+ */ 
+void csi_lpt_irqhandler(csp_lpt_t *ptLptBase, uint8_t byIdx)
+{
+	uint8_t byIsr = csp_lpt_get_isr(ptLptBase);
+	
+	if(g_tLptCtrl[byIdx].callback)
+			g_tLptCtrl[byIdx].callback(ptLptBase, byIsr);
+			
+	csp_lpt_clr_isr(ptLptBase, byIsr);
+}
+
+/** \brief clear lpt interrupt 
+ * 
+ *  \param[in] ptLptBase: pointer of lpt register structure
+ *  \param[in] eIntSrc: lpt interrupt source
+ *  \return none
+ */ 
+void csi_lpt_clr_isr(csp_lpt_t *ptLptBase, csi_lpt_intsrc_e eIntSrc)
+{
+	csp_lpt_clr_isr(ptLptBase, (lpt_int_e)eIntSrc);	
+}
+
+/** \brief enable lpt in debug mode
+ * 
+ *  \param[in]  ptLptBase      pointer of gpta register structure
+ *  \return none
+ */
+void csi_lpt_debug_enable(csp_lpt_t *ptLptBase)
+{
+	csp_lpt_debug_enable(ptLptBase);
+}
+
+/** \brief disable lpt in debug mode
+ * 
+ *  \param[in]  ptLptBase      pointer of gpta register structure
+ *  \return none
+ */
+void csi_lpt_debug_disable(csp_lpt_t *ptLptBase)
+{
+	csp_lpt_debug_disable(ptLptBase);
 }

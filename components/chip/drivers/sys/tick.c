@@ -37,7 +37,7 @@ ATTRIBUTE_ISR void  bt3_int_handler(void)
     // ISR content ...
 	volatile uint32_t wMisr = csp_bt_get_isr(BT3);
 	
-	if(wMisr & BT_PEND_INT)					//PEND interrupt
+	if(wMisr & BT_INT_PEND)					//PEND interrupt
 	{
 	
 		s_wTick++;
@@ -48,7 +48,7 @@ ATTRIBUTE_ISR void  bt3_int_handler(void)
 #elif defined(CONFIG_KERNEL_UCOS)
 		OSTimeTick();
 #endif
-		csp_bt_clr_isr(BT3, BT_PEND_INT);			
+		csp_bt_clr_isr(BT3, BT_INT_PEND);			
 	}
 }
 

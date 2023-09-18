@@ -4,9 +4,7 @@
  * \copyright Copyright (C) 2015-2023 @ APTCHIP
  * <table>
  * <tr><th> Date  <th>Version  <th>Author  <th>Description
- * <tr><td> 2021-7-27 <td>V2.0 <td>WNN    <td>initial
- * <tr><td> 2023-3-15 <td>V0.1  <td>YT     <td>modify
- * <tr><td> 2023-9-14 <td>V0.2  <td>YT     <td>modify
+ * <tr><td> 2023-9-14 <td>V0.0  <td>YT     <td>initial
  * </table>
  * *********************************************************************
 */
@@ -21,41 +19,40 @@
 /* externs variablesr------------------------------------------------------*/
 /* Private variablesr------------------------------------------------------*/
 
+#if (USE_WWDT_CALLBACK == 1)
 
-#if (USE_WWDT_CALLBACK == 0)	
-
-/** \brief	wwdt_int_handler: WWDT中断服务函数
+/** \brief  user_wwdt_callback：WWDT中断回调函数
  * 
- *  \brief 	WWDT发生中断时会调用此函数，函数在interrupt.c里定义为弱(weak)属性，默认不做处理；用户用到WWDT中
- * 			断时，请重新定义此函数，在此函数中进行对应中断处理，也可直接在interrupt.c里的函数里进行处理
+ * 	\brief	用户定义，支持EVI中断处理，使用csi标准库，中断发生时会自动调用用户注册的回调函
+ * 			数，用户可在回调函数里做自己的处理，而不需要关注具体的底层中断处理。
+ * 
+ *  \param[out] ptWwdtBase: WWDT寄存器结构体指针，指向WWDT的基地址 
+ *  \param[out] byIsr: 		WWDT中断状态
+ *  \return none
+ */ 
+void user_wwdt_callback(csp_wwdt_t * ptWwdtBase, uint8_t byIsr)
+{
+	//user code
+	
+}
+
+/** \brief	wwdt_int_handler: WWDT中断服务函数，使用callback
+ * 
+ *  \brief 	WWDT的计数器计数到0x80时，可以产生一个警告中断
  * 
  *  \param[in] none
  *  \return none
  */
- ATTRIBUTE_ISR void wwdt_int_handler(void)
- {
-	 //用户直接在中断服务接口函数里处理中断，建议客户使用此模式
-	 csp_wwdt_clr_isr(WWDT);
- }
- 
- #endif
- 
- /** \brief	wwdt_demo: WWDT 喂狗
- * 
- *  \brief	窗内喂狗不会引起复位，窗外喂狗会引起复位
- *  \param[in] none
- *  \return error code
- */
- 
-csi_error_t wwdt_demo(void)
+ csi_error_t wwdt_callback_demo(void)
 {
 	volatile uint32_t temp1, temp2, temp3;	
 	
 	csi_wwdt_init(80);							//设置timeout时间为80ms 时间设置过大 会返回错误
 	csi_wwdt_debug_enable(WWDT);				//可以配置在debug模式下，wdt是否继续计时		
 	csi_wwdt_set_window_time(40);				//设置窗口值为40ms
-//	csi_wwdt_int_enable( );                     //中断使能
-
+	csi_wwdt_int_enable( );                     //中断使能
+	
+	csi_wwdt_register_callback(WWDT, user_wwdt_callback);	//注册中断回调函数
 	csi_wwdt_open();							//WWDT一旦使能，软件将不能停止
 	mdelay(2);
 	temp1 = csi_wwdt_get_remaining_time();
@@ -83,3 +80,4 @@ csi_error_t wwdt_demo(void)
 }
 
 
+#endif

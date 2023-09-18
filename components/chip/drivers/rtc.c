@@ -29,11 +29,12 @@ csp_error_t apt_rtc_set_trgprd(csp_rtc_t *ptRtc, uint8_t byTrg, uint8_t byPrd);
 csp_rtc_time_t tRtcAlarmTime;
 
 
-/**
-  \brief       Initialize RTC Interface. Initializes the resources needed for the RTC interface
-  \param       ptRtc    pointer of rtc register structure
-  \param	   tConfig  rtc basic parameters \ref csi_rtc_config_t
-  \return      none
+/**\brief	Initialize RTC Interface. Initializes the resources needed for the RTC interface
+ * 
+ * \param	ptRtc : rtc handle
+ * \param	eOsc : clock source 
+ * \param	eFmt : rtc format: RTC_24FMT/RTC_12FMT
+ * \return	none
 */
 void csi_rtc_init(csp_rtc_t *ptRtc, csi_rtc_config_t *tConfig)
 {
@@ -115,11 +116,11 @@ void csi_rtc_init(csp_rtc_t *ptRtc, csi_rtc_config_t *tConfig)
 
 }
 
-/**
-  \brief       Read back function enable control. To save current, disable read back.
-  \param       rtc        handle pointer of rtc register structure to operate
-  \param       bEnable    
-  \return      none
+/**\brief	Read back function enable control. To save current, disable read back.
+ * 
+ * \param	ptRtc： handle pointer of rtc register structure to operate
+ * \param	bEnable    
+ * \return	none
 */
 void csi_rtc_rb_enable(csp_rtc_t *ptRtc, bool bEnable)
 {
@@ -139,11 +140,11 @@ void csi_rtc_rb_enable(csp_rtc_t *ptRtc, bool bEnable)
 	}
 }
 
-/**
-  \brief       To set/change RTC format
-  \param       pointer of rtc register structure pointer of rtc register structure to operate
-  \param       eFmt \ref rtc_fmt_e    
-  \return      none
+/**\brief To set/change RTC format
+ * 
+ * \param  rtc handle rtc handle to operate
+ * \param  eFmt \ref rtc_fmt_e    
+ * \return none
 */
 void csi_rtc_change_fmt(csp_rtc_t *ptRtc,  rtc_fmt_e eFmt)
 {
@@ -153,10 +154,10 @@ void csi_rtc_change_fmt(csp_rtc_t *ptRtc,  rtc_fmt_e eFmt)
 	while(csp_rtc_update_status(ptRtc));
 }
 
-/**
-  \brief       To start RTC 
-  \param       pointer of rtc register structure pointer of rtc register structure to operate
-  \return      none
+/**\brief To start RTC 
+ * 
+ * \param  rtc handle rtc handle to operate
+ * \return none
 */
 void csi_rtc_start(csp_rtc_t *ptRtc)
 {
@@ -167,10 +168,10 @@ void csi_rtc_start(csp_rtc_t *ptRtc)
 }
 
 
-/**
-  \brief       To stop RTC 
-  \param       pointer of rtc register structure pointer of rtc register structure to operate
-  \return      none
+/**\brief To stop RTC 
+ * 
+ * \param  pointer of rtc register structure pointer of rtc register structure to operate
+ * \return  none
 */
 void csi_rtc_stop(csp_rtc_t *ptRtc)
 {
@@ -180,22 +181,21 @@ void csi_rtc_stop(csp_rtc_t *ptRtc)
 	while(csp_rtc_update_status(ptRtc));
 }
 
-/**
-  \brief       To reset RTC 
-  \param       pointer of rtc register structure pointer of rtc register structure to operate
-  \return      none
+/**\brief To reset RTC 
+ * 
+ * \param pointer of rtc register structure pointer of rtc register structure to operate
+ * \return  none
 */
 void csi_rtc_reset(csp_rtc_t *ptRtc)
 {
 	csp_rtc_reset(ptRtc);
 }
 
-/**
-  \brief       Set system date and run after setting
-   * 				week day will be calculated in this function
-  \param       rtc        handle pointer of rtc register structure to operate
-  \param       rtctime    pointer to rtc time
-  \return      error code \ref csi_error_t
+/**\brief       Set system date and run after setting
+ * 				week day will be calculated in this function
+ * \param       rtc        handle pointer of rtc register structure to operate
+ * \param       rtctime    pointer to rtc time
+ * \return      error code \ref csi_error_t
 */
 csi_error_t csi_rtc_set_time(csp_rtc_t *ptRtc, csi_rtc_time_t *ptRtcTime)
 {   
@@ -240,16 +240,16 @@ csi_error_t csi_rtc_set_time(csp_rtc_t *ptRtc, csi_rtc_time_t *ptRtcTime)
 	return ret;
 }
 
-/**
-  \brief   Config RTC alarm
-  \param   ptRtc      handle pointer of rtc register structure to operate
-  \param   byAlm	  RTC_ALMA/RTC_ALMB
-  \param   ptAlmTime    alarm time(s) 
-  \param   byMode	  	0: day       hour min sec
-						1: weekday   hour min sec
-						2:           hour min sec
-
-  \return  error code \ref csi_error_t
+/**\brief   Config RTC alarm
+ * 
+ * \param   ptRtc      handle pointer of rtc register structure to operate
+ * \param   byAlm	  RTC_ALMA/RTC_ALMB
+ * \param   ptAlmTime    alarm time(s) 
+ * \param   byMode	  	0: day       hour min sec
+ *						1: weekday   hour min sec
+ *						2:           hour min sec
+ *
+ * \return  error code \ref csi_error_t
 */
 csi_error_t csi_rtc_set_alarm(csp_rtc_t *ptRtc, uint8_t byAlm, uint8_t byMode, csi_rtc_time_t *ptAlmTime)
 { 	
@@ -310,7 +310,7 @@ csi_error_t csi_rtc_set_alarm(csp_rtc_t *ptRtc, uint8_t byAlm, uint8_t byMode, c
 			return CSI_ERROR;
 	}
 	
-	csi_rtc_int_enable(RTC, RTC_INT_ALMA,ENABLE);
+	csi_rtc_int_enable(RTC, RTC_INT_ALMA);
 	
 	csp_rtc_set_key(ptRtc);
 	csp_rtc_alm_disable(ptRtc, byAlm);
@@ -334,11 +334,11 @@ csi_error_t csi_rtc_set_alarm(csp_rtc_t *ptRtc, uint8_t byAlm, uint8_t byMode, c
 	return CSI_OK;
 }
 
-/**
-  \brief       Cancel the rtc alarm, keep last alarm time and mode setting
-  \param       ptRtc    pointer of rtc register structure to operate
-  \param       byAlm	RTC_ALMA/RTC_ALMB
-  \return      none
+/**\brief Cancel the rtc alarm, keep last alarm time and mode setting
+ * 
+ * \param ptRtc    pointer of rtc register structure to operate
+ * \param byAlm	RTC_ALMA/RTC_ALMB
+ * \return none
 */
 void csi_rtc_cancel_alarm(csp_rtc_t *ptRtc, uint8_t byAlm)
 {
@@ -349,21 +349,21 @@ void csi_rtc_cancel_alarm(csp_rtc_t *ptRtc, uint8_t byAlm)
 	
 	switch (byAlm)
 	{
-		case (RTC_ALMA): 	csi_rtc_int_enable(ptRtc, RTC_INT_ALMA,DISABLE);
+		case (RTC_ALMA): 	csi_rtc_int_disable(ptRtc, RTC_INT_ALMA);
 							csp_rtc_clr_isr(ptRtc, RTC_INT_ALMA);
 							break;
-		case (RTC_ALMB):	csi_rtc_int_enable(ptRtc, RTC_INT_ALMB,DISABLE);
+		case (RTC_ALMB):	csi_rtc_int_disable(ptRtc, RTC_INT_ALMB);
 							csp_rtc_clr_isr(ptRtc, RTC_INT_ALMB);
 							break;
 		default: break;
 	}
 }
 
-/**
-  \brief       Config RTC alarm ture timer
-  \param[in]   ptRtc      handle pointer of rtc register structure to operate
-  \param[in]   eOut     rtc output
-  \return      none
+/**\brief  Config RTC alarm ture timer
+ * 
+ * \param[in]   ptRtc      handle pointer of rtc register structure to operate
+ * \param[in]   eOut     rtc output
+ * \return      none
 */
 void csi_rtc_set_alarm_out(csp_rtc_t *ptRtc, csi_rtc_osel_e eOut)
 {	
@@ -375,11 +375,11 @@ void csi_rtc_set_alarm_out(csp_rtc_t *ptRtc, csi_rtc_osel_e eOut)
 
 
 
-/**
-  \brief    use rtc as a timer
-  \param	callback  callback function to be called when time = ePrd
-  \param 	ePrd    time interval of the timer.
-  \param[in]   rtc    pointer of rtc register structure to operate
+/**\brief use rtc as a timer
+ * 
+ * \param	callback  callback function to be called when time = ePrd
+ * \param 	ePrd    time interval of the timer.
+ * \param[in]   rtc    pointer of rtc register structure to operate
 */
 void csi_rtc_start_as_timer(csp_rtc_t *ptRtc, csi_rtc_timer_e ePrd)
 {	
@@ -388,38 +388,39 @@ void csi_rtc_start_as_timer(csp_rtc_t *ptRtc, csi_rtc_timer_e ePrd)
 	csp_rtc_set_cprd(ptRtc, (rtc_cprd_e)ePrd);
 	csp_rtc_clr_key(ptRtc);
 	while(csp_rtc_update_status(ptRtc));
-	csi_rtc_int_enable(ptRtc, RTC_INT_CPRD , ENABLE);
+	csi_rtc_int_enable(ptRtc, RTC_INT_CPRD);
 	//csp_rtc_run(ptRtc);
 }
 
-/**
-  \brief   RTC interrupt enable/disable
-  \param   ptRtc      handle pointer of rtc register structure to operate
-  \param   eIntSrc	  interrupt source	
-  \param   bEnable    ENABLE/DISABLE 
-  \return  none
+/**\brief   RTC interrupt enable
+ * 
+ * \param   ptRtc      handle pointer of rtc register structure to operate
+ * \param   eIntSrc	  interrupt source	
+ * \return  none
 */
-void csi_rtc_int_enable(csp_rtc_t *ptRtc, rtc_int_e eIntSrc, bool bEnable)
+void csi_rtc_int_enable(csp_rtc_t *ptRtc, rtc_int_e eIntSrc)
 {
-		
-	
-	if (bEnable) {
-		csp_rtc_int_enable(ptRtc, (rtc_int_e)eIntSrc);
-		csi_irq_enable((uint32_t *)ptRtc);
-	}
-	else {
-		csp_rtc_int_disable(ptRtc, (rtc_int_e)eIntSrc);
-		if (eIntSrc == csp_rtc_get_imcr(ptRtc)) {
-			csi_irq_disable((uint32_t *)ptRtc);
-		}
-	}
+	csp_rtc_int_enable(ptRtc, (rtc_int_e)eIntSrc);
 }
 
-/**
-  \brief       Get system time
-  \param[in]   rtc        handle pointer of rtc register structure to operate
-  \param[out]  rtctime    pointer to rtc time
-  \return      none
+/**\brief   RTC interrupt disable
+ * 
+ * \param   ptRtc      handle pointer of rtc register structure to operate
+ * \param   eIntSrc	  interrupt source	
+ * \return  none
+*/
+void csi_rtc_int_disable(csp_rtc_t *ptRtc, rtc_int_e eIntSrc)
+{
+	csp_rtc_int_disable(ptRtc, (rtc_int_e)eIntSrc);
+	if (eIntSrc == csp_rtc_get_imcr(ptRtc)) {
+		csi_irq_disable((uint32_t *)ptRtc);
+	}
+}
+/**\brief Get system time
+ * 
+ * \param[in]   rtc        handle pointer of rtc register structure to operate
+ * \param[out]  rtctime    pointer to rtc time
+ * \return      none
 */
 void csi_rtc_get_time(csp_rtc_t *ptRtc, csi_rtc_time_t *rtctime)
 {
@@ -435,11 +436,11 @@ void csi_rtc_get_time(csp_rtc_t *ptRtc, csi_rtc_time_t *rtctime)
 	csi_rtc_rb_enable(ptRtc,DISABLE);
 }
 
-/**
-  \brief       Get alarm remaining time
-  \param[in]   rtc    pointer of rtc register structure to operate
-  \param	   byAlm  RTC_ALMA/RTC_ALMB
-  \return      the remaining time(s)
+/**\brief       Get alarm remaining time
+ * 
+ * \param[in]   rtc    pointer of rtc register structure to operate
+ * \param	   byAlm  RTC_ALMA/RTC_ALMB
+ * \return      the remaining time(s)
 */
 uint32_t csi_rtc_get_alarm_remaining_time(csp_rtc_t *ptRtc, uint8_t byAlm)
 {

@@ -11,7 +11,7 @@
 
 /* include ----------------------------------------------------------------*/
 #include "rtc.h"
-#include "pin.h"
+#include "gpio.h"
 #include "iostring.h"
 
 /* externs function--------------------------------------------------------*/
@@ -33,10 +33,10 @@ void rtc_set_time_demo(void)
 	uint32_t wSec;
 	
 	wSec = 0xff;
-#if !defined(USE_GUI)
+#if (USE_GUI==0)
 /**********    RTC_CLKSRC_EMOSC_DIV4     ****************/	
-//	csi_pin_set_mux(PD0, PD0_XIN);			//设置PD0为SXIN，如果使用外部主晶振作为RTC时钟源，必须先对管脚进行配置
-//	csi_pin_set_mux(PD1, PD1_XOUT);         //设置PD1为SXOUT，如果使用外部主晶振作为RTC时钟源，必须先对管脚进行配置
+//	csi_gpio_set_mux(GPIOD, PD0, PD0_XIN);			//设置PD0为SXIN，如果使用外部主晶振作为RTC时钟源，必须先对管脚进行配置
+//	csi_gpio_set_mux(GPIOD, PD1, PD1_XOUT);         //设置PD1为SXOUT，如果使用外部主晶振作为RTC时钟源，必须先对管脚进行配置
 //	
 //	tRtcConfig.byClkSrc = RTC_CLKSRC_EMOSC_DIV4;		//选择时钟源
 //	tRtcConfig.byFmt = RTC_12FMT;				//选择时间模式
@@ -45,8 +45,8 @@ void rtc_set_time_demo(void)
 
 
 /**********    RTC_CLKSRC_ESOSC     ****************/		
-//	csi_pin_set_mux(PC14, PC14_SXIN);        //设置PC14为XIN，如果使用外部副晶振作为RTC时钟源，必须先对管脚进行配置
-//	csi_pin_set_mux(PC15, PC15_SXOUT);        //设置PC15为XOUT，如果使用外部副晶振作为RTC时钟源，必须先对管脚进行配置
+//	csi_gpio_set_mux(GPIOC,PC14, PC14_SXIN);        //设置PC14为XIN，如果使用外部副晶振作为RTC时钟源，必须先对管脚进行配置
+//	csi_gpio_set_mux(GPIOC,PC15, PC15_SXOUT);        //设置PC15为XOUT，如果使用外部副晶振作为RTC时钟源，必须先对管脚进行配置
 
 //	tRtcConfig.byClkSrc = RTC_CLKSRC_ESOSC;		//选择时钟源
 //	tRtcConfig.byFmt = RTC_12FMT;				//选择时间模式
@@ -111,10 +111,11 @@ void rtc_alarm_demo(void)
 	uint32_t wSec = 0;
 	csi_rtc_time_t tRtcTime, tAlmTime, tRtcTimeRdbk;
 	csi_rtc_config_t tRtcConfig;
-#if !defined(USE_GUI)
+	
+#if (USE_GUI==0)
 /**********    RTC_CLKSRC_EMOSC_DIV4     ****************/	
-//	csi_pin_set_mux(PD0, PD0_XIN);			//设置PD0为SXIN，如果使用外部主晶振作为RTC时钟源，必须先对管脚进行配置
-//	csi_pin_set_mux(PD1, PD1_XOUT);         //设置PD1为SXOUT，如果使用外部主晶振作为RTC时钟源，必须先对管脚进行配置
+//	csi_gpio_set_mux(GPIOD, PD0, PD0_XIN);			//设置PD0为SXIN，如果使用外部主晶振作为RTC时钟源，必须先对管脚进行配置
+//csi_gpio_set_mux(GPIOD, PD1, PD1_XOUT);         //设置PD1为SXOUT，如果使用外部主晶振作为RTC时钟源，必须先对管脚进行配置
 //	
 //	tRtcConfig.byClkSrc = RTC_CLKSRC_EMOSC_DIV4;		//选择时钟源
 //	tRtcConfig.byFmt = RTC_12FMT;				//选择时间模式
@@ -123,14 +124,15 @@ void rtc_alarm_demo(void)
 
 
 /**********    RTC_CLKSRC_ESOSC     ****************/		
-//	csi_pin_set_mux(PC14, PC14_SXIN);        //设置PC14为XIN，如果使用外部副晶振作为RTC时钟源，必须先对管脚进行配置
-//	csi_pin_set_mux(PC15, PC15_SXOUT);        //设置PC15为XOUT，如果使用外部副晶振作为RTC时钟源，必须先对管脚进行配置
+//	csi_gpio_set_mux(GPIOC, PC14, PC14_SXIN);        //设置PC14为XIN，如果使用外部副晶振作为RTC时钟源，必须先对管脚进行配置
+//	csi_gpio_set_mux(GPIOC, PC15, PC15_SXOUT);        //设置PC15为XOUT，如果使用外部副晶振作为RTC时钟源，必须先对管脚进行配置
 
 //	tRtcConfig.byClkSrc = RTC_CLKSRC_ESOSC;		//选择时钟源
 //	tRtcConfig.byFmt = RTC_12FMT;				//选择时间模式
 //	csi_rtc_init(RTC, &tRtcConfig);				//初始化设置
 /***********************************************************/	
 #endif
+
 /**********    RTC_CLKSRC_IMOSC_DIV4 /RTC_CLKSRC_ISOSC    ****************/	
 	tRtcConfig.byClkSrc = RTC_CLKSRC_IMOSC_DIV4;  //选择时钟源
 	tRtcConfig.byFmt = RTC_24FMT;				  //选择时间模式
@@ -152,6 +154,7 @@ void rtc_alarm_demo(void)
 	tAlmTime.iMin = 16;
 	tAlmTime.iSec = 0xff;							//不要比较sec（0xFF意味着不要比较）
 	csi_rtc_set_alarm(RTC, RTC_ALMA, tAlmA.byAlmMode, &tAlmTime);	//设置闹钟A	
+	
 	while(tAlmA.byAlmSt == 0){										//如果闹钟时间没有到，每秒打印一次当前时间和距离闹钟的时间
 		csi_rtc_get_time(RTC,  &tRtcTimeRdbk);
 		wTemp0 = csi_rtc_get_alarm_remaining_time(RTC, RTC_ALMA);
@@ -176,10 +179,10 @@ void rtc_alarm_demo(void)
 void rtc_timer_demo(void)
 {
 	csi_rtc_config_t tRtcConfig;
-#if !defined(USE_GUI)	
+#if (USE_GUI ==0)	
 	/**********    RTC_CLKSRC_EMOSC_DIV4     ****************/	
-//	csi_pin_set_mux(PD0, PD0_XIN);			//设置PD0为SXIN，如果使用外部主晶振作为RTC时钟源，必须先对管脚进行配置
-//	csi_pin_set_mux(PD1, PD1_XOUT);         //设置PD1为SXOUT，如果使用外部主晶振作为RTC时钟源，必须先对管脚进行配置
+//	csi_gpio_set_mux(GPIOD, PD0, PD0_XIN);			//设置PD0为SXIN，如果使用外部主晶振作为RTC时钟源，必须先对管脚进行配置
+//	csi_gpio_set_mux(GPIOD, PD1, PD1_XOUT);         //设置PD1为SXOUT，如果使用外部主晶振作为RTC时钟源，必须先对管脚进行配置
 //	
 //	tRtcConfig.byClkSrc = RTC_CLKSRC_EMOSC_DIV4;		//选择时钟源
 //	tRtcConfig.byFmt = RTC_12FMT;				//选择时间模式
@@ -188,8 +191,8 @@ void rtc_timer_demo(void)
 
 
 /**********    RTC_CLKSRC_ESOSC     ****************/		
-//	csi_pin_set_mux(PC14, PC14_SXIN);        //设置PC14为XIN，如果使用外部副晶振作为RTC时钟源，必须先对管脚进行配置
-//	csi_pin_set_mux(PC15, PC15_SXOUT);        //设置PC15为XOUT，如果使用外部副晶振作为RTC时钟源，必须先对管脚进行配置
+//	csi_gpio_set_mux(GPIOC, PC14, PC14_SXIN);        //设置PC14为XIN，如果使用外部副晶振作为RTC时钟源，必须先对管脚进行配置
+//	csi_gpio_set_mux(GPIOC, PC15, PC15_SXOUT);        //设置PC15为XOUT，如果使用外部副晶振作为RTC时钟源，必须先对管脚进行配置
 
 //	tRtcConfig.byClkSrc = RTC_CLKSRC_ESOSC;		//选择时钟源
 //	tRtcConfig.byFmt = RTC_12FMT;				//选择时间模式
@@ -227,7 +230,7 @@ void rtc_timer_demo(void)
 	csi_rtc_init(RTC, &tRtcConfig);				  	//初始化RTC
 	
 	csi_rtc_start_as_timer(RTC, RTC_TIMER_1S);	  	//每1s进一次中断
-	csi_rtc_int_enable(RTC, RTC_INT_CPRD , DISABLE);//不需要中断的话，可以关掉
+	csi_rtc_int_disable(RTC, RTC_INT_CPRD);			//不需要中断的话，可以关掉
 	csi_rtc_start(RTC);								//RTC开始工作
 	
 	csi_rtc_set_evtrg(RTC, 0, RTC_TRGOUT_CPRD, 2);  //RTC TRGEV0 每两秒钟输出一次trigger event

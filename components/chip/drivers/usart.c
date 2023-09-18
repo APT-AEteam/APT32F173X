@@ -154,7 +154,7 @@ void csi_usart_irqhandler(csp_usart_t *ptUsartBase,uint8_t byIdx)
 {
 	switch(csp_usart_get_isr(ptUsartBase) & 0x5101)								//get rxfifo/tx/txfifo/rxtimeout interrupt status
 	{
-		case US_RXFIFO_INT:														//rxfifo int			
+		case US_INT_RXFIFO:														//rxfifo int			
 			
 			while(csp_usart_get_sr(ptUsartBase) & US_RNE)						//rxfifo not empty
 			{
@@ -163,7 +163,7 @@ void csi_usart_irqhandler(csp_usart_t *ptUsartBase,uint8_t byIdx)
 				else															//RX completed										
 				{
 					csp_usart_rxfifo_sw_rst(ptUsartBase);							//reset rxfifo
-					csp_usart_int_disable(ptUsartBase, US_RXFIFO_INT);			//disable rxfifo int 
+					csp_usart_int_disable(ptUsartBase, US_INT_RXFIFO);			//disable rxfifo int 
 					csp_usart_set_rtor(ptUsartBase,0);							//disable time over by setting OVER_TIME to 0.
 					g_tUsartCtrl[byIdx].hwTransNum = 0;							//clear rx counter
 					g_tUsartCtrl[byIdx].byRxState = USART_EVENT_RX_DNE;			//rx completed
@@ -178,7 +178,7 @@ void csi_usart_irqhandler(csp_usart_t *ptUsartBase,uint8_t byIdx)
 			}
 			break;
 			
-		case US_RXTO_INT:				
+		case US_INT_RXTO:				
 			if(g_tUsartCtrl[byIdx].byRxState != USART_EVENT_RX_DNE)
 			{
 				while(csp_usart_get_sr(ptUsartBase) & US_RNE)
@@ -204,11 +204,11 @@ void csi_usart_irqhandler(csp_usart_t *ptUsartBase,uint8_t byIdx)
 						g_tUsartCtrl[byIdx].recv_callback(ptUsartBase, USART_EVENT_RX_DNE, g_tUsartCtrl[byIdx].pbyRxBuf, &g_tUsartCtrl[byIdx].hwRxSize);
 				}
 			}
-			csp_usart_clr_isr(ptUsartBase, US_RXTO_INT_S);							//clear interrupt
+			csp_usart_clr_isr(ptUsartBase, US_INT_RXTO_S);							//clear interrupt
 			csp_usart_rtor_enable(ptUsartBase);	
 			break;
 			
-		case US_TXFIFO_INT:					
+		case US_INT_TXFIFO:					
 			csp_usart_set_data(ptUsartBase, *g_tUsartCtrl[byIdx].pbyTxBuf);			//send data
 			g_tUsartCtrl[byIdx].hwTxSize --;
 			g_tUsartCtrl[byIdx].pbyTxBuf ++;
@@ -216,7 +216,7 @@ void csi_usart_irqhandler(csp_usart_t *ptUsartBase,uint8_t byIdx)
 			if(g_tUsartCtrl[byIdx].hwTxSize == 0)	
 			{	
 				g_tUsartCtrl[byIdx].byTxState = USART_EVENT_TX_DNE;					//send completed
-				csp_usart_int_disable(ptUsartBase, US_TXFIFO_INT);					//disable interrupt
+				csp_usart_int_disable(ptUsartBase, US_INT_TXFIFO);					//disable interrupt
 				
 				//callback, send data completed
 				if(g_tUsartCtrl[byIdx].send_callback)
@@ -225,7 +225,7 @@ void csi_usart_irqhandler(csp_usart_t *ptUsartBase,uint8_t byIdx)
 			break;
 
 		default:
-			csp_usart_clr_isr(ptUsartBase, US_ALL_INT_S);
+			csp_usart_clr_isr(ptUsartBase, US_INT_ALL_S);
 			break;
 	}
 }
@@ -352,7 +352,7 @@ void csi_usart_clkout(csp_usart_t *ptUsartBase, bool bEnable)
  */
 void csi_usart_putc(csp_usart_t *ptUsartBase, uint8_t byData)
 {
-	while(!(csp_usart_get_sr(ptUsartBase) & US_TXRDY_INT));
+	while(!(csp_usart_get_sr(ptUsartBase) & US_INT_TXRDY));
 	csp_usart_set_data(ptUsartBase, byData);				
 	
 }
@@ -453,7 +453,7 @@ int16_t csi_usart_send_int(csp_usart_t *ptUsartBase, const void *pData, uint16_t
 	g_tUsartCtrl[byIdx].hwTxSize = hwSize;
 	g_tUsartCtrl[byIdx].byTxState = USART_EVENT_SEND;				//set usart send status, sending
 	
-	csp_usart_int_enable(ptUsartBase, (usart_int_e)US_TXFIFO_INT);	//enable usart txfifo interrupt
+	csp_usart_int_enable(ptUsartBase, (usart_int_e)US_INT_TXFIFO);	//enable usart txfifo interrupt
 	
 	return CSI_OK;
 }
@@ -480,7 +480,7 @@ csi_error_t csi_usart_receive_int(csp_usart_t *ptUsartBase, void *pData, uint16_
 	csp_usart_rxfifo_sw_rst(ptUsartBase);									//reset rxfifo
 //	csp_usart_clr_isr(ptUsartBase, US_RXTO_INT_S);
 	csp_usart_rtor_enable(ptUsartBase);								//enable rto
-	csp_usart_int_enable(ptUsartBase, US_RXFIFO_INT | US_RXTO_INT);		//rxfifo and receive timeout int
+	csp_usart_int_enable(ptUsartBase, US_INT_RXFIFO | US_INT_RXTO);		//rxfifo and receive timeout int
 	
 	return CSI_OK;
 }

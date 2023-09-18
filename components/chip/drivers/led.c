@@ -10,7 +10,7 @@
  * </table>
  * *********************************************************************
 */
-#include <drv/led.h>
+#include "drv/led.h"
 
 /* Private macro------------------------------------------------------*/
 /* externs function---------------------------------------------------*/
@@ -22,11 +22,11 @@ csi_led_ctrl_t g_tLedCtrl[LED_IDX];
  * 
  *  \param[in] ptLedBase: pointer of led register structure
  *  \param[in] ptLedCfg: pointer of led parameter config structure
- * 			   - byClkDiv: LED Clock divider
- * 			   - byBrt: LED brightness control
- * 			   - hwComMask: COM port enable mask
- * 			   - hwOnTime: scanning timing: COM on cycles(range:56~2096).Tcom = byOnTime * Tledclk, needs to be a multiple of 8, otherwise the timing will NOT be accurate
- * 			   - hwBreakTime: scanning timing: cycles between COMs(range:14~524).Tbreak = byBreakTime * Tledclk.
+ * 			   	- eClkDiv: LED Clock divider
+ * 			   	- eBrt: LED brightness control
+ * 			   	- hwComMask: COM port enable mask
+ * 			   	- hwOnTime: scanning timing: COM on cycles(range:56~2096).Tcom = byOnTime * Tledclk, needs to be a multiple of 8, otherwise the timing will NOT be accurate
+ * 			   	- hwBreakTime: scanning timing: cycles between COMs(range:14~524).Tbreak = byBreakTime * Tledclk.
  *  \return error code \ref csi_error_t
  */ 
 csi_error_t csi_led_init(csp_led_t *ptLedBase, csi_led_config_t *ptLedCfg) 
@@ -39,8 +39,6 @@ csi_error_t csi_led_init(csp_led_t *ptLedBase, csi_led_config_t *ptLedCfg)
 		return CSI_ERROR;
 	csp_led_set_dcomcnt(ptLedBase, (ptLedCfg->hwOnTime/8 - 7));
 	csp_led_set_novcnt(ptLedBase, (ptLedCfg->hwBreakTime/2 -7));
-	
-	csi_irq_enable((uint32_t *)ptLedBase);
 	
 	return CSI_OK;
 }
@@ -85,21 +83,9 @@ void csi_led_int_disable(csp_led_t *ptLedBase, csi_led_intsrc_e eIntSrc)
  *  \param[in] byData: SEG data for the specific com
  *  \return None
  */
-void csi_led_write_data(csp_led_t *ptLedBase, uint8_t byCom, uint8_t byData)
+void csi_led_set_data(csp_led_t *ptLedBase, uint8_t byCom, uint8_t byData)
 {
-	csp_led_set_setdata(ptLedBase, byCom, byData);
-}
-
-/** \brief   set led blink pattern
- * 
- * \param[in] ptLedBase: pointer of LED register structure
- * \param[in] hwOnMsk: on pattern
- * \return  None
- */
-void csi_led_set_blink_pattern(csp_led_t *ptLedBase, uint16_t hwOnMsk)
-{
-	csp_led_com_on(ptLedBase,   (hwOnMsk & LED_BLK_MSK));
-	csp_led_com_off(ptLedBase, ~(hwOnMsk & LED_BLK_MSK));
+	csp_led_set_data(ptLedBase, byCom, byData);
 }
 
 /** \brief  led blink control
@@ -116,6 +102,7 @@ void csi_led_blink_control(csp_led_t *ptLedBase, csi_led_blk_e eLedBlk, uint16_t
 	else if(eLedBlk == LED_BLK_OFF)
 		csp_led_com_off(ptLedBase, (hwOnMsk & LED_BLK_MSK));
 }
+
 /** \brief   led scan start
  * 
  * \param[in] ptLedBase: pointer of LED register structure
@@ -125,6 +112,7 @@ void csi_led_light_on(csp_led_t *ptLedBase)
 {
 	csp_led_light_on(ptLedBase);
 }
+
 /** \brief led scan stop
  * 
  *  \param[in] ptLedBase: pointer of LED register structure
@@ -133,6 +121,17 @@ void csi_led_light_on(csp_led_t *ptLedBase)
 void csi_led_light_off(csp_led_t *ptLedBase)
 {	
 	csp_led_light_off(ptLedBase);
+}
+
+/** \brief clear led interrupt
+ * 
+ *  \param[in] ptLedBase: pointer of LED register structure
+ *  \param[in] eInt: interrupt source \ref csi_led_intsrc_e
+ *  \return None
+ */
+void csi_led_clr_isr(csp_led_t *ptLedBase,csi_led_intsrc_e eInt)
+{	
+	csp_led_clr_isr(ptLedBase,(csp_led_int_e)eInt);
 }
 
 /** \brief get led number 

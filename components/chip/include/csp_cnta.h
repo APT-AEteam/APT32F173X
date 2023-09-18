@@ -143,10 +143,10 @@ typedef enum
 ******************************************************************************/
 typedef enum
 {
-	CNTA_NONE_INT		= (0x00ul << 0),
-	CNTA_PENDH_INT		= (0x01ul << 0),
-	CNTA_PENDL_INT		= (0x01ul << 1),
-	CNTA_ALL_INT		= (0x03ul << 0),
+	CNTA_INT_NONE		= (0x00ul << 0),
+	CNTA_INT_PENDH		= (0x01ul << 0),
+	CNTA_INT_PENDL		= (0x01ul << 1),
+	CNTA_INT_ALL		= (0x03ul << 0),
 }cnta_int_e;
 
 /******************************************************************************
@@ -224,8 +224,8 @@ static inline void csp_cnta_set_carrier(csp_cnta_t *ptCntaBase, cnta_carrier_e e
 	ptCntaBase->CACON |= (eCarCtrl << CNTA_CARRIER_POS) | (eEnvelope << CNTA_ENVELOPE_POS) | (eRemsta << CNTA_REMSTAT_POS) | (eOsp << CNTA_OSP_POS);
 }
 
-//software update
-static inline void csp_cnta_soft_update(csp_cnta_t *ptCntaBase)
+//software-update enable
+static inline void csp_cnta_sw_update_enable(csp_cnta_t *ptCntaBase)
 {
 	ptCntaBase->CACON |= (CNTA_SW_STROBE << CNTA_SW_STROBE_POS);	
 }

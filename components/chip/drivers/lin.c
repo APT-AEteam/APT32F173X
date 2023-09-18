@@ -31,9 +31,28 @@
 
 /* Private macro------------------------------------------------------*/
 /* externs function---------------------------------------------------*/
-/* externs variablesr-------------------------------------------------*/
-/* Private variablesr-------------------------------------------------*/
-csi_lin_trans_t g_tLinTran;		
+/* externs variables-------------------------------------------------*/
+/* Private variables-------------------------------------------------*/
+csi_lin_ctrl_t g_tLinCtrl[USART_IDX];	
+
+
+/** \brief get lin idx 
+ * 
+ *  \param[in] ptUsartBase: pointer of usart register structure
+ *  \return usart id number(0~1) or error(0xff)
+ */ 
+static uint8_t apt_get_lin_idx(csp_lin_t *ptLinBase)
+{
+	switch((uint32_t)ptLinBase)
+	{
+		case APB_USART0_BASE:
+			return 0;
+		case APB_USART1_BASE:
+			return 1;		
+		default:
+			return 0xff;		//error
+	}
+}
 
 /** \brief get data number for set ndata
  * 
@@ -181,16 +200,50 @@ csi_error_t csi_lin_init(csp_lin_t *ptLinBase, csi_lin_config_t *ptLinCfg)
 	csp_usart_lin_set_lcp1(ptLinBase, ptLinCfg->byLcp1);						//lpc1;
 	csp_usart_lin_set_lcp2(ptLinBase, ptLinCfg->byLcp2);						//lpc2;
 	
-	if(ptLinCfg->wInt >= LIN_INTSRC_ENDHEADER)
-	{
-		csp_usart_int_enable(ptLinBase, ptLinCfg->wInt);				//enable lin interrupt
-		csi_irq_enable((uint32_t *)ptLinBase);									//enable lin irq	
-	}
-	
+//	if(ptLinCfg->wInt >= LIN_INTSRC_ENDHEADER)
+//	{
+//		csp_usart_int_enable(ptLinBase, ptLinCfg->wInt);				//enable lin interrupt
+////		csi_irq_enable((uint32_t *)ptLinBase);									//enable lin irq	
+//	}
+//	
 	csp_usart_lin_enable(ptLinBase);
 	
 	return CSI_OK;
 }
+
+/** \brief enable lin interrupt
+ * 
+ *  \param[in] ptLinBase: pointer of lin register structure
+ * 	\param[in] eIntSrc: interrupt of LIN. \ref csi_lin_intsrc_e
+ *  \return none
+ */ 
+void csi_lin_int_enable(csp_lin_t *ptLinBase, csi_lin_intsrc_e eIntSrc)
+{
+	csp_usart_int_enable(ptLinBase, (usart_int_e)eIntSrc);
+}
+
+/** \brief disable lin interrupt
+ * 
+ *  \param[in] ptLinBase: pointer of lin register structure
+ * 	\param[in] eIntSrc: interrupt of LIN. \ref csi_lin_intsrc_e
+ *  \return none
+ */ 
+void csi_lin_int_disable(csp_lin_t *ptLinBase, csi_lin_intsrc_e eIntSrc)
+{
+	csp_usart_int_disable(ptLinBase, (usart_int_e)eIntSrc);
+}
+
+/** \brief clear usart interrupt status
+ * 
+ *  \param[in] ptLinBase: pointer of lin register structure
+ *  \param[in] eIntSta: lin interrupt status, \ref csi_lin_intsrc_e
+ *  \return none
+ */
+void csi_lin_clr_isr(csp_lin_t *ptLinBase, csi_lin_intsrc_e eIntSta)
+{
+	csp_usart_clr_isr(ptLinBase, (usart_isr_e)eIntSta);
+}
+
 /** \brief start(enable) lin 
  * 
  *  \param[in] ptLinBase: pointer of lin register structure
@@ -221,7 +274,7 @@ void csi_lin_stop(csp_lin_t *ptLinBase)
  *  \param[in] bySize: number of data to send (bytes).
  *  \return the num of data which is send successfully or CSI_ERROR/CSI_OK
  */
-csi_error_t csi_lin_send(csp_lin_t *ptLinBase, uint8_t byId, const void *pbyData, uint8_t bySize)
+csi_error_t csi_lin_send(csp_lin_t *ptLinBase, uint8_t byIdx, const void *pbyData, uint8_t bySize)
 {
 	uint8_t byDataNum = 0;
 	uint8_t byVer = csp_usart_lin_get_ver(ptLinBase);			//lin1.2/lin2.0
@@ -230,13 +283,13 @@ csi_error_t csi_lin_send(csp_lin_t *ptLinBase, uint8_t byId, const void *pbyData
 	if(pbyData ==NULL || bySize == 0)
 		return CSI_ERROR;
 	
-	g_tLinTran.byWkMode		= LIN_SEND;							//send mode
-	g_tLinTran.byWkStat		= LIN_STATE_IDLE;		
+	g_tLinCtrl[byIdx].byWkMode		= LIN_SEND;							//send mode
+	g_tLinCtrl[byIdx].byWkStat		= LIN_EVENT_IDLE;		
 	byDataNum = apt_lin_set_data(ptLinBase, (uint8_t *)pbyData, bySize, byVer);		//load data and return NDATA;
 	
 	if(byDataNum)
 	{
-		csp_usart_lin_set_id_num(ptLinBase, byId, byDataNum, byVer);	//identifier and number of data
+		csp_usart_lin_set_id_num(ptLinBase, byIdx, byDataNum, byVer);	//identifier and number of data
 		csp_usart_lin_start_msg(ptLinBase);						//start message send
 		return CSI_OK;
 	}
@@ -252,33 +305,33 @@ csi_error_t csi_lin_send(csp_lin_t *ptLinBase, uint8_t byId, const void *pbyData
  *  \param[in] wTimeOut: the timeout between bytes(ms), unit: ms 
  *  \return  none
  */
-int csi_lin_send_recv(csp_lin_t *ptLinBase,  uint8_t byId, void *pbyData, uint8_t bySize)
+int csi_lin_send_recv(csp_lin_t *ptLinBase,  uint8_t byIdx, void *pbyData, uint8_t bySize)
 {
 	uint8_t byVer= csp_usart_lin_get_ver(ptLinBase);		//lin1.2/lin2.0
 	uint8_t byTimeOut = 100;								//timeout 100ms
 	uint8_t byDataNum = 0;
 	
-	g_tLinTran.byWkMode		= LIN_RECV;						//receive mode
-	g_tLinTran.byWkStat		= LIN_STATE_IDLE;				
-	g_tLinTran.byRxSize 	= bySize;
-	g_tLinTran.pbyRxData	= (uint8_t *)pbyData;
+	g_tLinCtrl[byIdx].byWkMode		= LIN_RECV;						//receive mode
+	g_tLinCtrl[byIdx].byWkStat		= LIN_EVENT_IDLE;				
+	g_tLinCtrl[byIdx].byRxSize 	= bySize;
+	g_tLinCtrl[byIdx].pbyRxData	= (uint8_t *)pbyData;
 	
 	byDataNum = apt_lin_get_ndata(ptLinBase, bySize, byVer);	
-	csp_usart_lin_set_id_num(ptLinBase, byId, byDataNum, byVer);	//identifier and number of data
+	csp_usart_lin_set_id_num(ptLinBase, byIdx, byDataNum, byVer);	//identifier and number of data
 	csp_usart_lin_start_head(ptLinBase);						//start header send
 	
 	if(byTimeOut)
 	{
 		uint32_t wRecvStart = csi_tick_get_ms();	
-		while(g_tLinTran.byWkStat == LIN_STATE_IDLE)
+		while(g_tLinCtrl[byIdx].byWkStat == LIN_EVENT_IDLE)
 		{
 			if((csi_tick_get_ms() - wRecvStart) >= byTimeOut) 
 				return CSI_TIMEOUT;
 		}
 		
-		if(g_tLinTran.byWkStat == LIN_STATE_ENDMESS)
+		if(g_tLinCtrl[byIdx].byWkStat == LIN_EVENT_ENDMESS)
 		{	
-			g_tLinTran.byWkStat = LIN_STATE_IDLE;
+			g_tLinCtrl[byIdx].byWkStat = LIN_EVENT_IDLE;
 			return bySize;
 		}
 		else
@@ -286,9 +339,9 @@ int csi_lin_send_recv(csp_lin_t *ptLinBase,  uint8_t byId, void *pbyData, uint8_
 	}
 //	else
 //	{
-//		while(g_tLinTran.byWkStat == LIN_STATE_IDLE);
+//		while(g_tLinCtrl[byIdx].byWkStat == LIN_EVENT_IDLE);
 //		
-//		if(g_tLinTran.byWkStat == LIN_STATE_ENDMESS)	
+//		if(g_tLinCtrl[byIdx].byWkStat == LIN_EVENT_ENDMESS)	
 //			return bySize;
 //		else
 //			return CSI_ERROR;
@@ -306,10 +359,14 @@ bool csi_lin_get_msg(csp_lin_t *ptLinBase, bool bClrEn)
 {
 	bool bRet = false;
 	
-	if(g_tLinTran.byWkStat == LIN_STATE_ENDMESS)
+	uint8_t byIdx = apt_get_lin_idx(ptLinBase);
+	if(byIdx == 0xff)
+		return CSI_ERROR;
+		
+	if(g_tLinCtrl[byIdx].byWkStat == LIN_EVENT_ENDMESS)
 	{
 		if(bClrEn)
-			g_tLinTran.byWkStat = LIN_STATE_IDLE;		//clear send status
+			g_tLinCtrl[byIdx].byWkStat = LIN_EVENT_IDLE;		//clear send status
 		bRet = true;
 	}
 	
@@ -322,6 +379,139 @@ bool csi_lin_get_msg(csp_lin_t *ptLinBase, bool bClrEn)
  */ 
 void csi_lin_clr_msg(csp_lin_t *ptLinBase)
 {
-	g_tLinTran.byWkStat = LIN_STATE_IDLE;				//clear send status
+	uint8_t byIdx = apt_get_lin_idx(ptLinBase);
+	
+	g_tLinCtrl[byIdx].byWkStat = LIN_EVENT_IDLE;				//clear send status
 }
 
+
+
+/** \brief lin interrupt handle function
+ * 
+ *  \param[in] ptLinBase: pointer of lin register structure
+ *  \param[in] byIdx: lin id number(0)
+ *  \return none
+ */ 
+void csi_lin_irqhandler(csp_lin_t *ptLinBase, uint8_t byIdx)
+{
+	uint32_t wLinSr = csp_usart_get_isr(ptLinBase) & 0x7f000000;
+	
+	if(wLinSr & LIN_INT_ERR)								//error
+	{
+		if(wLinSr & LIN_INT_CHECKSUM)						//Checksum error 					
+		{
+			g_tLinCtrl[byIdx].byWkStat |= LIN_EVENT_CHKERR;
+			csp_usart_clr_isr(ptLinBase,LIN_INT_CHECKSUM_S);//clear interrupt status
+		}
+		
+		if(wLinSr & LIN_INT_IPERROR)						//Identity parity error 
+		{
+			g_tLinCtrl[byIdx].byWkStat |= LIN_EVENT_IPERR;
+			csp_usart_clr_isr(ptLinBase,LIN_INT_IPERROR_S);	//clear interrupt status
+		}
+		
+		if(wLinSr & LIN_INT_BITERROR)						//Bit error 
+		{
+			g_tLinCtrl[byIdx].byWkStat |= LIN_EVENT_BITERR;
+			csp_usart_clr_isr(ptLinBase,LIN_INT_BITERROR_S);	//clear interrupt status
+		}
+		
+		if(wLinSr & LIN_INT_NOTREPS)						//Bit error 
+		{
+			g_tLinCtrl[byIdx].byWkStat |= LIN_EVENT_NOTRESP;
+			csp_usart_clr_isr(ptLinBase,LIN_INT_NOTREPS_S);	//clear interrupt status
+		}
+	}
+	else
+	{
+		switch(wLinSr)	
+		{
+			case LIN_INT_WAKEUP:								//LIN Wake up Interrupt	
+				nop;
+				csp_usart_clr_isr(ptLinBase,LIN_INT_WAKEUP_S);	//clear interrupt status
+				break;
+			case LIN_INT_ENDMESS:								//Ended message Interrupt
+				if(!(g_tLinCtrl[byIdx].byWkStat & LIN_EVENT_ALLERR))	//no error
+				{
+					if(g_tLinCtrl[byIdx].byWkMode == LIN_RECV)
+					{
+						if(g_tLinCtrl[byIdx].byRxSize < 5)
+						{
+							for(uint8_t i = 0; i < g_tLinCtrl[byIdx].byRxSize; i++)
+							{
+								g_tLinCtrl[byIdx].pbyRxData[i] = (uint8_t)(csp_usart_lin_get_dfrr0(ptLinBase) >> (8 * i));
+							}
+						}
+						else
+						{
+							for(uint8_t i = 0; i < (g_tLinCtrl[byIdx].byRxSize - 4); i++)
+							{
+								g_tLinCtrl[byIdx].pbyRxData[i+4] = (uint8_t)(csp_usart_lin_get_dfrr1(ptLinBase) >> (8 * i));
+							}
+							g_tLinCtrl[byIdx].pbyRxData[0] = (uint8_t)csp_usart_lin_get_dfrr0(ptLinBase);
+							g_tLinCtrl[byIdx].pbyRxData[1] = (uint8_t)(csp_usart_lin_get_dfrr0(ptLinBase) >> 8);
+							g_tLinCtrl[byIdx].pbyRxData[2] = (uint8_t)(csp_usart_lin_get_dfrr0(ptLinBase) >> 16);
+							g_tLinCtrl[byIdx].pbyRxData[3] = (uint8_t)(csp_usart_lin_get_dfrr0(ptLinBase) >> 24);
+						}
+						
+						if(g_tLinCtrl[byIdx].recv_callback)
+							g_tLinCtrl[byIdx].recv_callback(ptLinBase,LIN_EVENT_ENDMESS, g_tLinCtrl[byIdx].pbyRxData, &g_tLinCtrl[byIdx].byRxSize); //recv message completed
+					}
+					else {
+						if(g_tLinCtrl[byIdx].send_callback)
+							g_tLinCtrl[byIdx].send_callback(ptLinBase );//send message completed
+					}
+					g_tLinCtrl[byIdx].byWkStat = LIN_EVENT_ENDMESS;	
+					
+					
+				}
+					
+				csp_usart_clr_isr(ptLinBase,LIN_INT_ENDMESS_S);	//clear interrupt status
+				break;
+			case LIN_INT_ENDHEADER:								//Ended header Interrupt
+//				if(g_tLinTran.byWkMode == LIN_RECV)
+//					csp_usart_cr_cmd(ptLinBase, LIN_STRESP);	
+				if(g_tLinCtrl[byIdx].byWkMode == LIN_RECV)
+				{
+					if(g_tLinCtrl[byIdx].recv_callback)
+						g_tLinCtrl[byIdx].recv_callback(ptLinBase,LIN_EVENT_ENDHEADER, g_tLinCtrl[byIdx].pbyRxData, &g_tLinCtrl[byIdx].byRxSize); //send header completed
+				}
+
+				csp_usart_clr_isr(ptLinBase,LIN_INT_ENDHEADER_S);	//clear interrupt status
+				break;
+			default:
+				break;
+		}
+	}
+}
+
+
+/** \brief  register lin interrupt callback function
+ * 
+ *  \param[in] ptUsartBase: pointer of uart register structure
+ *  \param[in] eCallBkId: lin interrupt callback type, \ref csi_lin_callback_id_e
+ *  \param[in] callback: lin interrupt handle function
+ *  \return error code \ref csi_error_t
+ */ 
+csi_error_t csi_lin_register_callback(csp_lin_t *ptLinBase, csi_lin_callback_id_e eCallBkId, void  *callback)
+{
+	uint8_t byIdx = apt_get_lin_idx(ptLinBase);
+	if(byIdx == 0xff)
+		return CSI_ERROR;
+
+	switch(eCallBkId)
+	{
+		case LIN_CALLBACK_ID_RECV:
+			g_tLinCtrl[byIdx].recv_callback = callback;
+			break;
+		case LIN_CALLBACK_ID_SEND:
+			g_tLinCtrl[byIdx].send_callback = callback;
+			break;
+		case LIN_CALLBACK_ID_ERR:
+			g_tLinCtrl[byIdx].err_callback = callback;
+			break;
+		default:
+			return CSI_ERROR;
+	}
+	return CSI_OK;
+}

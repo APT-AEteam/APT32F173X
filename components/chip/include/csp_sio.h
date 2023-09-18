@@ -310,12 +310,12 @@ typedef enum{
 
 typedef enum
 {
-	SIO_TXDNE     	=	(0x01ul << SIO_TXDNE_POS),  
-	SIO_RXDNE    	=	(0x01ul << SIO_RXDNE_POS),      
-	SIO_TXBUFEMPT   =	(0x01ul << SIO_TXBUFEMPT_POS), 
-	SIO_RXBUFFULL	=	(0x01ul << SIO_RXBUFFULL_POS), 
-	SIO_BREAK		=	(0x01ul << SIO_BREAK_POS), 
-	SIO_TIMEOUT		=	(0x01ul << SIO_TIMEOUT_POS)
+	SIO_INT_TXDNE     	=	(0x01ul << SIO_TXDNE_POS),  
+	SIO_INT_RXDNE    	=	(0x01ul << SIO_RXDNE_POS),      
+	SIO_INT_TXBUFEMPT   =	(0x01ul << SIO_TXBUFEMPT_POS), 
+	SIO_INT_RXBUFFULL	=	(0x01ul << SIO_RXBUFFULL_POS), 
+	SIO_INT_BREAK		=	(0x01ul << SIO_BREAK_POS), 
+	SIO_INT_TIMEOUT		=	(0x01ul << SIO_TIMEOUT_POS)
 }sio_int_e;  
 
 typedef enum
@@ -389,7 +389,7 @@ static inline void csp_sio_woke_rst(csp_sio_t *ptSioBase)
 //SIO DMA
 static inline void csp_sio_txdma_enable(csp_sio_t *ptSioBase, bool bEnable) 
 {
-	ptSioBase->CR = (ptSioBase->CR & ~SIO_TDMA_EN_MSK) | (bEnable << SIO_TDMA_EN_POS);
+	ptSioBase->CR |= (ptSioBase->CR & ~SIO_TDMA_EN_MSK) | (bEnable << SIO_TDMA_EN_POS);
 }
 
 static inline void csp_sio_rxdma_enable(csp_sio_t *ptSioBase, bool bEnable) 
@@ -429,7 +429,7 @@ static inline  void csp_sio_set_dh(csp_sio_t *ptSioBase, sio_lenob_e eDhBit, uin
 
 static inline void csp_sio_wait_tx(csp_sio_t *ptSioBase)
 {
-	while(!(ptSioBase->RISR & SIO_TXDNE));
+	while(!(ptSioBase->RISR & SIO_INT_TXDNE));
 }
 static inline void csp_sio_set_txbuf(csp_sio_t *ptSioBase,uint32_t wVal)
 {
@@ -517,7 +517,7 @@ static inline void csp_sio_int_disable(csp_sio_t *ptSioBase,sio_int_e eSioInt)
 {
 	ptSioBase->IMCR &= ~eSioInt;
 }
-static inline void csp_sio_soft_rst(csp_sio_t *ptSioBase)
+static inline void csp_sio_sw_rst(csp_sio_t *ptSioBase)
 {
 	ptSioBase->SRR = SIO_SWRST_MSK;
 }
