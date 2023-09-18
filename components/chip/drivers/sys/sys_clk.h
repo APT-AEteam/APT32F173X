@@ -162,7 +162,7 @@ typedef enum {
 	SPI1_SYS_CLK	= 17U,
     SIO0_SYS_CLK	= 20U,
 	SIO1_SYS_CLK	= 21U,
-    I2C_SYS_CLK		= 22U,
+    IIC_SYS_CLK		= 22U,
     CAN_SYS_CLK		= 24U,
 	
 	GPTA0_SYS_CLK	= 33U,

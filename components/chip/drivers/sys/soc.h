@@ -66,7 +66,7 @@ extern "C" {
 #define CMP_IDX  			3		//CMPx id number
 #define GPTA_IDX  			4		//GPTAx id number
 #define DAC_IDX   			1		//DACx id number
-#define IIC_IDX  			1		//I2Cx id number
+#define IIC_IDX  			1		//IICx id number
 #define LPT_IDX  			1		//LPTx id number
 #define WWDT_IDX  			1		//WWDTx id number
 
@@ -154,7 +154,7 @@ typedef enum {
 	UART2_IRQn      				= 40U,
 	SIO0_IRQn						= 42U,
 	SIO1_IRQn						= 43U,
-	I2C_IRQn    					= 44U,
+	IIC_IRQn    					= 44U,
 	SPI0_IRQn						= 45U,
 	SPI1_IRQn						= 46U,
 	CAN_IRQn      					= 47U,
@@ -430,7 +430,7 @@ typedef enum {
 	PA13_OUTPUT			    =  2U,		//output
 	PA13_OUTPUT_MONI		=  3U,		//output with monitor
 	PA13_SWDIO				=  4U,
-    PA13_I2C_SCL            =  5U,
+    PA13_IIC_SCL            =  5U,
     PA13_UART1_RX           =  6U,
     PA13_UART0_RX	  	    =  7U,
 	PA13_LED_C8             =  10U,
@@ -441,7 +441,7 @@ typedef enum {
 	PA14_OUTPUT			    =  2U,		
 	PA14_OUTPUT_MONI		=  3U,		
 	PA14_SWDCLK			    =  4U,
-    PA14_I2C_SDA          	=  5U,
+    PA14_IIC_SDA          	=  5U,
     PA14_UART1_TX           =  6U,
     PA14_UART0_TX		  	=  7U,
 	PA14_LED_C9			    =  10U,
@@ -547,7 +547,7 @@ typedef enum {
 	PB6_OUTPUT_MONI		    =  3U,		//output with monitor
 	PB6_UART1_TX			=  4U,
     PB6_GPTA1_CHA          	=  5U,
-    PB6_I2C_SCL             =  6U,
+    PB6_IIC_SCL             =  6U,
     PB6_LPT_OUT	  	        =  7U,
 	PB6_GPTB5_CHAX		    =  8U,
 	PB6_GPTB3_CHAX          =  9U,
@@ -561,7 +561,7 @@ typedef enum {
 	PB7_OUTPUT_MONI		    =  3U,		//output with monitor
 	PB7_UART1_RX			=  4U,
     PB7_GPTA1_CHB          	=  5U,
-    PB7_I2C_SDA             =  6U,
+    PB7_IIC_SDA             =  6U,
 	PB7_GPTB3_CHAY          =  9U,
 	PB7_LED_C3              =  10U,
 	PB7_CPIN8N              =  12U,
@@ -576,7 +576,7 @@ typedef enum {
 	PB8_OUTPUT_MONI		    =  3U,		//output with monitor
 	PB8_USART1_TX			=  4U,
     PB8_GPTA0_CHA          	=  5U,
-    PB8_I2C_SCL             =  6U,
+    PB8_IIC_SCL             =  6U,
     PB8_CAN_RX	  	        =  7U,
 	PB8_EBI1		        =  8U,
 	PB8_GPTB4_CHAX          =  9U,
@@ -592,7 +592,7 @@ typedef enum {
 	PB9_OUTPUT_MONI		    =  3U,		//output with monitor
 	PB9_USART1_RX			=  4U,
     PB9_GPTA0_CHB          	=  5U,
-    PB9_I2C_SDA            =  6U,
+    PB9_IIC_SDA            =  6U,
     PB9_CAN_TX	  	       =  7U,
 	PB9_EBI2		       =  8U,
 	PB9_GPTB4_CHAY         =  9U,
@@ -608,7 +608,7 @@ typedef enum {
 	PB10_GPTA1_CHA			=  4U,
     PB10_USART0_TX          =  5U,
     PB10_GPTA0_CHA          =  6U,
-    PB10_I2C_SCL	  	    =  7U,
+    PB10_IIC_SCL	  	    =  7U,
 	PB10_UART0_RX		    =  8U,
 	PB10_GROUP0              =  10U,
 	PB10_CP1_OUT             =  11U,
@@ -622,7 +622,7 @@ typedef enum {
 	PB11_GPTA1_CHB			=  4U,
     PB11_USART0_RX          =  5U,
     PB11_GPTA0_CHB          =  6U,
-    PB11_I2C_SDA	  	    =  7U,
+    PB11_IIC_SDA	  	    =  7U,
 	PB11_UART0_TX		    =  8U,
 	PB11_GROUP0             =  10U,
 	PB11_CP2_OUT            =  11U,
@@ -722,7 +722,7 @@ typedef enum {
 	PC4_INPUT				=  1U,		//input
 	PC4_OUTPUT				=  2U,		//output
 	PC4_OUTPUT_MONI		    =  3U,		//output with monitor
-	PC4_I2C_SCL			    =  4U,
+	PC4_IIC_SCL			    =  4U,
     PC4_UART0_RX       	    =  5U,
     PC4_CAN_RX              =  6U,
 	PC4_LED_S6              =  10U,
@@ -733,7 +733,7 @@ typedef enum {
 	PC5_INPUT				=  1U,		//input
 	PC5_OUTPUT				=  2U,		//output
 	PC5_OUTPUT_MONI		    =  3U,		//output with monitor
-	PC5_I2C_SDA			    =  4U,
+	PC5_IIC_SDA			    =  4U,
     PC5_UART0_TX        	=  5U,
     PC5_CAN_TX              =  6U,
 	PC5_LED_S7              =  10U,
@@ -762,7 +762,7 @@ typedef enum {
 	PC8_OUTPUT				=  2U,		//output
 	PC8_OUTPUT_MONI		    =  3U,		//output with monitor
 	PC8_GPTA3_CHA			=  4U,
-    PC8_I2C_SCL        	    =  5U,
+    PC8_IIC_SCL        	    =  5U,
     PC8_UART1_TX            =  6U,
 	PC8_ADC_INB17           =  13U,
 
@@ -771,7 +771,7 @@ typedef enum {
 	PC9_OUTPUT				=  2U,		//output
 	PC9_OUTPUT_MONI		    =  3U,		//output with monitor
 	PC9_GPTA3_CHB		    =  4U,
-    PC9_I2C_SDA        	    =  5U,
+    PC9_IIC_SDA        	    =  5U,
     PC9_UART1_RX            =  6U,
 	PC9_ADC_INB18           =  13U,
 
@@ -783,7 +783,7 @@ typedef enum {
     PC10_USART1_TX          =  5U,
     PC10_UART2_TX           =  6U,
     PC10_SPI1_SCK	  	    =  7U,
-	PC10_I2C_SDA		    =  8U,
+	PC10_IIC_SDA		    =  8U,
 	PC10_BT0_OUT            =  9U,
 	PC10_LED_C6             =  10U,
 	PC10_ADC_INA7          =  13U,
@@ -796,7 +796,7 @@ typedef enum {
     PC11_USART1_RX          =  5U,
     PC11_UART2_RX           =  6U,
     PC11_SPI1_MISO	  	    =  7U,
-	PC11_I2C_SCL		    =  8U,
+	PC11_IIC_SCL		    =  8U,
 	PC11_BT1_OUT            =  9U,
 	PC11_LED_C7             =  10U,
 	PC11_ADC_INA8          =  13U,
@@ -1002,7 +1002,7 @@ typedef enum{
 #define APB_SPI0_BASE  		(APB_PERI_BASE + 0x90000)
 #define APB_SPI1_BASE  		(APB_PERI_BASE + 0x91000)
 
-#define APB_I2C0_BASE   	(APB_PERI_BASE + 0xA0000)
+#define APB_IIC0_BASE   	(APB_PERI_BASE + 0xA0000)
 #define APB_SIO0_BASE  		(APB_PERI_BASE + 0xB0000)
 #define APB_SIO1_BASE  		(APB_PERI_BASE + 0xB1000)
 
@@ -1067,7 +1067,7 @@ typedef enum{
 //#define	DUMMY1_INT      (0x01ul<<41U)
 #define	SIO0_INT			(0x01ul<<42U)
 #define	SIO1_INT			(0x01ul<<43U)
-#define	I2C_INT    			(0x01ul<<44U)
+#define	IIC_INT    			(0x01ul<<44U)
 #define	SPI0_INT			(0x01ul<<45U)
 #define	SPI1_INT			(0x01ul<<46U)
 #define	CAN_INT      		(0x01ul<<47U)
@@ -1126,7 +1126,7 @@ void uart1_int_handler(void);			//UART1 interrupt
 void uart2_int_handler(void);			//UART2 interrupt
 void sio0_int_handler(void);			//SIO0 interrupt
 void sio1_int_handler(void);			//SIO1 interrupt
-void i2c_int_handler(void);				//I2C  interrupt
+void i2c_int_handler(void);				//IIC  interrupt
 void spi0_int_handler(void);			//SPI0 interrupt
 void spi1_int_handler(void);			//SPI1 interrupt
 void can_int_handler(void);				//CAN interrupt

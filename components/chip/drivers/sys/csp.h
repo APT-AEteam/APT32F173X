@@ -22,7 +22,7 @@
 #include "csp_etcb.h"
 #include "csp_gpio.h"
 #include "csp_gpta.h"
-#include "csp_i2c.h"
+#include "csp_iic.h"
 #include "csp_can.h"
 #include "csp_ifc.h"
 #include "csp_lpt.h"
@@ -64,7 +64,7 @@ extern csp_sio_t  		*SIO0, *SIO1;
 extern csp_cmp_t  		*CMP0;
 extern csp_cmp_t  		*CMP1;
 extern csp_cmp_t  		*CMP2;
-extern csp_i2c_t  		*I2C0;
+extern csp_iic_t  		*IIC0;
 extern csp_can_t 		*CAN0; 
 extern csp_cnta_t  		*CA0;
 extern csp_gpta_t 		*GPTA0,*GPTA1,*GPTA2,*GPTA3;

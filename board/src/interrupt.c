@@ -38,7 +38,7 @@ extern void bt_irqhandler3(csp_bt_t *ptBtBase);
 extern void wwdt_irqhandler(void);
 extern void adc_irqhandler(csp_adc_t *ptAdcBase);
 extern void syscon_irqhandler(csp_syscon_t *ptSysconBase);
-extern void i2c_irqhandler(csp_i2c_t *ptIicBase);
+extern void i2c_irqhandler(csp_iic_t *ptIicBase);
 
 extern void gptb_irqhandler(csp_gptb_t *ptGptbBase);
 extern void sio_irqhandler(csp_sio_t *ptSioBase);
@@ -349,9 +349,9 @@ ATTRIBUTE_ISR __attribute__((weak)) void i2c_int_handler(void)
 {
 	CSI_INTRPT_ENTER();
 #if (USE_I2C_CALLBACK==1)
-	csi_iic_irqhandler(I2C0,0);
+	csi_iic_irqhandler(IIC0,0);
 #else
-	csp_i2c_clr_isr(I2C0, csp_i2c_get_isr(I2C0));
+	csp_i2c_clr_isr(IIC0, csp_i2c_get_isr(IIC0));
 #endif
 	CSI_INTRPT_EXIT();
 }

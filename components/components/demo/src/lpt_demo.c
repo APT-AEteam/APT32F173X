@@ -177,7 +177,7 @@ int lpt_etcb_bt_start_demo(void)
 	tTim2Config.eRunMode  = BT_RUN_CONT;					//BT计数器工作模式：连续/单次
 	
 	csi_bt_timer_init(BT1,&tTim2Config);									//BT定时
-	csi_bt_set_sync(BT1, BT_SYNCIN0, BT_TRG_ONCE, DISABLE);  	//外部触发bt启动(SYNCIN0)
+	csi_bt_set_sync(BT1, BT_SYNCIN0, BT_SYNC_ONCE, DISABLE);  	//外部触发bt启动(SYNCIN0)
 
 	tEtbConfig.eChType = ETCB_ONE_TRG_ONE;  						//单个源触发单个目标
 	tEtbConfig.eSrcIp  = ETCB_LPT_TRGOUT0;  	    					//LPT作为触发源
