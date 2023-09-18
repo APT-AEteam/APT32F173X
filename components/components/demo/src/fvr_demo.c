@@ -9,47 +9,32 @@
  * *********************************************************************
 */
 /* Includes ---------------------------------------------------------------*/
-#include <string.h>
-#include "sys_clk.h"
-#include <drv/fvr.h>
-#include "pin.h"
+#include "drv/fvr.h"
+#include "drv/gpio.h"
+#include "board_config.h"
 
-#include "demo.h"
 /* externs function--------------------------------------------------------*/
 /* externs variablesr------------------------------------------------------*/
 /* Private macro-----------------------------------------------------------*/
 /* Private variablesr------------------------------------------------------*/
 
-/** \brief 配置FVR电平，并通过管脚输出示例代码
+/** \brief 配置FVR电平，并通过管脚输出
  * 
  *  \param[in] none
  *  \return none
  */
 void fvr_output_demo(void)
 {
-#if !defined(USE_GUI)	
-	csi_pin_set_mux(PB7, PB7_FVROUT);//设置PB7为FVR输出
+#if (USE_GUI == 0)		
+	csi_gpio_set_mux(GPIOB,PB7, PB7_FVROUT);				//设置PB7为FVR输出
 #endif	
-	soc_clk_enable(FVR_SYS_CLK);//配置FVR时钟
-	csi_fvr_lvl_set(FVR, LVL_4V);//设置FVR电平为4V
-	csi_fvr_start(FVR);	
-}
-
-/** \brief 配置FVR电平，设置CMP和OPA的参考电平为FVR
- * 
- *  \param[in] none
- *  \return none
- */
-void fvr_referenceset_demo(void)
-{
-#if !defined(USE_GUI)	
-	csi_pin_set_mux(PB7, PB7_FVROUT);//设置PB7为FVR输出
-#endif	
-	soc_clk_enable(FVR_SYS_CLK);//配置FVR时钟
-	csi_fvr_lvl_set(FVR, LVL_4V);//设置FVR电平为4V
-	csi_fvr_cmpref_set(FVR,CMPREF_FVR);//设置CMP参考电平为FVR
-	csi_fvr_opacm(FVR,OPACM_HALFFVR);	//设置OPA CM电平为FVR
-	csi_fvr_start(FVR);	
+	csi_fvr_config_t tFvrConfig;
+	tFvrConfig.eFvrLevel = LVL_1V;							//设置FVR输出电压
+	tFvrConfig.eCmpref = CMPREF_FVR;						//设置CMP的参考电压为FVR
+	tFvrConfig.eOpacm = OPACM_HALFFVR;						//设置OPA的基准电压为1/2FVR
+	
+	csi_fvr_init(FVR,&tFvrConfig);
+	csi_fvr_enable(FVR);									//使能FVR
 }
 
 /** \brief 配置BUF(intervref)电平，并通过管脚输出
@@ -57,13 +42,12 @@ void fvr_referenceset_demo(void)
  *  \param[in] none
  *  \return none
  */
-void fvr_buf_demo(void)
+void buf_output_demo(void)
 {
-	soc_clk_enable(FVR_SYS_CLK);//配置FVR时钟
-#if !defined(USE_GUI)
-	csi_pin_set_mux(PD4, PD4_INPUT);//设置BUF输入管脚PD4
-	csi_pin_set_mux(PB8, PB8_BUF);//设置BUF输出管脚PB8
+#if (USE_GUI == 0)	
+	csi_gpio_set_mux(GPIOD,PD4, PD4_INPUT);					//设置BUF输入管脚PD4
+	csi_gpio_set_mux(GPIOB,PB8, PB8_BUF);					//设置BUF输出管脚PB8
 #endif
-	csi_fvr_buf_init(FVR,BUFLVL_INPUT);//设置buf的输入源
-	csi_fvr_start(FVR);		
+	csi_buf_init(FVR,BUFLVL_EXTERNAL);						//设置buf的输出为外部管脚输入
+	csi_fvr_enable(FVR);		
 }

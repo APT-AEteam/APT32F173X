@@ -112,6 +112,7 @@ void csi_dac_disable(csp_dac_t *ptDacBase)
 */
 void csi_dac_int_enable(csp_dac_t *ptDacBase, csi_dac_intsrc_e eIntsrc)
 {
+	csp_dac_clr_isr(ptDacBase, (dac_int_e)eIntsrc);
 	csp_dac_int_enable(ptDacBase,(dac_int_e)eIntsrc);
 }
 /**

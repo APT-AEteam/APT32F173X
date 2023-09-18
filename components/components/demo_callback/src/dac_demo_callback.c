@@ -9,8 +9,7 @@
  * *********************************************************************
 */
 /* Includes ---------------------------------------------------------------*/
-#include "drv/dac.h"
-#include "drv/gpio.h"
+#include "csi_drv.h"
 #include "board_config.h"
 
 #if (USE_DAC_CALLBACK == 1)
@@ -18,7 +17,6 @@
 /* externs variablesr------------------------------------------------------*/
 /* Private macro-----------------------------------------------------------*/
 /* Private variablesr------------------------------------------------------*/
-
 
 /** \brief  dac_callback：DAC中断回调函数
  * 
@@ -36,6 +34,7 @@ void dac_callback(csp_dac_t *ptDacBase, uint8_t byIsr)
 		nop;						//user code
 	}
 }
+
 /** \brief	dac_callback_demo：dac转换结束功能demo，使用callback
  * 	\brief  csi接口默认使用(开启)转换结束中断，若不需要开启中断，可调用csi_dac_int_disable接口函数，关闭转换结束中断
  * 	 \brief DAC可以选择PA4或者PA8作为输出口，BUF enable时，PA4输出，BUF disable时，PA8输出
