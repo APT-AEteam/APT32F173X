@@ -9,7 +9,7 @@
  * </table>
  * *********************************************************************
 */
-#include <drv/wwdt.h>
+#include "drv/wwdt.h"
 
 /* Private macro------------------------------------------------------*/
 /* externs function---------------------------------------------------*/
@@ -91,17 +91,6 @@ void csi_wwdt_open(void)
 	csp_wwdt_enable(WWDT);
 }
 
-/** \brief close(stop) wwdt
- * 
- *  \param[in] none
- *  \return error code \ref csi_error_t
- */ 
-//csi_error_t csi_wwdt_close(void)
-//{
-//	//csp_iwdt_disable(SYSCON);
-//	return CSI_UNSUPPORTED;					//can not stop WWDT once it is enabled
-//}
-
 /** \brief feed wwdt
  * 
  *  \param[in] none
@@ -121,7 +110,6 @@ void csi_wwdt_feed(void)
 void csi_wwdt_int_enable(void)
 {
 	csp_wwdt_int_enable(WWDT);
-//	csi_vic_enable_irq(WWDT_IRQn);				//enable wwdt irq
 
 }
 
@@ -133,7 +121,6 @@ void csi_wwdt_int_enable(void)
 void csi_wwdt_int_disable(void)
 {
 	csp_wwdt_int_disable(WWDT);
-//	csi_vic_disable_irq(WWDT_IRQn);				//disable wwdt irq
 
 }
 
@@ -225,10 +212,10 @@ csi_error_t csi_wwdt_register_callback(csp_wwdt_t * ptWwdtBase, void  *callback)
  */ 
 void csi_wwdt_irqhandler(csp_wwdt_t * ptWwdtBase, uint8_t byIdx)
 {
-	uint8_t byIsr = apt_get_wwdt_idx(ptWwdtBase);
-	
+
+
 	if(g_tWwdtCtrl[byIdx].callback)
-			g_tWwdtCtrl[byIdx].callback(ptWwdtBase, byIsr);
+			g_tWwdtCtrl[byIdx].callback(ptWwdtBase);
 			
 	csp_wwdt_clr_isr(WWDT);
 }

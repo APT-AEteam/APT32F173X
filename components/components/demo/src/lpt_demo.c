@@ -12,11 +12,7 @@
 */
 /* Includes ---------------------------------------------------------------*/
 
-#include "lpt.h"
-#include "pin.h"
-#include "etcb.h"
-#include "bt.h"
-//#include <bt.h>
+#include "csi_drv.h"
 #include "board_config.h"
 /* externs function--------------------------------------------------------*/
 /* externs variablesr------------------------------------------------------*/
@@ -37,7 +33,6 @@ ATTRIBUTE_ISR void lpt_int_handler(void)
 {
 	//用户直接在中断服务接口函数里处理中断，建议客户使用此模式
 	volatile uint32_t wMisr = csp_lpt_get_isr(LPT);
-	csi_gpio_toggle(GPIOA, PA1);		//PA1翻转
 	
 	if(wMisr & LPT_TRGEV_INT)					//TRGEV interrupt
 	{
@@ -63,17 +58,14 @@ ATTRIBUTE_ISR void lpt_int_handler(void)
 int lpt_timer_demo(void)
 {
 	int iRet = 0;
-//#if (USE_GUI == 0)	
-//	csi_gpio_set_mux(GPIOC, PC0, PC0_LPT_IN);   //将PC0设为LPT_IN
-//#endif
 
 	csi_lpt_time_config_t tTimConfig;
-	tTimConfig.wTimeVal = 200;					//LPT定时值 = 200ms
-	tTimConfig.eWkMode  = LPT_CNT_CONTINU;		//LPT计数器工作模式，连续
+	tTimConfig.wTimeVal = 200;					//LPT定时值 = 200us
+	tTimConfig.eRunMode  = LPT_CNT_CONT;		//LPT计数器工作模式，连续
 	tTimConfig.eClksrc=LPT_CLK_PCLK_DIV4;  		//LPT时钟源  
 	csi_lpt_timer_init(LPT,&tTimConfig);        //初始化lpt,默认采用PEND中断
 
-	csi_lpt_start(LPT);	                             //启动lpt
+	csi_lpt_start(LPT);	                        //启动lpt
 	
 	return iRet;	
 }
@@ -89,13 +81,15 @@ int lpt_pwm_demo(void)
 	int iRet = 0;
 	
 	csi_lpt_pwm_config_t tLptPwmCfg;  	
+	
 #if (USE_GUI == 0)	
 	csi_gpio_set_mux(GPIOB, PB6, PB6_LPT_OUT);                   //将PB6设为LPT_OUT
 #endif
-	tLptPwmCfg.byClksrc = LPT_CLK_PCLK_DIV4;                     //PWM 时钟选择
-	tLptPwmCfg.byStartpol = LPT_PWM_START_LOW;                   //初始低电平
-	tLptPwmCfg.byIdlepol  = LPT_PWM_IDLE_LOW;                    //停止时highZ
-	tLptPwmCfg.byCycle = 30;                                     //PWM 输出占空比(0~100)	
+
+	tLptPwmCfg.eClkSrc = LPT_CLK_PCLK_DIV4;                     //PWM 时钟选择
+	tLptPwmCfg.eStartPol = LPT_PWM_START_LOW;                   //初始低电平
+	tLptPwmCfg.eIdlePol  = LPT_PWM_IDLE_LOW;                    //停止时highZ
+	tLptPwmCfg.byDutyCycle = 30;                                 //PWM 输出占空比(0~100)	
 	tLptPwmCfg.wFreq = 1000;                                     //PWM 输出频率
 
 	if(csi_lpt_pwm_init(LPT, &tLptPwmCfg) == CSI_OK){            //初始化lpt
@@ -110,7 +104,7 @@ int lpt_pwm_demo(void)
  *  \param[in] none
  *  \return error code
  */
-int lpt_sync_trg_start_demo(void)
+int exi_etcb_lpt_start_demo(void)
 {
 	int iRet = 0;
 	volatile uint8_t ch;
@@ -127,7 +121,7 @@ int lpt_sync_trg_start_demo(void)
 	
 	csi_lpt_time_config_t tTimConfig;
 	tTimConfig.wTimeVal = 5;					//LPT定时值 = 5ms
-	tTimConfig.eWkMode  = LPT_CNT_CONTINU;		//LPT计数器工作模式
+	tTimConfig.eRunMode  = LPT_CNT_CONT;		//LPT计数器工作模式
 	tTimConfig.eClksrc=LPT_CLK_PCLK_DIV4;  		//LPT时钟源  
 	csi_lpt_timer_init(LPT,&tTimConfig);        //初始化lpt,默认采用PEND中断
 
@@ -135,7 +129,7 @@ int lpt_sync_trg_start_demo(void)
 	csi_lpt_sync_enable(LPT);
 	csi_lpt_debug_enable(LPT);
 	
-//	csp_lpt_trg_enable(LPT);      // 测试EVTRG TRGEV0,产生触发信号，进中断
+//	csp_lpt_evtrg_enable(LPT);      // 测试EVTRG TRGEV0,产生触发信号，进中断
 	csp_lpt_set_evtrg(LPT, LPT_TRGSRC0_ZRO);  
 	
 	tEtbConfig.eChType = ETCB_ONE_TRG_ONE;  		//单个源触发单个目标
@@ -158,7 +152,7 @@ int lpt_sync_trg_start_demo(void)
  *  \param[in] none
  *  \return error code
  */
-int lpt_trg_out_demo(void)
+int lpt_etcb_bt_start_demo(void)
 {
 	int iRet = 0;
 	volatile uint8_t ch;
@@ -166,21 +160,24 @@ int lpt_trg_out_demo(void)
 	
 	csi_lpt_time_config_t tTimConfig;
 	tTimConfig.wTimeVal = 50;					//LPT定时值 = 50ms
-	tTimConfig.eWkMode  = LPT_CNT_CONTINU;		//LPT计数器工作模式
+	tTimConfig.eRunMode  = LPT_CNT_CONT;		//LPT计数器工作模式
 	tTimConfig.eClksrc=LPT_CLK_PCLK_DIV4;  		//LPT时钟源  
 	csi_lpt_timer_init(LPT,&tTimConfig);        //初始化lpt,默认采用PEND中断
 	
 	csi_lpt_set_evtrg(LPT, LPT_TRGOUT, LPT_TRGSRC_PRD, 10);
 	csi_lpt_trg_enable(LPT);
-	csi_lpt_debug_enable(LPT);
 
-//	csp_lpt_trg_enable(LPT);                    // 测试EVTRG TRGEV0,产生触发信号，进中断
 	csp_lpt_set_evtrg(LPT, LPT_TRGSRC0_ZRO);  
 	
 	csp_lpt_set_trgprd(LPT,0xf);
 	csp_lpt_set_trgcnt(LPT,0xf);
-//	csi_bt_timer_init(BT1,5000);									//BT定时
-	csi_bt_set_sync(BT1, BT_SYNCIN0, BT_SYNC_ONCE, DISABLE);	//外部触发bt启动(SYNCIN0)
+
+	csi_bt_time_config_t tTim2Config;
+	tTim2Config.wTimeVal = 1000;							//BT定时值，单位：us；即定时值 = 1000us
+	tTim2Config.eRunMode  = BT_RUN_CONT;					//BT计数器工作模式：连续/单次
+	
+	csi_bt_timer_init(BT1,&tTim2Config);									//BT定时
+	csi_bt_set_sync(BT1, BT_SYNCIN0, BT_TRG_ONCE, DISABLE);  	//外部触发bt启动(SYNCIN0)
 
 	tEtbConfig.eChType = ETCB_ONE_TRG_ONE;  						//单个源触发单个目标
 	tEtbConfig.eSrcIp  = ETCB_LPT_TRGOUT0;  	    					//LPT作为触发源
@@ -198,41 +195,6 @@ int lpt_trg_out_demo(void)
 	return iRet;
 }
 
-/** \brief lpt software trg out
- *  lpt软件触发, 触发BT1启动
- *  \param[in] none
- *  \return error code
- */
-int lpt_soft_trg_out_demo(void)
-{
-	int iRet = 0;
-	volatile uint8_t ch;
-	csi_etcb_config_t tEtbConfig;				    				//ETB 参数配置结构体
-	
-
-	csi_bt_time_config_t tTimConfig;
-	tTimConfig.wTimeVal = 5000;					//BT定时值 = 5000us
-	tTimConfig.eRunMode  = BT_RUN_CONT;		    //BT计数器工作模式
-	csi_bt_timer_init(BT1, &tTimConfig);		//初始化BT	
-		
-	csi_bt_set_sync(BT1,BT_SYNCIN0, BT_SYNC_ONCE, DISABLE);		    //外部触发bt启动(SYNCIN0)
-	
-	tEtbConfig.eChType = ETCB_ONE_TRG_ONE;  						//单个源触发单个目标
-	tEtbConfig.eSrcIp  = ETCB_LPT_TRGOUT0;  	    					//LPT作为触发源
-	tEtbConfig.eDstIp =  ETCB_BT1_SYNCIN0;   	    				//BT1同步输入0 作为目标事件
-	tEtbConfig.eTrgMode = ETCB_HARDWARE_TRG;
-		
-	ch = csi_etcb_ch_alloc(tEtbConfig.eChType);	    				//自动获取空闲通道号,ch >= 0 获取成功
-	if(ch < 0)
-		return -1;								    				//ch < 0,则获取通道号失败
-	iRet = csi_etcb_ch_init(ch, &tEtbConfig);
-	
-	csi_lpt_soft_evtrg(LPT);	                            		//lpt软件触发, 触发BT1启动
-	
-	return iRet;
-}
-
-
 
 /** \brief lpt external clock with filter
  *  
@@ -248,7 +210,7 @@ int lpt_filter_demo(void)
 	
 	csi_lpt_time_config_t tTimConfig;
 	tTimConfig.wTimeVal = 1;					//LPT定时值 = 1ms
-	tTimConfig.eWkMode  = LPT_CNT_CONTINU;		//LPT计数器工作模式
+	tTimConfig.eRunMode  = LPT_CNT_CONT;		//LPT计数器工作模式
 	tTimConfig.eClksrc=LPT_CLK_IN_FALL;  		//LPT时钟源  
 	csi_lpt_timer_init(LPT,&tTimConfig);        //初始化lpt,默认采用PEND中断
 	
@@ -259,54 +221,6 @@ int lpt_filter_demo(void)
 }
 
 
-
-/** \brief lpt window function test
- *  
- *  \param[in] none
- *  \return error code
- */
-int lpt_window_demo(void)
-{
-	int iRet = 0;
-	volatile uint8_t ch;
-	csi_etcb_config_t tEtbConfig;				                //ETB 参数配置结构体	
-	csi_lpt_pwm_config_t tLptPwmCfg;  	
-#if (USE_GUI == 0)	
-	csi_gpio_set_mux(GPIOA,PA5,PA5_OUTPUT);	
-	csi_gpio_set_mux(GPIOA,PA2,PA2_OUTPUT);	
-#endif
-//	csi_bt_timer_init(BT0, 1000);	//初始化BT0, 定时2000us； BT定时，默认采用PEND中断
-	csi_bt_start(BT0);					//启动定时器  
-	csi_bt_set_evtrg(BT0,BT_TRGSRC_PEND);   
-
-	csi_gpio_set_mux(GPIOB,PB6, PB6_LPT_OUT);	                           //将PB6设为LPT_OUT
-	tLptPwmCfg.byClksrc = LPT_CLK_PCLK_DIV4;                //PWM 时钟选择
-	tLptPwmCfg.byStartpol = LPT_PWM_START_HIGH;              //初始低电平
-	tLptPwmCfg.byIdlepol  = LPT_PWM_IDLE_LOW;                //停止时highZ
-	tLptPwmCfg.byCycle = 1;                            //PWM 输出占空比(0~100)	
-	tLptPwmCfg.wFreq = 100;                           //PWM 输出频率   10ms	
-
-	csi_lpt_pwm_init(LPT, &tLptPwmCfg); 
-	csi_lpt_set_sync(LPT, 0, LPT_SYNC_CONT, ENABLE);
-	csi_lpt_sync_enable(LPT);
-	csi_lpt_set_sync_window(LPT, ENABLE, DISABLE, 50, 50);
-
-	tEtbConfig.eChType = ETCB_ONE_TRG_ONE;  		//单个源触发单个目标
-	tEtbConfig.eSrcIp  = ETCB_BT0_TRGOUT ;  	    //BT0 触发输出0作为触发源
-	tEtbConfig.eSrcIp1 = 0xff;      
-	tEtbConfig.eSrcIp2 = 0xff;
-	tEtbConfig.eDstIp =  ETCB_LPT_SYNCIN;   	    //LPT0 同步输入作为目标事件
-	tEtbConfig.eDstIp1 = 0xff;
-	tEtbConfig.eDstIp2 = 0xff;
-	tEtbConfig.eTrgMode = ETCB_HARDWARE_TRG;
-
-	ch = csi_etcb_ch_alloc(tEtbConfig.eChType);	    //自动获取空闲通道号,ch >= 0 获取成功
-	if(ch < 0)
-		return -1;								    //ch < 0,则获取通道号失败
-	iRet = csi_etcb_ch_init(ch, &tEtbConfig);	
-
-	return iRet;
-}
 
 
 

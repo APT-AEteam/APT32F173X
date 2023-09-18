@@ -102,20 +102,20 @@ typedef enum
 }csi_lpt_clksrc_e;
 
 /**
- * \enum     csi_lpt_workmode_e
+ * \enum     csi_lpt_runmode_e
  * \brief    LPT count mode  
  */
 typedef enum{
-	LPT_CNT_CONTINU	= 0,			//continuous count mode	
+	LPT_CNT_CONT	= 0,			//continuous count mode	
 	LPT_CNT_ONCE 					//once count mode	
-}csi_lpt_wkmode_e;
+}csi_lpt_runmode_e;
 
 
 /// \struct csi_lpt_time_config_t
 /// \brief  lpt timer parameter configuration, open to users  
 typedef struct {
-	uint32_t			wTimeVal;			//TIMER Timing Value
-	csi_lpt_wkmode_e	eWkMode;			//TIMER WorkMode: continuous/once
+	uint32_t			wTimeVal;			//TIMER Timing Value (0-636291451 us)
+	csi_lpt_runmode_e	eRunMode;			//TIMER RunMode: continuous/once
 	csi_lpt_clksrc_e    eClksrc;            //TIMER Clock Source
 } csi_lpt_time_config_t;
 
@@ -142,6 +142,7 @@ typedef enum
 	LPT_INTSRC_ALL  =	(0x07ul << 0)	//ALL interrupt
 }csi_lpt_intsrc_e;
 
+
 /**
  * \enum     csi_lpt_update_e
  * \brief    LPT update mode
@@ -152,16 +153,16 @@ typedef enum
 	UPDATA_PEND		
 }csi_lpt_update_e;
 
-/**
- * \enum     csi_lpt_int_e
- * \brief    LPT interrupt source 
- */
-typedef enum
-{
-	LPT_INT_TRGEV0 = 0,
-	LPT_INT_MATCH,
-	LPT_INT_PEND,
-}csi_lpt_int_e;
+///**
+// * \enum     csi_lpt_int_e
+// * \brief    LPT interrupt source 
+// */
+//typedef enum
+//{
+//	LPT_INTSRC_TRGEV0 = 0,
+//	LPT_INTSRC_MATCH,
+//	LPT_INTSRC_PEND,
+//}csi_lpt_int_e;
 
 /**
  * \enum     csi_lpt_pwm_config_t
@@ -169,10 +170,10 @@ typedef enum
  */
 typedef struct
 {
-	uint8_t            byStartpol;
-	uint8_t            byIdlepol;
-	uint8_t            byClksrc;
-	uint8_t            byCycle;
+	csi_lpt_startpol_e eStartPol;
+	csi_lpt_idlepol_e  eIdlePol;
+	csi_lpt_clksrc_e   eClkSrc;
+	uint8_t            byDutyCycle;  
 	uint8_t            byRev1;
 	uint8_t            byRev2;	
 	uint8_t            byRev3;	
@@ -324,8 +325,8 @@ csi_error_t csi_lpt_set_sync_window(csp_lpt_t *ptLptBase, bool bCrossEnable, boo
  *  \param bARearmEnable: auto rearm enable/disable
  *  \return csi_error_t
  */
-csi_error_t csi_lpt_set_sync(csp_lpt_t *ptLptBase, uint8_t bySync, csi_lpt_syncmode_e tSyncMode, bool bARearmEnable);
-
+//csi_error_t csi_lpt_set_sync(csp_lpt_t *ptLptBase, uint8_t bySync, csi_lpt_syncmode_e tSyncMode, bool bARearmEnable);
+csi_error_t csi_lpt_set_sync(csp_lpt_t *ptLptBase, csi_lpt_syncin_e eSync, csi_lpt_syncmode_e eSyncMode, bool bARearmEnable);
 
 /** \brief restart lpt sync 
  * 
@@ -333,7 +334,8 @@ csi_error_t csi_lpt_set_sync(csp_lpt_t *ptLptBase, uint8_t bySync, csi_lpt_syncm
  *  \param bySync: sync select
  *  \return error code \ref csi_error_t
  */
-csi_error_t csi_lpt_rearm_sync(csp_lpt_t *ptLptBase, uint8_t bySync);
+//csi_error_t csi_lpt_rearm_sync(csp_lpt_t *ptLptBase, uint8_t bySync);
+csi_error_t csi_lpt_rearm_sync(csp_lpt_t *ptLptBase, csi_lpt_syncin_e eSync);
 
 /** \brief lpt evtrg source output config  
  * 
@@ -352,21 +354,6 @@ csi_error_t csi_lpt_set_evtrg(csp_lpt_t *ptLptBase, uint8_t  byEvtrg, csi_lpt_tr
  *  \return error code \ref csi_error_t
  */
 csi_error_t csi_lpt_set_fre(csp_lpt_t *ptLptBase, csi_lpt_clksrc_e eClk, uint16_t wHz);
-
-/** \brief LPT software sync enable control
- * 
- *  \param[in] ptLptBase:pointer of lpt register structure
- *  \return void
- */
-void csi_lpt_swsync_enable(csp_lpt_t *ptLptBase);
-
-/** \brief LPT software sync enable control
- * 
- *  \param[in] ptLptBase:pointer of lpt register structure
- *  \return void
- */
-void csi_lpt_swsync_disable(csp_lpt_t *ptLptBase);
-
 
 /** \brief lpt software generates a trigger event
  * 
