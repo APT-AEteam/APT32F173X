@@ -67,6 +67,7 @@ extern "C" {
 #define USE_CNTA_CALLBACK		1		//CNTA(0)
 #define USE_CMP_CALLBACK		1		//CMP(0/1/2)
 #define USE_GPTA_CALLBACK		1		//GPTA(0/1/2/3)
+#define USE_GPTB_CALLBACK		1		//GPTB(0/1/2/3/4/5)
 #define USE_DAC_CALLBACK		1		//DAC(0)
 #define USE_USART_CALLBACK		0		//USART(0/1)
 #define USE_LIN_CALLBACK        0       //LIN(0/1) LIN和USART使用的都是USART模块，同一个USART,使用了普通的USART功能，LIN功能就不能使用了

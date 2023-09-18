@@ -15,6 +15,44 @@ extern "C" {
 extern uint32_t g_gptb0_prd;
 extern uint32_t g_gptb1_prd;
 
+/**
+ * \enum     csi_gptb_wave_e
+ * \brief    gptb work in capture mode or pwm mode 
+ */
+typedef enum
+{
+	GPTB_CAPTURE	= 0,		
+    GPTB_WAVE 		= 1		
+}csi_gptb_wave_e;
+
+/**
+ * \enum     csi_gptb_runmode_e
+ * \brief    GPTB run mode  
+ */
+typedef enum{
+	GPTB_RUN_CONT	= 0,			//continuous count mode	
+	GPTB_RUN_ONCE 					//once count mode	
+}csi_gptb_runmode_e;
+
+/**
+ * \enum     csi_gptb_cntmd_e
+ * \brief    GPTB count mode  
+ */
+typedef enum {
+	GPTB_UPCNT 		= 0,
+	GPTB_DNCNT,
+	GPTB_UPDNCNT
+}csi_gptb_cntmd_e;
+
+/**
+ * \enum     csi_gptb_capmode_e
+ * \brief    GPTB capture mode  
+ */
+typedef enum{
+	GPTB_CAP_MERGE = 0,
+	GPTB_CAP_SEPARATE
+}csi_gptb_capmode_e;
+
 typedef struct csi_gptb_config csi_gptb_config_t;
 struct csi_gptb_config {
     uint8_t		byWorkmod;          //Count or capture
@@ -35,11 +73,10 @@ struct csi_gptb_config {
     uint8_t     byCgsrc;
 	uint8_t     byCgflt;
 	uint32_t	wFreq;				 //TIMER PWM OUTPUT frequency 
-	uint32_t    wInt;
 };
 
-typedef struct csi_gptb_pwmconfig  csi_gptb_pwmconfig_t;
-struct csi_gptb_pwmconfig {
+typedef struct csi_gptb_pwm_config  csi_gptb_pwm_config_t;
+struct csi_gptb_pwm_config {
 	uint8_t		byWorkmod;          //Count or capture
 	uint8_t     byCountingMode;    //csi_gptb_cntmd_e
 	uint8_t     byOneshotMode;     //Single or continuous
@@ -47,31 +84,23 @@ struct csi_gptb_pwmconfig {
 	uint8_t     byPscld;
 	uint8_t		byDutyCycle;		 //TIMER PWM OUTPUT duty cycle	
 	uint32_t	wFreq;				 //TIMER PWM OUTPUT frequency 
-	uint32_t    wInt;
 };
 
-typedef struct csi_gptb_captureconfig  csi_gptb_captureconfig_t;
-struct csi_gptb_captureconfig {
-	uint8_t		byWorkmod;          //Count or capture
-	uint8_t     byCountingMode;     //csi_gptb_cntmd_e
-	uint8_t     byOneshotMode;      //Single or continuous
-	uint8_t     byStartSrc ;
-	uint8_t     byPscld;
-	uint8_t		byDutyCycle;		 //TIMER PWM OUTPUT duty cycle	
- 	uint8_t     byCaptureCapLden;
-	uint8_t		byCapSrcMode;        //CAPMODE_SEL
-	uint8_t     byCaptureRearm;
-	uint8_t     byCaptureCapmd;
-	uint8_t     byCaptureStopWrap;
-	uint8_t     byCaptureLdaret;
-	uint8_t     byCaptureLdbret;
-	uint8_t     byCaptureLdcret;
-	uint8_t     byCaptureLddret;
-	uint32_t    wInt;
+typedef struct csi_gptb_capture_config  csi_gptb_capture_config_t;
+struct csi_gptb_capture_config {
+	csi_gptb_wave_e			eWorkMode;          	//work mode
+	csi_gptb_cntmd_e     	eCountMode;     		//count mode
+	csi_gptb_runmode_e     	eRunMode;      			//run mode
+	csi_gptb_capmode_e		eCapMode;        		//capture mode
+	uint8_t     			byCapStopWrap;
+	uint8_t     			byCapLdaret;
+	uint8_t     			byCapLdbret;
+	uint8_t     			byCapLdcret;
+	uint8_t     			byCapLddret;
 };
 
-typedef struct csi_gptb_pwmchannel_config      csi_gptb_pwmchannel_config_t;
-struct csi_gptb_pwmchannel_config {
+typedef struct csi_gptb_pwm_channel_config      csi_gptb_pwm_channel_config_t;
+struct csi_gptb_pwm_channel_config {
 	
     uint8_t		byActionZro;          //
 	uint8_t     byActionPrd;          //
@@ -205,23 +234,21 @@ typedef struct {
 	uint8_t 	byAqcsf;		
 } csi_gptb_reglk_config_t;
 
-typedef enum
-{
-	GPTB_CAPTURE	= 0,		
-    GPTB_WAVE 	= 1		
-}csi_gptb_wave_e;
+typedef enum {
+	GPTB_CGSRC_CHAX = 0,
+	GPTB_CGSRC_CHBX,
+}csi_gptb_cgsrc_e;
 
 typedef enum {
-	GPTB_UPCNT = 0,
-	GPTB_DNCNT,
-	GPTB_UPDNCNT
-}csi_gptb_cntmd_e;
-
-
-typedef enum{
-	GPTB_OP_CONT = 0,
-	GPTB_OP_OT,
-}csi_gptb_opmd_e;
+    GPTB_CGFLT_BP = 0,
+	GPTB_CGFLT_2,
+	GPTB_CGFLT_4,
+	GPTB_CGFLT_6,
+	GPTB_CGFLT_8,
+	GPTB_CGFLT_16,
+	GPTB_CGFLT_32,
+	GPTB_CGFLT_64
+}csi_gptb_cgflt_e;
 
 typedef enum{
     GPTB_COMPA=0,
@@ -239,7 +266,6 @@ typedef enum{
 	GPTB_DBDTF,
 	GPTB_DCKPSC,		
 }csi_gptb_dbldr_e;
-
 
 typedef enum {
 	GPTB_CH_A = 0,
@@ -260,7 +286,6 @@ typedef enum {
 	GPTB_POLARITY_HIGH = 0,
 	GPTB_POLARITY_LOW
 }csi_gptb_polarity_t;
-
 
 typedef enum{
 	GPTB_CAP_CONT = 0,
@@ -371,11 +396,6 @@ typedef enum{
 	GPTB_LDPSCR_PRD,
 	GPTB_LDPSCR_ZROPRD
 }csp_gptb_ldpscr_e;
-
-typedef enum{
-	GPTB_CAP_MERGE = 0,
-	GPTB_CAP_SEPARATE
-}csi_gptb_capsrcmd_e;
 
 typedef enum{
 	GPTB_SHADOW    = 0,    
@@ -579,7 +599,7 @@ csi_error_t csi_gptb_config_init(csp_gptb_t *ptGptbBase, csi_gptb_config_t *ptGp
  \param  ptGptbPwmCfg   	refer to csi_gptb_captureconfig_t
  \return CSI_OK /CSI_ERROR
 //*/
-csi_error_t csi_gptb_capture_init(csp_gptb_t *ptGptbBase, csi_gptb_captureconfig_t *ptGptbPwmCfg);
+csi_error_t csi_gptb_capture_init(csp_gptb_t *ptGptbBase, csi_gptb_capture_config_t *ptGptbPwmCfg);
 
  /**
  \brief  wave configuration
@@ -587,7 +607,7 @@ csi_error_t csi_gptb_capture_init(csp_gptb_t *ptGptbBase, csi_gptb_captureconfig
  \param  ptGptbPwmCfg   	refer to csi_gptb_pwmconfig_t
  \return CSI_OK /CSI_ERROR
 */
-csi_error_t  csi_gptb_wave_init(csp_gptb_t *ptGptbBase, csi_gptb_pwmconfig_t *ptGptbPwmCfg);
+csi_error_t  csi_gptb_wave_init(csp_gptb_t *ptGptbBase, csi_gptb_pwm_config_t *ptGptbPwmCfg);
 
 /** \brief initialize gptb data structure
  * 
@@ -600,20 +620,26 @@ csi_error_t csi_gptb_timer_init(csp_gptb_t *ptGptbBase, uint32_t wTimeOut);
 /** \brief set gptb count mode
  * 
  *  \param[in] ptGptbBase: pointer of gpta register structure
- *  \param[in] eCntMode: gpta count mode, one pulse/continuous
+ *  \param[in] eCntMode: gpta count mode, one-shot/continuous
  *  \return none
  */ 
-void csi_gptb_count_mode(csp_gptb_t *ptGptbBase, csi_gptb_opmd_e eCntMode);
+void csi_gptb_count_mode(csp_gptb_t *ptGptbBase, csi_gptb_runmode_e eCntMode);
+
+/** \brief enable/disable gptb burst 
+ * 
+ *  \param[in] ptGptbBase: pointer of gptb register structure 
+ *  \param[in] byCgflt \ref cfgcsi_gptb_cgflt_eflt
+ *  \return error code \ref csi_error_t
+ */
+csi_error_t csi_gptb_set_cgflt(csp_gptb_t *ptGptbBase,csi_gptb_cgflt_e eCgflt);
 
 /** \brief enable/disable gptb burst 
  * 
  *  \param[in] ptGptbBase: pointer of gptb register structure
- *  \param[in] byCgsrc:cgr src 
- *  \param[in] byCgflt:cfg flt
- *  \param[in] bEnable: ENABLE/DISABLE
+ *  \param[in] byCgsrc \ref csi_gptb_cgsrc_e src 
  *  \return error code \ref csi_error_t
  */
-csi_error_t csi_gptb_burst_enable(csp_gptb_t *ptGptbBase,uint8_t byCgsrc,uint8_t byCgflt, bool bEnable);
+csi_error_t csi_gptb_set_burst(csp_gptb_t *ptGptbBase,csi_gptb_cgsrc_e eCgsrc);
 
  /**
  \brief  Channel configuration
@@ -622,7 +648,7 @@ csi_error_t csi_gptb_burst_enable(csp_gptb_t *ptGptbBase,uint8_t byCgsrc,uint8_t
  \param  channel        Channel label
  \return CSI_OK /CSI_ERROR
 */
-csi_error_t csi_gptb_channel_config(csp_gptb_t *ptGptbBase, csi_gptb_pwmchannel_config_t *ptPwmCfg, csi_gptb_channel_e eChannel);
+csi_error_t csi_gptb_channel_config(csp_gptb_t *ptGptbBase, csi_gptb_pwm_channel_config_t *ptPwmCfg, csi_gptb_channel_e eChannel);
 
 /** \brief Channel CMPLDR configuration
  * 
@@ -748,9 +774,9 @@ void csi_gptb_set_start_mode(csp_gptb_t *ptGptbBase, csi_gptb_stmd_e eMode);
 /**
  \brief set GPTB operation mode
  \param ptGptbBase    pointer of gptb register structure
- \param eMode 	 GPTB_OP_CONT/GPTB_OP_OT
+ \param eMode 	\ref csi_gptb_runmode_e
 */
-void csi_gptb_set_os_mode(csp_gptb_t *ptGptbBase, csi_gptb_opmd_e eMode);
+void csi_gptb_set_os_mode(csp_gptb_t *ptGptbBase, csi_gptb_runmode_e eMode);
 
 /**
  \brief set GPTB stop status
@@ -821,27 +847,37 @@ void csi_gptb_clr_sftlck(csp_gptb_t *ptGptbBase, csi_gptb_ep_e eEp);
 void csi_gptb_force_em(csp_gptb_t *ptGptbBase, csi_gptb_ep_e eEp);
 
 /**
-  \brief       enable/disable gptb in debug mode
-  \param[in]   ptEpt      pointer of gptb register structure
-  \param[in]   bEnable		ENABLE/DISABLE
+  \brief       enable gptb in debug mode
+  \param[in]   ptGptbBase pointer of gptb register structure
 */
-
-void csi_gptb_debug_enable(csp_gptb_t *ptGptbBase, bool bEnable);
+void csi_gptb_debug_enable(csp_gptb_t *ptGptbBase);
 
 /**
-  \brief       enable/disable gptb emergencyinterruption
-  \param[in]   ptGptbBase       pointer of gptb register structure
-  \param[in]   eEmint		       refer to csi_gptb_emint_e
+  \brief       disable gptb in debug mode
+  \param[in]   ptGptbBase pointer of gptb register structure
 */
-void csi_gptb_emint_en(csp_gptb_t *ptGptbBase, csi_gptb_emint_e eEmint);
+void csi_gptb_debug_disable(csp_gptb_t *ptGptbBase);
+
+/**
+  \brief       enable gptb emergency interrupt
+  \param[in]   ptGptbBase   pointer of gptb register structure
+  \param[in]   eEmint		refer to csi_gptb_emint_e
+*/
+void csi_gptb_emint_enable(csp_gptb_t *ptGptbBase, csi_gptb_emint_e eEmint);
+
+/**
+  \brief       disable gptb emergency interrupt
+  \param[in]   ptGptbBase   pointer of gptb register structure
+  \param[in]   eEmint		refer to csi_gptb_emint_e
+*/
+void csi_gptb_emint_disable(csp_gptb_t *ptGptbBase, csi_gptb_emint_e eEmint);
 
 /**
   \brief   enable/disable gptb out trigger 
   \param   ptGptbBase   pointer of gptb register structure
   \param   byCh			0/1
-  \param   bEnable		ENABLE/DISABLE
 */
-csi_error_t csi_gptb_evtrg_enable(csp_gptb_t *ptGptbBase, uint8_t byCh, bool bEnable);
+csi_error_t csi_gptb_evtrg_enable(csp_gptb_t *ptGptbBase, uint8_t byCh);
 
 /**
   \brief   One time software output 
@@ -866,13 +902,19 @@ void csi_gptb_loading_method_aqcsf(csp_gptb_t *ptGptbBase, csi_gptb_aqosf_e eLoa
  */
 csi_error_t csi_gptb_continuoussoftwareforce_output(csp_gptb_t *ptGptbBase, csi_gptb_channel_e eChannel, csi_gptb_aqcsf_e eAction);
 
-/** \brief gptb  input  config  
+/** \brief gptb interrupt enable  
  *  \param[in] ptGptbBase: pointer of gptb register structure
- *  \param[in] eInt:     refer to to csp_gptb_int_e
- *  \param[in] bEnable:  ENABLE/DISABLE
+ *  \param[in] eInt:       \ref csi_gptb_int_e
  *  \return CSI_OK;
  */
-csi_error_t csi_gptb_int_enable(csp_gptb_t *ptGptbBase, csi_gptb_int_e eInt, bool bEnable);
+csi_error_t csi_gptb_int_enable(csp_gptb_t *ptGptbBase, csi_gptb_int_e eInt);
+
+/** \brief gptb interrupt disable   
+ *  \param[in] ptGptbBase: pointer of gptb register structure
+ *  \param[in] eInt:       \ref csi_gptb_int_e
+ *  \return CSI_OK;
+ */
+csi_error_t csi_gptb_int_disable(csp_gptb_t *ptGptbBase, csi_gptb_int_e eInt);
 
 /** \brief gptb sync input evtrg config  
  * 
@@ -940,4 +982,4 @@ csi_error_t csi_gptb_reglk_config(csp_gptb_t *ptGptbBase,csi_gptb_reglk_config_t
 }
 #endif
 
-#endif /* _DRV_PWM_H_ */
+#endif /* _GPTB_H_ */
