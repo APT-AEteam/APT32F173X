@@ -93,10 +93,8 @@ ATTRIBUTE_ISR void syscon_int_handler(void)
 
 ATTRIBUTE_ISR void ifc_int_handler(void)
 {
-	// ISR content ...
 	CSI_INTRPT_ENTER();
-	ifc_irqhandler();
-	
+	ifc_irqhandler();	//only DFLASH paramode write would use IFC interrupt handler. DO NOT rewrite this funcion！
 	CSI_INTRPT_EXIT();
 }
 
