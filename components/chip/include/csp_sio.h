@@ -315,7 +315,8 @@ typedef enum
 	SIO_INT_TXBUFEMPT   =	(0x01ul << SIO_TXBUFEMPT_POS), 
 	SIO_INT_RXBUFFULL	=	(0x01ul << SIO_RXBUFFULL_POS), 
 	SIO_INT_BREAK		=	(0x01ul << SIO_BREAK_POS), 
-	SIO_INT_TIMEOUT		=	(0x01ul << SIO_TIMEOUT_POS)
+	SIO_INT_TIMEOUT		=	(0x01ul << SIO_TIMEOUT_POS),
+	SIO_INT_ALL			=	(0x2Ful << 0)
 }sio_int_e;  
 
 typedef enum
@@ -431,7 +432,7 @@ static inline void csp_sio_wait_tx(csp_sio_t *ptSioBase)
 {
 	while(!(ptSioBase->RISR & SIO_INT_TXDNE));
 }
-static inline void csp_sio_set_txbuf(csp_sio_t *ptSioBase,uint32_t wVal)
+static inline void csp_sio_set_txbuf(csp_sio_t *ptSioBase, uint32_t wVal)
 {
 	ptSioBase->TXBUF = wVal;
 }
@@ -457,7 +458,7 @@ static inline void csp_sio_align_enable(csp_sio_t *ptSioBase, bool bEnable)
 	ptSioBase->RXCR0 = (ptSioBase->RXCR0 & ~SIO_ALIGNEN_MSK) | (bEnable << SIO_ALIGNEN_POS);
 }
 
-static inline void csp_sio_set_torst(csp_sio_t *ptSioBase, uint8_t byToCnt, bool bEnable)
+static inline void csp_sio_set_timeout(csp_sio_t *ptSioBase, uint8_t byToCnt, bool bEnable)
 {
 	ptSioBase->RXCR2 = (ptSioBase->RXCR2 & ~(SIO_TORSTEN_MSK | SIO_TOCNT_MSK)) | (bEnable << SIO_TORSTEN_POS) | SIO_TOCNT(byToCnt);
 }

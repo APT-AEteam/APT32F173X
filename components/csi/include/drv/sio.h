@@ -263,7 +263,7 @@ typedef struct {
 	uint8_t			byRxStat;			//sio receive status
 	uint8_t			byTxStat;			//sio send status
 	//CallBack		
-	void(*recv_callback)(csp_sio_t *ptSioBase, uint32_t *pwBuf, uint16_t hwSzie);
+	void(*recv_callback)(csp_sio_t *ptSioBase, uint8_t byIsr, uint32_t *pwBuf, uint16_t hwSzie);
 	void(*send_callback)(csp_sio_t *ptSioBase);
 	void(*err_callback)(csp_sio_t *ptSioBase, uint8_t byIsr);
 } csi_sio_ctrl_t;
@@ -376,13 +376,22 @@ csi_error_t csi_sio_send_int(csp_sio_t *ptSioBase, const uint32_t *pwSend, uint1
 csi_error_t csi_sio_set_buffer(uint32_t *pwData, uint16_t hwLen);
 
 /**
-  \brief       receive data to sio transmitter, asynchronism mode
+  \brief       sio receive data, use rxbuffull interrupt 
   \param[in]   ptSioBase	pointer of sio register structure
   \param[in]   pwRecv		pointer of sio receive data
   \param[in]   hwLen		length receive data
   \return      error code \ref csi_error_t or receive data len
 */
-int32_t csi_sio_receive(csp_sio_t *ptSioBase, uint32_t *pwRecv, uint16_t hwLen);
+csi_error_t csi_sio_receive_rxfull_int(csp_sio_t *ptSioBase, uint32_t *pwRecv, uint16_t hwSize);
+
+/**
+  \brief       sio receive data, use rxdne interrupt 
+  \param[in]   ptSioBase	pointer of sio register structure
+  \param[in]   pwRecv		pointer of sio receive data
+  \param[in]   hwLen		length receive data
+  \return      error code \ref csi_error_t or receive data len
+*/
+csi_error_t csi_sio_receive_rxdne_int(csp_sio_t *ptSioBase, uint32_t *pwRecv, uint16_t hwSize);
 
 /** 
   \brief receive data to sio transmitter, asynchronism mode
@@ -391,7 +400,24 @@ int32_t csi_sio_receive(csp_sio_t *ptSioBase, uint32_t *pwRecv, uint16_t hwLen);
   \param[in] hwSize: receive data size
   \return error code \ref csi_error_t or receive data len
  */
-int32_t csi_sio_receive_int(csp_sio_t *ptSioBase, uint32_t *pwRecv, uint16_t hwSize);
+int32_t csi_sio_receive(csp_sio_t *ptSioBase, uint32_t *pwRecv, uint16_t hwSize);
+
+
+/** 
+  \brief 	   sio send dma enable
+  \param[in]   ptSioBase	pointer of sio register structure
+  \param[in]   bEnable		enable/disable send dma
+  \return  	   none
+ */
+void csi_sio_send_dma_enable(csp_sio_t *ptSioBase, bool bEnable);
+
+/** 
+  \brief 	   sio receive dma enable
+  \param[in]   ptSioBase	pointer of sio register structure
+  \param[in]   bEnable		enable/disable receive dma
+  \return  	   none
+ */
+void csi_sio_receive_dma_enable(csp_sio_t *ptSioBase, bool bEnable);
 
 /** 
   \brief send data from sio, this function is dma mode

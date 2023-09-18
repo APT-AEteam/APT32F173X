@@ -246,7 +246,7 @@ void csi_dma_sw_rst(csp_dma_t *ptDmaBase)
 bool csi_dma_get_msg(csp_dma_t *ptDmaBase, csi_dma_ch_e eDmaCh, bool bClrEn)
 {
 	bool bRet = false;
-	uint8_t byIdx = csi_get_dma_idx(ptDmaBase);
+	uint8_t byIdx = apt_get_dma_idx(ptDmaBase);
 	
 	if(0 != (s_hwDmaMsg[byIdx] & (0x01ul << eDmaCh))) 
 	{

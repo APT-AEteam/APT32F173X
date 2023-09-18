@@ -26,7 +26,6 @@ int32_t console_init(sys_console_t *handle)
 	
 	tUartConfig.eParity = UART_PARITY_NONE;			//no parity
 	tUartConfig.wBaudRate = handle->baudrate;		//115200
-	
     ret = csi_uart_init(handle->uart, &tUartConfig);
 	
 	if(ret < 0)

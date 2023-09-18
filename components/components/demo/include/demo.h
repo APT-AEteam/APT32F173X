@@ -78,8 +78,10 @@ extern int adc_samp_continuous_int_demo(void);
 //sio demo
 //sio led
 extern int sio_led_rgb_demo(void);
-extern int sio_led_rgb_recv_rxfull_demo(void);
-extern int sio_led_rgb_recv_rxdone_demo(void);
+extern int sio_led_rgb_int_demo(void);
+extern int sio_led_rgb_send_dma_demo(void);
+extern int sio_led_rgb_receive_dma_demo(void);
+
 //hdq
 extern int sio_hdq_send_demo(void);
 extern int sio_hdq_recv_wrcmd_demo(void);
