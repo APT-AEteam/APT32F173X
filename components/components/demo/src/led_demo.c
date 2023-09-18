@@ -124,7 +124,6 @@ int led_demo(void)
 		{
 			//display status 0:正常控制，依次显示1，2，3，4
 			case 0:
-				
 				for(uint8_t i = 0; i < 4; i++)
 				{
 					csi_led_set_data(LED, i, g_byLedData[i]);
