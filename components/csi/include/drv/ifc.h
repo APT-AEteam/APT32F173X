@@ -54,6 +54,7 @@ void csi_ifc_dflash_paramode_enable(csp_ifc_t *ptIfcBase, bool bEnable);
 */
 csi_error_t csi_ifc_read(csp_ifc_t *ptIfcBase, uint32_t wAddr, uint32_t *data, uint32_t wDataNum);
 
+
 /** \brief Program data (<page size)to DFLASH. NOTE!!! Extra ERASE is NOT needed before programming.
  * 
  *  \param[in] ptIfcBase：pointer of ifc register structure
@@ -75,6 +76,7 @@ csi_error_t csi_ifc_dflash_page_program(csp_ifc_t *ptIfcBase, uint32_t wAddr, ui
  */
 csi_error_t csi_ifc_pflash_page_program(csp_ifc_t *ptIfcBase, uint32_t wAddr, uint32_t *pwData, uint32_t wDataWordNum);
 
+
 /** \brief Program data (<page size)to Flash. NOTE!!! Extra ERASE is NOT needed before programming.
  * 
  *  \param[in] ptIfcBase：pointer of ifc register structure
@@ -84,7 +86,6 @@ csi_error_t csi_ifc_pflash_page_program(csp_ifc_t *ptIfcBase, uint32_t wAddr, ui
  *  \return error code
  */
 csi_error_t csi_ifc_page_program(csp_ifc_t *ptIfcBase, uint32_t wAddr, uint32_t *pwData, uint32_t wDataNum);
-
 
 
 /**
@@ -97,6 +98,7 @@ csi_error_t csi_ifc_page_program(csp_ifc_t *ptIfcBase, uint32_t wAddr, uint32_t 
 */
 csi_error_t csi_ifc_program(csp_ifc_t *ptIfcBase, uint32_t wAddr, uint32_t *pwData, uint32_t wDataNum);
 
+
 /** \brief erase one page(DFLASH or PFLASH). NOTE!!! Extra ERASE is NOT needed before programming.
  * 
  *  \param[in] ptIfcBase：pointer of ifc register structure
@@ -104,6 +106,7 @@ csi_error_t csi_ifc_program(csp_ifc_t *ptIfcBase, uint32_t wAddr, uint32_t *pwDa
  *  \return ifc_status_t
  */
 csi_error_t csi_ifc_page_erase(csp_ifc_t *ptIfcBase, uint32_t wPageStAddr);
+
 
 /**
   \brief       Get Data Flash information.
@@ -119,7 +122,6 @@ void csi_ifc_info(csp_ifc_t *ptIfcBase,csi_ifc_info_t *ifc_info);
 csi_ifc_status_t csi_ifc_get_status(csp_ifc_t *ptIfcBase);
 
 
-
 /** \brief Change user option
  *  \param ptIfcBase pointer of ifc register structure.
  *  \param wData data that to be written into USER OPTION area
@@ -128,6 +130,12 @@ csi_ifc_status_t csi_ifc_get_status(csp_ifc_t *ptIfcBase);
 csi_error_t csi_ifc_wr_useroption(csp_ifc_t *ptIfcBase, uint32_t wData);
 
 
+/** \brief write flash protection
+ *  \param ptIfcBase：ptIfcBase pointer of ifc register structure.
+ *  \param eProt：Flash protection mode \ref ifc_prot_e
+ *  \return csi_error_t
+ */
+csi_error_t csi_ifc_wr_protection(csp_ifc_t *ptIfcBase, ifc_prot_e eProt);
 
 extern volatile bool g_bFlashCheckPass;
 extern volatile bool g_bFlashPgmDne;

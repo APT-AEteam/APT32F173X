@@ -7,16 +7,16 @@
  * <table>
  * <tr><th> Date  <th>Version  <th>Author  <th>Description
  * <tr><td> 2020-8-10 <td>V0.0  <td>WNN   <td>initial
+ * <tr><td> 2023-9-10 <td>V0.0  <td>WNN   <td> add protection write
  * </table>
  * *********************************************************************
 */
 
-#include <csi_core.h>
-#include <stdint.h>
-#include "csp_common.h"
 
 #ifndef CSP_IFC_H
 #define CSP_IFC_H
+
+#include "soc.h"
 
 /// \struct csp_ifc_t
 /// \brief IFC register structure
@@ -41,7 +41,7 @@ typedef volatile struct {
 #define DFLASH  (0x1)
 #define PFLASH_PAGE_SZ	(64)
 #define DFLASH_PAGE_SZ	(16)
-#define SWD_ADDR	(0x000801C0)
+
 
 ///CEDR: clock enable disable reg
 #define  IFC_CLKEN  (0x01ul) 
@@ -52,8 +52,16 @@ typedef volatile struct {
 ///CMR: IFC command reg
 #define  HIDM0  ((0x0ul)<<8) 
 #define  HIDM1  ((0x1ul)<<8) 
-#define  HIDM2  ((0x2ul)<<8) 
-#define  HIDM3  ((0x3ul)<<8) 
+
+typedef enum{
+	IFC_ENCRYPT = 0x1 << 20,
+	IFC_SWDP	= 0x1 << 19,
+	IFC_RDP		= 0x1 << 18,
+	IFC_HDP_32K	= 0x1 << 22,
+	IFC_HDP_16K	= 0x1 << 21,
+	IFC_HDP_8K	= 0x1 << 16,
+	IFC_HDP_FULL= 0x1 << 17,
+}ifc_prot_e;
 
 typedef enum{
 	PROGRAM = 1,
@@ -77,14 +85,15 @@ typedef enum{
 ///MR: IFC operation mode
 #define  PF_WAIT_POS (0)
 #define  PF_WAIT_MSK (0x7ul << PF_WAIT_POS)
-#define  PF_WAIT0 (0x0ul) 
-#define  PF_WAIT1 (0x1ul) 
-#define  PF_WAIT2 (0x2ul) 
-#define  PF_WAIT3 (0x3ul) 
-#define  PF_WAIT4 (0x4ul) 
-#define  PF_WAIT5 (0x5ul) 
-#define  PF_WAIT6 (0x6ul) 
-#define  PF_WAIT7 (0x7ul) 
+#define  PF_WAIT0 (0x0ul << PF_WAIT_POS) 
+#define  PF_WAIT1 (0x1ul << PF_WAIT_POS) 
+#define  PF_WAIT2 (0x2ul << PF_WAIT_POS) 
+#define  PF_WAIT3 (0x3ul << PF_WAIT_POS) 
+#define  PF_WAIT4 (0x4ul << PF_WAIT_POS) 
+#define  PF_WAIT5 (0x5ul << PF_WAIT_POS) 
+#define  PF_WAIT6 (0x6ul << PF_WAIT_POS) 
+#define  PF_WAIT7 (0x7ul << PF_WAIT_POS) 
+
 #define  DFLASH_PMODE_POS 8
 #define  DFLASH_PMODE_MSK (0x1 <<DFLASH_PMODE_POS)
 #define  DFLASH_PMODE (0x1 <<DFLASH_PMODE_POS)
@@ -100,25 +109,28 @@ typedef enum{
 
 ///Interrupt regs: IMCR, RISR, MISR, ICR
 typedef enum{
-	IFCINT_ERS_END = 1,
-	IFCINT_PGM_END = 2,
-	IFCINT_PEP_END = 4,
-	IFCINT_PROT_ERR = (0x1ul << 12),
-	IFCINT_UDEF_ERR = (0x1ul << 13),
-	IFCINT_ADDR_ERR = (0x1ul << 14),
-	IFCINT_OVW_ERR = (0x1ul << 15)
+	IFC_INT_ERS_END = 1,
+	IFC_INT_PGM_END = 2,
+	IFC_INT_PEP_END = 4,
+	IFC_INT_PROT_ERR = (0x1ul << 12),
+	IFC_INT_UDEF_ERR = (0x1ul << 13),
+	IFC_INT_ADDR_ERR = (0x1ul << 14),
+	IFC_INT_OVW_ERR = (0x1ul << 15),
+	IFC_INT_ALL = IFC_INT_ERS_END|IFC_INT_PGM_END|IFC_INT_PEP_END|IFC_INT_PROT_ERR|IFC_INT_UDEF_ERR|IFC_INT_ADDR_ERR|IFC_INT_OVW_ERR
 }ifc_int_e;
 
-static inline void csp_ifc_clk_enable(csp_ifc_t *ptIfcBase, bool bEnable)
+static inline void csp_ifc_clk_enable(csp_ifc_t *ptIfcBase)
 {
-	if (bEnable)
-		ptIfcBase->CEDR = IFC_CLKEN;
-	else
-		ptIfcBase->CEDR = (~IFC_CLKEN);
+	ptIfcBase->CEDR = IFC_CLKEN;
+}
+
+static inline void csp_ifc_clk_disable(csp_ifc_t *ptIfcBase)
+{
+	ptIfcBase->CEDR = (~IFC_CLKEN);
 }
 
 
-static inline void csp_ifc_reset(csp_ifc_t *ptIfcBase)
+static inline void csp_ifc_sw_rst(csp_ifc_t *ptIfcBase)
 {
 	ptIfcBase->SRR = IFC_SWRST;
 }
@@ -131,20 +143,23 @@ static inline void csp_ifc_wr_cmd(csp_ifc_t *ptIfcBase, ifc_cmd_e eCmd)
 {
 	ptIfcBase->CMR = eCmd;
 }
-static inline void csp_ifc_addr(csp_ifc_t *ptIfcBase, uint32_t wAddr)
+static inline void csp_ifc_set_addr(csp_ifc_t *ptIfcBase, uint32_t wAddr)
 {
 	ptIfcBase->ADDR = wAddr;
 }
 
-static inline void csp_ifc_int_enable(csp_ifc_t *ptIfcBase, ifc_int_e eInt, bool bEnable)
+static inline void csp_ifc_int_enable(csp_ifc_t *ptIfcBase, ifc_int_e eInt)
 {
-	if (bEnable)
-		ptIfcBase->IMCR |= eInt;
-	else
-		ptIfcBase->IMCR &= ~eInt;
+	ptIfcBase->ICR = eInt;
+	ptIfcBase->IMCR |= eInt;
 }
 
-static inline uint32_t csp_ifc_get_misr(csp_ifc_t *ptIfcBase)
+static inline void csp_ifc_int_disable(csp_ifc_t *ptIfcBase, ifc_int_e eInt)
+{
+	ptIfcBase->IMCR &= ~eInt;
+}
+
+static inline uint32_t csp_ifc_get_isr(csp_ifc_t *ptIfcBase)
 {
 	return (ptIfcBase->MISR);
 }
@@ -162,16 +177,15 @@ static inline void csp_ifc_unlock(csp_ifc_t *ptIfcBase)
 	ptIfcBase->KR = IFC_USER_KEY;
 }
 
-static inline void csp_ifc_dflash_paramode_enable(csp_ifc_t *ptIfcBase, bool bEnable)
+static inline void csp_ifc_dflash_paramode_enable(csp_ifc_t *ptIfcBase)
 {
-	ptIfcBase->MR = (ptIfcBase->MR &(~DFLASH_PMODE_MSK)) | (bEnable << DFLASH_PMODE_POS);
+	ptIfcBase->MR |= DFLASH_PMODE_MSK;
 }
 
-static inline void csp_ifc_flash_set_speed_wait(csp_ifc_t *ptIfcBase, uint8_t bySpeed,uint8_t byWait)
+static inline void csp_ifc_dflash_paramode_disable(csp_ifc_t *ptIfcBase)
 {
-	ptIfcBase->MR = (ptIfcBase->MR &(~PF_SPEED_MSK)&(~PF_WAIT_MSK)) | (bySpeed << PF_SPEED_POS)| (byWait << PF_WAIT_POS);
+	ptIfcBase->MR &= ~DFLASH_PMODE_MSK;
 }
-
 
 static inline uint32_t csp_ifc_get_dflash_paramode(csp_ifc_t *ptIfcBase)
 {
@@ -179,6 +193,9 @@ static inline uint32_t csp_ifc_get_dflash_paramode(csp_ifc_t *ptIfcBase)
 }
 
 
-
+static inline void csp_ifc_flash_set_speed_wait(csp_ifc_t *ptIfcBase, uint8_t bySpeed,uint8_t byWait)
+{
+	ptIfcBase->MR = (ptIfcBase->MR &(~PF_SPEED_MSK)&(~PF_WAIT_MSK)) | (bySpeed << PF_SPEED_POS)| (byWait << PF_WAIT_POS);
+}
 
 #endif   /**< CSP_IFC_H */

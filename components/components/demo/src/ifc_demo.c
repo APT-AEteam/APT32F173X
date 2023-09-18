@@ -38,18 +38,6 @@ void ifc_read_demo(void)
 }
 
 
-/** \brief flash page erase操作示例代码
- * 			- 使用注意事项：无论dflash还是pflash，编程操作都自带erase步骤，不需要额外调用page erase函数，否则会影响flash寿命！！
- * 							
- *  \param[in] none
- *  \return error code
- */	
-void ifc_page_erase_demo(void)
-{	
-	csi_ifc_page_erase(IFC,0x10000000);			//erase dflash 第一个page
-}
-
-
 /** \brief dflash page写操作示例代码
  *   		- 不支持跨页，请确保写入地址在同一个page
  * 			- 使用注意事项：1、起始地址必须word对齐
@@ -86,8 +74,6 @@ void ifc_dflash_page_parallel_program_demo(void)
 	else
 		my_printf("program pass!\n");
 }
-
-
 
 
 /** \brief pflash page写操作示例代码
@@ -131,4 +117,16 @@ void ifc_program_demo(void)
 		my_printf("program fail!\n");
 	else
 		my_printf("program pass!\n");
+}
+
+
+/** \brief flash page erase操作示例代码
+ * 			- 使用注意事项：无论dflash还是pflash，编程操作都自带erase步骤，不需要额外调用page erase函数，否则会影响flash寿命！！
+ * 							
+ *  \param[in] none
+ *  \return error code
+ */	
+void ifc_page_erase_demo(void)
+{	
+	csi_ifc_page_erase(IFC,0x10000000);			//erase dflash 第一个page
 }

@@ -96,7 +96,7 @@ ATTRIBUTE_ISR void ifc_int_handler(void)
 {
 	// ISR content ...
 	CSI_INTRPT_ENTER();
-	
+	ifc_irqhandler();
 	
 	CSI_INTRPT_EXIT();
 }
