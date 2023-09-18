@@ -62,6 +62,7 @@ void csi_led_set_bright(csp_led_t *ptLedBase, csi_led_brt_e eBrt)
  */ 
 void csi_led_int_enable(csp_led_t *ptLedBase, csi_led_intsrc_e eIntSrc)
 {
+	csp_led_clr_isr(ptLedBase, (csp_led_int_e)eIntSrc);
 	csp_led_int_enable(ptLedBase, (csp_led_int_e)eIntSrc);
 }
 
@@ -178,7 +179,7 @@ void csi_led_irqhandler(csp_led_t *ptLedBase, uint8_t byIdx)
 	uint8_t byIsr = csp_led_get_isr(ptLedBase);
 	
 	if(g_tLedCtrl[byIdx].callback)
-			g_tLedCtrl[byIdx].callback(ptLedBase, byIsr);
-			
+		g_tLedCtrl[byIdx].callback(ptLedBase, byIsr);
+
 	csp_led_clr_isr(ptLedBase, byIsr);
 }
