@@ -11,8 +11,8 @@
  * *********************************************************************
 */
 
-#ifndef _LED_H_
-#define _LED_H_
+#ifndef _DRV_LED_H_
+#define _DRV_LED_H_
 
 #include "csp.h"
 
@@ -166,4 +166,4 @@ csi_error_t csi_led_register_callback(csp_led_t *ptLedBase, void  *callback);
 }
 #endif
 
-#endif /* _LED_H_ */
+#endif /* _DRV_LED_H_ */

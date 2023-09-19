@@ -19,7 +19,36 @@
 /* Private macro-----------------------------------------------------------*/
 /* Private variablesr------------------------------------------------------*/
 
-/** \brief GPTB基本定时功能
+#if (USE_GPTB_CALLBACK == 0)		
+/** \brief	gptbx_int_handler: BT中断服务函数
+ * 
+ *  \brief 	GPTB发生中断时会调用此函数，函数在interrupt.c里定义为弱(weak)属性，默认不做处理；用户用到GPTB中
+ * 			断时，请重新定义此函数，在此函数中进行对应中断处理，也可直接在interrupt.c里的函数里进行处理
+ * 
+ *  \param[in] none
+ *  \return none
+ */
+ATTRIBUTE_ISR  void gptb0_int_handler(void)
+{
+	//用户直接在中断服务接口函数里处理中断，建议客户使用此模式
+	volatile uint32_t wIsr = csp_gptb_get_isr(GPTB0);
+	
+	if(wIsr & GPTB_INT_PEND)					//PEND interrupt
+	{
+		csp_gptb_clr_isr(GPTB0, GPTB_INT_PEND);
+		csi_gpio_toggle(GPIOA, PA6);		//PA6翻转
+	}
+}
+#endif
+
+/** \brief	gptb_timer_demo: gptb做基本定时器功能，默认使用向上计数，PEND中断
+ * 
+ *  \brief	csi初始化使用(开启)周期结束中断，并在中断里面翻转IO(需要打开PA6 IO配置注释)；
+ * 			若不需要开启中断,需调用csi_gptb_int_disable接口函数，关闭周期结束中断。
+ * 			定时1000us翻转一次IO口，故IO翻转周期为2000us=2ms，500Hz
+ * 
+ * @ 工作模式:	GPTB_RUN_CONT: 连续工作模式。计数结束，计数器重新开始计数，周期执行
+ * 				GPTB_RUN_ONCE: 单次工作模式。计数结束，计数器停止工作
  * 
  *  \param[in] none
  *  \return error code
@@ -27,10 +56,17 @@
 int gptb_timer_demo(void)
 {
 	int iRet = 0;
+	csi_gptb_time_config_t tTimConfig;
 	
-	csi_gptb_timer_init(GPTB0, 10000);		//初始化GPTB0, 定时10000us； GPTB定时，默认采用向上计数，PEND中断
+#if (USE_GUI == 0)		
+	csi_gpio_set_mux(GPIOA, PA6, PA6_OUTPUT);	//初始化PA6为输出
+#endif
 	
-	csi_gptb_start(GPTB0);                  //启动定时器
+	tTimConfig.wTimeVal  = 1000;				//GPTB定时值 = 1000us
+	tTimConfig.eRunMode  = GPTB_RUN_CONT;		//GPTB计数器工作模式
+	csi_gptb_timer_init(GPTB0, &tTimConfig);	//初始化GPTB	
+	
+	csi_gptb_start(GPTB0);                  	//启动定时器
 
 	return iRet;	
 }
@@ -529,104 +565,4 @@ int gptb_pwm_dz_em_demo(void)
 		mdelay(1);
 	}	
 	return iRet;
-}
-
-static uint32_t s_wGptbCapBuff[4] = {0};
-
-/** \brief gptb0 interrupt handle weak function
- *  \param[in] none
- *  \return    none
- */
-__attribute__((weak)) void gptb_irqhandler(csp_gptb_t *ptGptbBase)
-{
-	volatile uint32_t wEMMisr = csp_gptb_get_emisr(ptGptbBase);
-	volatile uint32_t wMisr   = csp_gptb_get_isr(ptGptbBase);	
-	
-	//GPTB emergency interrupt
-	if(wEMMisr > 0)
-	{
-		if((wEMMisr & GPTB_EM_INT_EP0) == GPTB_EM_INT_EP0)
-		{
-			csp_gptb_clr_emisr(ptGptbBase, GPTB_EM_INT_EP0);
-		}
-		if((wEMMisr & GPTB_EM_INT_EP1) == GPTB_EM_INT_EP1)
-		{
-			csp_gptb_clr_emisr(ptGptbBase, GPTB_EM_INT_EP1);
-		}
-		if((wEMMisr & GPTB_EM_INT_EP2) == GPTB_EM_INT_EP2)
-		{
-			csp_gptb_clr_emisr(ptGptbBase, GPTB_EM_INT_EP2);
-		}
-		if((wEMMisr & GPTB_EM_INT_EP3) == GPTB_EM_INT_EP3)
-		{
-			csp_gptb_clr_emisr(ptGptbBase, GPTB_EM_INT_EP3);
-		}	
-	}
-
-	//GPTB interrupt
-	if(wMisr > 0)
-	{
-		if((wMisr & GPTB_INT_TRGEV0) == GPTB_INT_TRGEV0)
-		{
-			csp_gptb_clr_isr(ptGptbBase, GPTB_INT_TRGEV0);
-		}
-		if((wMisr & GPTB_INT_TRGEV1) == GPTB_INT_TRGEV1)
-		{
-			csp_gptb_clr_isr(ptGptbBase, GPTB_INT_TRGEV1);
-		}
-		if((wMisr & GPTB_INT_CAPLD0) == GPTB_INT_CAPLD0)
-		{
-			csp_gptb_clr_isr(ptGptbBase, GPTB_INT_CAPLD0);
-			s_wGptbCapBuff[0]=csp_gptb_get_cmpa(ptGptbBase);
-		}
-		if((wMisr & GPTB_INT_CAPLD1) == GPTB_INT_CAPLD1)
-		{
-			csp_gptb_clr_isr(ptGptbBase, GPTB_INT_CAPLD1);
-			s_wGptbCapBuff[0]=csp_gptb_get_cmpa(ptGptbBase);
-			s_wGptbCapBuff[1]=csp_gptb_get_cmpb(ptGptbBase);
-		}
-		if((wMisr & GPTB_INT_CAPLD2) == GPTB_INT_CAPLD2)
-		{
-			csp_gptb_clr_isr(ptGptbBase, GPTB_INT_CAPLD2);
-			s_wGptbCapBuff[0]=csp_gptb_get_cmpa(ptGptbBase);
-			s_wGptbCapBuff[1]=csp_gptb_get_cmpb(ptGptbBase);
-			s_wGptbCapBuff[2]=csp_gptb_get_cmpaa(ptGptbBase);
-		}
-		if((wMisr & GPTB_INT_CAPLD3) == GPTB_INT_CAPLD3)
-		{
-			csp_gptb_clr_isr(ptGptbBase, GPTB_INT_CAPLD3);
-			s_wGptbCapBuff[0]=csp_gptb_get_cmpa(ptGptbBase);
-			s_wGptbCapBuff[1]=csp_gptb_get_cmpb(ptGptbBase);
-			s_wGptbCapBuff[2]=csp_gptb_get_cmpaa(ptGptbBase);
-			s_wGptbCapBuff[3]=csp_gptb_get_cmpba(ptGptbBase);
-		}
-		if((wMisr & GPTB_INT_CAU) == GPTB_INT_CAU)
-		{
-			csp_gptb_clr_isr(ptGptbBase, GPTB_INT_CAU);
-		}
-		if((wMisr & GPTB_INT_CAD) == GPTB_INT_CAD)
-		{
-			csp_gptb_clr_isr(ptGptbBase, GPTB_INT_CAD);
-		}
-		if((wMisr & GPTB_INT_CBU) == GPTB_INT_CBU)
-		{
-			csp_gptb_clr_isr(ptGptbBase, GPTB_INT_CBU);
-		}
-		if((wMisr & GPTB_INT_CBD) == GPTB_INT_CBD)
-		{
-			csp_gptb_clr_isr(ptGptbBase, GPTB_INT_CBD);
-		}
-		if((wMisr & GPTB_INT_PEND) == GPTB_INT_PEND)
-		{	
-			csp_gptb_clr_isr(ptGptbBase, GPTB_INT_PEND);
-		}
-		if((wMisr & GPTB_INT_PRDMA) == GPTB_INT_PRDMA)
-		{
-			csp_gptb_clr_isr(ptGptbBase, GPTB_INT_PRDMA);
-		}
-		if((wMisr & GPTB_INT_ZROMA) == GPTB_INT_ZROMA)
-		{
-			csp_gptb_clr_isr(ptGptbBase, GPTB_INT_ZROMA);
-		}
-	}
 }
