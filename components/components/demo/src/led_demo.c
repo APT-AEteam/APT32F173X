@@ -18,11 +18,12 @@
 
 /* externs function--------------------------------------------------------*/
 /* private function--------------------------------------------------------*/
+void led_io_init(void);
 /* externs variablesr------------------------------------------------------*/
 /* Private variablesr------------------------------------------------------*/
 /* device instance ------------------------------------------------------*/
 /* Private variablesr-----------------------------------------------------*/ 
-uint8_t g_byLedData[4] = {0x06,0x5b,0x4f,0x66};//数码管编码：1,2,3,4 
+static uint8_t s_byLedData[4] = {0x06,0x5b,0x4f,0x66};//数码管编码：1,2,3,4 
 
 #if (USE_LED_CALLBACK == 0)
 /** \brief	led_int_handler: led中断服务函数
@@ -40,7 +41,7 @@ ATTRIBUTE_ISR void led_int_handler(void)
 }
 #endif
 
-/** \brief  led_io_config: LED相关IO配置，包括SEG脚与COM脚的配置
+/** \brief  led_io_init: LED相关IO配置，包括SEG脚与COM脚的配置
  * 
  * 注意：
  * 如果要使用SWD口作COM功能使用(PA13/PA14)，前面一定要加delay函数，否则复位后将很难连上芯片，见如下使用示例：
@@ -51,7 +52,7 @@ ATTRIBUTE_ISR void led_int_handler(void)
  * \param[in] none
  * \return none
  */
-void led_io_config(void)
+void led_io_init(void)
 {
 #if (USE_GUI == 0)
 	//SEG0~SEG7
@@ -81,10 +82,10 @@ void led_io_config(void)
 /**
 * \brief led_demo： LED示例代码
 * \brief 代码功能说明：
-* \brief 1、正常控制：依次点亮4个数码管，依次显示1，2，3，4
-* \brief 2、闪烁控制：关闭COM0，显示2，3，4
-* \brief 3、闪烁控制：关闭COM0/1，显示3，4
-* \brief 4、闪烁控制：关闭COM0/1/2，显示4
+* \brief byDisplayStatus=0：正常控制，打开COM0/1/2/3，显示1，2，3，4
+* \brief byDisplayStatus=1：闪烁控制，关闭COM0，显示2，3，4
+* \brief byDisplayStatus=2：闪烁控制，关闭COM0/1，显示3，4
+* \brief byDisplayStatus=3：闪烁控制，关闭COM0/1/2，显示4
 * \return  error code
 * 四位一体共阴数码管(SM420564W32U3A/AB092716)引脚图：
 					  COM1  a   f COM2 COM3 b
@@ -105,13 +106,13 @@ int led_demo(void)
 {	
 	int iRet = 0;
 	uint8_t byDisplayStatus=0;
-	
-	led_io_config();
-	
 	csi_led_config_t ptLedCfg;
+	
+	led_io_init();
+	
 	ptLedCfg.eClkDiv 	  = LED_PCLK_DIV8;	//LED时钟为系统时钟8分频
+	ptLedCfg.eBrt 		  = LED_BRT100;		//LED显示亮度100%
 	ptLedCfg.hwComMask 	  = 0x0f;			//COM0~3打开
-	ptLedCfg.eBrt 		  = LED_100;		//LED显示亮度50%
 	ptLedCfg.hwOnTime 	  = 120;			//显示周期时间(单位：Tledclk)
 	ptLedCfg.hwBreakTime  = 50;				//Non-Overlap时间(单位：Tledclk)
 	csi_led_init(LED, &ptLedCfg);		
@@ -122,52 +123,52 @@ int led_demo(void)
 	{
 		switch(byDisplayStatus)
 		{
-			//display status 0:正常控制，依次显示1，2，3，4
+			//display status=0:正常控制，依次显示1，2，3，4
 			case 0:
 				for(uint8_t i = 0; i < 4; i++)
 				{
-					csi_led_set_data(LED, i, g_byLedData[i]);
+					csi_led_set_data(LED, i, s_byLedData[i]);
 					mdelay(5);
 				}
 				byDisplayStatus++;
 				mdelay(1000);
 			break;
 			
-			//display status 1:闪烁控制，关闭COM0，依次显示2，3，4
+			//display status=1:闪烁控制，关闭COM0，依次显示2，3，4
 			case 1:
-				csi_led_blink_control(LED, LED_BLK_OFF,(0x01&LED_BLK_MSK));//disable COM0
+				csi_led_set_blink(LED, LED_BLK_OFF, 0x01);//disable COM0
 				for(uint8_t i = 0; i < 4; i++)
 				{
-					csi_led_set_data(LED, i, g_byLedData[i]);
+					csi_led_set_data(LED, i, s_byLedData[i]);
 					mdelay(5);
 				}
 				byDisplayStatus++;
 				mdelay(1000);
 			break;
 				
-			//display status 2:闪烁控制，关闭COM0/1，依次显示3，4
+			//display status=2:闪烁控制，关闭COM0/1，依次显示3，4
 			case 2:
-				csi_led_blink_control(LED, LED_BLK_OFF,(0x02&LED_BLK_MSK));//disable COM1
+				csi_led_set_blink(LED, LED_BLK_OFF, 0x03);//disable COM1
 				for(uint8_t i = 0; i < 4; i++)
 				{
-					csi_led_set_data(LED, i, g_byLedData[i]);
+					csi_led_set_data(LED, i, s_byLedData[i]);
 					mdelay(5);
 				}
 				byDisplayStatus++;
 				mdelay(1000);
 			break;
 				
-			//display status 3:闪烁控制，关闭COM0/1/2，显示4
+			//display status=3:闪烁控制，关闭COM0/1/2，显示4
 			case 3:
-				csi_led_blink_control(LED, LED_BLK_OFF,(0x04&LED_BLK_MSK));//disable COM2
+				csi_led_set_blink(LED, LED_BLK_OFF, 0x07);//disable COM2
 				for(uint8_t i = 0; i < 4; i++)
 				{
-					csi_led_set_data(LED, i, g_byLedData[i]);
+					csi_led_set_data(LED, i, s_byLedData[i]);
 					mdelay(5);
 				}
 				byDisplayStatus = 0;
 				mdelay(1000);
-				csi_led_blink_control(LED, LED_BLK_ON,(0x07&LED_BLK_MSK));//enable COM0/1/2
+				csi_led_set_blink(LED, LED_BLK_ON, 0x07);//enable COM0/1/2
 			break;
 			
 			default:

@@ -26,14 +26,14 @@ typedef enum {
 }csi_led_blk_e;
 
 typedef enum {
-	LED_100 = 0,
-	LED_87,
-	LED_75,
-	LED_62,
-	LED_50,
-	LED_37,
-	LED_25,
-	LED_12
+	LED_BRT100 = 0,
+	LED_BRT87,
+	LED_BRT75,
+	LED_BRT62,
+	LED_BRT50,
+	LED_BRT37,
+	LED_BRT25,
+	LED_BRT12
 }csi_led_brt_e;
 
 typedef enum {
@@ -44,17 +44,16 @@ typedef enum {
 	LED_PCLK_DIV64,
 	LED_PCLK_DIV128,
 	LED_PCLK_DIV256,
-}csi_led_ledclk_e;
+}csi_led_clkdiv_e;
 
 typedef enum {
-	LED_INTSRC_NONE  = 0,
 	LED_INTSRC_ICEND = 0x1ul<<0,
 	LED_INTSRC_IPEND = 0x1ul<<1,
 	LED_INTSRC_ALL   = 0x0F
 }csi_led_intsrc_e;
 
 typedef struct csi_led_config {
-	csi_led_ledclk_e 	eClkDiv;		//clk configure
+	csi_led_clkdiv_e 	eClkDiv;		//clk configure
 	csi_led_brt_e 		eBrt;			//brightness configure
 	uint16_t 			hwComMask;		//COM enable
 	uint16_t 			hwOnTime;		//scanning timing: COM on cycles(range:56~2096).Tcom = byOnTime * Tledclk, needs to be a multiple of 8, otherwise the timing will NOT be accurate
@@ -62,7 +61,7 @@ typedef struct csi_led_config {
 }csi_led_config_t;
 
 /// \struct csi_led_ctrl_t
-/// \brief  bt control handle, not open to users  
+/// \brief  LED control handle, not open to users  
 typedef struct 
 {
     void(*callback)(csp_led_t *ptLedBase, uint8_t byIsr);
@@ -70,12 +69,12 @@ typedef struct
 
 extern csi_led_ctrl_t g_tLedCtrl[LED_IDX];
 
- /** \brief initialize uart parameter structure
+ /** \brief initialize LED parameter structure
  * 
  *  \param[in] ptLedBase: pointer of led register structure
  *  \param[in] ptLedCfg: pointer of led parameter config structure
- * 			    - byClkDiv: LED Clock divider
- * 			    - byBrt: LED brightness control
+ * 			    - eClkDiv: LED Clock divider
+ * 			    - eBrt: LED brightness control
  * 			    - hwComMask: COM port enable mask
  * 			    - hwOnTime: scanning timing: COM on cycles(range:56~2096).Tcom = byOnTime * Tledclk, needs to be a multiple of 8, otherwise the timing will NOT be accurate
  * 			    - hwBreakTime: scanning timing: cycles between COMs(range:14~524).Tbreak = byBreakTime * Tledclk.
@@ -123,17 +122,17 @@ void csi_led_set_data(csp_led_t *ptLedBase, uint8_t byCom, uint8_t byData);
  * \param[in] hwOnMsk: on pattern
  * \return  None
  */
-void csi_led_blink_control(csp_led_t *ptLedBase, csi_led_blk_e eLedBlk, uint16_t hwOnMsk);
+void csi_led_set_blink(csp_led_t *ptLedBase, csi_led_blk_e eLedBlk, uint16_t hwOnMsk);
 
 /**
-  \brief   	   led start
+  \brief   	   led scan start
   \param[in]   ptLedBase    pointer of LED register structure
   \return  	   None
 */
 void csi_led_light_on(csp_led_t *ptLedBase);
 
 /**
-  \brief   	   led stop
+  \brief   	   led scan stop
   \param[in]   ptLedBase    pointer of LED register structure
   \return  	   None
 */
