@@ -62,7 +62,6 @@ int cnta_timer_demo(void)
 	tTimerCfg.eRunMode = CNTA_RUN_CONT;                 //重复模式
 	csi_cnta_timer_init(CA0, &tTimerCfg);               //初始化CountA
 	
-	csi_cnta_int_enable(CA0, CNTA_INTSRC_PENDL);        //若需使用中断，使能对应中断，这里使用CNTA_INTSRC_PENDL中断
 	csi_cnta_start(CA0);                                //启动CountA
 	
 	while(1)
@@ -81,9 +80,8 @@ int cnta_pwm_demo(void)
 	int iRet = 0;
 	csi_cnta_pwm_config_t tPwmCfg;
 	
-	//cnta作为pwm输出口
 #if (USE_GUI == 0)	
-	csi_gpio_set_mux(GPIOA, PA10,PA10_CNTA_BUZ);	
+	csi_gpio_set_mux(GPIOA, PA10,PA10_CNTA_BUZ);	   //cnta作为pwm输出口
 #endif
 	
 	tPwmCfg.eClkDiv = CNTA_CK_DIV8;		               //时钟8分频

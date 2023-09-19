@@ -110,7 +110,7 @@ extern void lp_exi_wakeup_demo(void);
 extern void iic_slave_int_callback_demo(void);
 
 //cnta demo
-extern int cnta_timer_callback_demo(void);
+extern int cnta_timer_int_callback_demo(void);
 
 //spi demo
 extern int spi_master_send_demo(void);
