@@ -135,7 +135,7 @@ static int32_t apt_set_lpt_clk(csp_lpt_t *ptLptBase,csi_lpt_clksrc_e eClk,uint32
 */
 void csi_lpt_int_enable(csp_lpt_t *ptLptBase, csi_lpt_intsrc_e eLptInt)
 {
-	csp_lpt_int_enable(ptLptBase,(lpt_int_e)LPT_INTSRC_ALL);
+	csp_lpt_int_enable(ptLptBase,(lpt_int_e)eLptInt);
 	csp_lpt_int_enable(ptLptBase,(lpt_int_e)eLptInt);
 }
 

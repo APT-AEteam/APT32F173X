@@ -188,6 +188,7 @@ void csi_cmp_clr_isr(csp_cmp_t *ptCmpBase)
  */ 
 void csi_cmp_int_enable(csp_cmp_t *ptCmpBase, csi_cmp_intsrc_e eIntSrc)
 {
+	csp_cmp_clr_isr(ptCmpBase);
 	csp_cmp_int_enable(ptCmpBase, (cmp_int_e)eIntSrc);
 }
 
