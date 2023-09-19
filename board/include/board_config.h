@@ -36,7 +36,7 @@ extern "C" {
 
 #ifndef PLL_VALUE
 
-#if	defined(IS_CHIP_1732) 
+#if	(IS_CHIP_1732 == 1) 
 #define PLL_VALUE               105000000U
 #else
 #define PLL_VALUE               72000000U
