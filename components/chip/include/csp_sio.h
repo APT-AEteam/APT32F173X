@@ -377,16 +377,13 @@ static inline void csp_sio_clk_enable(csp_sio_t *ptUsartBase)
 }
 static inline void csp_sio_clk_disable(csp_sio_t *ptUsartBase)
 {
-	ptUsartBase->CR &= ~SIO_CLKEN_MSK ; //CLK DIS
+	ptUsartBase->CR &= ~SIO_CLKEN_MSK ; 	//CLK DIS
 }
-static inline void csp_sio_set_mode(csp_sio_t *ptSioBase, sio_mode_e eTxRx)
+static inline void csp_sio_set_wkmode(csp_sio_t *ptSioBase, sio_mode_e eTxRx)
 {
 	ptSioBase->CR = (ptSioBase->CR & ~SIO_MODE_MSK) | (eTxRx << SIO_MODE_POS);
 }
-static inline void csp_sio_logic_rst(csp_sio_t *ptSioBase)
-{
-	ptSioBase->CR |= (SIO_WOKE_RSTKEY_MSK | SIO_WOKE_RST_MSK);		//reset without reg
-}
+
 //SIO DMA
 static inline void csp_sio_txdma_enable(csp_sio_t *ptSioBase, bool bEnable) 
 {
@@ -445,7 +442,7 @@ static inline void csp_sio_align_enable(csp_sio_t *ptSioBase, bool bEnable)
 	ptSioBase->RXCR0 = (ptSioBase->RXCR0 & ~SIO_ALIGNEN_MSK) | (bEnable << SIO_ALIGNEN_POS);
 }
 
-static inline void csp_sio_set_timeout(csp_sio_t *ptSioBase, uint8_t byToCnt, bool bEnable)
+static inline void csp_sio_set_samp_timeout(csp_sio_t *ptSioBase, uint8_t byToCnt, bool bEnable)
 {
 	ptSioBase->RXCR2 = (ptSioBase->RXCR2 & ~(SIO_TORSTEN_MSK | SIO_TOCNT_MSK)) | (bEnable << SIO_TORSTEN_POS) | SIO_TOCNT(byToCnt);
 }
@@ -470,7 +467,7 @@ static inline void csp_sio_set_sample_mode(csp_sio_t *ptSioBase,sio_bstsel_e eBs
 	ptSioBase->RXCR0 = (ptSioBase->RXCR0 & ~(SIO_BSTSEL_MSK | SIO_TRGMODE_MSK | SIO_RMODE_MSK));
 	ptSioBase->RXCR0 |= (eBst << SIO_BSTSEL_POS) | (eTrgMode << SIO_TRGMODE_POS) | (eRMode << SIO_RMODE_POS);
 }
-static inline void csp_sio_set_recv(csp_sio_t *ptSioBase,sio_rdir_e eRdir, uint8_t byBuflen, uint8_t byRxCnt)
+static inline void csp_sio_set_receive(csp_sio_t *ptSioBase,sio_rdir_e eRdir, uint8_t byBuflen, uint8_t byRxCnt)
 {
 	ptSioBase->RXCR0 = (ptSioBase->RXCR0 & ~SIO_RDIR_MSK) | (eRdir << SIO_RDIR_POS);
 	ptSioBase->RXCR1 = (ptSioBase->RXCR1 & ~(SIO_BUFCNT_MSK | SIO_RXCNT_MSK)) | SIO_BUFCNT(byBuflen) | SIO_RXCNT(byRxCnt) ;
@@ -503,10 +500,15 @@ static inline void csp_sio_int_disable(csp_sio_t *ptSioBase,sio_int_e eSioInt)
 {
 	ptSioBase->IMCR &= ~eSioInt;
 }
+
+//reset
+static inline void csp_sio_logic_rst(csp_sio_t *ptSioBase)
+{
+	ptSioBase->CR |= (SIO_WOKE_RSTKEY_MSK | SIO_WOKE_RST_MSK);		//reset without reg
+}
 static inline void csp_sio_sw_rst(csp_sio_t *ptSioBase)
 {
 	ptSioBase->SRR = SIO_SWRST_MSK;
 }
-
 
 #endif

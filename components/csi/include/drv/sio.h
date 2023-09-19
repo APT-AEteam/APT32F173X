@@ -184,8 +184,8 @@ typedef enum {
 	SIO_STATE_IDLE		= 0,	//sio idle(rx/tx)
 	SIO_STATE_RECV,				//sio receiving 
 	SIO_STATE_SEND,				//sio sending 
-	SIO_STATE_FULL,				//sio receive complete(full)
-	SIO_STATE_DONE,				//sio send complete
+	SIO_STATE_RX_DNE,			//sio receive complete(full)
+	SIO_STATE_TX_DNE,			//sio send complete
 	SIO_STATE_ERROR,			//sio recv/send error
 	SIO_STATE_TIMEOUT			//sio receive timeout
 } csi_sio_state_e;
@@ -307,12 +307,12 @@ csi_error_t csi_sio_tx_init(csp_sio_t *ptSioBase, csi_sio_tx_config_t *ptTxCfg);
 csi_error_t csi_sio_rx_init(csp_sio_t *ptSioBase, csi_sio_rx_config_t *ptRxCfg);
 
 /** 
-  \brief 	   sio transfer mode set,send(tx)/receive(rx)
+  \brief 	   sio work mode set,send(tx)/receive(rx)
   \param[in]   ptSioBase	pointer of sio register structure
   \param[in]   eWorkMd		sio working mode, send(tx)/receive(rx)
   \return 	   none
 */
-void csi_sio_set_mode(csp_sio_t *ptSioBase, csi_sio_wkmode_e eWorkMd);
+void csi_sio_set_wkmode(csp_sio_t *ptSioBase, csi_sio_wkmode_e eWorkMd);
 
 /** 
   \brief 	   enable sio interrupt 
@@ -347,7 +347,7 @@ csi_error_t csi_sio_set_break(csp_sio_t *ptSioBase, csi_sio_bklev_e eBkLev, uint
   \param[in]   bEnable    	ENABLE/DISABLE sample timeout reset
   \return      error code \ref csi_error_t
 */
-csi_error_t csi_sio_set_timeout(csp_sio_t *ptSioBase, uint8_t byToCnt ,bool bEnable);
+csi_error_t csi_sio_set_samp_timeout(csp_sio_t *ptSioBase, uint8_t byToCnt ,bool bEnable);
 
 /**
   \brief	   send data from sio, this function is polling  

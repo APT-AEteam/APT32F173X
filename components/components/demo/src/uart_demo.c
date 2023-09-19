@@ -202,7 +202,7 @@ int uart_send_dma_demo(void)
 	tUartConfig.wBaudRate = 115200;								//波特率，115200
 	csi_uart_init(UART1, &tUartConfig);							//初始化串口
 	
-	csi_uart_set_txdma(UART1, UART_DMA_TXFIFO_NFULL);			//设置TX DMA工作模式并使能
+	csi_uart_set_send_dma(UART1, UART_DMA_TXFIFO_NFULL);		//设置send1 DMA工作模式并使能
 	csi_uart_start(UART1, UART_FUNC_RX_TX);						//开启UART的RX和TX功能，也可单独开启RX或者TX功能
 	
 	//DMA配置初始化
@@ -264,7 +264,7 @@ int uart_receive_dma_demo(void)
 	tUartConfig.wBaudRate = 115200;								//波特率，115200
 	csi_uart_init(UART1, &tUartConfig);							//初始化串口
 	
-	csi_uart_set_rxdma(UART1, UART_DMA_RXFIFO_NSPACE);			//设置RX DMA工作模式并使能	
+	csi_uart_set_receive_dma(UART1, UART_DMA_RXFIFO_NSPACE);	//设置receive DMA工作模式并使能	
 	csi_uart_start(UART1, UART_FUNC_RX_TX);						//开启UART的RX和TX功能，也可单独开启RX或者TX功能
 
 	//DMA配置初始化

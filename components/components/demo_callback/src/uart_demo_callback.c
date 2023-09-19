@@ -29,7 +29,7 @@ uint8_t bySendBuf[30]={1,2,3,4,5,6,7,8,9,21,22,23,24,25,26,27,28,29,30,10,11,12,
  * 	\brief	用户定义，使用csi标准库进行中断发送时，发送完毕后回自动调用用户注册的回调函数；用户可在回调
  * 			函数里做自己的处理，而不需要关注具体的底层中断处理。
  * 		
- *  \param[out] ptUartBase: UARTx寄存器结构体指针，指向UARTx的基地址 
+ *  \param[in] ptUartBase: UARTx寄存器结构体指针，指向UARTx的基地址 
  *  \return none
  */
 static void	user_send_callback(csp_uart_t *ptUartBase)
@@ -93,7 +93,7 @@ int uart_send_int_callback_demo(void)
  * @ 注意：				实际使用中，两种接收方式请选择一种，若选择了指定长度，回调函数UART_STATE_RX_TO事件
  * 						请不要做处理(接收清零)，否则会导致指定长度接收数据异常。
  * 
- *  \param[out] ptUartBase: UARTx寄存器结构体指针，指向UARTx的基地址 
+ *  \param[in]  ptUartBase: UARTx寄存器结构体指针，指向UARTx的基地址 
  *  \param[out] eState: 	接收状态，支持定长和超时两种方式
  *  \param[out] pbyBuf: 	接收buf，指向接收数据缓存数组首地址
  *  \param[out] hwLen: 		接收长度，

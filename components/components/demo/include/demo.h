@@ -85,7 +85,7 @@ extern int sio_led_rgb_receive_dma_demo(void);
 
 extern int sio_hdq_master_wrcmd_demo(void);
 extern int sio_hdq_slave_receive_wrcmd_demo(void);
-extern int sio_hdq_master_rcmd_demo(void);
+extern int sio_hdq_master_rdcmd_demo(void);
 extern int sio_hdq_slave_receive_rdcmd_demo(void);
 
 //hdq
