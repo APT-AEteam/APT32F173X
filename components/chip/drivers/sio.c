@@ -68,7 +68,7 @@ csi_error_t csi_sio_register_callback(csp_sio_t *ptSioBase, csi_sio_callback_id_
 }
 /** \brief sio interrupt handler function
  * 
- *  \param[in] ptSioBase: pointer of uart sio structure
+ *  \param[in] ptSioBase: pointer of sio sio structure
  *  \param[in] byIdx: sio idx(0/1)
  *  \return none
  */ 
@@ -139,7 +139,18 @@ void csi_sio_irqhandler(csp_sio_t *ptSioBase, uint8_t byIdx)
 /** \brief Init sio tx, Initializes the resources needed for the sio instance 
  * 
  *  \param[in] ptSioBase: pointer of sio register structure
- *  \param[in] ptTxCfg: pointer of sio parameter config structure
+ *  \param[in] ptTxCfg: pointer of sio parameter config structure, \ref csi_sio_tx_config_t
+ * 				- byD0Len: D0 send length (1~8)个bit, all 0 sequence(out low(0))
+ * 				- byD1Len: D1 send length (1~8)个bit, all 1 sequence(out high(1))
+ * 				- byDLLen: DL send length (1~8)个bit
+ * 				- byDHLen: DH send length (1~8)个bit
+ * 				- byDLLsq: DL data sequence (0~0xff),send sequence bit0 - bitdatahlen
+ * 				- byDHHsq: DH data sequence (0~0xff),send sequence bit0 - bitdatallen
+ * 				- byTxCnt: sio tx bit count, Mux Num = 256bit(32bytes)
+ * 				- byTxBufLen: sio tx buffer length, Max Len = 16bit(2bytes)	
+ * 				- eTxDir: sio output dir, LSB OR MSB
+ * 				- eIdleLev: idle sio ouput state
+ * 				- wTxFreq: sio tx frequency 
  *  \return error code \ref csi_error_t
  */
 csi_error_t csi_sio_tx_init(csp_sio_t *ptSioBase, csi_sio_tx_config_t *ptTxCfg)
@@ -172,7 +183,19 @@ csi_error_t csi_sio_tx_init(csp_sio_t *ptSioBase, csi_sio_tx_config_t *ptTxCfg)
 /** \brief Init sio rx, Initializes the resources needed for the sio instance 
  * 
  *  \param[in] ptSioBase: pointer of sio register structure
- *  \param[in] ptRxCfg: pointer of sio parameter config structure
+ *  \param[in] ptRxCfg: pointer of sio parameter config structure, \ref csi_sio_rx_config_t
+ * 				- eTrgEdge：receive samping trigger edge	
+ * 				- eTrgMode：receive samping trigger mode	
+ * 				- eSampMode：receive samping mode
+ * 				- eSampExtra：receive samping extract select
+ * 				- eRxDir：sio receive dir, LSB OR MSB
+ * 				- byDebPerLen：debounce period length, (1~8)period
+ * 				- byDebClkDiv： debounce clk div
+ * 				- byHithr：extract high Threshold 
+ * 				- bySpBitLen：receive samping one bit count length
+ * 				- byRxCnt：sio rx bit count, Mux Num = 256bit(32bytes)
+ * 				- byRxBufLen：sio rx buffer length, Max Len = 32bit(4bytes)
+ * 				- wRxFreq： sio rx sampingfrequency 
  *  \return error code \ref csi_error_t
  */
 csi_error_t csi_sio_rx_init(csp_sio_t *ptSioBase, csi_sio_rx_config_t *ptRxCfg)
@@ -203,7 +226,7 @@ csi_error_t csi_sio_rx_init(csp_sio_t *ptSioBase, csi_sio_rx_config_t *ptRxCfg)
 /** \brief sio receive break reset config
  * 
  *  \param[in] ptSioBase: pointer of sio register structure
- *  \param[in] eBkLev: break reset detect level
+ *  \param[in] eBkLev: break reset detect level, \ref csi_sio_bklev_e
  *  \param[in] byBkCnt: break reset detect period
  *  \param[in] bEnable: ENABLE/DISABLE break reset and break interrupt
  *  \return error code \ref csi_error_t
@@ -237,7 +260,7 @@ csi_error_t csi_sio_set_samp_timeout(csp_sio_t *ptSioBase, uint8_t byToCnt ,bool
 /** \brief sio work mode set,send(tx)/receive(rx)
  * 
  *  \param[in] ptSioBase: pointer of sio register structure
- *  \param[in] eWorkMd: sio working mode, send(tx)/receive(rx)
+ *  \param[in] eWorkMd: sio working mode, \ref csi_sio_wkmode_e
  *  \return none
  */
 void csi_sio_set_wkmode(csp_sio_t *ptSioBase, csi_sio_wkmode_e eWorkMd)
@@ -247,7 +270,7 @@ void csi_sio_set_wkmode(csp_sio_t *ptSioBase, csi_sio_wkmode_e eWorkMd)
 /** \brief enable/disable sio interrupt 
  * 
  *  \param[in] ptSioBase: pointer of sio register structure
- *  \param[in] eIntSrc: sio interrupt source
+ *  \param[in] eIntSrc: sio interrupt source, \ref csi_sio_intsrc_e
  *  \return none
  */
 void csi_sio_int_enable(csp_sio_t *ptSioBase, csi_sio_intsrc_e eIntSrc)
@@ -258,20 +281,29 @@ void csi_sio_int_enable(csp_sio_t *ptSioBase, csi_sio_intsrc_e eIntSrc)
 /** \brief enable/disable sio interrupt 
  * 
  *  \param[in] ptSioBase: pointer of sio register structure
- *  \param[in] eIntSrc: sio interrupt source
+ *  \param[in] eIntSrc: sio interrupt source, \ref csi_sio_intsrc_e
  *  \return none
  */
 void csi_sio_int_disable(csp_sio_t *ptSioBase, csi_sio_intsrc_e eIntSrc)
 {
 	csp_sio_int_disable(ptSioBase, (sio_int_e)eIntSrc);
 }
-
+/** \brief clear sio interrupt status
+ * 
+ *  \param[in] ptSioBase: pointer of sio register structure
+ *  \param[in] eIntSrc: sio interrupt status, \ref csi_sio_intsrc_e
+ *  \return none
+ */
+void csi_sio_clr_isr(csp_sio_t *ptSioBase, csi_sio_intsrc_e eIntSrc)
+{
+	csp_sio_clr_isr(ptSioBase, (sio_int_e)eIntSrc);
+}
 /** \brief send data from sio, this function is polling mode(sync mode)
  * 
  * \param[in] ptSioBase: pointer of sio register structure
  * \param[in] pwData: pointer to buffer with data to send 
  * \param[in] hwSize: send data size
- * \return error code \ref csi_error_t or receive data size
+ * \return error code \ref csi_error_t or send data size
  */
 int32_t csi_sio_send(csp_sio_t *ptSioBase, const uint32_t *pwData, uint16_t hwSize)
 {
@@ -339,7 +371,7 @@ csi_error_t csi_sio_receive_rxfull_int(csp_sio_t *ptSioBase, uint32_t *pwRecv, u
 	return CSI_OK;
 }
 
-/** \brief sio receive data, use rxbuffull interrupt 
+/** \brief sio receive data, use rxdne interrupt 
  * 
  * \param[in] ptSioBase: pointer of sio register structure
  * \param[in] pwRecv: pointer of sio receive data
@@ -388,8 +420,8 @@ void csi_sio_receive_dma_enable(csp_sio_t *ptSioBase, bool bEnable)
  * 
  *  \param[in] ptSioBase: pointer of sio register structure
  *  \param[in] ptDmaBase: pointer of dma register structure
- *  \param[in] eDmaCh: channel number of dma, eDmaCh: DMA_CH0` DMA_CH5
- *  \param[in] pData: pointer to buffer with data to send to uart transmitter.
+ *  \param[in] eDmaCh: channel number of dma, \ref csi_dma_ch_e
+ *  \param[in] pData: pointer to buffer with data to send to sio transmitter.
  *  \param[in] hwSize: number of data to send (byte); hwSize <= 0xfff
  *  \return error code \ref csi_error_t
  */
@@ -406,8 +438,8 @@ csi_error_t csi_sio_send_dma(csp_sio_t *ptSioBase, csp_dma_t *ptDmaBase, csi_dma
  * 
  *  \param[in] ptSioBase: pointer of sio register structure
  *  \param[in] ptDmaBase: pointer of dma register structure
- *  \param[in] eDmaCh: channel number of dma, eDmaCh: DMA_CH0` DMA_CH5
- *  \param[in] pData: pointer to buffer with data to send to uart transmitter.
+ *  \param[in] eDmaCh: channel number of dma, \ref csi_dma_ch_e
+ *  \param[in] pData: pointer to buffer with data to send to sio transmitter.
  *  \param[in] hwSize: number of data to send (byte); hwSize <= 0xfff
  *  \return error code \ref csi_error_t
  */
