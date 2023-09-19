@@ -1,10 +1,11 @@
 /***********************************************************************//** 
  * \file  gpio_demo.c
  * \brief  GPIO_DEMO description and static inline functions at register level 
- * \copyright Copyright (C) 2015-2020 @ APTCHIP
+ * \copyright Copyright (C) 2015-20203 @ APTCHIP
  * <table>
  * <tr><th> Date  <th>Version  <th>Author  <th>Description
  * <tr><td> 2020-4-25 <td>V0.0 <td>ZJY     <td>initial
+ * <tr><td> 2023-9-19 <td>V0.1 <td>ZJY     <td>initial
  * </table>
  * *********************************************************************
 */

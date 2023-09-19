@@ -4,22 +4,21 @@
  * \copyright Copyright (C) 2015-2023 @ APTCHIP
  * <table>
  * <tr><th> Date  <th>Version  <th>Author  <th>Description
- * <tr><td> 2023-9-12 <td>V0.0 <td>ZJY     <td>initial
+ * <tr><td> 2021-9-12 <td>V0.0 <td>ZJY     <td>initial
+ * <tr><td> 2023-9-19 <td>V0.1 <td>ZJY     <td>initial
  * </table>
  * *********************************************************************
 */
 /* Includes ---------------------------------------------------------------*/
-#include "drv/uart.h"
-#include "drv/gpio.h"
-#include <drv/etcb.h>
+#include "csi_drv.h"
 #include "board_config.h"
 
 /* externs function--------------------------------------------------------*/
 /* externs variablesr------------------------------------------------------*/
 /* Private macro-----------------------------------------------------------*/
 /* Private variablesr------------------------------------------------------*/
-uint8_t byRecvBuf[64]={0};			//receive buf
-uint8_t bySendBuf[30]={1,2,3,4,5,6,7,8,9,21,22,23,24,25,26,27,28,29,30,10,11,12,13,14,15,16,17,18,19};	
+static uint8_t s_byRecvBuf[64]={0};			//receive buf
+static uint8_t s_bySendBuf[30]={1,2,3,4,5,6,7,8,9,21,22,23,24,25,26,27,28,29,30,10,11,12,13,14,15,16,17,18,19};	
 
 
 #if (USE_BT_CALLBACK == 0)	
@@ -37,30 +36,30 @@ static uint16_t hwSendLen = 0;
 ATTRIBUTE_ISR void uart1_int_handler(void) 
 {
 	//TXFIFO中断
-	if(csp_uart_get_isr(UART1)&UART_TXFIFO_INT_S)				//TXFIFO中断
+	if(csp_uart_get_isr(UART1)&UART_INT_TXFIFO_S)				//TXFIFO中断
 	{
 		//发送16字节数据，发送完毕关闭中断(停止发送)
 		if(hwSendLen < 16)
-			csp_uart_set_data(UART1, bySendBuf[hwSendLen++]);
+			csp_uart_set_data(UART1, s_bySendBuf[hwSendLen++]);
 		else
 		{
 			hwSendLen = 0;
-			csp_uart_int_disable(UART1, UART_RXFIFO_INT);		//关闭rxfifo/中断	
+			csp_uart_int_disable(UART1, UART_INT_RXFIFO);		//关闭rxfifo/中断	
 		}
 	}
 	
 	//RXFIFO中断
-	if(csp_uart_get_isr(UART1)&UART_RXFIFO_INT_S)				//RXFIFO中断
+	if(csp_uart_get_isr(UART1)&UART_INT_RXFIFO_S)				//RXFIFO中断
 	{
 		//添加用户处理
-		byRecvBuf[0] = csp_uart_get_data(UART1);				//接收数据,RXFIFO中断状态不需要专门清除，读数据时自动清除
+		s_byRecvBuf[0] = csp_uart_get_data(UART1);				//接收数据,RXFIFO中断状态不需要专门清除，读数据时自动清除
 	}
 	
 	//接收超时中断
-	if(csp_uart_get_isr(UART1)& UART_RXTO_INT_S)				//接收超时中断
+	if(csp_uart_get_isr(UART1)& UART_INT_RXTO_S)				//接收超时中断
 	{
 		//添加用户处理(若开启此中断)
-		csp_uart_clr_isr(UART1, UART_RXTO_INT_S);				//清除接收超时中断状态
+		csp_uart_clr_isr(UART1, UART_INT_RXTO_S);				//清除接收超时中断状态
 		csp_uart_rto_enable(UART1);								//使能接收超时
 	}
 }
@@ -90,7 +89,7 @@ int uart_send_demo(void)
 	while(1)
 	{
 		//不使用中断发送，发送接口返回发送数据长度；是否判断返回长度，由用户根据实际应用决定
-		if (csi_uart_send(UART1,(void *)bySendBuf, 26) != 26)
+		if (csi_uart_send(UART1,(void *)s_bySendBuf, 26) != 26)
 		{	
 			return -1;
 		}
@@ -231,7 +230,7 @@ int uart_send_dma_demo(void)
 	
 	while(1)
 	{
-		csi_uart_send_dma(UART1, DMA0, DMA_CH1, (void *)bySendBuf, 26);	
+		csi_uart_send_dma(UART1, DMA0, DMA_CH1, (void *)s_bySendBuf, 26);	
 		mdelay(50);
 		
 		if(csi_dma_get_msg(DMA0, DMA_CH1, ENABLE))				//获取发送完成消息，并清除消息
@@ -291,14 +290,14 @@ int uart_receive_dma_demo(void)
 	if(iRet < CSI_OK)
 		return CSI_ERROR;
 	
-	csi_uart_recv_dma(UART1, DMA0, DMA_CH0, (void*)byRecvBuf,22);
+	csi_uart_recv_dma(UART1, DMA0, DMA_CH0, (void*)s_byRecvBuf,22);
 	
 	while(1)
 	{
 		if(csi_dma_get_msg(DMA0,DMA_CH0, ENABLE))				//获取接收完成消息，并清除消息
 		{
 			//添加用户代码
-			csi_uart_send(UART1, (void*)byRecvBuf, 22);
+			csi_uart_send(UART1, (void*)s_byRecvBuf, 22);
 			nop;
 		}							
 		mdelay(10);

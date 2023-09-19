@@ -30,9 +30,9 @@ extern "C" {
  * \brief    SIO idle ouput level
  */
 typedef enum{
-	SIO_IDLE_Z			= 0,
-	SIO_IDLE_H,
-	SIO_IDLE_L
+	SIO_IDLE_HRS		= 0,	//High resistance	
+	SIO_IDLE_HIGH,				//High level
+	SIO_IDLE_LOW				//Low level
 }csi_sio_idlest_e;
 
 /**
@@ -50,10 +50,10 @@ typedef enum{
  */
 typedef enum
 {
-	TXBUF_D0     		=	0x00,  
-	TXBUF_D1    		=	0x01,      
-	TXBUF_DL   			=	0x02, 
-	TXBUF_DH			=	0x03
+	SIO_TXBUF_D0     	=	0x00,  
+	SIO_TXBUF_D1    	=	0x01,      
+	SIO_TXBUF_DL   		=	0x02, 
+	SIO_TXBUF_DH		=	0x03
 }csi_sio_txbuf_data_e;   
 
 //sio rx
@@ -73,8 +73,8 @@ typedef enum{
  * \brief    SIO rx sample trigger mode
  */
 typedef enum{
-	SIO_TRGMD_DEB		= 0,
-	SIO_TRGMD_FIL,
+	SIO_TRGMODE_DEB		= 0,
+	SIO_TRGMODE_FIL,
 }csi_sio_trgmode_e;
 
 /**
@@ -82,8 +82,8 @@ typedef enum{
  * \brief    SIO rx sample mode
  */
 typedef enum{
-	SIO_SPMD_EDGE_EN		= 0,
-	SIO_SPMD_EDGE_DIS,
+	SIO_SAMPMODE_EDGE		= 0,
+	SIO_SAMPMODE_NOEDGE,
 }csi_sio_spmode_e;
 
 /**
@@ -241,8 +241,8 @@ typedef struct {
 
 	csi_sio_trgedge_e	eTrgEdge;		//receive samping trigger edge
 	csi_sio_trgmode_e	eTrgMode;		//receive samping trigger mode
-	csi_sio_spmode_e	eSpMode;		//receive samping mode
-	csi_sio_extract_e	eSpExtra;		//receive samping extract select
+	csi_sio_spmode_e	eSampMode;		//receive samping mode
+	csi_sio_extract_e	eSampExtra;		//receive samping extract select
 	csi_sio_rdir_e		eRxDir;			//sio receive dir, LSB OR MSB
 	uint8_t				byDebPerLen;	//debounce period length, (1~8)period
 	uint8_t				byDebClkDiv;	//debounce clk div,

@@ -92,7 +92,7 @@ void csi_sio_irqhandler(csp_sio_t *ptSioBase, uint8_t byIdx)
 				if(g_tSioCtrl[byIdx].hwTransNum >= g_tSioCtrl[byIdx].hwSize)
 				{
 					g_tSioCtrl[byIdx].byRxStat = SIO_STATE_FULL;			//receive buf full, g_tSioCtrl.hwTransNum = receive data len = receive buf len
-					csp_sio_woke_rst(ptSioBase);
+					csp_sio_logic_rst(ptSioBase);
 					
 					if(g_tSioCtrl[byIdx].recv_callback)
 						g_tSioCtrl[byIdx].recv_callback(ptSioBase, byIsr, g_tSioCtrl[byIdx].pwData, g_tSioCtrl[byIdx].hwSize);
@@ -182,8 +182,8 @@ csi_error_t csi_sio_rx_init(csp_sio_t *ptSioBase, csi_sio_rx_config_t *ptRxCfg)
 	
 	//rx receive config
 	csp_sio_set_rx_deb(ptSioBase, ptRxCfg->byDebPerLen - 1, ptRxCfg->byDebClkDiv - 1);													//set rx sampling debounce 
-	csp_sio_set_sample_mode(ptSioBase,(sio_bstsel_e)ptRxCfg->eTrgEdge,(sio_trgmode_e)ptRxCfg->eTrgMode,(sio_rmode_e)ptRxCfg->eSpMode);	//set rx samping mode
-	csp_sio_set_sample(ptSioBase, (sio_extract_e)ptRxCfg->eSpExtra, SIO_ALIGN_EN, ptRxCfg->bySpBitLen - 1, ptRxCfg->byHithr);			//set rx samping control
+	csp_sio_set_sample_mode(ptSioBase,(sio_bstsel_e)ptRxCfg->eTrgEdge,(sio_trgmode_e)ptRxCfg->eTrgMode,(sio_rmode_e)ptRxCfg->eSampMode);//set rx samping mode
+	csp_sio_set_sample(ptSioBase, (sio_extract_e)ptRxCfg->eSampExtra, SIO_ALIGN_EN, ptRxCfg->bySpBitLen - 1, ptRxCfg->byHithr);			//set rx samping control
 	csp_sio_set_recv(ptSioBase, (sio_rdir_e)ptRxCfg->eRxDir, ptRxCfg->byRxBufLen - 1, ptRxCfg->byRxCnt - 1);							//set receive para
 	
 	return CSI_OK;
@@ -201,7 +201,7 @@ csi_error_t csi_sio_set_break(csp_sio_t *ptSioBase, csi_sio_bklev_e eBkLev, uint
 	if(byBkCnt == 0)
 		return CSI_ERROR;
 		
-	csp_sio_set_break(ptSioBase, bEnable, (sio_breaklel_e)eBkLev, byBkCnt - 1);
+	csp_sio_set_break(ptSioBase, (sio_breaklel_e)eBkLev, (byBkCnt - 1), bEnable);
 
 	return CSI_OK; 
 }

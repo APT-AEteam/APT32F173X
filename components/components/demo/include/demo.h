@@ -79,8 +79,14 @@ extern int adc_samp_continuous_int_demo(void);
 //sio led
 extern int sio_led_rgb_demo(void);
 extern int sio_led_rgb_int_demo(void);
+extern int sio_led_rgb_receive_int_demo(void);
 extern int sio_led_rgb_send_dma_demo(void);
 extern int sio_led_rgb_receive_dma_demo(void);
+
+extern int sio_hdq_master_wrcmd_demo(void);
+extern int sio_hdq_slave_receive_wrcmd_demo(void);
+extern int sio_hdq_master_rcmd_demo(void);
+extern int sio_hdq_slave_receive_rdcmd_demo(void);
 
 //hdq
 extern int sio_hdq_send_demo(void);
@@ -128,9 +134,6 @@ extern void lp_exi_wakeup_demo(void);
 extern void iic_master_eeprom_demo(void);
 extern void iic_master_demo(void);
 extern void iic_slave_demo(void);
-extern void iic_multi_slave_demo(void);
-extern void iic_dma_send_demo(void);
-extern void iic_dma_receive_demo(void);
 
 //cnta demo
 extern int cnta_timer_demo(void);

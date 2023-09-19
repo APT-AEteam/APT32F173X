@@ -131,6 +131,7 @@ void csi_bt_stop(csp_bt_t *ptBtBase)
  */ 
 void csi_bt_int_enable(csp_bt_t *ptBtBase, csi_bt_intsrc_e eIntSrc)
 {
+	csp_bt_clr_isr(ptBtBase, (bt_int_e)eIntSrc);
 	csp_bt_int_enable(ptBtBase, (bt_int_e)eIntSrc);	
 }
 /** \brief disable bt interrupt 

@@ -58,11 +58,11 @@ extern "C" {
 #define XIN_PIN_FUNC			PD0
 #define XOUT_PIN_FUNC			PD1
 
-
 //csi interrupt user callback enable: 1/0 = ENABLE/DISABLE
 //csi库函数中断支持回调函数，通过宏USE_XXX_CALLBACK来实现次功能选择，若使能需用
 #define USE_BT_CALLBACK			0		//BT(0/1/2/3)
 #define USE_UART_CALLBACK		1		//UART(0/1/2)
+#define USE_SIO_CALLBACK		1		//SIO(0/1)
 #define USE_LED_CALLBACK		0		//LED(0)
 #define USE_CNTA_CALLBACK		1		//CNTA(0)
 #define USE_CMP_CALLBACK		1		//CMP(0/1/2)
@@ -74,6 +74,7 @@ extern "C" {
 #define USE_I2C_CALLBACK		1		//IIC(0)
 #define USE_LPT_CALLBACK		1		//LPT(0)
 #define USE_WWDT_CALLBACK		1		//WWDT(0)
+
 //csi GUI Handling Enable, 1/0(OPEN/CLOSE)
 //可视化编程，通过宏USE_GUI来实现功能选择
 #define USE_GUI					0						
