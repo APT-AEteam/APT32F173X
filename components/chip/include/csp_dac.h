@@ -77,9 +77,9 @@
 #define DAC_SYNC_MSK(n)			(0x01ul << DAC_SYNC_POS(n))
 
 typedef enum{
-	DAC_SYNCIN0					= 0,
-	DAC_SYNCIN1					= 1,
-	DAC_SYNCIN2					= 2,	
+	DAC_SYNCEN0					= 0,
+	DAC_SYNCEN1					= 1,
+	DAC_SYNCEN2					= 2,	
 }dac_sync_in_e;
 /******************************************************************************
 * STEP : Incremental Control

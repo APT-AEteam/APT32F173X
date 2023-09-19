@@ -44,7 +44,7 @@ typedef enum{
 //	OPA_PGA_EN	
 //}opa_pga_e;
 
-#define	OPA_PGAC_POS			(2)			
+#define	OPA_PGAC_POS			(2)
 #define	OPA_PGAC_MSK			(0x07ul << OPA_PGAC_POS)								
 typedef enum{
 	OPA_PGAC_X2			= 0,

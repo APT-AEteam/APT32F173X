@@ -64,7 +64,7 @@ void csi_buf_init(csp_fvr_t *ptFvrBase,csi_fvr_buflvl_e eBuflvl)
 	csi_clk_enable((uint32_t *)ptFvrBase);
 	csp_fvr_bufkey_unlock(ptFvrBase);
 	csp_fvr_buf_enable(ptFvrBase);
-	if(eBuflvl == BUFLVL_EXTERNAL)
+	if(eBuflvl == FVR_BUF_LEVEL_EXTERNAL)
 	{	
 		csp_fvr_set_buflvl(ptFvrBase, (fvr_buflvl_e)eBuflvl);
 		csp_fvr_bufin_enable(ptFvrBase);

@@ -29,9 +29,9 @@ void fvr_output_demo(void)
 	csi_gpio_set_mux(GPIOB,PB7, PB7_FVROUT);				//设置PB7为FVR输出
 #endif	
 	csi_fvr_config_t tFvrConfig;
-	tFvrConfig.eFvrLevel = LVL_1V;							//设置FVR输出电压
-	tFvrConfig.eCmpref = CMPREF_FVR;						//设置CMP的参考电压为FVR
-	tFvrConfig.eOpacm = OPACM_HALFFVR;						//设置OPA的基准电压为1/2FVR
+	tFvrConfig.eFvrLevel = FVR_LEVEL_1V;							//设置FVR输出电压
+	tFvrConfig.eCmpref = FVR_COMPARER_REF_FVR;						//设置CMP的参考电压为FVR
+	tFvrConfig.eOpacm = FVR_OPACM_HALFFVR;						//设置OPA的基准电压为1/2FVR
 	
 	csi_fvr_init(FVR,&tFvrConfig);
 	csi_fvr_enable(FVR);									//使能FVR
@@ -48,6 +48,6 @@ void buf_output_demo(void)
 	csi_gpio_set_mux(GPIOD,PD4, PD4_INPUT);					//设置BUF输入管脚PD4
 	csi_gpio_set_mux(GPIOB,PB8, PB8_BUF);					//设置BUF输出管脚PB8
 #endif
-	csi_buf_init(FVR,BUFLVL_EXTERNAL);						//设置buf的输出为外部管脚输入
+	csi_buf_init(FVR,FVR_BUF_LEVEL_EXTERNAL);						//设置buf的输出为外部管脚输入
 	csi_fvr_enable(FVR);		
 }

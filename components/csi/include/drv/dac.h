@@ -42,9 +42,9 @@ typedef enum{
  * \brief    DAC sync trigger input 
  */
 typedef enum{
-	SYNCIN0			= (0x01uL << 0),
-	SYNCIN1			= (0x01uL << 1),
-	SYNCIN2			= (0x01uL << 2),	
+	DAC_SYNCIN0			= (0x01uL << 0),
+	DAC_SYNCIN1			= (0x01uL << 1),
+	DAC_SYNCIN2			= (0x01uL << 2),	
 }csi_dac_syncin_e;
 
 /// \struct csi_dac_ctrl_t

@@ -1,6 +1,6 @@
 /***********************************************************************//** 
  * \file  csp_fvr.h
- * \brief OPA description and static inline functions at register level 
+ * \brief FVR description and static inline functions at register level 
  * \copyright Copyright (C) 2015-2023 @ APTCHIP
  * <table>
  * <tr><th> Date  <th>Version  <th>Author  <th>Description
@@ -25,7 +25,7 @@ typedef volatile struct
 } csp_fvr_t;
 
 /******************************************************************************
-* CR: LCD Control Register 
+* CR: FVR Control Register 
 ******************************************************************************/
 #define FVR_EN_POS			(0)			//FVR Enable/Disable
 #define FVR_EN_MSK			(0x01ul << FVR_EN_POS)

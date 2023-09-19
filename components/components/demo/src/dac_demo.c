@@ -96,9 +96,9 @@ void dac_sync_demo(void)
 	csi_dac_int_enable(DAC0, DAC_INTSRC_WRERR);	//使能WRERR中断
 	csi_dac_int_enable(DAC0, DAC_INTSRC_SYNCERR);	//使能SYNCERR中断
 	
-	csi_dac_sync_enable(DAC0, SYNCIN0);//开启DAC_SYNCIN0触发
-	csi_dac_sync_enable(DAC0, SYNCIN1);//开启DAC_SYNCIN1触发
-	csi_dac_sync_enable(DAC0, SYNCIN2);//开启DAC_SYNCIN2触发
+	csi_dac_sync_enable(DAC0, DAC_SYNCIN0);//开启DAC_SYNCIN0触发
+	csi_dac_sync_enable(DAC0, DAC_SYNCIN1);//开启DAC_SYNCIN1触发
+	csi_dac_sync_enable(DAC0, DAC_SYNCIN2);//开启DAC_SYNCIN2触发
 	csi_dac_set_step(DAC0, 409);//设置触发增减值
 	
 	csi_dac_start(DAC0);

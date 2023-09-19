@@ -19,26 +19,26 @@ extern "C" {
 #endif
 
 typedef enum{
-	LVL_1V			= 0,
-	LVL_2V,
-	LVL_3V,
-	LVL_4V
+	FVR_LEVEL_1V			= 0,
+	FVR_LEVEL_2V,
+	FVR_LEVEL_3V,
+	FVR_LEVEL_4V
 }csi_fvr_lvl_e;
 
 typedef enum{
-	CMPREF_AVDD		= 0,
-	CMPREF_FVR,
+	FVR_COMPARER_REF_AVDD		= 0,
+	FVR_COMPARER_REF_FVR,
 }csi_fvr_cmpref_e;
 
 typedef enum{
-	BUFLVL_EXTERNAL	= 0,
-	BUFLVL_1V,
-	BUFLVL_TS 		= 3
+	FVR_BUF_LEVEL_EXTERNAL	= 0,
+	FVR_BUF_LEVEL_1V,
+	FVR_BUF_LEVEL_TS 		= 3
 }csi_fvr_buflvl_e;
 
 typedef enum{
-	OPACM_HALFAVDD	= 0,
-	OPACM_HALFFVR,
+	FVR_OPACM_HALFAVDD	= 0,
+	FVR_OPACM_HALFFVR,
 }csi_fvr_opacm_e;
 
 /// \struct csi_fvr_config_t
