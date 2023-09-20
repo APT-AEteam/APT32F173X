@@ -112,36 +112,45 @@ __attribute__((weak)) void gptb_irqhandler(csp_gptb_t *ptGptbBase)
 }
 
 /**
- \brief  capture configuration
+ \brief  gptb capture configuration
  \param  ptGptbBase    	pointer of gptb register structure
  \param  ptGptbCapCfg   \refer csi_gptb_capture_config_t
+  * 		- eWorkMode:GPTB work mode \refer csi_gptb_wave_e
+  * 		- eCountMode:GPTB counting mode \refer csi_gptb_cntmd_e
+  * 		- eRunMode:GPTB run mode \refer csi_gptb_runmode_e
+  * 		- eCapMode:GPTB capture mode \refer csi_gptb_capmode_e  		
+  * 		- byCapStopWrap:GPTB capture counts
+  * 		- byCapLdaret:CMPA load,counter value reset or not
+  * 		- byCapLdbret:CMPB load,counter value reset or not
+  * 		- byCapLdcret:CMPAA load,counter value reset or not
+  * 		- byCapLddret:CMPBA load,counter value reset or not
  \return CSI_OK /CSI_ERROR
 */
 csi_error_t csi_gptb_capture_init(csp_gptb_t *ptGptbBase, csi_gptb_capture_config_t *ptGptbCapCfg)
 {
 	uint32_t wCrVal;
 
-	csi_clk_enable((uint32_t *)ptGptbBase);					//clk enable
+	csi_clk_enable((uint32_t *)ptGptbBase);	
 	csp_gptb_clken(ptGptbBase);
-	csp_gptb_wr_key(ptGptbBase);	                        //Unlocking	
-	csp_gptb_reset(ptGptbBase);								//reset 
+	csp_gptb_wr_key(ptGptbBase);	
+	csp_gptb_reset(ptGptbBase);
 
 	wCrVal = (ptGptbCapCfg->eCountMode) | (ptGptbCapCfg->eRunMode << GPTB_CAPMD_POS) | (ptGptbCapCfg->eWorkMode << GPTB_MODE_POS);
-	wCrVal = (wCrVal & ~(0x01<<CAPMODE_SEL_POS))|((ptGptbCapCfg->eCapMode&0x01)  	<< CAPMODE_SEL_POS);
+	wCrVal = (wCrVal & ~(0x01<<CAPMODE_SEL_POS))|((ptGptbCapCfg->eCapMode & 0x01)  	<< CAPMODE_SEL_POS);
 	
-	wCrVal = (wCrVal & ~(GPTB_STOPWRAP_MSK)) | ((ptGptbCapCfg->byCapStopWrap&0x03)	<< GPTB_STOPWRAP_POS);
-	wCrVal = (wCrVal & ~(GPTB_CMPA_RST_MSK)) | ((ptGptbCapCfg->byCapLdaret&0x01)  	<< GPTB_CMPA_RST_POS);
-	wCrVal = (wCrVal & ~(GPTB_CMPB_RST_MSK)) | ((ptGptbCapCfg->byCapLdbret&0x01)  	<< GPTB_CMPB_RST_POS);
-	wCrVal = (wCrVal & ~(GPTB_CMPC_RST_MSK)) | ((ptGptbCapCfg->byCapLdcret&0x01)  	<< GPTB_CMPC_RST_POS);
-	wCrVal = (wCrVal & ~(GPTB_CMPD_RST_MSK)) | ((ptGptbCapCfg->byCapLddret&0x01)  	<< GPTB_CMPD_RST_POS);
-	
+	wCrVal = (wCrVal & ~(GPTB_STOPWRAP_MSK)) | ((ptGptbCapCfg->byCapStopWrap & 0x03)	<< GPTB_STOPWRAP_POS);
+	wCrVal = (wCrVal & ~(GPTB_CMPA_RST_MSK)) | ((ptGptbCapCfg->byCapLdaret & 0x01)  	<< GPTB_CMPA_RST_POS);
+	wCrVal = (wCrVal & ~(GPTB_CMPB_RST_MSK)) | ((ptGptbCapCfg->byCapLdbret & 0x01)  	<< GPTB_CMPB_RST_POS);
+	wCrVal = (wCrVal & ~(GPTB_CMPC_RST_MSK)) | ((ptGptbCapCfg->byCapLdcret & 0x01)  	<< GPTB_CMPC_RST_POS);
+	wCrVal = (wCrVal & ~(GPTB_CMPD_RST_MSK)) | ((ptGptbCapCfg->byCapLddret & 0x01)  	<< GPTB_CMPD_RST_POS);
+
 	wCrVal |= GPTB_CAPLD_EN;
 	wCrVal |= GPTB_CAPREARM;
 
-    csp_gptb_clken(ptGptbBase);                             // clkEN
-	csp_gptb_set_cr(ptGptbBase, wCrVal);					// set bt work mode
-	csp_gptb_set_pscr(ptGptbBase, 0);						// clk div
-	csp_gptb_set_prdr(ptGptbBase, 0xFFFF);				    // prdr load value
+    csp_gptb_clken(ptGptbBase);  
+	csp_gptb_set_cr(ptGptbBase, wCrVal);
+	csp_gptb_set_pscr(ptGptbBase, 0);	
+	csp_gptb_set_prdr(ptGptbBase, 0xFFFF);	
 	
 	return CSI_OK;
 }
@@ -907,59 +916,68 @@ csi_error_t csi_gptb_continuoussoftwareforce_output(csp_gptb_t *ptGptbBase, csi_
 	return CSI_OK;
 }
 
+/** \brief gptb interrupt clear  
+ *  \param[in] ptGptbBase: pointer of gptb register structure
+ *  \param[in] eInt:       \ref csi_gptb_int_e
+ *  \return none;
+ */
+void csi_gptb_clr_isr(csp_gptb_t *ptGptbBase, csi_gptb_int_e eInt)
+{  
+	csp_gptb_clr_isr(ptGptbBase,(gptb_int_e)eInt);
+}
+
 /** \brief gptb interrupt enable  
  *  \param[in] ptGptbBase: pointer of gptb register structure
  *  \param[in] eInt:       \ref csi_gptb_int_e
- *  \return CSI_OK;
+ *  \return none;
  */
-csi_error_t csi_gptb_int_enable(csp_gptb_t *ptGptbBase, csi_gptb_int_e eInt)
+void csi_gptb_int_enable(csp_gptb_t *ptGptbBase, csi_gptb_int_e eInt)
 {  
+	csp_gptb_clr_isr(ptGptbBase,(gptb_int_e)eInt);
 	csp_gptb_int_enable(ptGptbBase,(gptb_int_e)eInt);
-	return CSI_OK;
 }
 
 /** \brief gptb interrupt disable   
  *  \param[in] ptGptbBase: pointer of gptb register structure
  *  \param[in] eInt:       \ref csi_gptb_int_e
- *  \return CSI_OK;
+ *  \return none;
  */
-csi_error_t csi_gptb_int_disable(csp_gptb_t *ptGptbBase, csi_gptb_int_e eInt)
+void csi_gptb_int_disable(csp_gptb_t *ptGptbBase, csi_gptb_int_e eInt)
 {  
 	csp_gptb_int_disable(ptGptbBase,(gptb_int_e)eInt);
-	return CSI_OK;
 }
 
 /** \brief gptb sync input evtrg config  
  * 
  *  \param[in] ptGptbBase: pointer of gptb register structure
- *  \param[in] eTrgin: gptb sync evtrg input channel(0~6)
- *  \param[in] eTrgMode: gptb sync evtrg mode, continuous/once
+ *  \param[in] eSyncIn: gptb sync evtrg input channel(0~6)
+ *  \param[in] eSyncMode: gptb sync evtrg mode, continuous/once
  *  \param[in] eAutoRearm: refer to csi_gptb_arearm_e 
  *  \return none
  */
-void csi_gptb_set_sync(csp_gptb_t *ptGptbBase, csi_gptb_trgin_e eTrgIn, csi_gptb_trgmode_e eTrgMode, csi_gptb_arearm_e eAutoRearm)
+void csi_gptb_set_sync(csp_gptb_t *ptGptbBase, csi_gptb_syncin_e eSyncIn, csi_gptb_syncmode_e eSyncMode, csi_gptb_arearm_e eAutoRearm)
 {
-	csp_gptb_set_sync_mode(ptGptbBase, eTrgIn, (gptb_syncmd_e)eTrgMode);
+	csp_gptb_set_sync_mode(ptGptbBase, eSyncIn, (gptb_syncmd_e)eSyncMode);
 	csp_gptb_set_auto_rearm(ptGptbBase, (gptb_arearm_e)eAutoRearm);
-	csp_gptb_sync_enable(ptGptbBase, eTrgIn);
+	csp_gptb_sync_enable(ptGptbBase, eSyncIn);
 }
 
 /** \brief gptb extsync input select
  * 
  *  \param[in] ptGptbBase: pointer of gptb register structure
- *  \param[in] eTrgin: gptb sync evtrg input channel(0~6)
+ *  \param[in] eSyncIn: gptb sync evtrg input channel(0~6)
  *  \param[in] byTrgChx: trgxsel channel(0~1)
  *  \return error code \ref csi_error_t
  */
-csi_error_t csi_gptb_set_extsync_chnl(csp_gptb_t *ptGptbBase, csi_gptb_trgin_e eTrgIn, csi_gptb_syncrout_e eTrgChx)
+csi_error_t csi_gptb_set_extsync_chnl(csp_gptb_t *ptGptbBase, csi_gptb_syncin_e eSyncIn, csi_gptb_syncrout_e eTrgChx)
 {
 	switch(eTrgChx)
 	{
 		case 0:
-			csp_gptb_sync_trg0sel(ptGptbBase, eTrgIn);
+			csp_gptb_sync_trg0sel(ptGptbBase, eSyncIn);
 			break;
 		case 1:
-			csp_gptb_sync_trg1sel(ptGptbBase, eTrgIn);
+			csp_gptb_sync_trg1sel(ptGptbBase, eSyncIn);
 			break;
 		default:
 			return CSI_ERROR;
@@ -979,7 +997,7 @@ csi_error_t csi_gptb_set_sync_filter(csp_gptb_t *ptGptbBase, csi_gptb_filter_con
 	uint32_t wFiltCr;
 	uint32_t wWindow;
 	
-	if(ptFilter->byFiltSrc > GPTB_TRGIN_SYNCEN6)
+	if(ptFilter->byFiltSrc > GPTB_SYNCIN6)
 		return CSI_ERROR;
 	wFiltCr = ptFilter->byFiltSrc | (ptFilter->byWinInv << GPTB_FLTBLKINV_POS) | 
 			(ptFilter->byWinAlign << GPTB_ALIGNMD_POS) | (ptFilter->byWinCross << GPTB_CROSSMD_POS);
@@ -993,12 +1011,12 @@ csi_error_t csi_gptb_set_sync_filter(csp_gptb_t *ptGptbBase, csi_gptb_filter_con
 /** \brief rearm gptb sync evtrg  
  * 
  *  \param[in] ptGptbBase: pointer of gptb register structure
- *  \param[in] eTrgin: gptb sync evtrg input channel(0~6)
+ *  \param[in] eSyncin: gptb sync evtrg input channel(0~6)
  *  \return none
  */
-void csi_gptb_rearm_sync(csp_gptb_t *ptGptbBase,csi_gptb_trgin_e eTrgin)
+void csi_gptb_rearm_sync(csp_gptb_t *ptGptbBase,csi_gptb_syncin_e eSyncin)
 {
-	csp_gptb_rearm_sync(ptGptbBase, eTrgin);
+	csp_gptb_rearm_sync(ptGptbBase, eSyncin);
 }
 /** \brief gptb evtrg output config
  * 

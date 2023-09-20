@@ -123,23 +123,23 @@ typedef enum{
 }csi_gptb_capmd_e;
 
 typedef enum{
-	GPTBINT_NONE        = 0x0,
-	GPTBINT_TRGEV0 		= 0x1 << 0,
-	GPTBINT_TRGEV1 		= 0x1 << 1,
-	GPTBINT_TRGEV2 		= 0x1 << 2,
-	GPTBINT_TRGEV3 		= 0x1 << 3,
-	GPTBINT_CAPLD0 		= 0x1 << 4,
-	GPTBINT_CAPLD1 		= 0x1 << 5,
-	GPTBINT_CAPLD2 		= 0x1 << 6,
-	GPTBINT_CAPLD3 		= 0x1 << 7,
-	GPTBINT_CAU 		= 0x1 << 8,
-	GPTBINT_CAD 		= 0x1 << 9,
-	GPTBINT_CBU 		= 0x1 << 10,
-	GPTBINT_CBD 		= 0x1 << 11,
+	GPTB_INTSRC_TRGEV0 		= 0x1 << 0,
+	GPTB_INTSRC_TRGEV1 		= 0x1 << 1,
+	GPTB_INTSRC_TRGEV2 		= 0x1 << 2,
+	GPTB_INTSRC_TRGEV3 		= 0x1 << 3,
+	GPTB_INTSRC_CAPLD0 		= 0x1 << 4,
+	GPTB_INTSRC_CAPLD1 		= 0x1 << 5,
+	GPTB_INTSRC_CAPLD2 		= 0x1 << 6,
+	GPTB_INTSRC_CAPLD3 		= 0x1 << 7,
+	GPTB_INTSRCT_CAU 		= 0x1 << 8,
+	GPTB_INTSRC_CAD 		= 0x1 << 9,
+	GPTB_INTSRC_CBU 		= 0x1 << 10,
+	GPTB_INTSRCT_CBD 		= 0x1 << 11,
 	
-	GPTBINT_PEND   		= 0x1 << 16,	
-	GPTBINT_PRDMA  		= 0x1 << 17,
-	GPTBINT_ZROMA  		= 0x1 << 18
+	GPTB_INTSRC_PEND   		= 0x1 << 16,	
+	GPTB_INTSRC_PRDMA  		= 0x1 << 17,
+	GPTB_INTSRC_ZROMA  		= 0x1 << 18,
+	GPTB_INTSRC_ALL  		= 0xFFFFFFFF
 }csi_gptb_int_e;
 
 typedef enum{
@@ -163,14 +163,14 @@ typedef enum{
  * \brief    GPTB sync trigger input 
  */
 typedef enum{
-	GPTB_TRGIN_SYNCEN0	= 0,	//start	up or reset count			
-	GPTB_TRGIN_SYNCEN1,			//reg updata				
-	GPTB_TRGIN_SYNCEN2,			//capture				
-	GPTB_TRGIN_SYNCEN3,			//			
-	GPTB_TRGIN_SYNCEN4,			//	
-	GPTB_TRGIN_SYNCEN5,			//
-    GPTB_TRGIN_SYNCEN6					
-}csi_gptb_trgin_e;
+	GPTB_SYNCIN0	= 0,			
+	GPTB_SYNCIN1,						
+	GPTB_SYNCIN2,						
+	GPTB_SYNCIN3,			
+	GPTB_SYNCIN4,
+	GPTB_SYNCIN5,
+    GPTB_SYNCIN6		
+}csi_gptb_syncin_e;
 
 /**
  * \enum	csi_gptb_trgout_e
@@ -205,9 +205,9 @@ typedef enum {
  * \brief    gptb sync trigger mode 
  */
 typedef enum{
-	GPTB_TRG_CONTINU		= 0,	
-	GPTB_TRG_ONCE								
-}csi_gptb_trgmode_e;
+	GPTB_SYNC_CONT		= 0,	
+	GPTB_SYNC_ONCE								
+}csi_gptb_syncmode_e;
 
 /**
  * \enum     csi_gptb_arearm_e
@@ -869,38 +869,45 @@ void csi_gptb_loading_method_aqcsf(csp_gptb_t *ptGptbBase, csi_gptb_aqosf_e eLoa
  */
 csi_error_t csi_gptb_continuoussoftwareforce_output(csp_gptb_t *ptGptbBase, csi_gptb_channel_e eChannel, csi_gptb_aqcsf_e eAction);
 
+/** \brief gptb interrupt clear  
+ *  \param[in] ptGptbBase: pointer of gptb register structure
+ *  \param[in] eInt:       \ref csi_gptb_int_e
+ *  \return none;
+ */
+void csi_gptb_clr_isr(csp_gptb_t *ptGptbBase, csi_gptb_int_e eInt);
+
 /** \brief gptb interrupt enable  
  *  \param[in] ptGptbBase: pointer of gptb register structure
  *  \param[in] eInt:       \ref csi_gptb_int_e
- *  \return CSI_OK;
+ *  \return none;
  */
-csi_error_t csi_gptb_int_enable(csp_gptb_t *ptGptbBase, csi_gptb_int_e eInt);
+void csi_gptb_int_enable(csp_gptb_t *ptGptbBase, csi_gptb_int_e eInt);
 
 /** \brief gptb interrupt disable   
  *  \param[in] ptGptbBase: pointer of gptb register structure
  *  \param[in] eInt:       \ref csi_gptb_int_e
- *  \return CSI_OK;
+ *  \return none;
  */
-csi_error_t csi_gptb_int_disable(csp_gptb_t *ptGptbBase, csi_gptb_int_e eInt);
+void csi_gptb_int_disable(csp_gptb_t *ptGptbBase, csi_gptb_int_e eInt);
 
 /** \brief gptb sync input evtrg config  
  * 
  *  \param[in] ptGptbBase: pointer of gptb register structure
- *  \param[in] eTrgin: gptb sync evtrg input channel(0~6)
- *  \param[in] eTrgMode: gptb sync evtrg mode, continuous/once
+ *  \param[in] eSyncIn: gptb sync evtrg input channel(0~6)
+ *  \param[in] eSyncMode: gptb sync evtrg mode, continuous/once
  *  \param[in] eAutoRearm: refer to csi_gptb_arearm_e 
  *  \return none
  */
-void csi_gptb_set_sync(csp_gptb_t *ptGptbBase, csi_gptb_trgin_e eTrgIn, csi_gptb_trgmode_e eTrgMode, csi_gptb_arearm_e eAutoRearm);
+void csi_gptb_set_sync(csp_gptb_t *ptGptbBase, csi_gptb_syncin_e eSyncIn, csi_gptb_syncmode_e eSyncMode, csi_gptb_arearm_e eAutoRearm);
 
 /** \brief gptb extsync input select
  * 
  *  \param[in] ptGptbBase: pointer of gptb register structure
- *  \param[in] eTrgin: gptb sync evtrg input channel(0~6)
+ *  \param[in] eSyncIn: gptb sync evtrg input channel(0~6)
  *  \param[in] byTrgChx: trgxsel channel(0~1)
  *  \return error code \ref csi_error_t
  */
-csi_error_t csi_gptb_set_extsync_chnl(csp_gptb_t *ptGptbBase, csi_gptb_trgin_e eTrgIn, csi_gptb_syncrout_e eTrgChx);
+csi_error_t csi_gptb_set_extsync_chnl(csp_gptb_t *ptGptbBase, csi_gptb_syncin_e eSyncIn, csi_gptb_syncrout_e eTrgChx);
 
 /** \brief gptb sync input filter config  
  * 
@@ -913,10 +920,10 @@ csi_error_t csi_gptb_set_sync_filter(csp_gptb_t *ptGptbBase, csi_gptb_filter_con
 /** \brief rearm gptb sync evtrg  
  * 
  *  \param[in] ptGptbBase: pointer of gptb register structure
- *  \param[in] eTrgin: gptb sync evtrg input channel(0~6)
+ *  \param[in] eSyncIn: gptb sync evtrg input channel(0~6)
  *  \return none
  */
-void csi_gptb_rearm_sync(csp_gptb_t *ptGptbBase,csi_gptb_trgin_e eTrgin);
+void csi_gptb_rearm_sync(csp_gptb_t *ptGptbBase,csi_gptb_syncin_e eSyncIn);
 
 /** \brief gptb evtrg output config
  * 
