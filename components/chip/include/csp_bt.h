@@ -175,7 +175,7 @@ typedef enum
 	BT_EVTRG_PEND,	
 	BT_EVTRG_CMP,	
 	BT_EVTRG_OVF         
-}bt_evtrg_sel_e;
+}bt_evtrg_src_e;
 
 #define	BT_TRGOE_POS	(20)
 #define	BT_TRGOE_MSK	(0x01ul << BT_TRGOE_POS)
@@ -341,6 +341,10 @@ static inline void csp_bt_sync_enable(csp_bt_t *ptBtBase, bt_sync_in_e eSyncIn)
 static inline void csp_bt_sync_disable(csp_bt_t *ptBtBase, bt_sync_in_e eSyncIn)
 {
 		ptBtBase->CR &= ~BT_SYNC_MSK(eSyncIn);
+}
+static inline void csp_bt_set_evtrg_src(csp_bt_t *ptBtBase, bt_evtrg_src_e eTrgSrc)	
+{
+	ptBtBase->EVTRG |= eTrgSrc;
 }
 static inline void csp_bt_evtrg_enable(csp_bt_t *ptBtBase)
 {
