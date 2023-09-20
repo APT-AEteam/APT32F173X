@@ -135,7 +135,7 @@ static int32_t apt_set_lpt_clk(csp_lpt_t *ptLptBase,csi_lpt_clksrc_e eClk,uint32
 */
 void csi_lpt_int_enable(csp_lpt_t *ptLptBase, csi_lpt_intsrc_e eLptInt)
 {
-	csp_lpt_int_enable(ptLptBase,(lpt_int_e)eLptInt);
+	csp_lpt_clr_isr(ptLptBase, (lpt_int_e)eLptInt);
 	csp_lpt_int_enable(ptLptBase,(lpt_int_e)eLptInt);
 }
 
@@ -512,7 +512,7 @@ csi_error_t csi_lpt_start_sync(csp_lpt_t *ptLptBase, csi_lpt_clksrc_e eClk, uint
 /** \brief lpt sync config  
  * 
  *  \param[in] ptLptBase:pointer of lpt register structure
- *  \param[in] eSync: select sync ÓÃÃ¶¾Ù
+ *  \param[in] eSync: select sync Ã“ÃƒÃƒÂ¶Â¾Ã™
  *  \param[in] eSyncMode: LPT_TRG_CONT/LPT_TRG_ONCE
  *  \param[in] bARearmEnable: auto rearm enable/disable
  *  \return error code \ref csi_error_t
