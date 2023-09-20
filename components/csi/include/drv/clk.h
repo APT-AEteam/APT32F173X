@@ -20,6 +20,15 @@
 extern "C" {
 #endif
 
+//GCER GDCR CLK bit
+#define CLK_ISOSC	0
+#define	CLK_IMOSC	1
+#define CLK_ESOSC	2
+#define CLK_EMOSC	3
+#define CLK_HFOSC	4
+#define CLK_PLL		5
+
+
 typedef struct {
 	uint32_t wRegBase;
     uint32_t wModule;
@@ -53,7 +62,7 @@ csi_error_t csi_emosc_disable(void);
  *  \param[in] none
  *  \return csi_error_t
  */
-csi_error_t csi_esosc_enable(uint32_t wFreq);
+csi_error_t csi_esosc_enable(void);
 
 /** \brief esosc disable
  * 

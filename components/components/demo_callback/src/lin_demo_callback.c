@@ -10,10 +10,8 @@
 */
 /* Includes ---------------------------------------------------------------*/
 
-//#include "drv/usart.h"
-#include "drv/gpio.h"
-#include "drv/lin.h"
-#include <iostring.h>
+#include "csi_drv.h"
+#include "iostring.h"
 #include "board_config.h"
 
 /* externs function--------------------------------------------------------*/
@@ -37,13 +35,13 @@ void user_send_callback(csp_lin_t *ptLinBase)
 	//添加用户程序
 }
 
-/** \brief lin_send_recv_callback_demo：示例lin主机发送完整数据帧
+/** \brief lin_send_recv_int_callback_demo：示例lin主机发送完整数据帧
  *  		数据帧发送完整，会进入回调函数user_send_callback，用户可在该条件语句下
  *			添加相应的代码
  *  \param[in] none
  *  \return error code
  */
-int lin_send_callback_demo(void)
+int lin_send_int_callback_demo(void)
 {
 	int iRet = 0;
 	uint8_t bySdBuf[8] = {0x45,0x46,3,4,5,6,7,8};
@@ -127,14 +125,14 @@ void user_receive_callback(csp_lin_t *ptLinBase,csi_lin_event_e eEvent, uint8_t 
 	}
 }
 
-/** \brief lin_send_recv_callback_demo：示例lin主机发送帧头，等待应答数据
+/** \brief lin_send_recv_int_callback_demo：示例lin主机发送帧头，等待应答数据
  *  		帧头发送完成的时候会进入回调函数，在条件LIN_EVENT_ENDHEADER下添加相应的用户代码
  *			接收到完整的应答数据时，会进入条件LIN_EVENT_ENDMESS下执行，用户可在该条件语句下
  *			添加相应的代码
  *  \param[in] none
  *  \return error code
  */
-int lin_send_recv_callback_demo(void)
+int lin_send_recv_int_callback_demo(void)
 {
 	volatile int iRet = 0;
 	uint8_t byReBuf[8] = {0};

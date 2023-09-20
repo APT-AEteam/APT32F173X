@@ -8,20 +8,10 @@
  * </table>
  * *********************************************************************
 */
-//#include <csi_config.h>
-#include <stdio.h>
-#include <soc.h>
-#include <sys_clk.h>
-#include <drv/uart.h>
-#include <drv/bt.h>
-#include <drv/dma.h>
-#include <drv/iic.h>
-#include <drv/rtc.h>
-#include <drv/spi.h>
-#include <drv/adc.h>
-#include <drv/gpio.h>
-#include <drv/irq.h>
-#include <drv/pin.h>
+
+#include "soc.h"
+#include "sys_clk.h"
+
 
 
 const csi_irqmap_t g_tIrqMap[] = {

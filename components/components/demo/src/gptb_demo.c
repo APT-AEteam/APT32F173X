@@ -18,8 +18,64 @@
 /* externs variablesr------------------------------------------------------*/
 /* Private macro-----------------------------------------------------------*/
 /* Private variablesr------------------------------------------------------*/
+static uint32_t s_wGptbCapBuff[4] = {0};
 
-/** \brief GPTB基本定时功能
+#if (USE_GPTB_CALLBACK == 0)		
+/** \brief	gptbx_int_handler: GPTB中断服务函数
+ * 
+ *  \brief 	GPTB发生中断时会调用此函数，函数在interrupt.c里定义为弱(weak)属性，默认不做处理；用户用到GPTB中
+ * 			断时，请重新定义此函数，在此函数中进行对应中断处理，也可直接在interrupt.c里的函数里进行处理
+ * 
+ *  \param[in] none
+ *  \return none
+ */
+ATTRIBUTE_ISR  void gptb0_int_handler(void)
+{
+	//用户直接在中断服务接口函数里处理中断，建议客户使用此模式
+	volatile uint32_t wIsr = csp_gptb_get_isr(GPTB0);
+	
+	if(wIsr & GPTB_INT_PEND)				//PEND interrupt
+	{
+		csp_gptb_clr_isr(GPTB0, GPTB_INT_PEND);
+		csi_gpio_toggle(GPIOA, PA6);		//PA6翻转
+	}
+	if(wIsr & GPTB_INT_CAPLD0)				//CAPLD0 interrupt
+	{
+		csp_gptb_clr_isr(GPTB0, GPTB_INT_CAPLD0);
+		s_wGptbCapBuff[0] = csp_gptb_get_cmpa(GPTB0);
+	}
+	if(wIsr & GPTB_INT_CAPLD1)				//CAPLD1 interrupt
+	{
+		csp_gptb_clr_isr(GPTB0, GPTB_INT_CAPLD1);
+		s_wGptbCapBuff[0] = csp_gptb_get_cmpa(GPTB0);
+		s_wGptbCapBuff[1] = csp_gptb_get_cmpb(GPTB0);
+	}
+	if(wIsr & GPTB_INT_CAPLD2)				//CAPLD2 interrupt
+	{
+		csp_gptb_clr_isr(GPTB0, GPTB_INT_CAPLD2);
+		s_wGptbCapBuff[0] = csp_gptb_get_cmpa(GPTB0);
+		s_wGptbCapBuff[1] = csp_gptb_get_cmpb(GPTB0);
+		s_wGptbCapBuff[2] = csp_gptb_get_cmpaa(GPTB0);
+	}
+	if(wIsr & GPTB_INT_CAPLD3)				//CAPLD3 interrupt
+	{
+		csp_gptb_clr_isr(GPTB0, GPTB_INT_CAPLD3);
+		s_wGptbCapBuff[0] = csp_gptb_get_cmpa(GPTB0);
+		s_wGptbCapBuff[1] = csp_gptb_get_cmpb(GPTB0);
+		s_wGptbCapBuff[2] = csp_gptb_get_cmpaa(GPTB0);
+		s_wGptbCapBuff[3] = csp_gptb_get_cmpba(GPTB0);
+	}
+}
+#endif
+
+/** \brief	gptb_timer_demo: gptb做基本定时器功能，默认使用向上计数，PEND中断
+ * 
+ *  \brief	csi初始化使用(开启)周期结束中断，并在中断里面翻转IO(需要打开PA6 IO配置注释)；
+ * 			若不需要开启中断,需调用csi_gptb_int_disable接口函数，关闭周期结束中断。
+ * 			定时1000us，翻转一次IO口，故IO翻转周期为2000us=2ms，500Hz
+ * 
+ * @ 工作模式:	GPTB_RUN_CONT: 连续工作模式。计数结束，计数器重新开始计数，周期执行
+ * 				GPTB_RUN_ONCE: 单次工作模式。计数结束，计数器停止工作
  * 
  *  \param[in] none
  *  \return error code
@@ -27,71 +83,29 @@
 int gptb_timer_demo(void)
 {
 	int iRet = 0;
+	csi_gptb_time_config_t tTimConfig;
 	
-	csi_gptb_timer_init(GPTB0, 10000);		//初始化GPTB0, 定时10000us； GPTB定时，默认采用向上计数，PEND中断
+#if (USE_GUI == 0)		
+	csi_gpio_set_mux(GPIOA, PA6, PA6_OUTPUT);	//初始化PA6为输出
+#endif
 	
-	csi_gptb_start(GPTB0);                  //启动定时器
+	tTimConfig.wTimeVal  = 1000;				//GPTB定时值 = 1000us
+	tTimConfig.eRunMode  = GPTB_RUN_CONT;		//GPTB计数器工作模式
+	csi_gptb_timer_init(GPTB0, &tTimConfig);	//初始化GPTB	
+	
+	csi_gptb_start(GPTB0);                  	//启动定时器
 
 	return iRet;	
 }
 
-/** \brief GPTB捕获示例代码
- *   		- 捕获2次产生一次捕获中断
- *     		- 由PA01触发外部事件1，经过ETCB  触发sync2或sync3捕获
- * 			- 信号由PA01的高低电平切换产生（一直高电平意味着没有触发）
- * 			- GPTB支持分离捕获和合并捕获两种模式：
- * 			- 分离捕获：区分sync2和sync3的捕获事件：sync2捕获对应capld0事件;sync3捕获对应capld1事件
- * 			- 合并捕获：合并sync2和sync3的捕获事件，对应capld0~3四个事件
- *  \param[in] none
- *  \return error code
- */
-
-int gptb_capture_demo(void)
-{
-	int iRet = 0;	
-	volatile uint8_t ch = 0;
-	csi_etcb_config_t tEtcbConfig;				//ETCB 参数配置结构体
-	csi_gptb_capture_config_t tCapCfg;
-//------------------------------------------------------------------------------------------------------------------------	
-	csi_gpio_set_mux(GPIOA, PA1, PA1_INPUT);	
-	csi_gpio_pull_mode(GPIOA, PA1, GPIO_PULLUP);					//PA01 上拉使能
-	csi_gpio_irq_mode(GPIOA, PA1,EXI_GRP1, GPIO_IRQ_FALLING_EDGE);	//PA01 下降沿产生中断
-	csi_gpio_int_enable(GPIOA, PA1);								//使能PA01中断	
-	csi_exi_set_evtrg(EXI_TRGOUT1, EXI_TRGSRC_GRP1, 1);		
-	csi_exi_evtrg_enable(EXI_TRGOUT1);
-//------------------------------------------------------------------------------------------------------------------------		
-	tEtcbConfig.eChType  = ETCB_ONE_TRG_ONE;  						//单个源触发单个目标
-	tEtcbConfig.eSrcIp   = ETCB_EXI_TRGOUT1 ;  						//EXI_TRGOUT1作为触发源
-	tEtcbConfig.eDstIp   = ETCB_GPTB0_SYNCIN2;   					//GPTB0同步输入2作为目标事件
-	tEtcbConfig.eTrgMode = ETCB_HARDWARE_TRG;
-	ch = csi_etcb_ch_alloc(tEtcbConfig.eChType);					//自动获取空闲通道号,ch >= 0 获取成功
-	if(ch < 0)														//ch < 0,则获取通道号失败
-		return -1;		
-	iRet = csi_etcb_ch_init(ch, &tEtcbConfig);	
-//------------------------------------------------------------------------------------------------------------------------	
-	tCapCfg.eWorkMode         	= GPTB_CAPTURE;                     //GPTB工作模式：捕获/波形输出	
-	tCapCfg.eCountMode    		= GPTB_UPCNT;                       //GPTB计数模式：递增/递减/递增递减	
-	tCapCfg.eRunMode	    	= GPTB_RUN_CONT;        		    //GPTB运行模式：连续/一次性	
-	tCapCfg.eCapMode      		= GPTB_CAP_SEPARATE;                //GPTB捕获模式：合并/分离	
-	tCapCfg.byCapStopWrap 		= 2;                                //GPTB捕获次数：0/1/2/3
-	tCapCfg.byCapLdaret   		= 0;                                //CMPA捕获载入后计数器设置(1h：捕获载入后计数器值重置;0h：捕获载入后计数器值不重置)
-	tCapCfg.byCapLdbret   		= 0;  								//CMPB捕获载入后计数器设置(1h：捕获载入后计数器值重置;0h：捕获载入后计数器值不重置)
-	tCapCfg.byCapLdcret   		= 0;								//CMPC捕获载入后计数器设置(1h：捕获载入后计数器值重置;0h：捕获载入后计数器值不重置)
-	tCapCfg.byCapLddret   		= 0;   								//CMPD捕获载入后计数器设置(1h：捕获载入后计数器值重置;0h：捕获载入后计数器值不重置)                        
-	csi_gptb_capture_init(GPTB0, &tCapCfg);
-	
-	csi_gptb_set_sync(GPTB0, GPTB_TRGIN_SYNCEN2, GPTB_TRG_CONTINU,GPTB_AUTO_REARM_ZRO);
-	csi_gptb_start(GPTB0);
-	
-	return iRet;
-}
-
-/** \brief GPTB sync2 sync3合并捕获示例代码，测试周期时间
+/** \brief GPTB合并捕获示例代码，PA1输入2KHz/50% PWM波形，测试周期时间。
  *          - sync2 sync3不区分，实现4次捕获
- *   		- 捕获4次产生一次捕获中断，ldbarst捕获后，计数器进行重置
- *     		- 由PA1外部扩展口,下降沿触发外部事件5，经过ETCB  触发sync3 捕获
+ *   		- 捕获4次产生一次捕获中断，每一次捕获后，计数器值均进行重置
+ *     		- 由PA1外部扩展口,下降沿触发外部事件1，经过ETCB  触发GPTB的SYNCIN3端口捕获
  * 			- 信号由PA1的高低电平切换产生（一直高或低电平意味着没有触发）
  *          - CMPA捕获的是第一次周期值，CMPB捕获的是第二次周期值，CMPAA捕获的是第三次周期值,CMPBA捕获的是第四次周期值
+ *  实测捕获到的值均为0xCD14 = 52500，故周期时间为500us。
+ * 	注意：当GPTB工作时钟不同时，所支持捕获的PWM最小输出频率也不同。如GPTB工作在105MHz时，所支持捕获的最小PWM频率为105MHz/65536=1602Hz。
  *  \param[in] none
  *  \return error code
  
@@ -105,37 +119,40 @@ int gptb_capture_sync_demo0(void)
 {
 	int iRet = 0;
     volatile uint8_t ch;
-	
-//------------------------------------------------------------------------------------------------------------------------
-	csi_pin_set_mux(PA1,PA1_INPUT);		
-	csi_pin_pull_mode(PA1, GPIO_PULLUP);						 //PA1 上拉
-	csi_pin_irq_mode(PA1, EXI_GRP16, GPIO_IRQ_FALLING_EDGE);     //PA1 下降沿产生中断，选择中断组16
-	csi_pin_irq_enable(PA1, ENABLE);                            //PA1 中断使能                                    
-	csi_exi_set_evtrg(5, EXI_TRGSRC_GRP16, 1);	 
+	csi_etcb_config_t tEtcbConfig;									//ETCB参数配置结构体
+	csi_gptb_capture_config_t tCapCfg;								//GPTB捕获参数配置结构体
+//------------------------------------------------------------------------------------------------------------------------ 	
+	csi_gpio_set_mux(GPIOA, PA1, PA1_INPUT);						//PA01 输入
+	csi_gpio_pull_mode(GPIOA, PA1, GPIO_PULLUP);					//PA01 上拉使能
+	csi_gpio_irq_mode(GPIOA, PA1,EXI_GRP1, GPIO_IRQ_FALLING_EDGE);	//PA01 下降沿产生中断
+	csi_gpio_int_enable(GPIOA, PA1);								//使能PA01中断	
+	csi_exi_set_evtrg(EXI_TRGOUT1, EXI_TRGSRC_GRP1, 1);				//EXI 触发配置
+	csi_exi_evtrg_enable(EXI_TRGOUT1);								//使能 EXI_TRGOUT1触发输出
 //------------------------------------------------------------------------------------------------------------------------		
-	csi_etcb_config_t tEtbConfig;				//ETCB 参数配置结构体	
-	tEtbConfig.eChType  = ETCB_ONE_TRG_ONE;  	//单个源触发单个目标
-	tEtbConfig.eSrcIp   = ETCB_EXI_TRGOUT5 ;  	//...作为触发源
-	tEtbConfig.eDstIp   = ETCB_GPTB0_SYNCIN3;  //GPTB0 同步输入2作为目标事件
-	tEtbConfig.eTrgMode = ETCB_HARDWARE_TRG;
-	
-	ch = csi_etcb_ch_alloc(tEtbConfig.eChType);	//自动获取空闲通道号,ch >= 0 获取成功						//ch < 0,则获取通道号失败		
-	iRet = csi_etcb_ch_init(ch, &tEtbConfig);	
+	tEtcbConfig.eChType  = ETCB_ONE_TRG_ONE;  						//单个源触发单个目标
+	tEtcbConfig.eSrcIp   = ETCB_EXI_TRGOUT1;  						//EXI_TRGOUT1作为触发源
+	tEtcbConfig.eDstIp   = ETCB_GPTB0_SYNCIN3;  					//GPTB0 SYNCIN3作为目标事件
+	tEtcbConfig.eTrgMode = ETCB_HARDWARE_TRG;
+	ch = csi_etcb_ch_alloc(tEtcbConfig.eChType);					//自动获取空闲通道号,ch >= 0 获取成功	
+	if(ch < 0)														//ch < 0,则获取通道号失败
+		return -1;	
+	iRet = csi_etcb_ch_init(ch, &tEtcbConfig);	
 //------------------------------------------------------------------------------------------------------------------------	
-	csi_gptb_capture_config_t tCapCfg;								  
 	tCapCfg.eWorkMode         	= GPTB_CAPTURE;                     //GPTB工作模式：捕获/波形输出	
 	tCapCfg.eCountMode    		= GPTB_UPCNT;                       //GPTB计数模式：递增/递减/递增递减	
 	tCapCfg.eRunMode	    	= GPTB_RUN_CONT;        		    //GPTB运行模式：连续/一次性	
-	tCapCfg.eCapMode      		= GPTB_MERGE_CAP;                	//GPTB捕获模式：合并/分离	
+	tCapCfg.eCapMode      		= GPTB_CAP_MERGE;                	//GPTB捕获模式：合并/分离	
 	tCapCfg.byCapStopWrap 		= 3;                                //GPTB捕获次数：0/1/2/3
-	tCapCfg.byCapLdaret   		= 0;                                //CMPA捕获载入后计数器设置(1h：捕获载入后计数器值重置;0h：捕获载入后计数器值不重置)
-	tCapCfg.byCapLdbret   		= 0;  								//CMPB捕获载入后计数器设置(1h：捕获载入后计数器值重置;0h：捕获载入后计数器值不重置)
-	tCapCfg.byCapLdcret   		= 0;								//CMPC捕获载入后计数器设置(1h：捕获载入后计数器值重置;0h：捕获载入后计数器值不重置)
+	tCapCfg.byCapLdaret   		= 1;                                //CMPA捕获载入后计数器设置(1h：捕获载入后计数器值重置;0h：捕获载入后计数器值不重置)
+	tCapCfg.byCapLdbret   		= 1;  								//CMPB捕获载入后计数器设置(1h：捕获载入后计数器值重置;0h：捕获载入后计数器值不重置)
+	tCapCfg.byCapLdcret   		= 1;								//CMPC捕获载入后计数器设置(1h：捕获载入后计数器值重置;0h：捕获载入后计数器值不重置)
 	tCapCfg.byCapLddret   		= 1;   								//CMPD捕获载入后计数器设置(1h：捕获载入后计数器值重置;0h：捕获载入后计数器值不重置)                        
 	csi_gptb_capture_init(GPTB0, &tCapCfg);
 //------------------------------------------------------------------------------------------------------------------------
-    csi_gptb_set_sync(GPTB0, GPTB_TRGIN_SYNCEN3, GPTB_TRG_CONTINU, GPTB_AUTO_REARM_ZRO);//使能SYNCIN3外部触发
-	csi_gptb_start(GPTB0);//start  timer
+	csi_gptb_int_enable(GPTB0, GPTB_INTSRC_CAPLD3);
+    csi_gptb_set_sync(GPTB0, GPTB_SYNCIN3, GPTB_SYNC_CONT, GPTB_AUTO_REARM_ZRO);//使能SYNCIN3外部触发
+	csi_gptb_start(GPTB0);
+	
     while(1)
 	{
 		mdelay(1);
@@ -143,13 +160,15 @@ int gptb_capture_sync_demo0(void)
 	return iRet;
 }
 
-/** \brief GPTB sync2 sync3合并捕获示例代码，测试低电平时间
- *          //sync2 sync3不区分，实现1次捕获
- *   		- 捕获1次产生一次捕获中断，ldarst捕获后，计数器进行重置
+/** \brief GPTB 合并捕获示例代码，PA1输入2KHz/30% PWM波形，测试低电平时间
+ *          - sync2 sync3不区分，实现1次捕获
+ *   		- 捕获1次产生一次捕获中断，CMPA捕获载入后，计数器值进行重置
  *     		- 由PA1下降沿产生外部事件0，经过ETCB  触发sync0，重置和启动计数器
- *          - 由PA1外部扩展口，上升沿产生外部事件5，经过ETCB  触发sync3 捕获，上升沿捕获值存放在CMPA中
+ *          - 由PA1外部扩展口，上升沿产生外部事件5，经过ETCB  触发sync3捕获，上升沿捕获值存放在CMPA中
  * 			- 信号由PA1的高低电平切换产生（一直高或低电平意味着没有触发）
- *          - CMPA捕获的是下降沿时间
+ *          - CMPA捕获的是低电平时间
+ * 实测CMPA捕获到的值为0x8F8C = 36748，故低电平时间为350us。
+ * 注意：当GPTB工作时钟不同时，所支持捕获的PWM最小输出频率也不同。如GPTB工作在105MHz时，所支持捕获的最小PWM频率为105MHz/65536=1602Hz。
  *  \param[in] none
  *  \return error code
  * 
@@ -163,51 +182,52 @@ int gptb_capture_sync_demo1(void)
 {
 	int iRet = 0;	
     volatile uint8_t ch;
-	
-//------------------------------------------------------------------------------------------------------------------------
-	csi_pin_set_mux(PA1,PA1_INPUT);		
-	csi_pin_pull_mode(PA1, GPIO_PULLUP);						//PA1 上拉
-	
-	csi_pin_irq_mode(PA1,EXI_GRP1, GPIO_IRQ_FALLING_EDGE);		//PA1 下降沿产生中断，选择中断组1 
-	csi_exi_set_evtrg(0, EXI_TRGSRC_GRP1, 1);					//产生外部事件0
-	
-	csi_pin_irq_mode(PA1, EXI_GRP16, GPIO_IRQ_RISING_EDGE);     //PA1 上升沿产生中断，选择中断组16                                                            
-	csi_exi_set_evtrg(5, EXI_TRGSRC_GRP16, 1);	 				//产生外部事件5
-	csi_pin_irq_enable(PA1, ENABLE);							//PA1 中断使能 
-//------------------------------------------------------------------------------------------------------------------------
-	csi_etcb_config_t tEtbConfig;		
-	//ETCB 参数配置结构体	
-	tEtbConfig.eChType  = ETCB_ONE_TRG_ONE;  	//单个源触发单个目标
-	tEtbConfig.eSrcIp   = ETCB_EXI_TRGOUT0 ;  	//...作为触发源
-	tEtbConfig.eDstIp   = ETCB_GPTB0_SYNCIN0;  //GPTB0 同步输入0作为目标事件
-	tEtbConfig.eTrgMode = ETCB_HARDWARE_TRG;
-	
-	ch = csi_etcb_ch_alloc(tEtbConfig.eChType);	//自动获取空闲通道号,ch >= 0 获取成功						//ch < 0,则获取通道号失败		
-	iRet = csi_etcb_ch_init(ch, &tEtbConfig);			
-//------------------------------------------------------------------------------------------------------------------------		
-	tEtbConfig.eChType  = ETCB_ONE_TRG_ONE;  	//单个源触发单个目标
-	tEtbConfig.eSrcIp   = ETCB_EXI_TRGOUT5 ;  	//...作为触发源
-	tEtbConfig.eDstIp   = ETCB_GPTB0_SYNCIN3;  //GPTB0 同步输入2作为目标事件
-	tEtbConfig.eTrgMode = ETCB_HARDWARE_TRG;
-	
-	ch = csi_etcb_ch_alloc(tEtbConfig.eChType);	//自动获取空闲通道号,ch >= 0 获取成功						//ch < 0,则获取通道号失败		
-	iRet = csi_etcb_ch_init(ch, &tEtbConfig);	
+	csi_etcb_config_t tEtcbConfig;									//ETCB 参数配置结构体	
+	csi_gptb_capture_config_t tCapCfg;								//GPTB捕获参数配置结构体
 //------------------------------------------------------------------------------------------------------------------------	
-	csi_gptb_capture_config_t tCapCfg;								  
+	csi_gpio_set_mux(GPIOA, PA1, PA1_INPUT);						//PA01 输入
+	csi_gpio_pull_mode(GPIOA, PA1, GPIO_PULLUP);					//PA01 上拉使能
+	csi_gpio_irq_mode(GPIOA, PA1,EXI_GRP1, GPIO_IRQ_FALLING_EDGE);	//PA01 下降沿产生中断
+	csi_exi_set_evtrg(EXI_TRGOUT1, EXI_TRGSRC_GRP1, 1);				//EXI 触发配置
+	csi_exi_evtrg_enable(EXI_TRGOUT1);								//使能 EXI_TRGOUT1触发输出
+	csi_gpio_irq_mode(GPIOA, PA1,EXI_GRP16, GPIO_IRQ_RISING_EDGE);	//PA01 上升沿产生中断
+	csi_exi_set_evtrg(EXI_TRGOUT5, EXI_TRGSRC_GRP16, 1);			//EXI 触发配置
+	csi_exi_evtrg_enable(EXI_TRGOUT5);								//使能 EXI_TRGOUT5触发输出
+	csi_gpio_int_enable(GPIOA, PA1);								//使能PA01中断	
+//------------------------------------------------------------------------------------------------------------------------
+	tEtcbConfig.eChType  = ETCB_ONE_TRG_ONE;  						//单个源触发单个目标
+	tEtcbConfig.eSrcIp   = ETCB_EXI_TRGOUT1 ;  						//EXI_TRGOUT1作为触发源
+	tEtcbConfig.eDstIp   = ETCB_GPTB0_SYNCIN0;  					//GPTB0 SYNCIN0作为目标事件
+	tEtcbConfig.eTrgMode = ETCB_HARDWARE_TRG;
+	ch = csi_etcb_ch_alloc(tEtcbConfig.eChType);					//自动获取空闲通道号,ch >= 0 获取成功		
+	if(ch < 0)														//ch < 0,则获取通道号失败
+		return -1;
+	iRet = csi_etcb_ch_init(ch, &tEtcbConfig);			
+//------------------------------------------------------------------------------------------------------------------------		
+	tEtcbConfig.eChType  = ETCB_ONE_TRG_ONE;  						//单个源触发单个目标
+	tEtcbConfig.eSrcIp   = ETCB_EXI_TRGOUT5 ;  						//EXI_TRGOUT5作为触发源
+	tEtcbConfig.eDstIp   = ETCB_GPTB0_SYNCIN3;  					//GPTB0 SYNCIN3作为目标事件
+	tEtcbConfig.eTrgMode = ETCB_HARDWARE_TRG;
+	ch = csi_etcb_ch_alloc(tEtcbConfig.eChType);					//自动获取空闲通道号,ch >= 0 获取成功		
+	if(ch < 0)														//ch < 0,则获取通道号失败
+		return -1;
+	iRet = csi_etcb_ch_init(ch, &tEtcbConfig);	
+//------------------------------------------------------------------------------------------------------------------------	
 	tCapCfg.eWorkMode         	= GPTB_CAPTURE;                     //GPTB工作模式：捕获/波形输出	
 	tCapCfg.eCountMode    		= GPTB_UPCNT;                       //GPTB计数模式：递增/递减/递增递减	
 	tCapCfg.eRunMode	    	= GPTB_RUN_CONT;        		    //GPTB运行模式：连续/一次性	
-	tCapCfg.eCapMode      		= GPTB_MERGE_CAP;                	//GPTB捕获模式：合并/分离	
-	tCapCfg.byCapStopWrap 		= 1;                                //GPTB捕获次数：0/1/2/3
+	tCapCfg.eCapMode      		= GPTB_CAP_MERGE;                	//GPTB捕获模式：合并/分离	
+	tCapCfg.byCapStopWrap 		= 0;                                //GPTB捕获次数：0/1/2/3
 	tCapCfg.byCapLdaret   		= 1;                                //CMPA捕获载入后计数器设置(1h：捕获载入后计数器值重置;0h：捕获载入后计数器值不重置)
 	tCapCfg.byCapLdbret   		= 0;  								//CMPB捕获载入后计数器设置(1h：捕获载入后计数器值重置;0h：捕获载入后计数器值不重置)
 	tCapCfg.byCapLdcret   		= 0;								//CMPC捕获载入后计数器设置(1h：捕获载入后计数器值重置;0h：捕获载入后计数器值不重置)
 	tCapCfg.byCapLddret   		= 0;   								//CMPD捕获载入后计数器设置(1h：捕获载入后计数器值重置;0h：捕获载入后计数器值不重置)                        
 	csi_gptb_capture_init(GPTB0, &tCapCfg);
 //------------------------------------------------------------------------------------------------------------------------
-	csi_gptb_set_sync(GPTB0, GPTB_TRGIN_SYNCEN0, GPTB_TRG_CONTINU, GPTB_AUTO_REARM_ZRO);//使能SYNCIN0外部触发
-    csi_gptb_set_sync(GPTB0, GPTB_TRGIN_SYNCEN3, GPTB_TRG_CONTINU, GPTB_AUTO_REARM_ZRO);//使能SYNCIN3外部触发
-	csi_gptb_start(GPTB0);//start  timer
+	csi_gptb_int_enable(GPTB0, GPTB_INTSRC_CAPLD0);
+	csi_gptb_set_sync(GPTB0, GPTB_SYNCIN0, GPTB_SYNC_CONT, GPTB_AUTO_REARM_ZRO);//使能SYNCIN0外部触发
+    csi_gptb_set_sync(GPTB0, GPTB_SYNCIN3, GPTB_SYNC_CONT, GPTB_AUTO_REARM_ZRO);//使能SYNCIN3外部触发
+	csi_gptb_start(GPTB0);
     while(1)
 	{
 		mdelay(1);
@@ -215,72 +235,73 @@ int gptb_capture_sync_demo1(void)
 	return iRet;
 }
 
-/** \brief GPTB sync2 sync3区分捕获示例代码，测试低电平和周期时间，同时可计算出高电平时间
- *          //sync2 sync3区分，实现2次捕获
- *   		- 捕获2次产生一次捕获中断，ldbrst捕获后，计数器进行重置
- *     		- 由PA3产生外部事件0，经过ETCB  触发sync2 上升沿捕获，上升沿捕获值存放在CMPA中
- *          - 由PA3外部扩展口,产生外部事件5，经过ETCB  触发sync3 下降沿捕获，下降沿捕获值存放在CMPB中
- * 			- 信号由PA3的高低电平切换产生（一直高或低电平意味着没有触发）
- *          - 下降沿时间为CMPA，周期时间为CMPB，上升沿时间为 CMPB - CMPA。  
+/** \brief GPTB 区分捕获示例代码，PA1输入2KHz/30% PWM波形，测试高电平和周期时间，同时可计算出低电平时间
+ *          - sync2 sync3区分，实现2次捕获
+ *   		- 捕获2次产生一次捕获中断，CMPB捕获载入后，计数器值进行重置
+ *     		- 由PA1下降沿产生外部事件1，经过ETCB  触发sync2捕获，捕获值存放在CMPA中
+ *          - 由PA1外部扩展口，上升沿产生外部事件5，经过ETCB  触发sync3捕获，捕获值存放在CMPB中
+ * 			- 信号由PA1的高低电平切换产生（一直高或低电平意味着没有触发）
+ *          - CMPA捕获值为高电平时间，CMPB捕获值为周期时间，故低电平时间为 CMPB - CMPA。  
+ * 实测CMPA捕获值为0x3D87 = 36748，故高电平时间150us；CMPB捕获值为0xCD14 = 52500，故周期时间为350us。
+ * 注意：当GPTB工作时钟不同时，所支持捕获的PWM最小输出频率也不同。如GPTB工作在105MHz时，所支持捕获的最小PWM频率为105MHz/65536=1602Hz。
  *  \param[in] none
  *  \return error code
- * 
-				 —————          —————           —————         
-				 |        |          |        |           |        |    
-				 |        |          |        |           |        |        
- PA3输入波形———        ——————         ——————         ———
-			    CMPA      CMPB      CMPA      CMPB       CMPA      CMPB  
+				—————          —————           —————         
+				|        |          |        |           |        |    
+				|        |          |        |           |        |        
+PA1输入波形———        ——————         ——————         ———
+			   CMPB      CMPA      CMPB      CMPA       CMPB      CMPA  
 */
 int gptb_capture_sync_demo2(void)
 {
 	int iRet = 0;	
     volatile uint8_t ch;
-
+	csi_etcb_config_t tEtcbConfig;									//ETCB 参数配置结构体	
+	csi_gptb_capture_config_t tCapCfg;								//GPTB捕获参数配置结构体
 //------------------------------------------------------------------------------------------------------------------------	
-	csi_pin_set_mux(PA3,PA3_INPUT);		
-	csi_pin_pull_mode(PA3, GPIO_PULLUP);						//PA3 上拉
-	
-	csi_pin_irq_mode(PA3,EXI_GRP3, GPIO_IRQ_RISING_EDGE);		//PA3 上升沿产生中断，选择中断组3
-	csi_exi_set_evtrg(0, EXI_TRGSRC_GRP3, 1);					//产生外部事件0
-
-	csi_pin_irq_mode(PA3, EXI_GRP16, GPIO_IRQ_FALLING_EDGE);    //PA3 下降沿产生中断，选择中断组16                                   
-	csi_exi_set_evtrg(5, EXI_TRGSRC_GRP16, 1);	   				//产生外部事件5
-	
-	csi_pin_irq_enable(PA3, ENABLE);
-//------------------------------------------------------------------------------------------------------------------------		
-	csi_etcb_config_t tEtbConfig;				//ETCB 参数配置结构体	
-	tEtbConfig.eChType  = ETCB_ONE_TRG_ONE;  	//单个源触发单个目标
-	tEtbConfig.eSrcIp   = ETCB_EXI_TRGOUT0 ;  	//...作为触发源
-	tEtbConfig.eDstIp   = ETCB_GPTB0_SYNCIN2;  //GPTB0 同步输入2作为目标事件
-	tEtbConfig.eTrgMode = ETCB_HARDWARE_TRG;
-	
-	ch = csi_etcb_ch_alloc(tEtbConfig.eChType);	//自动获取空闲通道号,ch >= 0 获取成功						//ch < 0,则获取通道号失败		
-	iRet = csi_etcb_ch_init(ch, &tEtbConfig);	
-//------------------------------------------------------------------------------------------------------------------------		
-	tEtbConfig.eChType  = ETCB_ONE_TRG_ONE;  	//单个源触发单个目标
-	tEtbConfig.eSrcIp   = ETCB_EXI_TRGOUT5 ;  	//...作为触发源
-	tEtbConfig.eDstIp   = ETCB_GPTB0_SYNCIN3;  //GPTB0 同步输入3作为目标事件
-	tEtbConfig.eTrgMode = ETCB_HARDWARE_TRG;
-	
-	ch = csi_etcb_ch_alloc(tEtbConfig.eChType);	//自动获取空闲通道号,ch >= 0 获取成功						//ch < 0,则获取通道号失败		
-	iRet = csi_etcb_ch_init(ch, &tEtbConfig);		
+	csi_gpio_set_mux(GPIOA, PA1, PA1_INPUT);						//PA01 输入
+	csi_gpio_pull_mode(GPIOA, PA1, GPIO_PULLUP);					//PA01 上拉使能
+	csi_gpio_irq_mode(GPIOA, PA1,EXI_GRP1, GPIO_IRQ_FALLING_EDGE);	//PA01 下降沿产生中断
+	csi_exi_set_evtrg(EXI_TRGOUT1, EXI_TRGSRC_GRP1, 1);				//EXI 触发配置
+	csi_exi_evtrg_enable(EXI_TRGOUT1);								//使能 EXI_TRGOUT1触发输出
+	csi_gpio_irq_mode(GPIOA, PA1,EXI_GRP16, GPIO_IRQ_RISING_EDGE);	//PA01 上升沿产生中断
+	csi_exi_set_evtrg(EXI_TRGOUT5, EXI_TRGSRC_GRP16, 1);			//EXI 触发配置
+	csi_exi_evtrg_enable(EXI_TRGOUT5);								//使能 EXI_TRGOUT5触发输出
+	csi_gpio_int_enable(GPIOA, PA1);	
 //------------------------------------------------------------------------------------------------------------------------	
-	csi_gptb_capture_config_t tCapCfg;								  
-
+	tEtcbConfig.eChType  = ETCB_ONE_TRG_ONE;  						//单个源触发单个目标
+	tEtcbConfig.eSrcIp   = ETCB_EXI_TRGOUT1 ;  						//EXI_TRGOUT1作为触发源
+	tEtcbConfig.eDstIp   = ETCB_GPTB0_SYNCIN2;  					//GPTB0 SYNCIN2作为目标事件
+	tEtcbConfig.eTrgMode = ETCB_HARDWARE_TRG;
+	ch = csi_etcb_ch_alloc(tEtcbConfig.eChType);					//自动获取空闲通道号,ch >= 0 获取成功		
+	if(ch < 0)														//ch < 0,则获取通道号失败
+		return -1;
+	iRet = csi_etcb_ch_init(ch, &tEtcbConfig);	
+//------------------------------------------------------------------------------------------------------------------------		
+	tEtcbConfig.eChType  = ETCB_ONE_TRG_ONE;  						//单个源触发单个目标
+	tEtcbConfig.eSrcIp   = ETCB_EXI_TRGOUT5 ;  						//EXI_TRGOUT5作为触发源
+	tEtcbConfig.eDstIp   = ETCB_GPTB0_SYNCIN3;  					//GPTB0 SYNCIN3作为目标事件
+	tEtcbConfig.eTrgMode = ETCB_HARDWARE_TRG;
+	ch = csi_etcb_ch_alloc(tEtcbConfig.eChType);					//自动获取空闲通道号,ch >= 0 获取成功		
+	if(ch < 0)														//ch < 0,则获取通道号失败
+		return -1;
+	iRet = csi_etcb_ch_init(ch, &tEtcbConfig);		
+//------------------------------------------------------------------------------------------------------------------------	
 	tCapCfg.eWorkMode         	= GPTB_CAPTURE;                     //GPTB工作模式：捕获/波形输出	
 	tCapCfg.eCountMode    		= GPTB_UPCNT;                       //GPTB计数模式：递增/递减/递增递减	
 	tCapCfg.eRunMode	    	= GPTB_RUN_CONT;        		    //GPTB运行模式：连续/一次性	
-	tCapCfg.eCapMode      		= GPTB_SEPARATE_CAP;                //GPTB捕获模式：合并/分离	
-	tCapCfg.byCapStopWrap 		= 2;                                //GPTB捕获次数：0/1/2/3
+	tCapCfg.eCapMode      		= GPTB_CAP_SEPARATE;                //GPTB捕获模式：合并/分离	
+	tCapCfg.byCapStopWrap 		= 1;                                //GPTB捕获次数：0/1/2/3
 	tCapCfg.byCapLdaret   		= 0;                                //CMPA捕获载入后计数器设置(1h：捕获载入后计数器值重置;0h：捕获载入后计数器值不重置)
 	tCapCfg.byCapLdbret   		= 1;  								//CMPB捕获载入后计数器设置(1h：捕获载入后计数器值重置;0h：捕获载入后计数器值不重置)
 	tCapCfg.byCapLdcret   		= 0;								//CMPC捕获载入后计数器设置(1h：捕获载入后计数器值重置;0h：捕获载入后计数器值不重置)
 	tCapCfg.byCapLddret   		= 0;   								//CMPD捕获载入后计数器设置(1h：捕获载入后计数器值重置;0h：捕获载入后计数器值不重置)                        
 	csi_gptb_capture_init(GPTB0, &tCapCfg);
 //------------------------------------------------------------------------------------------------------------------------
-    csi_gptb_set_sync(GPTB0, GPTB_TRGIN_SYNCEN2, GPTB_TRG_CONTINU, GPTB_AUTO_REARM_ZRO);//使能SYNCIN2外部触发
-	csi_gptb_set_sync(GPTB0, GPTB_TRGIN_SYNCEN3, GPTB_TRG_CONTINU, GPTB_AUTO_REARM_ZRO);//使能SYNCIN3外部触发
-	csi_gptb_start(GPTB0);//start  timer
+    csi_gptb_int_enable(GPTB0, GPTB_INTSRC_CAPLD1);
+	csi_gptb_set_sync(GPTB0, GPTB_SYNCIN2, GPTB_SYNC_CONT, GPTB_AUTO_REARM_ZRO);//使能SYNCIN2外部触发
+	csi_gptb_set_sync(GPTB0, GPTB_SYNCIN3, GPTB_SYNC_CONT, GPTB_AUTO_REARM_ZRO);//使能SYNCIN3外部触发
+	csi_gptb_start(GPTB0);
     while(1)
 	{
 		mdelay(1);
@@ -529,104 +550,4 @@ int gptb_pwm_dz_em_demo(void)
 		mdelay(1);
 	}	
 	return iRet;
-}
-
-static uint32_t s_wGptbCapBuff[4] = {0};
-
-/** \brief gptb0 interrupt handle weak function
- *  \param[in] none
- *  \return    none
- */
-__attribute__((weak)) void gptb_irqhandler(csp_gptb_t *ptGptbBase)
-{
-	volatile uint32_t wEMMisr = csp_gptb_get_emisr(ptGptbBase);
-	volatile uint32_t wMisr   = csp_gptb_get_isr(ptGptbBase);	
-	
-	//GPTB emergency interrupt
-	if(wEMMisr > 0)
-	{
-		if((wEMMisr & GPTB_EM_INT_EP0) == GPTB_EM_INT_EP0)
-		{
-			csp_gptb_clr_emisr(ptGptbBase, GPTB_EM_INT_EP0);
-		}
-		if((wEMMisr & GPTB_EM_INT_EP1) == GPTB_EM_INT_EP1)
-		{
-			csp_gptb_clr_emisr(ptGptbBase, GPTB_EM_INT_EP1);
-		}
-		if((wEMMisr & GPTB_EM_INT_EP2) == GPTB_EM_INT_EP2)
-		{
-			csp_gptb_clr_emisr(ptGptbBase, GPTB_EM_INT_EP2);
-		}
-		if((wEMMisr & GPTB_EM_INT_EP3) == GPTB_EM_INT_EP3)
-		{
-			csp_gptb_clr_emisr(ptGptbBase, GPTB_EM_INT_EP3);
-		}	
-	}
-
-	//GPTB interrupt
-	if(wMisr > 0)
-	{
-		if((wMisr & GPTB_INT_TRGEV0) == GPTB_INT_TRGEV0)
-		{
-			csp_gptb_clr_isr(ptGptbBase, GPTB_INT_TRGEV0);
-		}
-		if((wMisr & GPTB_INT_TRGEV1) == GPTB_INT_TRGEV1)
-		{
-			csp_gptb_clr_isr(ptGptbBase, GPTB_INT_TRGEV1);
-		}
-		if((wMisr & GPTB_INT_CAPLD0) == GPTB_INT_CAPLD0)
-		{
-			csp_gptb_clr_isr(ptGptbBase, GPTB_INT_CAPLD0);
-			s_wGptbCapBuff[0]=csp_gptb_get_cmpa(ptGptbBase);
-		}
-		if((wMisr & GPTB_INT_CAPLD1) == GPTB_INT_CAPLD1)
-		{
-			csp_gptb_clr_isr(ptGptbBase, GPTB_INT_CAPLD1);
-			s_wGptbCapBuff[0]=csp_gptb_get_cmpa(ptGptbBase);
-			s_wGptbCapBuff[1]=csp_gptb_get_cmpb(ptGptbBase);
-		}
-		if((wMisr & GPTB_INT_CAPLD2) == GPTB_INT_CAPLD2)
-		{
-			csp_gptb_clr_isr(ptGptbBase, GPTB_INT_CAPLD2);
-			s_wGptbCapBuff[0]=csp_gptb_get_cmpa(ptGptbBase);
-			s_wGptbCapBuff[1]=csp_gptb_get_cmpb(ptGptbBase);
-			s_wGptbCapBuff[2]=csp_gptb_get_cmpaa(ptGptbBase);
-		}
-		if((wMisr & GPTB_INT_CAPLD3) == GPTB_INT_CAPLD3)
-		{
-			csp_gptb_clr_isr(ptGptbBase, GPTB_INT_CAPLD3);
-			s_wGptbCapBuff[0]=csp_gptb_get_cmpa(ptGptbBase);
-			s_wGptbCapBuff[1]=csp_gptb_get_cmpb(ptGptbBase);
-			s_wGptbCapBuff[2]=csp_gptb_get_cmpaa(ptGptbBase);
-			s_wGptbCapBuff[3]=csp_gptb_get_cmpba(ptGptbBase);
-		}
-		if((wMisr & GPTB_INT_CAU) == GPTB_INT_CAU)
-		{
-			csp_gptb_clr_isr(ptGptbBase, GPTB_INT_CAU);
-		}
-		if((wMisr & GPTB_INT_CAD) == GPTB_INT_CAD)
-		{
-			csp_gptb_clr_isr(ptGptbBase, GPTB_INT_CAD);
-		}
-		if((wMisr & GPTB_INT_CBU) == GPTB_INT_CBU)
-		{
-			csp_gptb_clr_isr(ptGptbBase, GPTB_INT_CBU);
-		}
-		if((wMisr & GPTB_INT_CBD) == GPTB_INT_CBD)
-		{
-			csp_gptb_clr_isr(ptGptbBase, GPTB_INT_CBD);
-		}
-		if((wMisr & GPTB_INT_PEND) == GPTB_INT_PEND)
-		{	
-			csp_gptb_clr_isr(ptGptbBase, GPTB_INT_PEND);
-		}
-		if((wMisr & GPTB_INT_PRDMA) == GPTB_INT_PRDMA)
-		{
-			csp_gptb_clr_isr(ptGptbBase, GPTB_INT_PRDMA);
-		}
-		if((wMisr & GPTB_INT_ZROMA) == GPTB_INT_ZROMA)
-		{
-			csp_gptb_clr_isr(ptGptbBase, GPTB_INT_ZROMA);
-		}
-	}
 }

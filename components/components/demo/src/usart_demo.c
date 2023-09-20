@@ -10,10 +10,8 @@
 */
 /* Includes ---------------------------------------------------------------*/
 
-#include "drv/usart.h"
-#include "drv/pin.h"
+#include "csi_drv.h"
 #include "board_config.h"
-#include "drv/etcb.h"
 
 /* externs function--------------------------------------------------------*/
 /* externs variable------------------------------------------------------*/

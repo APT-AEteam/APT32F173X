@@ -182,7 +182,7 @@ void csi_clr_rst_reason(uint16_t hwRstSrc);
   \param       none
   \return      none
 */
-void csi_sys_swrst(void);
+void csi_sys_sw_rst(void);
 
 /**
   \brief       user reg write 

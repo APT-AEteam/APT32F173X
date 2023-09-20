@@ -10,9 +10,9 @@
 */
 
 /* include ----------------------------------------------------------------*/
-#include "reliability.h"
-#include "pin.h"
+#include "csi_drv.h"
 #include "iostring.h"
+#include "board_config.h"
 
 /* externs function--------------------------------------------------------*/
 /* private function--------------------------------------------------------*/
@@ -84,15 +84,16 @@ void memorycheck_demo(void)
 	
 }
 
-/** \brief 外部主时钟监测的使用方法。必须外接晶振。
+/** \brief 外部主时钟监测的使用方法。必须外接外部主晶振。
  * 
  *  \param[in] none
  *  \return error code
  */
 void emcm_demo(void)
 {
-	csi_pin_set_mux(PD0, PD0_XIN);
-	csi_pin_set_mux(PD1, PD1_XOUT);
+	csi_gpio_set_mux(XIN_PORT,XIN_PIN, XIN_PIN_FUNC);
+	csi_gpio_set_mux(XOUT_PORT,XOUT_PIN, XOUT_PIN_FUNC);
+	
 	csi_emosc_enable(8000000);			//使能外部晶振驱动电路,输入频率参数，以调整内部增益
 	csi_emcm_2_imosc_int();				//一旦检测到外部晶振失常，系统时钟切到IMOSC，并触发中断。注意：
 	csi_emcm_rst();						//一旦检测到外部晶振失常，系统复位。
@@ -100,17 +101,17 @@ void emcm_demo(void)
 }
 
 
-/** \brief 外部副时钟监测的使用方法。必须外接晶振。
+/** \brief 外部副时钟监测的使用方法。必须外接外部副晶振。
  * 
  *  \param[in] none
  *  \return error code
  */
 void escm_demo(void)
 {
-	csi_pin_set_mux(PC14, PC14_SXIN);
-	csi_pin_set_mux(PC15, PC15_SXOUT);
+	csi_gpio_set_mux(SXIN_PORT,SXIN_PIN, SXIN_PIN_FUNC);
+	csi_gpio_set_mux(SXOUT_PORT,SXOUT_PIN, SXOUT_PIN_FUNC);
 	
-//	csi_esosc_enable(0);			 //使能外部晶振驱动电路,输入频率参数，以调整内部增益
+	csi_esosc_enable();			 //使能外部晶振驱动电路,输入频率参数，以调整内部增益
 	
 	csi_escm_2_imosc_int();				//一旦检测到外部晶振失常，系统时钟切到IMOSC，并触发中断。注意：
 	csi_escm_rst();						//一旦检测到外部晶振失常，系统复位。

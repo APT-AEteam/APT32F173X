@@ -56,7 +56,7 @@ void csi_rtc_init(csp_rtc_t *ptRtc, csi_rtc_config_t *tConfig)
 			hwDivs = 269;
 			break;
 		case (RTC_ESOSC):
-			csi_esosc_enable(ESOSC_VALUE);
+			csi_esosc_enable();
 			byDiva = 3;
 			hwDivs = 4095;
 //			hwDivs = 1;
@@ -400,6 +400,7 @@ void csi_rtc_start_as_timer(csp_rtc_t *ptRtc, csi_rtc_timer_e ePrd)
 */
 void csi_rtc_int_enable(csp_rtc_t *ptRtc, rtc_int_e eIntSrc)
 {
+	csp_rtc_clr_isr(ptRtc, (rtc_int_e)eIntSrc);
 	csp_rtc_int_enable(ptRtc, (rtc_int_e)eIntSrc);
 }
 

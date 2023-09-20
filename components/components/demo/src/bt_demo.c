@@ -4,14 +4,13 @@
  * \copyright Copyright (C) 2015-2023 @ APTCHIP
  * <table>
  * <tr><th> Date  <th>Version  <th>Author  <th>Description
- * <tr><td> 2023-9-12 <td>V0.0 <td>ZJY     <td>initial
+ * <tr><td> 2021-7-12 <td>V0.0 <td>ZJY     <td>initial
+ * <tr><td> 2023-9-19 <td>V0.0 <td>ZJY     <td>initial
  * </table>
  * *********************************************************************
 */
 /* Includes ---------------------------------------------------------------*/
-#include "drv/bt.h"
-#include "drv/gpio.h"
-#include "drv/etcb.h"
+#include "csi_drv.h"
 #include "board_config.h"
 
 /* externs function--------------------------------------------------------*/
@@ -36,18 +35,18 @@ ATTRIBUTE_ISR  void bt1_int_handler(void)
 	//用户直接在中断服务接口函数里处理中断，建议客户使用此模式
 	volatile uint32_t byIsr = csp_bt_get_isr(BT1);
 	
-	if(byIsr & BT_PEND_INT)					//PEND interrupt
+	if(byIsr & BT_INT_PEND)					//PEND interrupt
 	{
-		csp_bt_clr_isr(BT1, BT_PEND_INT);
+		csp_bt_clr_isr(BT1, BT_INT_PEND);
 		csi_gpio_toggle(GPIOA, PA6);		//PA6翻转
 	}
-	if(byIsr & BT_CMP_INT)					//CMP interrupt
+	if(byIsr & BT_INT_CMP)					//CMP interrupt
 	{
-		csp_bt_clr_isr(BT1, BT_CMP_INT);	
+		csp_bt_clr_isr(BT1, BT_INT_CMP);	
 	}
-	if(byIsr & BT_EVTRG_INT)				//EVTRG interrupt
+	if(byIsr & BT_INT_EVTRG)				//EVTRG interrupt
 	{
-		csp_bt_clr_isr(BT1, BT_EVTRG_INT);
+		csp_bt_clr_isr(BT1, BT_INT_EVTRG);
 	}
 }
 
@@ -136,18 +135,18 @@ ATTRIBUTE_ISR  void bt0_int_handler(void)
 	//用户直接在中断服务接口函数里处理中断，建议客户使用此模式
 	volatile uint8_t byIsr = csp_bt_get_isr(BT0);
 	
-	if(byIsr & BT_PEND_INT)					//PEND interrupt
+	if(byIsr & BT_INT_PEND)					//PEND interrupt
 	{
-		csp_bt_clr_isr(BT0, BT_PEND_INT);
+		csp_bt_clr_isr(BT0, BT_INT_PEND);
 		csi_gpio_toggle(GPIOA, PA6);		//PA6翻转
 	}
-	if(byIsr & BT_CMP_INT)					//CMP interrupt
+	if(byIsr & BT_INT_CMP)					//CMP interrupt
 	{
-		csp_bt_clr_isr(BT0, BT_CMP_INT);	
+		csp_bt_clr_isr(BT0, BT_INT_CMP);	
 	}
-	if(byIsr & BT_EVTRG_INT)				//EVTRG interrupt
+	if(byIsr & BT_INT_EVTRG)				//EVTRG interrupt
 	{
-		csp_bt_clr_isr(BT0, BT_EVTRG_INT);
+		csp_bt_clr_isr(BT0, BT_INT_EVTRG);
 	}
 }
 #endif

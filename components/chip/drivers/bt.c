@@ -83,6 +83,7 @@ csi_error_t csi_bt_timer_init(csp_bt_t *ptBtBase, csi_bt_time_config_t *ptBtTimC
 {
 	uint32_t wTmLoad;
 	uint32_t wClkDiv;
+	uint8_t byIdx = apt_get_bt_idx(ptBtBase);
 	
 	csi_clk_enable((uint32_t *)ptBtBase);			//bt clk enable
 	csp_bt_sw_rst(ptBtBase);						//reset bt
@@ -102,6 +103,9 @@ csi_error_t csi_bt_timer_init(csp_bt_t *ptBtBase, csi_bt_time_config_t *ptBtTimC
 	csp_bt_set_prdr(ptBtBase, (uint16_t)wTmLoad);					//bt prdr load value
 	csp_bt_set_cmp(ptBtBase, (uint16_t)(wTmLoad >> 1));				//bt prdr load value
 	csp_bt_int_enable(ptBtBase, BT_INT_PEND);						//enable PEND interrupt
+	
+	//callback init 
+	g_tBtCtrl[byIdx].callback = NULL;
 	
 	return CSI_OK;
 }
@@ -131,6 +135,7 @@ void csi_bt_stop(csp_bt_t *ptBtBase)
  */ 
 void csi_bt_int_enable(csp_bt_t *ptBtBase, csi_bt_intsrc_e eIntSrc)
 {
+	csp_bt_clr_isr(ptBtBase, (bt_int_e)eIntSrc);
 	csp_bt_int_enable(ptBtBase, (bt_int_e)eIntSrc);	
 }
 /** \brief disable bt interrupt 
@@ -206,6 +211,7 @@ csi_error_t csi_bt_pwm_init(csp_bt_t *ptBtBase, csi_bt_pwm_config_t *ptBtPwmCfg)
 	uint32_t wCrVal;
 	uint32_t wCmpLoad; 
 	uint32_t wPrdrLoad; 
+	uint8_t byIdx = apt_get_bt_idx(ptBtBase);
 	
 	if(ptBtPwmCfg->wFreq == 0)
 		return CSI_ERROR;
@@ -230,6 +236,9 @@ csi_error_t csi_bt_pwm_init(csp_bt_t *ptBtBase, csi_bt_pwm_config_t *ptBtPwmCfg)
 	csp_bt_set_prdr(ptBtBase, (uint16_t)wPrdrLoad);						//bt prdr load value
 	csp_bt_set_cmp(ptBtBase, (uint16_t)wCmpLoad);						//bt cmp load value
 		
+	//callback init 
+	g_tBtCtrl[byIdx].callback = NULL;
+	
 	return CSI_OK;
 }
 /** \brief  updata bt cmp reg value
@@ -391,4 +400,3 @@ void csi_bt_sw_evtrg(csp_bt_t *ptBtBase)
 {
 	csp_bt_sw_evtrg(ptBtBase);
 }
-

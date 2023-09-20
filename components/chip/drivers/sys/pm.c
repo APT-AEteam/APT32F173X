@@ -9,9 +9,7 @@
  * *********************************************************************
 */
 
-#include <drv/common.h>
-#include <csp_syscon.h>
-#include <soc.h>
+
 #include "pm.h"
 
 #ifdef CONFIG_USER_PM
@@ -75,8 +73,11 @@ csi_error_t csi_pm_enter_sleep(csi_pm_mode_e mode)
 			#ifdef CONFIG_USER_PM
 			g_tPmCore.prepare_to_sleep();
 			#endif
-			ptSysconBase->PWRKEY = 0xA67A6CC7;
-			ptSysconBase->PWRCR = (ptSysconBase->PWRCR & (~(0x0f<<16))) | 0x40002;
+//			ptSysconBase->PWRKEY = 0xA67A6CC7;
+//			ptSysconBase->PWRCR = (ptSysconBase->PWRCR & (~(0x0f<<16))) | 0x40002;
+			csp_sleep_mainreg_power_enable(ptSysconBase); //enable main reg power under sleep mode
+			csp_sleep_vos_enable(ptSysconBase); //enable VOS under sleep mode
+			
 			soc_sleep(PM_MODE_SLEEP);	
 			#ifdef CONFIG_USER_PM
 			g_tPmCore.wkup_frm_sleep();		
@@ -109,53 +110,59 @@ csi_error_t csi_pm_config_wakeup_source(csi_wakeup_src_e eWkupSrc, bool bEnable)
 	csp_syscon_t *ptSysconBase  = (csp_syscon_t*)APB_SYS_BASE;
 	
 	if (bEnable){
-		ptSysconBase->WKCR |= 0x1 << (eWkupSrc);
+		csp_wakeup_source_enable(ptSysconBase,(wakeup_src_e)eWkupSrc);
 	}
 	else{
-		ptSysconBase->WKCR &= ~(0x1 << (eWkupSrc));
+		csp_wakeup_source_disable(ptSysconBase,(wakeup_src_e)eWkupSrc);
 	}
 	return ret;
 }
 
-/** \brief deep sleep mode, osc enable/disable.
+/** \brief deep sleep mode, osc enable.
  * 
- * \param[in] eSleepOsc: \ref csi_sleep_osc_e
- * \param[in] enable: enable/disable sleep/deepsleep osc
+ * \param[in] eSleepOsc: \ref csi_pm_clk_e
  * \return error code
  */
-void csi_pm_clk_enable(csi_pm_clk_e eOsc, bool bEnable)
+void csi_pm_clk_enable(csi_pm_clk_e eOsc)
 {
 	csp_syscon_t *ptSysconBase  = (csp_syscon_t*)APB_SYS_BASE;
 	
-	if(bEnable)
-	{
-		ptSysconBase->GCER |= eOsc;
-		while(!(csp_get_gcsr(ptSysconBase) & eOsc));
-	}
-	else
-	{
-		ptSysconBase->GCDR |= eOsc;
-		while(csp_get_gcsr(ptSysconBase) & eOsc);
-	}
+//		ptSysconBase->GCER |= eOsc;
+	csp_clk_pm_enable(ptSysconBase,(clk_pm_e)eOsc);
+	while(!(csp_get_gcsr(ptSysconBase) & (0x1<<eOsc)));
+
 }
 
-/** \brief clear wkalv int status
+/** \brief deep sleep mode, osc disable.
  * 
- *  \param[in] byWkInt: WkInt Mask WKINT0~3 
- *  \return none
+ * \param[in] eSleepOsc: \ref csi_pm_clk_e
+ * \return error code
  */
-void csi_pm_clr_wkint(uint8_t byWkInt)
+void csi_pm_clk_disable(csi_pm_clk_e eOsc)
 {
 	csp_syscon_t *ptSysconBase  = (csp_syscon_t*)APB_SYS_BASE;
-	ptSysconBase->ICR = ((byWkInt & 0x0f) << 24);				//PA00/PB011/PA12/PB011
+
+	csp_clk_pm_disable(ptSysconBase,(clk_pm_e)eOsc);
+	while(csp_get_gcsr(ptSysconBase) & (0x1<<eOsc));
+
 }
-/** \brief clear wkalv int status
- * 
- *  \param[in] none
- *  \return WkInt Mask
- */
-uint8_t csi_pm_get_wkint(void)
-{
-	csp_syscon_t *ptSysconBase  = (csp_syscon_t*)APB_SYS_BASE;
-	return (uint8_t)((ptSysconBase->RISR >> 24) & 0x0f);
-}
+///** \brief clear wkalv int status
+// * 
+// *  \param[in] byWkInt: WkInt Mask WKINT0~3 
+// *  \return none
+// */
+//void csi_pm_clr_wkint(uint8_t byWkInt)
+//{
+//	csp_syscon_t *ptSysconBase  = (csp_syscon_t*)APB_SYS_BASE;
+//	ptSysconBase->ICR = ((byWkInt & 0x0f) << 24);				//PA00/PB011/PA12/PB011
+//}
+///** \brief clear wkalv int status
+// * 
+// *  \param[in] none
+// *  \return WkInt Mask
+// */
+//uint8_t csi_pm_get_wkint(void)
+//{
+//	csp_syscon_t *ptSysconBase  = (csp_syscon_t*)APB_SYS_BASE;
+//	return (uint8_t)((ptSysconBase->RISR >> 24) & 0x0f);
+//}

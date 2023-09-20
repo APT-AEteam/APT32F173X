@@ -32,6 +32,10 @@ static volatile uint32_t s_wLastTimeMs = 0U;
 //	return  CORETIMER->MTIME;
 //}
 
+/** \brief  bt3_int_handler
+ *  			- bt3 interrupt handler
+ *  \return none
+ */
 ATTRIBUTE_ISR void  bt3_int_handler(void) 
 {
     // ISR content ...
@@ -52,11 +56,19 @@ ATTRIBUTE_ISR void  bt3_int_handler(void)
 	}
 }
 
+/** \brief  csi_tick_increase
+ *  			- tick increase
+ *  \return none
+ */
 void csi_tick_increase(void)
 {
     s_wTick++;
 }
 
+/** \brief  csi_tick_init
+ *  			- init tick
+ *  \return csi_error_t: CSI_OK
+ */
 csi_error_t csi_tick_init(void)
 {
 	csi_bt_time_config_t tTimConfig;
@@ -71,16 +83,24 @@ csi_error_t csi_tick_init(void)
     return CSI_OK;
 }
 
-void csi_tick_uninit(void)
-{
-	csi_irq_enable((uint32_t *)BT3);	
-}
+//void csi_tick_uninit(void)
+//{
+//	csi_irq_enable((uint32_t *)BT3);	
+//}
 
+/** \brief  csi_tick_get
+ *  			- get current tick
+ *  \return time: current tick
+ */
 uint32_t csi_tick_get(void)
 {
     return s_wTick;
 }
 
+/** \brief  csi_tick_get_ms
+ *  			- get current time
+ *  \return time: current time (ms)
+ */ 
 uint32_t csi_tick_get_ms(void)
 {
     uint32_t time;
@@ -98,6 +118,10 @@ uint32_t csi_tick_get_ms(void)
     return time;
 }
 
+/** \brief  _500usdelay
+ *  			- delay 500us
+ *  \return none
+ */ 
 static void _500usdelay(void)
 {
     uint32_t start = csp_bt_get_cnt(BT3);
@@ -119,7 +143,10 @@ static void _500usdelay(void)
         }
     }
 }
-
+/** \brief  _10udelay
+ *  			- delay 10us
+ *  \return none
+ */ 
 void _10udelay(void)
 {
     uint32_t start = csp_bt_get_cnt(BT3);

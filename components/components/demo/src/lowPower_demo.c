@@ -10,19 +10,9 @@
 */
 
 /* include ----------------------------------------------------------------*/
-#include <drv/pm.h>
-#include <drv/pin.h>
-#include <drv/rtc.h>
-#include <drv/lpt.h>
-#include <drv/irq.h>
-#include <drv/iwdt.h>
-#include <drv/tick.h>
-#include <drv/common.h> 
-#include <drv/reliability.h>
 
-#include "demo.h"
+#include "csi_drv.h"
 #include "iostring.h"
-#include "csp_syscon.h"
 #include "board_config.h"
 
 
@@ -31,7 +21,8 @@
 /* Private variablesr-------------------------------------------------*/
 
 
-/** \brief 进入低功耗模式前的准备动作
+/** \brief prepare_lp
+ * 			-进入低功耗模式前的准备动作
  *  \param[in] none
  *  \return error code
  */
@@ -40,7 +31,8 @@ static void prepare_lp(void)
 	//USER CODE，如记忆管脚状态
 }
 
-/** \brief 退出低功耗模式后恢复动作
+/** \brief wkup_lp
+ * 			-退出低功耗模式后恢复动作
  *  \param[in] none
  *  \return error code
  */
@@ -52,7 +44,9 @@ static void wkup_lp(void)
 
 
 /** \brief 通过LPT唤醒DEEPSLEEP模式
- * 
+ * 			- 配置PA5作为程序运行指示：PA5以200ms翻转时，显示代码运行到此函数，
+ * 			-PA5以500ms运行的时候，表示LPT正常唤醒deepsleep。PA5快速翻转，表示
+ * 			-程序未正常进入低功耗或者异常唤醒。
  *  \param  none
  *  \return none
  */
@@ -60,41 +54,41 @@ void lp_lpt_wakeup_deepsleep_demo(void)
 {
 	csi_pm_mode_e ePmMode = PM_MODE_DEEPSLEEP;		
 	
-	csi_pin_set_mux(PA5,PA5_OUTPUT);				//PA05 OUTPUT
+	csi_gpio_set_mux(GPIOA,PA5,PA5_OUTPUT);							//配置PA05输出
 	
-	csi_pin_toggle(PA5);
+	csi_gpio_toggle(GPIOA,PA5);
 	delay_ums(200);
-	csi_pin_toggle(PA5);
+	csi_gpio_toggle(GPIOA,PA5);
 	delay_ums(200);
-	csi_pin_toggle(PA5);
+	csi_gpio_toggle(GPIOA,PA5);
 	delay_ums(200);
-	csi_pin_toggle(PA5);
+	csi_gpio_toggle(GPIOA,PA5);
 	delay_ums(200);
-	csi_pin_toggle(PA5);
+	csi_gpio_toggle(GPIOA,PA5);
 	delay_ums(200);
-	csi_pin_toggle(PA5);
+	csi_gpio_toggle(GPIOA,PA5);
 	delay_ums(200);
-	csi_pin_toggle(PA5);
+	csi_gpio_toggle(GPIOA,PA5);
 	delay_ums(200);
-	csi_pin_toggle(PA5);
+	csi_gpio_toggle(GPIOA,PA5);
 	delay_ums(200);
 
 #ifdef CONFIG_USER_PM	
 	csi_pm_attach_callback(ePmMode, prepare_lp, wkup_lp);	//需要在工程设置compiler tab下加入define CONFIG_USER_PM=1;
 #endif
 
-	csi_pm_config_wakeup_source(WKUP_LPT, ENABLE);			//配置唤醒源
-//	csi_pm_clk_enable(DP_ISOSC, ENABLE);					//SNOOZE模式下时钟开启/关闭
-//	csi_pm_clk_enable(DP_IMOSC, ENABLE);
-//	csi_pm_clk_enable(DP_ESOSC, ENABLE);
-//	csi_pm_clk_enable(DP_EMOSC, ENABLE);
+	csi_pm_config_wakeup_source(SRC_WKUP_LPT, ENABLE);			//配置唤醒源
+//	csi_pm_clk_enable(DP_ISOSC);								//低功耗模式下时钟开启/关闭
+//	csi_pm_clk_enable(DP_IMOSC);
+//	csi_pm_clk_enable(DP_ESOSC);
+//	csi_pm_clk_enable(DP_EMOSC);
 	
 	//lpt初始化配置
 	csi_lpt_time_config_t tTimConfig;
-	tTimConfig.wTimeVal = 500;					//LPT定时值 = 200ms
-	tTimConfig.eRunMode  = LPT_CNT_CONT;		//LPT计数器工作模式，连续
-	tTimConfig.eClksrc=LPT_CLK_ISCLK;  		//LPT时钟源  
-	csi_lpt_timer_init(LPT,&tTimConfig);        //初始化lpt,默认采用PEND中断
+	tTimConfig.wTimeVal = 500;									//LPT定时值 = 500ms
+	tTimConfig.eRunMode  = LPT_CNT_CONT;						//LPT计数器工作模式，连续
+	tTimConfig.eClksrc=LPT_CLK_ISCLK;  							//LPT时钟源  
+	csi_lpt_timer_init(LPT,&tTimConfig);        				//初始化lpt,默认采用PEND中断
 
 	csi_lpt_start(LPT);	  
 	delay_ums(200);
@@ -105,7 +99,7 @@ void lp_lpt_wakeup_deepsleep_demo(void)
 			my_printf("Enter Sleep Mode\n");
 			break;
 		case PM_MODE_DEEPSLEEP:
-		//	my_printf("Enter Deep-Sleep mode\n");
+			my_printf("Enter Deep-Sleep mode\n");
 			break;
 		default:
 			break;
@@ -113,11 +107,10 @@ void lp_lpt_wakeup_deepsleep_demo(void)
 	
 	while(1) 
 	{
-		csi_pin_set_high(PA5);
+		csi_gpio_set_high(GPIOA,PA5);
 		csi_pm_enter_sleep(ePmMode);
-	//	my_printf("Wakeup From Deep-Sleep Mode...\n");
-		csi_pin_set_low(PA5);
-		delay_ums(200);
+		my_printf("Wakeup From Deep-Sleep Mode...\n");
+		csi_gpio_set_high(GPIOA,PA5);
 	}
 }
 
@@ -138,42 +131,42 @@ void lp_exi_wakeup_demo(void)
 		csi_clr_rst_reason(hwRstSrc);				//清除复位信息
 	}
 	
-	csi_pin_set_mux(PB2,PB2_OUTPUT);				//PB02 OUTPUT
+	csi_gpio_set_mux(GPIOB,PB2,PB2_OUTPUT);				//PB02 OUTPUT
 	
-	csi_pin_toggle(PB2);
+	csi_gpio_toggle(GPIOB,PB2);
 	mdelay(200);
-	csi_pin_toggle(PB2);
+	csi_gpio_toggle(GPIOB,PB2);
 	mdelay(200);
-	csi_pin_toggle(PB2);
+	csi_gpio_toggle(GPIOB,PB2);
 	mdelay(200);
-	csi_pin_toggle(PB2);
+	csi_gpio_toggle(GPIOB,PB2);
 	mdelay(200);
-	csi_pin_toggle(PB2);
+	csi_gpio_toggle(GPIOB,PB2);
 	mdelay(200);
-	csi_pin_toggle(PB2);
+	csi_gpio_toggle(GPIOB,PB2);
 	mdelay(200);
-	csi_pin_toggle(PB2);
+	csi_gpio_toggle(GPIOB,PB2);
 	mdelay(200);
-	csi_pin_toggle(PB2);
+	csi_gpio_toggle(GPIOB,PB2);
 	mdelay(200);
 	
 #ifdef CONFIG_USER_PM	
 	csi_pm_attach_callback(ePmMode, prepare_lp, wkup_lp);	//需要在工程设置compiler tab下加入define CONFIG_USER_PM=1;
 #endif
 	
-	csi_pin_set_mux(PB1,PB1_INPUT);								//PB1 输入							
-	csi_pin_pull_mode(PB1, GPIO_PULLUP);						//PB1 上拉
-	csi_pin_irq_mode(PB1,EXI_GRP1, GPIO_IRQ_FALLING_EDGE);		//PB1 下降沿产生中断
-	csi_pin_irq_enable(PB1, ENABLE);							//PB1 中断使能，选择中断组1
-	csi_pin_vic_irq_enable(EXI_GRP1, ENABLE);					//PB1 VIC中断使能，选择中断组1	
-	csi_vic_get_pending_irq(EXI1_IRQ_NUM);
+	csi_gpio_set_mux(GPIOB,PB1,PB1_INPUT);								//PB1 输入							
+	csi_gpio_pull_mode(GPIOB,PB1, GPIO_PULLUP);							//PB1 上拉
+	csi_gpio_int_enable(GPIOB,PB1);  
+	csi_gpio_irq_mode(GPIOB,PB1,EXI_GRP1, GPIO_IRQ_FALLING_EDGE);		//PB1 下降沿产生中断
+	csi_gpio_vic_irq_enable(EXI_GRP1, ENABLE);							//PB1 中断使能，选择中断组1
+
 	
-	csi_pm_clk_enable(SP_IDLE_PCLK, DISABLE);					//sleep模式下关闭PCLK
-	csi_pm_clk_enable(SP_IDLE_HCLK, DISABLE);					//sleep模式下关闭HCLK
-//	csi_pm_clk_enable(DP_ISOSC, ENABLE);
-//	csi_pm_clk_enable(DP_IMOSC, ENABLE);
-//	csi_pm_clk_enable(DP_ESOSC, ENABLE);
-//	csi_pm_clk_enable(DP_EMOSC, ENABLE);
+	csi_pm_clk_disable(SP_IDLE_PCLK);					//sleep模式下关闭PCLK
+	csi_pm_clk_disable(SP_IDLE_HCLK);					//sleep模式下关闭HCLK
+//	csi_pm_clk_enable(DP_ISOSC);
+//	csi_pm_clk_enable(DP_IMOSC);
+//	csi_pm_clk_enable(DP_ESOSC);
+//	csi_pm_clk_enable(DP_EMOSC);
 	
 //	csi_pm_config_wakeup_source(WKUP_RTC, ENABLE);
 
@@ -189,10 +182,11 @@ void lp_exi_wakeup_demo(void)
 	//CMP WAKUP DeepSleep
 //	cmp_base_demo();
 	
-//	csi_pin_set_mux(SXIN_PIN, SXIN_PIN_FUNC);		//ESOSC管脚使能	
-//	csi_pin_set_mux(SXOUT_PIN, SXOUT_PIN_FUNC);		//ESOSC管脚使能	
-//	csi_pin_set_mux(PA03, PA03_OSC_XI);
-//	csi_pin_set_mux(PA04, PA04_OSC_XO);
+//	csi_gpio_set_mux(SXIN_PORT,SXIN_PIN, SXIN_PIN_FUNC);		//ESOSC管脚使能	
+//	csi_gpio_set_mux(SXOUT_PORT,SXOUT_PIN, SXOUT_PIN_FUNC);		//ESOSC管脚使能	
+//	
+//	csi_gpio_set_mux(XIN_PORT,XIN_PIN, XIN_PIN_FUNC);			//EMOSC管脚使能	
+//	csi_gpio_set_mux(XOUT_PORT,XOUT_PIN, XOUT_PIN_FUNC);		//EMOSC管脚使能	
 	//RTC WAKEUP DeepSleep/snooze/shutdown
 //	{
 //		csi_rtc_config_t tRtcConfig;
@@ -226,14 +220,13 @@ void lp_exi_wakeup_demo(void)
 	
 	while(1) 
 	{
-		csi_pin_set_high(PB2);
+		csi_gpio_set_high(GPIOB,PB2);
 		
 		csi_pm_enter_sleep(ePmMode);
 		//csi_iwdt_feed();
-		//mdelay(100);
-		csi_pin_set_low(PB2);
+		csi_gpio_set_high(GPIOB,PB2);
 		delay_ums(100);
-		//my_printf("Wakeup From Sleep Mode...\n");
+		my_printf("Wakeup From Sleep Mode...\n");
 	}
 }
 
