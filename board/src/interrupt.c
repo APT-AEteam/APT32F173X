@@ -99,24 +99,28 @@ ATTRIBUTE_ISR void ifc_int_handler(void)
 
 ATTRIBUTE_ISR __attribute__((weak)) void adc0_int_handler(void) 
 {	
-#if	ADC0_INT_HANDLE_EN
-	// ISR content ...
+    //ISR content ...
 	CSI_INTRPT_ENTER();
-	adc_irqhandler(ADC0); //this is a weak function defined in adc_demo.c, for better efficiency, we recommand user directly implement IRQ handler here without any function call.
-	CSI_INTRPT_EXIT();
-#endif	
+#if (USE_ADC_CALLBACK == 1)
+	csi_adc_irqhandler(ADC0, 0);
+#else
+	csp_adc_clr_sr(ADC0, csp_adc_get_isr(ADC0));
+#endif
+	CSI_INTRPT_EXIT();	
 }
 
 ATTRIBUTE_ISR __attribute__((weak)) void adc1_int_handler(void) 
 {
-#if	ADC1_INT_HANDLE_EN
-	// ISR content ...
-	#if	defined(IS_CHIP_1732) 
-		CSI_INTRPT_ENTER();	
-		adc_irqhandler(ADC1);//this is a weak function defined in adc_demo.c, for better efficiency, we recommand user directly implement IRQ handler here without any function call.
-		CSI_INTRPT_EXIT();
-	#endif	
-#endif	
+    //ISR content ...
+	CSI_INTRPT_ENTER();
+#if	(CHIP_1732==1)
+#if (USE_ADC_CALLBACK == 1)
+	csi_adc_irqhandler(ADC1, 1);
+#else
+	csp_adc_clr_sr(ADC1, csp_adc_get_isr(ADC1));
+#endif
+#endif
+	CSI_INTRPT_EXIT();	
 }
 
 ATTRIBUTE_ISR __attribute__((weak)) void dma0_int_handler(void)

@@ -57,11 +57,11 @@ csi_error_t csi_dac_register_callback(csp_dac_t *ptDacBase, void  *callback)
  */ 
 void csi_dac_irqhandler(csp_dac_t *ptDacBase, uint8_t byIdx)
 {
-	uint8_t byIsr = csp_dac_get_isr(ptDacBase);
+	dac_int_e eIsr = csp_dac_get_isr(ptDacBase);
 	if(g_tDacCtrl[byIdx].callback)
-		g_tDacCtrl[byIdx].callback(ptDacBase, byIsr);
+		g_tDacCtrl[byIdx].callback(ptDacBase, eIsr);
 			
-	csp_dac_clr_isr(ptDacBase, byIsr);
+	csp_dac_clr_isr(ptDacBase, eIsr);
 }
 
 /** \brief initialize dac data structure

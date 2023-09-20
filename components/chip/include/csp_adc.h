@@ -117,7 +117,7 @@ typedef enum{
 typedef enum{
 	ADC_RUN_ONCE		=   (0x00ul),
 	ADC_RUN_CONT		= 	(0x01ul),
-	ADC_RUN_WAIT		= 	(0x02ul),
+	ADC_RUN_WAITSYNC		= 	(0x02ul),
 }adc_runmode_e;
 
 /******************************************************************************
@@ -411,14 +411,9 @@ typedef enum{
 #define ADC_EV0CNT_MSK			(0xf << ADC_EV0CNT_POS)
 #define ADC_EV1CNT_POS			(20)
 #define ADC_EV1CNT_MSK			(0xf << ADC_EV1CNT_POS)
-#define ADC_EVCNT_POS(n)		(16 + 4*(n))
-#define ADC_EVCNT_MSK(n)		(0xf << ADC_EVCNT_POS(n))
 
 #define ADC_TRGEV0PRD(val) 		(((val) & 0xFul) << 0)
 #define ADC_TRGEV1PRD(val)   	(((val) & 0xFul) << 4)
-
-#define ADC_TRGEV0CNT(val)   	(((val) & 0xFul) <<16)
-#define ADC_TRGEV1CNT(val)   	(((val) & 0xFul) <<20)
 /******************************************************************************
 * EVSWF  
 ******************************************************************************/
@@ -607,11 +602,6 @@ static inline void csp_adc_sync_rearm(csp_adc_t *ptAdcBase,  adc_sync_in_e eSync
 static inline void csp_adc_set_trgprd(csp_adc_t *ptAdcBase,adc_evtrg_out_e eEvtOut,uint8_t byPeriod)
 {
 	ptAdcBase->EVPS = (ptAdcBase->EVPS & ~ADC_EVPRD_MSK(eEvtOut))| (byPeriod << ADC_EVPRD_POS(eEvtOut));
-}
-
-static inline void csp_adc_set_trgcnt(csp_adc_t *ptAdcBase,adc_evtrg_out_e eEvtOut,uint8_t byCnt)
-{
-	ptAdcBase->EVPS = (ptAdcBase->EVPS & ~ADC_EVCNT_MSK(eEvtOut))| (byCnt << ADC_EVCNT_POS(eEvtOut));
 }
 
 static inline void csp_adc_set_evtrg_src(csp_adc_t *ptAdcBase,  adc_evtrg_src_e eEvtSrc ,adc_evtrg_out_e eEvtOut)
