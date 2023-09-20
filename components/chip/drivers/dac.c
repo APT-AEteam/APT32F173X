@@ -6,7 +6,7 @@
  * <tr><th> Date  <th>Version  <th>Author  <th>Description
  * <tr><td> 2020-8-12 <td>V0.0  <td>ZJY   <td>initial
  * <tr><td> 2021-1-8  <td>V0.1  <td>WNN   <td>modify
- * <tr><td> 2023-9-11 <td>V0.2  <td>xs    <td>modify
+ * <tr><td> 2023-9-11 <td>V0.2  <td>xs    <td>fix bug,code normalization
  * </table>
  * *********************************************************************
 */

@@ -5,7 +5,7 @@
  * <table>
  * <tr><th> Date  <th>Version  <th>Author  <th>Description
  * <tr><td> 2021-10-8  <td>V0.1  <td>ljy   <td>modify(enum pattern, add)
- * <tr><td> 2023-9-11  <td>V0.2  <td>xs    <td>modify
+ * <tr><td> 2023-9-11  <td>V0.2  <td>xs    <td>fix bug,code normalization
  * </table>
  * *********************************************************************
 */
