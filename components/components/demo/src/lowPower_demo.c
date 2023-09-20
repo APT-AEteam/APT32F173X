@@ -96,7 +96,7 @@ void lp_lpt_wakeup_deepsleep_demo(void)
 	//lpt初始化配置
 	csi_lpt_time_config_t tTimConfig;
 	tTimConfig.wTimeVal = 500;									//LPT定时值 = 500ms
-	tTimConfig.eWkMode  = LPT_CNT_CONTINU;						//LPT计数器工作模式，连续
+	tTimConfig.eRunMode  = LPT_CNT_CONT;						//LPT计数器工作模式，连续
 	tTimConfig.eClksrc=LPT_CLK_ISCLK;  							//LPT时钟源  
 	csi_lpt_timer_init(LPT,&tTimConfig);        				//初始化lpt,默认采用PEND中断
 
