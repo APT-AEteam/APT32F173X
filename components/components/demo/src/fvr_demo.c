@@ -1,7 +1,7 @@
 /***********************************************************************//** 
  * \file  fvr_demo.c
  * \brief  FVR_DEMO description and static inline functions at register level 
- * \copyright Copyright (C) 2015-2020 @ APTCHIP
+ * \copyright Copyright (C) 2015-2023 @ APTCHIP
  * <table>
  * <tr><th> Date  <th>Version  <th>Author  <th>Description
  * <tr><td> 2023-4-25 <td>V0.0 <td>XS    <td>initial

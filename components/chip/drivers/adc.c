@@ -1,11 +1,12 @@
 /***********************************************************************//** 
  * \file  adc.c
  * \brief  csi adc driver
- * \copyright Copyright (C) 2015-2020 @ APTCHIP
+ * \copyright Copyright (C) 2015-2023 @ APTCHIP
  * <table>
  * <tr><th> Date  <th>Version  <th>Author  <th>Description
  * <tr><td> 2020-8-12 <td>V0.0  <td>ZJY   <td>initial
  * <tr><td> 2021-1-8  <td>V0.1  <td>WNN   <td>modify
+ * <tr><td> 2023-9-19 <td>V0.2  <td>XS    <td>fix bug,code normalization
  * </table>
  * *********************************************************************
 */
@@ -76,11 +77,11 @@ csi_error_t csi_adc_init(csp_adc_t *ptAdcBase, csi_adc_config_t *ptAdcCfg)
 	csi_error_t ret = CSI_OK;
 	
 	csi_clk_enable((uint32_t *)ptAdcBase);				//adc peripheral clk enable
-	csp_adc_clk_en(ptAdcBase);							//adc clk enable
-	csp_adc_soft_rst(ptAdcBase);						//adc mode reset
-	csp_adc_clk_en(ptAdcBase);							//adc clk enable
-	csp_adc_set_resolution(ptAdcBase, ADC12_12BIT);		//adc 12bit
-	csp_adc_en(ptAdcBase);								//enable adc mode
+	csp_adc_clk_enable(ptAdcBase);							//adc clk enable
+	csp_adc_sw_rst(ptAdcBase);						//adc mode reset
+	csp_adc_clk_enable(ptAdcBase);							//adc clk enable
+	csp_adc_set_resolution(ptAdcBase, ADC_12BIT);		//adc 12bit
+	csp_adc_enable(ptAdcBase);								//enable adc mode
 	
 	if(ptAdcCfg->byClkDiv > 62)
 		ptAdcCfg->byClkDiv = 62;
@@ -89,16 +90,16 @@ csi_error_t csi_adc_init(csp_adc_t *ptAdcBase, csi_adc_config_t *ptAdcCfg)
 		ptAdcCfg->bySampHold = 3;
 	
 	//general configuration 
-	csp_adc_set_clk_div(ptAdcBase, ptAdcCfg->byClkDiv);		//adc clk div, clk = pclk/div
-	csp_adc_clk_sel(ptAdcBase,ptAdcCfg->byClksel);		//adc clk sel
-	csp_adc_hold_cycle(ptAdcBase, ptAdcCfg->bySampHold);	//adc sample hold period, sample time = (bySampHold + 16) clk period
-	csp_adc_set_conv_mode(ptAdcBase, ptAdcCfg->byConvMode);	//adc conversion mode, continuous/one shot
+	csp_adc_set_clkdiv(ptAdcBase, ptAdcCfg->byClkDiv);		//adc clk div, clk = pclk/div
+	csp_adc_set_clksrc(ptAdcBase,ptAdcCfg->byClksel);		//adc clk sel
+	csp_adc_set_hold_cycle(ptAdcBase, ptAdcCfg->bySampHold);	//adc sample hold period, sample time = (bySampHold + 16) clk period
+	csp_adc_set_runmode(ptAdcBase, ptAdcCfg->byConvMode);	//adc conversion mode, continuous/one shot
 	csp_adc_set_vref(ptAdcBase,ptAdcCfg->byVrefSrc);		//adc vref
 	
 	//adc interrupt
 	if(ptAdcCfg->wInt)
 	{
-		csp_adc_int_enable(ptAdcBase, ptAdcCfg->wInt, ENABLE);	//enable adc interrupt
+		csp_adc_int_enable(ptAdcBase, ptAdcCfg->wInt);	//enable adc interrupt
 	}	
 	return ret;
 }
@@ -141,7 +142,7 @@ csi_error_t csi_adc_start(csp_adc_t *ptAdcBase)
 	csi_error_t ret = CSI_OK;
 	uint32_t wTimeOut = 0xffff;
 	
-	while(!(ptAdcBase->SR & ADC12_READY) && wTimeOut --);	//adc ready ok?
+	while(!(ptAdcBase->SR & ADC_READY) && wTimeOut --);	//adc ready ok?
 	if(wTimeOut)
 		csp_adc_start(ptAdcBase);									//start adc
 	else
@@ -158,7 +159,7 @@ csi_error_t csi_adc_stop(csp_adc_t *ptAdcBase)
 {
 	csi_error_t ret = CSI_OK;
 	
-	if(csp_adc_get_sr(ptAdcBase) & ADC12_CTCVS)		//continuous mode
+	if(csp_adc_get_sr(ptAdcBase) & ADC_CTCVS)		//continuous mode
 		csp_adc_stop(ptAdcBase);					//stop adc
 	else											//one shot mode, can't stop
 		ret = CSI_ERROR; 
@@ -173,7 +174,7 @@ csi_error_t csi_adc_stop(csp_adc_t *ptAdcBase)
  */
 void csi_adc_conv_mode(csp_adc_t *ptAdcBase, csi_adc_conv_mode_e eConvMode)
 {
-	csp_adc_set_conv_mode(ptAdcBase, (adc_conv_mode_e)eConvMode);
+	csp_adc_set_runmode(ptAdcBase, (adc_runmode_e)eConvMode);
 }
 /** \brief set adc conversion sequence priority
  * 
@@ -197,10 +198,10 @@ int16_t csi_adc_read_channel(csp_adc_t *ptAdcBase, uint8_t byChIdx)
 	uint32_t wTimeOut = 0;
 	
 	do{
-		if(csp_adc_get_sr(ptAdcBase) & ADC12_SEQ(byChIdx))		//sequence channel sample complete?
+		if(csp_adc_get_sr(ptAdcBase) & ADC_SEQ(byChIdx))		//sequence channel sample complete?
 		{
 			ret = csp_adc_get_data(ptAdcBase, byChIdx);			//get adc channel value
-			csp_adc_clr_sr(ptAdcBase, ADC12_SEQ(byChIdx));		//clr channel status
+			csp_adc_clr_sr(ptAdcBase, ADC_SEQ(byChIdx));		//clr channel status
 			break;
 		}
 		else
@@ -240,22 +241,8 @@ uint32_t csi_adc_freq_div(csp_adc_t *ptAdcBase, uint8_t byDiv)
 	else if(byDiv > 62)
 		byDiv = 62;
 		
-	csp_adc_set_clk_div(ptAdcBase,byDiv);	
+	csp_adc_set_clkdiv(ptAdcBase,byDiv);	
 	return  csi_get_pclk_freq()/byDiv;		
-}
-/** \brief get adc clk 
- * 
- *  \param[in] ptAdcBase: pointer of adc register structure
- *  \return adc clk
- */
-uint32_t csi_adc_get_freq(csp_adc_t *ptAdcBase)
-{
-    uint8_t byDiv = csp_adc_get_clk_div(ptAdcBase);
-	
-	if(0 == byDiv)
-		return  csi_get_pclk_freq();
-	else
-		return  csi_get_pclk_freq()/(byDiv << 1);
 }
  /** \brief adc cmp0 config
  * 
@@ -267,16 +254,16 @@ uint32_t csi_adc_get_freq(csp_adc_t *ptAdcBase)
  */
 csi_error_t csi_adc_set_cmp0(csp_adc_t *ptAdcBase, uint8_t byCmpChnl, uint32_t wCmpData, csi_adc_cmp_dir_e eDir)
 {
-	csp_adc_set_cmp_mode(ptAdcBase, ADC12_CMP_ACROSS);
+	csp_adc_set_cmp_mode(ptAdcBase, ADC_CMP_ACROSS);
 	csp_adc_set_cmp0(ptAdcBase, wCmpData,byCmpChnl) ;
 	
 	switch(eDir)
 	{
 		case ADC_CMP_H:	
-			csp_adc_int_enable(ptAdcBase,(adc_int_e)ADC12_CMP0H , ENABLE);
+			csp_adc_int_enable(ptAdcBase,(adc_int_e)ADC_CMP0H);
 			break;
 		case ADC_CMP_L:	
-			csp_adc_int_enable(ptAdcBase,(adc_int_e)ADC12_CMP0L , ENABLE);
+			csp_adc_int_enable(ptAdcBase,(adc_int_e)ADC_CMP0L);
 			break;
 		default:		
 			return CSI_ERROR;
@@ -294,16 +281,16 @@ csi_error_t csi_adc_set_cmp0(csp_adc_t *ptAdcBase, uint8_t byCmpChnl, uint32_t w
  */
 csi_error_t csi_adc_set_cmp1(csp_adc_t *ptAdcBase, uint8_t byCmpChnl, uint32_t wCmpData, csi_adc_cmp_dir_e eDir)
 {
-	csp_adc_set_cmp_mode(ptAdcBase, ADC12_CMP_ACROSS);
+	csp_adc_set_cmp_mode(ptAdcBase, ADC_CMP_ACROSS);
 	csp_adc_set_cmp1(ptAdcBase, wCmpData, byCmpChnl);
 	
 	switch(eDir)
 	{
 		case ADC_CMP_H:	
-			csp_adc_int_enable(ptAdcBase,(adc_int_e)ADC12_CMP1H , ENABLE);
+			csp_adc_int_enable(ptAdcBase,(adc_int_e)ADC_CMP1H);
 			break;
 		case ADC_CMP_L:	
-			csp_adc_int_enable(ptAdcBase,(adc_int_e)ADC12_CMP1L , ENABLE);
+			csp_adc_int_enable(ptAdcBase,(adc_int_e)ADC_CMP1L);
 			break;
 		default:		
 			return CSI_ERROR;
@@ -348,7 +335,7 @@ csi_error_t csi_adc_set_sync(csp_adc_t *ptAdcBase, csi_adc_trgin_e eTrgIn, csi_a
  */
 void csi_adc_rearm_sync(csp_adc_t *ptAdcBase, csi_adc_trgin_e eTrgIn)
 {
-	csp_adc_rearm_sync(ptAdcBase, (adc_sync_e)eTrgIn);
+	csp_adc_sync_rearm(ptAdcBase, (adc_sync_in_e)eTrgIn);
 }
 
 /** \brief set adc evtrg output
@@ -363,12 +350,12 @@ csi_error_t csi_adc_set_evtrg(csp_adc_t *ptAdcBase, csi_adc_trgout_e eTrgOut, cs
 	switch(eTrgOut)
 	{
 		case ADC_TRGOUT0:		//event trigger out0
-			ptAdcBase->EVTRG = (ptAdcBase->EVTRG & (~ADC12_TRGSRC0_MSK)) | (eTrgSrc << ADC12_TRGSRC0_POS);
-			ptAdcBase->EVTRG |= ADC12_TRG0OE;
+			ptAdcBase->EVTRG = (ptAdcBase->EVTRG & (~ADC_TRGSRC0_MSK)) | (eTrgSrc << ADC_TRGSRC0_POS);
+			ptAdcBase->EVTRG |= ADC_TRG0OE;
 			break;
 		case ADC_TRGOUT1:		//event trigger out1
-			ptAdcBase->EVTRG = (ptAdcBase->EVTRG & (~ADC12_TRGSRC1_MSK)) | (eTrgSrc << ADC12_TRGSRC1_POS);
-			ptAdcBase->EVTRG |= ADC12_TRG1OE;
+			ptAdcBase->EVTRG = (ptAdcBase->EVTRG & (~ADC_TRGSRC1_MSK)) | (eTrgSrc << ADC_TRGSRC1_POS);
+			ptAdcBase->EVTRG |= ADC_TRG1OE;
 			break;
 		default:
 			return CSI_ERROR;
@@ -387,10 +374,10 @@ csi_error_t csi_adc_set_epvs(csp_adc_t *ptAdcBase, csi_adc_trgout_e eTrgOut, uin
 	switch(eTrgOut)
 	{
 		case ADC_TRGOUT0:		//event trigger out0
-			ptAdcBase->EPVS = (ptAdcBase->EPVS & (~ADC12_EV0PRD_MSK)) | ADC12_TRGEV0PRD(byPeriod);
+			ptAdcBase->EVPS = (ptAdcBase->EVPS & (~ADC_EV0PRD_MSK)) | ADC_TRGEV0PRD(byPeriod);
 			break;
 		case ADC_TRGOUT1:		//event trigger out1
-			ptAdcBase->EPVS = (ptAdcBase->EPVS & (~ADC12_EV1PRD_MSK)) | ADC12_TRGEV1PRD(byPeriod);
+			ptAdcBase->EVPS = (ptAdcBase->EVPS & (~ADC_EV1PRD_MSK)) | ADC_TRGEV1PRD(byPeriod);
 			break;
 		default:
 			return CSI_ERROR;
@@ -402,14 +389,18 @@ csi_error_t csi_adc_set_epvs(csp_adc_t *ptAdcBase, csi_adc_trgout_e eTrgOut, uin
  *  \param[in] ptAdcBase: ADC handle to operate
  *  \param[in] eIntSrc:  INT
  */
-void csi_adc_int_enable(csp_adc_t *ptAdcBase, csi_adc_intsrc_e eIntSrc, bool bEnable)
+void csi_adc_int_enable(csp_adc_t *ptAdcBase, csi_adc_intsrc_e eIntSrc)
 {
-	csp_adc_int_enable(ptAdcBase, (adc_int_e)eIntSrc, bEnable);
-	
-	if(bEnable)
-		csi_irq_enable((uint32_t *)ptAdcBase);
-	else
-		csi_irq_disable((uint32_t *)ptAdcBase);
+	csp_adc_int_enable(ptAdcBase, (adc_int_e)eIntSrc);
+}
+/** \brief enable/disable adc INT status
+ * 
+ *  \param[in] ptAdcBase: ADC handle to operate
+ *  \param[in] eIntSrc:  INT
+ */
+void csi_adc_int_disable(csp_adc_t *ptAdcBase, csi_adc_intsrc_e eIntSrc)
+{
+	csp_adc_int_disable(ptAdcBase, (adc_int_e)eIntSrc);
 }
 /** \brief select adc clock
  * 
@@ -418,7 +409,7 @@ void csi_adc_int_enable(csp_adc_t *ptAdcBase, csi_adc_intsrc_e eIntSrc, bool bEn
  */
 void csi_adc_set_clk(csp_adc_t *ptAdcBase,csi_adc_clksel_e eClksel)
 {
-	csp_adc_clk_sel(ptAdcBase,(adc_clksel_e)eClksel);
+	csp_adc_set_clksrc(ptAdcBase,(adc_clksel_e)eClksel);
 }
 
 
