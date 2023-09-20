@@ -12,8 +12,7 @@
  * *********************************************************************
 */
 /* include ----------------------------------------------------------------*/
-#include "drv/gpio.h"
-#include "drv/cnta.h"
+#include "csi_drv.h"
 #include "board_config.h"
 
 #if (USE_CNTA_CALLBACK == 1)

@@ -6,21 +6,145 @@
  * <tr><th> Date  <th>Version  <th>Author  <th>Description
  * <tr><td> 2021-5-11 <td>V0.0 <td>ljy     <td>initial
  * <tr><td> 2023-3-21 <td>V1.0 <td>YYM     <td>initial
+ * <tr><td> 2023-9-07 <td>V1.1 <td>LHY     <td>modify
  * </table>
  * *********************************************************************
 */
 /* Includes ---------------------------------------------------------------*/
-#include <string.h>
-#include <drv/gpta.h>
-#include <drv/pin.h>
-#include <drv/etcb.h>
+#include "csi_drv.h"
+#include "board_config.h"
 
 //#include "demo.h"
 /* externs function--------------------------------------------------------*/
 /* externs variablesr------------------------------------------------------*/
 /* Private macro-----------------------------------------------------------*/
 /* Private variablesr------------------------------------------------------*/
+
+#if (USE_GPTA_CALLBACK == 0)
 static uint32_t s_wGptaCapBuff[4] = {0};
+/** \brief gpta0_int_handler: gpta中断服务函数
+ * 
+ *  \brief GPTA发生中断时会调用此函数，函数在interrupt.c里定义为弱(weak)属性，默认不做处理；用户用到GPTA中
+ *         断时，请重新定义此函数，在此函数中进行对应中断处理，也可直接在interrupt.c里的函数里进行处理
+ * 
+ *  \param[in] none
+ *  \return none
+ */
+ATTRIBUTE_ISR  void gpta0_int_handler(void)
+{
+	//用户直接在中断服务接口函数里处理中断，建议客户使用此模式
+	volatile uint32_t wMisr = csp_gpta_get_isr(GPTA0);
+	
+	if((wMisr & GPTA_INT_PEND) == GPTA_INT_PEND)
+	{	
+	    csp_gpta_clr_isr(GPTA0, GPTA_INT_PEND);
+	}
+	if((wMisr & GPTA_INT_TRGEV0) == GPTA_INT_TRGEV0)
+	{		
+	    csp_gpta_clr_isr(GPTA0, GPTA_INT_TRGEV0);
+	}
+	if((wMisr & GPTA_INT_TRGEV1) == GPTA_INT_TRGEV1)
+	{		
+	    csp_gpta_clr_isr(GPTA0, GPTA_INT_TRGEV1);
+	   	
+	}
+    if((wMisr & GPTA_INT_CAPLD0) == GPTA_INT_CAPLD0)
+	{		
+		s_wGptaCapBuff[0]=csp_gpta_get_cmpa(GPTA0);
+		csp_gpta_clr_isr(GPTA0, GPTA_INT_CAPLD0);			
+	}
+	if((wMisr & GPTA_INT_CAPLD1) == GPTA_INT_CAPLD1)
+	{		
+     	s_wGptaCapBuff[0]=csp_gpta_get_cmpa(GPTA0);
+		s_wGptaCapBuff[1]=csp_gpta_get_cmpb(GPTA0);
+		csp_gpta_clr_isr(GPTA0, GPTA_INT_CAPLD1);			
+	}
+    if((wMisr & GPTA_INT_CAPLD2) == GPTA_INT_CAPLD2)
+	{		
+     	s_wGptaCapBuff[0]=csp_gpta_get_cmpa(GPTA0);
+		s_wGptaCapBuff[1]=csp_gpta_get_cmpb(GPTA0);
+		s_wGptaCapBuff[2]=csp_gpta_get_cmpaa(GPTA0);
+		csp_gpta_clr_isr(GPTA0, GPTA_INT_CAPLD2);			
+	}
+	if((wMisr & GPTA_INT_CAPLD3) == GPTA_INT_CAPLD3)
+	{		
+     	s_wGptaCapBuff[0]=csp_gpta_get_cmpa(GPTA0);
+		s_wGptaCapBuff[1]=csp_gpta_get_cmpb(GPTA0);
+		s_wGptaCapBuff[2]=csp_gpta_get_cmpaa(GPTA0);
+		s_wGptaCapBuff[3]=csp_gpta_get_cmpba(GPTA0);
+		csp_gpta_clr_isr(GPTA0, GPTA_INT_CAPLD3);			
+	}	
+	
+    if((wMisr & GPTA_INT_CBU) == GPTA_INT_CBU)
+	{	
+	    csp_gpta_clr_isr(GPTA0, GPTA_INT_CBU);
+	}
+	
+	
+}
+
+/** \brief gpta1_int_handler: gpta中断服务函数
+ * 
+ *  \brief GPTA发生中断时会调用此函数，函数在interrupt.c里定义为弱(weak)属性，默认不做处理；用户用到GPTA中
+ *         断时，请重新定义此函数，在此函数中进行对应中断处理，也可直接在interrupt.c里的函数里进行处理
+ * 
+ *  \param[in] none
+ *  \return none
+ */
+ATTRIBUTE_ISR  void gpta1_int_handler(void)
+{
+//用户直接在中断服务接口函数里处理中断，建议客户使用此模式
+	volatile uint32_t wMisr = csp_gpta_get_isr(GPTA1);
+	
+	if((wMisr & GPTA_INT_PEND) == GPTA_INT_PEND)
+	{	
+	    csp_gpta_clr_isr(GPTA1, GPTA_INT_PEND);
+	}
+	if((wMisr & GPTA_INT_TRGEV0) == GPTA_INT_TRGEV0)
+	{		
+	    csp_gpta_clr_isr(GPTA1, GPTA_INT_TRGEV0);
+	}
+	if((wMisr & GPTA_INT_TRGEV1) == GPTA_INT_TRGEV1)
+	{		
+	    csp_gpta_clr_isr(GPTA1, GPTA_INT_TRGEV1);
+	   	
+	}
+    if((wMisr & GPTA_INT_CAPLD0) == GPTA_INT_CAPLD0)
+	{		
+		s_wGptaCapBuff[0]=csp_gpta_get_cmpa(GPTA1);
+		csp_gpta_clr_isr(GPTA1, GPTA_INT_CAPLD0);			
+	}
+	if((wMisr & GPTA_INT_CAPLD1) == GPTA_INT_CAPLD1)
+	{		
+     	s_wGptaCapBuff[0]=csp_gpta_get_cmpa(GPTA1);
+		s_wGptaCapBuff[1]=csp_gpta_get_cmpb(GPTA1);
+		csp_gpta_clr_isr(GPTA1, GPTA_INT_CAPLD1);			
+	}
+    if((wMisr & GPTA_INT_CAPLD2) == GPTA_INT_CAPLD2)
+	{		
+     	s_wGptaCapBuff[0]=csp_gpta_get_cmpa(GPTA1);
+		s_wGptaCapBuff[1]=csp_gpta_get_cmpb(GPTA1);
+		s_wGptaCapBuff[2]=csp_gpta_get_cmpaa(GPTA1);
+		csp_gpta_clr_isr(GPTA1, GPTA_INT_CAPLD2);			
+	}
+	if((wMisr & GPTA_INT_CAPLD3) == GPTA_INT_CAPLD3)
+	{		
+     	s_wGptaCapBuff[0]=csp_gpta_get_cmpa(GPTA1);
+		s_wGptaCapBuff[1]=csp_gpta_get_cmpb(GPTA1);
+		s_wGptaCapBuff[2]=csp_gpta_get_cmpaa(GPTA1);
+		s_wGptaCapBuff[3]=csp_gpta_get_cmpba(GPTA1);
+		csp_gpta_clr_isr(GPTA1, GPTA_INT_CAPLD3);			
+	}	
+	
+    if((wMisr & GPTA_INT_CBU) == GPTA_INT_CBU)
+	{	
+	    csp_gpta_clr_isr(GPTA1, GPTA_INT_CBU);
+	}
+}
+
+#endif
+
+
 
 /** \brief gpta timer
  * 
@@ -60,47 +184,49 @@ int gpta_capture_sync_demo0(void)
 	int iRet = 0;
     volatile uint8_t ch;
 
-	csi_pin_set_mux(PA1,PA1_INPUT);		
-	csi_pin_pull_mode(PA1, GPIO_PULLUP);						 //PA1 上拉
-	csi_pin_irq_mode(PA1, EXI_GRP16, GPIO_IRQ_FALLING_EDGE);     //PA1 下降沿产生中断，选择中断组16
-	csi_pin_irq_enable(PA1, ENABLE);                            //PA1 中断使能                                    
-	csi_exi_set_evtrg(5, EXI_TRGSRC_GRP16, 1);	 
+	csi_gpio_set_mux(GPIOA, PA1, PA1_INPUT);		
+	csi_gpio_pull_mode(GPIOA, PA1, GPIO_PULLUP);				    //PA1 上拉
+	csi_gpio_irq_mode(GPIOA, PA1, EXI_GRP16, GPIO_IRQ_FALLING_EDGE);//PA1 下降沿产生中断，选择中断组16
+	csi_gpio_int_enable(GPIOA,PA1);                                 //PA1 中断使能                                    
+	csi_exi_set_evtrg(EXI_TRGOUT5, EXI_TRGSRC_GRP16, 1);	 
+	csi_exi_evtrg_enable(EXI_TRGOUT5);		 
+			
+	csi_etcb_config_t tEtcbConfig;				                    //ETCB 参数配置结构体	
+	tEtcbConfig.eChType  = ETCB_ONE_TRG_ONE;  	                    //单个源触发单个目标
+	tEtcbConfig.eSrcIp   = ETCB_EXI_TRGOUT5 ;  	                    //...作为触发源
+	tEtcbConfig.eDstIp   = ETCB_GPTA0_SYNCIN3;                      //GPTB0 同步输入2作为目标事件
+	tEtcbConfig.eTrgMode = ETCB_HARDWARE_TRG;
+	ch = csi_etcb_ch_alloc(tEtcbConfig.eChType);                    //自动获取空闲通道号,ch >= 0 获取成功						//ch < 0,则获取通道号失败		
+	if(ch < 0)
+	{
+		return -1;
+	}
+	iRet = csi_etcb_ch_init(ch, &tEtcbConfig);	
 	
-//------------------------------------------------------------------------------------------------------------------------		
-	csi_etcb_config_t tEtbConfig;				//ETCB 参数配置结构体	
-	tEtbConfig.eChType  = ETCB_ONE_TRG_ONE;  	//单个源触发单个目标
-	tEtbConfig.eSrcIp   = ETCB_EXI_TRGOUT5 ;  	//...作为触发源
-	tEtbConfig.eDstIp   =  ETCB_GPTA0_SYNCIN3;  //GPTB0 同步输入2作为目标事件
-	tEtbConfig.eTrgMode = ETCB_HARDWARE_TRG;
-	ch = csi_etcb_ch_alloc(tEtbConfig.eChType);	//自动获取空闲通道号,ch >= 0 获取成功						//ch < 0,则获取通道号失败		
-	iRet = csi_etcb_ch_init(ch, &tEtbConfig);	
-//------------------------------------------------------------------------------------------------------------------------	
 	csi_gpta_captureconfig_t tPwmCfg;								  
-	tPwmCfg.byWorkmod       = GPTA_CAPTURE;                     //WAVE or CAPTURE    //计数或捕获	
-	tPwmCfg.byCountingMode  = GPTA_UPCNT;                       //CNYMD  //计数方向
-	tPwmCfg.byOneshotMode    = GPTA_OP_CONT; 
-	tPwmCfg.byStartSrc      = GPTA_SYNC;				       //软件使能同步触发使能控制（RSSR中START控制位）//启动方式
-	tPwmCfg.byPscld         = GPTA_LDPSCR_ZRO;                  //PSCR(分频)活动寄存器载入控制。活动寄存器在配置条件满足时，从影子寄存器载入更新值	
-	tPwmCfg.byCaptureCapmd   = 0;                               //0:连续捕捉模式    1h：一次性捕捉模式
-	tPwmCfg.byCaptureStopWrap=4-1;                              //Capture模式下，捕获事件计数器周期设置值
-	tPwmCfg.byCaptureLdaret   =0;                                //CMPA捕捉载入后，计数器值计数状态控制位(1h：CMPA触发后，计数器值进行重置;0h：CMPA触发后，计数器值不进行重置)
-	tPwmCfg.byCaptureLdbret   =0; 
-	tPwmCfg.byCaptureLdaaret  =0;  
-	tPwmCfg.byCaptureLdbaret  =1;  
+	tPwmCfg.byWorkmod         = GPTA_CAPTURE;                       //WAVE or CAPTURE    //计数或捕获	
+	tPwmCfg.byCountingMode    = GPTA_UPCNT;                         //CNYMD  //计数方向
+	tPwmCfg.byOneshotMode     = GPTA_OP_CONT; 
+	tPwmCfg.byStartSrc        = GPTA_SYNC;				            //软件使能同步触发使能控制（RSSR中START控制位）//启动方式
+	tPwmCfg.byPscld           = GPTA_LDPSCR_ZRO;                    //PSCR(分频)活动寄存器载入控制。活动寄存器在配置条件满足时，从影子寄存器载入更新值	
+	tPwmCfg.byCaptureCapmd    = 0;                                  //0:连续捕捉模式    1h：一次性捕捉模式
+	tPwmCfg.byCaptureStopWrap = 4-1;                                //Capture模式下，捕获事件计数器周期设置值
+	tPwmCfg.byCaptureLdaret   = 0;                                  //CMPA捕捉载入后，计数器值计数状态控制位(1h：CMPA触发后，计数器值进行重置;0h：CMPA触发后，计数器值不进行重置)
+	tPwmCfg.byCaptureLdbret   = 0; 
+	tPwmCfg.byCaptureLdaaret  = 0;  
+	tPwmCfg.byCaptureLdbaret  = 1;  
 	tPwmCfg.byCaptureCapmdSel = GPTA_CMPMD_SEL_NODIFF;
-                                                        	
-	tPwmCfg.wInt 		 =GPTA_INTSRC_CAPLD3;                   //interrupt//
-		
 	csi_gpta_capture_init(GPTA0, &tPwmCfg);
-
-//------------------------------------------------------------------------------------------------------------------------
-    csi_gpta_set_sync(GPTA0, GPTA_TRG_SYNCEN3, GPTA_TRG_CONTINU, GPTA_AUTO_REARM_ZRO);//使能SYNCIN2外部触发
+                                                        	
+	csi_gpta_int_enable(GPTA0, GPTA_INTSRC_CAPLD3);	
+    csi_gpta_set_sync(GPTA0, GPTA_TRG_SYNCEN3, GPTA_TRG_CONT, GPTA_AUTO_REARM_ZRO);//使能SYNCIN2外部触发
+	
 	csi_gpta_start(GPTA0);//start  timer
-    while(1){		
-		  		      
-		    mdelay(200);                        
-		    	
-		    mdelay(200);
+	
+    while(1)
+	{	      
+		mdelay(200);                        
+		mdelay(200);
 	}			
 	return iRet;
 };
@@ -128,65 +254,63 @@ int gpta_capture_sync_demo1(void)
 	int iRet = 0;	
     volatile uint8_t ch;
 
-	csi_pin_set_mux(PA1,PA1_INPUT);		
-	csi_pin_pull_mode(PA1, GPIO_PULLUP);						//PA1 上拉
+	csi_gpio_set_mux(GPIOA, PA1, PA1_INPUT);		
+	csi_gpio_pull_mode(GPIOA, PA1, GPIO_PULLUP);						//PA1 上拉
 	
-	csi_pin_irq_mode(PA1,EXI_GRP1, GPIO_IRQ_FALLING_EDGE);		//PA1 下降沿产生中断 
-	csi_pin_irq_enable(PA1, ENABLE);	
-	csi_exi_set_evtrg(0, EXI_TRGSRC_GRP1, 1);		
+	csi_gpio_irq_mode(GPIOA, PA1,EXI_GRP1, GPIO_IRQ_FALLING_EDGE);		//PA1 下降沿产生中断 
+	csi_gpio_int_enable(GPIOA, PA1);	
+	csi_exi_set_evtrg(EXI_TRGOUT0, EXI_TRGSRC_GRP1, 1);
+	csi_exi_evtrg_enable(EXI_TRGOUT0);		
 	
-	csi_pin_irq_mode(PA1, EXI_GRP16, GPIO_IRQ_RISING_EDGE);     //PA1 上升沿产生中断，选择中断组16
-	csi_pin_irq_enable(PA1, ENABLE);                            //PA1 中断使能                                    
-	csi_exi_set_evtrg(5, EXI_TRGSRC_GRP16, 1);	 
-
-	csi_etcb_config_t tEtbConfig;
+	csi_gpio_irq_mode(GPIOA, PA1, EXI_GRP16, GPIO_IRQ_RISING_EDGE);     //PA1 上升沿产生中断，选择中断组16
+	csi_gpio_int_enable(GPIOA, PA1);                                    //PA1 中断使能                                    
+	csi_exi_set_evtrg(EXI_TRGOUT5, EXI_TRGSRC_GRP16, 1);	 
+	csi_exi_evtrg_enable(EXI_TRGOUT5);
 	
-//------------------------------------------------------------------------------------------------------------------------		
-	//ETCB 参数配置结构体	
-	tEtbConfig.eChType  = ETCB_ONE_TRG_ONE;  	//单个源触发单个目标
-	tEtbConfig.eSrcIp   = ETCB_EXI_TRGOUT0 ;  	//...作为触发源
-	tEtbConfig.eDstIp   =  ETCB_GPTA0_SYNCIN0;  //GPTA0 同步输入0作为目标事件
-	tEtbConfig.eTrgMode = ETCB_HARDWARE_TRG;
-	ch = csi_etcb_ch_alloc(tEtbConfig.eChType);	//自动获取空闲通道号,ch >= 0 获取成功						//ch < 0,则获取通道号失败		
-	iRet = csi_etcb_ch_init(ch, &tEtbConfig);			
+	csi_etcb_config_t tEtcbConfig;                                      //ETCB 参数配置结构体
+	tEtcbConfig.eChType  = ETCB_ONE_TRG_ONE;  	                        //单个源触发单个目标
+	tEtcbConfig.eSrcIp   = ETCB_EXI_TRGOUT0 ;                       	//...作为触发源
+	tEtcbConfig.eDstIp   = ETCB_GPTA0_SYNCIN0;                          //GPTA0 同步输入0作为目标事件
+	tEtcbConfig.eTrgMode = ETCB_HARDWARE_TRG;
+	ch = csi_etcb_ch_alloc(tEtcbConfig.eChType);	                    //自动获取空闲通道号,ch >= 0 获取成功						//ch < 0,则获取通道号失败		
+	iRet = csi_etcb_ch_init(ch, &tEtcbConfig);			
 	
-//------------------------------------------------------------------------------------------------------------------------		
-	tEtbConfig.eChType  = ETCB_ONE_TRG_ONE;  	//单个源触发单个目标
-	tEtbConfig.eSrcIp   = ETCB_EXI_TRGOUT5 ;  	//...作为触发源
-	tEtbConfig.eDstIp   =  ETCB_GPTA0_SYNCIN3;  //GPTB0 同步输入2作为目标事件
-	tEtbConfig.eTrgMode = ETCB_HARDWARE_TRG;
-	ch = csi_etcb_ch_alloc(tEtbConfig.eChType);	//自动获取空闲通道号,ch >= 0 获取成功						//ch < 0,则获取通道号失败		
-	iRet = csi_etcb_ch_init(ch, &tEtbConfig);	
-//------------------------------------------------------------------------------------------------------------------------	
-	csi_gpta_captureconfig_t tPwmCfg;								  
-	tPwmCfg.byWorkmod       = GPTA_CAPTURE;                     //WAVE or CAPTURE    //计数或捕获	
-	tPwmCfg.byCountingMode  = GPTA_UPCNT;                       //CNYMD  //计数方向
-	tPwmCfg.byOneshotMode    = GPTA_OP_CONT; 
-	tPwmCfg.byStartSrc      = GPTA_SYNC;				    //软件使能同步触发使能控制（RSSR中START控制位）//启动方式
-	tPwmCfg.byPscld         = GPTA_LDPSCR_ZRO;                  //PSCR(分频)活动寄存器载入控制。活动寄存器在配置条件满足时，从影子寄存器载入更新值	
-	tPwmCfg.byCaptureCapmd   = 0;                               //0:连续捕捉模式    1h：一次性捕捉模式
-	tPwmCfg.byCaptureStopWrap=1-1;                              //Capture模式下，捕获事件计数器周期设置值
-	tPwmCfg.byCaptureLdaret   =1;                                //CMPA捕捉载入后，计数器值计数状态控制位(1h：CMPA触发后，计数器值进行重置;0h：CMPA触发后，计数器值不进行重置)
-	tPwmCfg.byCaptureLdbret   =0; 
-	tPwmCfg.byCaptureLdaaret  =0;  
-	tPwmCfg.byCaptureLdbaret  =0;  
+	tEtcbConfig.eChType  = ETCB_ONE_TRG_ONE;  	                        //单个源触发单个目标
+	tEtcbConfig.eSrcIp   = ETCB_EXI_TRGOUT5 ;  	                        //...作为触发源
+	tEtcbConfig.eDstIp   = ETCB_GPTA0_SYNCIN3;                          //GPTB0 同步输入2作为目标事件
+	tEtcbConfig.eTrgMode = ETCB_HARDWARE_TRG;
+	ch = csi_etcb_ch_alloc(tEtcbConfig.eChType);	                    //自动获取空闲通道号,ch >= 0 获取成功						//ch < 0,则获取通道号失败		
+	iRet = csi_etcb_ch_init(ch, &tEtcbConfig);	
+	
+	csi_gpta_captureconfig_t tPwmCfg;								    //ETCB 参数配置结构体
+	tPwmCfg.byWorkmod         = GPTA_CAPTURE;                           //WAVE or CAPTURE    //计数或捕获	
+	tPwmCfg.byCountingMode    = GPTA_UPCNT;                             //CNYMD  //计数方向
+	tPwmCfg.byOneshotMode     = GPTA_OP_CONT; 
+	tPwmCfg.byStartSrc        = GPTA_SYNC;				                //软件使能同步触发使能控制（RSSR中START控制位）//启动方式
+	tPwmCfg.byPscld           = GPTA_LDPSCR_ZRO;                        //PSCR(分频)活动寄存器载入控制。活动寄存器在配置条件满足时，从影子寄存器载入更新值	
+	tPwmCfg.byCaptureCapmd    = 0;                                      //0:连续捕捉模式    1h：一次性捕捉模式
+	tPwmCfg.byCaptureStopWrap = 1-1;                                    //Capture模式下，捕获事件计数器周期设置值
+	tPwmCfg.byCaptureLdaret   = 1;                                      //CMPA捕捉载入后，计数器值计数状态控制位(1h：CMPA触发后，计数器值进行重置;0h：CMPA触发后，计数器值不进行重置)
+	tPwmCfg.byCaptureLdbret   = 0; 
+	tPwmCfg.byCaptureLdaaret  = 0;  
+	tPwmCfg.byCaptureLdbaret  = 0;  
 	tPwmCfg.byCaptureCapmdSel = GPTA_CMPMD_SEL_NODIFF;
-                                                        	
-	tPwmCfg.wInt 		 =GPTA_INTSRC_CAPLD0;                   //interrupt//
-		
 	csi_gpta_capture_init(GPTA0, &tPwmCfg);
-
+	
+	csi_gpta_int_enable(GPTA0, GPTA_INTSRC_CAPLD0);		
+	
 	csp_gpta_set_phsr(GPTA0, 0x00);
-	csp_gpta_phsen_enable(GPTA0, ENABLE);
-//------------------------------------------------------------------------------------------------------------------------
-	csi_gpta_set_sync(GPTA0, GPTA_TRG_SYNCEN0, GPTA_TRG_CONTINU, GPTA_AUTO_REARM_ZRO);//使能SYNCIN0外部触发
-    csi_gpta_set_sync(GPTA0, GPTA_TRG_SYNCEN3, GPTA_TRG_CONTINU, GPTA_AUTO_REARM_ZRO);//使能SYNCIN2外部触发
+	csp_gpta_phsen_enable(GPTA0);
+	
+	csi_gpta_set_sync(GPTA0, GPTA_TRG_SYNCEN0, GPTA_TRG_CONT, GPTA_AUTO_REARM_ZRO);//使能SYNCIN0外部触发
+    csi_gpta_set_sync(GPTA0, GPTA_TRG_SYNCEN3, GPTA_TRG_CONT, GPTA_AUTO_REARM_ZRO);//使能SYNCIN2外部触发
+	
 	csi_gpta_start(GPTA0);//start  timer
-    while(1){		
-		  		      
-		    mdelay(200);                        
-		    	
-		    mdelay(200);
+	
+    while(1)
+	{
+		mdelay(200);                        
+		mdelay(200);
 	}			
 	return iRet;
 };
@@ -214,62 +338,60 @@ int gpta_capture_sync_demo2(void)
 	int iRet = 0;	
     volatile uint8_t ch;
 	
-	csi_pin_set_mux(PA3,PA3_INPUT);		
-	csi_pin_pull_mode(PA3, GPIO_PULLUP);						//PA3 上拉
+	csi_gpio_set_mux(GPIOA, PA3, PA3_INPUT);		
+	csi_gpio_pull_mode(GPIOA, PA3, GPIO_PULLUP);						//PA3 上拉
 	
-	csi_pin_irq_mode(PA3,EXI_GRP3, GPIO_IRQ_RISING_EDGE);		//PA3 上升沿产生中断  GPIO_IRQ_FALLING_EDGE  GPIO_IRQ_RISING_EDGE
-	csi_pin_irq_enable(PA3, ENABLE);	
-	csi_exi_set_evtrg(0, EXI_TRGSRC_GRP3, 1);	
+	csi_gpio_irq_mode(GPIOA, PA3, EXI_GRP3, GPIO_IRQ_RISING_EDGE);		//PA3 上升沿产生中断  GPIO_IRQ_FALLING_EDGE  GPIO_IRQ_RISING_EDGE
+	csi_gpio_int_enable(GPIOA, PA3);	
+	csi_exi_set_evtrg(EXI_TRGOUT0, EXI_TRGSRC_GRP3, 1);
+	csi_exi_evtrg_enable(EXI_TRGOUT0);	
 
-	csi_pin_irq_mode(PA3, EXI_GRP16, GPIO_IRQ_FALLING_EDGE);     //PA3 下降沿产生中断，选择中断组16
-	csi_pin_irq_enable(PA3, ENABLE);                            //PA3 中断使能                                   
-	csi_exi_set_evtrg(5, EXI_TRGSRC_GRP16, 1);	   
-	
-//------------------------------------------------------------------------------------------------------------------------		
-	csi_etcb_config_t tEtbConfig;				//ETCB 参数配置结构体	
-	tEtbConfig.eChType  = ETCB_ONE_TRG_ONE;  	//单个源触发单个目标
-	tEtbConfig.eSrcIp   = ETCB_EXI_TRGOUT0 ;  	//...作为触发源
-	tEtbConfig.eDstIp   =  ETCB_GPTA0_SYNCIN2;  //GPTA0 同步输入2作为目标事件
-	tEtbConfig.eTrgMode = ETCB_HARDWARE_TRG;
-	ch = csi_etcb_ch_alloc(tEtbConfig.eChType);	//自动获取空闲通道号,ch >= 0 获取成功						//ch < 0,则获取通道号失败		
-	iRet = csi_etcb_ch_init(ch, &tEtbConfig);	
-	
-//------------------------------------------------------------------------------------------------------------------------		
-	tEtbConfig.eChType  = ETCB_ONE_TRG_ONE;  	//单个源触发单个目标
-	tEtbConfig.eSrcIp   = ETCB_EXI_TRGOUT5 ;  	//...作为触发源
-	tEtbConfig.eDstIp   =  ETCB_GPTA0_SYNCIN3;  //GPTA0 同步输入3作为目标事件
-	tEtbConfig.eTrgMode = ETCB_HARDWARE_TRG;
-	ch = csi_etcb_ch_alloc(tEtbConfig.eChType);	//自动获取空闲通道号,ch >= 0 获取成功						//ch < 0,则获取通道号失败		
-	iRet = csi_etcb_ch_init(ch, &tEtbConfig);		
-	
-//------------------------------------------------------------------------------------------------------------------------	
-	csi_gpta_captureconfig_t tPwmCfg;								  
-	tPwmCfg.byWorkmod       = GPTA_CAPTURE;                     //WAVE or CAPTURE    //计数或捕获	
-	tPwmCfg.byCountingMode  = GPTA_UPCNT;                       //CNYMD  //计数方向
-	tPwmCfg.byOneshotMode    = GPTA_OP_CONT; 
-	tPwmCfg.byStartSrc      = GPTA_SYNC;				    //软件使能同步触发使能控制（RSSR中START控制位）//启动方式
-	tPwmCfg.byPscld         = GPTA_LDPSCR_ZRO;                  //PSCR(分频)活动寄存器载入控制。活动寄存器在配置条件满足时，从影子寄存器载入更新值	
-	tPwmCfg.byCaptureCapmd   = 0;                               //0:连续捕捉模式    1h：一次性捕捉模式
-	tPwmCfg.byCaptureStopWrap=2-1;                              //Capture模式下，捕获事件计数器周期设置值
-	tPwmCfg.byCaptureLdaret   =0;                                //CMPA捕捉载入后，计数器值计数状态控制位(1h：CMPA触发后，计数器值进行重置;0h：CMPA触发后，计数器值不进行重置)
-	tPwmCfg.byCaptureLdbret   =1; 
-	tPwmCfg.byCaptureLdaaret  =0;  
-	tPwmCfg.byCaptureLdbaret  =0;  
-	tPwmCfg.byCaptureCapmdSel = GPTA_CMPMD_SEL_DIFF;
-                                                        	
-	tPwmCfg.wInt 		 = GPTA_INTSRC_CAPLD1;                   //interrupt//
+	csi_gpio_irq_mode(GPIOA, PA3, EXI_GRP16, GPIO_IRQ_FALLING_EDGE);     //PA3 下降沿产生中断，选择中断组16
+	csi_gpio_int_enable(GPIOA, PA3);                                     //PA3 中断使能                                   
+	csi_exi_set_evtrg(EXI_TRGOUT5, EXI_TRGSRC_GRP16, 1);	
+    csi_exi_evtrg_enable(EXI_TRGOUT5);
+			
+	csi_etcb_config_t tEtcbConfig;				                         //ETCB 参数配置结构体	
+	tEtcbConfig.eChType  = ETCB_ONE_TRG_ONE;  	                         //单个源触发单个目标
+	tEtcbConfig.eSrcIp   = ETCB_EXI_TRGOUT0 ;  	                         //...作为触发源
+	tEtcbConfig.eDstIp   = ETCB_GPTA0_SYNCIN2;                           //GPTA0 同步输入2作为目标事件
+	tEtcbConfig.eTrgMode = ETCB_HARDWARE_TRG;
+	ch = csi_etcb_ch_alloc(tEtcbConfig.eChType);	                     //自动获取空闲通道号,ch >= 0 获取成功						//ch < 0,则获取通道号失败		
+	iRet = csi_etcb_ch_init(ch, &tEtcbConfig);	
+			
+	tEtcbConfig.eChType  = ETCB_ONE_TRG_ONE;  	                         //单个源触发单个目标
+	tEtcbConfig.eSrcIp   = ETCB_EXI_TRGOUT5 ;  	                         //...作为触发源
+	tEtcbConfig.eDstIp   = ETCB_GPTA0_SYNCIN3;                           //GPTA0 同步输入3作为目标事件
+	tEtcbConfig.eTrgMode = ETCB_HARDWARE_TRG;
+	ch = csi_etcb_ch_alloc(tEtcbConfig.eChType);	                     //自动获取空闲通道号,ch >= 0 获取成功						//ch < 0,则获取通道号失败		
+	iRet = csi_etcb_ch_init(ch, &tEtcbConfig);		
 		
+	csi_gpta_captureconfig_t tPwmCfg;								  
+	tPwmCfg.byWorkmod         = GPTA_CAPTURE;                            //WAVE or CAPTURE    //计数或捕获	
+	tPwmCfg.byCountingMode    = GPTA_UPCNT;                              //CNYMD  //计数方向
+	tPwmCfg.byOneshotMode     = GPTA_OP_CONT; 
+	tPwmCfg.byStartSrc        = GPTA_SYNC;				                 //软件使能同步触发使能控制（RSSR中START控制位）//启动方式
+	tPwmCfg.byPscld           = GPTA_LDPSCR_ZRO;                         //PSCR(分频)活动寄存器载入控制。活动寄存器在配置条件满足时，从影子寄存器载入更新值	
+	tPwmCfg.byCaptureCapmd    = 0;                                       //0:连续捕捉模式    1h：一次性捕捉模式
+	tPwmCfg.byCaptureStopWrap = 2-1;                                     //Capture模式下，捕获事件计数器周期设置值
+	tPwmCfg.byCaptureLdaret   = 0;                                       //CMPA捕捉载入后，计数器值计数状态控制位(1h：CMPA触发后，计数器值进行重置;0h：CMPA触发后，计数器值不进行重置)
+	tPwmCfg.byCaptureLdbret   = 1; 
+	tPwmCfg.byCaptureLdaaret  = 0;  
+	tPwmCfg.byCaptureLdbaret  = 0;  
+	tPwmCfg.byCaptureCapmdSel = GPTA_CMPMD_SEL_DIFF;
 	csi_gpta_capture_init(GPTA0, &tPwmCfg);
+	
+	csi_gpta_int_enable(GPTA0, GPTA_INTSRC_CAPLD1);	
 
-//------------------------------------------------------------------------------------------------------------------------
-    csi_gpta_set_sync(GPTA0, GPTA_TRG_SYNCEN2, GPTA_TRG_CONTINU, GPTA_AUTO_REARM_ZRO);//使能SYNCIN2外部触发
-	csi_gpta_set_sync(GPTA0, GPTA_TRG_SYNCEN3, GPTA_TRG_CONTINU, GPTA_AUTO_REARM_ZRO);//使能SYNCIN3外部触发
+    csi_gpta_set_sync(GPTA0, GPTA_TRG_SYNCEN2, GPTA_TRG_CONT, GPTA_AUTO_REARM_ZRO);//使能SYNCIN2外部触发
+	csi_gpta_set_sync(GPTA0, GPTA_TRG_SYNCEN3, GPTA_TRG_CONT, GPTA_AUTO_REARM_ZRO);//使能SYNCIN3外部触发
+	
 	csi_gpta_start(GPTA0);//start  timer
-    while(1){		
-		  		      
-		    mdelay(200);                        
-		    	
-		    mdelay(200);
+	
+    while(1)
+	{		
+		mdelay(200);                        
+		mdelay(200);
 	}			
 	return iRet;
 };
@@ -282,12 +404,12 @@ int gpta_capture_sync_demo2(void)
 int gpta_pwm_demo(void)
 {
 	int iRet = 0;	
-//------------------------------------------------------------------------------------------------------------------------	
-#if !defined(USE_GUI)
-	csi_pin_set_mux(PA0, PA0_GPTA0_CHA);						//
-	csi_pin_set_mux(PA1, PA1_GPTA0_CHB);						//
+	
+#if (USE_GUI == 0)	
+	csi_gpio_set_mux(GPIOA, PA0, PA0_GPTA0_CHA);				
+	csi_gpio_set_mux(GPIOA, PA1, PA1_GPTA0_CHB);						
 #endif
-//------------------------------------------------------------------------------------------------------------------------	
+	
 	csi_gpta_pwmconfig_t tPwmCfg;								  
 	tPwmCfg.byWorkmod        = GPTA_WAVE;                        //WAVE  波形模式
 	tPwmCfg.byCountingMode   = GPTA_UPCNT;                       //CNYMD  //计数方向
@@ -296,10 +418,9 @@ int gpta_pwm_demo(void)
 	tPwmCfg.byPscld          = GPTA_LDPSCR_ZRO;                  //PSCR(分频)活动寄存器载入控制。活动寄存器在配置条件满足时，从影子寄存器载入更新值		
 	tPwmCfg.byDutyCycle 	 = 50;								 //pwm ouput duty cycle//PWM初始值(X%)			
 	tPwmCfg.wFreq 			 = 1000;							 //pwm ouput frequency	
-	tPwmCfg.wInt 		 	 = GPTA_INTSRC_CBU;                     //interrupt
 	csi_gpta_wave_init(GPTA0, &tPwmCfg);
 	
-//------------------------------------------------------------------------------------------------------------------------
+	csi_gpta_int_enable(GPTA0, GPTA_INTSRC_CBU);
 
 	csi_gpta_pwmchannel_config_t  tGptachannelCfg;
 	tGptachannelCfg.byActionZro    =   GPTA_LO;
@@ -314,20 +435,21 @@ int gpta_pwm_demo(void)
 	tGptachannelCfg.byActionT2d    =   GPTA_NA;
 	tGptachannelCfg.byChoiceC1sel  =   GPTA_CMPA;
 	tGptachannelCfg.byChoiceC2sel  =   GPTA_CMPA;	
-	csi_gpta_channel_config(GPTA0, &tGptachannelCfg,  GPTA_CHANNEL_1);//channel
+	csi_gpta_set_channel(GPTA0, &tGptachannelCfg,  GPTA_CHANNEL_1);//channel
 	tGptachannelCfg.byChoiceC1sel  =   GPTA_CMPB;
 	tGptachannelCfg.byChoiceC2sel  =   GPTA_CMPB;
-	csi_gpta_channel_config(GPTA0, &tGptachannelCfg,  GPTA_CHANNEL_2);
+	csi_gpta_set_channel(GPTA0, &tGptachannelCfg,  GPTA_CHANNEL_2);
 
 	csi_gpta_start(GPTA0);
-//------------------------------------------------------------------------------------------------------------------------
-	while(1){	
-			csi_gpta_change_ch_duty(GPTA0,GPTA_COMPA, 20);
-	        csi_gpta_change_ch_duty(GPTA0,GPTA_COMPB, 20);
-		    mdelay(200);                        
-			csi_gpta_change_ch_duty(GPTA0,GPTA_COMPA, 50);
-	        csi_gpta_change_ch_duty(GPTA0,GPTA_COMPB, 50);
-		    mdelay(200);	
+
+	while(1)
+	{	
+		csi_gpta_change_ch_duty(GPTA0,GPTA_COMPA, 20);
+		csi_gpta_change_ch_duty(GPTA0,GPTA_COMPB, 20);
+		mdelay(200);                        
+		csi_gpta_change_ch_duty(GPTA0,GPTA_COMPA, 50);
+		csi_gpta_change_ch_duty(GPTA0,GPTA_COMPB, 50);
+		mdelay(200);	
 	}	
 
     return iRet;
@@ -341,23 +463,23 @@ int gpta_pwm_demo(void)
 int gpta_pwm_waveform_demo(void)
 {
 	int iRet = 0;	
-//------------------------------------------------------------------------------------------------------------------------	
-#if !defined(USE_GUI)
-	csi_pin_set_mux(PA0, PA0_GPTA0_CHA);						//
-	csi_pin_set_mux(PA1, PA1_GPTA0_CHB);						//
+	
+#if (USE_GUI == 0)	
+	csi_gpio_set_mux(GPIOA, PA0, PA0_GPTA0_CHA);			
+	csi_gpio_set_mux(GPIOA, PA1, PA1_GPTA0_CHB);				
 #endif	
-//------------------------------------------------------------------------------------------------------------------------	
+	
 	csi_gpta_pwmconfig_t tPwmCfg;								  
-	tPwmCfg.byWorkmod        = GPTA_WAVE;                        //WAVE  波形模式
-	tPwmCfg.byCountingMode   = GPTA_UPDNCNT;                     //CNYMD  //计数方向
-	tPwmCfg.byOneshotMode    = GPTA_OP_CONT;                     //OPM    //单次或连续(工作方式)
+	tPwmCfg.byWorkmod        = GPTA_WAVE;                    //WAVE  波形模式
+	tPwmCfg.byCountingMode   = GPTA_UPDOWNCNT;                 //CNYMD  //计数方向
+	tPwmCfg.byOneshotMode    = GPTA_OP_CONT;                 //OPM    //单次或连续(工作方式)
 	tPwmCfg.byStartSrc       = GPTA_SYNC;					 //软件使能同步触发使能控制（RSSR中START控制位）//启动方式
-	tPwmCfg.byPscld          = GPTA_LDPSCR_ZRO;                  //PSCR(分频)活动寄存器载入控制。活动寄存器在配置条件满足时，从影子寄存器载入更新值		
-	tPwmCfg.byDutyCycle 	 = 50;								 //pwm ouput duty cycle//PWM初始值(X%)			
-	tPwmCfg.wFreq 			 = 1000;							 //pwm ouput frequency	
-	tPwmCfg.wInt 		 	 = GPTA_INTSRC_CBU;                     //interrupt
+	tPwmCfg.byPscld          = GPTA_LDPSCR_ZRO;              //PSCR(分频)活动寄存器载入控制。活动寄存器在配置条件满足时，从影子寄存器载入更新值		
+	tPwmCfg.byDutyCycle 	 = 50;						     //pwm ouput duty cycle//PWM初始值(X%)			
+	tPwmCfg.wFreq 			 = 1000;					     //pwm ouput frequency	
 	csi_gpta_wave_init(GPTA0, &tPwmCfg);
-//------------------------------------------------------------------------------------------------------------------------
+	
+	csi_gpta_int_enable(GPTA0, GPTA_INTSRC_CBU);
 	
 	csi_gpta_pwmchannel_config_t  tGptachannelCfg;
 	tGptachannelCfg.byActionZro    =   GPTA_LO;
@@ -372,30 +494,31 @@ int gpta_pwm_waveform_demo(void)
 	tGptachannelCfg.byActionT2d    =   GPTA_NA;
 	tGptachannelCfg.byChoiceC1sel  =   GPTA_CMPA;
 	tGptachannelCfg.byChoiceC2sel  =   GPTA_CMPA;	
-	csi_gpta_channel_config(GPTA0, &tGptachannelCfg,  GPTA_CHANNEL_1);//channel
+	csi_gpta_set_channel(GPTA0, &tGptachannelCfg,  GPTA_CHANNEL_1);//channel
+	
 	tGptachannelCfg.byChoiceC1sel  =   GPTA_CMPB;
 	tGptachannelCfg.byChoiceC2sel  =   GPTA_CMPB;
-	csi_gpta_channel_config(GPTA0, &tGptachannelCfg,  GPTA_CHANNEL_2);
+	csi_gpta_set_channel(GPTA0, &tGptachannelCfg,  GPTA_CHANNEL_2);
 
-//------------------------------------------------------------------------------------------------------------------------
 	csi_gpta_start(GPTA0);
-//------------------------------------------------------------------------------------------------------------------------
-	 while(1){		
-		  	csi_gpta_change_ch_duty(GPTA0,GPTA_COMPA, 20);
-	        csi_gpta_change_ch_duty(GPTA0,GPTA_COMPB, 20);
-		    mdelay(10);
 
-            csi_gpta_onetimesoftware_output(GPTA0,GPTA_OSTSF1,GPTA_HI);
-            mdelay(2);
-			
-		    csi_gpta_change_ch_duty(GPTA0,GPTA_COMPA, 50);
-	        csi_gpta_change_ch_duty(GPTA0,GPTA_COMPB, 50);
-		    mdelay(10);
-			
-			csi_gpta_aqcsfload_config(GPTA0, GPTA_AQCSF_NOW);
-			csi_gpta_continuous_software_waveform(GPTA0, GPTA_CHANNEL_1, GPTA_AQCSF_L);
-			mdelay(10);
-			csi_gpta_continuous_software_waveform(GPTA0, GPTA_CHANNEL_1, GPTA_AQCSF_NONE);
+	 while(1)
+	{		
+		csi_gpta_change_ch_duty(GPTA0,GPTA_COMPA, 20);
+		csi_gpta_change_ch_duty(GPTA0,GPTA_COMPB, 20);
+		mdelay(10);
+
+		csi_gpta_onetimesoftware_output(GPTA0,GPTA_OSTSF1_MSK,GPTA_HI);
+		mdelay(2);
+		
+		csi_gpta_change_ch_duty(GPTA0,GPTA_COMPA, 50);
+		csi_gpta_change_ch_duty(GPTA0,GPTA_COMPB, 50);
+		mdelay(10);
+		
+		csi_gpta_set_aqcsfload(GPTA0, GPTA_AQCSF_NOW);
+		csi_gpta_continuous_software_waveform(GPTA0, GPTA_CHANNEL_1, GPTA_AQCSF_L);
+		mdelay(10);
+		csi_gpta_continuous_software_waveform(GPTA0, GPTA_CHANNEL_1, GPTA_AQCSF_NONE);
 	}			
     return iRet;
 }
@@ -410,25 +533,25 @@ int gpta_pwm_waveform_demo(void)
 int gpta_reglk_demo(void)
 {
 	int iRet = 0;	
-//------------------------------------------------------------------------------------------------------------------------	
-#if !defined(USE_GUI)	
-	csi_pin_set_mux(PA0, PA0_GPTA0_CHA);						//
-	csi_pin_set_mux(PA1, PA1_GPTA0_CHB);						//
+	
+#if (USE_GUI == 0)		
+	csi_gpio_set_mux(GPIOA, PA0, PA0_GPTA0_CHA);		
+	csi_gpio_set_mux(GPIOA, PA1, PA1_GPTA0_CHB);		
 #endif	
-//------------------------------------------------------------------------------------------------------------------------	
-    csi_gpta_channel_cmpload_config(GPTA0, GPTA_SHDW_SHADOW, GPTA_LDMD_ZRO ,GPTA_COMPA);
-	csi_gpta_channel_cmpload_config(GPTA0, GPTA_SHDW_SHADOW, GPTA_LDMD_ZRO ,GPTA_COMPB);
+	
+    csi_gpta_channel_set_cmpload(GPTA0, GPTA_SHDW_SHADOW, GPTA_LDMD_ZRO ,GPTA_COMPA);
+	csi_gpta_channel_set_cmpload(GPTA0, GPTA_SHDW_SHADOW, GPTA_LDMD_ZRO ,GPTA_COMPB);
 	csi_gpta_pwmconfig_t tPwmCfg;								  
-	tPwmCfg.byWorkmod        = GPTA_WAVE;                        //WAVE  波形模式
-	tPwmCfg.byCountingMode   = GPTA_UPCNT;                     //CNYMD  //计数方向
-	tPwmCfg.byOneshotMode    = GPTA_OP_CONT;                     //OPM    //单次或连续(工作方式)
+	tPwmCfg.byWorkmod        = GPTA_WAVE;                    //WAVE  波形模式
+	tPwmCfg.byCountingMode   = GPTA_UPCNT;                   //CNYMD  //计数方向
+	tPwmCfg.byOneshotMode    = GPTA_OP_CONT;                 //OPM    //单次或连续(工作方式)
 	tPwmCfg.byStartSrc       = GPTA_SYNC;					 //软件使能同步触发使能控制（RSSR中START控制位）//启动方式
-	tPwmCfg.byPscld          = GPTA_LDPSCR_ZRO;                  //PSCR(分频)活动寄存器载入控制。活动寄存器在配置条件满足时，从影子寄存器载入更新值		
-	tPwmCfg.byDutyCycle 	 = 50;								 //pwm ouput duty cycle//PWM初始值(X%)			
-	tPwmCfg.wFreq 			 = 1000;							 //pwm ouput frequency	
-	tPwmCfg.wInt 		 	 = GPTA_INTSRC_CBU;                     //interrupt
+	tPwmCfg.byPscld          = GPTA_LDPSCR_ZRO;              //PSCR(分频)活动寄存器载入控制。活动寄存器在配置条件满足时，从影子寄存器载入更新值		
+	tPwmCfg.byDutyCycle 	 = 50;						     //pwm ouput duty cycle//PWM初始值(X%)			
+	tPwmCfg.wFreq 			 = 1000;					     //pwm ouput frequency	
 	csi_gpta_wave_init(GPTA0, &tPwmCfg);
 	
+	csi_gpta_int_enable(GPTA0, GPTA_INTSRC_CBU);
 
 	csi_gpta_pwmchannel_config_t  tGptachannelCfg;
 	tGptachannelCfg.byActionZro    =   GPTA_LO;
@@ -443,14 +566,13 @@ int gpta_reglk_demo(void)
 	tGptachannelCfg.byActionT2d    =   GPTA_NA;
 	tGptachannelCfg.byChoiceC1sel  =   GPTA_CMPA;
 	tGptachannelCfg.byChoiceC2sel  =   GPTA_CMPA;	
-	csi_gpta_channel_config(GPTA0, &tGptachannelCfg,  GPTA_CHANNEL_1);//channel
+	csi_gpta_set_channel(GPTA0, &tGptachannelCfg,  GPTA_CHANNEL_1);//channel
+	
 	tGptachannelCfg.byChoiceC1sel  =   GPTA_CMPB;
 	tGptachannelCfg.byChoiceC2sel  =   GPTA_CMPB;
-	csi_gpta_channel_config(GPTA0, &tGptachannelCfg,  GPTA_CHANNEL_2);
+	csi_gpta_set_channel(GPTA0, &tGptachannelCfg,  GPTA_CHANNEL_2);
 		
-//----------------------------------------------------------------------------------------------------------------------
-// 0x0 不链接, 0x1 GPTA0 ,0x2 GPTA1 0x3 GPTA2 ,0x4 GPTA3 0x5 GPTB0 ,0x6 GPTB1,0x7 GPTB2 ,0x8 GPTB3 0x9 GPTB4 ,0xA GPTB5 
-//---------------------------------------------------------------------------------------------------------------------- 
+	// 0x0 不链接, 0x1 GPTA0 ,0x2 GPTA1 0x3 GPTA2 ,0x4 GPTA3 
     csi_gpta_feglk_config_t  FEGLKcfg;                                                                    
 	FEGLKcfg.byPrdr	   = 2;                                                             
 	FEGLKcfg.byRssr    = 2;																                   
@@ -464,22 +586,20 @@ int gpta_reglk_demo(void)
 	FEGLKcfg.byAqosf   = 2;																					
 	FEGLKcfg.byAqcsf   = 2;  																				 
     csi_gpta_reglk_config(GPTA0,&FEGLKcfg);
-//------------------------------------------------------------------------------------------------------------------------
-	
-	csi_pin_set_mux(PA2, PA2_GPTA1_CHA);						//
-	csi_pin_set_mux(PA3, PA3_GPTA1_CHB);						//
+
+	csi_gpio_set_mux(GPIOA, PA2, PA2_GPTA1_CHA);						//
+	csi_gpio_set_mux(GPIOA, PA3, PA3_GPTA1_CHB);						//
 							  
-	tPwmCfg.byWorkmod        = GPTA_WAVE;                        //WAVE  波形模式
-	tPwmCfg.byCountingMode   = GPTA_UPCNT;                       //CNYMD  //计数方向
-	tPwmCfg.byOneshotMode    = GPTA_OP_CONT;                     //OPM    //单次或连续(工作方式)
-	tPwmCfg.byStartSrc       = GPTA_SYNC;					 //软件使能同步触发使能控制（RSSR中START控制位）//启动方式
-	tPwmCfg.byPscld          = GPTA_LDPSCR_ZRO;                  //PSCR(分频)活动寄存器载入控制。活动寄存器在配置条件满足时，从影子寄存器载入更新值		
-	tPwmCfg.byDutyCycle 	 = 50;								 //pwm ouput duty cycle//PWM初始值(X%)			
-	tPwmCfg.wFreq 			 = 1000;							 //pwm ouput frequency	
-	tPwmCfg.wInt 		 	 = GPTA_INTSRC_CBU;                     //interrupt
+	tPwmCfg.byWorkmod        = GPTA_WAVE;                     //WAVE  波形模式
+	tPwmCfg.byCountingMode   = GPTA_UPCNT;                    //CNYMD  //计数方向
+	tPwmCfg.byOneshotMode    = GPTA_OP_CONT;                  //OPM    //单次或连续(工作方式)
+	tPwmCfg.byStartSrc       = GPTA_SYNC;					  //软件使能同步触发使能控制（RSSR中START控制位）//启动方式
+	tPwmCfg.byPscld          = GPTA_LDPSCR_ZRO;               //PSCR(分频)活动寄存器载入控制。活动寄存器在配置条件满足时，从影子寄存器载入更新值		
+	tPwmCfg.byDutyCycle 	 = 50;						      //pwm ouput duty cycle//PWM初始值(X%)			
+	tPwmCfg.wFreq 			 = 1000;					      //pwm ouput frequency	
 	csi_gpta_wave_init(GPTA1, &tPwmCfg);
 	
-//------------------------------------------------------------------------------------------------------------------------
+	csi_gpta_int_enable(GPTA1, GPTA_INTSRC_CBU);
 
 	tGptachannelCfg.byActionZro    =   GPTA_LO;
 	tGptachannelCfg.byActionPrd    =   GPTA_NA;
@@ -493,241 +613,22 @@ int gpta_reglk_demo(void)
 	tGptachannelCfg.byActionT2d    =   GPTA_NA;
 	tGptachannelCfg.byChoiceC1sel  =   GPTA_CMPA;
 	tGptachannelCfg.byChoiceC2sel  =   GPTA_CMPA;	
-	csi_gpta_channel_config(GPTA1, &tGptachannelCfg,  GPTA_CHANNEL_1);//channel
+	csi_gpta_set_channel(GPTA1, &tGptachannelCfg,  GPTA_CHANNEL_1);//channel
+	
 	tGptachannelCfg.byChoiceC1sel  =   GPTA_CMPB;
 	tGptachannelCfg.byChoiceC2sel  =   GPTA_CMPB;
-	csi_gpta_channel_config(GPTA1, &tGptachannelCfg,  GPTA_CHANNEL_2);
+	csi_gpta_set_channel(GPTA1, &tGptachannelCfg,  GPTA_CHANNEL_2);
 
 	csi_gpta_start(GPTA1);	
-	while(1){	
-			csi_gpta_change_ch_duty(GPTA1,GPTA_COMPA, 20);
-	        csi_gpta_change_ch_duty(GPTA1,GPTA_COMPB, 20);
-		    mdelay(200);                        
-			csi_gpta_change_ch_duty(GPTA1,GPTA_COMPA, 50);
-	        csi_gpta_change_ch_duty(GPTA1,GPTA_COMPB, 50);
-		    mdelay(200);	
+	while(1)
+	{	
+		csi_gpta_change_ch_duty(GPTA1,GPTA_COMPA, 20);
+		csi_gpta_change_ch_duty(GPTA1,GPTA_COMPB, 20);
+		mdelay(200);                        
+		csi_gpta_change_ch_duty(GPTA1,GPTA_COMPA, 50);
+		csi_gpta_change_ch_duty(GPTA1,GPTA_COMPB, 50);
+		mdelay(200);	
 	}	
 	return iRet;	
-	
 }
 
-
-/** \brief gpta interrupt handle weak function
- *   		- 
- *  \param[in] none
- *  \return    none
- */
-__attribute__((weak)) void gpta_irqhandler0(csp_gpta_t *ptGptaBase)
-{
-
-	if(((csp_gpta_get_misr(ptGptaBase) & GPTA_INT_PEND))==GPTA_INT_PEND)
-	{	
-	    csp_gpta_clr_int(ptGptaBase, GPTA_INT_PEND);
-	}
-	if(((csp_gpta_get_misr(ptGptaBase) & GPTA_INT_TRGEV0))==GPTA_INT_TRGEV0)
-	{		
-	    csp_gpta_clr_int(ptGptaBase, GPTA_INT_TRGEV0);
-	}
-	if(((csp_gpta_get_misr(ptGptaBase) & GPTA_INT_TRGEV1))==GPTA_INT_TRGEV1)
-	{		
-	    csp_gpta_clr_int(ptGptaBase, GPTA_INT_TRGEV1);
-	   	
-	}
-    if(((csp_gpta_get_misr(ptGptaBase) & GPTA_INT_CAPLD0))==GPTA_INT_CAPLD0)
-	{		
-		s_wGptaCapBuff[0]=csp_gpta_get_cmpa(ptGptaBase);
-		csp_gpta_clr_int(ptGptaBase, GPTA_INT_CAPLD0);			
-	}
-	if(((csp_gpta_get_misr(ptGptaBase) & GPTA_INT_CAPLD1))==GPTA_INT_CAPLD1)
-	{		
-     	s_wGptaCapBuff[0]=csp_gpta_get_cmpa(ptGptaBase);
-		s_wGptaCapBuff[1]=csp_gpta_get_cmpb(ptGptaBase);
-		csp_gpta_clr_int(ptGptaBase, GPTA_INT_CAPLD1);			
-	}
-    if(((csp_gpta_get_misr(ptGptaBase) & GPTA_INT_CAPLD2))==GPTA_INT_CAPLD2)
-	{		
-     	s_wGptaCapBuff[0]=csp_gpta_get_cmpa(ptGptaBase);
-		s_wGptaCapBuff[1]=csp_gpta_get_cmpb(ptGptaBase);
-		s_wGptaCapBuff[2]=csp_gpta_get_cmpaa(ptGptaBase);
-		csp_gpta_clr_int(ptGptaBase, GPTA_INT_CAPLD2);			
-	}
-	if(((csp_gpta_get_misr(ptGptaBase) & GPTA_INT_CAPLD3))==GPTA_INT_CAPLD3)
-	{		
-     	s_wGptaCapBuff[0]=csp_gpta_get_cmpa(ptGptaBase);
-		s_wGptaCapBuff[1]=csp_gpta_get_cmpb(ptGptaBase);
-		s_wGptaCapBuff[2]=csp_gpta_get_cmpaa(ptGptaBase);
-		s_wGptaCapBuff[3]=csp_gpta_get_cmpba(ptGptaBase);
-		csp_gpta_clr_int(ptGptaBase, GPTA_INT_CAPLD3);			
-	}	
-	
-    if(((csp_gpta_get_misr(ptGptaBase) & GPTA_INT_CBU))==GPTA_INT_CBU)
-	{	
-	    csp_gpta_clr_int(ptGptaBase, GPTA_INT_CBU);
-	}
-
-}
-
-/** \brief gpta interrupt handle weak function
- *   		- 
- *  \param[in] none
- *  \return    none
- */
-__attribute__((weak)) void gpta_irqhandler1(csp_gpta_t *ptGptaBase)
-{
-
-	if(((csp_gpta_get_misr(ptGptaBase) & GPTA_INT_PEND))==GPTA_INT_PEND)
-	{	
-	    csp_gpta_clr_int(ptGptaBase, GPTA_INT_PEND);
-	}
-	if(((csp_gpta_get_misr(ptGptaBase) & GPTA_INT_TRGEV0))==GPTA_INT_TRGEV0)
-	{		
-	    csp_gpta_clr_int(ptGptaBase, GPTA_INT_TRGEV0);
-	}
-	if(((csp_gpta_get_misr(ptGptaBase) & GPTA_INT_TRGEV1))==GPTA_INT_TRGEV1)
-	{		
-	    csp_gpta_clr_int(ptGptaBase, GPTA_INT_TRGEV1);
-	   	
-	}
-    if(((csp_gpta_get_misr(ptGptaBase) & GPTA_INT_CAPLD0))==GPTA_INT_CAPLD0)
-	{		
-		s_wGptaCapBuff[0]=csp_gpta_get_cmpa(ptGptaBase);
-		csp_gpta_clr_int(ptGptaBase, GPTA_INT_CAPLD0);			
-	}
-	if(((csp_gpta_get_misr(ptGptaBase) & GPTA_INT_CAPLD1))==GPTA_INT_CAPLD1)
-	{		
-     	s_wGptaCapBuff[0]=csp_gpta_get_cmpa(ptGptaBase);
-		s_wGptaCapBuff[1]=csp_gpta_get_cmpb(ptGptaBase);
-		csp_gpta_clr_int(ptGptaBase, GPTA_INT_CAPLD1);			
-	}
-    if(((csp_gpta_get_misr(ptGptaBase) & GPTA_INT_CAPLD2))==GPTA_INT_CAPLD2)
-	{		
-     	s_wGptaCapBuff[0]=csp_gpta_get_cmpa(ptGptaBase);
-		s_wGptaCapBuff[1]=csp_gpta_get_cmpb(ptGptaBase);
-		s_wGptaCapBuff[2]=csp_gpta_get_cmpaa(ptGptaBase);
-		csp_gpta_clr_int(ptGptaBase, GPTA_INT_CAPLD2);			
-	}
-	if(((csp_gpta_get_misr(ptGptaBase) & GPTA_INT_CAPLD3))==GPTA_INT_CAPLD3)
-	{		
-     	s_wGptaCapBuff[0]=csp_gpta_get_cmpa(ptGptaBase);
-		s_wGptaCapBuff[1]=csp_gpta_get_cmpb(ptGptaBase);
-		s_wGptaCapBuff[2]=csp_gpta_get_cmpaa(ptGptaBase);
-		s_wGptaCapBuff[3]=csp_gpta_get_cmpba(ptGptaBase);
-		csp_gpta_clr_int(ptGptaBase, GPTA_INT_CAPLD3);			
-	}	
-	
-    if(((csp_gpta_get_misr(ptGptaBase) & GPTA_INT_CBU))==GPTA_INT_CBU)
-	{	
-	    csp_gpta_clr_int(ptGptaBase, GPTA_INT_CBU);
-	}
-
-}
-
-/** \brief gpta interrupt handle weak function
- *   		- 
- *  \param[in] none
- *  \return    none
- */
-__attribute__((weak)) void gpta_irqhandler2(csp_gpta_t *ptGptaBase)
-{
-
-	if(((csp_gpta_get_misr(ptGptaBase) & GPTA_INT_PEND))==GPTA_INT_PEND)
-	{	
-	    csp_gpta_clr_int(ptGptaBase, GPTA_INT_PEND);
-	}
-	if(((csp_gpta_get_misr(ptGptaBase) & GPTA_INT_TRGEV0))==GPTA_INT_TRGEV0)
-	{		
-	    csp_gpta_clr_int(ptGptaBase, GPTA_INT_TRGEV0);
-	}
-	if(((csp_gpta_get_misr(ptGptaBase) & GPTA_INT_TRGEV1))==GPTA_INT_TRGEV1)
-	{		
-	    csp_gpta_clr_int(ptGptaBase, GPTA_INT_TRGEV1);
-	   	
-	}
-    if(((csp_gpta_get_misr(ptGptaBase) & GPTA_INT_CAPLD0))==GPTA_INT_CAPLD0)
-	{		
-		s_wGptaCapBuff[0]=csp_gpta_get_cmpa(ptGptaBase);
-		csp_gpta_clr_int(ptGptaBase, GPTA_INT_CAPLD0);			
-	}
-	if(((csp_gpta_get_misr(ptGptaBase) & GPTA_INT_CAPLD1))==GPTA_INT_CAPLD1)
-	{		
-     	s_wGptaCapBuff[0]=csp_gpta_get_cmpa(ptGptaBase);
-		s_wGptaCapBuff[1]=csp_gpta_get_cmpb(ptGptaBase);
-		csp_gpta_clr_int(ptGptaBase, GPTA_INT_CAPLD1);			
-	}
-    if(((csp_gpta_get_misr(ptGptaBase) & GPTA_INT_CAPLD2))==GPTA_INT_CAPLD2)
-	{		
-     	s_wGptaCapBuff[0]=csp_gpta_get_cmpa(ptGptaBase);
-		s_wGptaCapBuff[1]=csp_gpta_get_cmpb(ptGptaBase);
-		s_wGptaCapBuff[2]=csp_gpta_get_cmpaa(ptGptaBase);
-		csp_gpta_clr_int(ptGptaBase, GPTA_INT_CAPLD2);			
-	}
-	if(((csp_gpta_get_misr(ptGptaBase) & GPTA_INT_CAPLD3))==GPTA_INT_CAPLD3)
-	{		
-     	s_wGptaCapBuff[0]=csp_gpta_get_cmpa(ptGptaBase);
-		s_wGptaCapBuff[1]=csp_gpta_get_cmpb(ptGptaBase);
-		s_wGptaCapBuff[2]=csp_gpta_get_cmpaa(ptGptaBase);
-		s_wGptaCapBuff[3]=csp_gpta_get_cmpba(ptGptaBase);
-		csp_gpta_clr_int(ptGptaBase, GPTA_INT_CAPLD3);			
-	}	
-	
-    if(((csp_gpta_get_misr(ptGptaBase) & GPTA_INT_CBU))==GPTA_INT_CBU)
-	{	
-	    csp_gpta_clr_int(ptGptaBase, GPTA_INT_CBU);
-	}
-
-}
-
-/** \brief gpta interrupt handle weak function
- *   		- 
- *  \param[in] none
- *  \return    none
- */
-__attribute__((weak)) void gpta_irqhandler3(csp_gpta_t *ptGptaBase)
-{
-
-	if(((csp_gpta_get_misr(ptGptaBase) & GPTA_INT_PEND))==GPTA_INT_PEND)
-	{	
-	    csp_gpta_clr_int(ptGptaBase, GPTA_INT_PEND);
-	}
-	if(((csp_gpta_get_misr(ptGptaBase) & GPTA_INT_TRGEV0))==GPTA_INT_TRGEV0)
-	{		
-	    csp_gpta_clr_int(ptGptaBase, GPTA_INT_TRGEV0);
-	}
-	if(((csp_gpta_get_misr(ptGptaBase) & GPTA_INT_TRGEV1))==GPTA_INT_TRGEV1)
-	{		
-	    csp_gpta_clr_int(ptGptaBase, GPTA_INT_TRGEV1);
-	   	
-	}
-    if(((csp_gpta_get_misr(ptGptaBase) & GPTA_INT_CAPLD0))==GPTA_INT_CAPLD0)
-	{		
-		s_wGptaCapBuff[0]=csp_gpta_get_cmpa(ptGptaBase);
-		csp_gpta_clr_int(ptGptaBase, GPTA_INT_CAPLD0);			
-	}
-	if(((csp_gpta_get_misr(ptGptaBase) & GPTA_INT_CAPLD1))==GPTA_INT_CAPLD1)
-	{		
-     	s_wGptaCapBuff[0]=csp_gpta_get_cmpa(ptGptaBase);
-		s_wGptaCapBuff[1]=csp_gpta_get_cmpb(ptGptaBase);
-		csp_gpta_clr_int(ptGptaBase, GPTA_INT_CAPLD1);			
-	}
-    if(((csp_gpta_get_misr(ptGptaBase) & GPTA_INT_CAPLD2))==GPTA_INT_CAPLD2)
-	{		
-     	s_wGptaCapBuff[0]=csp_gpta_get_cmpa(ptGptaBase);
-		s_wGptaCapBuff[1]=csp_gpta_get_cmpb(ptGptaBase);
-		s_wGptaCapBuff[2]=csp_gpta_get_cmpaa(ptGptaBase);
-		csp_gpta_clr_int(ptGptaBase, GPTA_INT_CAPLD2);			
-	}
-	if(((csp_gpta_get_misr(ptGptaBase) & GPTA_INT_CAPLD3))==GPTA_INT_CAPLD3)
-	{		
-     	s_wGptaCapBuff[0]=csp_gpta_get_cmpa(ptGptaBase);
-		s_wGptaCapBuff[1]=csp_gpta_get_cmpb(ptGptaBase);
-		s_wGptaCapBuff[2]=csp_gpta_get_cmpaa(ptGptaBase);
-		s_wGptaCapBuff[3]=csp_gpta_get_cmpba(ptGptaBase);
-		csp_gpta_clr_int(ptGptaBase, GPTA_INT_CAPLD3);			
-	}	
-	
-    if(((csp_gpta_get_misr(ptGptaBase) & GPTA_INT_CBU))==GPTA_INT_CBU)
-	{	
-	    csp_gpta_clr_int(ptGptaBase, GPTA_INT_CBU);
-	}
-
-}

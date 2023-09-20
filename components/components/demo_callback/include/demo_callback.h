@@ -123,16 +123,11 @@ extern int spi_etcb_dma_send_demo(void);
 extern int spi_etcb_dma_send_receive_demo(void);
 
 //cmp demo
-extern int cmp_base_callback_demo(void);
+extern int cmp_base_int_callback_demo(void);
 
 //gpta demo
-extern int gpta_timer_demo(void);
-extern int gpta_capture_sync_demo0(void);
-extern int gpta_capture_sync_demo1(void);
-extern int gpta_capture_sync_demo2(void);
-extern int gpta_pwm_demo(void);
-extern int gpta_pwm_waveform_demo(void);
-extern int gpta_reglk_demo(void);
+extern int gpta_timer_int_callback_demo(void);
+extern int gpta_capture_sync_int_callback_demo0(void);
 
 //gptb demo
 extern int gptb_timer_demo(void);
