@@ -32,8 +32,8 @@ void user_demo(void)
 ///  通过PA02输出系统时钟，主要用于调试。
 ///  同时示例管脚功能配置的方法。
 /// ***************************************************	
-//	csi_pin_set_mux(PA2, PA2_CLO);
-//	csi_clo_config(CLO_HCLK, CLO_DIV2);
+//	csi_gpio_set_mux(GPIOA, PA2, PA2_CLO);
+//	csi_clo_config(CLO_HCLK, CLO_DIV16);
 	
 /// ***************************************************
 ///  系统可靠性相关的示例代码
@@ -179,7 +179,7 @@ void user_demo(void)
 //	usart_send_int_callback_demo();	
 //	usart_receive_int_callback_demo();
 	
-	lin_send_demo();        
+//	lin_send_demo();        
 //	lin_send_recv_demo();
 
 //	lin_send_callback_demo();

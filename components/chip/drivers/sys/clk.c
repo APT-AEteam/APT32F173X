@@ -69,12 +69,15 @@ void csi_clk_disable(uint32_t *pIpBase)
  */
 csi_error_t csi_emosc_enable(uint32_t wFreq)
 {
+	csp_em_flt_sel(SYSCON,EM_FLT_10NS);	//	filter <10ns pulse
+	csp_em_flt_enable(SYSCON);			//  enable filter
+	
 	if (wFreq > 20000000)
 		csp_set_em_gain(SYSCON, 0x1f);
 	else
 		csp_set_em_gain(SYSCON, 0x7);
 		
-	SYSCON->GCER = EMOSC;
+	csp_src_clk_enable(SYSCON,CLK_EMOSC);
 	//wait for EMOSC to stable
 	while(!(csp_get_ckst(SYSCON)& EMOSC));
 	return CSI_OK;
@@ -89,11 +92,11 @@ csi_error_t csi_emosc_enable(uint32_t wFreq)
  */
 csi_error_t csi_emosc_disable(void)
 {
-	if ((SYSCON->SCLKCR & SYSCLK_SRC_MSK) == SC_EMOSC)
+	if (csp_get_clksrc(SYSCON) == SC_EMOSC) //sysclk is EM?
 		return CSI_ERROR;
 	else
 	{
-		SYSCON->GCDR = EMOSC;
+		csp_src_clk_disable(SYSCON,CLK_EMOSC);
 		return CSI_OK;
 	}
 }
@@ -105,13 +108,13 @@ csi_error_t csi_emosc_disable(void)
  *  \param[in] none
  *  \return csi_error_t
  */
-csi_error_t csi_esosc_enable(uint32_t wFreq)
+//csi_error_t csi_esosc_enable(uint32_t wFreq
+csi_error_t csi_esosc_enable(void)
 {
 	csp_set_es_gain(SYSCON, 0x7);
 	
-
-	SYSCON->GCER = ESOSC;
-	//wait for EMOSC to stable
+	csp_src_clk_enable(SYSCON,CLK_ESOSC);
+	//wait for ESOSC to stable
 	while(!(csp_get_ckst(SYSCON)& ESOSC));
 	return CSI_OK;
 }
@@ -125,11 +128,11 @@ csi_error_t csi_esosc_enable(uint32_t wFreq)
  */
 csi_error_t csi_esosc_disable(void)
 {
-	if ((SYSCON->SCLKCR & SYSCLK_SRC_MSK) == SC_ESOSC)
+	if (csp_get_clksrc(SYSCON) == SC_ESOSC)
 		return CSI_ERROR;
 	else
 	{
-		SYSCON->GCDR = ESOSC;
+		csp_src_clk_disable(SYSCON,CLK_ESOSC);
 		return CSI_OK;
 	}
 }
@@ -147,7 +150,7 @@ csi_error_t csi_esosc_disable(void)
 csi_error_t csi_imosc_enable(uint8_t byFre)
 {
 	csp_set_imosc_fre(SYSCON, byFre);
-	SYSCON->GCER = IMOSC;
+	csp_src_clk_enable(SYSCON,CLK_IMOSC);
 	//wait for IMOSC to stable
 	while(!(csp_get_ckst(SYSCON)& IMOSC));
 	return CSI_OK;
@@ -162,10 +165,10 @@ csi_error_t csi_imosc_enable(uint8_t byFre)
  */
 csi_error_t csi_imosc_disable(void)
 {
-	if ((SYSCON->SCLKCR & SYSCLK_SRC_MSK) == SC_IMOSC)
+	if (csp_get_clksrc(SYSCON) == SC_IMOSC)
 		return CSI_ERROR;
 	else{
-		SYSCON->GCDR = IMOSC;
+		csp_src_clk_disable(SYSCON,CLK_IMOSC);
 		return CSI_OK;
 	}
 }
@@ -183,7 +186,8 @@ csi_error_t csi_imosc_disable(void)
 csi_error_t csi_hfosc_enable(uint8_t byFre)
 {
 	csp_set_hfosc_fre(SYSCON, byFre);	
-	SYSCON->GCER = HFOSC;
+	
+	csp_src_clk_enable(SYSCON,CLK_HFOSC);
 	//wait for HFOSC to stable
 	while(!(csp_get_ckst(SYSCON)& HFOSC));
 	return CSI_OK;
@@ -198,11 +202,11 @@ csi_error_t csi_hfosc_enable(uint8_t byFre)
  */
 csi_error_t csi_hfosc_disable(void)
 {
-	if ((SYSCON->SCLKCR & SYSCLK_SRC_MSK) == SC_HFOSC)
+	if (csp_get_clksrc(SYSCON) == SC_HFOSC)
 		return CSI_ERROR;
 	else
 	{
-		SYSCON->GCDR = HFOSC;
+		csp_src_clk_disable(SYSCON,CLK_HFOSC);
 		return CSI_OK;
 	}
 }
@@ -216,7 +220,7 @@ csi_error_t csi_hfosc_disable(void)
  */
 csi_error_t csi_isosc_enable(void)
 {
-	SYSCON->GCER = ISOSC;
+	csp_src_clk_enable(SYSCON,CLK_ISOSC);
 	//wait for ISOSC to stable
 	while(!(csp_get_ckst(SYSCON)& ISOSC));
 	return CSI_OK;
@@ -231,11 +235,11 @@ csi_error_t csi_isosc_enable(void)
  */
 csi_error_t csi_isosc_disable(void)
 {
-	if((SYSCON->SCLKCR & SYSCLK_SRC_MSK) == SC_ISOSC || csp_iwdt_rd_st(SYSCON))
+	if(csp_get_clksrc(SYSCON) == SC_ISOSC || csp_iwdt_rd_st(SYSCON))
 		return CSI_ERROR;
 	else 
 	{
-		SYSCON->GCDR = ISOSC;
+		csp_src_clk_disable(SYSCON,CLK_ISOSC);
 		return CSI_OK;
 	}	
 }
@@ -249,7 +253,7 @@ csi_error_t csi_isosc_disable(void)
  */
 csi_error_t csi_pll_enable(void)
 {
-	SYSCON->GCER = PLL;
+	csp_src_clk_enable(SYSCON,CLK_PLL);
 	while(!(csp_get_ckst(SYSCON)& PLL));
 	return CSI_OK;
 }
@@ -263,11 +267,11 @@ csi_error_t csi_pll_enable(void)
  */
 csi_error_t csi_pll_disable(void)
 {
-	if((SYSCON->SCLKCR & SYSCLK_SRC_MSK) == SC_PLL)
+	if(csp_get_clksrc(SYSCON) == SC_PLL)
 		return CSI_ERROR;
 	else 
 	{
-		SYSCON->GCDR = PLL;
+		csp_src_clk_disable(SYSCON,CLK_PLL);
 		return CSI_OK;
 	}	
 }

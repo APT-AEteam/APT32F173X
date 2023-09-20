@@ -59,7 +59,7 @@ static uint32_t apt_get_lpt_clk(csi_lpt_clksrc_e eClk)
 			wLptClk = EMOSC_VALUE;
 			break;
 		case (LPT_CLK_ESCLK): 
-			csi_esosc_enable(ESOSC_VALUE);
+			csi_esosc_enable();
 			wLptClk = ESOSC_VALUE;
 			break;
 
@@ -512,7 +512,7 @@ csi_error_t csi_lpt_start_sync(csp_lpt_t *ptLptBase, csi_lpt_clksrc_e eClk, uint
 /** \brief lpt sync config  
  * 
  *  \param[in] ptLptBase:pointer of lpt register structure
- *  \param[in] eSync: select sync ç”¨æžšä¸¾
+ *  \param[in] eSync: select sync ÓÃÃ¶¾Ù
  *  \param[in] eSyncMode: LPT_TRG_CONT/LPT_TRG_ONCE
  *  \param[in] bARearmEnable: auto rearm enable/disable
  *  \return error code \ref csi_error_t

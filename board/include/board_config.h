@@ -53,10 +53,22 @@ extern "C" {
 #define CONSOLE_RXD_FUNC        PA3_UART1_RX
 #define CONSOLE_PORT     		(GPIOA)
 
+//emosc pin
+#define XIN_PORT				GPIOD
 #define XIN_PIN					PD0
+#define XIN_PIN_FUNC			PD0_XIN
+#define XOUT_PORT				GPIOD
 #define XOUT_PIN				PD1
-#define XIN_PIN_FUNC			PD0
-#define XOUT_PIN_FUNC			PD1
+#define XOUT_PIN_FUNC			PD1_XOUT
+
+//esosc pin
+#define SXIN_PORT				GPIOC
+#define SXIN_PIN				PC14
+#define SXIN_PIN_FUNC			PC14_SXIN
+#define SXOUT_PORT				GPIOC
+#define SXOUT_PIN				PC15
+#define SXOUT_PIN_FUNC			PC15_SXOUT
+
 
 //csi interrupt user callback enable: 1/0 = ENABLE/DISABLE
 //csi库函数中断支持回调函数，通过宏USE_XXX_CALLBACK来实现次功能选择，若使能需用
@@ -74,7 +86,6 @@ extern "C" {
 #define USE_I2C_CALLBACK		1		//IIC(0)
 #define USE_LPT_CALLBACK		1		//LPT(0)
 #define USE_WWDT_CALLBACK		1		//WWDT(0)
-
 //csi GUI Handling Enable, 1/0(OPEN/CLOSE)
 //可视化编程，通过宏USE_GUI来实现功能选择
 #define USE_GUI					0						

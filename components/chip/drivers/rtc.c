@@ -56,7 +56,7 @@ void csi_rtc_init(csp_rtc_t *ptRtc, csi_rtc_config_t *tConfig)
 			hwDivs = 269;
 			break;
 		case (RTC_ESOSC):
-			csi_esosc_enable(ESOSC_VALUE);
+			csi_esosc_enable();
 			byDiva = 3;
 			hwDivs = 4095;
 //			hwDivs = 1;

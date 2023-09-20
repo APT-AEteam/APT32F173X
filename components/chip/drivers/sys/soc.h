@@ -30,6 +30,10 @@ extern "C" {
 #define EMOSC_32K_VALUE		32000U
 #endif
 
+#ifndef EMOSC_24M_VALUE
+#define EMOSC_24M_VALUE		24000000U
+#endif
+
 #ifndef IMOSC_5M_VALUE
 #define IMOSC_5M_VALUE		5556000U
 #endif
