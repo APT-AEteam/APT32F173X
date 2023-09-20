@@ -9,7 +9,7 @@
  * *********************************************************************
 */
 
-#include <drv/crc.h>
+#include "drv/crc.h"
 
 
 /** \brief       Initialize CRC Interface. 1. Initializes the resources needed for the CRC interface 

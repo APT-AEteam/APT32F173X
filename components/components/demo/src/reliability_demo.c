@@ -10,8 +10,7 @@
 */
 
 /* include ----------------------------------------------------------------*/
-#include "reliability.h"
-#include "pin.h"
+#include "csi_drv.h"
 #include "iostring.h"
 #include "board_config.h"
 

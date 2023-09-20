@@ -10,19 +10,9 @@
 */
 
 /* include ----------------------------------------------------------------*/
-#include <drv/pm.h>
-#include <drv/pin.h>
-#include <drv/rtc.h>
-#include <drv/lpt.h>
-#include <drv/irq.h>
-#include <drv/iwdt.h>
-#include <drv/tick.h>
-#include <drv/common.h> 
-#include <drv/reliability.h>
 
-#include "demo.h"
+#include "csi_drv.h"
 #include "iostring.h"
-#include "csp_syscon.h"
 #include "board_config.h"
 
 

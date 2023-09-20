@@ -10,8 +10,10 @@
  * </table>
  * *********************************************************************
 */
-#include <drv/clk.h>
+
 #include "csp.h"
+#include "drv/clk.h"
+
 
 extern csi_clkmap_t g_tClkMap[];
 

@@ -13,7 +13,7 @@
 #include "drv/lin.h"
 #include "drv/tick.h"
 #include "drv/usart.h"
-#include "csp_usart.h"
+
 
 /* LIN ID introduction------------------------------------------------*/
 //Frame ID: 0x00-0x3B, 信号携带帧，包含：无条件/事件触发/偶发帧
