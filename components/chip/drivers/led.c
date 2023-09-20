@@ -1,6 +1,6 @@
 /***********************************************************************//** 
  * \file  led.c
- * \brief  CRC driver
+ * \brief  LED driver
  * \copyright Copyright (C) 2015-2020 @ APTCHIP
  * <table>
  * <tr><th> Date  <th>Version  <th>Author  <th>Description
@@ -33,7 +33,7 @@ csi_error_t csi_led_init(csp_led_t *ptLedBase, csi_led_config_t *ptLedCfg)
 {
 	csi_clk_enable((uint32_t *)ptLedBase);	
 	csi_led_set_bright(ptLedBase, ptLedCfg->eBrt);
-	csp_led_set_clk(ptLedBase, (led_ledclk_e)(ptLedCfg->eClkDiv));
+	csp_led_set_clk(ptLedBase, (led_clkdiv_e)(ptLedCfg->eClkDiv));
 	csp_led_set_commask(ptLedBase, (ptLedCfg->hwComMask & 0x3ff));
 	if(ptLedCfg->hwOnTime > 2096 || ptLedCfg->hwBreakTime > 524)
 		return CSI_ERROR;
@@ -42,8 +42,8 @@ csi_error_t csi_led_init(csp_led_t *ptLedBase, csi_led_config_t *ptLedCfg)
 	
 	return CSI_OK;
 }
-
-/** \brief   led bright control
+//////
+/** \brief   led bright set
  * 
  *  \param[in] ptLedBase: pointer of LED register structure
  *  \param[in] eBrt:	LED bright control \ref csi_led_brt_e
@@ -92,11 +92,11 @@ void csi_led_set_data(csp_led_t *ptLedBase, uint8_t byCom, uint8_t byData)
 /** \brief  led blink control
  * 
  * \param[in] ptLedBase: pointer of LED register structure
- * \param[in] eLedBlk: blink on or blink off \ref csi_led_intsrc_e
+ * \param[in] eLedBlk: blink on or blink off \ref csi_led_blk_e
  * \param[in] hwOnMsk: on pattern
  * \return  None
  */
-void csi_led_blink_control(csp_led_t *ptLedBase, csi_led_blk_e eLedBlk, uint16_t hwOnMsk)
+void csi_led_set_blink(csp_led_t *ptLedBase, csi_led_blk_e eLedBlk, uint16_t hwOnMsk)
 {
 	if(eLedBlk == LED_BLK_ON)
 		csp_led_com_on(ptLedBase, (hwOnMsk & LED_BLK_MSK));

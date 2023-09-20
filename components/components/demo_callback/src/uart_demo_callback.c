@@ -4,7 +4,8 @@
  * \copyright Copyright (C) 2015-2023 @ APTCHIP
  * <table>
  * <tr><th> Date  <th>Version  <th>Author  <th>Description
- * <tr><td> 2023-9-12 <td>V0.0 <td>ZJY     <td>initial
+ * <tr><td> 2020-7-12 <td>V0.0 <td>ZJY     <td>initial
+ * <tr><td> 2023-9-19 <td>V0.1 <td>ZJY     <td>initial
  * </table>
  * *********************************************************************
 */
@@ -17,10 +18,10 @@
 /* Private macro-----------------------------------------------------------*/
 /* Private variablesr------------------------------------------------------*/
 
-#if (USE_BT_CALLBACK == 1)	
+#if (USE_UART_CALLBACK == 1)	
 
-uint8_t byRecvBuf[128]={0};			//receive buf
-uint8_t bySendBuf[30]={1,2,3,4,5,6,7,8,9,21,22,23,24,25,26,27,28,29,30,10,11,12,13,14,15,16,17,18,19};
+static uint8_t s_byRecvBuf[128]={0};			//receive buf
+static uint8_t s_bySendBuf[30]={1,2,3,4,5,6,7,8,9,21,22,23,24,25,26,27,28,29,30,10,11,12,13,14,15,16,17,18,19};
 
 
 /** \brief  user_send_callback：串口中断发送回调函数
@@ -28,7 +29,7 @@ uint8_t bySendBuf[30]={1,2,3,4,5,6,7,8,9,21,22,23,24,25,26,27,28,29,30,10,11,12,
  * 	\brief	用户定义，使用csi标准库进行中断发送时，发送完毕后回自动调用用户注册的回调函数；用户可在回调
  * 			函数里做自己的处理，而不需要关注具体的底层中断处理。
  * 		
- *  \param[out] ptUartBase: UARTx寄存器结构体指针，指向UARTx的基地址 
+ *  \param[in] ptUartBase: UARTx寄存器结构体指针，指向UARTx的基地址 
  *  \return none
  */
 static void	user_send_callback(csp_uart_t *ptUartBase)
@@ -48,7 +49,6 @@ static void	user_send_callback(csp_uart_t *ptUartBase)
 int uart_send_int_callback_demo(void)
 {
 	int iRet = 0;
-	uint8_t bySendBuf[30]={1,2,3,4,5,6,7,8,9,21,22,23,24,25,26,27,28,29,30,10,11,12,13,14,15,16,17,18,19};
 	csi_uart_config_t tUartConfig;						//UART1 参数配置结构体
 	
 #if (USE_GUI == 0)		
@@ -69,7 +69,7 @@ int uart_send_int_callback_demo(void)
 	//使用中断方式发送，若要知道是否发送完成可使用回调函数
 	while(1)
 	{
-		csi_uart_send_int(UART1,(void *)bySendBuf,28);	//采用中断方式
+		csi_uart_send_int(UART1,(void *)s_bySendBuf,28);//采用中断方式
 		mdelay(200);
 	}
 	
@@ -92,7 +92,7 @@ int uart_send_int_callback_demo(void)
  * @ 注意：				实际使用中，两种接收方式请选择一种，若选择了指定长度，回调函数UART_STATE_RX_TO事件
  * 						请不要做处理(接收清零)，否则会导致指定长度接收数据异常。
  * 
- *  \param[out] ptUartBase: UARTx寄存器结构体指针，指向UARTx的基地址 
+ *  \param[in]  ptUartBase: UARTx寄存器结构体指针，指向UARTx的基地址 
  *  \param[out] eState: 	接收状态，支持定长和超时两种方式
  *  \param[out] pbyBuf: 	接收buf，指向接收数据缓存数组首地址
  *  \param[out] hwLen: 		接收长度，
@@ -157,7 +157,7 @@ int uart_receive_int_callback_demo(void)
 	
 	//指定长度接收
 	//接收到16个字节数据时，会自动调用uart1_recv_callback，用户可在UART_STATE_RX_DNE状态中做处理
-	csi_uart_receive_int(UART1, byRecvBuf, 16);		//开启接收，指定接收数据长度和数据接收buf,并开启接收FIFO和接收超时中断
+	csi_uart_receive_int(UART1, s_byRecvBuf, 16);	//开启接收，指定接收数据长度和数据接收buf,并开启接收FIFO和接收超时中断
 	
 	
 	//动态长度接收

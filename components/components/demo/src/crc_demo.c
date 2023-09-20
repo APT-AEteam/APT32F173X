@@ -9,12 +9,10 @@
  * </table>
  * *********************************************************************
 */
-#include <string.h>
-#include <drv/bt.h>
-#include <drv/pin.h>
+
+#include "csi_drv.h"
 #include "iostring.h"
-#include "demo.h"
-#include "crc.h"
+
 
 
 /* private function--------------------------------------------------------*/

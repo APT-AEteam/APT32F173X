@@ -411,7 +411,7 @@ void csi_iic_irqhandler(csp_iic_t *ptIicBase, uint8_t byIdx)
  */ 
 void csi_iic_int_enable(csp_iic_t *ptIicBase, csi_iic_intsrc_e eIntSrc)
 {
-	csp_iic_clr_isr(ptIicBase,(iic_int_e)IIC_INTSRC_ALL);
+	csp_iic_clr_isr(ptIicBase,(iic_int_e)eIntSrc);
 	csp_iic_int_enable(ptIicBase, (iic_int_e)eIntSrc);
 }
 

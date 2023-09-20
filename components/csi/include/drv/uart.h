@@ -315,7 +315,7 @@ csi_error_t csi_uart_send_int(csp_uart_t *ptUartBase, const void *pData, uint16_
   \param[in]   eDmaMode		ctx dma mode, \ref csi_uart_dma_md_e
   \return  	   none
  */
-void csi_uart_set_txdma(csp_uart_t *ptUartBase, csi_uart_dma_md_e eDmaMode);
+void csi_uart_set_send_dma(csp_uart_t *ptUartBase, csi_uart_dma_md_e eDmaMode);
 
 /** 
   \brief 	   set uart rx dma mode and enable
@@ -323,7 +323,7 @@ void csi_uart_set_txdma(csp_uart_t *ptUartBase, csi_uart_dma_md_e eDmaMode);
   \param[in]   eDmaMode		rx dma mode, \ref csi_uart_dma_md_e
   \return  	   none
  */
-void csi_uart_set_rxdma(csp_uart_t *ptUartBase, csi_uart_dma_md_e eDmaMode);
+void csi_uart_set_receive_dma(csp_uart_t *ptUartBase, csi_uart_dma_md_e eDmaMode);
 
 /** 
   \brief 	   send data from uart, this function is dma mode

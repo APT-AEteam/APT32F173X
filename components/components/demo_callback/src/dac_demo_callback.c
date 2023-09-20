@@ -44,11 +44,11 @@ void dac_callback(csp_dac_t *ptDacBase, uint8_t byIsr)
 int dac_callback_demo(void)
 {
 	int iRet = 0;
+	csi_dac_config_t tDacConfig;
 
 	//dac 输出管脚配置
 	csi_gpio_set_mux(GPIOA,PA4,PA4_DAC0_OUT);	
 	//dac 参数配置初始化
-	csi_dac_config_t tDacConfig;
 	tDacConfig.byClkDiv 	= 0x02;				//DAC clk两分频：FCK = FHCLK / 2
 	tDacConfig.bRefsel	 	= DISABLE;			//DAC 参考电平选择
 	tDacConfig.hwDatarset 	= 0x00;				//DAC 电平码值设置

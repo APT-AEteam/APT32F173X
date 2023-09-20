@@ -39,9 +39,9 @@ typedef enum
  */
 typedef enum
 {
-	ADC_HFOSC		= 0,		//HFOSC
-	ADC_PLLQ,			        //PLLQ	
-    ADC_PCLK                    //PCLK
+	ADC_CLK_HFOSC		= 0,		//HFOSC
+	ADC_CLK_PLLQ,			        //PLLQ	
+    ADC_CLK_PCLK                    //PCLK
 }csi_adc_clksel_e;
 /**
  * \enum	csi_adc_state_e
@@ -228,30 +228,30 @@ typedef enum{
  * \brief   adc event trigger out source
  */
 typedef enum{
-	ADC_TRGSRC_NONE		= 0,
-	ADC_TRGSRC_EOC,		
-	ADC_TRGSRC_READY,	
-	ADC_TRGSRC_OVR,	
-	ADC_TRGSRC_CMP0H,		
-	ADC_TRGSRC_CMP0L,		
-	ADC_TRGSRC_CMP1H,		
-	ADC_TRGSRC_CMP1L,	
-	ADC_TRGSRC_SEQEND0,	
-	ADC_TRGSRC_SEQEND1,
-	ADC_TRGSRC_SEQEND2,	
-	ADC_TRGSRC_SEQEND3,
-	ADC_TRGSRC_SEQEND4,	
-	ADC_TRGSRC_SEQEND5,
-	ADC_TRGSRC_SEQEND6,	
-	ADC_TRGSRC_SEQEND7,
-	ADC_TRGSRC_SEQEND8,	
-	ADC_TRGSRC_SEQEND9,
-	ADC_TRGSRC_SEQEND10,	
-	ADC_TRGSRC_SEQEND11,
-	ADC_TRGSRC_SEQEND12,	
-	ADC_TRGSRC_SEQEND13,
-	ADC_TRGSRC_SEQEND14,	
-	ADC_TRGSRC_SEQEND15
+	ADC_TRGSOURCE_NONE		= 0,
+	ADC_TRGSOURCE_EOC,		
+	ADC_TRGSOURCE_READY,	
+	ADC_TRGSOURCE_OVR,	
+	ADC_TRGSOURCE_CMP0H,		
+	ADC_TRGSOURCE_CMP0L,		
+	ADC_TRGSOURCE_CMP1H,		
+	ADC_TRGSOURCE_CMP1L,	
+	ADC_TRGSOURCE_SEQEND0,	
+	ADC_TRGSOURCE_SEQEND1,
+	ADC_TRGSOURCE_SEQEND2,	
+	ADC_TRGSOURCE_SEQEND3,
+	ADC_TRGSOURCE_SEQEND4,	
+	ADC_TRGSOURCE_SEQEND5,
+	ADC_TRGSOURCE_SEQEND6,	
+	ADC_TRGSOURCE_SEQEND7,
+	ADC_TRGSOURCE_SEQEND8,	
+	ADC_TRGSOURCE_SEQEND9,
+	ADC_TRGSOURCE_SEQEND10,	
+	ADC_TRGSOURCE_SEQEND11,
+	ADC_TRGSOURCE_SEQEND12,	
+	ADC_TRGSOURCE_SEQEND13,
+	ADC_TRGSOURCE_SEQEND14,	
+	ADC_TRGSOURCE_SEQEND15
 }csi_adc_trgsrc_e;
 
 /**
@@ -492,7 +492,7 @@ csi_adc_state_e csi_adc_get_status(csp_adc_t *ptAdcBase);
   \param[in]   bEnable		enable/disable
   \return 	   none
  */
-void csi_adc_int_enable(csp_adc_t *ptAdcBase, csi_adc_intsrc_e eIntSrc, bool bEnable);
+void csi_adc_int_enable(csp_adc_t *ptAdcBase, csi_adc_intsrc_e eIntSrc);
 
 /** 
   \brief 	   adc cmp0 config

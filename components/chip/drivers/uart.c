@@ -54,6 +54,7 @@ csi_error_t csi_uart_init(csp_uart_t *ptUartBase, csi_uart_config_t *ptUartCfg)
 {
 	uart_parity_e eParity = UART_PAR_NONE;
 	uint32_t wBrDiv;
+	uint8_t byIdx = apt_get_uart_idx(ptUartBase);
 	
 	csi_clk_enable((uint32_t *)ptUartBase);						//uart peripheral clk enable
 	csp_uart_sw_rst(ptUartBase);								//reset ip
@@ -84,8 +85,13 @@ csi_error_t csi_uart_init(csp_uart_t *ptUartBase, csi_uart_config_t *ptUartCfg)
 		csp_uart_rto_enable(ptUartBase);
 	}
 	else
-		csp_uart_rto_disable(ptUartBase);					
-
+		csp_uart_rto_disable(ptUartBase);	
+	
+	//callback init
+	g_tUartCtrl[byIdx].recv_callback = NULL;
+	g_tUartCtrl[byIdx].send_callback = NULL;
+	g_tUartCtrl[byIdx].err_callback = NULL;
+	
 	return CSI_OK;
 }
 
@@ -417,7 +423,7 @@ csi_error_t csi_uart_send_int(csp_uart_t *ptUartBase, const void *pData, uint16_
 {
 	uint8_t byIdx = apt_get_uart_idx(ptUartBase);
 	 
-	if((NULL == pData) || (0 == hwSize) || (g_tUartCtrl[byIdx].byTxState== UART_STATE_SEND))
+	if((NULL == pData) || (0 == hwSize))
 		return CSI_ERROR;
 	
 	g_tUartCtrl[byIdx].pbyTxBuf = (uint8_t *)pData;					
@@ -439,7 +445,7 @@ csi_error_t csi_uart_receive_int(csp_uart_t *ptUartBase, void *pData, uint16_t h
 {
 	uint8_t byIdx = apt_get_uart_idx(ptUartBase);
 	
-	if((NULL == pData) || (0 == hwSize) || (g_tUartCtrl[byIdx].byTxState == UART_STATE_RECV)) 
+	if((NULL == pData) || (0 == hwSize)) 
 		return CSI_ERROR;
 		
 	g_tUartCtrl[byIdx].pbyRxBuf = (uint8_t *)pData;
@@ -453,23 +459,23 @@ csi_error_t csi_uart_receive_int(csp_uart_t *ptUartBase, void *pData, uint16_t h
 	
 	return CSI_OK;
 }
-/** \brief set uart tx dma mode and enable
+/** \brief set uart send dma mode and enable
  * 
  *  \param[in] ptUartBase: pointer of uart register structure
  *  \param[in] eDmaMode: ctx dma mode, \ref csi_uart_dma_md_e
  *  \return  none
  */
-void csi_uart_set_txdma(csp_uart_t *ptUartBase, csi_uart_dma_md_e eDmaMode)
+void csi_uart_set_send_dma(csp_uart_t *ptUartBase, csi_uart_dma_md_e eDmaMode)
 {
 	csp_uart_set_txdma(ptUartBase, (uart_tdma_md_e)eDmaMode);
 }
-/** \brief set uart rx dma mode and enable
+/** \brief set uart receive dma mode and enable
  * 
  *  \param[in] ptUartBase: pointer of uart register structure
  *  \param[in] eDmaMode: rx dma mode, \ref csi_uart_dma_md_e
  *  \return  none
  */
-void csi_uart_set_rxdma(csp_uart_t *ptUartBase, csi_uart_dma_md_e eDmaMode)
+void csi_uart_set_receive_dma(csp_uart_t *ptUartBase, csi_uart_dma_md_e eDmaMode)
 {
 	csp_uart_set_rxdma(ptUartBase, (uart_rdma_md_e)eDmaMode);
 }

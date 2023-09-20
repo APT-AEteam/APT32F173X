@@ -1141,9 +1141,9 @@ static inline void csp_gptb_set_stop_st(csp_gptb_t *ptGptbBase, gptb_stpst_e eSt
 	ptGptbBase -> CR = (ptGptbBase->CR & (~GPTB_STPST_MSK))| (eStpst <<GPTB_STPST_POS);
 }
 
-static inline void csp_gptb_set_opmd(csp_gptb_t *ptGptbBase, gptb_runmd_e eOpmd)
+static inline void csp_gptb_set_runmode(csp_gptb_t *ptGptbBase, gptb_runmd_e eRunmd)
 {
-	ptGptbBase -> CR = (ptGptbBase->CR & (~GPTB_RUNMD_MSK))| (eOpmd <<GPTB_RUNMD_POS);
+	ptGptbBase -> CR = (ptGptbBase->CR & (~GPTB_RUNMD_MSK))| (eRunmd <<GPTB_RUNMD_POS);
 }
 
 static inline void csp_gptb_capld_enable(csp_gptb_t *ptGptbBase, bool bEnable)

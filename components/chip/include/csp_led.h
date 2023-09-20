@@ -55,7 +55,7 @@ typedef enum{
 	LED_PCLK_D64,
 	LED_PCLK_D128,
 	LED_PCLK_D256,
-}led_ledclk_e;
+}led_clkdiv_e;
 
 #define LED_LIGHTON_POS                 0                                       /*!< LED CR: LIGHTON Position */
 #define LED_LIGHTON_MSK                 (0x1UL << LED_LIGHTON_POS)              /*!< LED CR: LIGHTON Mask */
@@ -64,14 +64,14 @@ typedef enum{
 #define LED_BRT_POS                 	0                                       /*!< LED BRIGHT: BRT Position */
 #define LED_BRT_MSK                 	(0x7UL << LED_BRT_POS)                  /*!< LED BRIGHT: BRT Mask */
 typedef enum {
-	COM100 = 0,
-	COM87,
-	COM75,
-	COM62,
-	COM50,
-	COM37,
-	COM25,
-	COM12
+	LED_100 = 0,
+	LED_87,
+	LED_75,
+	LED_62,
+	LED_50,
+	LED_37,
+	LED_25,
+	LED_12
 }led_brt_e;
 
 ///RISR/IMCR/MISR/ICR
@@ -96,7 +96,7 @@ typedef enum {
 #define LED_SEGDATA_MSK(n)              (0x1UL << LED_SEGDAT0_SEG7_POS)          /*!< LED SEGDATn: Mask */
 
 /******************************************************************************
-********************* ptLedBase inline Functions Declaration **********************
+********************* LED inline Functions**********************
 ******************************************************************************/
 //on/off
 static inline void csp_led_light_on(csp_led_t *ptLedBase) 					 
@@ -120,7 +120,7 @@ static inline void csp_led_com_off(csp_led_t *ptLedBase,uint16_t hwVal)
 }		  	 
 
 //write reg
-static inline void csp_led_set_clk(csp_led_t *ptLedBase, led_ledclk_e eClk) 		
+static inline void csp_led_set_clk(csp_led_t *ptLedBase, led_clkdiv_e eClk) 		
 {
 	ptLedBase -> CR = (ptLedBase -> CR & (~LED_LEDCLK_MSK)) | (eClk << LED_LEDCLK_POS);
 }	
@@ -151,7 +151,7 @@ static inline void csp_led_set_data(csp_led_t *ptLedBase,uint8_t byCom,uint8_t b
 }
 
 //read reg
-static inline uint16_t csp_led_get_com_st(csp_led_t *ptLedBase)  	
+static inline uint16_t csp_led_get_blink_status(csp_led_t *ptLedBase)
 {
 	return ptLedBase -> BLKST;
 }			 
@@ -167,14 +167,18 @@ static inline void csp_led_int_disable(csp_led_t *ptLedBase,led_int_e eInt)
 	ptLedBase -> IMCR &= ~eInt;
 }	
 
+static inline uint32_t csp_led_get_risr(csp_led_t *ptLedBase)
+{
+	return ptLedBase -> RISR;
+}
+
+static inline uint32_t csp_led_get_isr(csp_led_t *ptLedBase)
+{
+	return ptLedBase -> MISR;
+}
+
 static inline void csp_led_clr_isr(csp_led_t *ptLedBase,led_int_e eInt)		
 {
 	ptLedBase -> ICR  =  eInt;
 }	
-
-static inline uint32_t csp_led_get_isr(csp_led_t *ptLedBase)	
-{
-	return ptLedBase -> MISR;
-}				 
-
 #endif
