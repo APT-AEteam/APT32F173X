@@ -185,6 +185,7 @@ void csi_dma_int_enable(csp_dma_t *ptDmaBase, csi_dma_ch_e eDmaCh, csi_dma_intsr
 {
 	csp_dma_t *ptDmaChBase = (csp_dma_t *)DMA_REG_BASE(ptDmaBase, eDmaCh);
 	
+	csp_dma_clr_isr(ptDmaChBase, (dma_int_e)eIntSrc);
 	csp_dma_int_enable(ptDmaChBase, (dma_int_e)eIntSrc);
 }
 

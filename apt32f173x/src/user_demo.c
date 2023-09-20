@@ -182,8 +182,8 @@ void user_demo(void)
 //	lin_send_demo();        
 //	lin_send_recv_demo();
 
-//	lin_send_callback_demo();
-//	lin_send_recv_callback_demo();
+//	lin_send_int_callback_demo();
+//	lin_send_recv_int_callback_demo();
 
 /// ***************************************************
 ///  IIC相关的示例代码

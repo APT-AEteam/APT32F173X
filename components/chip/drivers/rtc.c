@@ -400,6 +400,7 @@ void csi_rtc_start_as_timer(csp_rtc_t *ptRtc, csi_rtc_timer_e ePrd)
 */
 void csi_rtc_int_enable(csp_rtc_t *ptRtc, rtc_int_e eIntSrc)
 {
+	csp_rtc_clr_isr(ptRtc, (rtc_int_e)eIntSrc);
 	csp_rtc_int_enable(ptRtc, (rtc_int_e)eIntSrc);
 }
 

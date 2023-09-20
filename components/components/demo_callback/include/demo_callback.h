@@ -54,8 +54,8 @@ extern int uart_receive_int_callback_demo(void);
 extern int usart_send_int_callback_demo(void);
 extern int usart_receive_int_callback_demo(void);
 
-extern int lin_send_callback_demo(void);
-extern int lin_send_recv_callback_demo(void);
+extern int lin_send_int_callback_demo(void);
+extern int lin_send_recv_int_callback_demo(void);
 
 //adc demo
 //normal mode(no interrupt)

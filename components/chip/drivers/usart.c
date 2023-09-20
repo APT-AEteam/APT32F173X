@@ -252,6 +252,7 @@ void csi_usart_rxfifo_enable(csp_usart_t *ptUsartBase, bool bEnable)
  */
 void csi_usart_int_enable(csp_usart_t *ptUsartBase, csi_usart_intsrc_e eIntSrc)
 {
+	csp_usart_clr_isr(ptUsartBase, (usart_int_e)eIntSrc);
 	csp_usart_int_enable(ptUsartBase, (usart_int_e)eIntSrc);
 }
 
