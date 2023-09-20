@@ -16,22 +16,21 @@
 #include "soc.h"
 #include "ifc.h"
 
-/* externs function--------------------------------------------------------*/
+/* global variables--------------------------------------------------------*/
+volatile bool g_bFlashCheckPass = 1;
+volatile bool g_bFlashPgmDne = 1;
+
 /* private function--------------------------------------------------------*/
 static void apt_ifc_step_sync(csp_ifc_t * ptIfcBase, ifc_cmd_e eStepn, uint32_t wPageStAddr);
 static void apt_ifc_step_async(csp_ifc_t * ptIfcBase, ifc_cmd_e eStepn, uint32_t wPageStAddr);
 static csp_error_t apt_ifc_wr_nword(csp_ifc_t * ptIfcBase, uint8_t bFlashType, uint32_t wAddr, uint32_t wDataNum, uint32_t *pwData);
 
-/* externs variables------------------------------------------------------*/
-
 /* Private variables------------------------------------------------------*/
-volatile bool g_bFlashCheckPass = 1;
-volatile bool g_bFlashPgmDne = 1;
 volatile static uint32_t s_wPageStAddr;
 volatile static uint32_t s_wBuffForCheck[DFLASH_PAGE_SZ];
 
 
-/** \brief ifc interrupt handle function,mainly used for para mode PGM of DFLASH
+/** \brief ifc interrupt handle function,only used for para-mode PGM of DFLASH
  * 
  *  \param[in] none
  *  \return none
@@ -67,7 +66,7 @@ __attribute__((weak)) void ifc_irqhandler(void)
 }
 
 /// csi API
-/** \brief config data flash workmode
+/** \brief config data flash PGM mode
  * 
  *  \param[in] ptIfcBase: pointer of ifc register structure
  *  \param[in] bEnable: ENABLE/DISABLE
@@ -81,10 +80,10 @@ void csi_ifc_dflash_paramode_enable(csp_ifc_t *ptIfcBase, bool bEnable)
 
 /** \brief Read data from Flash.
  * 
- *  \param[in] ptIfcBase：pointer of ifc register structure.
- *  \param[in] wAddr：Data address（(SHOULD BE WORD ALLIGNED)）
+ *  \param[in] 	ptIfcBase：pointer of ifc register structure.
+ *  \param[in] 	wAddr：data address（(SHOULD BE WORD ALLIGNED)）
  *  \param[out] wData：data  Pointer to a buffer storing the data read from Flash.
- *  \param[in] wDataNum：Number of data（WORDs）to read.
+ *  \param[in] 	wDataNum：Number of data（WORDs）to read.
  *  \return error code
  */
 csi_error_t csi_ifc_read(csp_ifc_t *ptIfcBase, uint32_t wAddr, uint32_t *wData, uint32_t wDataNum)
@@ -115,12 +114,13 @@ csi_error_t csi_ifc_read(csp_ifc_t *ptIfcBase, uint32_t wAddr, uint32_t *wData, 
 }
 
 
-/** \brief Program data (<page size)to DFLASH. NOTE!!! Extra ERASE is NOT needed before programming.
+/** \brief Program data (<page size)to DFLASH. 
+ *  \brief NOTE!!! Extra ERASE is NOT needed before programming.
  * 
- *  \param[in] ptIfcBase：pointer of ifc register structure
- *  \param[in] wAddr：Data address (SHOULD BE WORD ALLIGNED)
- *  \param[in] pwData: data  Pointer to a buffer containing the data to be programmed to Flash.
- *  \param[in] wDataWordNum: Number of data(WORDS) items to program.
+ *  \param[in] ptIfcBase：	pointer of ifc register structure
+ *  \param[in] wAddr：		data address (SHOULD BE WORD ALLIGNED)
+ *  \param[in] pwData: 		data  Pointer to a buffer containing the data to be programmed to Flash.
+ *  \param[in] wDataWordNum:number of data(WORDS) items to program.
  *  \return error code
  */
 csi_error_t csi_ifc_dflash_page_program(csp_ifc_t *ptIfcBase, uint32_t wAddr, uint32_t *pwData, uint32_t wDataWordNum)
@@ -361,6 +361,7 @@ csi_error_t csi_ifc_wr_useroption(csp_ifc_t *ptIfcBase, uint32_t wData)
     wPageStAddr = USEROPTION_ADDR;
     wOffsetAddr = 0;
 	
+	csp_ifc_clk_enable(IFC);
 	///step1
 	apt_ifc_step_sync(ptIfcBase, PAGE_LAT_CLR_HIDM1, 0);
 	///step2
@@ -385,19 +386,20 @@ csi_error_t csi_ifc_wr_useroption(csp_ifc_t *ptIfcBase, uint32_t wData)
 	apt_ifc_step_sync(ptIfcBase, USEROPTION_ERASE, 0);
 	///step6
 	apt_ifc_step_sync(ptIfcBase, USEROPTION_PGM, 0);
-	///whole page check
-	for (i=0; i<bPageSize; i++)
-	{
-			if (*(uint32_t *)(wPageStAddr+4*i) != wBuff[i]){
-				tRet = CSI_ERROR;
-				g_bFlashCheckPass = 0;
-				g_bFlashPgmDne = 1;
-				return tRet;
-			}
-	}
-	if (tRet != CSI_ERROR)
-		g_bFlashPgmDne = 1;
+	///check
 	
+	
+	if (*(uint32_t *)USEROPTION_ADDR != wData) {
+		g_bFlashCheckPass = 0;
+		tRet = CSI_ERROR;
+
+	}
+	else {
+		g_bFlashCheckPass = 1;
+		tRet = CSI_OK;
+	}
+	
+	g_bFlashPgmDne = 1;	
 	return tRet;
 }
 
@@ -414,6 +416,7 @@ csi_error_t csi_ifc_wr_protection(csp_ifc_t *ptIfcBase, ifc_prot_e eProt)
 	uint32_t wBuff[16];
 	uint32_t wPageStAddr = USEROPTION_ADDR;
 	
+	csp_ifc_clk_enable(IFC);
 	///step1
 	apt_ifc_step_sync(ptIfcBase, PAGE_LAT_CLR_HIDM1, 0);
 	///step2
