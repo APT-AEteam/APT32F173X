@@ -77,9 +77,9 @@
 #define DAC_SYNC_MSK(n)			(0x01ul << DAC_SYNC_POS(n))
 
 typedef enum{
-	DAC_SYNCIN0					= 0,
-	DAC_SYNCIN1					= 1,
-	DAC_SYNCIN2					= 2,	
+	DAC_SYNCEN0					= 0,
+	DAC_SYNCEN1					= 1,
+	DAC_SYNCEN2					= 2,	
 }dac_sync_in_e;
 /******************************************************************************
 * STEP : Incremental Control
@@ -133,17 +133,17 @@ static inline void csp_dac_clr_dac(csp_dac_t *ptDacBase)
 static inline void csp_dac_buff_enable(csp_dac_t *ptDacBase,bool bEnable)
 {
 	if(bEnable)ptDacBase -> DACR |=   DAC_BUFFEN_MSK ;
-	else{      ptDacBase -> DACR  =   ptDacBase -> DACR &(~DAC_BUFFEN_MSK);}
+	else{      ptDacBase -> DACR &=  ~DAC_BUFFEN_MSK;}
 }
 static inline void csp_dac_refsel_enable(csp_dac_t *ptDacBase, bool bEnable)
 {
 	if(bEnable)ptDacBase -> DACR |=   DAC_REFSEL_MSK ;
-	else{      ptDacBase -> DACR  =   ptDacBase -> DACR &(~DAC_REFSEL_MSK);}
+	else{      ptDacBase -> DACR &=  ~DAC_REFSEL_MSK;}
 }
 static inline void csp_dac_powerdown_enable(csp_dac_t *ptDacBase, bool bEnable)
 {
 	if(bEnable)ptDacBase -> DACR |=   DAC_PD_MSK ;
-	else{         ptDacBase -> DACR  =   ptDacBase -> DACR &(~DAC_PD_MSK);}
+	else{      ptDacBase -> DACR &=  ~DAC_PD_MSK;}
 }
 //DATA
 static inline void csp_dac_set_datal(csp_dac_t *ptDacBase, uint16_t hwDatal)

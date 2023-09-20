@@ -385,22 +385,22 @@ static inline void csp_cmp_evtrg_disable(csp_cmp_t *ptCmpBase)
 //dflt en/dis
 static inline void  csp_cmp_dflt1_enable(csp_cmp_t *ptCmpBase)
 {
-	ptCmpBase->CR = (ptCmpBase->CR&~CMP_DFLT1EN_MSK)|(1<<CMP_DFLT1EN_POS);
+	ptCmpBase->CR |= CMP_DFLT1EN_MSK;
 }
 
 static inline void  csp_cmp_dflt1_disable(csp_cmp_t *ptCmpBase)
 {
-	ptCmpBase->CR = (ptCmpBase->CR&~CMP_DFLT1EN_MSK)|(0<<CMP_DFLT1EN_POS);
+	ptCmpBase->CR &= ~CMP_DFLT1EN_MSK;
 }
 
 static inline void  csp_cmp_dflt2_enable(csp_cmp_t *ptCmpBase)
 {
-	ptCmpBase->CR = (ptCmpBase->CR&~CMP_DFLT2EN_MSK)|(1<<CMP_DFLT2EN_POS);
+	ptCmpBase->CR |= CMP_DFLT2EN_MSK;
 }
 
 static inline void  csp_cmp_dflt2_disable(csp_cmp_t *ptCmpBase)
 {
-	ptCmpBase->CR = (ptCmpBase->CR&~CMP_DFLT2EN_MSK)|(0<<CMP_DFLT2EN_POS);
+	ptCmpBase->CR &= ~CMP_DFLT2EN_MSK;
 }
 
 //set windowfilter 

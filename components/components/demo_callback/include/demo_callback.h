@@ -54,8 +54,8 @@ extern int uart_receive_int_callback_demo(void);
 extern int usart_send_int_callback_demo(void);
 extern int usart_receive_int_callback_demo(void);
 
-extern int lin_send_callback_demo(void);
-extern int lin_send_recv_callback_demo(void);
+extern int lin_send_int_callback_demo(void);
+extern int lin_send_recv_int_callback_demo(void);
 
 //adc demo
 //normal mode(no interrupt)
@@ -68,8 +68,8 @@ extern int adc_samp_continuous_int_demo(void);
 //sio demo
 //sio led
 extern int sio_led_rgb_int_callback_demo(void);
-extern int sio_led_rgb_recv_rxfull_demo(void);
-extern int sio_led_rgb_recv_rxdone_demo(void);
+extern int sio_led_rgb_receive_rxfull_int_callback_demo(void);
+extern int sio_led_rgb_receive_rxdone_int_callback_demo(void);
 //hdq
 extern int sio_hdq_send_demo(void);
 extern int sio_hdq_recv_wrcmd_demo(void);
@@ -77,13 +77,7 @@ extern int sio_hdq_send_recv_demo(void);
 extern int sio_hdq_recv_rdcmd_demo(void);
 
 //lpt demo
-extern int lpt_timer_demo(void);
-extern int lpt_pwm_demo(void);
-extern int lpt_sync_trg_start_demo(void);
-extern int lpt_trg_out_demo(void);
-extern int lpt_soft_trg_out_demo(void);
-extern int lpt_filter_demo(void);
-extern int lpt_window_demo(void);
+extern int lpt_timer_int_callback_demo(void);
 
 //reliability demo
 extern void lvd_demo(void);
@@ -93,7 +87,7 @@ extern void emcm_demo(void);
 extern void syscon_cqcr_demo(void);
 
 //wwdt demo
-extern  csi_error_t wwdt_callback_demo(void);
+extern  csi_error_t wwdt_int_callback_demo(void);
 
 //ifc demo
 extern void ifc_read_demo();
@@ -113,10 +107,10 @@ extern void lp_lpt_wakeup_deepsleep_demo(void);
 extern void lp_exi_wakeup_demo(void);
 
 //iic demo
-extern void iic_slave_callback_demo(void);
+extern void iic_slave_int_callback_demo(void);
 
 //cnta demo
-extern int cnta_timer_callback_demo(void);
+extern int cnta_timer_int_callback_demo(void);
 
 //spi demo
 extern int spi_master_send_demo(void);

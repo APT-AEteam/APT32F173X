@@ -12,10 +12,9 @@
 #ifndef _PM_H_
 #define _PM_H_
 
-#include <stdint.h>
-#include <drv/common.h>
-#include <soc.h>
-#include <csi_core.h>
+
+#include "csp_syscon.h"
+
 
 #ifdef __cplusplus
 extern "C" {
@@ -32,20 +31,20 @@ typedef struct{
 
 typedef enum {
 	
-	WKUP_IWDT = 8,
-	WKUP_RTC,
-	WKUP_LPT,
-	WKUP_LVD
+	SRC_WKUP_IWDT = 8,
+	SRC_WKUP_RTC,
+	SRC_WKUP_LPT,
+	SRC_WKUP_LVD
 	
 } csi_wakeup_src_e;
 
 typedef enum {
-	SP_IDLE_PCLK	= (0x01ul << 8),	///< IDLE_PCLK for sleep
-	SP_IDLE_HCLK 	= (0x01ul << 9),	///< DLE_HCLK for sleep		
-	DP_ISOSC 		= (0x01ul << 12),	///< ISOSC for deepsleep				
-	DP_IMOSC	 	= (0x01ul << 13),	///< ISOSC for deepsleep	
-	DP_ESOSC		= (0x01ul << 14),	///< ISOSC for deepsleep					
-	DP_EMOSC		= (0x01ul << 15)	///< ISOSC for deepsleep
+	SP_IDLE_PCLK	= (8),	///< IDLE_PCLK for sleep
+	SP_IDLE_HCLK 	= (9),	///< DLE_HCLK for sleep		
+	DP_ISOSC 		= (12),	///< ISOSC for deepsleep				
+	DP_IMOSC	 	= (13),	///< ISOSC for deepsleep	
+	DP_ESOSC		= (14),	///< ISOSC for deepsleep					
+	DP_EMOSC		= (15)	///< ISOSC for deepsleep
 } csi_pm_clk_e;
 
 
@@ -73,26 +72,32 @@ csi_error_t csi_pm_enter_sleep(csi_pm_mode_e eMode);
 csi_error_t csi_pm_config_wakeup_source(csi_wakeup_src_e eWkupSrc, bool bEnable);
 
 /**
-  \brief       deep sleep mode, osc enable/disable.
+  \brief       deep sleep mode, osc enable
   \param[in]   eSrc			\ref csi_pm_clk_e
-  \param[in]   enable  		enable/disable deep sleep osc
   \return      error code
 */
-void csi_pm_clk_enable(csi_pm_clk_e eOsc, bool bEnable);
+void csi_pm_clk_enable(csi_pm_clk_e eOsc);
 
-/**
-  \brief       clear wkalv int status
-  \param[in]   eWkAlv		WKUP_ALV0 - WKUP_ALV_ALL
-  \return      none
-*/
-void csi_pm_clr_wkint(uint8_t byWkInt);
+/** \brief deep sleep mode, osc disable.
+ * 
+ * \param[in] eSleepOsc: \ref csi_pm_clk_e
+ * \return error code
+ */
+void csi_pm_clk_disable(csi_pm_clk_e eOsc);
 
-/**
-  \brief       get wkalv int status
-  \param[in]   eWkAlv: WKUP_ALV0~WKUP_ALV_ALL
-  \return      none
-*/
-uint8_t csi_pm_get_wkint(void);
+///**
+//  \brief       clear wkalv int status
+//  \param[in]   eWkAlv		WKUP_ALV0 - WKUP_ALV_ALL
+//  \return      none
+//*/
+//void csi_pm_clr_wkint(uint8_t byWkInt);
+//
+///**
+//  \brief       get wkalv int status
+//  \param[in]   eWkAlv: WKUP_ALV0~WKUP_ALV_ALL
+//  \return      none
+//*/
+//uint8_t csi_pm_get_wkint(void);
 
 #ifdef __cplusplus
 }

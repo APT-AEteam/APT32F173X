@@ -4,7 +4,8 @@
  * \copyright Copyright (C) 2015-2023 @ APTCHIP
  * <table>
  * <tr><th> Date  <th>Version  <th>Author  <th>Description
- * <tr><td> 2023-9-12 <td>V0.0 <td>ZJY     <td>initial
+ * <tr><td> 2021-6-11 <td>V0.0 <td>ZJY     <td>initial
+ * <tr><td> 2023-9-19 <td>V0.1 <td>ZJY     <td>initial
  * </table>
  * *********************************************************************
 */
@@ -17,7 +18,6 @@
 /* Private macro-----------------------------------------------------------*/
 /* Private variablesr------------------------------------------------------*/
 
-
 #if (USE_BT_CALLBACK == 1)									
 
 /** \brief  user_bt0_callback：BT0中断回调函数
@@ -25,7 +25,7 @@
  * 	\brief	用户定义，支持指PEND/CMP/EVTRG三种中断处理，使用csi标准库，中断发生时会自动调用用户注册的回调函
  * 			数，用户可在回调函数里做自己的处理，而不需要关注具体的底层中断处理。
  * 
- *  \param[out] ptBtBase: 	BTx寄存器结构体指针，指向BTx的基地址 
+ *  \param[in]  ptBtBase: 	BTx寄存器结构体指针，指向BTx的基地址 
  *  \param[out] byIsr: 		BTx中断状态
  *  \return none
  */ 
@@ -75,8 +75,8 @@ int bt_timer_callback_demo(void)
  * 	\brief	用户定义，支持指PEND/CMP/EVTRG三种中断处理，使用csi标准库，中断发生时会自动调用用户注册的回调函
  * 			数，用户可在回调函数里做自己的处理，而不需要关注具体的底层中断处理。
  * 
- *  \param[in] ptBtBase:	BTx寄存器结构体指针，指向BTx的基地址 
- *  \param[in] byIsr: 		BTx中断状态
+ *  \param[in]  ptBtBase:	BTx寄存器结构体指针，指向BTx的基地址 
+ *  \param[out] byIsr: 		BTx中断状态
  *  \return none
  */ 
 void user_bt1_callback(csp_bt_t *ptBtBase, uint8_t byIsr)

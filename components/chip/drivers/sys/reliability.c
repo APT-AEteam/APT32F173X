@@ -9,11 +9,8 @@
  * *********************************************************************
 */
 
-#include "csp_syscon.h"
 #include "csp.h"
 #include "reliability.h"
-#include "irq.h"
-#include "soc.h"
 
 /// ************************************************************************
 ///						for LVD module
@@ -27,12 +24,12 @@
 void csi_lvd_int_enable(csi_lvd_pol_e ePol, csi_lvd_level_e eLvl)
 {
 	
-	csp_set_lvd_level(SYSCON, (lvd_level_e)eLvl);	
-	csp_set_lvd_int_pol(SYSCON, (lvdint_pol_e)ePol);
+	csp_lvd_set_level(SYSCON, (lvd_level_e)eLvl);	
+	csp_lvd_set_int_pol(SYSCON, (lvdint_pol_e)ePol);
 	
+	csp_syscon_clr_isr(SYSCON,LVD_INT);  //clear int before enable 
 	csp_syscon_int_enable(SYSCON, LVD_INT);			
 	csp_lvd_lvr_enable(SYSCON);						
-	csi_vic_enable_irq(SYSCON_IRQ_NUM);
 }
 
 /** \brief lvd  disable  
@@ -50,7 +47,7 @@ void csi_lvd_disable(void)
  */
 uint32_t csi_lvd_flag(void)
 {
-	return csp_lvd_flag(SYSCON);
+	return csp_lvd_get_flag(SYSCON);
 }
 
 /** \brief Enable LVR
@@ -61,7 +58,7 @@ uint32_t csi_lvd_flag(void)
 void csi_lvr_enable(csi_lvr_level_e eLvl)
 {
 	
-	csp_set_lvr_level(SYSCON, (lvr_level_e)eLvl);
+	csp_lvr_set_level(SYSCON, (lvr_level_e)eLvl);
 	csp_lvr_rst_enable(SYSCON);	
 	csp_lvd_lvr_enable(SYSCON);
 }
@@ -82,7 +79,7 @@ void csi_lvr_disable(void)
 uint32_t csi_get_lvdlevel(void)
 {		
 	uint32_t ret = 24;
-	switch ((SYSCON->LVDCR & LVD_LV_MSK) >> 8)
+	switch ((csp_lvd_get_intlvl(SYSCON)) >> 8)
 	{
 		case (0):
 			ret = 24;
@@ -123,7 +120,7 @@ uint32_t csi_get_lvdlevel(void)
 uint32_t csi_get_lvrlevel(void)
 {
 	uint32_t ret = 19;
-	switch ((SYSCON->LVDCR & LVR_LV_MSK) >> LVR_LV_POS)
+	switch (csp_lvr_get_lvl(SYSCON) >> 12)
 	{
 		case (0):
 			ret = 19;
@@ -166,23 +163,6 @@ uint32_t csi_get_lvrlevel(void)
  */
 uint16_t csi_get_rst_reason(void)
 {
-//	uint32_t wRsr;
-//	csi_rsr_e eRsr = NO_RST;
-//	uint8_t i;
-//
-//	wRsr = csp_rst_rd_st(SYSCON);
-//	i = 0;
-//	
-//	while(wRsr)
-//	{
-//		if (wRsr & (0x1 << i))
-//		{
-//			eRsr = i;
-//			csp_rst_src_clr(SYSCON, i);
-//			break;
-//		}
-//		i++;
-//	}
 	return csp_rst_rd_st(SYSCON);
 }
 /** \brief clr chip reset reason
@@ -200,9 +180,9 @@ void csi_clr_rst_reason(uint16_t hwRstSrc)
  *  \param[in] none
  *  \return none
  */
-void csi_sys_swrst(void)
+void csi_sys_sw_rst(void)
 {
-	csp_set_swrst(SYSCON, SYS_SWRST);
+	csp_sw_rst(SYSCON, SYS_SWRST);
 }
 /// ************************************************************************
 ///						for user reg operate 
@@ -266,8 +246,9 @@ void csi_sramcheck_rst(void)
  */
 void csi_sramcheck_int(void)
 {
-	csp_sramcheck_int(SYSCON);
-	csi_vic_enable_irq(SYSCON_IRQ_NUM);
+	csp_syscon_clr_isr(SYSCON,RAM_INT_ERR);
+	csp_sramcheck_int_enable(SYSCON);
+//	csi_vic_enable_irq(SYSCON_IRQ_NUM);
 	csp_sramcheck_enable(SYSCON);
 }
 
@@ -330,8 +311,9 @@ void csi_emcm_2_imosc_int(void)
 	csp_emcm_enable(SYSCON);
 	csp_emcm_rst_disable(SYSCON);
 	
+	csp_syscon_clr_isr(SYSCON, EMFAIL_INT);
 	csp_syscon_int_enable(SYSCON, EMFAIL_INT);
-	csi_vic_enable_irq(SYSCON_IRQ_NUM);
+//	csi_vic_enable_irq(SYSCON_IRQ_NUM);
 }
 
 /** \brief rest chip when EMOSC failure detected
@@ -372,8 +354,9 @@ void csi_escm_2_imosc_int(void)
 	csp_escm_enable(SYSCON);
 	csp_escm_rst_disable(SYSCON);
 	
+	csp_syscon_clr_isr(SYSCON, ESFAIL_INT);
 	csp_syscon_int_enable(SYSCON, ESFAIL_INT);
-	csi_vic_enable_irq(SYSCON_IRQ_NUM);
+//	csi_vic_enable_irq(SYSCON_IRQ_NUM);
 }
 
 /** \brief rest chip when EMOSC failure detected
@@ -478,9 +461,9 @@ void csi_cqcr_disable(void)
  */
 void csi_set_cqcr(csi_cqcr_refsel_e eRefSel,csi_cqcr_srcsel_e eSrcSel,uint32_t wVal)
 {
-	csp_set_cqcr_ref_sel(SYSCON,(cqcr_refsel_e)eRefSel);
-	csp_set_cqcr_src_sel(SYSCON,(cqcr_srcsel_e)eSrcSel);
-	csp_set_cqcr_value(SYSCON,wVal);
+	csp_cqcr_set_ref_sel(SYSCON,(cqcr_refsel_e)eRefSel);
+	csp_cqcr_set_src_sel(SYSCON,(cqcr_srcsel_e)eSrcSel);
+	csp_cqcr_set_value(SYSCON,wVal);
 	csp_cqcr_enable(SYSCON);
 }
 
@@ -490,7 +473,7 @@ void csi_set_cqcr(csi_cqcr_refsel_e eRefSel,csi_cqcr_srcsel_e eSrcSel,uint32_t w
  */
 uint32_t csi_get_cqsr(void)
 {
-	while((SYSCON->CQCR&0x01) == 0x01);
+	while(csp_cqcr_get_status(SYSCON));
 	return csp_get_cqsr(SYSCON);
 }
 

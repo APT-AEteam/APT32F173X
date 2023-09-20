@@ -1,5 +1,5 @@
 /***********************************************************************//** 
- * \file  i2c.h
+ * \file  iic.h
  * \brief  IIC head file 
  * \copyright Copyright (C) 2015-2020 @ APTCHIP
  * <table>
@@ -26,7 +26,7 @@ extern "C" {
 typedef enum{
 	IIC_CALLBACK_RECV	=	0,		//iic rteceive callback id
 	IIC_CALLBACK_SEND,				//iic send callback id
-	IIC_CALLBACK_ERR,				//iic error callback id
+	IIC_CALLBACK_STATE,				//iic other state callback id
 }csi_iic_callback_id_e;
 
 
@@ -51,6 +51,12 @@ typedef enum {
     IIC_ADDRESS_10BIT                       ///< 10-bit address mode
 } csi_iic_addr_mode_e;
 
+typedef enum
+{
+	I2C_QUALMASK	= 0,
+	I2C_QUALEXTEND    
+}csi_iic_qual_e;
+
 /**
   \struct       csi_iic_master_config_t
   \brief       iic master parameter configuration
@@ -69,11 +75,15 @@ typedef struct csi_iic_master_config {
  */
 typedef struct csi_iic_slave_config {
 	uint16_t	         hwSlaveAddr;   //IIC Slave address
+	uint16_t	         hwMaskAddr ;   //IIC Slave address
+	csi_iic_qual_e       eQualMode;     //IIC Qual mode
 	csi_iic_speed_e		 eSpeedMode;    //IIC Speed mode
 	csi_iic_addr_mode_e	 eAddrMode;	    //IIC ADDR mode 7/10 bit
 	uint32_t	         wSdaTimeout;   //IIC SDA timeout SET
 	uint32_t	         wSclTimeout;   //IIC SCL timeout SET
 }csi_iic_slave_config_t;
+
+
 
 /**
   \struct       csi_iic_slave_t
@@ -133,7 +143,7 @@ typedef enum
  *  \param[in] ptIicSlaveCfg: pointer of iic slave config structure
  *  \return error code \ref csi_error_t
  */ 
-csi_error_t csi_iic_slave_init(csp_i2c_t *ptIicBase, csi_iic_slave_config_t *ptIicSlaveCfg);
+csi_error_t csi_iic_slave_init(csp_iic_t *ptIicBase, csi_iic_slave_config_t *ptIicSlaveCfg);
 
 /** \brief initialize iic slave
  * 
@@ -141,7 +151,7 @@ csi_error_t csi_iic_slave_init(csp_i2c_t *ptIicBase, csi_iic_slave_config_t *ptI
  *  \param[in] ptIicMasterCfg: pointer of iic master config structure
  *  \return error code \ref csi_error_t
  */ 
-csi_error_t csi_iic_master_init(csp_i2c_t *ptIicBase, csi_iic_master_config_t *ptIicMasterCfg);
+csi_error_t csi_iic_master_init(csp_iic_t *ptIicBase, csi_iic_master_config_t *ptIicMasterCfg);
 
 
 
@@ -151,21 +161,29 @@ csi_error_t csi_iic_master_init(csp_i2c_t *ptIicBase, csi_iic_master_config_t *p
  *  \param[in] eIntSrc: led interrupt source \ref csi_led_intsrc_e
  *  \return none
  */ 
-void csi_iic_int_enable(csp_i2c_t *ptIicBase, csi_iic_intsrc_e eIntSrc);
+void csi_iic_int_enable(csp_iic_t *ptIicBase, csi_iic_intsrc_e eIntSrc);
+
+/** \brief IIC interrupt disable control
+ * 
+ *  \param[in] ptLedBase: pointer of bt register structure
+ *  \param[in] eIntSrc: iic interrupt source \ref csi_iic_intsrc_e
+ *  \return none
+ */ 
+void csi_iic_int_disable(csp_iic_t *ptIicBase, csi_iic_intsrc_e eIntSrc);
 
 /** \brief enable iic 
  * 
  *  \param[in] ptIicBase: pointer of iic register structure
  *  \return none
  */ 
-void csi_iic_enable(csp_i2c_t *ptIicBase);
+void csi_iic_enable(csp_iic_t *ptIicBase);
 
 /** \brief disable iic 
  * 
  *  \param[in] ptIicBase: pointer of iic register structure
  *  \return none
  */ 
-void csi_iic_disable(csp_i2c_t *ptIicBase);
+void csi_iic_disable(csp_iic_t *ptIicBase);
 
 /** \brief  iic  master  write n byte data
  * 
@@ -177,7 +195,7 @@ void csi_iic_disable(csp_i2c_t *ptIicBase);
  * 	\param[in] wNumByteToWrite: Write data length
  *  \return error code \ref csi_error_t
  */ 
-csi_error_t csi_iic_write_nbyte(csp_i2c_t *ptIicBase,uint32_t wDevAddr, uint32_t wWriteAdds, uint8_t byWriteAddrNumByte,volatile uint8_t *pbyIicData,uint32_t wNumByteToWrite);
+csi_error_t csi_iic_master_write_nbyte(csp_iic_t *ptIicBase,uint32_t wDevAddr, uint32_t wWriteAdds, uint8_t byWriteAddrNumByte,volatile uint8_t *pbyIicData,uint32_t wNumByteToWrite);
 
 
 /** \brief  iic  master  read n byte data
@@ -190,7 +208,7 @@ csi_error_t csi_iic_write_nbyte(csp_i2c_t *ptIicBase,uint32_t wDevAddr, uint32_t
  * 	\param[in] wNumByteRead: Read data length
  *  \return error code \ref csi_error_t
  */ 
-csi_error_t csi_iic_read_nbyte(csp_i2c_t *ptIicBase,uint32_t wDevAddr, uint32_t wReadAdds, uint8_t wReadAddrNumByte,volatile uint8_t *pbyIicData,uint32_t wNumByteRead);
+csi_error_t csi_iic_master_read_nbyte(csp_iic_t *ptIicBase,uint32_t wDevAddr, uint32_t wReadAdds, uint8_t wReadAddrNumByte,volatile uint8_t *pbyIicData,uint32_t wNumByteRead);
 
 
 
@@ -204,14 +222,14 @@ csi_error_t csi_iic_read_nbyte(csp_i2c_t *ptIicBase,uint32_t wDevAddr, uint32_t 
  * 	\param[in] wNumByteRead: Read data length
  *  \return error code \ref csi_error_t
  */ 
-csi_error_t csi_iic_read_nbyte_dma(csp_i2c_t *ptIicBase,uint32_t wDevAddr, uint32_t wReadAdds, uint8_t byReadAddrNumByte,volatile uint8_t *pbyIicData,uint32_t wNumByteRead);
+csi_error_t csi_iic_read_nbyte_dma(csp_iic_t *ptIicBase,uint32_t wDevAddr, uint32_t wReadAdds, uint8_t byReadAddrNumByte,volatile uint8_t *pbyIicData,uint32_t wNumByteRead);
 
 /** \brief  IIC slave handler
  * 
  *  \param[in] ptIicBase: pointer of iic register structure
  *  \return none
  */ 
-void csi_iic_slave_receive_send(csp_i2c_t *ptIicBase);
+void csi_iic_slave_receive_send(csp_iic_t *ptIicBase);
 
 /** \brief  iic  master  read n byte data
  * 
@@ -230,7 +248,7 @@ void csi_iic_set_slave_buffer(volatile uint8_t *pbyIicRxBuf,uint16_t hwIicRxSize
  *  \param[in] bySpklenCfg: filter set 
  *  \return none
  */ 
-void csi_iic_spklen_set(csp_i2c_t *ptIicBase, uint8_t bySpklen);
+void csi_iic_spklen_set(csp_iic_t *ptIicBase, uint8_t bySpklen);
 
 
 
@@ -240,7 +258,7 @@ void csi_iic_spklen_set(csp_i2c_t *ptIicBase, uint8_t bySpklen);
  *  \param[in] eQualmode: iic slave address qualifier mode
  *  \return error code \ref csi_error_t
  */ 
-void csi_iic_qualmode_set(csp_i2c_t *ptIicBase,i2c_qual_e eQualmode);
+void csi_iic_qualmode_set(csp_iic_t *ptIicBase,iic_qual_e eQualmode);
 
 
 /** \brief  set iic slave address qualifier value
@@ -249,7 +267,7 @@ void csi_iic_qualmode_set(csp_i2c_t *ptIicBase,i2c_qual_e eQualmode);
  *  \param[in] wSlvqual: iic slave address qualifier value
  *  \return error code \ref csi_error_t
  */ 
-void csi_iic_slvqual_set(csp_i2c_t *ptIicBase,uint32_t wSlvqual);
+void csi_iic_slvqual_set(csp_iic_t *ptIicBase,uint32_t wSlvqual);
 
 /** \brief  register iic interrupt callback function
  * 
@@ -257,15 +275,15 @@ void csi_iic_slvqual_set(csp_i2c_t *ptIicBase,uint32_t wSlvqual);
  *  \param[in] callback: iic interrupt handle function
  *  \return error code \ref csi_error_t
  */ 
-csi_error_t csi_iic_register_callback(csp_i2c_t *ptIicBase, csi_iic_callback_id_e eCallBkId,void  *callback);
+csi_error_t csi_iic_register_callback(csp_iic_t *ptIicBase, csi_iic_callback_id_e eCallBkId,void  *callback);
 
-/// \struct csi_i2c_ctrl_t
+/// \struct csi_iic_ctrl_t
 /// \brief  bt control handle, not open to users  
 typedef struct 
 {
-	void(*recv_callback)(csp_i2c_t *ptIicBase, volatile uint8_t *pbyBuf, uint16_t *hwSzie);
-	void(*send_callback)(csp_i2c_t *ptIicBase);
-	void(*other_state_callback)(csp_i2c_t *ptIicBase, uint16_t hwIsr);
+	void(*recv_callback)(csp_iic_t *ptIicBase, volatile uint8_t *pbyBuf, uint16_t *hwSzie);
+	void(*send_callback)(csp_iic_t *ptIicBase);
+	void(*state_callback)(csp_iic_t *ptIicBase, uint16_t hwIsr);
 } csi_iic_ctrl_t;
 
 extern csi_iic_ctrl_t g_tIicCtrl[IIC_IDX];
@@ -277,7 +295,7 @@ extern csi_iic_ctrl_t g_tIicCtrl[IIC_IDX];
  *  \param[in] byIdx: uart idx(0/1/2)
  *  \return none
  */ 
-void csi_iic_irqhandler(csp_i2c_t *ptIicBase, uint8_t byIdx);
+void csi_iic_irqhandler(csp_iic_t *ptIicBase, uint8_t byIdx);
 
 /** \brief iic taddr set
  * 
@@ -285,7 +303,7 @@ void csi_iic_irqhandler(csp_i2c_t *ptIicBase, uint8_t byIdx);
  *  \return none
  */ 
 
-void csi_iic_set_taddr(csp_i2c_t *ptI2cBase, uint32_t wTAddr);
+void csi_iic_set_taddr(csp_iic_t *ptI2cBase, uint32_t wTAddr);
 
 
 
@@ -296,7 +314,7 @@ void csi_iic_set_taddr(csp_i2c_t *ptI2cBase, uint32_t wTAddr);
  *  \param[in] eRxDmaSel: RX DMA function select
  *  \return none
  */ 
-void csi_i2c_set_rxdma(csp_i2c_t *ptI2cBase, i2c_rdma_en_e eRxDmaEn, i2c_rdma_sel_e eRxDmaSel); 
+void csi_iic_set_receive_dma(csp_iic_t *ptI2cBase, iic_rdma_en_e eRxDmaEn, iic_rdma_sel_e eRxDmaSel); 
 
 /** \brief  set iic txdma
  * 
@@ -305,7 +323,7 @@ void csi_i2c_set_rxdma(csp_i2c_t *ptI2cBase, i2c_rdma_en_e eRxDmaEn, i2c_rdma_se
  *  \param[in] eTxDmaSel: TX DMA function select
  *  \return none
  */ 
-void csi_i2c_set_txdma(csp_i2c_t *ptI2cBase, i2c_tdma_en_e eTxDmaEn, i2c_tdma_sel_e eTxDmaSel);
+void csi_iic_set_send_dma(csp_iic_t *ptI2cBase, iic_tdma_en_e eTxDmaEn, iic_tdma_sel_e eTxDmaSel);
 
 /** \brief clear iic interrupt 
  * 
@@ -313,7 +331,7 @@ void csi_i2c_set_txdma(csp_i2c_t *ptI2cBase, i2c_tdma_en_e eTxDmaEn, i2c_tdma_se
  *  \param[in] eIntSrc: iic interrupt source
  *  \return none
  */ 
-void csi_iic_clr_isr(csp_i2c_t *ptI2cBase, csi_iic_intsrc_e eIntSrc);
+void csi_iic_clr_isr(csp_iic_t *ptI2cBase, csi_iic_intsrc_e eIntSrc);
 
 #ifdef __cplusplus
 }

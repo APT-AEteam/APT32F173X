@@ -14,17 +14,18 @@
 #ifndef _SYS_CLK_H_
 #define _SYS_CLK_H_
 
-#include <soc.h>
+#include "soc.h"
 
 typedef enum {
     SRC_IMOSC = 0,
     SRC_EMOSC,
     SRC_HFOSC,
-	SRC_AUTO_HF_PLL,
+	SRC_ISOSC = 4,
+	SRC_ESOSC,
+	SRC_AUTO_HF_PLL = 6,
 	SRC_AUTO_EM_PLL,
-	SRC_MANUAL_PLL,
-	SRC_ISOSC,
-	SRC_ESOSC	
+	SRC_MANUAL_HF_PLL,
+	SRC_MANUAL_EM_PLL,	
 } csi_clk_src_e;
 
 typedef enum {
@@ -109,9 +110,9 @@ typedef struct {
 	uint8_t               byNul;
 	uint8_t               byCkp_Div;
 	uint8_t               byCkq_Div;
-}csi_pll_manual_config_t;
+}csi_pll_config_t;
 
-extern csi_pll_manual_config_t g_tPllClkConfig;
+extern csi_pll_config_t g_tPllClkConfig;
 
 typedef enum{
 	CLO_ISCLK = 0,
@@ -162,7 +163,7 @@ typedef enum {
 	SPI1_SYS_CLK	= 17U,
     SIO0_SYS_CLK	= 20U,
 	SIO1_SYS_CLK	= 21U,
-    I2C_SYS_CLK		= 22U,
+    IIC_SYS_CLK		= 22U,
     CAN_SYS_CLK		= 24U,
 	
 	GPTA0_SYS_CLK	= 33U,
@@ -217,7 +218,7 @@ csi_error_t csi_sysclk_config(csi_clk_config_t tClkCfg);
  *  \param[in] wFreq: pll clk freq 
  *  \return csi_error_t.
  */
- csi_error_t csi_pll_manual_config(csi_pll_manual_config_t tPllCfg,uint32_t wFreq);
+ csi_error_t csi_pll_manual_config(csi_pll_config_t tPllCfg,uint32_t wFreq);
  
 /** \brief PLL clk auto config
  * 
@@ -235,15 +236,15 @@ csi_error_t csi_sysclk_config(csi_clk_config_t tClkCfg);
  */
 csi_error_t csi_clo_config(csi_clo_src_e eCloSrc, csi_clo_div_e eCloDiv);
 
-/** 
-  \brief to set clock status in PM mode 
-   when IWDT is enabled, trying to stop ISOSC in stop mode would be invalid
-   refer to GCER in SYSCON chapter for detailed description
-  \param[in] eClk: clock to be configured
-  \param[in] bEnable: enable or disable
-  \return none.
- */ 
-void csi_clk_pm_enable(csi_clk_pm_e eClk, bool bEnable);
+///** 
+//  \brief to set clock status in PM mode 
+//   when IWDT is enabled, trying to stop ISOSC in stop mode would be invalid
+//   refer to GCER in SYSCON chapter for detailed description
+//  \param[in] eClk: clock to be configured
+//  \param[in] bEnable: enable or disable
+//  \return none.
+// */ 
+//void csi_clk_pm_enable(csi_clk_pm_e eClk, bool bEnable);
 
 
 /** 
@@ -275,12 +276,12 @@ uint32_t csi_get_pclk_freq(void);
 */
 uint32_t soc_get_coret_freq(void);
 
-/**
-  \brief       Soc get bt frequence.
-  \param[in]   byIdx	id of bt
-  \return      bt frequence
-*/
-uint32_t soc_get_bt_freq(uint8_t byIdx);
+///**
+//  \brief       Soc get bt frequence.
+//  \param[in]   byIdx	id of bt
+//  \return      bt frequence
+//*/
+//uint32_t soc_get_bt_freq(uint8_t byIdx);
 
 /*
   \brief       Soc enable device clock

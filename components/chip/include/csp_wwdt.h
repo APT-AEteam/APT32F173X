@@ -11,10 +11,11 @@
  * *********************************************************************
 */
 
-
 #ifndef CSP_WWDT_H
 #define CSP_WWDT_H
 
+/* Includes ------------------------------------------------------------------*/
+#include "soc.h"
 
 /******************************************************************************
 ************************** WWDT Structure Definition ****************************
@@ -92,23 +93,22 @@ static inline uint8_t csp_wwdt_get_psc(csp_wwdt_t *ptWwdtBase)
 
 static inline void csp_wwdt_debug_enable(csp_wwdt_t *ptWwdtBase)
 {
-	ptWwdtBase->CFGR = (ptWwdtBase->CFGR & (~WWDT_DBGEN_MSK)) | (1 << WWDT_DBGEN_POS);
+	ptWwdtBase->CFGR |=  WWDT_DBGEN_MSK;
 }
 
 static inline void csp_wwdt_debug_disable(csp_wwdt_t *ptWwdtBase)
 {
-	ptWwdtBase->CFGR = (ptWwdtBase->CFGR & (~WWDT_DBGEN_MSK)) | (0 << WWDT_DBGEN_POS);
+	ptWwdtBase->CFGR &=  ~WWDT_DBGEN_MSK ;
 }
 
-
-static inline void csp_wwdt_int_enable(csp_wwdt_t *ptWwdtBase)
+static inline void csp_wwdt_int_enable(csp_wwdt_t *ptWwdtBase)  
 {
-	ptWwdtBase->IMCR = (ptWwdtBase->IMCR & (~WWDT_EVI_MSK)) | (1 << WWDT_EVI_POS);
+	ptWwdtBase->IMCR |=WWDT_EVI_MSK;     
 }
 
-static inline void csp_wwdt_int_disable(csp_wwdt_t *ptWwdtBase)
+static inline void csp_wwdt_int_disable(csp_wwdt_t *ptWwdtBase) 
 {
-	ptWwdtBase->IMCR = (ptWwdtBase->IMCR & (~WWDT_EVI_MSK)) | (0 << WWDT_EVI_POS);
+	ptWwdtBase->IMCR &=~WWDT_EVI_MSK;  
 }
 
 static inline void csp_wwdt_clr_isr(csp_wwdt_t *ptWwdtBase)
@@ -128,14 +128,6 @@ static inline uint8_t csp_wwdt_get_cnt(csp_wwdt_t *ptWwdtBase)
 {
 	return (ptWwdtBase->CR & WWDT_CNT_MSK);
 }
-
-//static inline void csp_wwdt_vic_irq_en(void)
-//{
-//	NVIC_EnableIRQ(WWDT_IRQn); 
-//}
-/******************************************************************************
-********************** WWDT External Functions Declaration **********************
-******************************************************************************/
 
 
 

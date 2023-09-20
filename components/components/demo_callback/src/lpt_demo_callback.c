@@ -10,10 +10,7 @@
 */
 /* Includes ---------------------------------------------------------------*/
 
-#include "lpt.h"
-#include "pin.h"
-#include "etcb.h"
-#include "bt.h"
+#include "csi_drv.h"
 #include "board_config.h"
 
 /* externs function--------------------------------------------------------*/
@@ -34,25 +31,28 @@
  */ 
 void user_lpt_callback(csp_lpt_t *ptLptBase, uint8_t byIsr)
 {
-	if(byIsr & LPT_PEND_INT)
+	if(byIsr & LPT_INTSRC_PEND)
 	{
 		csi_gpio_toggle(GPIOA,PA1);						//PA1翻转
 	}
 }
 
-/** \brief lpt timer
- * 
+/** \brief lpt_timer_int_callback_demo：LPT做基本定时器功能demo，使用callback
+* 	\brief  csi接口默认使用(开启)周期结束中断，并在中断里面翻转IO(需要打开PA1IO配置），若不需要开启中断，可调
+ * 			用csi_bt_int_disable接口函数，关闭周期结束中断
  *  \param[in] none
  *  \return error code
  */
-int lpt_timer_callback_demo(void)
+int lpt_timer_int_callback_demo(void)
 {
 	int iRet = 0;
 
 	csi_lpt_time_config_t tTimConfig;
+
+	csi_gpio_set_mux(GPIOA, PA1, PA1_OUTPUT);			//初始化PA1为输出
 	
 	tTimConfig.wTimeVal = 200;					//LPT定时值 = 200ms
-	tTimConfig.eWkMode  = LPT_CNT_CONTINU;		//LPT计数器工作模式，连续
+	tTimConfig.eRunMode  = LPT_CNT_CONT;		//LPT计数器工作模式，连续
 	tTimConfig.eClksrc=LPT_CLK_PCLK_DIV4;  		//LPT时钟源  
 	csi_lpt_timer_init(LPT,&tTimConfig);        //初始化lpt,默认采用PEND中断
 	
@@ -64,34 +64,5 @@ int lpt_timer_callback_demo(void)
 }
 
 
-/** \brief lpt pwm ouput
- * 
- *  \param[in] none
- *  \return error code
- */
-int lpt_pwm_callback_demo(void)
-{
-	int iRet = 0;
-	
-	csi_lpt_pwm_config_t tLptPwmCfg;  	
-#if (USE_GUI == 0)		
-	csi_gpio_set_mux(GPIOB,PB6, PB6_LPT_OUT);	                           //将PB6设为LPT_OUT
-#endif
-
-	tLptPwmCfg.byClksrc = LPT_CLK_PCLK_DIV4;                          //PWM 时钟选择
-	tLptPwmCfg.byStartpol = LPT_PWM_START_LOW;                    //初始低电平
-	tLptPwmCfg.byIdlepol  = LPT_PWM_IDLE_LOW;                     //停止时highZ
-	tLptPwmCfg.byCycle = 30;                                     //PWM 输出占空比(0~100)	
-	tLptPwmCfg.wFreq = 1000;                                     //PWM 输出频率
-	csi_lpt_int_enable(LPT,LPT_INTSRC_PEND);	 //enable PEND interrupt
-	
-	csi_lpt_register_callback(LPT, user_lpt_callback);	//注册中断回调函数
-	
-	if(csi_lpt_pwm_init(LPT, &tLptPwmCfg) == CSI_OK){            //初始化lpt
-
-		csi_lpt_start(LPT);                                      //启动lpt
-	}	
-	return iRet;	
-}
 
 #endif

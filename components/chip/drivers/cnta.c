@@ -32,16 +32,17 @@ csi_error_t csi_cnta_timer_init(csp_cnta_t *ptCntaBase,csi_cnta_timer_config_t *
 	uint8_t byDivTemp = 1;
 	uint32_t wTempLoad = 1;
 	byDivTemp  = ( 0x01 << (ptContaTimerCfg->eClkDiv) );
-	wTempLoad  = (csi_get_pclk_freq() / (byDivTemp * 1000000)) * ptContaTimerCfg->wTime - 1; // (timeout_us / 1000000) = (byDivTemp / pclk) * (tmp_load + 1)
+	wTempLoad  = (csi_get_pclk_freq() / (byDivTemp * 1000000)) * ptContaTimerCfg->wTime - 1;                            // (timeout_us / 1000000) = (byDivTemp / pclk) * (tmp_load + 1)
 	
-	csi_clk_enable((uint32_t *)ptCntaBase);		//cnta clk enable
-    csp_cnta_sw_rst(ptCntaBase);				//default init valu
+	csi_clk_enable((uint32_t *)ptCntaBase);		                                                                        //cnta clk enable
+    csp_cnta_sw_rst(ptCntaBase);				                                                                        //default init valu
 	csp_cnta_set_ckdiv(ptCntaBase,(cnta_ckdiv_e)ptContaTimerCfg->eClkDiv,(cnta_runmode_e)ptContaTimerCfg->eRunMode);	//cnta clk = pclk/eClkDiv
 	
-	csp_cnta_set_datal(ptCntaBase, wTempLoad);				//set CADATAL data
-//    csp_cnta_set_datah(ptCntaBase, wTempLoad);			    //set CADATAH data
+	csp_cnta_set_datal(ptCntaBase, wTempLoad);				                                                            //set CADATAL data
+//    csp_cnta_set_datah(ptCntaBase, wTempLoad);			                                                            //set CADATAH data
 
-	csp_cnta_sw_update_enable(ptCntaBase);	                    //updata CADATAH CADATAL value 
+	csi_cnta_int_enable(CA0, CNTA_INTSRC_PENDL);                                                                        //enable interrupt source
+	csp_cnta_sw_update_enable(ptCntaBase);	                                                                            //updata CADATAH CADATAL value 
 	
 	return CSI_OK;
 }
@@ -71,7 +72,7 @@ void csi_cnta_stop(csp_cnta_t *ptCntaBase)
  *  \param[in] ptCntaBase: pointer of cnta register structure
  *  \return none
  */ 
-void csi_cnta_set_datah_value(csp_cnta_t *ptCntaBase, uint16_t hwData)
+void csi_cnta_set_datah(csp_cnta_t *ptCntaBase, uint16_t hwData)
 {	
 	csp_cnta_set_datah(ptCntaBase, hwData);
 }
@@ -105,8 +106,8 @@ csi_error_t csi_cnta_pwm_init(csp_cnta_t *ptCntaBase,csi_cnta_pwm_config_t *ptCo
 	if(ptContaPwmCfg->wFreq == 0 || ptContaPwmCfg->byDutyCycle == 0 || ptContaPwmCfg->byDutyCycle == 100)
 		return CSI_ERROR;
 		
-	csi_clk_enable((uint32_t *)ptCntaBase);		//cnta clk enable
-    csp_cnta_sw_rst(ptCntaBase);				//default init valu
+	csi_clk_enable((uint32_t *)ptCntaBase);		                             //cnta clk enable
+    csp_cnta_sw_rst(ptCntaBase);				                             //default init valu
 	
 	//byClkDiv = ptContaPwmCfg->eClkDiv;
 	wPeriod = (csi_get_pclk_freq() / ptContaPwmCfg->wFreq) >> ptContaPwmCfg->eClkDiv;
@@ -114,19 +115,19 @@ csi_error_t csi_cnta_pwm_init(csp_cnta_t *ptCntaBase,csi_cnta_pwm_config_t *ptCo
 	if(wPeriod * ptContaPwmCfg->byDutyCycle < 300)
 		wDatahLoad = 0x00;
 	else
-		wDatahLoad = wPeriod * ptContaPwmCfg->byDutyCycle / 100 - 3 ;//convert count-mode need 3 cycles
+		wDatahLoad = wPeriod * ptContaPwmCfg->byDutyCycle / 100 - 3 ;        //convert count-mode need 3 cycles
 		
 	if(wPeriod * (100 - ptContaPwmCfg->byDutyCycle) < 300)	
 		wDatalLoad = 0x00;
 	else
 		wDatalLoad = wPeriod * (100 - ptContaPwmCfg->byDutyCycle) / 100 - 3 ;//convert count-mode need 3 cycles
 	
-	if(ptContaPwmCfg->byStartLevel == CNTA_POLAR_LOW)			//initial polarity
+	if(ptContaPwmCfg->byStartLevel == CNTA_POLAR_LOW)			             //initial polarity
 		eOsp = CNTA_OSP_LOW;
 	else if(ptContaPwmCfg->byStartLevel == CNTA_POLAR_HIGH)
 		eOsp = CNTA_OSP_HIGH;
 		
-	if(ptContaPwmCfg->byStopLevel == CNTA_STOP_LOW)				//stop output level
+	if(ptContaPwmCfg->byStopLevel == CNTA_STOP_LOW)				             //stop output level
 		eRemStat = CNTA_REMSTAT_LOW;
 	else if(ptContaPwmCfg->byStopLevel == CNTA_STOP_HIGH)
 		eRemStat = CNTA_REMSTAT_HIGH;

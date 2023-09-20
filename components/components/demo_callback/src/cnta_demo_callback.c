@@ -43,7 +43,7 @@ void cnta_callback(csp_cnta_t *ptCntaBase)
  *  \param[in]  无参数
  *  \return     返回int类型
  */
-int cnta_timer_callback_demo(void)
+int cnta_timer_int_callback_demo(void)
 {	
 	int iRet = 0;
 	csi_cnta_timer_config_t tTimerCfg;
@@ -59,7 +59,6 @@ int cnta_timer_callback_demo(void)
 	tTimerCfg.eRunMode = CNTA_RUN_CONT;                      //重复模式
 	csi_cnta_timer_init(CA0,&tTimerCfg);                     //初始化CountA
 	
-	csi_cnta_int_enable(CA0, CNTA_INTSRC_PENDL);             //若需使用中断，请调该接口使能对应中断，这里使用PENDL中断
 	csi_cnta_register_callback(CA0, cnta_callback);	         //注册中断回调函数
 	
 	csi_cnta_start(CA0);                                     //启动CountA

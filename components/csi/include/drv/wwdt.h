@@ -35,7 +35,7 @@ typedef enum
 /// \brief  wwdt control handle, not open to users  
 typedef struct 
 {
-    void(*callback)(csp_wwdt_t *ptBtBase, uint8_t byIsr);
+    void(*callback)(csp_wwdt_t *ptBtBase);
 } csi_wwdt_ctrl_t;
 
 extern csi_wwdt_ctrl_t g_tWwdtCtrl[WWDT_IDX];

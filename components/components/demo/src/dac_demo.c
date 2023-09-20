@@ -9,9 +9,9 @@
  * *********************************************************************
 */
 /* Includes ---------------------------------------------------------------*/
-#include "drv/dac.h"
-#include "pin.h"
+#include "csi_drv.h"
 #include "board_config.h"
+
 /* externs function--------------------------------------------------------*/
 /* externs variablesr------------------------------------------------------*/
 /* Private macro-----------------------------------------------------------*/
@@ -53,6 +53,7 @@ ATTRIBUTE_ISR  void dac0_int_handler(void)
  */
 void dac_demo(void)	
 {
+	csi_dac_config_t tDacConfig;
 #if (USE_GUI == 0)	
 	//dac 输出管脚配置
 	csi_gpio_set_mux(GPIOA,PA4,PA4_DAC0_OUT);	
@@ -60,11 +61,11 @@ void dac_demo(void)
 	csi_gpio_output_mode(GPIOA,PA8,GPIO_OPEN_DRAIN);
 #endif	
 	//dac 参数配置初始化
-	csi_dac_config_t tDacConfig;
-	tDacConfig.byClkDiv 	= 0x02;				//DAC clk两分频：FCK = FHCLK / 2
-	tDacConfig.bRefsel	 	= DISABLE;			//DAC 参考电平选择
-	tDacConfig.hwDatarset 	= 0x00;				//DAC 电平码值设置
-	tDacConfig.bBufen 		= ENABLE;			//DAC BUF enable时，PA4输出，BUF disable时，PA8输出	
+
+	tDacConfig.byClkDiv 	= 0x02;					//DAC clk两分频：FCK = FHCLK / 2
+	tDacConfig.bRefsel	 	= DISABLE;				//DAC 参考电平选择
+	tDacConfig.hwDatarset 	= 0x00;					//DAC 电平码值设置
+	tDacConfig.bBufen 		= ENABLE;				//DAC BUF enable时，PA4输出，BUF disable时，PA8输出	
 	csi_dac_init(DAC0, &tDacConfig);
 	
 	csi_dac_enable(DAC0);
@@ -77,30 +78,31 @@ void dac_demo(void)
  */
 void dac_sync_demo(void)	
 {
+	csi_dac_config_t tDacConfig;
 #if (USE_GUI == 0)
 	//dac 输出管脚配置
 	csi_gpio_set_mux(GPIOA,PA4,PA4_DAC0_OUT);	
 	csi_gpio_set_mux(GPIOA,PA8,PA8_DAC0_OUT);
 	csi_gpio_output_mode(GPIOA,PA8,GPIO_OPEN_DRAIN);
-#endif	
+#endif
+
 	//dac 参数配置初始化
-	csi_dac_config_t tDacConfig;
-	tDacConfig.byClkDiv 	= 0x02;				//DAC clk两分频：FCK = FHCLK / 2
-	tDacConfig.bRefsel	 	= DISABLE;			//DAC 参考电平选择
-	tDacConfig.hwDatarset 	= 0x00;				//DAC 电平码值设置
-	tDacConfig.bBufen 		= ENABLE;			//DAC BUF enable时，PA4输出，BUF disable时，PA8输出
+	tDacConfig.byClkDiv 	= 0x02;					//DAC clk两分频：FCK = FHCLK / 2
+	tDacConfig.bRefsel	 	= DISABLE;				//DAC 参考电平选择
+	tDacConfig.hwDatarset 	= 0x00;					//DAC 电平码值设置
+	tDacConfig.bBufen 		= ENABLE;				//DAC BUF enable时，PA4输出，BUF disable时，PA8输出
 	csi_dac_init(DAC0, &tDacConfig);
 	
 	csi_dac_enable(DAC0);
 	
 	csi_dac_int_enable(DAC0, DAC_INTSRC_EOC);		//使能EOC中断
-	csi_dac_int_enable(DAC0, DAC_INTSRC_WRERR);	//使能WRERR中断
+	csi_dac_int_enable(DAC0, DAC_INTSRC_WRERR);		//使能WRERR中断
 	csi_dac_int_enable(DAC0, DAC_INTSRC_SYNCERR);	//使能SYNCERR中断
 	
-	csi_dac_sync_enable(DAC0, SYNCIN0);//开启DAC_SYNCIN0触发
-	csi_dac_sync_enable(DAC0, SYNCIN1);//开启DAC_SYNCIN1触发
-	csi_dac_sync_enable(DAC0, SYNCIN2);//开启DAC_SYNCIN2触发
-	csi_dac_set_step(DAC0, 409);//设置触发增减值
+	csi_dac_sync_enable(DAC0, DAC_SYNCIN0);			//开启DAC_SYNCIN0触发
+	csi_dac_sync_enable(DAC0, DAC_SYNCIN1);			//开启DAC_SYNCIN1触发
+	csi_dac_sync_enable(DAC0, DAC_SYNCIN2);			//开启DAC_SYNCIN2触发
+	csi_dac_set_step(DAC0, 409);					//设置触发增减值
 	
 	csi_dac_start(DAC0);
 }

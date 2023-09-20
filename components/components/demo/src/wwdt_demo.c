@@ -12,7 +12,7 @@
 */
 
 /* include ----------------------------------------------------------------*/
-#include "wwdt.h"
+#include "csi_drv.h"
 #include "iostring.h"
 #include "board_config.h"
 
@@ -49,29 +49,20 @@
  
 csi_error_t wwdt_demo(void)
 {
-	volatile uint32_t temp1, temp2, temp3;	
+	volatile uint32_t temp;	
 	
 	csi_wwdt_init(80);							//设置timeout时间为80ms 时间设置过大 会返回错误
 	csi_wwdt_debug_enable(WWDT);				//可以配置在debug模式下，wdt是否继续计时		
 	csi_wwdt_set_window_time(40);				//设置窗口值为40ms
 //	csi_wwdt_int_enable( );                     //中断使能
-
+	
 	csi_wwdt_open();							//WWDT一旦使能，软件将不能停止
-	mdelay(2);
-	temp1 = csi_wwdt_get_remaining_time();
-	if (temp1 < 77 || temp1 >79)
-		return CSI_ERROR;
 	
 	//csi_wwdt_feed();							//如果在这里（窗口外）喂狗，将会引起芯片复位
 	
-	mdelay(62);
-	temp2 = csi_wwdt_get_remaining_time(); 		//读取剩余时间
-	if (temp2 < 14 || temp2 >17)
-		return CSI_ERROR;
-	
 	while(1) {
-		temp3 = csi_wwdt_get_remaining_time() ;
-		if (temp3< 30) {						//此处仅为示例喂狗操作。实际应用需要对代码运行时间有全局的了解。只有在窗口内喂狗，芯片才不会复位
+		temp = csi_wwdt_get_remaining_time() ;
+		if (temp< 30) {						//此处仅为示例喂狗操作。实际应用需要对代码运行时间有全局的了解。只有在窗口内喂狗，芯片才不会复位
 			csi_wwdt_feed();			
 			if (csi_wwdt_get_remaining_time()  < 79) {
 				return CSI_ERROR;

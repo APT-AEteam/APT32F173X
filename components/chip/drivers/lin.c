@@ -13,7 +13,7 @@
 #include "drv/lin.h"
 #include "drv/tick.h"
 #include "drv/usart.h"
-#include "csp_usart.h"
+
 
 /* LIN ID introduction------------------------------------------------*/
 //Frame ID: 0x00-0x3B, 信号携带帧，包含：无条件/事件触发/偶发帧
@@ -230,6 +230,7 @@ void csi_lin_int_enable(csp_lin_t *ptLinBase, csi_lin_intsrc_e eIntSrc)
  */ 
 void csi_lin_int_disable(csp_lin_t *ptLinBase, csi_lin_intsrc_e eIntSrc)
 {
+	csp_usart_clr_isr(ptLinBase, (usart_int_e)eIntSrc);
 	csp_usart_int_disable(ptLinBase, (usart_int_e)eIntSrc);
 }
 

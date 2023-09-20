@@ -11,7 +11,7 @@
 
 /* Includes ---------------------------------------------------------------*/
 
-#include <drv/dma.h>
+#include "drv/dma.h"
 
 
 /* Private macro-----------------------------------------------------------*/
@@ -185,6 +185,7 @@ void csi_dma_int_enable(csp_dma_t *ptDmaBase, csi_dma_ch_e eDmaCh, csi_dma_intsr
 {
 	csp_dma_t *ptDmaChBase = (csp_dma_t *)DMA_REG_BASE(ptDmaBase, eDmaCh);
 	
+	csp_dma_clr_isr(ptDmaChBase, (dma_int_e)eIntSrc);
 	csp_dma_int_enable(ptDmaChBase, (dma_int_e)eIntSrc);
 }
 
@@ -246,7 +247,7 @@ void csi_dma_sw_rst(csp_dma_t *ptDmaBase)
 bool csi_dma_get_msg(csp_dma_t *ptDmaBase, csi_dma_ch_e eDmaCh, bool bClrEn)
 {
 	bool bRet = false;
-	uint8_t byIdx = csi_get_dma_idx(ptDmaBase);
+	uint8_t byIdx = apt_get_dma_idx(ptDmaBase);
 	
 	if(0 != (s_hwDmaMsg[byIdx] & (0x01ul << eDmaCh))) 
 	{

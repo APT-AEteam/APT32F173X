@@ -10,7 +10,7 @@
  * </table>
  * *********************************************************************
 */
-#include <drv/lpt.h>
+#include "drv/lpt.h"
 #include "board_config.h"
 
 /* Private macro-----------------------------------------------------------*/
@@ -20,7 +20,7 @@
 /* Global variablesr------------------------------------------------------*/
 csi_lpt_ctrl_t g_tLptCtrl[LPT_IDX];
 
-uint32_t g_wLptPrd = 0;
+int32_t g_wLptPrd = 0;
 
 /** \brief get lpt clk
  * 
@@ -59,7 +59,7 @@ static uint32_t apt_get_lpt_clk(csi_lpt_clksrc_e eClk)
 			wLptClk = EMOSC_VALUE;
 			break;
 		case (LPT_CLK_ESCLK): 
-			csi_esosc_enable(ESOSC_VALUE);
+			csi_esosc_enable();
 			wLptClk = ESOSC_VALUE;
 			break;
 
@@ -74,7 +74,7 @@ static uint32_t apt_get_lpt_clk(csi_lpt_clksrc_e eClk)
  *  \param[in] wMult_t: converted wMult value 
  *  \return lpt prd
  */ 
-static uint32_t apt_set_lpt_clk(csp_lpt_t *ptLptBase,csi_lpt_clksrc_e eClk,uint32_t wMult_t)
+static int32_t apt_set_lpt_clk(csp_lpt_t *ptLptBase,csi_lpt_clksrc_e eClk,uint32_t wMult_t)
 {
 	uint32_t hg_wLptPrd,wDiv = 0;
 	lpt_pscdiv_e ePscDiv;
@@ -120,7 +120,7 @@ static uint32_t apt_set_lpt_clk(csp_lpt_t *ptLptBase,csi_lpt_clksrc_e eClk,uint3
 	}
 	else
 	{
-		return ERR_LPT_CLK;	 		
+		return CSI_UNSUPPORTED;	 		
 	}
 	wDiv = 1<<ePscDiv;
 	csp_lpt_set_clk(ptLptBase, (lpt_css_e) eClk, ePscDiv);
@@ -135,8 +135,8 @@ static uint32_t apt_set_lpt_clk(csp_lpt_t *ptLptBase,csi_lpt_clksrc_e eClk,uint3
 */
 void csi_lpt_int_enable(csp_lpt_t *ptLptBase, csi_lpt_intsrc_e eLptInt)
 {
+	csp_lpt_clr_isr(ptLptBase, (lpt_int_e)eLptInt);
 	csp_lpt_int_enable(ptLptBase,(lpt_int_e)eLptInt);
-//	csi_irq_enable((uint32_t *)ptLptBase);
 }
 
 /**
@@ -148,39 +148,33 @@ void csi_lpt_int_disable(csp_lpt_t *ptLptBase, csi_lpt_intsrc_e eLptInt)
 {
 
 	csp_lpt_int_disable(ptLptBase, (lpt_int_e)eLptInt);
-//	if (eLptInt == csp_lpt_get_imcr(ptLptBase)) 
-//	{
-//		csi_irq_disable((uint32_t *)ptLptBase);
-//	}
 }
 
 /** \brief initialize lpt data structure
  *  \param[in] ptLptBase:pointer of lpt register structure
  *  \param[in] ptLptTimCfg: ptLptTimCfg: pointer of lpt timing parameter config structure
- *             - wTimeVal: timing value, unit: us
- *             - eWkMode: lpt count work mode, \ref csi_lpt_wkmode_e
- *             - eClksrc: Clock Source, \ref csi_lpt_clksrc_e
+ *              - wTimeVal: timing value, unit: us
+ *              - eWkMode: lpt count work mode, \ref csi_lpt_wkmode_e
+ *              - eClksrc: Clock Source, \ref csi_lpt_clksrc_e
  *  \return error code \ref csi_error_t
  */ 
 csi_error_t csi_lpt_timer_init(csp_lpt_t *ptLptBase,csi_lpt_time_config_t *ptLptTimCfg)
 {
-	CSI_PARAM_CHK(ptLptBase, CSI_ERROR);
-	
+
 	uint32_t wLptClk =0, wMult = 0;
 	csi_error_t tRet = CSI_OK;
 	
 	csi_clk_enable((uint32_t *)ptLptBase);
-	csp_lpt_soft_rst(ptLptBase);
-	csp_lpt_clk_enable(ptLptBase, ENABLE);
+	csp_lpt_sw_rst(ptLptBase);
+	csp_lpt_clk_enable(ptLptBase);
 	
-	csp_lpt_set_opmd(ptLptBase, (lpt_opm_e) ptLptTimCfg->eWkMode);
+	csp_lpt_set_opmd(ptLptBase, (lpt_opm_e) ptLptTimCfg->eRunMode);
 	
 	wLptClk = apt_get_lpt_clk(ptLptTimCfg->eClksrc);
-//	wLptClk = 2000000;
 	wMult = wLptClk/1000*ptLptTimCfg->wTimeVal;
 		
 	g_wLptPrd = apt_set_lpt_clk(ptLptBase,ptLptTimCfg->eClksrc,wMult);
-	if(g_wLptPrd == ERR_LPT_CLK)
+	if(g_wLptPrd == CSI_UNSUPPORTED)
 	{
 		tRet = CSI_UNSUPPORTED;
 	}
@@ -188,21 +182,9 @@ csi_error_t csi_lpt_timer_init(csp_lpt_t *ptLptBase,csi_lpt_time_config_t *ptLpt
 	{
 		csp_lpt_set_prdr(ptLptBase, (uint16_t)g_wLptPrd);
 	}
-	csi_lpt_int_enable(ptLptBase,LPT_INTSRC_PEND);	 //enable PEND interrupt
-	
+	csi_lpt_int_enable(ptLptBase,LPT_INTSRC_PEND);	 //enable PEND interrupt  
 	
 	return tRet;	
-}
-
-/** \brief de-initialize lpt interface
- * 
- *  \param[in] ptLptBase:pointer of lpt register structure
- *  \return none
- */ 
-void csi_lpt_uninit(csp_lpt_t *ptLptBase)
-{
-    CSI_PARAM_CHK_NORETVAL(ptLptBase);
-    csp_lpt_soft_rst(ptLptBase);
 }
 
 /** \brief stop lpt
@@ -212,7 +194,6 @@ void csi_lpt_uninit(csp_lpt_t *ptLptBase)
  */ 
 void csi_lpt_stop(csp_lpt_t *ptLptBase)
 {
-    CSI_PARAM_CHK_NORETVAL(ptLptBase);
 	
     csp_lpt_stop(ptLptBase);
 }
@@ -224,8 +205,6 @@ void csi_lpt_stop(csp_lpt_t *ptLptBase)
  */ 
 uint32_t csi_lpt_get_remaining_value(csp_lpt_t *ptLptBase)
 {
-    CSI_PARAM_CHK(ptLptBase, 0U);
-	
 	uint16_t hwTimeVal = 0;
 	
     hwTimeVal = csp_lpt_get_prdr(ptLptBase) - csp_lpt_get_cnt(ptLptBase);
@@ -240,8 +219,6 @@ uint32_t csi_lpt_get_remaining_value(csp_lpt_t *ptLptBase)
  */ 
 uint32_t csi_lpt_get_load_value(csp_lpt_t *ptLptBase)
 {
-    CSI_PARAM_CHK(ptLptBase, 0U);
-
 	return csp_lpt_get_prdr(ptLptBase);
 }
 
@@ -252,8 +229,6 @@ uint32_t csi_lpt_get_load_value(csp_lpt_t *ptLptBase)
  */ 
 bool csi_lpt_is_running(csp_lpt_t *ptLptBase)
 {
-	CSI_PARAM_CHK(ptLptBase, false);
-
     return (csp_lpt_get_work_state(ptLptBase) ? true : false);
 }
 
@@ -282,14 +257,12 @@ void csi_lpt_pwm_para_update(csp_lpt_t *ptLptBase, uint16_t hwCmp, uint16_t hwPr
  *  \param[in] bySync: sync select
  *  \return error code \ref csi_error_t
  */
-csi_error_t csi_lpt_rearm_sync(csp_lpt_t *ptLptBase, uint8_t bySync)
+csi_error_t csi_lpt_rearm_sync(csp_lpt_t *ptLptBase, csi_lpt_syncin_e eSync)
 {
-	CSI_PARAM_CHK(ptLptBase, CSI_ERROR);
-
     csi_error_t ret = CSI_OK;
-	if(bySync > 0)
+	if(eSync > 0)
 		return CSI_ERROR;
-	csp_lpt_rearm_sync(ptLptBase);
+	csp_lpt_sync_rearm(ptLptBase);
 	
 	return ret;
 }
@@ -303,9 +276,7 @@ csi_error_t csi_lpt_rearm_sync(csp_lpt_t *ptLptBase, uint8_t bySync)
  */
 csi_error_t csi_lpt_set_evtrg(csp_lpt_t *ptLptBase, uint8_t byEvtrg, csi_lpt_trgsrc_e eTrgsrc, uint8_t byTrgprd)
 {
-	CSI_PARAM_CHK(ptLptBase, CSI_ERROR);
-
-    csi_error_t ret = CSI_OK;
+	csi_error_t ret = CSI_OK;
 	if(byEvtrg > 0)
 		return CSI_ERROR;
 	
@@ -322,7 +293,7 @@ csi_error_t csi_lpt_set_evtrg(csp_lpt_t *ptLptBase, uint8_t byEvtrg, csi_lpt_trg
  */
 void csi_lpt_trg_enable(csp_lpt_t *ptLptBase)
 {
-	csp_lpt_trg_enable(ptLptBase);
+	csp_lpt_evtrg_enable(ptLptBase);
 }
 
 /** \brief LPT trigger enable control
@@ -332,7 +303,7 @@ void csi_lpt_trg_enable(csp_lpt_t *ptLptBase)
  */
 void csi_lpt_trg_disable(csp_lpt_t *ptLptBase)
 {
-	csp_lpt_trg_disable(ptLptBase);
+	csp_lpt_evtrg_disable(ptLptBase);
 }
 
 /** \brief lpt set frequency 
@@ -373,31 +344,28 @@ csi_error_t csi_lpt_set_fre(csp_lpt_t *ptLptBase, csi_lpt_clksrc_e eClk, uint16_
  */
 csi_error_t csi_lpt_pwm_init(csp_lpt_t *ptLptBase, csi_lpt_pwm_config_t *ptLptPara)
 {
-	CSI_PARAM_CHK(ptLptBase, CSI_ERROR);
-	
 	csi_error_t tRet = CSI_OK;
 	uint32_t wLptClk = 0,wMult = 0,hwCmp = 0;
 	
 	csi_clk_enable((uint32_t *)ptLptBase);
-	csp_lpt_soft_rst(ptLptBase);
-	csp_lpt_clk_enable(ptLptBase, ENABLE);
+	csp_lpt_sw_rst(ptLptBase);
+	csp_lpt_clk_enable(ptLptBase);
 	
 	csp_lpt_set_opmd(ptLptBase, LPT_OPM_CONT);
-	csp_lpt_stopshadow_enable(ptLptBase, ENABLE);
-	csp_lpt_set_pol(ptLptBase, ptLptPara->byStartpol);
-	csp_lpt_set_idle_st(ptLptBase, ptLptPara->byIdlepol);
-	csp_lpt_out_enable(ptLptBase, ENABLE);
+	csp_lpt_stopshadow_enable(ptLptBase);
+	csp_lpt_set_pol(ptLptBase, ptLptPara->eStartPol);
+	csp_lpt_set_idle_st(ptLptBase, ptLptPara->eIdlePol);
+	csp_lpt_out_enable(ptLptBase);
 
 	
 	if(ptLptPara->wFreq== 0 )
 		return CSI_ERROR;
 		
-	wLptClk = apt_get_lpt_clk(ptLptPara->byClksrc);
-//	wLptClk = 12000000;
+	wLptClk = apt_get_lpt_clk(ptLptPara->eClkSrc);
 
 	wMult = wLptClk/ptLptPara->wFreq;
 	
-	g_wLptPrd = apt_set_lpt_clk(ptLptBase,ptLptPara->byClksrc,wMult);	
+	g_wLptPrd = apt_set_lpt_clk(ptLptBase,ptLptPara->eClkSrc,wMult);	
 	
 	if(g_wLptPrd == ERR_LPT_CLK)
 	{
@@ -407,13 +375,13 @@ csi_error_t csi_lpt_pwm_init(csp_lpt_t *ptLptBase, csi_lpt_pwm_config_t *ptLptPa
 	{
 		csp_lpt_set_prdr(ptLptBase, (uint16_t)g_wLptPrd);
 		
-		if(ptLptPara->byCycle >= 100)
+		if(ptLptPara->byDutyCycle >= 100)
 		{
 			hwCmp = g_wLptPrd + 1;
 		}
 		else
 		{
-			hwCmp = g_wLptPrd*ptLptPara->byCycle/100;		
+			hwCmp = g_wLptPrd*ptLptPara->byDutyCycle/100;		
 		}
 		csp_lpt_set_cmp(ptLptBase, (uint16_t)hwCmp);
 		
@@ -430,8 +398,6 @@ csi_error_t csi_lpt_pwm_init(csp_lpt_t *ptLptBase, csi_lpt_pwm_config_t *ptLptPa
  */
 csi_error_t csi_lpt_pwm_start_sync(csp_lpt_t *ptLptBase, csi_lpt_pwm_config_t *ptLptPara) 
 {
-	CSI_PARAM_CHK(ptLptBase, CSI_ERROR);
-	
 	csi_error_t tRet = CSI_OK;
 	uint32_t wLptClk = 0,wMult = 0 ,hwCmp = 0;
 	
@@ -439,12 +405,12 @@ csi_error_t csi_lpt_pwm_start_sync(csp_lpt_t *ptLptBase, csi_lpt_pwm_config_t *p
 		return CSI_ERROR;
 	
 	csi_clk_enable((uint32_t *)ptLptBase);
-	csp_lpt_soft_rst(ptLptBase);
-	csp_lpt_clk_enable(ptLptBase, ENABLE);
+	csp_lpt_sw_rst(ptLptBase);
+	csp_lpt_clk_enable(ptLptBase);
 	
-	wLptClk = apt_get_lpt_clk(ptLptPara->byClksrc);
+	wLptClk = apt_get_lpt_clk(ptLptPara->eClkSrc);
 	wMult = wLptClk/ptLptPara->wFreq;
-	g_wLptPrd = apt_set_lpt_clk(ptLptBase,ptLptPara->byClksrc,wMult);	
+	g_wLptPrd = apt_set_lpt_clk(ptLptBase,ptLptPara->eClkSrc,wMult);	
 	if(g_wLptPrd == ERR_LPT_CLK)
 	{
 		tRet = CSI_UNSUPPORTED;
@@ -453,20 +419,21 @@ csi_error_t csi_lpt_pwm_start_sync(csp_lpt_t *ptLptBase, csi_lpt_pwm_config_t *p
 	{
 		csp_lpt_set_prdr(ptLptBase, (uint16_t)g_wLptPrd);
 		
-		if(ptLptPara->byCycle >= 100)
+		if(ptLptPara->byDutyCycle >= 100)
 		{
 			hwCmp = g_wLptPrd + 1;
 		}
 		else
 		{
-			hwCmp = g_wLptPrd*ptLptPara->byCycle/100;		
+			hwCmp = g_wLptPrd*ptLptPara->byDutyCycle/100;		
 		}
 		csp_lpt_prdr_ldmode(ptLptBase, LPT_PRDLD_IM);
 		csp_lpt_cmp_ldmode(ptLptBase, LPT_CMPLD_IM);
 		csp_lpt_set_prdr(ptLptBase, (uint16_t)g_wLptPrd);
 		csp_lpt_set_cmp(ptLptBase, (uint16_t)hwCmp);
 		
-		csp_lpt_set_start_im_enable(ptLptBase, ENABLE);
+		csp_lpt_immediate_start(ptLptBase, ENABLE);
+		
 	}
 	return tRet;	
 
@@ -503,8 +470,8 @@ csi_error_t csi_lpt_change_duty(csp_lpt_t *ptLptBase, uint32_t wDutyCycle)
 csi_error_t csi_lpt_start(csp_lpt_t *ptLptBase)
 {
 	csp_lpt_sw_start(ptLptBase);
-	csp_lpt_set_start_im_enable(ptLptBase, ENABLE);
-	csp_lpt_swsync_enable(ptLptBase);
+	csp_lpt_immediate_start(ptLptBase, ENABLE);
+	csp_lpt_start_mode(ptLptBase,LPT_SYNC);
 	return CSI_OK;
 }
 
@@ -521,8 +488,8 @@ csi_error_t csi_lpt_start_sync(csp_lpt_t *ptLptBase, csi_lpt_clksrc_e eClk, uint
 	csi_error_t tRet = CSI_OK;
 	
 	csi_clk_enable((uint32_t *)ptLptBase);
-	csp_lpt_soft_rst(ptLptBase);
-	csp_lpt_clk_enable(ptLptBase, ENABLE);	
+	csp_lpt_sw_rst(ptLptBase);
+	csp_lpt_clk_enable(ptLptBase);	
 	
 	wLptClk = apt_get_lpt_clk(eClk);
 	wMult = wLptClk/1000*wTimeMs;
@@ -545,17 +512,21 @@ csi_error_t csi_lpt_start_sync(csp_lpt_t *ptLptBase, csi_lpt_clksrc_e eClk, uint
 /** \brief lpt sync config  
  * 
  *  \param[in] ptLptBase:pointer of lpt register structure
- *  \param[in] bySync: select sync
+ *  \param[in] eSync: select sync ÓÃÃ¶¾Ù
  *  \param[in] eSyncMode: LPT_TRG_CONT/LPT_TRG_ONCE
  *  \param[in] bARearmEnable: auto rearm enable/disable
  *  \return error code \ref csi_error_t
  */
-csi_error_t csi_lpt_set_sync(csp_lpt_t *ptLptBase, uint8_t bySync, csi_lpt_syncmode_e eSyncMode, bool bARearmEnable)
+ 
+csi_error_t csi_lpt_set_sync(csp_lpt_t *ptLptBase, csi_lpt_syncin_e eSync, csi_lpt_syncmode_e eSyncMode, bool bARearmEnable)
 {
-	if(bySync > 0)
+	if(eSync > 0)
 		return CSI_ERROR;		
 	csp_lpt_set_sync_mode(ptLptBase, (lpt_syncmd_e)eSyncMode);
-	csp_lpt_auto_rearm_enable(ptLptBase, bARearmEnable);
+	if(bARearmEnable==1)
+		csp_lpt_autorearm_enable(ptLptBase);
+	else
+		csp_lpt_autorearm_enable(ptLptBase);
 	return CSI_OK;
 }
 
@@ -580,36 +551,17 @@ void csi_lpt_sync_disable(csp_lpt_t *ptLptBase)
 }
 
 
-/** \brief LPT software sync enable control
- * 
- *  \param[in] ptLptBase:pointer of lpt register structure
- *  \return void
- */
-void csi_lpt_swsync_enable(csp_lpt_t *ptLptBase)
-{
-	csp_lpt_swsync_enable(ptLptBase);
-}
-
-/** \brief LPT software sync enable control
- * 
- *  \param[in] ptLptBase:pointer of lpt register structure
- *  \return void
- */
-void csi_lpt_swsync_disable(csp_lpt_t *ptLptBase)
-{
-	csp_lpt_swsync_disable(ptLptBase);
-}
 
 /** \brief lpt software generates a trigger event
  * 
  *  \param[in] ptLptBase:pointer of lpt register structure
  *  \return none
  */
-void csi_lpt_soft_evtrg(csp_lpt_t *ptLptBase)
+void csi_lpt_sw_evtrg(csp_lpt_t *ptLptBase)
 {
 	csi_clk_enable((uint32_t *)ptLptBase);										
-	csp_lpt_trg_enable(ptLptBase);
-	csp_lpt_evswf_en(ptLptBase);
+	csp_lpt_evtrg_enable(ptLptBase);
+	csp_lpt_sw_evtrg(ptLptBase);
 }
 
 
@@ -637,22 +589,9 @@ csi_error_t csi_lpt_set_sync_window(csp_lpt_t *ptLptBase, bool bCrossEnable, boo
 	
 	csp_lpt_set_sync_offset(ptLptBase, (uint16_t)wOffset);
 	csp_lpt_set_sync_window(ptLptBase, (uint16_t)wWindow);	
-	csp_lpt_sync_window_enable(ptLptBase, ENABLE);
+	csp_lpt_sync_window_enable(ptLptBase);
 	
 	return CSI_OK;
-//	
-//	hwOffset = g_wLptPrd * hwOffsetRate/100;
-//	hwWindow = g_wLptPrd * hwWindowRate/100;
-//	
-//	if (hwOffsetRate + hwWindowRate > 100)
-//			csp_lpt_sync_window_cross_enable(ptLptBase, ENABLE);
-//	else
-//			csp_lpt_sync_window_cross_enable(ptLptBase, DISABLE);
-//			
-//	csp_lpt_set_sync_offset(ptLptBase, hwOffset);
-//	csp_lpt_set_sync_window(ptLptBase, hwWindow);
-//	
-//	csp_lpt_sync_window_enable(ptLptBase, ENABLE);
 
 
 }
@@ -702,7 +641,7 @@ void csi_lpt_irqhandler(csp_lpt_t *ptLptBase, uint8_t byIdx)
 	uint8_t byIsr = csp_lpt_get_isr(ptLptBase);
 	
 	if(g_tLptCtrl[byIdx].callback)
-			g_tLptCtrl[byIdx].callback(ptLptBase, byIsr);
+		g_tLptCtrl[byIdx].callback(ptLptBase, byIsr);
 			
 	csp_lpt_clr_isr(ptLptBase, byIsr);
 }

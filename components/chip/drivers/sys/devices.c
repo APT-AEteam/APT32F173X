@@ -8,20 +8,10 @@
  * </table>
  * *********************************************************************
 */
-//#include <csi_config.h>
-#include <stdio.h>
-#include <soc.h>
-#include <sys_clk.h>
-#include <drv/uart.h>
-#include <drv/bt.h>
-#include <drv/dma.h>
-#include <drv/iic.h>
-#include <drv/rtc.h>
-#include <drv/spi.h>
-#include <drv/adc.h>
-#include <drv/gpio.h>
-#include <drv/irq.h>
-#include <drv/pin.h>
+
+#include "soc.h"
+#include "sys_clk.h"
+
 
 
 const csi_irqmap_t g_tIrqMap[] = {
@@ -51,7 +41,7 @@ const csi_irqmap_t g_tIrqMap[] = {
 	{APB_UART2_BASE,           	UART2_IRQn		},
 	{APB_SIO0_BASE,             SIO0_IRQn		},
 	{APB_SIO1_BASE,             SIO1_IRQn		},
-	{APB_I2C0_BASE,             I2C_IRQn		},
+	{APB_IIC0_BASE,             IIC_IRQn		},
 	{APB_SPI0_BASE,             SPI0_IRQn		},
 	{APB_SPI1_BASE,             SPI1_IRQn		},
 	{APB_CNTA_BASE,            	CNTA_IRQn		},
@@ -85,7 +75,7 @@ const csi_clkmap_t g_tClkMap[] = {
 	{APB_SPI1_BASE,				SPI1_SYS_CLK	},
     {APB_SIO0_BASE,				SIO0_SYS_CLK	},
 	{APB_SIO1_BASE,				SIO1_SYS_CLK	},
-    {APB_I2C0_BASE,				I2C_SYS_CLK		},
+    {APB_IIC0_BASE,				IIC_SYS_CLK		},
     {APB_CAN_BASE,				CAN_SYS_CLK		},	
     {APB_GPTA0_BASE,			GPTA0_SYS_CLK	},		
     {APB_GPTA1_BASE,			GPTA1_SYS_CLK	},		
