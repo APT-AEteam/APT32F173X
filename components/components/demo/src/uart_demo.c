@@ -21,7 +21,7 @@ static uint8_t s_byRecvBuf[64]={0};			//receive buf
 static uint8_t s_bySendBuf[30]={1,2,3,4,5,6,7,8,9,21,22,23,24,25,26,27,28,29,30,10,11,12,13,14,15,16,17,18,19};	
 
 
-#if (USE_BT_CALLBACK == 0)	
+#if (USE_UART_CALLBACK == 0)	
 	
 static uint16_t hwSendLen = 0;	
 

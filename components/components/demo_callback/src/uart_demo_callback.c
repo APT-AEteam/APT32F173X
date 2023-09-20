@@ -18,10 +18,10 @@
 /* Private macro-----------------------------------------------------------*/
 /* Private variablesr------------------------------------------------------*/
 
-#if (USE_BT_CALLBACK == 1)	
+#if (USE_UART_CALLBACK == 1)	
 
-uint8_t byRecvBuf[128]={0};			//receive buf
-uint8_t bySendBuf[30]={1,2,3,4,5,6,7,8,9,21,22,23,24,25,26,27,28,29,30,10,11,12,13,14,15,16,17,18,19};
+static uint8_t s_byRecvBuf[128]={0};			//receive buf
+static uint8_t s_bySendBuf[30]={1,2,3,4,5,6,7,8,9,21,22,23,24,25,26,27,28,29,30,10,11,12,13,14,15,16,17,18,19};
 
 
 /** \brief  user_send_callback：串口中断发送回调函数
@@ -49,7 +49,6 @@ static void	user_send_callback(csp_uart_t *ptUartBase)
 int uart_send_int_callback_demo(void)
 {
 	int iRet = 0;
-	uint8_t bySendBuf[30]={1,2,3,4,5,6,7,8,9,21,22,23,24,25,26,27,28,29,30,10,11,12,13,14,15,16,17,18,19};
 	csi_uart_config_t tUartConfig;						//UART1 参数配置结构体
 	
 #if (USE_GUI == 0)		
@@ -70,7 +69,7 @@ int uart_send_int_callback_demo(void)
 	//使用中断方式发送，若要知道是否发送完成可使用回调函数
 	while(1)
 	{
-		csi_uart_send_int(UART1,(void *)bySendBuf,28);	//采用中断方式
+		csi_uart_send_int(UART1,(void *)s_bySendBuf,28);//采用中断方式
 		mdelay(200);
 	}
 	
@@ -158,7 +157,7 @@ int uart_receive_int_callback_demo(void)
 	
 	//指定长度接收
 	//接收到16个字节数据时，会自动调用uart1_recv_callback，用户可在UART_STATE_RX_DNE状态中做处理
-	csi_uart_receive_int(UART1, byRecvBuf, 16);		//开启接收，指定接收数据长度和数据接收buf,并开启接收FIFO和接收超时中断
+	csi_uart_receive_int(UART1, s_byRecvBuf, 16);	//开启接收，指定接收数据长度和数据接收buf,并开启接收FIFO和接收超时中断
 	
 	
 	//动态长度接收
