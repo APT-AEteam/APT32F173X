@@ -66,6 +66,7 @@ extern "C" {
 #define USART_IDX  			2		//USARTx id number
 #define SIO_IDX				2		//UART(0/1)
 #define LED_IDX  			1		//LEDx id number
+#define GPTB_IDX  			6		//GPTBx id number
 #define CNTA_IDX  			1		//CNTAx id number
 #define CMP_IDX  			3		//CMPx id number
 #define GPTA_IDX  			4		//GPTAx id number
