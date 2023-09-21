@@ -7,7 +7,7 @@
  * <tr><td> 2020-8-20 <td>V0.0  <td>ZJY   <td>initial
  * <tr><td> 2020-12-3 <td>V0.1  <td>WNN   <td>modiied
  * <tr><td> 2023-3-21 <td>V0.1  <td>WCH   <td>modified
- * <tr><td> 2023-9-1  <td>V0.2  <td>WCH   <td>modified
+ * <tr><td> 2023-9-1  <td>V0.2  <td>WCH   <td>code normalization
  * 
  * </table>
  * *********************************************************************

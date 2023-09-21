@@ -1,16 +1,16 @@
 /***********************************************************************//** 
  * \file  gptb_demo.c
  * \brief  TIMER_DEMO description and static inline functions at register level 
- * \copyright Copyright (C) 2015-2020 @ APTCHIP
+ * \copyright Copyright (C) 2015-2023 @ APTCHIP
  * <table>
  * <tr><th> Date  <th>Version  <th>Author  <th>Description
- * <tr><td> 2021-5-11 <td>V0.0 <td>ljy     <td>initial
- * <tr><td> 2023-5-8  <td>V0.1 <td>wangch  <td>modify
+ * <tr><td> 2021-5-11  <td>V0.0  <td>ljy      <td>initial
+ * <tr><td> 2023-5-8   <td>V0.1  <td>wangch   <td>modify
+ * <tr><td> 2023-9-18  <td>V0.2  <td>wangch   <td>code normalization
  * </table>
  * *********************************************************************
 */
 /* Includes ---------------------------------------------------------------*/
-#include <string.h>
 #include "csi_drv.h"
 #include "board_config.h"
 
@@ -18,9 +18,10 @@
 /* externs variablesr------------------------------------------------------*/
 /* Private macro-----------------------------------------------------------*/
 /* Private variablesr------------------------------------------------------*/
+
+#if (USE_GPTB_CALLBACK == 0)
 static uint32_t s_wGptbCapBuff[4] = {0};
 
-#if (USE_GPTB_CALLBACK == 0)		
 /** \brief	gptbx_int_handler: GPTB中断服务函数
  * 
  *  \brief 	GPTB发生中断时会调用此函数，函数在interrupt.c里定义为弱(weak)属性，默认不做处理；用户用到GPTB中
@@ -115,7 +116,7 @@ int gptb_timer_demo(void)
 				——————        ——————         ——————          —————        ————
 				CMPA                CMPB                 CMPAA                CMPBA               CMPA   
 */
-int gptb_capture_sync_demo0(void)
+int gptb_capture_demo0(void)
 {
 	int iRet = 0;
     volatile uint8_t ch;
@@ -178,7 +179,7 @@ int gptb_capture_sync_demo0(void)
                ——————        ——————         ——————          
                RESET      CMPA     RESET     CMPA      RESET       CMPA               
 */
-int gptb_capture_sync_demo1(void)
+int gptb_capture_demo1(void)
 {
 	int iRet = 0;	
     volatile uint8_t ch;
@@ -252,7 +253,7 @@ int gptb_capture_sync_demo1(void)
 PA1输入波形———        ——————         ——————         ———
 			   CMPB      CMPA      CMPB      CMPA       CMPB      CMPA  
 */
-int gptb_capture_sync_demo2(void)
+int gptb_capture_demo2(void)
 {
 	int iRet = 0;	
     volatile uint8_t ch;
@@ -313,7 +314,8 @@ int gptb_capture_sync_demo2(void)
  *   		-波形参数：10KHz，占空比50%
  *     		-可通过以下两种方式灵活调整PWM参数
  * 			--csi_gptb_change_ch_duty：修改PWM占空比
- *			--csi_gptb_prdr_cmp_update：修改PWM周期寄存器和比较寄存器的值
+ *			--csi_gptb_prdr_update：修改PWM周期寄存器的值
+ * 			--csi_gptb_cmp_update：修改PWM比较寄存器的值
  *  \param[in] none
  *  \return error code
  */
@@ -329,11 +331,11 @@ int gptb_pwm_demo(void)
 	csi_gpio_set_mux(GPIOD, PD0, PD0_GPTB0_CHB);					//初始化PD0为CHBX	
 #endif
 //------------------------------------------------------------------------------------------------------------------------		
-	tPwmCfg.eWorkMode       	= GPTB_WORK_WAVE;                   //GPTB工作模式：捕获/波形输出
-	tPwmCfg.eCountMode   		= GPTB_CNT_UPDN;                    //GPTB计数模式：递增/递减/递增递减
-	tPwmCfg.eRunMode    		= GPTB_RUN_CONT;                    //GPTB运行模式：连续/一次性
-	tPwmCfg.byDutyCycle 		= 50;								//GPTB输出PWM占空比			
-	tPwmCfg.wFreq 				= 10000;							//GPTB输出PWM频率	
+	tPwmCfg.eWorkMode       	 = GPTB_WORK_WAVE;                  //GPTB工作模式：捕获/波形输出
+	tPwmCfg.eCountMode   		 = GPTB_CNT_UPDN;                   //GPTB计数模式：递增/递减/递增递减
+	tPwmCfg.eRunMode    		 = GPTB_RUN_CONT;                   //GPTB运行模式：连续/一次性
+	tPwmCfg.byDutyCycle 		 = 50;								//GPTB输出PWM占空比			
+	tPwmCfg.wFreq 				 = 10000;							//GPTB输出PWM频率	
 	csi_gptb_wave_init(GPTB0, &tPwmCfg);
 //------------------------------------------------------------------------------------------------------------------------	
 	tPwmChannelCfg.eActionZro    =   GPTB_ACT_LO;
@@ -348,38 +350,36 @@ int gptb_pwm_demo(void)
 	tPwmChannelCfg.eActionT2d    =   GPTB_ACT_NA;
 	tPwmChannelCfg.eC1sel 		 =   GPTB_COMPA;
 	tPwmChannelCfg.eC2sel 		 =   GPTB_COMPA;
-	csi_gptb_channel_config(GPTB0, &tPwmChannelCfg,  GPTB_CHANNEL_1);//channel
-	csi_gptb_channel_config(GPTB0, &tPwmChannelCfg,  GPTB_CHANNEL_2);
+	csi_gptb_pwm_channel_init(GPTB0, &tPwmChannelCfg,  GPTB_CHANNEL_1);
+	csi_gptb_pwm_channel_init(GPTB0, &tPwmChannelCfg,  GPTB_CHANNEL_2);
 //------------------------------------------------------------------------------------------------------------------------
 	csi_gptb_start(GPTB0);
 
 	while(1)
 	{
-		csi_gptb_change_ch_duty(GPTB0,GPTB_COMPA, 20);				  	//修改PWM1占空比为20%
-		csi_gptb_change_ch_duty(GPTB0,GPTB_COMPB, 20);					//修改PWM2占空比为20%
+		csi_gptb_change_ch_duty(GPTB0,GPTB_COMPA, 20);				//修改PWM1占空比为20%
+		csi_gptb_change_ch_duty(GPTB0,GPTB_COMPB, 20);				//修改PWM2占空比为20%
 
-		csi_gptb_prdr_update(GPTB0,1200);								//修改PWM周期为1200
-		csi_gptb_cmp_update(GPTB0,GPTB_COMPA,800);						//修改PWM1比较值为800
-		csi_gptb_cmp_update(GPTB0,GPTB_COMPB,800);						//修改PWM2比较值为800
+		csi_gptb_prdr_update(GPTB0,1200);							//修改PWM周期为1200
+		csi_gptb_cmp_update(GPTB0,GPTB_COMPA,800);					//修改PWM1比较值为800
+		csi_gptb_cmp_update(GPTB0,GPTB_COMPB,800);					//修改PWM2比较值为800
 
 		mdelay(1);	
 	
-		csi_gptb_change_ch_duty(GPTB0,GPTB_COMPA, 50);					//修改PWM1占空比为50%
-		csi_gptb_change_ch_duty(GPTB0,GPTB_COMPB, 50);					//修改PWM2占空比为50%
+		csi_gptb_change_ch_duty(GPTB0,GPTB_COMPA, 50);				//修改PWM1占空比为50%
+		csi_gptb_change_ch_duty(GPTB0,GPTB_COMPB, 50);				//修改PWM2占空比为50%
 
-		csi_gptb_prdr_update(GPTB0,1200);								//修改PWM周期为1200
-		csi_gptb_cmp_update(GPTB0,GPTB_COMPB,1000);						//修改PWM1比较值为1000
-		csi_gptb_cmp_update(GPTB0,GPTB_COMPA,1000);						//修改PWM2比较值为1000
+		csi_gptb_prdr_update(GPTB0,1200);							//修改PWM周期为1200
+		csi_gptb_cmp_update(GPTB0,GPTB_COMPB,1000);					//修改PWM1比较值为1000
+		csi_gptb_cmp_update(GPTB0,GPTB_COMPA,1000);					//修改PWM2比较值为1000
 		mdelay(1);
 	}	
     return iRet;
 }
 
-
-/** \brief GPTB波形输出+互补对称波形+死区时间（上升沿500ns+下降沿200ns）
- *   		-10kHZ   
- *     		-PWM在80%和40%之间切换
- * 			-此为电机FOC基本波形设置
+/** \brief GPTB带死区延迟的互补波形输出：死区时间（上升沿500ns，下降沿200ns）
+ *   		-波形基本参数：10kHZ，50%
+ *     		-设置死区模块，得到带死区延迟的互补波形
  *  \param[in] none
  *  \return error code
  */
@@ -415,21 +415,21 @@ int gptb_pwm_dz_demo(void)
 	tPwmChannelCfg.eActionT2d    	=   GPTB_ACT_NA;
 	tPwmChannelCfg.eC1sel  		 	=   GPTB_COMPA;
 	tPwmChannelCfg.eC2sel  		 	=   GPTB_COMPB;
-	csi_gptb_channel_config(GPTB0, &tPwmChannelCfg,  GPTB_CHANNEL_1);
-	csi_gptb_channel_config(GPTB0, &tPwmChannelCfg,  GPTB_CHANNEL_2);
+	csi_gptb_pwm_channel_init(GPTB0, &tPwmChannelCfg,  GPTB_CHANNEL_1);
+	csi_gptb_pwm_channel_init(GPTB0, &tPwmChannelCfg,  GPTB_CHANNEL_2);
 //------------------------------------------------------------------------------------------------------------------------	
 	tDeadZoneCfg.eChxOutSel_S1S0    = GPTB_DBOUT_AR_BF;             //使能通道A的上升沿延时，使能通道B的下降沿延时
 	tDeadZoneCfg.eChxPol_S3S2   	= GPTB_DBPOL_B;                 //通道A和通道B延时输出电平是否反向
-	tDeadZoneCfg.eChxInSel_S5S4     = GPTB_DBIN_AR_AF;              //PWMA作为上升沿和下降沿延时处理的输入信号
+	tDeadZoneCfg.eChxInSel_S5S4     = GPTB_DBIN_AR_AF;              //PWM1作为上升沿和下降沿延时处理的输入信号
 	tDeadZoneCfg.eChxDedb_S6        = GPTB_DEDB_AR_BF;       		//不使用死区双沿
 	tDeadZoneCfg.eChxOutSwap_S8S7   = GPTB_DBSWAP_OUTA_A_OUTB_B;    //OUTA=通道A输出，OUTB=通道B输出
 	tDeadZoneCfg.eDclkSel           = GPTB_DCKSEL_DPSC;
-	tDeadZoneCfg.hwDpsc             = 0;             				 //FDBCLK = FHCLK / (DPSC+1)
-	tDeadZoneCfg.wRisingEdgeTime    = 500;             				 //上升沿-ns
-	tDeadZoneCfg.wFallingEdgeTime   = 200;             				 //下降沿-ns
+	tDeadZoneCfg.hwDpsc             = 0;             				//FDBCLK = FPCLK / (DPSC+1)
+	tDeadZoneCfg.wRisingEdgeTime    = 500;             				//上升沿延迟：ns
+	tDeadZoneCfg.wFallingEdgeTime   = 200;             				//下降沿延迟：ns
     csi_gptb_deadzone_init(GPTB0, &tDeadZoneCfg, GPTB_CHANNEL_1);
 //------------------------------------------------------------------------------------------------------------------------
-	csi_gptb_start(GPTB0);//start  timer	
+	csi_gptb_start(GPTB0);	
 	while(1)
 	{
 		csi_gptb_change_ch_duty(GPTB0,GPTB_COMPA, 80);
@@ -442,11 +442,10 @@ int gptb_pwm_dz_demo(void)
 	return iRet;
 }
 
-/** \brief GPTB波形输出+互补对称波形+死区时间（上升沿500ns+下降沿200ns）+软锁止/硬锁止
- *   		-10kHZ   
- *     		-PWM在80%和20%之间切换
- * 			-此为电机FOC基本波形设置
- *          -EBIx的输入需上拉或下拉，也可开启内部的上下拉
+/** \brief GPTB带死区延迟和锁止功能的互补波形输出：死区时间（上升沿500ns，下降沿200ns）
+ *   		-波形基本参数：10kHZ，50%
+ *     		-设置死区模块，得到带死区延迟的互补波形
+ * 			-设置紧急模块，当紧急输入脚为低电平时，强制拉低所有PWM波形
  *  \param[in] none
  *  \return error code
  */
@@ -466,17 +465,17 @@ int gptb_pwm_dz_em_demo(void)
 	csi_gpio_set_mux(GPIOA,  PA9,  PA9_EBI1);						//初始化PA9为EBI1
 	csi_gpio_set_mux(GPIOB,  PB2,  PB2_EBI2);						//初始化PB2为EBI2
 	csi_gpio_set_mux(GPIOA,  PA0,  PA0_EBI3);						//初始化PA0为EBI3
-	csi_gpio_pull_mode(GPIOA,PA6,  GPIO_PULLUP);
-	csi_gpio_pull_mode(GPIOA,PA9,  GPIO_PULLUP);
-	csi_gpio_pull_mode(GPIOB,PB2,  GPIO_PULLUP);
-	csi_gpio_pull_mode(GPIOA,PA0,  GPIO_PULLUP);
+	csi_gpio_pull_mode(GPIOA,PA6,  GPIO_PULLUP);					//EBI0上拉使能
+	csi_gpio_pull_mode(GPIOA,PA9,  GPIO_PULLUP);					//EBI1上拉使能
+	csi_gpio_pull_mode(GPIOB,PB2,  GPIO_PULLUP);					//EBI2上拉使能
+	csi_gpio_pull_mode(GPIOA,PA0,  GPIO_PULLUP);					//EBI3上拉使能
 #endif
 //------------------------------------------------------------------------------------------------------------------------		
-	tPwmCfg.eWorkMode       		= GPTB_WORK_WAVE;                //GPTB工作模式：捕获/波形输出
-	tPwmCfg.eCountMode   			= GPTB_CNT_UPDN;                 //GPTB计数模式：递增/递减/递增递减
-	tPwmCfg.eRunMode    			= GPTB_RUN_CONT;                 //GPTB运行模式：连续/一次性
-	tPwmCfg.byDutyCycle 			= 50;							 //GPTB输出PWM占空比			
-	tPwmCfg.wFreq 					= 10000;						 //GPTB输出PWM频率
+	tPwmCfg.eWorkMode       		= GPTB_WORK_WAVE;               //GPTB工作模式：捕获/波形输出
+	tPwmCfg.eCountMode   			= GPTB_CNT_UPDN;                //GPTB计数模式：递增/递减/递增递减
+	tPwmCfg.eRunMode    			= GPTB_RUN_CONT;                //GPTB运行模式：连续/一次性
+	tPwmCfg.byDutyCycle 			= 50;							//GPTB输出PWM占空比			
+	tPwmCfg.wFreq 					= 10000;						//GPTB输出PWM频率
 	csi_gptb_wave_init(GPTB0, &tPwmCfg);
 //------------------------------------------------------------------------------------------------------------------------	
 	tPwmChannelCfg.eActionZro    	= GPTB_ACT_LO;
@@ -491,8 +490,8 @@ int gptb_pwm_dz_em_demo(void)
 	tPwmChannelCfg.eActionT2d    	= GPTB_ACT_NA;
 	tPwmChannelCfg.eC1sel  		 	= GPTB_COMPA;
 	tPwmChannelCfg.eC2sel  		 	= GPTB_COMPA;
-	csi_gptb_channel_config(GPTB0, &tPwmChannelCfg,  GPTB_CHANNEL_1);
-	csi_gptb_channel_config(GPTB0, &tPwmChannelCfg,  GPTB_CHANNEL_2);
+	csi_gptb_pwm_channel_init(GPTB0, &tPwmChannelCfg,  GPTB_CHANNEL_1);
+	csi_gptb_pwm_channel_init(GPTB0, &tPwmChannelCfg,  GPTB_CHANNEL_2);
 //------------------------------------------------------------------------------------------------------------------------
 	tDeadZoneCfg.eChxOutSel_S1S0    = GPTB_DBOUT_AR_BF;             //使能通道A的上升沿延时，使能通道B的下降沿延时
 	tDeadZoneCfg.eChxPol_S3S2       = GPTB_DBPOL_B;                 //通道A和通道B延时输出电平是否反向
@@ -500,17 +499,15 @@ int gptb_pwm_dz_em_demo(void)
 	tDeadZoneCfg.eChxDedb_S6        = GPTB_DEDB_AR_BF;       	    //不使用死区双沿
 	tDeadZoneCfg.eChxOutSwap_S8S7   = GPTB_DBSWAP_OUTA_A_OUTB_B;    //OUTA=通道A输出，OUTB=通道B输出
 	tDeadZoneCfg.eDclkSel           = GPTB_DCKSEL_DPSC;
-	tDeadZoneCfg.hwDpsc             = 0;              				//FDBCLK = FHCLK / (DPSC+1)
-	tDeadZoneCfg.wRisingEdgeTime    = 500;             				//上升沿-ns
-	tDeadZoneCfg.wFallingEdgeTime   = 200;             				//下降沿-ns
+	tDeadZoneCfg.hwDpsc             = 0;             				//FDBCLK = FPCLK / (DPSC+1)
+	tDeadZoneCfg.wRisingEdgeTime    = 500;             				//上升沿延迟：ns
+	tDeadZoneCfg.wFallingEdgeTime   = 200;             				//下降沿延迟：ns
     csi_gptb_deadzone_init(GPTB0, &tDeadZoneCfg, GPTB_CHANNEL_1);
 //------------------------------------------------------------------------------------------------------------------------
 	tEmCfg.eEp       				= GPTB_EP0;            			//EP通道选择：EP0/1/2/3
     tEmCfg.eEmSrc    				= GPTB_EMSRC_EBI0;              //EP输入源选择
     tEmCfg.eEmPol   				= GPTB_EMPOL_L;      			//EP输入源极性选择
 	tEmCfg.eEpxLockMode  			= GPTB_LCKMD_SLCK;        		//EP锁止模式选择：软锁/硬锁
-    tEmCfg.eFltPace0  				= GPTB_EP_FLT_4P;      			//FLT0去抖滤波检查周期数
-	tEmCfg.eFltPace1  				= GPTB_EP_FLT_2P;      			//FLT1去抖滤波检查周期数
 	tEmCfg.eOsrShdw   				= GPTB_OSR_SHADOW;       	 	//EMOSR shadow模式选择
 	
 	if(tEmCfg.eEpxLockMode == GPTB_LCKMD_SLCK)
