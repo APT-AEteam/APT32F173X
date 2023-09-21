@@ -1,12 +1,12 @@
 /***********************************************************************//** 
  * \file  sio.c
  * \brief  csi sio driver
- * \copyright Copyright (C) 2015-2021 @ APTCHIP
+ * \copyright Copyright (C) 2015-2023 @ APTCHIP
  * <table>
  * <tr><th> Date  <th>Version  <th>Author  <th>Description
  * <tr><td> 2020-9-03 <td>V0.0  <td>XB   <td>initial
- * <tr><td> 2021-1-03 <td>V0.0  <td>ZJY   <td>modify
- * <tr><td> 2021-12-03 <td>V0.1  <td>LQ   <td>modify
+ * <tr><td> 2021-1-03 <td>V0.1  <td>ZJY   <td>modify
+ * <tr><td> 2023-9-21 <td>V0.2  <td>ZJY   <td>code normalization 
  * </table>
  * *********************************************************************
 */
