@@ -10,9 +10,9 @@
  * *********************************************************************
 */
 /* Includes ---------------------------------------------------------------*/
-#include "drv/cmp.h"
-#include "drv/gpio.h"
+#include "csi_drv.h"
 #include "board_config.h"
+
 /* externs function--------------------------------------------------------*/
 /* externs variablesr------------------------------------------------------*/
 /* Private macro-----------------------------------------------------------*/
@@ -43,7 +43,7 @@ void cmp0_callback(csp_cmp_t *ptCmpBase, uint8_t byIsr)
  *  \param[in] 无参数
  *  \return    错误码
  */
-int cmp_base_callback_demo(void)
+int cmp_base_int_callback_demo(void)
 {
 	int iRet = 0;
 	csi_cmp_config_t tCmpCfg;

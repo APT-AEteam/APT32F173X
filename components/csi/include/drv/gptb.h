@@ -11,42 +11,30 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-extern uint32_t g_gptb0_prd;
-extern uint32_t g_gptb1_prd;
 
-/**
- * \enum     csi_gptb_wave_e
- * \brief    gptb work in capture mode or pwm mode 
- */
+/*---------------------Enumrate definition--------------------------------*/
 typedef enum
 {
-	GPTB_CAPTURE	= 0,		
-    GPTB_WAVE 		= 1		
-}csi_gptb_wave_e;
+	GPTB_WORK_CAPTURE	= 0,		
+    GPTB_WORK_WAVE 		= 1		
+}csi_gptb_workmode_e;
 
-/**
- * \enum     csi_gptb_runmode_e
- * \brief    GPTB run mode  
- */
 typedef enum{
 	GPTB_RUN_CONT	= 0,			//continuous count mode	
 	GPTB_RUN_ONCE 					//once count mode	
 }csi_gptb_runmode_e;
 
-/**
- * \enum     csi_gptb_cntmd_e
- * \brief    GPTB count mode  
- */
 typedef enum {
-	GPTB_UPCNT 		= 0,
-	GPTB_DNCNT,
-	GPTB_UPDNCNT
+	GPTB_CNT_UP 		= 0,
+	GPTB_CNT_DN,
+	GPTB_CNT_UPDN
 }csi_gptb_cntmd_e;
 
-/**
- * \enum     csi_gptb_capmode_e
- * \brief    GPTB capture mode  
- */
+typedef enum{
+	GPTB_STP_ST_HZ = 0,
+	GPTB_STP_ST_LOW
+}csi_gptb_stpst_e;
+
 typedef enum{
 	GPTB_CAP_MERGE = 0,
 	GPTB_CAP_SEPARATE
@@ -103,24 +91,14 @@ typedef enum {
 }csi_gptb_chtype_e;
 
 typedef enum {
-	GPTB_SW = 0,
-	GPTB_SYNC
-}csi_gptb_stmd_e;
+	GPTB_STMD_START 		= 0,
+	GPTB_STMD_START_SYNC
+}csi_gptb_startmd_e;
 
 typedef enum{
 	GPTB_STP_HZ = 0,
 	GPTB_STP_L
 }csi_gptb_stopst_e;
-
-typedef enum {
-	GPTB_POLARITY_HIGH = 0,
-	GPTB_POLARITY_LOW
-}csi_gptb_polarity_t;
-
-typedef enum{
-	GPTB_CAP_CONT = 0,
-	GPTB_CAP_OT
-}csi_gptb_capmd_e;
 
 typedef enum{
 	GPTB_INTSRC_TRGEV0 		= 0x1 << 0,
@@ -158,10 +136,6 @@ typedef enum{
 	GPTB_FILT_SYNCIN6,			//filter input syncin6	
 }csi_gptb_filter_insrc_e;
 
-/**
- * \enum     csi_ept_trgin_e
- * \brief    GPTB sync trigger input 
- */
 typedef enum{
 	GPTB_SYNCIN0	= 0,			
 	GPTB_SYNCIN1,						
@@ -172,10 +146,6 @@ typedef enum{
     GPTB_SYNCIN6		
 }csi_gptb_syncin_e;
 
-/**
- * \enum	csi_gptb_trgout_e
- * \brief   gptb event trigger out port
- */
 typedef enum{
 	GPTB_TRG_OUT0		= 0,	
 	GPTB_TRG_OUT1,				
@@ -200,19 +170,11 @@ typedef enum {
 	GPTB_AQCSF_ZRO_PRD
 }csi_gptb_aqosf_e;
 
-/**
- * \enum     csi_gptb_trgmode_e
- * \brief    gptb sync trigger mode 
- */
 typedef enum{
 	GPTB_SYNC_CONT		= 0,	
 	GPTB_SYNC_ONCE								
 }csi_gptb_syncmode_e;
 
-/**
- * \enum     csi_gptb_arearm_e
- * \brief    v hardware auto rearm 
- */
 typedef enum{
 	GPTB_AUTO_REARM_DIS 	= 0,	//disable auto rearm
 	GPTB_AUTO_REARM_ZRO,			//CNT = ZRO auto rearm
@@ -239,6 +201,26 @@ typedef enum{
 }csi_gptb_shdwldmd_e;
 
 typedef enum{
+	GPTB_GLD_DIS = 0,
+	GPTB_GLD_EN,
+}csi_gptb_gld_en_e;
+
+typedef enum {
+	GPTB_GLDMD_ZRO = 0,
+	GPTB_GLDMD_PRD,
+	GPTB_GLDMD_ZRO_PRD,
+	GPTB_GLDMD_ZRO_LD_SYNC,
+	GPTB_GLDMD_PRD_LD_SYNC,
+	GPTB_GLDMD_ZRO_PRD_LD_SYNC,
+	GPTB_GLDMD_SW = 0xf
+}csi_gptb_gldmd_e;
+
+typedef enum{
+	GPTB_GLD_OSTMD_ANYTIME = 0,
+	GPTB_GLD_OSTMD_ONESHOT,
+}csi_gptb_gld_ostmd_e;
+
+typedef enum{
 	GPTB_DB_IMMEDIATE =0,
 	GPTB_DB_SHADOW      
 }csi_gptb_dbldmd_e;
@@ -251,13 +233,13 @@ typedef enum{
 }csi_gptb_shdwdbldmd_e;
 
 typedef enum {
-	GPTB_DB_TCLK = 0,
-	GPTB_DB_DPSC
+	GPTB_DCKSEL_TCLK = 0,
+	GPTB_DCKSEL_DPSC
 }csi_gptb_dbclksrc_e;
 
 typedef enum {
-	GPTB_DB_AR_BF = 0,
-	GPTB_DB_BR_BF
+	GPTB_DEDB_AR_BF = 0,
+	GPTB_DEDB_BR_BF
 }csi_gptb_dedb_e;
 
 typedef enum {
@@ -268,77 +250,25 @@ typedef enum {
 }csi_gptb_db_outsel_e;
 
 typedef enum {
-	GPTB_DB_POL_DIS = 0,
-	GPTB_DB_POL_A,
-	GPTB_DB_POL_B,
-	GPTB_DB_POL_AB
+	GPTB_DBPOL_DIS = 0,
+	GPTB_DBPOL_A,
+	GPTB_DBPOL_B,
+	GPTB_DBPOL_AB
 }csi_gptb_db_pol_e;
 
 typedef enum {
-	GPTB_DBCHAIN_AR_AF = 0,
-	GPTB_DBCHAIN_BR_AF,
-	GPTB_DBCHAIN_AR_BF,
-	GPTB_DBCHAIN_BR_BF
+	GPTB_DBIN_AR_AF = 0,
+	GPTB_DBIN_BR_AF,
+	GPTB_DBIN_AR_BF,
+	GPTB_DBIN_BR_BF
 }csi_gptb_dbcha_insel_e;
 
 typedef enum {
-	GPTB_DBCHAOUT_OUTA_A_OUTB_B = 0,
-	GPTB_DBCHAOUT_OUTA_B_OUTB_B,
-	GPTB_DBCHAOUT_OUTA_A_OUTB_A,
-	GPTB_DBCHAOUT_OUTA_B_OUTB_A
+	GPTB_DBSWAP_OUTA_A_OUTB_B = 0,
+	GPTB_DBSWAP_OUTA_B_OUTB_B,
+	GPTB_DBSWAP_OUTA_A_OUTB_A,
+	GPTB_DBSWAP_OUTA_B_OUTB_A
 }csi_gptb_dbcha_outswap_e;
-
-typedef enum {
-	GPTB_EMOUT_HZ,
-	GPTB_EMOUT_H,
-	GPTB_EMOUT_L,
-	GPTB_EMOUT_NONE
-}csi_gptb_emout_e;
-
-typedef enum {
-	GPTB_EBI0 = 1,
-	GPTB_EBI1,
-	GPTB_EBI2,
-	GPTB_EBI3,
-	GPTB_CMP0,
-	GPTB_CMP1,
-	GPTB_CMP2,
-	GPTB_LVD,
-	GPTB_ORL0 = 0xe,
-	GPTB_ORL1,
-}csi_gptb_ebi_e;
-
-#define GPTB_ORLx_EBI0  1<<0
-#define GPTB_ORLx_EBI1  1<<1
-#define	GPTB_ORLx_EBI2  1<<2
-#define	GPTB_ORLx_EBI3  1<<3
-#define	GPTB_ORLx_CMP0  1<<4
-#define	GPTB_ORLx_CMP1  1<<5
-#define	GPTB_ORLx_CMP2  1<<6
-
-typedef enum {
-	GPTB_EBI_POL_H = 0,
-	GPTB_EBI_POL_L
-}csi_gptb_ebipol_e;
-
-typedef enum{
-	GPTB_STP_ST_HZ = 0,
-	GPTB_STP_ST_LOW
-}csi_gptb_stpst_e;
-
-typedef enum{
-	GPTB_EP0 = 0,
-	GPTB_EP1,
-	GPTB_EP2,
-	GPTB_EP3,
-}csi_gptb_ep_e;
-
-typedef enum{
-	GPTB_EP_DIS = 0,
-	GPTB_EP_SLCK,
-	GPTB_EP_HLCK,
-	GPTB_EP_DISABLE
-}csi_gptb_ep_lckmd_e;
 
 typedef enum{	
 	GPTB_SLCLRMD_ZRO =0,
@@ -355,49 +285,114 @@ typedef enum{
 }csi_gptb_ldemosr_e;
 
 typedef enum{
-	GPTB_EP_FLT0_DIS = 0,
-	GPTB_EP_FLT0_2P,
-	GPTB_EP_FLT0_4P,
-	GPTB_EP_FLT0_6P,
-	GPTB_EP_FLT0_8P,
-	GPTB_EP_FLT0_16P,
-	GPTB_EP_FLT0_32P,
-	GPTB_EP_FLT0_64P
-}csi_gptb_epflt0_e;
+	GPTB_EP0 = 0,
+	GPTB_EP1,
+	GPTB_EP2,
+	GPTB_EP3,
+}csi_gptb_ep_e;
+
+typedef enum {
+	GPTB_EMPOL_H = 0,
+	GPTB_EMPOL_L
+}csi_gptb_empol_e;
+
+typedef enum {
+	GPTB_EMOUT_HZ,
+	GPTB_EMOUT_H,
+	GPTB_EMOUT_L,
+	GPTB_EMOUT_NONE
+}csi_gptb_emout_e;
+
+typedef enum {
+	GPTB_EMSRC_EBI0 = 1,
+	GPTB_EMSRC_EBI1,
+	GPTB_EMSRC_EBI2,
+	GPTB_EMSRC_EBI3,
+	GPTB_EMSRC_CMP0,
+	GPTB_EMSRC_CMP1,
+	GPTB_EMSRC_CMP2,
+	GPTB_EMSRC_LVD,
+	GPTB_EMSRC_ORL0 = 0xe,
+	GPTB_EMSRC_ORL1,
+}csi_gptb_emsrc_e;
+
+#define GPTB_ORLx_EBI0  1<<0
+#define GPTB_ORLx_EBI1  1<<1
+#define	GPTB_ORLx_EBI2  1<<2
+#define	GPTB_ORLx_EBI3  1<<3
+#define	GPTB_ORLx_CMP0  1<<4
+#define	GPTB_ORLx_CMP1  1<<5
+#define	GPTB_ORLx_CMP2  1<<6
 
 typedef enum{
-	GPTB_EP_FLT1_DIS = 0,
-	GPTB_EP_FLT1_2P,
-	GPTB_EP_FLT1_4P,
-	GPTB_EP_FLT1_6P,
-	GPTB_EP_FLT1_8P,
-	GPTB_EP_FLT1_16P,
-	GPTB_EP_FLT1_32P,
-	GPTB_EP_FLT1_64P
-}csi_gptb_epflt1_e;
+	GPTB_LCKMD_DIS = 0,
+	GPTB_LCKMD_SLCK,
+	GPTB_LCKMD_HLCK,
+	GPTB_LCKMD_DISABLE
+}csi_gptb_ep_lckmd_e;
+
+typedef enum{
+	GPTB_EP_FLT_DIS = 0,
+	GPTB_EP_FLT_2P,
+	GPTB_EP_FLT_4P,
+	GPTB_EP_FLT_6P,
+	GPTB_EP_FLT_8P,
+	GPTB_EP_FLT_16P,
+	GPTB_EP_FLT_32P,
+	GPTB_EP_FLT_64P
+}csi_gptb_epflt_e;
 
 typedef enum
 {
 	GPTB_OSR_IMMEDIATE=0,
 	GPTB_OSR_SHADOW
-}csi_gptb_Osrshdw_e;
+}csi_gptb_osrshdw_e;
 
 typedef enum {
-	GPTB_EMINT_EP0 = 0x1,
-	GPTB_EMINT_EP1 = 0x1 << 1,
-	GPTB_EMINT_EP2 = 0x1 << 2,
-	GPTB_EMINT_EP3 = 0x1 << 3,
-	GPTB_EMINT_CPUF= 0x1 << 8,
-	GPTB_EMINT_MEMF= 0x1 << 9,
-	GPTB_EMINT_EOMF= 0x1 << 10
+	GPTB_EM_INTSRC_EP0  = 0x1,
+	GPTB_EM_INTSRC_EP1  = 0x1 << 1,
+	GPTB_EM_INTSRCT_EP2 = 0x1 << 2,
+	GPTB_EM_INTSRC_EP3  = 0x1 << 3,
+	GPTB_EM_INTSRC_CPUF = 0x1 << 8,
+	GPTB_EM_INTSRC_MEMF = 0x1 << 9,
+	GPTB_EM_INTSRC_EOMF = 0x1 << 10,
+	GPTB_EM_INTSRC_ALL  = 0xFFFF
 }csi_gptb_emint_e;
 
 typedef enum {
-	GPTB_NA = 0,
-	GPTB_LO,
-	GPTB_HI,
-	GPTB_TG	
+	GPTB_ACT_NA = 0,
+	GPTB_ACT_LO,
+	GPTB_ACT_HI,
+	GPTB_ACT_TG	
 }csi_gptb_action_e;
+
+typedef enum{
+	GPTB_FLTSRC_DISABLE	= 0,
+	GPTB_FLTSRC_SYNCIN0,			
+	GPTB_FLTSRC_SYNCIN1,						
+	GPTB_FLTSRC_SYNCIN2,						
+	GPTB_FLTSRC_SYNCIN3,			
+	GPTB_FLTSRC_SYNCIN4,
+	GPTB_FLTSRC_SYNCIN5,
+    GPTB_FLTSRC_SYNCIN6		
+}csi_gptb_fltsrc_e;
+
+typedef enum{
+	GPTB_WININV_DIS =0,
+	GPTB_WININV_EN,
+}csi_gptb_wininv_e;
+
+typedef enum{
+	GPTB_ALIGNMD_PRD =0,
+	GPTB_ALIGNMD_ZRO,
+	GPTB_ALIGNMD_ZRO_PRD,
+	GPTB_ALIGNMD_T1
+}csi_gptb_alignmd_e;
+
+typedef enum{
+	GPTB_CROSSMD_DIS =0,
+	GPTB_CROSSMD_EN,
+}csi_gptb_crossmd_e;
 
 typedef enum{
 	GPTB_TRG0SRC_DIS = 0,
@@ -430,146 +425,129 @@ typedef enum {
 
 /*---------------------Struct variables--------------------------------*/
 typedef struct {
-	uint32_t			wTimeVal;			//TIMER Timing Value
-    csi_gptb_runmode_e  eRunMode;      			//run mode
+	uint32_t				  wTimeVal;		   //GPTB Timing Value
+    csi_gptb_runmode_e  	  eRunMode;        //GPTB run mode: continuous/once
 }csi_gptb_time_config_t;
 
 typedef struct {
-	uint8_t		byWorkmod;          //Count or capture
-	uint8_t     byCountingMode;    //csi_gptb_cntmd_e
-	uint8_t     byOneshotMode;     //Single or continuous
-	uint8_t     byStartSrc ;
-	uint8_t     byPscld;
-	uint8_t		byDutyCycle;		 //TIMER PWM OUTPUT duty cycle	
-	uint32_t	wFreq;				 //TIMER PWM OUTPUT frequency 
+	csi_gptb_workmode_e		  eWorkMode;       //GPTB work mode:CAPTURE/WAVE
+	csi_gptb_cntmd_e     	  eCountMode;      //GPTBcount mode:UP/DOWN/UPDOWN
+	csi_gptb_runmode_e     	  eRunMode;        //GPTB run mode: continuous/once
+	uint8_t					  byDutyCycle;	   //GPTB PWM OUTPUT duty cycle	
+	uint32_t				  wFreq;		   //GPTB PWM OUTPUT frequency 
 }csi_gptb_pwm_config_t;
 
 typedef struct  {
-	csi_gptb_wave_e			eWorkMode;          	//work mode
-	csi_gptb_cntmd_e     	eCountMode;     		//count mode
-	csi_gptb_runmode_e     	eRunMode;      			//run mode
-	csi_gptb_capmode_e		eCapMode;        		//capture mode
-	uint8_t     			byCapStopWrap;
-	uint8_t     			byCapLdaret;
-	uint8_t     			byCapLdbret;
-	uint8_t     			byCapLdcret;
-	uint8_t     			byCapLddret;
+	csi_gptb_workmode_e		  eWorkMode;       //GPTB work mode:CAPTURE/WAVE
+	csi_gptb_cntmd_e     	  eCountMode;      //GPTB count mode:UP/DOWN/UPDOWN
+	csi_gptb_runmode_e     	  eRunMode;        //GPTB run mode: continuous/once
+	csi_gptb_capmode_e		  eCapMode;        //GPTB capture mode:SEPERATE/MERGE
+	uint8_t     			  byCapStopWrap;   //GPTB capture counts
+	uint8_t     			  byCapLdaret;	   //GPTB when CMPA load,counter value reset or not
+	uint8_t     			  byCapLdbret;	   //GPTB when CMPB load,counter value reset or not
+	uint8_t     			  byCapLdcret;	   //GPTB when CMPAA load,counter value reset or not
+	uint8_t     			  byCapLddret;	   //GPTB when CMPBA load,counter value reset or not
 }csi_gptb_capture_config_t;
 
 typedef struct {
-	
-    uint8_t		byActionZro;          //
-	uint8_t     byActionPrd;          //
-	uint8_t     byActionC1u;          //
-    uint8_t     byActionC1d;          //
-	uint8_t     byActionC2u;          //
-	uint8_t     byActionC2d;          //
-	uint8_t     byActionT1u;          //
-	uint8_t     byActionT1d;          //
-	uint8_t     byActionT2u;          //
-	uint8_t     byActionT2d;          //	
-    uint8_t     byChoiceC1sel;
-	uint8_t     byChoiceC2sel;
+    csi_gptb_action_e		  eActionZro;      //ZRO event,wave action config:NA/LOW/HIGH/TOGGLE
+	csi_gptb_action_e     	  eActionPrd;      //PRD event,wave action config:NA/LOW/HIGH/TOGGLE
+	csi_gptb_action_e     	  eActionC1u;      //C1U event,wave action config:NA/LOW/HIGH/TOGGLE
+    csi_gptb_action_e      	  eActionC1d;      //C1D event,wave action config:NA/LOW/HIGH/TOGGLE
+	csi_gptb_action_e     	  eActionC2u;      //C2U event,wave action config:NA/LOW/HIGH/TOGGLE
+	csi_gptb_action_e     	  eActionC2d;      //C2D event,wave action config:NA/LOW/HIGH/TOGGLE
+	csi_gptb_action_e     	  eActionT1u;      //T1U event,wave action config:NA/LOW/HIGH/TOGGLE
+	csi_gptb_action_e     	  eActionT1d;      //T1D event,wave action config:NA/LOW/HIGH/TOGGLE
+	csi_gptb_action_e     	  eActionT2u;      //T2U event,wave action config:NA/LOW/HIGH/TOGGLE
+	csi_gptb_action_e     	  eActionT2d;      //T2D event,wave action config:NA/LOW/HIGH/TOGGLE
+    csi_gptb_comp_e    	 	  eC1sel;		   //C1 selection:CMPA/CMPB
+	csi_gptb_comp_e     	  eC2sel;		   //C1 selection:CMPA/CMPB
 }csi_gptb_pwm_channel_config_t;
 
 typedef struct {	
-	uint8_t       byChxOuselS1S0      ;   //
-	uint8_t       byChxPolarityS3S2   ;   //
-	uint8_t       byChxInselS5S4      ;   //
-	uint8_t       byChxOutSwapS8S7    ;   //		
-	uint8_t       byDcksel;
-	uint8_t       byChaDedb;
-	uint8_t       byChbDedb;
-	uint8_t       byChcDedb;
-	uint16_t      hwDpsc;                 //
-	uint32_t      wRisingEdgeTime ;  //
-	uint32_t      wFallingEdgeTime;  //
+	csi_gptb_db_outsel_e      eChxOutSel_S1S0; //DeadZone switch S0S1 config:DeadZone output Source Select
+	csi_gptb_db_pol_e         eChxPol_S3S2;    //DeadZone switch S2S3 config:DeadZone output polarity Control
+	csi_gptb_dbcha_insel_e    eChxInSel_S5S4;  //DeadZone switch S4S5 config:DeadZone delay module intput Select
+	csi_gptb_dbcha_outswap_e  eChxOutSwap_S8S7;//DeadZone switch S7S8 config:DeadZone output Swap Control	
+	csi_gptb_dbclksrc_e       eDclkSel;		   //DeadZone Clock Source
+	csi_gptb_dedb_e       	  eChxDedb_S6;	   //DeadZone switch S6 config:DeadZone output Select
+	uint16_t      			  hwDpsc;          //DeadZone Clock Divider
+	uint32_t      			  wRisingEdgeTime; //DeadZone rising edge delay time,unit:ns
+	uint32_t      			  wFallingEdgeTime;//DeadZone falling edge delay time,unit:ns
 }csi_gptb_deadzone_config_t;
 
 typedef struct {
-    uint8_t  byEpxInt ;
-	uint8_t  byPolEbix;
-    uint8_t	 byEpx;
-	uint8_t  byEpxLckmd;
-	uint8_t  byFltpace0;
-	uint8_t  byFltpace1;
-	uint8_t  byOrl0;
-	uint8_t  byOrl1;
-	uint8_t  byOsrshdw;
-	uint8_t  byOsrldmd;
-	uint8_t  bySlclrmd;
+	csi_gptb_ep_e	  		  eEp;			   //Emergency EP channel select:EP 0/1/2/3
+    csi_gptb_emsrc_e  		  eEmSrc;		   //Emergency source:EBIx/CMPx
+	csi_gptb_empol_e 		  eEmPol;		   //Emergency polarity:LOW/HIGH
+	csi_gptb_epflt_e  		  eFltPace0;	   //Emergency filter0 pace config
+	csi_gptb_epflt_e   		  eFltPace1;	   //Emergency filter1 pace config
+	csi_gptb_ep_lckmd_e  	  eEpxLockMode;	   //Emergency EP lock mode:SLCK/HLCK
+	csi_gptb_slclrmd_e  	  eSlckClrMode;	   //Emergency SLCK clear mode
+	csi_gptb_osrshdw_e  	  eOsrShdw;		   //Emergency EMOSR shadow mode
+	csi_gptb_ldemosr_e  	  eOsrLoadMode;	   //Emergency EMSOR Shadow load mode
+    uint8_t  				  byORL0;		   //Emergency ORL0 source
+	uint8_t  				  byORL1;		   //Emergency ORL1 source
 }csi_gptb_emergency_config_t;
 
 typedef struct {
-	uint8_t   byTrg0sel  ;
-	uint8_t   byTrg1sel  ;
-	uint8_t   byTrg0en   ;
-	uint8_t   byTrg1en   ;
-	uint8_t   byCnt0initfrc;
-	uint8_t   byCnt1initfrc;
-	uint8_t   byCnt0initen;
-	uint8_t   byCnt1initen;
-	uint8_t   byTrg0prd ;
-	uint8_t   byTrg1prd ;
-	uint8_t   byCnt0init;
-	uint8_t   byCnt1init;
-	
-	uint8_t   byFltipscld;
-	uint8_t   byFltckprs;
-	uint8_t   bySrcsel;
-	uint8_t   byBlkinv;
-	uint8_t   byAlignmd;
-	uint8_t   byCrossmd;
-	uint16_t  hwOffset;
-	uint16_t  hwWindow;
-}csi_gptb_event_trigger_config_t;
+	csi_gptb_gld_en_e 		  eGldEnable;	   //Global load enable control
+	csi_gptb_gldmd_e 		  eGldMode;		   //Global load mode
+	csi_gptb_gld_ostmd_e 	  eGldOstMode;	   //Global oneshot control
+	uint8_t 				  byGldprd;		   //Global load period select
+	uint8_t 				  byGldcnt;		   //Global event count
+}csi_gptb_global_load_config_t;
 
 typedef struct {
-	
-	bool bGlden;
-	bool bOstmd;
-	uint8_t byGldprd;	
-    uint8_t byGldmd;
-	uint8_t byGldcnt;
-}csi_gptb_Global_load_control_config_t;
-
-/// \struct csi_gptb_filter_config_t
-/// \brief  gptb sync trigger filter parameter configuration, open to users  
-typedef struct {
-	uint8_t		byFiltSrc;			//filter input signal source
-	uint8_t		byWinInv;			//window inversion 
-	uint8_t		byWinAlign;			//window alignment 
-	uint8_t		byWinCross;			//window cross
-	uint16_t	hwWinOffset;		//window offset
-	uint16_t 	hwWinWidth;			//window width		
-} csi_gptb_filter_config_t;
+	csi_gptb_fltsrc_e		  eFltSrc;			//Filter input signal source
+	csi_gptb_wininv_e		  eWinInv;			//Filter window inversion control
+	csi_gptb_alignmd_e		  eAlignMode;		//Filter window alignment mode control
+	csi_gptb_crossmd_e		  eCrossMode;		//Filter window cross mode control
+	uint16_t				  hwWinOffset;		//Filter window offset config
+	uint16_t 				  hwWinWidth;		//Filter window width config	
+}csi_gptb_filter_config_t;
 
 typedef struct {
-	uint8_t		byPrdr;			
-	uint8_t		byCmpa;			
-	uint8_t		byCmpb;			
-	uint8_t		byGld2;			
-	uint8_t 	byRssr;		          
-	uint8_t 	byEmslclr;
-	uint8_t 	byEmhlclr;
-    uint8_t 	byEmicr;
-	uint8_t 	byEmfrcr;
-    uint8_t 	byAqosf;
-	uint8_t 	byAqcsf;		
-} csi_gptb_reglk_config_t;
-//------------------------------------------------------------------------------------------------------------------------
- /**
- \brief  capture configuration
+	uint8_t					  byPrdr;			//REGLK control:PRDR	
+	uint8_t					  byCmpa;			//REGLK control:CMPA		
+	uint8_t					  byCmpb;			//REGLK control:CMPB		
+	uint8_t					  byGld2;			//REGLK control:GLDCR2		
+	uint8_t 				  byRssr;			//REGLK control:RSSR	          
+	uint8_t 				  byEmslclr;		//REGLK control:EMSLCLR
+	uint8_t 				  byEmhlclr;		//REGLK control:EMHLCLR
+    uint8_t 				  byEmicr;			//REGLK control:EMICR
+	uint8_t 				  byEmfrcr;			//REGLK control:EMFRCR
+    uint8_t 				  byAqosf;			//REGLK control:AQOSF
+	uint8_t 				  byAqcsf;			//REGLK control:AQCSF
+}csi_gptb_reglk_config_t;
+
+//----------------------------------Functions declaration-------------------------------------
+/**
+ \brief  gptb capture configuration
  \param  ptGptbBase    	pointer of gptb register structure
- \param  ptGptbPwmCfg   	refer to csi_gptb_captureconfig_t
+ \param  ptGptbCapCfg   \refer csi_gptb_capture_config_t
+  * 		- eWorkMode:GPTB work mode \refer csi_gptb_workmode_e
+  * 		- eCountMode:GPTB counting mode \refer csi_gptb_cntmd_e
+  * 		- eRunMode:GPTB run mode \refer csi_gptb_runmode_e
+  * 		- eCapMode:GPTB capture mode \refer csi_gptb_capmode_e  		
+  * 		- byCapStopWrap:GPTB capture counts
+  * 		- byCapLdaret:CMPA load,counter value reset or not
+  * 		- byCapLdbret:CMPB load,counter value reset or not
+  * 		- byCapLdcret:CMPAA load,counter value reset or not
+  * 		- byCapLddret:CMPBA load,counter value reset or not
  \return CSI_OK /CSI_ERROR
-//*/
-csi_error_t csi_gptb_capture_init(csp_gptb_t *ptGptbBase, csi_gptb_capture_config_t *ptGptbPwmCfg);
+*/
+csi_error_t csi_gptb_capture_init(csp_gptb_t *ptGptbBase, csi_gptb_capture_config_t *ptGptbCapCfg);
 
- /**
- \brief  wave configuration
+/**
+ \brief  gptb capture configuration
  \param  ptGptbBase    	pointer of gptb register structure
- \param  ptGptbPwmCfg   	refer to csi_gptb_pwmconfig_t
+ \param  ptGptbCapCfg   \refer csi_gptb_capture_config_t
+  * 		- eWorkMode:GPTB work mode \refer csi_gptb_workmode_e
+  * 		- eCountMode:GPTB counting mode \refer csi_gptb_cntmd_e
+  * 		- eRunMode:GPTB run mode \refer csi_gptb_runmode_e
+  * 		- byDutyCycle:PWM duty cycle  		
+  * 		- wFreq:PWM frequency
  \return CSI_OK /CSI_ERROR
 */
 csi_error_t  csi_gptb_wave_init(csp_gptb_t *ptGptbBase, csi_gptb_pwm_config_t *ptGptbPwmCfg);
@@ -583,6 +561,43 @@ csi_error_t  csi_gptb_wave_init(csp_gptb_t *ptGptbBase, csi_gptb_pwm_config_t *p
  *  \return error code \ref csi_error_t
  */ 
 csi_error_t csi_gptb_timer_init(csp_gptb_t *ptGptbBase, csi_gptb_time_config_t *ptGptbTimCfg);
+
+/**
+ \brief  gptb deadzone init
+ \param  ptGptbBase    	pointer of gptb register structure
+ \param  ptCfg   \refer csi_gptb_deadzone_config_t
+  * 		-eChxOutSel_S1S0:DeadZone switch S0S1 config:DeadZone output Source Select. \refer csi_gptb_db_outsel_e
+  * 		-eChxPol_S3S2:DeadZone switch S2S3 config:DeadZone output polarity Control. \refer csi_gptb_db_pol_e
+  * 		-eChxInSel_S5S4:DeadZone switch S4S5 config:DeadZone delay module intput Select. \refer csi_gptb_dbcha_insel_e
+  * 		-eChxOutSwap_S8S7:DeadZone switch S7S8 config:DeadZone output Swap Control. \refer csi_gptb_dbcha_outswap_e
+  * 		-eDclkSel:DeadZone Clock Source. \refer csi_gptb_dbclksrc_e
+  * 		-eChxDedb_S6:DeadZone switch S6 config:DeadZone output Select. \refer csi_gptb_dedb_e
+  * 		-hwDpsc:DeadZone Clock Divider
+  * 		-wRisingEdgeTime:DeadZone rising edge delay time,unit:ns
+  * 		-wFallingEdgeTime:DeadZone falling edge delay time,unit:ns
+ \param  eChannel   \refer csi_gptb_channel_e
+ \return CSI_OK /CSI_ERROR
+*/
+csi_error_t csi_gptb_deadzone_init(csp_gptb_t *ptGptbBase, csi_gptb_deadzone_config_t *ptDeadzoneCfg, csi_gptb_channel_e eChannel);
+
+/**
+ \brief  gptb emergency init
+ \param  ptGptbBase    	pointer of gptb register structure
+ \param  ptEmCfg   \refer csi_gptb_emergency_config_t
+  * 		-eEp:Emergency EP channel select:EP 0/1/2/3. \refer csi_gptb_ep_e
+  * 		-eEmSrc:Emergency source:EBIx/CMPx. \refer csi_gptb_emsrc_e
+  * 		-eEmPol:Emergency polarity:LOW/HIGH. \refer csi_gptb_empol_e
+  * 		-eFltPace0:Emergency filter0 pace config. \refer csi_gptb_epflt_e
+  * 		-eFltPace1:Emergency filter1 pace config. \refer csi_gptb_epflt_e
+  * 		-eEpxLockMode:Emergency EP lock mode:SLCK/HLCK. \refer csi_gptb_ep_lckmd_e
+  * 		-eSlckClrMode:Emergency SLCK clear mode. \refer csi_gptb_slclrmd_e
+  * 		-eOsrShdw:Emergency EMOSR shadow mode. \refer csi_gptb_osrshdw_e
+  * 		-eOsrLoadMode:Emergency EMSOR Shadow load mode. \refer csi_gptb_ldemosr_e
+  * 		-byORL0:Emergency ORL0 source
+  * 		-byORL1:Emergency ORL1 source
+ \return CSI_OK /CSI_ERROR
+*/
+csi_error_t csi_gptb_emergency_init(csp_gptb_t *ptGptbBase, csi_gptb_emergency_config_t *ptEmCfg);
 
 /** \brief set gptb count mode
  * 
@@ -627,14 +642,6 @@ csi_error_t csi_gptb_channel_config(csp_gptb_t *ptGptbBase, csi_gptb_pwm_channel
  */
 csi_error_t csi_gptb_channel_cmpload_config(csp_gptb_t *ptGptbBase, csi_gptb_ldmd_e eLdmd, csi_gptb_shdwldmd_e eShdwldmd ,csi_gptb_comp_e eChannel);
 
-/**
- \brief  DeadZoneTime configuration 
- \param  ptGptbBase    	pointer of gptb register structure
- \param  ptCfg           refer to csi_ept_deadzone_config_t
- \return CSI_OK /CSI_ERROR
-*/
-csi_error_t csi_gptb_dz_config(csp_gptb_t *ptGptbBase, csi_gptb_deadzone_config_t *ptCfg);
-
  /**
  \brief  DeadZoneTime configuration loading 
  \param  ptGptbBase    	pointer of gptb register structure
@@ -644,39 +651,15 @@ csi_error_t csi_gptb_dz_config(csp_gptb_t *ptGptbBase, csi_gptb_deadzone_config_
  \return CSI_OK /CSI_ERROR
 */
 csi_error_t csi_gptb_dbldrload_config(csp_gptb_t *ptGptbBase, csi_gptb_dbldr_e eDbldr,csi_gptb_dbldmd_e eDbldmd, csi_gptb_shdwdbldmd_e eShdwdbldmd);
-   
- /**
- \brief  DeadZoneTime configuration 
- \param  ptGptbBase    	pointer of gptb register structure
- \param  ptCfg           refer to csi_gptb_deadzone_config_t
- \return CSI_OK /CSI_ERROR
-*/
-csi_error_t csi_gptb_dbcr_config(csp_gptb_t *ptGptbBase, csi_gptb_deadzone_config_t *ptCfg);
-
- /**
- \brief  channelmode configuration 
- \param  ptGptbBase    pointer of gptb register structure
- \param  ptCfg         refer to csi_gptb_deadzone_config_t
- \param  eChannel         refer to csi_gptb_channel_e
- \return CSI_OK /CSI_ERROR  
-*/
-csi_error_t csi_gptb_channelmode_config(csp_gptb_t *ptGptbBase,csi_gptb_deadzone_config_t *ptCfg,csi_gptb_channel_e eChannel);
 
 /**
  \brief  State of emergency configuration 
  \param  ptGptbBase    	pointer of gptb register structure
- \param  ptCfg           refer to csi_gptb_emergency_config_t
+ \param  eOsrch         \refer to csi_gptb_osrchx_e
+ \param  eEmout         \refer to csi_gptb_emout_e
  \return CSI_OK /CSI_ERROR
-//*/
-csi_error_t csi_gptb_emergency_cfg(csp_gptb_t *ptGptbBase, csi_gptb_emergency_config_t *ptCfg);
-/**
- \brief  State of emergency configuration 
- \param  ptGptbBase    	pointer of gptb register structure
- \param  eOsrch         refer to csi_gptb_osrchx_e
- \param  eEmout         refer to csi_gptb_emout_e
- \return CSI_OK /CSI_ERROR
-//*/
-csi_error_t csi_gptb_emergency_pinxout(csp_gptb_t *ptGptbBase,csi_gptb_osrchx_e  eOsrch ,csi_gptb_emout_e eEmout);
+*/
+csi_error_t csi_gptb_set_emergency_out(csp_gptb_t *ptGptbBase, csi_gptb_osrchx_e eOsrch, csi_gptb_emout_e eEmOut);
 
 /** \brief Channel AQLDR configuration
  * 
@@ -689,12 +672,17 @@ csi_error_t csi_gptb_emergency_pinxout(csp_gptb_t *ptGptbBase,csi_gptb_osrchx_e 
 csi_error_t csi_gptb_channel_aqload_config(csp_gptb_t *ptGptbBase, csi_gptb_ldmd_e eLdmd, csi_gptb_shdwldmd_e eShdwldmd ,csi_gptb_channel_e eChannel);
 
 /**
- \brief  gptb configuration Loading
+ \brief  gptb global load init
  \param  ptGptbBase    	pointer of gptb register structure
- \param  ptGlobal       refer to csi_gptb_Global_load_control_config_t
+ \param  ptGldCfg       \refer csi_gptb_global_load_config_t
+  * 		- eGldEnable:Global load enable control \refer csi_gptb_gld_en_e
+  * 		- eGldMode:Global load mode \refer csi_gptb_gldmd_e
+  * 		- eGldOstMode:Global oneshot control \refer csi_gptb_gld_ostmd_e
+  * 		- byGldprd:Global load period select   		
+  * 		- byGldcnt:Global event count
  \return CSI_OK /CSI_ERROR
 */
-csi_error_t csi_gptb_global_config(csp_gptb_t *ptGptbBase,csi_gptb_Global_load_control_config_t *ptGlobal);
+csi_error_t csi_gptb_global_load_init(csp_gptb_t *ptGptbBase, csi_gptb_global_load_config_t *ptGldCfg);
 
 /** \brief GLDCFG loading
  * 
@@ -736,7 +724,7 @@ void csi_gptb_swstop(csp_gptb_t *ptGptbBase);
  \param ptGptbBase    pointer of gptb register structure
  \return eMode 隆锚oGPTB_SW/GPTB_SYNC
 */
-void csi_gptb_set_start_mode(csp_gptb_t *ptGptbBase, csi_gptb_stmd_e eMode);
+void csi_gptb_set_start_mode(csp_gptb_t *ptGptbBase, csi_gptb_startmd_e eMode);
 
 /**
  \brief set GPTB operation mode
@@ -759,15 +747,22 @@ void csi_gptb_set_stop_st(csp_gptb_t *ptGptbBase, csi_gptb_stpst_e eSt);
 */
 uint16_t csi_gptb_get_prdr(csp_gptb_t *ptGptbBase);
 
-/** \brief  update gptb PRDR and CMPx reg value
+/** \brief  update gptb PRDR reg value
+ * 
+ *  \param[in] ptGptbBase: pointer of gptb register structure
+ *  \param[in] hwPrdr: gptb PRDR reg  value
+ *  \return none
+ */
+csi_error_t csi_gptb_prdr_update(csp_gptb_t *ptGptbBase, uint16_t hwPrdr) ;
+
+/** \brief  update gptb CMPx reg value
  * 
  *  \param[in] ptGptbBase: pointer of gptb register structure
  *  \param[in] eComp: select which COMP to set(COMPA or COMPB)
- *  \param[in] hwPrdr: gptb PRDR reg  value
  *  \param[in] hwCmp: gptb COMP reg value
  *  \return none
  */
-csi_error_t csi_gptb_prdr_cmp_update(csp_gptb_t *ptGptbBase,csi_gptb_comp_e eComp, uint16_t hwPrdr, uint16_t hwCmp);
+csi_error_t csi_gptb_cmp_update(csp_gptb_t *ptGptbBase,csi_gptb_comp_e eComp, uint16_t hwCmp);
 
 /**
  \brief change gptb output dutycycle. 
@@ -913,17 +908,23 @@ csi_error_t csi_gptb_set_extsync_chnl(csp_gptb_t *ptGptbBase, csi_gptb_syncin_e 
  * 
  *  \param[in] ptGptbBase: pointer of gptb register structure
  *  \param[in] ptFilter: pointer of sync input filter parameter config structure
+ * 				- eFltSrc:Filter input signal source \refer csi_gptb_fltsrc_e
+ * 				- eWinInv:Filter window inversion control \refer csi_gptb_wininv_e
+ * 				- eAlignMode:Filter window alignment mode control \refer csi_gptb_alignmd_e
+ * 				- eCrossMode:Filter window cross mode control \refer csi_gptb_crossmd_e  		
+ * 				- hwWinOffset:Filter window offset config
+ * 				- hwWinWidth:Filter window width config
  *  \return error code \ref csi_error_t
  */
-csi_error_t csi_gptb_set_sync_filter(csp_gptb_t *ptGptbBase, csi_gptb_filter_config_t *ptFilter);
+csi_error_t csi_gptb_set_sync_filter(csp_gptb_t *ptGptbBase, csi_gptb_filter_config_t *ptFilterCfg);
 
-/** \brief rearm gptb sync evtrg  
+/** \brief rearm gptb sync rearm  
  * 
  *  \param[in] ptGptbBase: pointer of gptb register structure
  *  \param[in] eSyncIn: gptb sync evtrg input channel(0~6)
  *  \return none
  */
-void csi_gptb_rearm_sync(csp_gptb_t *ptGptbBase,csi_gptb_syncin_e eSyncIn);
+void csi_gptb_sync_rearm(csp_gptb_t *ptGptbBase,csi_gptb_syncin_e eSyncIn);
 
 /** \brief gptb evtrg output config
  * 

@@ -369,7 +369,7 @@ csi_error_t csi_bt_set_evtrg(csp_bt_t *ptBtBase, csi_bt_trgsrc_e eTrgSrc)
 	if(eTrgSrc == BT_TRGSRC_DIS)
 		csp_bt_set_evtrg(ptBtBase,0x00);
 	else
-		csp_bt_set_evtrg(ptBtBase,(eTrgSrc | (BT_TRGOE_DIS << BT_TRGOE_POS)));
+		csp_bt_set_evtrg_src(ptBtBase, (bt_evtrg_src_e)eTrgSrc);
 		
 	return CSI_OK;
 }
