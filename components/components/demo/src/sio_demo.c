@@ -377,7 +377,7 @@ int sio_led_rgb_send_dma_demo(void)
 	return iRet;
 }
 
-/** \brief 	sio_hdq_master_wrcmd_demo: HDQ协议主机发送写数据命令demo，非中断方式
+/** \brief 	sio_hdq_master_wrcmd_demo: HDQ协议主机写数据命令demo，非中断方式
  * 
  *  \brief 	sio 实现TI HDQ单线通讯协议，主机发送数据；数据传输方式LSB, 低7位是地址，最高位是R/W(0/1)控制位；一次传输两个
  * 			数据，具体HDQ协议可百度查询；HDQ的第一个数据包含Break、addr+rw、Trsps，即第一个数据的bit数 = Break+(addr+rw)
@@ -518,7 +518,7 @@ int sio_hdq_master_rdcmd_demo(void)
 	return iRet;
 }
 
-/** \brief 	sio_hdq_slave_demo: HDQ协议从机demo，接收使用RXBUFFULL中断
+/** \brief 	sio_hdq_slave_demo: HDQ协议从机demo，接收主机的读写命令，接收使用RXBUFFULL中断
  * 
  *  \brief 	SIO 实现TI HDQ单线通讯协议，从机接收主机读数据命令；数据传输方式LSB, 低7位是地址，最高位是R/W(0/1)控制位；
  * 			从机收到1字节命令，返回（发送）1字节数据。此demo和对应的sio_hdq_master_rdcmd_demo配合使用
@@ -692,170 +692,3 @@ static uint32_t sio_data_conversion(uint8_t byTxData)
 	return wDout;
 	
 }
-/** \brief 	sio_hdq_slave_receive_wrcmd_demo: HDQ协议从机接收写命令demo，接收使用RXDNE中断
- * 
- *  \brief	SIO 实现TI HDQ单线通讯协议，从机接收主机写命令数据（命令+数据）；数据传输方式LSB, 低7位是地址，最高位是R/W(0/1)控
- * 			制位；一次接收两个字节数据（命令+数据），接收第一个数据时，通过接收break把第一个数据中的break滤掉。此demo和对应的
- * 			sio_hdq_master_wrcmd_demo配合使用
- * 
- *  \param[in] none
- *  \return error code
- */
-//int sio_hdq_slave_receive_wrcmd_demo(void)
-//{
-//	int iRet = 0;
-//	csi_sio_rx_config_t tHdqRxCfg;
-//
-//#if (USE_GUI == 0)												//用户未选择图形化编程	
-//	csi_gpio_set_mux(GPIOB, PB0, PB0_SIO0);	
-//#endif
-//	
-//	//SIO RX 参数配置
-//	tHdqRxCfg.byDebLen 	= 3;									//接收滤波周期	
-//	tHdqRxCfg.byDebClkDiv 	= 4;								//接收滤波时钟分频
-//	tHdqRxCfg.eTrgEdge 		= SIO_TRG_FALL;						//接收采样触发边沿，下降沿
-//	tHdqRxCfg.eTrgMode		= SIO_TRGMODE_DEB;					//接收采样触发模式，去抖后
-//	tHdqRxCfg.eRxDir 	 	= SIO_RXDIR_MSB;					//接收数据方向， 数据按照bit31...0方式移入，根据不同应用移入数据
-//	tHdqRxCfg.eSampMode		= SIO_SAMPMODE_EDGE;				//接收数据采样边沿对齐使能	
-//	tHdqRxCfg.eSampExtra	= SIO_EXTRACT_HI;					//采样提取策略，(20H)HITHR; (BIT = 1)个数 > HITHR 提取H,否则提取L
-//	tHdqRxCfg.byHiThres		= 13;								//提取判定值, (BIT = 13)个数 > HITHR 提取H,否则提取L
-//	tHdqRxCfg.byRxBufLen	= 8;								//发送数据缓存长度(bit个数 = 8)，rxbuf 一次接收bit数量，len <= 32				
-//	tHdqRxCfg.byRxCnt		= 16;								//SIO一次接收总的数据长度(bit个数 = 16)，byRxCnt >= byRxBufLen，byRxCnt < 256(最大32bytes)				
-//	tHdqRxCfg.wRxFreq		= 100000;							//rx clk =100kHz, Trxsamp = 1/100kHz = 10us；每10us采样一次
-//	tHdqRxCfg.bySampBitLen	= 19;								//bit采样的长度，每个bit采样次数为19，总得采样时间 = 19*Trxsamp = 190us
-//	csi_sio_rx_init(SIO0, &tHdqRxCfg);							//初始化SIO接收参数
-//	
-//	csi_sio_set_break(SIO0, SIO_BKLEV_LOW, 19, ENABLE);			//检测接收break
-//	csi_sio_int_enable(SIO0, SIO_INTSRC_BREAK);					//使能break中断
-//	csi_sio_int_enable(SIO0, SIO_INTSRC_RXBUFFULL);				//使能RXBUFFULL中断，byRxCnt <= 32bit；接收byRxBufLen(8)个bit，产生中断,读取数据到接收buf，每次读取byRxCnt(16)bit
-//	
-//	while(1)
-//	{
-//		if(s_byHdqDneFlg)										//接收到主机命令，此标志在中断中置位									
-//		{
-//			//添加处理
-//			s_byHdqDneFlg = 0;									
-//		}
-//		mdelay(10);
-//	}
-//	
-//	return iRet;
-//}
-/** \brief	sio_led_rgb_receive_dma_demo：接收SIO驱动RGB三色LED的数据demo
- * 
- *  \brief	sio 驱动RGB LED(ws2812), RGB DATA = 24bit; 驱动数据输出排列方式:GRB;采用中断方式接收(RXBUFFULL)，和对应的
- * 			sio_led_rgb_int_demo或sio_led_rgb_send_dma_demo配合使用
- * 
- *  \param[in] none
- *  \return error code
- */
-//int sio_led_rgb_receive_int_demo(void)
-//{
-//	int iRet = 0;
-//	csi_sio_rx_config_t tSioRxCfg;
-//
-//#if (USE_GUI == 0)										//用户未选择图形化编程	
-//	csi_gpio_set_mux(GPIOB, PB0, PB0_SIO0);	
-//#endif
-//	
-//	//SIO RX 参数配置
-//	tSioRxCfg.byDebLen 	= 3;							//接收滤波周期	
-//	tSioRxCfg.byDebClkDiv 	= 2;						//接收滤波时钟分频
-//	tSioRxCfg.eTrgEdge 		= SIO_TRG_RISE;				//接收采样触发边沿，上升沿
-//	tSioRxCfg.eTrgMode		= SIO_TRGMODE_DEB;			//接收采样触发模式，去抖后
-//	tSioRxCfg.eRxDir 	 	= SIO_RXDIR_LSB;			//接收数据方向， 数据按照bit0...31方式移入，根据不同应用移入数据
-//	tSioRxCfg.eSampMode		= SIO_SAMPMODE_EDGE;		////接收数据有边沿跳变开始采样	
-//	tSioRxCfg.eSampExtra	= SIO_EXTRACT_HI;			//采样提取策略，(20H)HITHR; (BIT = 1)个数 > HITHR 提取H,否则提取L
-//	tSioRxCfg.byHiThres 		= 4;					//提取判定值, (BIT = 1)个数 > HITHR 提取H,否则提取L
-//	tSioRxCfg.byRxBufLen	= 8;						//发送数据缓存长度(bit个数 = 8)，rxbuf 一次接收bit数量，len <= 32				
-//	tSioRxCfg.byRxCnt		= 8;						//SIO一次接收总的数据长度(bit个数 = 8)，byRxCnt >= byRxBufLen，byRxCnt < 256(最大32bytes)				
-//	tSioRxCfg.wRxFreq		= 8000000;					//rx clk =8MHz, Trxsamp = 1/8 = 125ns；每125ns 采样一次
-//	tSioRxCfg.bySampBitLen	= 8;						//bit采样的长度，每个bit采样次数为8，总得采样时间 = 8*Trxsamp = 1us
-//	csi_sio_rx_init(SIO0, &tSioRxCfg);					//初始化SIO接收参数
-//	
-//	csi_sio_set_timeout(SIO0, 20, ENABLE);				//采样超时配置, timeout cnt > bySampBitLen
-//	csi_sio_int_enable(SIO0, SIO_INTSRC_RXBUFFULL);		//使能接收RXBUFFULL中断,接收在中断函数中处理
-//	
-//	while(1)
-//	{
-//		mdelay(10);
-//	}
-//	
-//	return iRet;
-//}
-
-/** \brief	sio_led_rgb_receive_dma_demo：DMA方式接收SIO驱动RGB三色LED的数据demo
- * 
- *  \brief	sio 驱动RGB LED(ws2812), RGB DATA = 24bit; 驱动数据输出排列方式:GRB;采样DMA发送接收，和对应的
- * 			sio_led_rgb_send_dma_demo 配合使用
- * 
- *  \param[in] none
- *  \return error code
- */
-//int sio_led_rgb_receive_dma_demo(void)
-//{
-//	int ret = 0;
-//	uint8_t byLedRxBuf[24];
-//	csi_dma_ch_config_t tDmaConfig;				
-//	csi_etcb_config_t 	tEtbConfig;	
-//	csi_sio_rx_config_t tSioRxCfg;
-//
-//#if (USE_GUI == 0)										//用户未选择图形化编程	
-//	csi_gpio_set_mux(GPIOB, PB0, PB0_SIO0);	
-//#endif
-//	
-//	//SIO RX 参数配置
-//	tSioRxCfg.byDebLen 	= 3;							//接收滤波周期	
-//	tSioRxCfg.byDebClkDiv 	= 2;						//接收滤波时钟分频
-//	tSioRxCfg.eTrgEdge 		= SIO_TRG_RISE;				//接收采样触发边沿，上升沿
-//	tSioRxCfg.eTrgMode		= SIO_TRGMODE_DEB;			//接收采样触发模式，去抖后
-//	tSioRxCfg.eRxDir 	 	= SIO_RXDIR_LSB;			//接收数据方向， 数据按照bit0...31方式移入，根据不同应用移入数据
-//	tSioRxCfg.eSampMode		= SIO_SAMPMODE_EDGE;		//接收数据有边沿跳变开始采样	
-//	tSioRxCfg.eSampExtra	= SIO_EXTRACT_HI;			//采样提取策略，(20H)HITHR; (BIT = 1)个数 > HITHR 提取H,否则提取L
-//	tSioRxCfg.byHiThres		= 4;						//提取判定值, (BIT = 1)个数 > HITHR 提取H,否则提取L
-//	tSioRxCfg.byRxBufLen	= 8;						//发送数据缓存长度(bit个数 = 8)，rxbuf 一次接收bit数量，len <= 32				
-//	tSioRxCfg.byRxCnt		= 8;						//SIO一次接收总的数据长度(bit个数 = 8)，byRxCnt >= byRxBufLen，byRxCnt < 256(最大32bytes)				
-//	tSioRxCfg.wRxFreq		= 8000000;					//rx clk =8MHz, Trxsamp = 1/8 = 125ns；每125ns 采样一次
-//	tSioRxCfg.bySampBitLen	= 8;						//bit采样的长度，每个bit采样次数为8，总得采样时间 = 8*Trxsamp = 1us
-//	csi_sio_rx_init(SIO0, &tSioRxCfg);					//初始化SIO接收参数
-//	
-//	csi_sio_set_timeout(SIO0, 20, ENABLE);				//采样超时配置, timeout cnt > bySampBitLen
-//	csi_sio_receive_dma_enable(SIO0);					//SIO接收DMA使能
-//	
-//	//DMA配置初始化
-//	tDmaConfig.eSrcLinc 	= DMA_ADDR_CONSTANT;		//低位传输原地址固定不变
-//	tDmaConfig.eSrcHinc 	= DMA_ADDR_CONSTANT;		//高位传输原地址固定不变
-//	tDmaConfig.eDetLinc 	= DMA_ADDR_CONSTANT;		//低位传输目标地址固定不变
-//	tDmaConfig.eDetHinc 	= DMA_ADDR_INC;				//高位传输目标地址自增
-//	tDmaConfig.eDataWidth 	= DMA_DSIZE_8_BITS;			//传输数据宽度8bit
-//	tDmaConfig.eReload 		= DMA_RELOAD_DISABLE;		//禁止自动重载
-//	tDmaConfig.eTransMode 	= DMA_TRANS_ONCE;			//DMA服务模式(传输模式)，连续服务
-//	tDmaConfig.eTsizeMode  	= DMA_TSIZE_ONE_DSIZE;		//传输数据大小，一个 DSIZE , 即DSIZE定义大小
-//	tDmaConfig.eReqMode		= DMA_REQ_HARDWARE;			//DMA请求模式，硬件请求
-//	ret = csi_dma_ch_init(DMA0, DMA_CH2, &tDmaConfig);	//初始化DMA
-//	
-//	csi_dma_int_enable(DMA0, DMA_CH2, DMA_INTSRC_TCIT);	//使能DMA_CH2的TCIT中断
-//	
-//	//ETCB 配置初始化
-//	tEtbConfig.eChType = ETCB_ONE_TRG_ONE_DMA;			//单个源触发单个目标，DMA方式
-//	tEtbConfig.eSrcIp 	= ETCB_SIO0_RXSRC;				//SIO RXSRC作为触发源
-//	tEtbConfig.eDstIp 	= ETCB_DMA0_CH2;					//ETCB DMA通道 作为目标实际
-//	tEtbConfig.eTrgMode = ETCB_HARDWARE_TRG;			//通道触发模式采样硬件触发
-//	ret = csi_etcb_ch_init(ETCB_CH20, &tEtbConfig);		//初始化ETCB，DMA ETCB CHANNEL > ETCB_CH19_ID
-//	if(ret < CSI_OK)
-//		return CSI_ERROR;
-//	
-//	csi_sio_receive_dma(SIO0, DMA0, DMA_CH2, (void*)byLedRxBuf, 24);
-//	
-//	while(1)
-//	{
-//		if(csi_dma_get_msg(DMA0, DMA_CH2, ENABLE))		//获取接收完成消息，并清除消息
-//		{
-//			//添加用户代码
-//			nop;
-//		}							
-//		mdelay(10);
-//	}
-//	return ret;
-//}
-

@@ -270,7 +270,7 @@ void csi_bt_prdr_update(csp_bt_t *ptBtBase, uint16_t hwPrdr)
  */
 void csi_bt_immediate_update(csp_bt_t *ptBtBase) 
 {
-	csp_bt_immediate_updata(ptBtBase);						//immediately updata
+	csp_bt_immediate_update(ptBtBase);						//immediately updata
 }
 
 /** \brief  updata bt pwm freq and duty cycle
