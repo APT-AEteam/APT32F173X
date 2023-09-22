@@ -29,16 +29,16 @@ typedef struct
     __IOM uint32_t GLDCR2;          //0x001c                                             
     __IOM uint32_t RESERVED;
     __IOM uint32_t PRDR;            //0x0024	Period Register                                             
-    __IOM uint32_t PHSR;            //0x0028                                             
+    __IOM uint32_t RESERVED1;                                              
     __IOM uint32_t CMPA;            //0x002c	Compare A Register	                                             
     __IOM uint32_t CMPB;            //0x0030    Compare B Register                                         
-    __IOM uint32_t RESERVED1[2];
+    __IOM uint32_t RESERVED2[2];
     __IOM uint32_t CMPLDR;          //0x003c    Compare Data Load Control Register                                         
     __IOM uint32_t CNT;             //0x0040    Counter Register                                          
     __IOM uint32_t AQLDR;           //0x0044	Action Qualifier Load Control Register                                             
     __IOM uint32_t AQCR1;           //0x0048    Action Qualifier Control Register 1                                         
     __IOM uint32_t AQCR2;           //0x004c    Action Qualifier Control Register 2                                         
-    __IOM uint32_t RESERVED2[3];
+    __IOM uint32_t RESERVED3[3];
     __IOM uint32_t AQOSF;           //0x005c    Action Qualifier One Shot Force Register                                         
     __IOM uint32_t AQCSF;           //0x0060    Action Qualifier Continuous Force Register                                         
     __IOM uint32_t DBLDR;           //0x0064                                             
@@ -46,18 +46,18 @@ typedef struct
     __IOM uint32_t DPSCR;           //0x006c                                             
     __IOM uint32_t DBDTR;           //0x0070                                             
     __IOM uint32_t DBDTF;           //0x0074                                             
-    __IOM uint32_t RESERVED3;
+    __IOM uint32_t RESERVED4;
     __IOM uint32_t EMSRC;           //0x007c                                             
     __IOM uint32_t EMSRC2;          //0x0080                                             
     __IOM uint32_t EMPOL;           //0x0084                                             
     __IOM uint32_t EMECR;           //0x0088                                             
     __IOM uint32_t EMOSR;           //0x008c                                             
-    __IOM uint32_t RESERVED4;
+    __IOM uint32_t RESERVED5;
     __IM  uint32_t EMSLSR;          //0x0094                                             
     __OM  uint32_t EMSLCLR;         //0x0098                                             
     __IM  uint32_t EMHLSR;          //0x009c                                             
     __OM  uint32_t EMHLCLR;         //0x00a0                                             
-    __IOM  uint32_t EMFRCR;			//0x00a4
+    __IOM uint32_t EMFRCR;			//0x00a4
     __IM  uint32_t EMRISR;          //0x00a8                                             
     __IM  uint32_t EMMISR;          //0x00ac                                             
     __IOM uint32_t EMIMCR;          //0x00b0                                             
@@ -146,10 +146,6 @@ typedef enum{
 	GPTB_RUNMD_CONT = 0,
 	GPTB_RUNMD_ONCE,
 }gptb_runmd_e;
-
-#define GPTB_PHSEN_EN   	(1ul << 7)
-#define GPTB_PHSEN_POS		(7)
-#define GPTB_PHSEN_MSK		(0x1 << GPTB_PHSEN_POS)
 
 #define GPTB_CAPLD_EN   	(1ul << 8)
 #define GPTB_CAPLD_POS		(8)
@@ -820,7 +816,7 @@ static inline void csp_gptb_wr_key(csp_gptb_t *ptGptbBase)
 	ptGptbBase -> REGPROT = GPTB_REGPROT;
 }
 
-static inline void csp_gptb_clken(csp_gptb_t *ptGptbBase)
+static inline void csp_gptb_clk_enable(csp_gptb_t *ptGptbBase)
 {
 	ptGptbBase -> CEDR |=  GPTB_CLKEN;
 }
@@ -866,17 +862,17 @@ static inline void csp_gptb_set_cr(csp_gptb_t *ptGptbBase, uint32_t wCr)
 	ptGptbBase->CR = wCr;
 }
 
-static inline void csp_gptb_set_workmode(csp_gptb_t *ptGptbBase, gptb_workmode_e eWorkMode)
+static inline void csp_gptb_set_work_mode(csp_gptb_t *ptGptbBase, gptb_workmode_e eWorkMode)
 {
 	ptGptbBase -> CR = (ptGptbBase -> CR &(~GPTB_MODE_MSK)) | eWorkMode << GPTB_MODE_POS;
 }
 
-static inline void csp_gptb_set_cntmd(csp_gptb_t *ptGptbBase, gptb_cntmd_e eCntMode)
+static inline void csp_gptb_set_count_mode(csp_gptb_t *ptGptbBase, gptb_cntmd_e eCntMode)
 {
 	ptGptbBase -> CR = (ptGptbBase->CR & (~GPTB_CNTMD_MSK)) | (eCntMode << GPTB_CNTMD_POS);
 }
 
-static inline uint8_t csp_gptb_get_cntmd(csp_gptb_t *ptGptbBase)
+static inline uint8_t csp_gptb_get_count_mode(csp_gptb_t *ptGptbBase)
 {
 	return (ptGptbBase->CR & GPTB_CNTMD_MSK);
 }
@@ -916,12 +912,12 @@ static inline void csp_gptb_set_start_mode(csp_gptb_t *ptGptbBase, gptb_startmod
 	ptGptbBase -> CR = (ptGptbBase->CR & (~GPTB_STARTMODE_MSK)) | (eStartMode << GPTB_STARTMODE_POS);
 }
 
-static inline void csp_gptb_set_stop_st(csp_gptb_t *ptGptbBase, gptb_stpst_e eStpst)
+static inline void csp_gptb_set_stop_status(csp_gptb_t *ptGptbBase, gptb_stpst_e eStpst) 
 {
 	ptGptbBase -> CR = (ptGptbBase->CR & (~GPTB_STPST_MSK))| (eStpst << GPTB_STPST_POS);
 }
 
-static inline void csp_gptb_set_runmode(csp_gptb_t *ptGptbBase, gptb_runmd_e eRunmd)
+static inline void csp_gptb_set_run_mode(csp_gptb_t *ptGptbBase, gptb_runmd_e eRunmd)
 {
 	ptGptbBase -> CR = (ptGptbBase->CR & (~GPTB_RUNMD_MSK))| (eRunmd << GPTB_RUNMD_POS);
 }
@@ -936,19 +932,9 @@ static inline void csp_gptb_capld_disable(csp_gptb_t *ptGptbBase)
 	ptGptbBase -> CR &= ~GPTB_CAPLD_EN;
 }
 
-static inline void csp_gptb_set_prdld_mod(csp_gptb_t *ptGptbBase, gptb_ldprdr_e ePrdrld)
+static inline void csp_gptb_set_prdld_mode(csp_gptb_t *ptGptbBase, gptb_ldprdr_e ePrdrld)
 {
 	ptGptbBase -> CR = (ptGptbBase->CR & ~(GPTB_PRDLD_MSK)) | (ePrdrld << GPTB_PRDLD_POS);
-}
-
-static inline void csp_gptb_phsr_enable(csp_gptb_t *ptGptbBase)
-{
-	ptGptbBase -> CR |= GPTB_PHSEN_EN;
-}
-
-static inline void csp_gptb_phsr_disable(csp_gptb_t *ptGptbBase)
-{
-	ptGptbBase -> CR &= ~GPTB_PHSEN_EN;
 }
 
 static inline void csp_gptb_sync_enable(csp_gptb_t *ptGptbBase, gptb_syncin_e eSyncIn)
@@ -1019,16 +1005,6 @@ static inline uint16_t csp_gptb_get_prdr(csp_gptb_t *ptGptbBase)
 	return (ptGptbBase -> PRDR);
 }
 
-static inline void csp_gptb_set_phsr(csp_gptb_t *ptGptbBase, uint16_t hwVal)
-{
-	ptGptbBase -> PHSR = hwVal;
-}
-
-static inline uint16_t csp_gptb_get_phsr(csp_gptb_t *ptGptbBase)
-{
-	return (ptGptbBase -> PHSR);
-}
-
 static inline void csp_gptb_set_cmpa(csp_gptb_t *ptGptbBase, uint16_t hwVal)
 {
 	ptGptbBase -> CMPA = hwVal;
@@ -1073,11 +1049,6 @@ static inline void csp_gptb_set_cmpldr(csp_gptb_t *ptGptbBase, gptb_ldmd_e eLdmd
 	}
 }
 
-static inline void csp_gptb_set_phsdir(csp_gptb_t *ptGptbBase, gptb_phsdir_e ePhsdir)
-{
-	ptGptbBase -> PHSR = (ptGptbBase->PHSR & ~(GPTB_PHSDIR_MSK)) | (ePhsdir << GPTB_PHSDIR_POS);
-}
-
 static inline void csp_gptb_set_aqldr(csp_gptb_t *ptGptbBase, gptb_ldmd_e eLdmd, gptb_shdwldmd_e eShdwldmd ,gptb_channel_e eChannel)
 {
 	if(eChannel == GPTB_CHANNEL1)
@@ -1116,7 +1087,7 @@ static inline void csp_gptb_set_aqosf(csp_gptb_t *ptGptbBase, gptb_channel_e eCh
 	}
 }
 
-static inline void csp_gptb_set_aqcsf_ldmd(csp_gptb_t *ptGptbBase, gptb_aqcsf_ldmd_e eLoadMode)
+static inline void csp_gptb_set_aqcsf_load_mode(csp_gptb_t *ptGptbBase, gptb_aqcsf_ldmd_e eLoadMode)
 {
 	ptGptbBase ->AQOSF = (ptGptbBase -> AQOSF & ~(GPTB_AQCSF_LDMD_MSK)) | ((eLoadMode & 0x03) << GPTB_AQCSF_LDMD_POS);
 }
@@ -1305,12 +1276,12 @@ static inline void csp_gptb_set_evcntinit(csp_gptb_t *ptGptbBase, gptb_trgev_e e
 	ptGptbBase -> EVCNTINIT = (ptGptbBase -> EVCNTINIT & ~GPTB_CNT_INIT_MSK_EV(eTrgEv)) | GPTB_CNT_INIT(byVal,eTrgEv);
 }
 
-static inline void csp_gptb_evtrgoe_enable(csp_gptb_t *ptGptbBase, gptb_trgev_e eTrgEv)
+static inline void csp_gptb_evtrg_enable(csp_gptb_t *ptGptbBase, gptb_trgev_e eTrgEv)
 {
 	ptGptbBase -> EVTRG |= (1 << GPTB_OUTEN_POS_TRG(eTrgEv));
 }
 
-static inline void csp_gptb_set_evtrgsel(csp_gptb_t *ptGptbBase,  gptb_trgev_e eTrgEv, gptb_trgsrc_e eSrc)
+static inline void csp_gptb_set_evtrg_src(csp_gptb_t *ptGptbBase,  gptb_trgev_e eTrgEv, gptb_trgsrc_e eSrc) 
 {
 	ptGptbBase -> EVTRG = (ptGptbBase -> EVTRG & (~GPTB_SEL_MSK_TRG(eTrgEv))) | (eSrc << GPTB_SEL_POS_TRG(eTrgEv));
 }

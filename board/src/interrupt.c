@@ -202,7 +202,7 @@ ATTRIBUTE_ISR __attribute__((weak)) void gptb0_int_handler(void)
 	csi_gptb_irqhandler(GPTB0, 0);
 #else
 	csp_gptb_clr_isr(GPTB0, csp_gptb_get_isr(GPTB0));
-	csp_gptb_clr_emisr(ptGptbBase, csp_gptb_get_emisr(GPTB0));
+	csp_gptb_clr_emisr(GPTB0, csp_gptb_get_emisr(GPTB0));
 #endif
 	CSI_INTRPT_EXIT();
 }
@@ -215,7 +215,7 @@ ATTRIBUTE_ISR __attribute__((weak)) void gptb1_int_handler(void)
 	csi_gptb_irqhandler(GPTB1, 1);
 #else
 	csp_gptb_clr_isr(GPTB1, csp_gptb_get_isr(GPTB1));
-	sp_gptb_clr_emisr(ptGptbBase, csp_gptb_get_emisr(GPTB1));
+	csp_gptb_clr_emisr(GPTB1, csp_gptb_get_emisr(GPTB1));
 #endif
 	CSI_INTRPT_EXIT();	
 }
@@ -228,7 +228,7 @@ ATTRIBUTE_ISR __attribute__((weak)) void gptb2_int_handler(void)
 	csi_gptb_irqhandler(GPTB2, 2);
 #else
 	csp_gptb_clr_isr(GPTB2, csp_gptb_get_isr(GPTB2));
-	sp_gptb_clr_emisr(ptGptbBase, csp_gptb_get_emisr(GPTB2));
+	csp_gptb_clr_emisr(GPTB2, csp_gptb_get_emisr(GPTB2));
 #endif
 	CSI_INTRPT_EXIT();	
 }
@@ -241,7 +241,7 @@ ATTRIBUTE_ISR __attribute__((weak)) void gptb3_int_handler(void)
 	csi_gptb_irqhandler(GPTB3, 3);
 #else
 	csp_gptb_clr_isr(GPTB3, csp_gptb_get_isr(GPTB3));
-	sp_gptb_clr_emisr(ptGptbBase, csp_gptb_get_emisr(GPTB3));
+	csp_gptb_clr_emisr(GPTB3, csp_gptb_get_emisr(GPTB3));
 #endif
 	CSI_INTRPT_EXIT();
 }
@@ -254,7 +254,7 @@ ATTRIBUTE_ISR __attribute__((weak)) void gptb4_int_handler(void)
 	csi_gptb_irqhandler(GPTB4, 4);
 #else
 	csp_gptb_clr_isr(GPTB4, csp_gptb_get_isr(GPTB4));
-	sp_gptb_clr_emisr(ptGptbBase, csp_gptb_get_emisr(GPTB4));
+	csp_gptb_clr_emisr(GPTB4, csp_gptb_get_emisr(GPTB4));
 #endif
 	CSI_INTRPT_EXIT();	
 }
@@ -267,7 +267,7 @@ ATTRIBUTE_ISR __attribute__((weak)) void gptb5_int_handler(void)
 	csi_gptb_irqhandler(GPTB5, 5);
 #else
 	csp_gptb_clr_isr(GPTB5, csp_gptb_get_isr(GPTB5));
-	sp_gptb_clr_emisr(ptGptbBase, csp_gptb_get_emisr(GPTB5));
+	csp_gptb_clr_emisr(GPTB5, csp_gptb_get_emisr(GPTB5));
 #endif
 	CSI_INTRPT_EXIT();
 }
