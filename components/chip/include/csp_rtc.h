@@ -41,7 +41,7 @@
    __IOM uint32_t	KEY;    	//0x0030
    __IOM uint32_t	EVTRG;  	//0x0034
    __IOM uint32_t	EVPS;   	//0x0038
-   __OM	uint32_t    EVSWF;  		//0x003C
+   __OM	uint32_t    EVSWF;  	//0x003C
 } csp_rtc_t;
 
 /****** RTC time *****/
@@ -73,59 +73,59 @@ typedef struct {
 
 
 ///TIMR
-#define RTC_SECU_POS	(0ul)
-#define RTC_SECU_MSK	(0xf << RTC_SECU_POS)
-#define RTC_SEC_MSK		(0x7f << RTC_SECU_POS)
-#define RTC_SECT_POS	(4ul)
-#define RTC_SECT_MSK	(0x7 << RTC_SECT_POS)
-#define RTC_MINU_POS	(8ul)
-#define RTC_MINU_MSK	(0xf << RTC_MINU_POS)
-#define RTC_MIN_MSK		(0x7f << RTC_MINU_POS)
-#define RTC_MINT_POS	(12ul)
-#define RTC_MINT_MSK	(0x7 << RTC_MINT_POS)
-#define RTC_HORU_POS	(16ul)
-#define RTC_HORU_MSK	(0xf << RTC_HORU_POS)
-#define RTC_HOR_MSK		(0x3f << RTC_HORU_POS)
-#define RTC_HORT_POS	(20ul)
-#define RTC_HORT_MSK	(0x3 << RTC_HORT_POS)
+#define RTC_SECU_POS		(0ul)
+#define RTC_SECU_MSK		(0xf << RTC_SECU_POS)
+#define RTC_SEC_MSK			(0x7f << RTC_SECU_POS)
+#define RTC_SECT_POS		(4ul)
+#define RTC_SECT_MSK		(0x7 << RTC_SECT_POS)
+#define RTC_MINU_POS		(8ul)
+#define RTC_MINU_MSK		(0xf << RTC_MINU_POS)
+#define RTC_MIN_MSK			(0x7f << RTC_MINU_POS)
+#define RTC_MINT_POS		(12ul)
+#define RTC_MINT_MSK		(0x7 << RTC_MINT_POS)
+#define RTC_HORU_POS		(16ul)
+#define RTC_HORU_MSK		(0xf << RTC_HORU_POS)
+#define RTC_HOR_MSK			(0x3f << RTC_HORU_POS)
+#define RTC_HORT_POS		(20ul)
+#define RTC_HORT_MSK		(0x3 << RTC_HORT_POS)
 
-#define RTC_SECU(n)    ((n)<<RTC_SECU_POS)
-#define RTC_SECT(n)    ((n)<<RTC_SECT_POS)
-#define RTC_MINU(n)    ((n)<<RTC_MINU_POS)
-#define RTC_MINT(n)    ((n)<<RTC_MINT_POS)
-#define RTC_HORU(n)    ((n)<<RTC_HORU_POS)
-#define RTC_HORT(n)    ((n)<<RTC_HORT_POS)
-#define RTC_PM_POS		(22)
-#define RTC_PM_MSK		(0x1 << RTC_PM_POS)
+#define RTC_SECU(n)    		((n)<<RTC_SECU_POS)
+#define RTC_SECT(n)    		((n)<<RTC_SECT_POS)
+#define RTC_MINU(n)    		((n)<<RTC_MINU_POS)
+#define RTC_MINT(n)    		((n)<<RTC_MINT_POS)
+#define RTC_HORU(n)    		((n)<<RTC_HORU_POS)
+#define RTC_HORT(n)    		((n)<<RTC_HORT_POS)
+#define RTC_PM_POS			(22)
+#define RTC_PM_MSK			(0x1 << RTC_PM_POS)
 #define RTC_AM	0x0
 #define RTC_PM 	0x1
 
 ///DATR
-#define RTC_DAYU_POS	(0ul)
-#define RTC_DAYU_MSK	(0xf << RTC_DAYU_POS)
-#define RTC_DAY_MSK		(0x3f << RTC_DAYU_POS)
-#define RTC_DAYT_POS	(4ul)
-#define RTC_DAYT_MSK	(0x3 << RTC_DAYT_POS)
-#define RTC_MONU_POS	(8ul)
-#define RTC_MONU_MSK	(0xf << RTC_MONU_POS)
-#define RTC_MON_MSK		(0x1f << RTC_MONU_POS)
-#define RTC_MONT_POS	(12ul)
-#define RTC_MONT_MSK	(0x1 << RTC_MONT_POS)
-#define RTC_YEAU_POS	(16ul)
-#define RTC_YEAU_MSK	(0xf << RTC_YEAU_POS)
-#define RTC_YEA_MSK		(0xff << RTC_YEAU_POS)
-#define RTC_YEAT_POS	(20ul)
-#define RTC_YEAT_MSK	(0xf << RTC_YEAT_POS)
-#define RTC_WKD_POS		(24ul)
-#define RTC_WKD_MSK		(0x7 << RTC_WKD_POS)
+#define RTC_DAYU_POS		(0ul)
+#define RTC_DAYU_MSK		(0xf << RTC_DAYU_POS)
+#define RTC_DAY_MSK			(0x3f << RTC_DAYU_POS)
+#define RTC_DAYT_POS		(4ul)
+#define RTC_DAYT_MSK		(0x3 << RTC_DAYT_POS)
+#define RTC_MONU_POS		(8ul)
+#define RTC_MONU_MSK		(0xf << RTC_MONU_POS)
+#define RTC_MON_MSK			(0x1f << RTC_MONU_POS)
+#define RTC_MONT_POS		(12ul)
+#define RTC_MONT_MSK		(0x1 << RTC_MONT_POS)
+#define RTC_YEAU_POS		(16ul)
+#define RTC_YEAU_MSK		(0xf << RTC_YEAU_POS)
+#define RTC_YEA_MSK			(0xff << RTC_YEAU_POS)
+#define RTC_YEAT_POS		(20ul)
+#define RTC_YEAT_MSK		(0xf << RTC_YEAT_POS)
+#define RTC_WKD_POS			(24ul)
+#define RTC_WKD_MSK			(0x7 << RTC_WKD_POS)
 
-#define RTC_DAYU(n)    ((n)<<RTC_DAYU_POS)
-#define RTC_DAYT(n)    ((n)<<RTC_DAYT_POS)
-#define RTC_MONU(n)    ((n)<<RTC_MONU_POS)
-#define RTC_MONT(n)    ((n)<<RTC_MONT_POS)
-#define RTC_YARU(n)    ((n)<<RTC_YEAU_POS)
-#define RTC_YART(n)    ((n)<<RTC_YEAT_POS)
-#define RTC_WKD(n)     ((n)<<RTC_WKD_POS)
+//#define RTC_DAYU(n)    	((n)<<RTC_DAYU_POS)
+//#define RTC_DAYT(n)   	((n)<<RTC_DAYT_POS)
+//#define RTC_MONU(n)    	((n)<<RTC_MONU_POS)
+//#define RTC_MONT(n)    	((n)<<RTC_MONT_POS)
+//#define RTC_YARU(n)    	((n)<<RTC_YEAU_POS)
+//#define RTC_YART(n)    	((n)<<RTC_YEAT_POS)
+//#define RTC_WKD(n)     	((n)<<RTC_WKD_POS)
 
 ///CR
 #define RTC_INIT            (1ul)
@@ -170,17 +170,17 @@ typedef enum {
 #define RTC_TKEYTRG_POS		(17ul)
 #define RTC_TKEYTRT_MSK		(0x3 << RTC_TKEYTRG_POS)
 
-#define RTC_RESET          (0x5 << 20)
+#define RTC_RESET			(0x5 << 20)
 ///CCR
-#define RTC_DIVS_POS	(0ul)
-#define RTC_DIVS_MSK	(0x7fff << RTC_DIVS_POS)
-#define RTC_DIVA_POS	(16ul)
-#define RTC_DIVA_MSK	(0x7f << RTC_DIVA_POS)
-#define RTC_DIVS(n)    ((n))
-#define RTC_DIVA(n)    ((n)<<RTC_DIVA_POS)
-#define RTC_DBGEN      (1ul<<23)
-#define RTC_CLKSRC_POS	(24ul)
-#define RTC_CLKSRC_MSK	(0x3 << RTC_CLKSRC_POS)
+#define RTC_DIVS_POS		(0ul)
+#define RTC_DIVS_MSK		(0x7fff << RTC_DIVS_POS)
+#define RTC_DIVA_POS		(16ul)
+#define RTC_DIVA_MSK		(0x7f << RTC_DIVA_POS)
+#define RTC_DIVS(n)    		((n))
+#define RTC_DIVA(n)    		((n)<<RTC_DIVA_POS)
+#define RTC_DBGEN      		(1ul<<23)
+#define RTC_CLKSRC_POS		(24ul)
+#define RTC_CLKSRC_MSK		(0x3 << RTC_CLKSRC_POS)
 typedef enum{
 	RTC_ISOSC = 0,
 	RTC_IMOSC_DIV4,
@@ -188,14 +188,14 @@ typedef enum{
 	RTC_EMOSC_DIV4
 }rtc_clksrc_e;
 
-#define RTC_CLK_STABLE	(0x1 << 26)
-#define RTC_CLKEN	   (1ul << 27)
+#define RTC_CLK_STABLE		(0x1 << 26)
+#define RTC_CLKEN	   		(1ul << 27)
 
 ///ALRA/ALRB
-#define RTC_ALMA		(0)
-#define RTC_ALMB		(1)
-#define RTC_ALM_DAY_POS	(24ul)
-#define RTC_ALM_DAY_MSK	(0x3f << RTC_ALM_DAY_POS)
+#define RTC_ALMA			(0)
+#define RTC_ALMB			(1)
+#define RTC_ALM_DAY_POS		(24ul)
+#define RTC_ALM_DAY_MSK		(0x3f << RTC_ALM_DAY_POS)
 #define RTC_ALM_DAYT_POS	(28)
 #define RTC_ALM_DAYT_MSK	(0x3 << RTC_ALM_DAYT_POS)
 #define RTC_ALM_DAYU_POS	(24)
@@ -204,79 +204,80 @@ typedef enum{
 #define RTC_ALM_DMSK_MSK	(0x1 << RTC_ALM_DMSK_POS)
 #define RTC_ALM_WDSEL_POS	(30ul)
 #define RTC_ALM_WDSEL_MSK	(0x1 << RTC_ALM_WDSEL_POS)
-#define RTC_ALM_DSEL	(0x0)
-#define RTC_ALM_WSEL	(0x1)
-#define RTC_ALM_DAYU(n) ((n) << 24)
-#define RTC_ALM_DAYT(n) ((n) << 28)
+#define RTC_ALM_DSEL		(0x0)
+#define RTC_ALM_WSEL		(0x1)
+#define RTC_ALM_DAYU(n) 	((n) << 24)
+#define RTC_ALM_DAYT(n) 	((n) << 28)
 
 
-#define RTC_ALM_HOR_POS (16ul)
-#define RTC_ALM_HOR_MSK	(0x3f << RTC_ALM_HOR_POS)
+#define RTC_ALM_HOR_POS 	(16ul)
+#define RTC_ALM_HOR_MSK		(0x3f << RTC_ALM_HOR_POS)
 #define RTC_ALM_HORT_POS	(20)
 #define RTC_ALM_HORT_MSK	(0x3 << RTC_ALM_HORT_POS)
 #define RTC_ALM_HORU_POS	(16)
 #define RTC_ALM_HORU_MSK	(0xf << RTC_ALM_HORU_POS)
 #define RTC_ALM_HMSK_POS	(23)
-#define RTC_ALM_PM		(0x1 << 22)
-#define RTC_ALM_HORU(n) ((n) << 20)
-#define RTC_ALM_HORT(n) ((n) << 16)
+#define RTC_ALM_PM			(0x1 << 22)
+#define RTC_ALM_HORU(n) 	((n) << 20)
+#define RTC_ALM_HORT(n) 	((n) << 16)
 
-#define RTC_ALM_MIN_POS	(8)
-#define RTC_ALM_MIN_MSK	(0x7f << RTC_ALM_MIN_POS)
+#define RTC_ALM_MIN_POS		(8)
+#define RTC_ALM_MIN_MSK		(0x7f << RTC_ALM_MIN_POS)
 #define RTC_ALM_MINT_POS	(12)
 #define RTC_ALM_MINT_MSK	(0x7 << RTC_ALM_MINT_POS)
 #define RTC_ALM_MINU_POS	(8)
 #define RTC_ALM_MINU_MSK	(0xf << RTC_ALM_MINU_POS)
 #define RTC_ALM_MMSK_POS    (15)
-#define RTC_ALM_MINU(n) ((n) << 12)
-#define RTC_ALM_MINT(n) ((n) << 8)
+#define RTC_ALM_MINU(n) 	((n) << 12)
+#define RTC_ALM_MINT(n) 	((n) << 8)
 
-#define RTC_ALM_SEC_POS	(0)
-#define RTC_ALM_SEC_MSK	(0x7f << RTC_ALM_SEC_POS)
+#define RTC_ALM_SEC_POS		(0)
+#define RTC_ALM_SEC_MSK		(0x7f << RTC_ALM_SEC_POS)
 #define RTC_ALM_SECT_POS	(4)
 #define RTC_ALM_SECT_MSK	(0x7 << RTC_ALM_SECT_POS)
 #define RTC_ALM_SECU_POS	(0)
 #define RTC_ALM_SECU_MSK	(0xf << RTC_ALM_SECU_POS)
 #define RTC_ALM_SMSK_POS	(7)
-#define RTC_ALM_SECU(n) ((n) << 4)
-#define RTC_ALM_SECT(n) ((n) << 0)
+#define RTC_ALM_SECU(n) 	((n) << 4)
+#define RTC_ALM_SECT(n) 	((n) << 0)
 
-#define RTC_ALM_MODE 	(0xC0808080)
+#define RTC_ALM_MODE 		(0xC0808080)
 
 ///SSR
-#define RTC_SSR_MSK		(0xffff)
+#define RTC_SSR_MSK			(0xffff)
 
 /// Interrupt Related
-#define ALRA_INT_POS 	(0)
-#define ALRB_INT_POS	(1)
-#define CPRD_INT_POS	(2)
-#define TRGEV0_INT_POS	(3)
-#define TRGEV1_INT_POS	(4)
+#define ALRA_INT_POS 		(0)
+#define ALRB_INT_POS		(1)
+#define CPRD_INT_POS		(2)
+#define TRGEV0_INT_POS		(3)
+#define TRGEV1_INT_POS		(4)
 typedef enum{
-	RTC_INT_ALMA = 0x1 << ALRA_INT_POS,
-	RTC_INT_ALMB = 0x1 << ALRB_INT_POS,
-	RTC_INT_CPRD = 0x1 <<CPRD_INT_POS,
-	RTC_INT_TRGEV0 = 0x1 <<TRGEV0_INT_POS,
-	RTC_INT_TRGEV1 = 0x1 <<TRGEV1_INT_POS
+	RTC_INT_ALMA 		= 0x1 << ALRA_INT_POS,
+	RTC_INT_ALMB		= 0x1 << ALRB_INT_POS,
+	RTC_INT_CPRD	 	= 0x1 << CPRD_INT_POS,
+	RTC_INT_TRGEV0	 	= 0x1 << TRGEV0_INT_POS,
+	RTC_INT_TRGEV1		= 0x1 << TRGEV1_INT_POS
 }rtc_int_e;
 
 
 ///KEY
-#define RTC_KEY		(0xca53)
+#define RTC_KEY				(0xca53)
 
 ///EVTRG
-#define RTC_TRGSEL0_POS	(0)
-#define RTC_TRGSEL0_MSK	(0xf)
-#define RTC_TRGSEL1_POS	(4)
-#define RTC_TRGSEL1_MSK	(0xf << RTC_TRGSEL1_POS)
+#define RTC_TRGSEL0_POS		(0)
+#define RTC_TRGSEL0_MSK		(0xf)
+
+#define RTC_TRGSEL1_POS		(4)
+#define RTC_TRGSEL1_MSK		(0xf << RTC_TRGSEL1_POS)
 typedef enum {
 	RTC_TRG_DIS = 0,
 	RTC_TRG_A,
 	RTC_TRG_B,
 	RTC_TRG_CPRD
 }csp_rtc_trgsel_e;
-#define RTC_TRG0OE		(0x1 << 20)
-#define RTC_TRG1OE		(0x1 << 21)
+#define RTC_TRG0OE			(0x1 << 20)
+#define RTC_TRG1OE			(0x1 << 21)
 
 ///EVPS
 #define RTC_TRGEV0PRD_POS	(0)
@@ -287,8 +288,8 @@ typedef enum {
 #define RTC_TRGEV0CNT_MSK	(0xf << RTC_TRGEV0CNT_POS)
 
 //EVSWF
-#define RTC_EV0SWF 	(0x1)
-#define RTC_EV1SWF  (0x2)
+#define RTC_EV0SWF 			(0x1)
+#define RTC_EV1SWF  		(0x2)
 
 
 /******************************************************************************
@@ -369,7 +370,7 @@ static inline void csp_rtc_run(csp_rtc_t *ptRtcBase)
 	ptRtcBase->CR &= (~RTC_INIT);		//key is needed!
 }
 
-static inline void csp_rtc_reset(csp_rtc_t *ptRtcBase)								
+static inline void csp_rtc_sw_rst(csp_rtc_t *ptRtcBase)								
 { 
 	ptRtcBase->CR |= RTC_RESET;
 }
@@ -461,7 +462,7 @@ static inline uint8_t csp_rtc_read_min(csp_rtc_t *ptRtcBase)
 
 static inline uint8_t csp_rtc_read_sec(csp_rtc_t *ptRtcBase)
 {
-	return (  ((ptRtcBase->TIMR & RTC_SECT_MSK) >> RTC_SECT_POS) * 10 + ((ptRtcBase->TIMR & RTC_SECU_MSK) >> RTC_SECU_POS)  );
+	return (  ((ptRtcBase->TIMR & RTC_SECU_MSK) >> RTC_SECU_POS) +((ptRtcBase->TIMR & RTC_SECT_MSK) >> RTC_SECT_POS) * 10 );
 }
 
 static inline void csp_rtc_alm_enable(csp_rtc_t *ptRtcBase,uint8_t byAlm)					

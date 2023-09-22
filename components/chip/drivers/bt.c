@@ -1,10 +1,11 @@
 /***********************************************************************//** 
  * \file  bt.c
  * \brief  csi bt driver
- * \copyright Copyright (C) 2015-2021 @ APTCHIP
+ * \copyright Copyright (C) 2015-2023 @ APTCHIP
  * <table>
  * <tr><th> Date  <th>Version  <th>Author  <th>Description
- * <tr><td> 2021-5-13 <td>V0.0 <td>ZJY     <td>initial
+ * <tr><td> 2021-5-13 <td>V0.0 <td>ZJY     <td>initial 
+ * <tr><td> 2023-9-21 <td>V0.1 <td>ZJY     <td>code normalization 
  * </table>
  * *********************************************************************
 */
@@ -270,7 +271,7 @@ void csi_bt_prdr_update(csp_bt_t *ptBtBase, uint16_t hwPrdr)
  */
 void csi_bt_immediate_update(csp_bt_t *ptBtBase) 
 {
-	csp_bt_immediate_updata(ptBtBase);						//immediately updata
+	csp_bt_immediate_update(ptBtBase);						//immediately updata
 }
 
 /** \brief  updata bt pwm freq and duty cycle

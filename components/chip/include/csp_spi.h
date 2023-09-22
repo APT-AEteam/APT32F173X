@@ -19,6 +19,7 @@
 #define FALSE 		0
 /* Includes ------------------------------------------------------------------*/
 #include <soc.h>
+#include "csp_common.h"
 
 /// \struct csp_adc_t
 /// \brief SPI reg description
@@ -359,17 +360,17 @@ static inline void csp_spi_set_clk_div(csp_spi_t *ptSpiBase,uint8_t wScr,uint8_t
 static inline uint8_t csp_spi_write_ready(csp_spi_t *ptSpiBase)
 {	
 	if(csp_spi_get_sr(ptSpiBase) & SPI_TNF)
-		return TRUE;			//no full
+		return 1;			//no full
 	else
-		return FALSE;			//full
+		return 0;			//full
 }
 
 static inline uint8_t csp_spi_busy(csp_spi_t *ptSpiBase)
 {
 	if(csp_spi_get_sr(ptSpiBase) & SPI_BSY)
-		return TRUE;			//busy
+		return 1;			//busy
 	else
-		return FALSE;			//idle
+		return 0;			//idle
 }
 
 static inline void csp_spi_default_init(csp_spi_t *ptSpiBase)
@@ -397,9 +398,9 @@ static inline void csp_spi_set_int(csp_spi_t *ptSpiBase,spi_int_e eSpiInt,bool b
 static inline uint8_t csp_spi_read_ready(csp_spi_t *ptSpiBase)
 {
 	if(csp_spi_get_sr(ptSpiBase) & SPI_RNE)
-		return TRUE;			//no empty
+		return 1;			//no empty
 	else
-		return FALSE;			//empty
+		return 0;			//empty
 }
 
 static inline void csp_spi_softreset(csp_spi_t *ptSpiBase,spi_softreset_e eRstSource)

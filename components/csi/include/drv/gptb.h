@@ -1,5 +1,12 @@
 /***********************************************************************//** 
-
+ * \file  gptb.h
+ * \brief  GPTB  
+ * \copyright Copyright (C) 2015-2023 @ APTCHIP
+ * <table>
+ * <tr><th> Date  <th>Version  <th>Author  <th>Description
+ * <tr><td> 2021-6-17 <td>V0.0  <td>ljy   <td>initial
+ * <tr><td> 2023-9-18 <td>V0.1  <td>wch   <td>code normalization
+ * </table>
  * *********************************************************************
 */
 
@@ -19,6 +26,12 @@ typedef enum
     GPTB_WORK_WAVE 		= 1		
 }csi_gptb_workmode_e;
 
+typedef enum
+{
+	GPTB_CLKSRC_PCLK	= 0,		
+    GPTB_CLKSRC_SYNCIN4 = 1		
+}csi_gptb_clksrc_e;
+
 typedef enum{
 	GPTB_RUN_CONT	= 0,			//continuous count mode	
 	GPTB_RUN_ONCE 					//once count mode	
@@ -29,6 +42,11 @@ typedef enum {
 	GPTB_CNT_DN,
 	GPTB_CNT_UPDN
 }csi_gptb_cntmd_e;
+
+typedef enum{
+	GPTB_PHSDIR_DN = 0,
+	GPTB_PHSDIR_UP
+}csi_gptb_phsdir_e;
 
 typedef enum{
 	GPTB_STP_ST_HZ = 0,
@@ -121,9 +139,9 @@ typedef enum{
 }csi_gptb_int_e;
 
 typedef enum{
-	GPTB_TRGO_0_SEL = 0,
-	GPTB_TRGO_1_SEL
-}csi_gptb_syncrout_e;
+	GPTB_TRGOUT0_SEL = 0,
+	GPTB_TRGOUT1_SEL
+}csi_gptb_trgout_e;
 
 typedef enum{
 	GPTB_FILT_DIS		= 0,	//filter disable
@@ -147,9 +165,9 @@ typedef enum{
 }csi_gptb_syncin_e;
 
 typedef enum{
-	GPTB_TRG_OUT0		= 0,	
-	GPTB_TRG_OUT1,				
-}csi_gptb_trgout_e;
+	GPTB_TRG_EV0		= 0,	
+	GPTB_TRG_EV1,				
+}csi_gptb_trgev_e;
 
 typedef enum{
 	GPTB_CNT0INIT		= 0,	//filter input syncin0
@@ -161,14 +179,14 @@ typedef enum {
 	GPTB_AQCSF_L,
 	GPTB_AQCSF_H,
 	GPTB_AQCSF_NONE1
-}csi_gptb_aqcsf_e;
+}csi_gptb_aqcsf_act_e;
 
 typedef enum {
-	GPTB_AQCSF_NOW=0,
-	GPTB_AQCSF_ZRO,
-	GPTB_AQCSF_PRD,
-	GPTB_AQCSF_ZRO_PRD
-}csi_gptb_aqosf_e;
+	GPTB_AQCSF_LOAD_NOW=0,
+	GPTB_AQCSF_LOAD_ZRO,
+	GPTB_AQCSF_LOAD_PRD,
+	GPTB_AQCSF_LOAD_ZRO_PRD
+}csi_gptb_aqcsf_ldmd_e;
 
 typedef enum{
 	GPTB_SYNC_CONT		= 0,	
@@ -521,7 +539,28 @@ typedef struct {
 	uint8_t 				  byAqcsf;			//REGLK control:AQCSF
 }csi_gptb_reglk_config_t;
 
+/// \struct csi_gptb_ctrl_t
+/// \brief  gptb control handle, not open to users  
+typedef struct {		
+	void(*callback)(csp_gptb_t *ptGptbBase, uint32_t wIsr);
+} csi_gptb_ctrl_t;
+
 //----------------------------------Functions declaration-------------------------------------
+/** \brief gptb interrupt handle  function
+ *  \param[in] ptGptbBase: pointer of gptb register structure
+ *  \param[in] byIdx: gptb idx(0/1/2/3/4/5)
+ *  \return    none
+ */
+void csi_gptb_irqhandler(csp_gptb_t *ptGptbBase, uint8_t byIdx);
+
+/** \brief  register gptb interrupt callback function
+ * 
+ *  \param[in] ptGptbBase: pointer of gptb register structure
+ *  \param[in] callback: gptb callback handle function
+ *  \return error code \ref csi_error_t
+ */ 
+csi_error_t csi_gptb_register_callback(csp_gptb_t *ptGptbBase, void  *callback);
+
 /**
  \brief  gptb capture configuration
  \param  ptGptbBase    	pointer of gptb register structure
@@ -552,7 +591,7 @@ csi_error_t csi_gptb_capture_init(csp_gptb_t *ptGptbBase, csi_gptb_capture_confi
 */
 csi_error_t  csi_gptb_wave_init(csp_gptb_t *ptGptbBase, csi_gptb_pwm_config_t *ptGptbPwmCfg);
 
-/** \brief initialize gptb data structure
+/** \brief gptb timer initialize
  * 
  *  \param[in] ptGptbBase: pointer of gptb register structure
  *  \param[in] ptGptbTimCfg of gptb timing parameter config structure
@@ -562,6 +601,49 @@ csi_error_t  csi_gptb_wave_init(csp_gptb_t *ptGptbBase, csi_gptb_pwm_config_t *p
  */ 
 csi_error_t csi_gptb_timer_init(csp_gptb_t *ptGptbBase, csi_gptb_time_config_t *ptGptbTimCfg);
 
+/** \brief set gptb running mode
+ * 
+ *  \param[in] ptGptbBase: pointer of gptb register structure
+ *  \param[in] eRunMode: gptb running mode, one pulse/continuous, \ref csi_gptb_runmode_e
+ *  \return none
+ */ 
+void csi_gptb_set_runmode(csp_gptb_t *ptGptbBase, csi_gptb_runmode_e eRunMode);
+
+/** \brief enable/disable gptb cgfilter 
+ * 
+ *  \param[in] ptGptbBase: pointer of gptb register structure 
+ *  \param[in] eCgflt \ref csi_gptb_cgflt_e
+ *  \return error code \ref csi_error_t
+ */
+csi_error_t csi_gptb_set_cgflt(csp_gptb_t *ptGptbBase,csi_gptb_cgflt_e eCgflt);
+
+/** \brief enable/disable gptb burst 
+ * 
+ *  \param[in] ptGptbBase: pointer of gptb register structure
+ *  \param[in] byCgsrc \ref csi_gptb_cgsrc_e 
+ *  \return error code \ref csi_error_t
+ */
+csi_error_t csi_gptb_set_burst(csp_gptb_t *ptGptbBase,csi_gptb_cgsrc_e eCgsrc);
+
+/** \brief gptb phsr config 
+ * 
+ *  \param[in] ptGptbBase: pointer of gptb register structure
+ *  \param[in] hwVal \ref phsr value 
+ * 	\param[in] eDir \ref csi_gptb_phsdir_e 
+ * 	\param[in] bEnable enable/disable 
+ *  \return error code \ref csi_error_t
+ */
+csi_error_t csi_gptb_set_phsr(csp_gptb_t *ptGptbBase, uint16_t hwVal, csi_gptb_phsdir_e eDir, bool bEnable);
+
+ /**
+ \brief  PWM Channel configuration
+ \param  ptGptbBase    	pointer of gptb register structure
+ \param  ptPwmCfg   	\refer to csi_gptb_pwm_channel_config_t
+ \param  channel        \refer to csi_gptb_channel_e
+ \return CSI_OK /CSI_ERROR
+*/
+csi_error_t csi_gptb_pwm_channel_init(csp_gptb_t *ptGptbBase, csi_gptb_pwm_channel_config_t *ptPwmCfg, csi_gptb_channel_e eChannel); 
+ 
 /**
  \brief  gptb deadzone init
  \param  ptGptbBase    	pointer of gptb register structure
@@ -599,59 +681,6 @@ csi_error_t csi_gptb_deadzone_init(csp_gptb_t *ptGptbBase, csi_gptb_deadzone_con
 */
 csi_error_t csi_gptb_emergency_init(csp_gptb_t *ptGptbBase, csi_gptb_emergency_config_t *ptEmCfg);
 
-/** \brief set gptb count mode
- * 
- *  \param[in] ptGptbBase: pointer of gpta register structure
- *  \param[in] eCntMode: gpta count mode, one-shot/continuous
- *  \return none
- */ 
-void csi_gptb_set_runmode(csp_gptb_t *ptGptbBase, csi_gptb_runmode_e eRunMode);
-
-/** \brief enable/disable gptb burst 
- * 
- *  \param[in] ptGptbBase: pointer of gptb register structure 
- *  \param[in] byCgflt \ref cfgcsi_gptb_cgflt_eflt
- *  \return error code \ref csi_error_t
- */
-csi_error_t csi_gptb_set_cgflt(csp_gptb_t *ptGptbBase,csi_gptb_cgflt_e eCgflt);
-
-/** \brief enable/disable gptb burst 
- * 
- *  \param[in] ptGptbBase: pointer of gptb register structure
- *  \param[in] byCgsrc \ref csi_gptb_cgsrc_e src 
- *  \return error code \ref csi_error_t
- */
-csi_error_t csi_gptb_set_burst(csp_gptb_t *ptGptbBase,csi_gptb_cgsrc_e eCgsrc);
-
- /**
- \brief  Channel configuration
- \param  ptGptbBase    	pointer of gptb register structure
- \param  ptPwmCfg   	    refer to csi_gptb_pwmchannel_config_t
- \param  channel        Channel label
- \return CSI_OK /CSI_ERROR
-*/
-csi_error_t csi_gptb_channel_config(csp_gptb_t *ptGptbBase, csi_gptb_pwm_channel_config_t *ptPwmCfg, csi_gptb_channel_e eChannel);
-
-/** \brief Channel CMPLDR configuration
- * 
- *  \param[in] ptGptbBase: pointer of gptb register structure
- *  \param[in] eLdmd: refer to csi_gptb_ldmd_e
- *  \param[in] eShdwldmd: refer to csi_gptb_shdwldmd_e
- *  \param[in] eChannel: refer to csi_gptb_comp_e
- *  \return error code \ref csi_error_t
- */
-csi_error_t csi_gptb_channel_cmpload_config(csp_gptb_t *ptGptbBase, csi_gptb_ldmd_e eLdmd, csi_gptb_shdwldmd_e eShdwldmd ,csi_gptb_comp_e eChannel);
-
- /**
- \brief  DeadZoneTime configuration loading 
- \param  ptGptbBase    	pointer of gptb register structure
- \param  eDbldr         refer to csi_gptb_dbldr_e
- \param  eDbldmd         refer to csi_gptb_dbldmd_e
- \param  eShdwdbldmd	       refer to csi_gptb_shdwdbldmd_e
- \return CSI_OK /CSI_ERROR
-*/
-csi_error_t csi_gptb_dbldrload_config(csp_gptb_t *ptGptbBase, csi_gptb_dbldr_e eDbldr,csi_gptb_dbldmd_e eDbldmd, csi_gptb_shdwdbldmd_e eShdwdbldmd);
-
 /**
  \brief  State of emergency configuration 
  \param  ptGptbBase    	pointer of gptb register structure
@@ -661,18 +690,38 @@ csi_error_t csi_gptb_dbldrload_config(csp_gptb_t *ptGptbBase, csi_gptb_dbldr_e e
 */
 csi_error_t csi_gptb_set_emergency_out(csp_gptb_t *ptGptbBase, csi_gptb_osrchx_e eOsrch, csi_gptb_emout_e eEmOut);
 
+/** \brief Channel CMPLDR configuration
+ * 
+ *  \param[in] ptGptbBase: pointer of gptb register structure
+ *  \param[in] eLoadMode: 		\ref to csi_gptb_ldmd_e
+ *  \param[in] eShdwLoadMode:   \ref to csi_gptb_shdwldmd_e
+ *  \param[in] eChannel: 		\ref to csi_gptb_comp_e
+ *  \return error code \ref csi_error_t
+ */
+csi_error_t csi_gptb_set_cmpload(csp_gptb_t *ptGptbBase, csi_gptb_ldmd_e eLoadMode, csi_gptb_shdwldmd_e eShdwLoadMode,csi_gptb_comp_e eChannel);
+
 /** \brief Channel AQLDR configuration
  * 
  *  \param[in] ptGptbBase: pointer of gptb register structure
- *  \param[in] eLdmd: refer to csi_gptb_ldmd_e
- *  \param[in] eShdwldmd: refer to csi_gptb_shdwldmd_e
- *  \param[in] eChannel: refer to csi_gptb_channel_e
+ *  \param[in] eLoadMode: 	  \ref to csi_gptb_ldmd_e
+ *  \param[in] eShdwLoadMode: \ref to csi_gptb_shdwldmd_e
+ *  \param[in] eChannel:      \ref to csi_gptb_channel_e
  *  \return error code \ref csi_error_t
  */
-csi_error_t csi_gptb_channel_aqload_config(csp_gptb_t *ptGptbBase, csi_gptb_ldmd_e eLdmd, csi_gptb_shdwldmd_e eShdwldmd ,csi_gptb_channel_e eChannel);
+csi_error_t csi_gptb_set_aqload(csp_gptb_t *ptGptbBase, csi_gptb_ldmd_e eLoadMode, csi_gptb_shdwldmd_e eShdwLoadMode ,csi_gptb_channel_e eChannel);
 
 /**
- \brief  gptb global load init
+ \brief  DeadZoneTime configuration loading 
+ \param  ptGptbBase    	pointer of gptb register structure
+ \param  eDbldr         \ref to csi_gptb_dbldr_e
+ \param  eDbldmd        \ref to csi_gptb_dbldmd_e
+ \param  eShdwdbldmd	\ref to csi_gptb_shdwdbldmd_e
+ \return CSI_OK /CSI_ERROR
+*/
+csi_error_t csi_gptb_set_dbload(csp_gptb_t *ptGptbBase, csi_gptb_dbldr_e eDbldr,csi_gptb_dbldmd_e eDbldmd, csi_gptb_shdwdbldmd_e eShdwdbldmd);
+
+/**
+ \brief  gptb global load config
  \param  ptGptbBase    	pointer of gptb register structure
  \param  ptGldCfg       \refer csi_gptb_global_load_config_t
   * 		- eGldEnable:Global load enable control \refer csi_gptb_gld_en_e
@@ -682,16 +731,16 @@ csi_error_t csi_gptb_channel_aqload_config(csp_gptb_t *ptGptbBase, csi_gptb_ldmd
   * 		- byGldcnt:Global event count
  \return CSI_OK /CSI_ERROR
 */
-csi_error_t csi_gptb_global_load_init(csp_gptb_t *ptGptbBase, csi_gptb_global_load_config_t *ptGldCfg);
+csi_error_t csi_gptb_set_gldcr(csp_gptb_t *ptGptbBase, csi_gptb_global_load_config_t *ptGldCfg);
 
 /** \brief GLDCFG loading
  * 
  *  \param[in] ptGPTBBase of GPTB register structure
- *  \param[in] Glo:  csi_GPTB_Global_load_gldcfg  
+ *  \param[in] Glo:  \ref csi_gptb_gldcfg_e
  *  \param[in] bEnable ENABLE or DISABLE
  *  \return CSI_OK
  */
-csi_error_t csi_gptb_gldcfg(csp_gptb_t *ptGptbBase ,csi_gptb_gldcfg_e Glo,bool bEnable);
+csi_error_t csi_gptb_set_gldcfg(csp_gptb_t *ptGptbBase ,csi_gptb_gldcfg_e eGloCfg, bool bEnable);
 
 /**
  \brief  Software trigger loading
@@ -714,31 +763,30 @@ csi_error_t csi_gptb_global_rearm(csp_gptb_t *ptGptbBase);
 csi_error_t csi_gptb_start(csp_gptb_t *ptGptbBase);
 
 /**
- \brief SW stop GPTB counter
+ \brief stop GPTB counter
  \param ptGptbBase    pointer of gptb register structure
 */
-void csi_gptb_swstop(csp_gptb_t *ptGptbBase);
+void csi_gptb_stop(csp_gptb_t *ptGptbBase);
+
+/**
+ \brief stop GPTB counter
+ \param ptGptbBase    pointer of gptb register structure
+*/
+void csi_gptb_set_clksrc(csp_gptb_t *ptGptbBase,csi_gptb_clksrc_e eClkSrc);
 
 /**
  \brief set GPTB start mode. 
  \param ptGptbBase    pointer of gptb register structure
- \return eMode 隆锚oGPTB_SW/GPTB_SYNC
+ \return eMode \ref csi_gptb_startmd_e
 */
 void csi_gptb_set_start_mode(csp_gptb_t *ptGptbBase, csi_gptb_startmd_e eMode);
 
 /**
- \brief set GPTB operation mode
- \param ptGptbBase    pointer of gptb register structure
- \param eMode 	\ref csi_gptb_runmode_e
-*/
-void csi_gptb_set_os_mode(csp_gptb_t *ptGptbBase, csi_gptb_runmode_e eMode);
-
-/**
  \brief set GPTB stop status
  \param ptGptbBase    pointer of gptb register structure
- \param eSt 	 GPTB_STP_HZ/GPTB_STP_LOW
+ \param eSt \ref csi_gptb_stpst_eW
 */
-void csi_gptb_set_stop_st(csp_gptb_t *ptGptbBase, csi_gptb_stpst_e eSt);
+void csi_gptb_set_stop_st(csp_gptb_t *ptGptbBase, csi_gptb_stpst_e eStpSt);
 
 /**
  \brief get counter period to calculate the duty cycle. 
@@ -753,12 +801,12 @@ uint16_t csi_gptb_get_prdr(csp_gptb_t *ptGptbBase);
  *  \param[in] hwPrdr: gptb PRDR reg  value
  *  \return none
  */
-csi_error_t csi_gptb_prdr_update(csp_gptb_t *ptGptbBase, uint16_t hwPrdr) ;
+csi_error_t csi_gptb_prdr_update(csp_gptb_t *ptGptbBase, uint16_t hwPrdr);
 
 /** \brief  update gptb CMPx reg value
  * 
  *  \param[in] ptGptbBase: pointer of gptb register structure
- *  \param[in] eComp: select which COMP to set(COMPA or COMPB)
+ *  \param[in] eComp: \ref  csi_gptb_comp_e.select which COMP to set(COMPA or COMPB)
  *  \param[in] hwCmp: gptb COMP reg value
  *  \return none
  */
@@ -767,102 +815,102 @@ csi_error_t csi_gptb_cmp_update(csp_gptb_t *ptGptbBase,csi_gptb_comp_e eComp, ui
 /**
  \brief change gptb output dutycycle. 
  \param ptGptbBase   pointer of gptb register structure
- \param eCh          refer to csi_gptb_comp_e
+ \param eCh          \refer to csi_gptb_comp_e
  \param wDuty        duty of PWM:0%-100%
 */
 csi_error_t csi_gptb_change_ch_duty(csp_gptb_t *ptGptbBase, csi_gptb_comp_e eCh, uint32_t wDuty);
 
 /**
  \brief get harklock status
- \param ptEpt    pointer of gptb register structure
+ \param ptGptbBase    pointer of gptb register structure
  \return uint8_t 0 or 1
 */
 uint8_t csi_gptb_get_hdlck_st(csp_gptb_t *ptGptbBase);
 
 /**
  \brief clear harklock status
- \param ptEpt   pointer of gptb register structure
- \return  eEp 	 external emergency input: csi_gptb_ep_e                 
+ \param ptGptbBase   pointer of gptb register structure
+ \return  eEp 	 external emergency input:  \refer to csi_gptb_ep_e                 
 */
 void csi_gptb_clr_hdlck(csp_gptb_t *ptGptbBase, csi_gptb_ep_e eEp);
 
 /**
- \brief get 	 softlock status
- \param ptEpt    pointer of gptb register structure
+ \brief get softlock status
+ \param ptGptbBase    pointer of gptb register structure
  \return uint8_t 0 or 1
 */
 uint8_t csi_gptb_get_sftlck_st(csp_gptb_t *ptGptbBase);
 
 /**
  \brief clear softlock status
- \param ptEpt   pointer of gptb register structure
- \return  eEp 	 external emergency input: csi_gptb_ep_e
+ \param ptGptbBase   pointer of gptb register structure
+ \return eEp 	external emergency input:  \refer to csi_gptb_ep_e
 */
 void csi_gptb_clr_sftlck(csp_gptb_t *ptGptbBase, csi_gptb_ep_e eEp);
 
 /** \brief software force emergency
  * 
  *  \param[in] ptGptbBase: pointer of gptb register structure
- *  \param[in] eEp: external emergency input: GPTB_EP0~3
+ *  \param[in] eEp: external emergency input:  \refer to csi_gptb_ep_e
  *  \return none
  */
 void csi_gptb_force_em(csp_gptb_t *ptGptbBase, csi_gptb_ep_e eEp);
 
 /**
   \brief       enable gptb in debug mode
-  \param[in]   ptGptbBase pointer of gptb register structure
+  \param[in]   ptGptbBase      pointer of gptb register structure
 */
 void csi_gptb_debug_enable(csp_gptb_t *ptGptbBase);
 
 /**
   \brief       disable gptb in debug mode
-  \param[in]   ptGptbBase pointer of gptb register structure
+  \param[in]   ptGptbBase      pointer of gptb register structure
 */
 void csi_gptb_debug_disable(csp_gptb_t *ptGptbBase);
 
 /**
   \brief       enable gptb emergency interrupt
   \param[in]   ptGptbBase   pointer of gptb register structure
-  \param[in]   eEmint		refer to csi_gptb_emint_e
+  \param[in]   eEmint		\refer to csi_gptb_emint_e
 */
 void csi_gptb_emint_enable(csp_gptb_t *ptGptbBase, csi_gptb_emint_e eEmint);
 
 /**
   \brief       disable gptb emergency interrupt
   \param[in]   ptGptbBase   pointer of gptb register structure
-  \param[in]   eEmint		refer to csi_gptb_emint_e
+  \param[in]   eEmint		\refer to csi_gptb_emint_e
 */
 void csi_gptb_emint_disable(csp_gptb_t *ptGptbBase, csi_gptb_emint_e eEmint);
 
 /**
   \brief   enable/disable gptb out trigger 
   \param   ptGptbBase   pointer of gptb register structure
-  \param   byCh			0/1
+  \param   eTrgEv		\refer to csi_gptb_trgev_e
 */
-csi_error_t csi_gptb_evtrg_enable(csp_gptb_t *ptGptbBase, uint8_t byCh);
+csi_error_t csi_gptb_evtrg_enable(csp_gptb_t *ptGptbBase, csi_gptb_trgev_e eTrgEv);
 
 /**
   \brief   One time software output 
-  \param   ptGptbBase      pointer of gptb register structure 
-  \param   byCh	         GPTB_OSTSFA/GPTB_OSTSFB		
-  \param   eAction 		GPTB_LDAQCR_ZRO/GPTB_LDAQCR_PRD/GPTB_LDAQCR_ZROPRD
+  \param   ptGptbBase    pointer of gptb register structure 
+  \param   eChannel	    \refer to csi_gptb_channel_e  		
+  \param   eAction 		\refer to csi_gptb_action_e
 */
-csi_error_t csi_gptb_onetimesoftwareforce_output(csp_gptb_t *ptGptbBase, csi_gptb_channel_e eChannel, csi_gptb_action_e eAction);
+csi_error_t csi_gptb_set_aqosf(csp_gptb_t *ptGptbBase, csi_gptb_channel_e eChannel, csi_gptb_action_e eAction);
 
 /** \brief  Continuous software waveform loading control
  *  \param[in] ptGptbBase: pointer of gptb register structure
- *  \param[in] eLoadtime:    refer to csi_gptb_aqosf_e
+ *  \param[in] eLoadMode:  \refer to csi_gptb_aqcsf_ldmd_e
  *  \return  none
  */
-void csi_gptb_loading_method_aqcsf(csp_gptb_t *ptGptbBase, csi_gptb_aqosf_e eLoadtime);
+void csi_gptb_set_aqcsf_loadmode(csp_gptb_t *ptGptbBase, csi_gptb_aqcsf_ldmd_e eLoadMode);
 
 /** \brief Continuous software waveform control
  *  \param[in] ptGptbBase: pointer of gptb register structure
- *  \param[in] byCh        refer to csi_gptb_channel_e
- *  \param[in] eAction:    refer to  csi_gptb_aqosf_e
+ *  \param[in] byCh        \refer to csi_gptb_channel_e
+ *  \param[in] eAction:    \refer to  csi_gptb_aqcsf_e
  *  \return  none
  */
-csi_error_t csi_gptb_continuoussoftwareforce_output(csp_gptb_t *ptGptbBase, csi_gptb_channel_e eChannel, csi_gptb_aqcsf_e eAction);
+csi_error_t csi_gptb_set_aqcsf(csp_gptb_t *ptGptbBase, csi_gptb_channel_e eChannel, csi_gptb_aqcsf_act_e eAction);
 
 /** \brief gptb interrupt clear  
  *  \param[in] ptGptbBase: pointer of gptb register structure
@@ -888,9 +936,9 @@ void csi_gptb_int_disable(csp_gptb_t *ptGptbBase, csi_gptb_int_e eInt);
 /** \brief gptb sync input evtrg config  
  * 
  *  \param[in] ptGptbBase: pointer of gptb register structure
- *  \param[in] eSyncIn: gptb sync evtrg input channel(0~6)
- *  \param[in] eSyncMode: gptb sync evtrg mode, continuous/once
- *  \param[in] eAutoRearm: refer to csi_gptb_arearm_e 
+ *  \param[in] eSyncIn:    \refer to csi_gptb_syncin_e
+ *  \param[in] eSyncMode:  \refer to csi_gptb_syncmode_e
+ *  \param[in] eAutoRearm: \refer to csi_gptb_arearm_e 
  *  \return none
  */
 void csi_gptb_set_sync(csp_gptb_t *ptGptbBase, csi_gptb_syncin_e eSyncIn, csi_gptb_syncmode_e eSyncMode, csi_gptb_arearm_e eAutoRearm);
@@ -898,11 +946,11 @@ void csi_gptb_set_sync(csp_gptb_t *ptGptbBase, csi_gptb_syncin_e eSyncIn, csi_gp
 /** \brief gptb extsync input select
  * 
  *  \param[in] ptGptbBase: pointer of gptb register structure
- *  \param[in] eSyncIn: gptb sync evtrg input channel(0~6)
- *  \param[in] byTrgChx: trgxsel channel(0~1)
+ *  \param[in] eSyncIn:  \refer to csi_gptb_syncin_e
+ *  \param[in] byTrgChx: \refer to csi_gptb_trgout_e
  *  \return error code \ref csi_error_t
  */
-csi_error_t csi_gptb_set_extsync_chnl(csp_gptb_t *ptGptbBase, csi_gptb_syncin_e eSyncIn, csi_gptb_syncrout_e eTrgChx);
+csi_error_t csi_gptb_set_extsync_chnl(csp_gptb_t *ptGptbBase, csi_gptb_syncin_e eSyncIn, csi_gptb_trgout_e eTrgChx);
 
 /** \brief gptb sync input filter config  
  * 
@@ -921,24 +969,24 @@ csi_error_t csi_gptb_set_sync_filter(csp_gptb_t *ptGptbBase, csi_gptb_filter_con
 /** \brief rearm gptb sync rearm  
  * 
  *  \param[in] ptGptbBase: pointer of gptb register structure
- *  \param[in] eSyncIn: gptb sync evtrg input channel(0~6)
+ *  \param[in] eSyncin: gptb sync evtrg input channel(0~6), \ref to csi_gptb_syncin_e
  *  \return none
  */
-void csi_gptb_sync_rearm(csp_gptb_t *ptGptbBase,csi_gptb_syncin_e eSyncIn);
+void csi_gptb_sync_rearm(csp_gptb_t *ptGptbBase,csi_gptb_syncin_e eSyncin);
 
 /** \brief gptb evtrg output config
  * 
  *  \param[in] ptGptbBase: pointer of gptb register structure
- *  \param[in] byTrgOut: evtrg out port(0~1)
- *  \param[in] eTrgSrc: evtrg source(1~15) 
+ *  \param[in] eTrgEv: \ref to csi_gptb_trgev_e
+ *  \param[in] eTrgSrc: \ref to csi_gptb_trgsrc_e 
  *  \return error code \ref csi_error_t
  */
-csi_error_t csi_gptb_set_evtrg(csp_gptb_t *ptGptbBase, csi_gptb_trgout_e eTrgOut, csi_gptb_trgsrc_e eTrgSrc);
+csi_error_t csi_gptb_set_evtrg(csp_gptb_t *ptGptbBase, csi_gptb_trgev_e eTrgEv, csi_gptb_trgsrc_e eTrgSrc);
 
 /** \brief gptb evtrg cntxinit control
  * 
  *  \param[in] ptGptbBase: pointer of gptb register structure
- *  \param[in] byCntChx: evtrg countinit channel(0~1)
+ *  \param[in] eCntChx: evtrg countinit channel(0~1)   \ref to csi_gptb_cntinit_e
  *  \param[in] byCntVal: evtrg cnt value(1~16)
  *  \param[in] byCntInitVal: evtrg cntxinit value(1~16)
  *  \return error code \ref csi_error_t
@@ -946,12 +994,12 @@ csi_error_t csi_gptb_set_evtrg(csp_gptb_t *ptGptbBase, csi_gptb_trgout_e eTrgOut
 csi_error_t csi_gptb_set_evcntinit(csp_gptb_t *ptGptbBase, csi_gptb_cntinit_e eCntChx, uint8_t byCntVal, uint8_t byCntInitVal);
 
 /**
- \brief  gptb configuration Loading
+ \brief  gptb reg link configuration
  \param  ptGptbBase    	pointer of gptb register structure
- \param  ptCfg           refer to csi_gptb_reglk_config_t
+ \param  ptGlobal       \refer csi_gptb_reglk_config_t
  \return CSI_OK /CSI_ERROR
 */
-csi_error_t csi_gptb_reglk_config(csp_gptb_t *ptGptbBase,csi_gptb_reglk_config_t *ptGlobal);
+csi_error_t csi_gptb_set_reglk(csp_gptb_t *ptGptbBase,csi_gptb_reglk_config_t *ptGlobal);
 
 #ifdef __cplusplus
 }

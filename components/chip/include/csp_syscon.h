@@ -771,7 +771,7 @@ static inline void csp_set_imosc_fre(csp_syscon_t *ptSysconBase, uint32_t wFreq)
 {
 	ptSysconBase->OPT1 = (ptSysconBase->OPT1 & (~IMO_MSK)) | wFreq;
 }
-static inline uint32_t csp_get_imosc_fre(csp_syscon_t *ptSysconBase)
+static inline uint32_t csp_get_imosc_freq(csp_syscon_t *ptSysconBase)
 {
 	return (uint32_t) ((ptSysconBase->OPT1) & IMO_MSK);
 }

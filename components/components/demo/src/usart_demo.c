@@ -1,10 +1,11 @@
 /***********************************************************************//** 
  * \file  usart_demo.c
  * \brief  USART_DEMO description and static inline functions at register level 
- * \copyright Copyright (C) 2015-2020 @ APTCHIP
+ * \copyright Copyright (C) 2015-2023 @ APTCHIP
  * <table>
  * <tr><th> Date  <th>Version  <th>Author  <th>Description
  * <tr><td> 2021-6-30 <td>V0.0 <td>ZJY     <td>initial
+ * <tr><td> 2023-9-22 <td>V0.1  <td>GQQ   <td>code normalization
  * </table>
  * *********************************************************************
 */
@@ -225,6 +226,7 @@ int usart_send_dma_demo(void)
 	tUsartCfg.wBaudRate 	= 115200;					//波特率：115200
 	csi_usart_init(USART0, &tUsartCfg);					//初始化串口
 	
+	csi_usart_set_send_dma(USART0, USDMA_TX_FIF0_TRG);	//配置DMA模式并使能
 	csi_usart_start(USART0, USART_FUNC_RX_TX);			//开启USART的RX和TX功能，也可单独开启RX或者TX功能
 
 
@@ -235,13 +237,12 @@ int usart_send_dma_demo(void)
 	tDmaConfig.eDetHinc 	= DMA_ADDR_CONSTANT;		//高位传输目标地址固定不变
 	tDmaConfig.eDataWidth 	= DMA_DSIZE_8_BITS;			//传输数据宽度8bit
 	tDmaConfig.eReload 		= DMA_RELOAD_DISABLE;		//禁止自动重载
-	tDmaConfig.eTransMode 	= DMA_TRANS_CONT;			//DMA服务模式(传输模式)，连续服务
+	tDmaConfig.eRunMode 	= DMA_RUN_CONT;			//DMA服务模式(传输模式)，连续服务
 	tDmaConfig.eTsizeMode  	= DMA_TSIZE_ONE_DSIZE;		//传输数据大小，一个 DSIZE , 即DSIZE定义大小
 	tDmaConfig.eReqMode		= DMA_REQ_HARDWARE;			//DMA请求模式，软件请求（软件触发）
 	csi_dma_ch_init(DMA0, DMA_CH0, &tDmaConfig);	    //初始化DMA
 	
 	csi_dma_int_enable(DMA0, DMA_CH0, DMA_INTSRC_LTCIT);
-	csi_usart_set_txdma(USART0, USDMA_TX_FIF0_TRG);
 	
 	
 	//etb 参数配置
@@ -297,6 +298,7 @@ int usart_recv_dma_demo(void)
 	tUsartCfg.wBaudRate 	= 115200;					//波特率：115200
 	csi_usart_init(USART0, &tUsartCfg);					//初始化串口
 	
+	csi_usart_set_recieve_dma(USART0, USDMA_RX_FIFO_NSPACE); //配置USART 接收DMA模式，并使能
 	csi_usart_start(USART0, USART_FUNC_RX_TX);			//开启USART的RX和TX功能，也可单独开启RX或者TX功能
 	
 	
@@ -307,13 +309,12 @@ int usart_recv_dma_demo(void)
 	tDmaConfig.eDetHinc 	= DMA_ADDR_INC;				//高位传输目标地址自增
 	tDmaConfig.eDataWidth 	= DMA_DSIZE_8_BITS;			//传输数据宽度8bit
 	tDmaConfig.eReload 		= DMA_RELOAD_DISABLE;		//自动重载
-	tDmaConfig.eTransMode 	= DMA_TRANS_CONT;			//DMA服务模式(传输模式)，连续服务
+	tDmaConfig.eRunMode 	= DMA_RUN_CONT;			//DMA服务模式(传输模式)，连续服务
 	tDmaConfig.eTsizeMode  	= DMA_TSIZE_ONE_DSIZE;		//传输数据大小，一个 DSIZE , 即DSIZE定义大小
 	tDmaConfig.eReqMode		= DMA_REQ_HARDWARE;			//DMA请求模式，硬件请求
 	csi_dma_ch_init(DMA0, DMA_CH3, &tDmaConfig);		//初始化DMA
 	
 	csi_dma_int_enable(DMA0, DMA_CH3, DMA_INTSRC_LTCIT);
-	csi_usart_set_rxdma(USART0, USDMA_RX_FIFO_NSPACE);
 	
 	
 	//etb 参数配置

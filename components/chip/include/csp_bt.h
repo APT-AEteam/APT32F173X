@@ -242,7 +242,7 @@ static inline void csp_bt_clk_enable(csp_bt_t *ptBtBase)
 {
 	ptBtBase->CR |= BT_CLK_EN;	
 }
-static inline void csp_bt_immediate_updata(csp_bt_t *ptBtBase)	
+static inline void csp_bt_immediate_update(csp_bt_t *ptBtBase)	
 {
 	ptBtBase->CR |= BT_UPDATA_MSK;
 }

@@ -1,7 +1,7 @@
 /***********************************************************************//** 
  * \file  interrupt.c
  * \brief  source file for interrypt handlers
- * \copyright Copyright (C) 2015-2020 @ APTCHIP
+ * \copyright Copyright (C) 2015-2023 @ APTCHIP
  * <table>
  * <tr><th> Date  <th>Version  <th>Author  <th>Description
  * <tr><td> 2020-8-10 <td>V0.0  <td>WNN   <td>initial
@@ -22,7 +22,6 @@
 			
 /* externs function--------------------------------------------------------*/
 extern void nmi_int_handler(void);
-extern void usart_irqhandler(csp_usart_t *ptUsartBase,uint8_t byIdx);
 extern void can_irqhandler(csp_can_t *ptCanBase);
 extern void dma_irqhandler(csp_dma_t *ptDmaBase);						//DMA
 extern void gpio_irqhandler(uint8_t byExiNum);
@@ -37,7 +36,6 @@ extern void syscon_irqhandler(csp_syscon_t *ptSysconBase);
 extern void i2c_irqhandler(csp_iic_t *ptIicBase);
 
 extern void sio_irqhandler(csp_sio_t *ptSioBase);
-extern void rtc_irqhandler(csp_rtc_t *ptRtcBase);
 
 extern void lpt_irqhandler(csp_lpt_t *ptLptBase);
 extern void dac_irqhandler(csp_dac_t *ptDacBase);
@@ -89,7 +87,7 @@ ATTRIBUTE_ISR void syscon_int_handler(void)
 ATTRIBUTE_ISR void ifc_int_handler(void)
 {
 	CSI_INTRPT_ENTER();
-	ifc_irqhandler();	//only DFLASH paramode write would use IFC interrupt handler. DO NOT rewrite this funcionï¼
+	ifc_irqhandler();	//only DFLASH paramode write would use IFC interrupt handler. DO NOT rewrite this funcion！
 	CSI_INTRPT_EXIT();
 }
 
@@ -204,6 +202,7 @@ ATTRIBUTE_ISR __attribute__((weak)) void gptb0_int_handler(void)
 	csi_gptb_irqhandler(GPTB0, 0);
 #else
 	csp_gptb_clr_isr(GPTB0, csp_gptb_get_isr(GPTB0));
+	csp_gptb_clr_emisr(ptGptbBase, csp_gptb_get_emisr(GPTB0));
 #endif
 	CSI_INTRPT_EXIT();
 }
@@ -216,6 +215,7 @@ ATTRIBUTE_ISR __attribute__((weak)) void gptb1_int_handler(void)
 	csi_gptb_irqhandler(GPTB1, 1);
 #else
 	csp_gptb_clr_isr(GPTB1, csp_gptb_get_isr(GPTB1));
+	sp_gptb_clr_emisr(ptGptbBase, csp_gptb_get_emisr(GPTB1));
 #endif
 	CSI_INTRPT_EXIT();	
 }
@@ -228,6 +228,7 @@ ATTRIBUTE_ISR __attribute__((weak)) void gptb2_int_handler(void)
 	csi_gptb_irqhandler(GPTB2, 2);
 #else
 	csp_gptb_clr_isr(GPTB2, csp_gptb_get_isr(GPTB2));
+	sp_gptb_clr_emisr(ptGptbBase, csp_gptb_get_emisr(GPTB2));
 #endif
 	CSI_INTRPT_EXIT();	
 }
@@ -240,6 +241,7 @@ ATTRIBUTE_ISR __attribute__((weak)) void gptb3_int_handler(void)
 	csi_gptb_irqhandler(GPTB3, 3);
 #else
 	csp_gptb_clr_isr(GPTB3, csp_gptb_get_isr(GPTB3));
+	sp_gptb_clr_emisr(ptGptbBase, csp_gptb_get_emisr(GPTB3));
 #endif
 	CSI_INTRPT_EXIT();
 }
@@ -252,6 +254,7 @@ ATTRIBUTE_ISR __attribute__((weak)) void gptb4_int_handler(void)
 	csi_gptb_irqhandler(GPTB4, 4);
 #else
 	csp_gptb_clr_isr(GPTB4, csp_gptb_get_isr(GPTB4));
+	sp_gptb_clr_emisr(ptGptbBase, csp_gptb_get_emisr(GPTB4));
 #endif
 	CSI_INTRPT_EXIT();	
 }
@@ -264,6 +267,7 @@ ATTRIBUTE_ISR __attribute__((weak)) void gptb5_int_handler(void)
 	csi_gptb_irqhandler(GPTB5, 5);
 #else
 	csp_gptb_clr_isr(GPTB5, csp_gptb_get_isr(GPTB5));
+	sp_gptb_clr_emisr(ptGptbBase, csp_gptb_get_emisr(GPTB5));
 #endif
 	CSI_INTRPT_EXIT();
 }
@@ -476,7 +480,7 @@ ATTRIBUTE_ISR __attribute__((weak)) void rtc_int_handler(void)
 {
 	CSI_INTRPT_ENTER();
 #if (USE_RTC_CALLBACK == 1)
-	
+	csi_rtc_irqhandler(RTC,0);
 #else
 	csp_rtc_clr_isr(RTC, csp_rtc_get_isr(RTC));
 #endif
