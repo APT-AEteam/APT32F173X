@@ -225,6 +225,7 @@ int usart_send_dma_demo(void)
 	tUsartCfg.wBaudRate 	= 115200;					//波特率：115200
 	csi_usart_init(USART0, &tUsartCfg);					//初始化串口
 	
+	csi_usart_set_send_dma(USART0, USDMA_TX_FIF0_TRG);	//配置DMA模式并使能
 	csi_usart_start(USART0, USART_FUNC_RX_TX);			//开启USART的RX和TX功能，也可单独开启RX或者TX功能
 
 
@@ -241,7 +242,6 @@ int usart_send_dma_demo(void)
 	csi_dma_ch_init(DMA0, DMA_CH0, &tDmaConfig);	    //初始化DMA
 	
 	csi_dma_int_enable(DMA0, DMA_CH0, DMA_INTSRC_LTCIT);
-	csi_usart_set_txdma(USART0, USDMA_TX_FIF0_TRG);
 	
 	
 	//etb 参数配置
@@ -297,6 +297,7 @@ int usart_recv_dma_demo(void)
 	tUsartCfg.wBaudRate 	= 115200;					//波特率：115200
 	csi_usart_init(USART0, &tUsartCfg);					//初始化串口
 	
+	csi_usart_set_recieve_dma(USART0, USDMA_RX_FIFO_NSPACE); //配置USART 接收DMA模式，并使能
 	csi_usart_start(USART0, USART_FUNC_RX_TX);			//开启USART的RX和TX功能，也可单独开启RX或者TX功能
 	
 	
@@ -313,7 +314,6 @@ int usart_recv_dma_demo(void)
 	csi_dma_ch_init(DMA0, DMA_CH3, &tDmaConfig);		//初始化DMA
 	
 	csi_dma_int_enable(DMA0, DMA_CH3, DMA_INTSRC_LTCIT);
-	csi_usart_set_rxdma(USART0, USDMA_RX_FIFO_NSPACE);
 	
 	
 	//etb 参数配置

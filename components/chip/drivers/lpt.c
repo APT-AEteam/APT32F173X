@@ -40,7 +40,7 @@ static uint32_t apt_get_lpt_clk(csi_lpt_clksrc_e eClk)
 			wLptClk = ISOSC_VALUE;
 			break;
 		case (LPT_CLK_IMCLK_DIV4):  
-			switch (csp_get_imosc_fre(SYSCON))
+			switch (csp_get_imosc_freq(SYSCON))
 			{
 				case (0): wLptClk = IMOSC_5M_VALUE >> 2;
 					break;

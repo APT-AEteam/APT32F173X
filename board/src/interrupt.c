@@ -22,7 +22,6 @@
 			
 /* externs function--------------------------------------------------------*/
 extern void nmi_int_handler(void);
-extern void usart_irqhandler(csp_usart_t *ptUsartBase,uint8_t byIdx);
 extern void can_irqhandler(csp_can_t *ptCanBase);
 extern void dma_irqhandler(csp_dma_t *ptDmaBase);						//DMA
 extern void gpio_irqhandler(uint8_t byExiNum);
@@ -37,7 +36,6 @@ extern void syscon_irqhandler(csp_syscon_t *ptSysconBase);
 extern void i2c_irqhandler(csp_iic_t *ptIicBase);
 
 extern void sio_irqhandler(csp_sio_t *ptSioBase);
-extern void rtc_irqhandler(csp_rtc_t *ptRtcBase);
 
 extern void lpt_irqhandler(csp_lpt_t *ptLptBase);
 extern void dac_irqhandler(csp_dac_t *ptDacBase);
@@ -89,7 +87,7 @@ ATTRIBUTE_ISR void syscon_int_handler(void)
 ATTRIBUTE_ISR void ifc_int_handler(void)
 {
 	CSI_INTRPT_ENTER();
-	ifc_irqhandler();	//only DFLASH paramode write would use IFC interrupt handler. DO NOT rewrite this funcionï¼
+	ifc_irqhandler();	//only DFLASH paramode write would use IFC interrupt handler. DO NOT rewrite this funcion！
 	CSI_INTRPT_EXIT();
 }
 
@@ -482,7 +480,7 @@ ATTRIBUTE_ISR __attribute__((weak)) void rtc_int_handler(void)
 {
 	CSI_INTRPT_ENTER();
 #if (USE_RTC_CALLBACK == 1)
-	
+	csi_rtc_irqhandler(RTC,0);
 #else
 	csp_rtc_clr_isr(RTC, csp_rtc_get_isr(RTC));
 #endif

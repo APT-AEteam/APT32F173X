@@ -154,15 +154,15 @@ void lp_exi_wakeup_demo(void)
 	csi_pm_attach_callback(ePmMode, prepare_lp, wkup_lp);	//需要在工程设置compiler tab下加入define CONFIG_USER_PM=1;
 #endif
 	
-	csi_gpio_set_mux(GPIOB,PB1,PB1_INPUT);								//PB1 输入							
-	csi_gpio_pull_mode(GPIOB,PB1, GPIO_PULLUP);							//PB1 上拉
+	csi_gpio_set_mux(GPIOB,PB1,PB1_INPUT);						//PB1 输入							
+	csi_gpio_pull_mode(GPIOB,PB1, GPIO_PULLUP);					//PB1 上拉
 	csi_gpio_int_enable(GPIOB,PB1);  
-	csi_gpio_irq_mode(GPIOB,PB1,EXI_GRP1, GPIO_IRQ_FALLING_EDGE);		//PB1 下降沿产生中断
-	csi_gpio_vic_irq_enable(EXI_GRP1, ENABLE);							//PB1 中断使能，选择中断组1
+	csi_gpio_irq_mode(GPIOB,PB1,EXI_GRP1, GPIO_IRQ_FALLING_EDGE);	//PB1 下降沿产生中断
+	csi_gpio_vic_irq_enable(EXI_GRP1, ENABLE);					//PB1 中断使能，选择中断组1
 
 	
-	csi_pm_clk_disable(SP_IDLE_PCLK);					//sleep模式下关闭PCLK
-	csi_pm_clk_disable(SP_IDLE_HCLK);					//sleep模式下关闭HCLK
+	csi_pm_clk_disable(SP_IDLE_PCLK);							//sleep模式下关闭PCLK
+	csi_pm_clk_disable(SP_IDLE_HCLK);							//sleep模式下关闭HCLK
 //	csi_pm_clk_enable(DP_ISOSC);
 //	csi_pm_clk_enable(DP_IMOSC);
 //	csi_pm_clk_enable(DP_ESOSC);
@@ -171,12 +171,12 @@ void lp_exi_wakeup_demo(void)
 //	csi_pm_config_wakeup_source(WKUP_RTC, ENABLE);
 
 	
-	//LPT WAKEUP DeepSleep/snooze
-//	csi_lpt_timer_init(LPT,LPT_CLK_ISCLK, 500);       		//初始化lpt,选用内部超低功耗时钟,定时200ms,默认采用PEND中断
+	//LPT WAKEUP DeepSleep	
+//	csi_lpt_timer_init(LPT,LPT_CLK_ISCLK, 500);       			//初始化lpt,选用内部超低功耗时钟,定时200ms,默认采用PEND中断
 //	csi_lpt_start(LPT);	  
 	
-	//LVD WAKEUP	DeepSleep/snooze/shutdown
-	//csi_lvd_int_enable(LVD_INTF,LVD_30);  						//VDD掉电到3.9V即触发LVD中断
+	//LVD WAKEUP	DeepSleep
+	//csi_lvd_int_enable(LVD_INTF,LVD_30);  					//VDD掉电到3.9V即触发LVD中断
 	
 	
 	//CMP WAKUP DeepSleep
@@ -191,16 +191,16 @@ void lp_exi_wakeup_demo(void)
 //	{
 //		csi_rtc_config_t tRtcConfig;
 //		
-//		tRtcConfig.byClkSrc = RTC_CLKSRC_ISOSC;  		//选择时钟源
-//		tRtcConfig.byFmt = RTC_24FMT;				  	//选择时间模式
-//		csi_rtc_init(RTC, &tRtcConfig);				  	//初始化RTC
-//		csi_rtc_start_as_timer(RTC, RTC_TIMER_0_5S);	//每1s进一次中断
+//		tRtcConfig.byClkSrc = RTC_CLKSRC_ISOSC;  				//选择时钟源
+//		tRtcConfig.byFmt = RTC_24FMT;				  			//选择时间模式
+//		csi_rtc_init(RTC, &tRtcConfig);				  			//初始化RTC
+//		csi_rtc_start_as_timer(RTC, RTC_TIMER_0_5S);			//每1s进一次中断
 //		csi_rtc_start(RTC);	
 //	}
 
-	//IWDT WAKEUP DeepSleep/snooze/shutdown
-//	csi_iwdt_init(IWDT_TO_1024);						//初始化看门狗，溢出时间为1000ms(系统复位时间)
-//	csi_iwdt_irq_enable(IWDT_ALARMTO_4_8, ENABLE);		//使能看门狗报警中断，报警时间为4/8溢出时间(500ms)
+	//IWDT WAKEUP DeepSleep
+//	csi_iwdt_init(IWDT_TO_1024);								//初始化看门狗，溢出时间为1000ms(系统复位时间)
+//	csi_iwdt_irq_enable(IWDT_ALARMTO_4_8, ENABLE);				//使能看门狗报警中断，报警时间为4/8溢出时间(500ms)
 //	csi_iwdt_open();	
 //	csi_iwdt_feed();
 	

@@ -116,7 +116,7 @@ extern void ifc_program_demo();
 extern void rtc_set_time_demo(void);
 extern void rtc_alarm_demo(void);
 extern void rtc_timer_demo(void);
-extern void rtc_trgev_demo(void);
+extern void rtc_etcb_bt_pwm_demo(void);
 
 //low power demo
 extern void lp_lpt_wakeup_deepsleep_demo(void);

@@ -19,10 +19,6 @@
 extern "C" {
 #endif  
 
-typedef struct  {
-	uint8_t		byClkSrc;	// clock source
-	uint8_t		byFmt;		//  timer format
-} csi_rtc_config_t;
 
 typedef struct {
 	uint8_t		byAlmMode;	//mode = 0:  day       hour min sec 
@@ -39,8 +35,8 @@ typedef struct {
     int iHour;            //< Hour.        [0-23]
     int iMday;            //< Day.         [1-31]
     int iMon;             //< Month.       [1-12]
-    int iYear;            //< Year-1900.   [70- ]      !NOTE:100=2000    
-	int iWday;			  // weekday		  [1-7]	     
+    int iYear;            //< Year= iYear+2000. [0- 99]      !NOTE:0=2000 
+	int iWday;			  // weekday	   [1-7]	     
     int iYday;            //< Days in year.[0-365]     !NOTE:January 1st = 0
 	int iIsdst;			  // Non-0 if daylight savings time is in effect
 	int iPm;			  //< PM.		  [0/1]
@@ -54,6 +50,16 @@ struct csi_rtc {
     void               *arg;
     void               *priv;
 } ;
+
+/// \struct csi_rtc_ctrl_t
+/// \brief  rtc control handle, not open to users  
+typedef struct 
+{
+    void(*callback)(csp_rtc_t *ptRtcBase, uint8_t byIsr);
+} csi_rtc_ctrl_t;
+
+extern csi_rtc_ctrl_t g_tRtcCtrl[RTC_IDX];
+
 
 typedef enum{
 	RTC_CLKSRC_ISOSC = 0,
@@ -83,6 +89,12 @@ typedef enum {
 }csi_rtc_osel_e;
 
 typedef enum{
+	RTC_TRGOUT0 = 0,
+	RTC_TRGOUT1
+}csi_rtc_trgout_e;
+
+
+typedef enum{
 	RTC_TRGOUT_DIS = 0,
 	RTC_TRGOUT_ALRMA,
 	RTC_TRGOUT_ALRMB,
@@ -91,11 +103,24 @@ typedef enum{
 }csi_rtc_trgsrc_e;
 
 typedef enum{
-	RTCINT_ALMB = 0,
-	RTCINT_CPRD = 2,
-	RTCINT_TRGEV0,
-	RTCINT_TRGEV1
+	RTCINT_ALMA = 1<<0,
+	RTCINT_ALMB = 1<<1,
+	RTCINT_CPRD = 1<<2,
+	RTCINT_TRGEV0 = 1<<3,
+	RTCINT_TRGEV1 = 1<<4
 }csi_rtc_int_e;
+
+typedef enum {
+	RTC_MODE_24FMT = 0,
+	RTC_MODE_12FMT
+}csi_rtc_fmt_e;
+
+
+typedef struct  {
+	csi_rtc_clksrc_e	eClkSrc;	// clock source
+	csi_rtc_fmt_e		eFmt;		//  timer format
+} csi_rtc_config_t;
+
 
 /**\brief	Initialize RTC Interface. Initializes the resources needed for the RTC interface
  * 
@@ -108,11 +133,17 @@ void csi_rtc_init(csp_rtc_t *ptRtc, csi_rtc_config_t *tConfig);
 
 /**\brief	Read back function enable control. To save current, disable read back.
  * 
- * \param	ptRtc： handle pointer of rtc register structure to operate
- * \param	bEnable    
+ * \param	ptRtc： handle pointer of rtc register structure to operate 
  * \return	none
 */
-void csi_rtc_rb_enable(csp_rtc_t *ptRtc, bool bEnable);
+void csi_rtc_rb_enable(csp_rtc_t *ptRtc);
+
+/**\brief	 To save current, disable read back.
+ * 
+ * \param	ptRtc： handle pointer of rtc register structure to operate  
+ * \return	none
+*/
+void csi_rtc_rb_disable(csp_rtc_t *ptRtc);
 
 /**\brief       De-initialize RTC Interface. stops operation and releases the software resources used by the interface
  * 
@@ -150,7 +181,7 @@ void csi_rtc_change_fmt(csp_rtc_t *ptRtc,  rtc_fmt_e eFmt);
  * \param   eIntSrc	  interrupt source	
  * \return  none
 */
-void csi_rtc_int_enable(csp_rtc_t *ptRtc, rtc_int_e eIntSrc);
+void csi_rtc_int_enable(csp_rtc_t *ptRtc, csi_rtc_int_e eIntSrc);
 
 /**\brief   RTC interrupt disable
  * 
@@ -158,7 +189,14 @@ void csi_rtc_int_enable(csp_rtc_t *ptRtc, rtc_int_e eIntSrc);
  * \param   eIntSrc	  interrupt source	
  * \return  none
 */
-void csi_rtc_int_disable(csp_rtc_t *ptRtc, rtc_int_e eIntSrc);
+void csi_rtc_int_disable(csp_rtc_t *ptRtc, csi_rtc_int_e eIntSrc);
+
+/**\brief To reset RTC 
+ * 
+ * \param pointer of rtc register structure pointer of rtc register structure to operate
+ * \return  none
+*/
+void csi_rtc_sw_rst(csp_rtc_t *ptRtc);
 
 /**\brief       Get system date
  * 
@@ -226,13 +264,28 @@ void csi_rtc_set_alarm_out(csp_rtc_t *ptRtc, csi_rtc_osel_e eOut);
 /** \brief evtrg source output config  
  * 
  *  \param[in] ptRtc: RTC handle to operate
- *  \param[in] byEvtrg: rtc evtrg channel(1~4) 
+ *  \param[in] eTrg: rtc evtrgout channel
  *  \param[in] eTrgSrc: rtc evtrg source
  *  \param[in] trg_prd: event count period 
  *  \return error code \ref csi_error_t
  */
-csi_error_t csi_rtc_set_evtrg(csp_rtc_t *ptRtc, uint8_t byEvtrg, csi_rtc_trgsrc_e eTrgSrc, uint8_t byTrgPrd);
+csi_error_t csi_rtc_set_evtrg(csp_rtc_t *ptRtc, csi_rtc_trgout_e eTrg, csi_rtc_trgsrc_e eTrgSrc, uint8_t byTrgPrd);
 
+/** \brief  register rtc interrupt callback function
+ * 
+ *  \param[in] ptRtcBase: pointer of rtc register structure
+ *  \param[in] callback: rtc interrupt handle function
+ *  \return error code \ref csi_error_t
+ */ 
+csi_error_t csi_rtc_register_callback(csp_rtc_t *ptRtcBase, void  *callback);
+
+/** \brief rtc interrupt handler function
+ * 
+ *  \param[in] ptRtcBase: pointer of rtc register structure
+ *  \param[in] byIdx: rtc idx(0)
+ *  \return none
+ */ 
+void csi_rtc_irqhandler(csp_rtc_t *ptRtcBase,  uint8_t byIdx);
 
 #ifdef __cplusplus
 }

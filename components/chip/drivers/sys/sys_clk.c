@@ -445,7 +445,7 @@ csi_error_t csi_calc_clk_freq(void)
 				g_tClkConfig.wFreq = EMOSC_VALUE;
 				break;
 			case (SEL_IMOSC):	
-				wImoFreq = csp_get_imosc_fre(SYSCON);
+				wImoFreq = csp_get_imosc_freq(SYSCON);
 				switch (wImoFreq)
 				{
 					case (0): 

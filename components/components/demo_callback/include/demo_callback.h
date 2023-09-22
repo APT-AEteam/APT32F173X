@@ -76,10 +76,7 @@ extern void ifc_pflash_page_program_demo();
 extern void ifc_program_demo();
 
 //rtc_demo
-extern void rtc_set_time_demo(void);
-extern void rtc_alarm_demo(void);
-extern void rtc_timer_demo(void);
-extern void rtc_trgev_demo(void);
+extern void rtc_alarm_callback_demo(void);
 
 //low power demo
 extern void lp_lpt_wakeup_deepsleep_demo(void);

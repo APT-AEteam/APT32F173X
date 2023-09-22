@@ -324,7 +324,7 @@ int16_t csi_usart_send(csp_usart_t *ptUsartBase, const void *pData, uint16_t hwS
  *  \param[in] bEnable: ENABLE/DISABLE
  *  \return  error code \ref csi_error_t
  */
-void csi_usart_set_txdma(csp_usart_t *ptUsartBase, csi_usdma_txfifo_md_e eTxDmaMode); 
+void csi_usart_set_send_dma(csp_usart_t *ptUsartBase, csi_usdma_txfifo_md_e eTxDmaMode); 
 
 /** \brief usart dma rx mode set
  * 
@@ -333,7 +333,7 @@ void csi_usart_set_txdma(csp_usart_t *ptUsartBase, csi_usdma_txfifo_md_e eTxDmaM
  *  \param[in] bEnable: ENABLE/DISABLE
  *  \return  error code \ref csi_error_t
  */
-void csi_usart_set_rxdma(csp_usart_t *ptUsartBase, csi_usdma_rxfifo_md_e eRxDmaMode); 
+void csi_usart_set_recieve_dma(csp_usart_t *ptUsartBase, csi_usdma_rxfifo_md_e eRxDmaMode); 
 
 /** \brief send data from usart, this function is dma transfer
  * 
