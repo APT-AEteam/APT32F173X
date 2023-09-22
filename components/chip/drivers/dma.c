@@ -1,10 +1,11 @@
 /***********************************************************************//** 
  * \file  dma.c
  * \brief  DMA description and static inline functions at register level 
- * \copyright Copyright (C) 2015-2020 @ APTCHIP
+ * \copyright Copyright (C) 2015-2023 @ APTCHIP
  * <table>
  * <tr><th> Date  <th>Version  <th>Author  <th>Description
  * <tr><td> 2021-12-23 <td>V0.0  <td>ZJY   <td>initial
+ * <tr><td> 2023-9-22 <td>V0.1  <td>GQQ   <td>fix bug,code normalization
  * </table>
  * *********************************************************************
 */

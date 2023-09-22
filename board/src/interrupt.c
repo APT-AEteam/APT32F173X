@@ -1,7 +1,7 @@
 /***********************************************************************//** 
  * \file  interrupt.c
  * \brief  source file for interrypt handlers
- * \copyright Copyright (C) 2015-2020 @ APTCHIP
+ * \copyright Copyright (C) 2015-2023 @ APTCHIP
  * <table>
  * <tr><th> Date  <th>Version  <th>Author  <th>Description
  * <tr><td> 2020-8-10 <td>V0.0  <td>WNN   <td>initial

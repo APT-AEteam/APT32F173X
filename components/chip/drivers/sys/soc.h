@@ -4,7 +4,7 @@
  * \file  soc.h
  * \brief  CSI Core Peripheral Access Layer Header File for
  *           CSKYSOC Device Series
- * \copyright Copyright (C) 2015-2021 @ APTCHIP
+ * \copyright Copyright (C) 2015-2023 @ APTCHIP
  * <table>
  * <tr><th> Date  <th>Version  <th>Author  <th>Description
  * <tr><td> 2021-5-13 <td>V0.0 <td>ZJY     <td>initial

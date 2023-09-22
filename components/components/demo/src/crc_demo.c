@@ -1,11 +1,11 @@
 /***********************************************************************//** 
  * \file  crc_demo.c
  * \brief  CRC_DEMO description and static inline functions at register level 
- * \copyright Copyright (C) 2015-2020 @ APTCHIP
+ * \copyright Copyright (C) 2015-2023 @ APTCHIP
  * <table>
  * <tr><th> Date  <th>Version  <th>Author  <th>Description
  * <tr><td> 2021-5-11 <td>V0.0 <td>CWL     <td>initial
- * <tr><td> 2023-9-5  <td>V0.1 <td>GQQ     <td>modified
+ * <tr><td> 2023-9-22 <td>V0.1  <td>GQQ   <td>fix bug,code normalization
  * </table>
  * *********************************************************************
 */

@@ -1,10 +1,11 @@
 /***********************************************************************//** 
  * \file  crc.c
  * \brief  CRC driver
- * \copyright Copyright (C) 2015-2020 @ APTCHIP
+ * \copyright Copyright (C) 2015-2023 @ APTCHIP
  * <table>
  * <tr><th> Date  <th>Version  <th>Author  <th>Description
  * <tr><td> 2021-5-28 <td>V0.0  <td>WNN   <td>initial
+ * <tr><td> 2023-9-22 <td>V0.1  <td>GQQ   <td>fix bug,code normalization
  * </table>
  * *********************************************************************
 */

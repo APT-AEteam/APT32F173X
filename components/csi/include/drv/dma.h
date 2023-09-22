@@ -1,14 +1,14 @@
-/*
- * Copyright (C) 2017-2020 Alibaba Group Holding Limited
- */
-
-/******************************************************************************
- * @file     dma.h
- * @brief    header file for dma driver
- * @version  V1.0
- * @date     08. Apr 2020
- * @model    dma
- ******************************************************************************/
+/***********************************************************************//** 
+ * \file  dma.h
+ * \brief  head file for DMA
+ * \copyright Copyright (C) 2015-2023 @ APTCHIP
+ * <table>
+ * <tr><th> Date  <th>Version  <th>Author  <th>Description
+ * <tr><td> 2021-12-23 <td>V0.0  <td>ZJY   <td>initial
+ * <tr><td> 2023-9-22 <td>V0.1  <td>GQQ   <td>fix bug,code normalization
+ * </table>
+ * *********************************************************************
+*/
 
 #ifndef _DRV_DMA_H_
 #define _DRV_DMA_H_

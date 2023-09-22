@@ -1,7 +1,7 @@
 /***********************************************************************//** 
  * \file  csp.c
  * \brief for debugging and using lower-level driver apis out of CSI
- * \copyright Copyright (C) 2015-2021 @ APTCHIP
+ * \copyright Copyright (C) 2015-2023 @ APTCHIP
  * <table>
  * <tr><th> Date  <th>Version  <th>Author  <th>Description
  * <tr><td> 2020-11-24 <td>V0.0  <td>WNN   <td>initial
