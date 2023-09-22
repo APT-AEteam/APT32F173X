@@ -346,7 +346,7 @@ int sio_led_rgb_send_dma_demo(void)
 	tDmaConfig.eDetHinc 	= DMA_ADDR_CONSTANT;		//高位传输目标地址固定不变
 	tDmaConfig.eDataWidth 	= DMA_DSIZE_16_BITS;		//传输数据宽度16bit
 	tDmaConfig.eReload 		= DMA_RELOAD_DISABLE;		//禁止自动重载
-	tDmaConfig.eTransMode 	= DMA_TRANS_ONCE;			//DMA服务模式(传输模式)，连续服务
+	tDmaConfig.eRunMode 	= DMA_RUN_ONCE;			//DMA服务模式(传输模式)，连续服务
 	tDmaConfig.eTsizeMode  	= DMA_TSIZE_ONE_DSIZE;		//传输数据大小，一个 DSIZE , 即DSIZE定义大小
 	tDmaConfig.eReqMode		= DMA_REQ_HARDWARE;			//DMA请求模式，硬件触发
 	iRet = csi_dma_ch_init(DMA0, DMA_CH1, &tDmaConfig);	//初始化DMA

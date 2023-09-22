@@ -20,12 +20,6 @@
 extern "C" {
 #endif
 
-/****** DMA Event *****/
-//typedef enum {
-//    DMA_EVENT_TRANSFER_DONE       = 0,  ///< transfer complete
-//    DMA_EVENT_TRANSFER_HALF_DONE,       ///< transfer half done
-//    DMA_EVENT_TRANSFER_ERROR,           ///< transfer error
-//} csi_dma_event_t;
 
 /**
  * \enum     csi_dma_addr_inc_e
@@ -56,13 +50,13 @@ typedef enum{
 }csi_dma_reload_e;
 
 /**
- * \enum     csi_dma_smode_e
+ * \enum     csi_dma_runmode_e
  * \brief    DMA serve mode 
  */
 typedef enum{
-	DMA_TRANS_ONCE		= 0,
-	DMA_TRANS_CONT				
-}csi_dma_smode_e;
+	DMA_RUN_ONCE		= 0,
+	DMA_RUN_CONT				
+}csi_dma_runmode_e;
 
 /**
  * \enum     csi_dma_tsize_e
@@ -153,7 +147,7 @@ typedef struct
 	csi_dma_addr_inc_e		eDetHinc;		//high transfer count det addr inc control
 	csi_dma_dsize_e			eDataWidth;		//transfer data size width
 	csi_dma_reload_e		eReload;		//auto reload	
-	csi_dma_smode_e			eTransMode;		//dma serve(transfer) mode
+	csi_dma_runmode_e		eRunMode;		//dma serve(transfer) mode
 	csi_dma_tsize_e			eTsizeMode;		//Tsize transfer mode
 	csi_dma_req_e			eReqMode;		//request mode
 } csi_dma_ch_config_t;

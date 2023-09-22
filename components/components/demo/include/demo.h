@@ -119,8 +119,11 @@ extern void rtc_timer_demo(void);
 extern void rtc_etcb_bt_pwm_demo(void);
 
 //low power demo
-extern void lp_lpt_wakeup_deepsleep_demo(void);
+extern void lp_lpt_wakeup_demo(void);
 extern void lp_exi_wakeup_demo(void);
+extern void lp_lvd_wakeup_demo(void);
+extern void lp_rtc_wakeup_demo(void);
+extern void lp_iwdt_wakeup_demo(void);
 
 //iic demo
 extern void iic_master_eeprom_demo(void);

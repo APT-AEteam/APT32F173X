@@ -76,7 +76,10 @@ void user_demo(void)
 ///  低功耗相关的示例代码
 /// ***************************************************
 //	lp_exi_wakeup_demo();
-//	lp_lpt_wakeup_deepsleep_demo();
+//	lp_lpt_wakeupp_demo();
+//	lp_lvd_wakeup_demo();
+//	lp_rtc_wakeupp_demo();
+//	lp_iwdt_wakeup_demo();
 	
 /// ***************************************************
 ///  BT相关的示例代码

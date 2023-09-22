@@ -110,10 +110,10 @@ csi_error_t csi_dma_ch_init(csp_dma_t *ptDmaBase, csi_dma_ch_e eDmaCh, csi_dma_c
 	if(eDmaCh >= DMA_CH_MAX_NUM)
 		return CSI_ERROR;
 	
-	csp_dma_set_ch_saddr_mode(ptDmaChBase, ptChCfg->eSrcLinc, ptChCfg->eSrcHinc);										///Src addr control mode
-	csp_dma_set_ch_daddr_mode(ptDmaChBase, ptChCfg->eDetLinc, ptChCfg->eDetHinc);										///Det addr control mode
-	csp_dma_set_ch(ptDmaChBase, ptChCfg->eDataWidth, ptChCfg->eReload, ptChCfg->eTransMode, ptChCfg->eTsizeMode);	///dma ch para config
-	csp_dma_set_ch_req(ptDmaChBase, ptChCfg->eReqMode);																///software or hardware request
+	csp_dma_set_ch_saddr_mode(ptDmaChBase, (dma_linc_e)ptChCfg->eSrcLinc, (dma_hinc_e)ptChCfg->eSrcHinc);										///Src addr control mode
+	csp_dma_set_ch_daddr_mode(ptDmaChBase, (dma_linc_e)ptChCfg->eDetLinc, (dma_hinc_e)ptChCfg->eDetHinc);										///Det addr control mode
+	csp_dma_set_ch(ptDmaChBase, (dma_dsize_e)ptChCfg->eDataWidth, (dma_reload_e)ptChCfg->eReload, (dma_smode_e)ptChCfg->eRunMode, (dma_tsize_e)ptChCfg->eTsizeMode);	///dma ch para config
+	csp_dma_set_ch_req(ptDmaChBase, (dma_req_e)ptChCfg->eReqMode);																///software or hardware request
 	
 //	if(ptChCfg->wInt)
 //	{
