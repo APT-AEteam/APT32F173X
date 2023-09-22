@@ -1,107 +1,100 @@
 /***********************************************************************//** 
  * \file  csp_syscon.h
  * \brief  SYSCON description and static inline functions at register level 
- * \copyright Copyright (C) 2015-2020 @ APTCHIP
+ * \copyright Copyright (C) 2015-2023 @ APTCHIP
  * <table>
  * <tr><th> Date  <th>Version  <th>Author  <th>Description
  * <tr><td> 2020-8-10 <td>V0.0  <td>WNN   <td>initial
+ * <tr><td> 2023-9-22 <td>V0.1  <td>GQQ   <td>code normalization
  * </table>
  * *********************************************************************
 */
-
-//#include <stdint.h>
-//#include "csp_common.h"
-//#include <csi_core.h>
-//#include <soc.h>
-
 
 #ifndef _CSP_SYSCON_H_
 #define _CSP_SYSCON_H_
 
 #include "soc.h"
-//#include <csi_core.h>
-//#include <stdint.h>
-
+#include "csi_core.h"
 
 /// \struct csp_syscon_t
 /// \brief SYSCON reg description
-typedef volatile struct {                   			/*!< SYSCON Structure                         */
-	volatile unsigned int IDCCR;                        /*!< 0x000: Identification & System Controller Clock Control Register */
-	volatile unsigned int GCER;                         /*!< 0x004: System Controller General Control Enable Register */
-	volatile unsigned int GCDR;                         /*!< 0x008: System Controller General Control Disable Register */
-	volatile unsigned int GCSR;                         /*!< 0x00C: System Controller General Control Status Register */
-	volatile unsigned int CKST;                         /*!< 0x010*/
-	volatile unsigned int RAMCHK;                       /*!< 0x014*/
-	volatile unsigned int EFLCHK;                       /*!< 0x018*/
-	volatile unsigned int SCLKCR;                       /*!< 0x01C: System Controller System Clock Selection & Division Register */
-	volatile unsigned int PCLKCR;                       /*!< 0x020: System Controller Peripheral Clock Selection & Division Register */
-	volatile unsigned int EXICFG;                       /*!< 0x024*/
-	volatile unsigned int PCER0;                        /*!< 0x028: System Controller Peripheral Clock Enable Register */
-	volatile unsigned int PCDR0;                        /*!< 0x02C: System Controller Peripheral Clock Disable Register */
-	volatile unsigned int PCSR0;                        /*!< 0x030: System Controller Peripheral Clock Status Register */
-	volatile unsigned int PCER1;                        /*!< 0x034: System Controller Peripheral Clock Enable Register */
-	volatile unsigned int PCDR1;                        /*!< 0x038: System Controller Peripheral Clock Disable Register */
-	volatile unsigned int PCSR1;                        /*!< 0x03C: System Controller Peripheral Clock Status Register */
-	volatile unsigned int OSTR;                         /*!< 0x040: System Controller External OSC Stable Time Control Register */
-	volatile unsigned int PLLCR;                        /*!< 0x044: System Controller PLL Stable Time Control Register */
-	volatile unsigned int _RSVD0;                       /*!< 0x048: System Controller PLL PMS Value Control Register */
-	volatile unsigned int LVDCR;                        /*!< 0x04C: System Controller LVD Control Register */
-	volatile unsigned int CLCR;                         /*!< 0x050: System Controller IMOSC Fine Adjustment Register*/
-	volatile unsigned int PWRCR;                        /*!< 0x054: System Controller Power Control Register */
-	volatile unsigned int PWRKEY;                       /*!< 0x058: System Controller Power Control Register */
-	volatile unsigned int _RSVD1;                       /*!< 0x05C: */
-	volatile unsigned int _RSVD2;                       /*!< 0x060: */
-	volatile unsigned int OPT1;                         /*!< 0x064: System Controller OSC Trim Control Register */
-	volatile unsigned int OPT0;                         /*!< 0x068: System Controller Protection Control Register */
-	volatile unsigned int WKCR;                         /*!< 0x06C: System Controller Clock Quality Check Control Register */
-	volatile unsigned int _RSVD3;                       /*!< 0x070: System Controller Clock Quality Check Control Register */
-	volatile unsigned int IMER;                         /*!< 0x074: System Controller Interrupt Enable Register */
-	volatile unsigned int IMDR;                         /*!< 0x078: System Controller Interrupt Disable Register */
-	volatile unsigned int IMCR;                         /*!< 0x07C: System Controller Interrupt Mask Register */
-	volatile unsigned int IAR;                          /*!< 0x080: System Controller Interrupt Active Register */
-	volatile unsigned int ICR;                          /*!< 0x084: System Controller Clear Status Register */
-	volatile unsigned int RISR;                         /*!< 0x088: System Controller Raw Interrupt Status Register */
-	volatile unsigned int MISR;                         /*!< 0x08C: System Controller Raw Interrupt Status Register */
-	volatile unsigned int RSR;                          /*!< 0x090: System Controller Raw Interrupt Status Register */
-	volatile unsigned int EXIRT;                        /*!< 0x094: System Controller Reset Status Register */
-	volatile unsigned int EXIFT;                        /*!< 0x098: System Controller External Interrupt Mode 1 (Positive Edge) Register */
-	volatile unsigned int EXIER;                        /*!< 0x09C: System Controller External Interrupt Mode 2 (Negative Edge) Register */
-	volatile unsigned int EXIDR;                        /*!< 0x0A0: System Controller External Interrupt Enable Register */
-	volatile unsigned int EXIMR;                        /*!< 0x0A4: System Controller External Interrupt Disable Register */
-	volatile unsigned int EXIAR;                        /*!< 0x0A8: System Controller External Interrupt Mask Register */
-	volatile unsigned int EXICR;                        /*!< 0x0AC: System Controller External Interrupt Active Register */
-	volatile unsigned int EXIRS;                        /*!< 0x0B0: System Controller External Interrupt Clear Status Register */
-	volatile unsigned int IWDCR;                        /*!< 0x0B4: System Controller Independent Watchdog Control Register */
-	volatile unsigned int IWDCNT;                       /*!< 0x0B8: SystCem Controller Independent Watchdog Counter Value Register */
-	volatile unsigned int IWDEDR;                       /*!< 0x0BC: System Controller Independent Watchdog Enable/disable Register*/
-	volatile unsigned int IOMAP0;                       /*!< 0x0C0: Customer Information Content mirror of 1st byte*/
-	volatile unsigned int IOMAP1;                       /*!< 0x0C4: Customer Information Content mirror of 1st byte*/
-	volatile unsigned int _RSVD4;                    	/*!< 0x0C8: Customer Information Content mirror of 1st byte*/
-	volatile unsigned int _RSVD5;                        /*!< 0x0CC: Customer Information Content mirror of 1st byte*/
-	volatile unsigned int FINF0;                        /*!< 0x0D0: Customer Information Content mirror of 1st byte*/
-	volatile unsigned int FINF1;                        /*!< 0x0D4: Customer Information Content mirror of 1st byte*/
-	volatile unsigned int FINF2;                        /*!< 0x0D8: Customer Information Content mirror of 1st byte*/
-	volatile unsigned int _RSVD6;                       /*!< 0x0DC: Customer Information Content mirror of 1st byte*/
-	volatile unsigned int ERRINF;                       /*!< 0x0E0:*/
-	volatile unsigned int UID0 ;                        /*!< 0x0E4: Customer Information Content mirror of 1st byte*/
-	volatile unsigned int UID1 ;                        /*!< 0x0E8: Customer Information Content mirror of 1st byte*/
-	volatile unsigned int UID2 ;                        /*!< 0x0EC: Customer Information Content mirror of 1st byte*/
-	volatile unsigned int PWROPT;                       /*!< 0x0F0: Power recovery timmming control */
-	volatile unsigned int EVTRG;                       	/*!< 0x0F4: Trigger gen                                    */
-	volatile unsigned int EVPS;                      	/*!< 0x0F8: Trigger prs                                    */
-	volatile unsigned int EVSWF;                       	/*!< 0x0FC: Trigger software force                         */
-	volatile unsigned int UREG0;                      	/*!< 0x100: User defined reg0                              */
-	volatile unsigned int UREG1;                       	/*!< 0x104: User defined reg1                              */
-	volatile unsigned int UREG2;                       	/*!< 0x108: User defined reg0                              */
-	volatile unsigned int TRIMUREG;                       /*!< 0x10C: User defined reg0                              */
-	volatile unsigned int _RSVD7[2];					
-	volatile unsigned int CQCR;                        	/*!< 0x118: Clock Quality check control reg                */
-	volatile unsigned int CQSR;						   	/*!< 0x11C: Clock Qualifty check control reg  			   */
-	volatile unsigned int _RSVD8[2];
-	volatile unsigned int DBGCR;						/*!< 0x128: Debug Control Register			   */
-	volatile unsigned int BRPKEY;						/*!< 0x12c: SRBREG, ERBREG  protect reg			   */	
-	volatile unsigned int SRBREG;						/*!< 0x130: SRBREG Register			   */	
-	volatile unsigned int ERBREG;						/*!< 0x134: ERBREG Register			   */	
+typedef volatile struct {                   	  /*!< SYSCON Structure                         */
+	__IOM uint32_t	IDCCR;                        /*!< 0x000: Identification & System Controller Clock Control Register */
+	__OM  uint32_t	GCER;                         /*!< 0x004: System Controller General Control Enable Register */
+	__OM  uint32_t	GCDR;                         /*!< 0x008: System Controller General Control Disable Register */
+	__IM  uint32_t	GCSR;                         /*!< 0x00C: System Controller General Control Status Register */
+	__IM  uint32_t	CKST;                         /*!< 0x010*/
+	__IOM uint32_t	RAMCHK;                       /*!< 0x014*/
+	__IOM uint32_t	EFLCHK;                       /*!< 0x018*/
+	__IOM uint32_t	SCLKCR;                       /*!< 0x01C: System Controller System Clock Selection & Division Register */
+	__OM  uint32_t	PCLKCR;                       /*!< 0x020: System Controller Peripheral Clock Selection & Division Register */
+	__IOM uint32_t	EXICFG;                       /*!< 0x024*/
+	__OM  uint32_t	PCER0;                        /*!< 0x028: System Controller Peripheral Clock Enable Register */
+	__OM  uint32_t	PCDR0;                        /*!< 0x02C: System Controller Peripheral Clock Disable Register */
+	__IM  uint32_t	PCSR0;                        /*!< 0x030: System Controller Peripheral Clock Status Register */
+	__OM  uint32_t	PCER1;                        /*!< 0x034: System Controller Peripheral Clock Enable Register */
+	__OM  uint32_t	PCDR1;                        /*!< 0x038: System Controller Peripheral Clock Disable Register */
+	__IM  uint32_t	PCSR1;                        /*!< 0x03C: System Controller Peripheral Clock Status Register */
+	__IOM uint32_t	OSTR;                         /*!< 0x040: System Controller External OSC Stable Time Control Register */
+	__IOM uint32_t	PLLCR;                        /*!< 0x044: System Controller PLL Stable Time Control Register */
+	__IM  uint32_t	_RSVD0;                       /*!< 0x048: System Controller PLL PMS Value Control Register */
+	__IOM uint32_t	LVDCR;                        /*!< 0x04C: System Controller LVD Control Register */
+	__IOM uint32_t	CLCR;                         /*!< 0x050: System Controller IMOSC Fine Adjustment Register*/
+	__IOM uint32_t	PWRCR;                        /*!< 0x054: System Controller Power Control Register */
+	__IOM uint32_t	PWRKEY;                       /*!< 0x058: System Controller Power Control Register */
+	__IM  uint32_t	_RSVD1;                       /*!< 0x05C: */
+	__IM  uint32_t	_RSVD2;                       /*!< 0x060: */
+	__IOM uint32_t	OPT1;                         /*!< 0x064: System Controller OSC Trim Control Register */
+	__IM  uint32_t	OPT0;                         /*!< 0x068: System Controller Protection Control Register */
+	__IOM uint32_t	WKCR;                         /*!< 0x06C: System Controller Clock Quality Check Control Register */
+	__IM  uint32_t	_RSVD3;                       /*!< 0x070: System Controller Clock Quality Check Control Register */
+	__OM  uint32_t	IMER;                         /*!< 0x074: System Controller Interrupt Enable Register */
+	__OM  uint32_t	IMDR;                         /*!< 0x078: System Controller Interrupt Disable Register */
+	__IOM uint32_t	IMCR;                         /*!< 0x07C: System Controller Interrupt Mask Register */
+	__OM  uint32_t	IAR;                          /*!< 0x080: System Controller Interrupt Active Register */
+	__OM  uint32_t	ICR;                          /*!< 0x084: System Controller Clear Status Register */
+	__IM  uint32_t	RISR;                         /*!< 0x088: System Controller Raw Interrupt Status Register */
+	__IM  uint32_t	MISR;                         /*!< 0x08C: System Controller Raw Interrupt Status Register */
+	__IOM uint32_t	RSR;                          /*!< 0x090: System Controller Raw Interrupt Status Register */
+	__IOM uint32_t	EXIRT;                        /*!< 0x094: System Controller Reset Status Register */
+	__IOM uint32_t	EXIFT;                        /*!< 0x098: System Controller External Interrupt Mode 1 (Positive Edge) Register */
+	__OM  uint32_t	EXIER;                        /*!< 0x09C: System Controller External Interrupt Mode 2 (Negative Edge) Register */
+	__OM  uint32_t	EXIDR;                        /*!< 0x0A0: System Controller External Interrupt Enable Register */
+	__IM  uint32_t	EXIMR;                        /*!< 0x0A4: System Controller External Interrupt Disable Register */
+	__IOM uint32_t	EXIAR;                        /*!< 0x0A8: System Controller External Interrupt Mask Register */
+	__IOM uint32_t	EXICR;                        /*!< 0x0AC: System Controller External Interrupt Active Register */
+	__IOM uint32_t	EXIRS;                        /*!< 0x0B0: System Controller External Interrupt Clear Status Register */
+	__IOM uint32_t	IWDCR;                        /*!< 0x0B4: System Controller Independent Watchdog Control Register */
+	__IOM uint32_t	IWDCNT;                       /*!< 0x0B8: SystCem Controller Independent Watchdog Counter Value Register */
+	__IOM uint32_t	IWDEDR;                       /*!< 0x0BC: System Controller Independent Watchdog Enable/disable Register*/
+	__IOM uint32_t	IOMAP0;                       /*!< 0x0C0: Customer Information Content mirror of 1st byte*/
+	__IOM uint32_t	IOMAP1;                       /*!< 0x0C4: Customer Information Content mirror of 1st byte*/
+	__IM  uint32_t	_RSVD4;                    	  /*!< 0x0C8: Customer Information Content mirror of 1st byte*/
+	__IM  uint32_t	_RSVD5;                       /*!< 0x0CC: Customer Information Content mirror of 1st byte*/
+	__IM  uint32_t	FINF0;                        /*!< 0x0D0: Customer Information Content mirror of 1st byte*/
+	__IM  uint32_t	FINF1;                        /*!< 0x0D4: Customer Information Content mirror of 1st byte*/
+	__IM  uint32_t	FINF2;                        /*!< 0x0D8: Customer Information Content mirror of 1st byte*/
+	__IM  uint32_t	_RSVD6;                       /*!< 0x0DC: Customer Information Content mirror of 1st byte*/
+	__IM  uint32_t	ERRINF;                       /*!< 0x0E0:*/
+	__IM  uint32_t	UID0 ;                        /*!< 0x0E4: Customer Information Content mirror of 1st byte*/
+	__IM  uint32_t	UID1 ;                        /*!< 0x0E8: Customer Information Content mirror of 1st byte*/
+	__IM  uint32_t	UID2 ;                        /*!< 0x0EC: Customer Information Content mirror of 1st byte*/
+	__IOM uint32_t	PWROPT;                       /*!< 0x0F0: Power recovery timmming control */
+	__IOM uint32_t	EVTRG;                        /*!< 0x0F4: Trigger gen                                    */
+	__IOM uint32_t	EVPS;                      	  /*!< 0x0F8: Trigger prs                                    */
+	__OM  uint32_t	EVSWF;                        /*!< 0x0FC: Trigger software force                         */
+	__IOM uint32_t	UREG0;                        /*!< 0x100: User defined reg0                              */
+	__IOM uint32_t	UREG1;                        /*!< 0x104: User defined reg1                              */
+	__IOM uint32_t	UREG2;                        /*!< 0x108: User defined reg0                              */
+	__IOM uint32_t	TRIMUREG;                     /*!< 0x10C: User defined reg0                              */
+	__IM  uint32_t	_RSVD7[2];					
+	__IOM uint32_t	CQCR;                         /*!< 0x118: Clock Quality check control reg                */
+	__IM  uint32_t	CQSR;						  /*!< 0x11C: Clock Qualifty check control reg  			   */
+	__IM  uint32_t	_RSVD8[2];
+	__IOM uint32_t	DBGCR;						  /*!< 0x128: Debug Control Register			   */
+	__IOM uint32_t	BRPKEY;						  /*!< 0x12c: SRBREG, ERBREG  protect reg			   */	
+	__IOM uint32_t	SRBREG;						  /*!< 0x130: SRBREG Register			   */	
+	__IOM uint32_t	ERBREG;						  /*!< 0x134: ERBREG Register			   */	
 } csp_syscon_t; 
 
 
@@ -456,13 +449,6 @@ typedef enum{
 
 #define PWRCR_KEY                     0xA67A6CC7       
 
-/// WKCR: wakeup(from deep-sleep) source register
-//#define IWDT_WKEN	(0x1<<8)
-//#define RTC_WKEN	(0x1<<9)
-//#define LPT_WKEN	(0x1<<10)
-//#define LVD_WKEN	(0x1<<11)
-//#define TKEY_WKEN	(0x1<<12)
-//#define WKI_WKEN	(0x1<<13)
 
 typedef enum {
 	
@@ -472,31 +458,8 @@ typedef enum {
 	WKUP_LVD
 	
 } wakeup_src_e;
-//#define DPSLEEP_MODE_P0S	(16)
-//#define DPSLEEP_MODE_MSK	(0xfful << DPSLEEP_MODE_P0S)
-//typedef enum{
-//	SNOOZE_MODE		= (0xAaul),
-//	SHUTDOWN_MODE	= (0xA5ul),
-//	DPSLEEP_MODE	= (0x05ul),
-//}deepsleep_mode_e;
-//
-//#define SNOOZE_TOUCH_P0S	(24)
-//#define SNOOZE_TOUCH_MSK	(0x01ul << SNOOZE_TOUCH_P0S)
-//#define SNOOZE_LCD_P0S		(25)
-//#define SNOOZE_LCD_MSK		(0x01ul << SNOOZE_LCD_P0S)
 
-///INTERRUPT related regs: IMER/IMDR/IAR/ICR/IMCR/RISR/MISR
-/*#define ISOSC_ST	(0x1)
-#define IMOSC_ST	(0x1<<1)
-#define EMOSC_ST	(0x1<<3)
-#define HFOSC_ST	(0x1<<4)
-#define SYSCLK_ST 	(0x1<<7)
-#define IWDT_INT	(0x1<<8)
-#define WKI_INT		(0x1<<9)
-#define RAMERR_INT	(0x1<<10)
-#define LVD_INT		(0x1<<11)
-#define EM_CMFAIL	(0x1<<18)
-#define CMD_ERR		(0x1<<29)*/
+
 typedef enum{
 	ISOSC_INT_ST 	= (0x1<<0),
 	IMOSC_INT_ST 	= (0x1<<1),
@@ -519,6 +482,7 @@ typedef enum{
 	EV2TRG_INT 		= (0x1<<21),
 	EV3TRG_INT 		= (0x1<<22),
 	CMD_INT_ERR		= (0x1<<29),
+	SYSCON_INT_ALL  = 0x207fedbf
 }syscon_int_e;
 
 /// EXI interrupt regs: EXIER/EXIDR/EXIRS/EXIAR/EXICR/EXIRS
@@ -1161,29 +1125,7 @@ static inline void csp_sleep_vos_disable(csp_syscon_t *ptSysconBase)
 }
 
 //wkcr 
-//static inline void csp_set_deepsleep_mode(csp_syscon_t *ptSysconBase, deepsleep_mode_e eDpSleep)
-//{
-//	ptSysconBase->WKCR = (ptSysconBase->WKCR & (~DPSLEEP_MODE_MSK)) | (eDpSleep  << DPSLEEP_MODE_P0S);
-//}
-//
-//static inline void csp_snooze_touch_power_enable(csp_syscon_t *ptSysconBase)
-//{
-//	ptSysconBase->WKCR |= SNOOZE_TOUCH_MSK;
-//}
-//static inline void csp_snooze_touch_power_disable(csp_syscon_t *ptSysconBase)
-//{
-//	ptSysconBase->WKCR &= (~SNOOZE_TOUCH_MSK);
-//}
-//
-//static inline void csp_snooze_lcd_power_enable(csp_syscon_t *ptSysconBase)
-//{
-//	ptSysconBase->WKCR |= SNOOZE_LCD_MSK;
-//}
-//
-//static inline void csp_snooze_lcd_power_disable(csp_syscon_t *ptSysconBase)
-//{
-//	ptSysconBase->WKCR &= (~SNOOZE_LCD_MSK);
-//}
+
 static inline void csp_wakeup_source_enable(csp_syscon_t *ptSysconBase,wakeup_src_e eWkupSrc)
 {
 	ptSysconBase->WKCR |= (0x1ul << eWkupSrc);

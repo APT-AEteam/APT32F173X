@@ -263,7 +263,6 @@ typedef enum{
 * IMSCR, RISR, MISR: USART Interrupt Registers
 ******************************************************************************/
 typedef enum{
-	US_INT_NONE			= (0x00ul << 0),
 	US_INT_RXRDY		= (0x01ul << 0),
 	US_INT_TXRDY		= (0x01ul << 1),
 	US_INT_RXBRK		= (0x01ul << 2),

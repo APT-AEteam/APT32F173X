@@ -61,7 +61,6 @@ void csi_rtc_init(csp_rtc_t *ptRtc, csi_rtc_config_t *tConfig)
 			csi_esosc_enable();
 			byDiva = 3;
 			hwDivs = 4095;
-//			hwDivs = 1;
 			break;
 		case (RTC_CLKSRC_IMOSC_DIV4):
 			switch(csp_get_imosc_freq(SYSCON))
@@ -95,26 +94,22 @@ void csi_rtc_init(csp_rtc_t *ptRtc, csi_rtc_config_t *tConfig)
 			break;
 	}
 	
-	//ptRtc->KEY = 0xCA53;
 	csp_rtc_set_key(ptRtc);
-	ptRtc->CCR = (ptRtc->CCR & (~RTC_CLKSRC_MSK) & (~RTC_DIVA_MSK)& (~RTC_DIVS_MSK)) | (tConfig->eClkSrc << RTC_CLKSRC_POS)|(byDiva << RTC_DIVA_POS)| (hwDivs << RTC_DIVS_POS) | (RTC_CLKEN);
+	csp_rtc_set_src_clk(ptRtc,(rtc_clksrc_e)tConfig->eClkSrc,byDiva,hwDivs);
 	csp_rtc_clr_key(ptRtc);
 	while((ptRtc->CCR & RTC_CLK_STABLE) == 0);
 	
-	//csp_rtc_clr_key(ptRtc);
 	csp_rtc_set_key(ptRtc);
-	
 	csp_rtc_rb_enable(ptRtc);
-	csp_rtc_set_fmt(ptRtc, tConfig->eFmt);
-	
+	csp_rtc_set_fmt(ptRtc, (rtc_fmt_e)tConfig->eFmt);
 	csp_rtc_alm_disable(ptRtc, RTC_ALMB);
 	csp_rtc_alm_disable(ptRtc, RTC_ALMA);
 	
 	csp_rtc_clr_key(ptRtc);
 	while(csp_rtc_update_status(ptRtc));
 	
-	csp_rtc_int_disable(ptRtc, RTC_INT_ALMA|RTC_INT_ALMB|RTC_INT_CPRD|RTC_INT_TRGEV0|RTC_INT_TRGEV1);
-	csp_rtc_clr_isr(ptRtc, RTC_INT_ALMA|RTC_INT_ALMB|RTC_INT_CPRD|RTC_INT_TRGEV0|RTC_INT_TRGEV1);
+	csp_rtc_int_disable(ptRtc, RTC_INT_ALL);
+	csp_rtc_clr_isr(ptRtc,RTC_INT_ALL);
 
 }
 

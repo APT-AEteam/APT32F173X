@@ -56,33 +56,34 @@ void lp_lpt_wakeup_demo(void)
 	csi_lpt_time_config_t tTimConfig; 
 
 #if (USE_GUI==0)	
-	csi_gpio_set_mux(GPIOA,PA5,PA5_OUTPUT);						//配置PA05输出,用来指示程序从deepsleep 模式唤醒
+	csi_gpio_set_mux(GPIOA,PA5,PA5_OUTPUT);					//配置PA05输出,用来指示程序从deepsleep 模式唤醒
 #endif	
 
 #ifdef CONFIG_USER_PM	
 	csi_pm_attach_callback(ePmMode, prepare_lp, wkup_lp);	//需要在工程设置compiler tab下加入define CONFIG_USER_PM=1;
 #endif
 
-	csi_pm_config_wakeup_source(SRC_WKUP_LPT, ENABLE);			//配置唤醒源
-//	csi_pm_clk_enable(DP_ISOSC);								//低功耗模式下时钟开启/关闭
+	csi_pm_config_wakeup_source(SRC_WKUP_LPT, ENABLE);		//配置唤醒源
+//	csi_pm_clk_enable(DP_ISOSC);							//低功耗模式下时钟开启/关闭
 //	csi_pm_clk_enable(DP_IMOSC);
 //	csi_pm_clk_enable(DP_ESOSC);
 //	csi_pm_clk_enable(DP_EMOSC);
 	
 	//lpt初始化配置
-	tTimConfig.wTimeVal = 500;									//LPT定时值 = 500ms
-	tTimConfig.eRunMode  = LPT_CNT_CONT;						//LPT计数器工作模式，连续
-	tTimConfig.eClksrc=LPT_CLK_ISCLK;  							//LPT时钟源  
-	csi_lpt_timer_init(LPT,&tTimConfig);        				//初始化lpt,默认采用PEND中断
+	tTimConfig.wTimeVal = 500;								//LPT定时值 = 500ms
+	tTimConfig.eRunMode  = LPT_CNT_CONT;					//LPT计数器工作模式，连续
+	tTimConfig.eClksrc=LPT_CLK_ISCLK;  						//LPT时钟源  
+	csi_lpt_timer_init(LPT,&tTimConfig);        			//初始化lpt,默认采用PEND中断
 
 	csi_lpt_start(LPT);	  
-	delay_ums(200);
+	
+	delay_ums(200);											
 	
 	
 	while(1) 
 	{
 		csi_pm_enter_sleep(ePmMode);
-		csi_gpio_toggle(GPIOA,PA5);
+		csi_gpio_toggle(GPIOA,PA5);							//PA5 500ms翻转一次
 	}
 }
 
@@ -171,7 +172,7 @@ void lp_lvd_wakeup_demo(void)
 	//LVD WAKEUP DeepSleep
 	csi_lvd_int_enable(LVD_INTF,LVD_30);  						//VDD掉电到3.9V即触发LVD中断
 	
-	delay_ums(100);
+	delay_ums(200);
 	
 	while(1) 
 	{
@@ -231,6 +232,8 @@ void lp_rtc_wakeup_demo(void)
 	csi_rtc_start_as_timer(RTC, RTC_TIMER_0_5S);				//每0.5s进一次中断
 	csi_rtc_start(RTC);	
 	
+	delay_ums(200);
+	
 	while(1) 
 	{
 		csi_pm_enter_sleep(ePmMode);							//进入低功耗模式
@@ -247,9 +250,10 @@ void lp_rtc_wakeup_demo(void)
 void lp_iwdt_wakeup_demo(void)
 {
 	csi_pm_mode_e ePmMode = PM_MODE_DEEPSLEEP;			//PM_MODE_SLEEP/PM_MODE_DEEPSLEEP
-	
+
+#if (USE_GUI==0)	
 	csi_gpio_set_mux(GPIOB,PB2,PB2_OUTPUT);				//PB02 OUTPUT
-	
+#endif	
 	
 #ifdef CONFIG_USER_PM	
 	csi_pm_attach_callback(ePmMode, prepare_lp, wkup_lp);	//需要在工程设置compiler tab下加入define CONFIG_USER_PM=1;
@@ -270,6 +274,7 @@ void lp_iwdt_wakeup_demo(void)
 	csi_iwdt_open();	
 	csi_iwdt_feed();
 	
+	delay_ums(200);
 	
 	while(1) 
 	{

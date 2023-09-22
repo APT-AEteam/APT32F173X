@@ -5,7 +5,7 @@
  * <table>
  * <tr><th> Date  <th>Version  <th>Author  <th>Description
  * <tr><td> 2020-12-01 <td>V0.0  <td>ZJY   <td>initial
- * <tr><td> 2023-9-22 <td>V0.1  <td>GQQ   <td>fix bug,code normalization
+ * <tr><td> 2023-9-22 <td>V0.1  <td>GQQ   <td>code normalization
  * </table>
  * *********************************************************************
 */
@@ -223,7 +223,7 @@ typedef enum{
 	DMA_INT_CH3		= (0x01ul << 3),
 	DMA_INT_CH4		= (0x01ul << 4),
 	DMA_INT_CH5		= (0x01ul << 5),
-	DMA_INT_ALL		= 0x3F
+	DMA_INT_ALL		= (0x3Ful << 0)
 }dma_icr_e;
 
 /******************************************************************************
