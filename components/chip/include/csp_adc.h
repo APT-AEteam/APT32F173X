@@ -68,12 +68,12 @@ typedef enum
 /******************************************************************************
 * CR : ADC Control Register
 ******************************************************************************/
-#define ADC_SWRST			(0)            
-#define ADC_ADCEN     		(1)            
-#define ADC_ADCDIS   		(2)            
-#define ADC_START     		(3)           
-#define ADC_STOP      		(4)  
-#define ADC_SWTRG     		(5)
+#define ADC_SWRST			(0x1 << 0)            
+#define ADC_ADCEN     		(0x1 << 1)            
+#define ADC_ADCDIS   		(0x1 << 2)            
+#define ADC_START     		(0x1 << 3)           
+#define ADC_STOP      		(0x1 << 4)  
+#define ADC_SWTRG     		(0x1 << 5)
 
 #define ADC_VREF_POS 		(6) 
 #define ADC_VREF_MSK 		(0x03ul << ADC_VREF_POS) 
@@ -115,8 +115,8 @@ typedef enum{
 #define ADC_CV_POS 			(30) 
 #define ADC_CV_MSK 			(0x03ul << ADC_CV_POS) 
 typedef enum{
-	ADC_RUN_ONCE		=   (0x00ul),
-	ADC_RUN_CONT		= 	(0x01ul),
+	ADC_RUN_ONESHOT			=   (0x00ul),
+	ADC_RUN_CONTINUE		= 	(0x01ul),
 	ADC_RUN_WAITSYNC		= 	(0x02ul),
 }adc_runmode_e;
 
@@ -161,7 +161,8 @@ typedef enum{
 	ADC_SEQ12   		= 	(0x01uL << 28),     
 	ADC_SEQ13   		= 	(0x01uL << 29),     
 	ADC_SEQ14   		= 	(0x01uL << 30),    
-	ADC_SEQ15   		= 	(0x01uL << 31)
+	ADC_SEQ15   		= 	(0x01uL << 31),
+	ADC_SR_ALL//
 }adc_sr_e;
 
 typedef enum{
@@ -244,10 +245,10 @@ typedef enum{
 	ADC_ADCINB20,
 	ADC_ADCINB21,
 	ADC_ADCINB22,
-	ADC_OPA0X     	= 0x79ul,
-	ADC_OPA1X,
-	ADC_OPA2X,
-	ADC_OPA3X,
+	ADC_ADCIN_OPA0X     	= 0x79ul,
+	ADC_ADCIN_OPA1X,
+	ADC_ADCIN_OPA2X,
+	ADC_ADCIN_OPA3X,
 	ADC_ADCIN_INTVREF,
 	ADC_ADCIN_1_5VDD,
 	ADC_ADCIN_VSS
@@ -473,11 +474,6 @@ static inline void csp_adc_set_seq_num(csp_adc_t *ptAdcBase, uint8_t bySeqNum)
 	ptAdcBase->MR = (ptAdcBase->MR & (~ADC_NBRCH_MSK)) |  ADC_NBRCH(bySeqNum);
 }
 
-static inline void csp_adc_set_syncsrc(csp_adc_t *ptAdcBase,uint8_t bychnl,adc_sync_source_e eSyncSrc)
-{
-	ptAdcBase->SEQ[bychnl] = (ptAdcBase->SEQ[bychnl] & (~ADC_SYNCSRC_MSK)) | (eSyncSrc<<ADC_SYNCSRC_POS);
-}
-
 static inline void csp_adc_set_seqx(csp_adc_t *ptAdcBase, uint8_t bySeqNum, adc_channel_e eAdcChnl, 
 				adc_cnt_e eCvCnt,adc_avg_e eAvgSel, bool bAvgctrl, adc_sync_source_e eSyncSrc)
 {
@@ -515,53 +511,53 @@ static inline void csp_adc_clr_sr(csp_adc_t *ptAdcBase,adc_sr_e eAdcSr)
 
 static inline uint32_t csp_adc_get_isr(csp_adc_t *ptAdcBase)
 {
-	return (uint32_t)(ptAdcBase->MISR);
+	return (ptAdcBase->MISR);
 }
 
 static inline void csp_adc_int_enable(csp_adc_t *ptAdcBase, adc_int_e eInt)
 {
-		ptAdcBase->IMCR |= eInt; 
+	ptAdcBase->IMCR |= eInt; 
 }
 
 static inline void csp_adc_int_disable(csp_adc_t *ptAdcBase, adc_int_e eInt)
 {
-		ptAdcBase->IMCR &= ~eInt; 
+	ptAdcBase->IMCR &= ~eInt; 
 }
 
 //cr control: start/stop/en/dis/swtrg
-static inline void csp_adc_start(csp_adc_t *ptAdcBase)
+static inline void csp_adc_start(csp_adc_t *ptAdcBase)//在DEFINE写
 {
-	ptAdcBase->CR |= 0x1 << ADC_START;
+	ptAdcBase->CR |= ADC_START;
 }
 
 static inline void csp_adc_stop(csp_adc_t *ptAdcBase)
 {
-	ptAdcBase->CR |= 0x1 <<ADC_STOP;
+	ptAdcBase->CR |= ADC_STOP;
 }
 
 static inline void csp_adc_enable(csp_adc_t *ptAdcBase)
 {
-	ptAdcBase->CR |= 0x1 <<ADC_ADCEN;
+	ptAdcBase->CR |= ADC_ADCEN;
 }
 
 static inline void csp_adc_disable(csp_adc_t *ptAdcBase)
 {
-	ptAdcBase->CR |= 0x1 <<ADC_ADCDIS;
+	ptAdcBase->CR |= ADC_ADCDIS;
 }
 
-static inline void csp_adc_swtrg(csp_adc_t *ptAdcBase)
+static inline void csp_adc_sw_start(csp_adc_t *ptAdcBase)
 {
-	ptAdcBase->CR |= 0x1 <<ADC_SWTRG;
+	ptAdcBase->CR |= ADC_SWTRG;
 }
 
 static inline void csp_adc_sw_rst(csp_adc_t *ptAdcBase)
 {
-	ptAdcBase->CR |= 0x1<<ADC_SWRST;
+	ptAdcBase->CR |= ADC_SWRST;
 }
 
-static inline void csp_adc_set_hold_cycle(csp_adc_t *ptAdcBase, uint16_t hwCycle)
+static inline void csp_adc_set_samp_hold(csp_adc_t *ptAdcBase, uint16_t hwSampHold)
 {
-	ptAdcBase->SHR = (hwCycle & 0xff);
+	ptAdcBase->SHR = (hwSampHold & 0xff);
 }
 
 static inline void csp_adc_set_pri(csp_adc_t *ptAdcBase, uint8_t byPri)
@@ -574,9 +570,9 @@ static inline void csp_adc_set_cmp_mode(csp_adc_t *ptAdcBase, adc_cmpos_e wCmpMo
 	ptAdcBase->MR = (ptAdcBase->MR & (~ADC_CMPOS_MSK)) | (wCmpMode << ADC_CMPOS_POS);
 } 
 
-static inline uint32_t csp_adc_get_data(csp_adc_t *ptAdcBase, uint8_t byChnl)
+static inline uint16_t csp_adc_get_data(csp_adc_t *ptAdcBase, uint8_t byChnl)
 {
-	return (uint32_t)(ptAdcBase->DR[byChnl] & ADC_DATA_MASK);
+	return (ptAdcBase->DR[byChnl] & ADC_DATA_MASK);
 } 
 //syncr
 static inline void csp_adc_sync_enable(csp_adc_t *ptAdcBase, adc_sync_in_e eSyncIn)
@@ -599,7 +595,7 @@ static inline void csp_adc_sync_rearm(csp_adc_t *ptAdcBase,  adc_sync_in_e eSync
 	ptAdcBase->SYNCR |= (0x1 << (eSyncIn + ADC_REARM_POS(eSyncIn)));
 }
 
-static inline void csp_adc_set_trgprd(csp_adc_t *ptAdcBase,adc_evtrg_out_e eEvtOut,uint8_t byPeriod)
+static inline void csp_adc_set_evtrg_prd(csp_adc_t *ptAdcBase,adc_evtrg_out_e eEvtOut,uint8_t byPeriod)
 {
 	ptAdcBase->EVPS = (ptAdcBase->EVPS & ~ADC_EVPRD_MSK(eEvtOut))| (byPeriod << ADC_EVPRD_POS(eEvtOut));
 }
@@ -632,6 +628,16 @@ static inline void csp_adc_drmask_enable(csp_adc_t *ptAdcBase,uint16_t hwDrNum)
 static inline void csp_adc_drmask_disable(csp_adc_t *ptAdcBase,uint16_t hwDrNum)			
 {
 	ptAdcBase->DRMASK &=  ~(0X1 << hwDrNum);
+}
+
+static inline void csp_adc_trg_delay0(csp_adc_t *ptAdcBase,adc_sync_in_e eSyncIn,uint16_t byDelay)
+{
+	ptAdcBase->TDL0 = (ptAdcBase->TDL0 & ~(0xFFul << (eSyncIn * 8))) | byDelay;
+}
+
+static inline void csp_adc_trg_delay1(csp_adc_t *ptAdcBase,adc_sync_in_e eSyncIn,uint16_t byDelay)
+{
+	ptAdcBase->TDL1 = (ptAdcBase->TDL1 & ~(0xFFul << ((eSyncIn - 3)  * 8))) | byDelay;
 }
 
 #endif

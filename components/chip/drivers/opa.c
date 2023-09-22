@@ -19,7 +19,7 @@
 * 			   	- eSingleGain: Internal Single Gain set, \ref csi_opa_pgac_single_e
 *  			   	- eDifferenceGain: Internal Difference Gain set, \ref csi_opa_pgac_difference_e
 *   			- eInputMode: Input Mode set, \ref csi_opa_mode_input_e
-* 				- bOpaNegativeInput: Opa Negative Input enable/disable
+* 				- bOpaNInput: Opa Negative Input enable/disable
 * 				- bOpaOutput: Opa Output enable/disable
   \return      error code.
 */
@@ -33,12 +33,12 @@ csi_error_t csi_opa_init(csp_opa_t *ptOpaBase, csi_opa_config_t *ptOpaCfg)
 	if(ptOpaCfg->eMode == OPA_INTERNAL_MODE)
 	{
 		csp_opa_external_disable(ptOpaBase);
-		if(ptOpaCfg->eInputMode == SINGEL)	
+		if(ptOpaCfg->eInputMode == OPA_SINGLE)	
 		{
 			csp_opa_set_pgac_singel(ptOpaBase,(opa_pgac_single_e)ptOpaCfg->eSingleGain);
 			csp_opa_difference_disable(ptOpaBase);
 		}
-		if(ptOpaCfg->eInputMode ==  DIFFERENCE)	
+		if(ptOpaCfg->eInputMode ==  OPA_DIFFERENCE)	
 		{
 			csp_opa_set_pgac_difference(ptOpaBase,(opa_pgac_difference_e)ptOpaCfg->eDifferenceGain);
 			csp_opa_difference_enable(ptOpaBase);
@@ -49,7 +49,7 @@ csi_error_t csi_opa_init(csp_opa_t *ptOpaBase, csi_opa_config_t *ptOpaCfg)
 		csp_opa_external_enable(ptOpaBase);
 		csp_opa_out_enable(ptOpaBase);
 	}
-	if(ptOpaCfg->bOpaNegativeInput == ENABLE)
+	if(ptOpaCfg->bOpaNInput == ENABLE)
 		csp_opa_in_enable(ptOpaBase);
 	else
 		csp_opa_in_disable(ptOpaBase);

@@ -109,7 +109,7 @@ ATTRIBUTE_ISR __attribute__((weak)) void adc1_int_handler(void)
 {
     //ISR content ...
 	CSI_INTRPT_ENTER();
-#if	(CHIP_1732==1)
+#if	(IS_CHIP_1732==1)
 #if (USE_ADC_CALLBACK == 1)
 	csi_adc_irqhandler(ADC1, 1);
 #else

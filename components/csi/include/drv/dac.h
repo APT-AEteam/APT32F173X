@@ -23,8 +23,8 @@ extern "C" {
  */
 typedef struct {
 	uint8_t				byClkDiv;		//dac clkdiv, dac clk = FHCLK/(byClkDiv+1)
-	bool				bRefsel;		//dac reference enable
 	uint16_t			hwDatarset;		//dac output voltage data set
+	bool				bRefSel;		//dac reference enable
 	bool				bBufen;			//dac buf enable
 } csi_dac_config_t;
 /**

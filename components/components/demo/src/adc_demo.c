@@ -12,6 +12,7 @@
 /* Includes ---------------------------------------------------------------*/
 #include "csi_drv.h"
 #include "board_config.h"
+#include <iostring.h>
 /* externs function--------------------------------------------------------*/
 /* externs variablesr------------------------------------------------------*/
 /* Private macro-----------------------------------------------------------*/
@@ -29,22 +30,12 @@
 ATTRIBUTE_ISR void adc0_int_handler(void)
 {
 	//用户直接在中断服务接口函数里处理中断，建议客户使用此模式
-	csp_adc_clr_sr(ADC0, csp_adc_get_isr(ADC0));
+	csi_adc_read_channel(ADC0, 0);				//seq end中断清除为读清
+	csi_adc_read_channel(ADC0, 1);				//seq end中断清除为读清
+	csi_adc_read_channel(ADC0, 2);				//seq end中断清除为读清	
+	csp_adc_clr_sr(ADC0, csp_adc_get_isr(ADC0));//清除seq和eoc以外的中断
 }
 #endif
-//ADC采样序列通道参数配置，默认情况，重复采样和平均系数为1(ADC采样值不平均)
-//ADC触发根据实际应用进行配置
-const csi_adc_seq_t tSeqCfg[] =
-{
-	//输入通道		//连续重复采样次数		//平均系数			//触发源选择
-	{ADC_INA0,		ADC_CV_COUNT_1,			ADC_AVG_COF_1,		ADCSYNC_NONE},
-	{ADC_INA1,		ADC_CV_COUNT_1,			ADC_AVG_COF_1,		ADCSYNC_IN1},
-	{ADC_INA2,		ADC_CV_COUNT_1,			ADC_AVG_COF_1,		ADCSYNC_IN1},
-
-}; 
-
-//采样序列的通道数
-volatile uint8_t byChnlNum = sizeof(tSeqCfg)/sizeof(tSeqCfg[0]);
 
 /** \brief ADC单次采样模式
  *  \brief ADC采样，轮询、单次转换模式。
@@ -53,9 +44,12 @@ volatile uint8_t byChnlNum = sizeof(tSeqCfg)/sizeof(tSeqCfg[0]);
  *  \param[in] none
  *  \return error code
  */
-int adc_samp_oneshot_demo(void)
+void adc_samp_oneshot_demo(void)
 {
-	int iRet = 0;
+	uint8_t i;
+	int iChnlNum = 3;											//设置总通道个数	
+	volatile int16_t nDataBuf[3] = {0,0,0};						//存放三通道采样值
+
 	csi_adc_config_t tAdcConfig;
 #if (USE_GUI == 0)	
 	//adc 输入管脚配置
@@ -65,17 +59,26 @@ int adc_samp_oneshot_demo(void)
 #endif		
 	//adc 参数配置初始化
 	tAdcConfig.byClkDiv = 0x02;									//ADC clk两分频：clk = pclk/2
-	tAdcConfig.eClksel = ADC_CLK_PCLK;							//ADC clk选择：PCLK
+	tAdcConfig.eClkSel = ADC_CLK_PCLK;							//ADC clk选择：PCLK
 	tAdcConfig.bySampHold = 0x06;								//ADC 采样时间： time = 16 + 6 = 22(ADC clk周期)
-	tAdcConfig.eRunMode = ADC_RUN_ONESHOT;						//ADC 转换模式： 单次转换；
-	tAdcConfig.eVrefSrc = ADCVERF_VDD_VSS;						//ADC 参考电压： 系统VDD
-	tAdcConfig.ptSeqCfg = (csi_adc_seq_t *)tSeqCfg;				//ADC 采样序列： 具体参考结构体变量 tSeqCfg
-	
+	tAdcConfig.eRunMode = ADC_RUN_ONCE;							//ADC 转换模式： 单次转换；
+	tAdcConfig.eVrefSrc = ADCVERF_VDD_VSS;						//ADC 参考电压： 系统VDD	
 	csi_adc_init(ADC0, &tAdcConfig);							//初始化ADC参数配置	
-	csi_adc_set_seqx(ADC0, tAdcConfig.ptSeqCfg, byChnlNum);		//配置ADC采样序列
-	csi_adc_start(ADC0);										//启动ADC
 	
-	return iRet;
+	csi_adc_set_seq_num(ADC0,iChnlNum);													//配置ADC总采样通道个数
+	csi_adc_set_seqx(ADC0,0,ADC_INA0,ADC_CV_COUNT_1,ADC_AVG_COF_1,ADCSYNC_NONE);		//配置ADC采样通道0
+	csi_adc_set_seqx(ADC0,1,ADC_INA1,ADC_CV_COUNT_1,ADC_AVG_COF_1,ADCSYNC_NONE);		//配置ADC采样通道1
+	csi_adc_set_seqx(ADC0,2,ADC_INA2,ADC_CV_COUNT_1,ADC_AVG_COF_1,ADCSYNC_NONE);		//配置ADC采样通道2
+	csi_adc_start(ADC0);																//启动ADC
+	
+	do
+	{
+		for(i = 0; i < iChnlNum; i++)
+		{
+			nDataBuf[i] = csi_adc_read_channel(ADC0, i);					//分别读ADC采样序列通道：0~iChnlNum			
+			my_printf("ADC channel value of seq: %d \n", nDataBuf[i]);		//串口打印采样值
+		}	
+	}while(0);
 }
 
 /** \brief ADC连续采样模式
@@ -85,11 +88,13 @@ int adc_samp_oneshot_demo(void)
  *  \param[in] none
  *  \return error code
  */
-int adc_samp_continuous_demo(void)
-{
-	int iRet = 0;	
-	csi_adc_config_t tAdcConfig;
+void adc_samp_continuous_demo(void)
+{	
+	uint8_t i;
+	int iChnlNum = 3;											//设置总通道个数	
+	volatile int16_t nDataBuf[3] = {0,0,0};						//存放三通道采样值
 	
+	csi_adc_config_t tAdcConfig;	
 #if (USE_GUI == 0)	
 	//adc 输入管脚配置
 	csi_gpio_set_mux(GPIOC,PC13, PC13_ADC_INA0);				//ADC GPIO作为输入通道
@@ -98,17 +103,26 @@ int adc_samp_continuous_demo(void)
 #endif		
 	//adc 参数配置初始化
 	tAdcConfig.byClkDiv = 0x02;									//ADC clk两分频：clk = pclk/2
-	tAdcConfig.eClksel = ADC_CLK_PCLK;							//ADC clk选择：PCLK
+	tAdcConfig.eClkSel = ADC_CLK_PCLK;							//ADC clk选择：PCLK
 	tAdcConfig.bySampHold = 0x06;								//ADC 采样时间： time = 16 + 6 = 22(ADC clk周期)
-	tAdcConfig.eRunMode = ADC_RUN_CONTINU;						//ADC 转换模式： 连续转换
-	tAdcConfig.eVrefSrc = ADCVERF_VDD_VSS;						//ADC 参考电压： 系统VDD
-	tAdcConfig.ptSeqCfg = (csi_adc_seq_t *)tSeqCfg;				//ADC 采样序列： 具体参考结构体变量 tSeqCfg
-	
+	tAdcConfig.eRunMode = ADC_RUN_CONT;							//ADC 转换模式： 连续转换
+	tAdcConfig.eVrefSrc = ADCVERF_VDD_VSS;						//ADC 参考电压： 系统VDD	
 	csi_adc_init(ADC0, &tAdcConfig);							//初始化ADC参数配置	
-	csi_adc_set_seqx(ADC0, tAdcConfig.ptSeqCfg, byChnlNum);		//配置ADC采样序列
-	csi_adc_start(ADC0);										//启动ADC
 	
-	return iRet;
+	csi_adc_set_seq_num(ADC0,iChnlNum);													//配置ADC总采样通道个数
+	csi_adc_set_seqx(ADC0,0,ADC_INA0,ADC_CV_COUNT_1,ADC_AVG_COF_1,ADCSYNC_NONE);		//配置ADC采样通道0
+	csi_adc_set_seqx(ADC0,1,ADC_INA1,ADC_CV_COUNT_1,ADC_AVG_COF_1,ADCSYNC_NONE);		//配置ADC采样通道1
+	csi_adc_set_seqx(ADC0,2,ADC_INA2,ADC_CV_COUNT_1,ADC_AVG_COF_1,ADCSYNC_NONE);		//配置ADC采样通道2
+	csi_adc_start(ADC0);																//启动ADC
+
+	do
+	{
+		for(i = 0; i < iChnlNum; i++)
+		{
+			nDataBuf[i] = csi_adc_read_channel(ADC0, i);					//分别读ADC采样序列通道：0~iChnlNum			
+			my_printf("ADC channel value of seq: %d \n", nDataBuf[i]);		//串口打印采样值
+		}	
+	}while(0);
 }
 
 
@@ -119,32 +133,33 @@ int adc_samp_continuous_demo(void)
  *  \param[in] none
  *  \return error code
  */
-int adc_samp_oneshot_int_demo(void)
+void adc_samp_oneshot_int_demo(void)
 {
-	int iRet = 0;
+			int iChnlNum = 3;									//设置总通道个数	
+
 	csi_adc_config_t tAdcConfig;
-	
 #if (USE_GUI == 0)	
 	//adc 输入管脚配置
 	csi_gpio_set_mux(GPIOC,PC13, PC13_ADC_INA0);				//ADC GPIO作为输入通道
 	csi_gpio_set_mux(GPIOC,PA14, PC14_ADC_INA1);
 	csi_gpio_set_mux(GPIOC,PA15, PC15_ADC_INA2);
-#endif	
-
+#endif		
 	//adc 参数配置初始化
-	tAdcConfig.byClkDiv = 48;									//ADC clk两分频：clk = pclk/2
-	tAdcConfig.eClksel = ADC_CLK_PCLK;								//ADC clk选择：PCLK
+	tAdcConfig.byClkDiv = 0x02;									//ADC clk两分频：clk = pclk/2
+	tAdcConfig.eClkSel = ADC_CLK_PCLK;							//ADC clk选择：PCLK
 	tAdcConfig.bySampHold = 0x06;								//ADC 采样时间： time = 16 + 6 = 22(ADC clk周期)
-	tAdcConfig.eRunMode =ADC_RUN_ONESHOT;                    //ADC 转换模式： 单次转换；ADC_CONV_CONTINU
-	tAdcConfig.eVrefSrc = ADCVERF_VDD_VSS;						//ADC 参考电压： 系统VDD
-	tAdcConfig.ptSeqCfg = (csi_adc_seq_t *)tSeqCfg;				//ADC 采样序列： 具体参考结构体变量 tSeqCfg
-	
-	csi_adc_int_enable(ADC0, ADC_INTSRC_EOC);					//设置EOC中断
+	tAdcConfig.eRunMode = ADC_RUN_ONCE;							//ADC 转换模式： 单次转换；
+	tAdcConfig.eVrefSrc = ADCVERF_VDD_VSS;						//ADC 参考电压： 系统VDD	
 	csi_adc_init(ADC0, &tAdcConfig);							//初始化ADC参数配置	
-	csi_adc_set_seqx(ADC0, tAdcConfig.ptSeqCfg, byChnlNum);		//配置ADC采样序列
-	csi_adc_start(ADC0);										//启动ADC
+	
+	csi_adc_set_seq_num(ADC0,iChnlNum);													//配置ADC总采样通道个数
+	csi_adc_set_seqx(ADC0,0,ADC_INA0,ADC_CV_COUNT_1,ADC_AVG_COF_1,ADCSYNC_NONE);		//配置ADC采样通道0
+	csi_adc_set_seqx(ADC0,1,ADC_INA1,ADC_CV_COUNT_1,ADC_AVG_COF_1,ADCSYNC_NONE);		//配置ADC采样通道1
+	csi_adc_set_seqx(ADC0,2,ADC_INA2,ADC_CV_COUNT_1,ADC_AVG_COF_1,ADCSYNC_NONE);		//配置ADC采样通道2
+	
+	csi_adc_int_enable(ADC0, ADC_INTSRC_SEQ0|ADC_INTSRC_SEQ1|ADC_INTSRC_SEQ2);			//设置采样通道0，1，2的转换完成中断
+	csi_adc_start(ADC0);																//启动ADC
 
-	return iRet;
 }
 
 /** \brief ADC中断连续模式
@@ -154,32 +169,32 @@ int adc_samp_oneshot_int_demo(void)
  *  \param[in] none
  *  \return error code
  */
-int adc_samp_continuous_int_demo(void)
+void adc_samp_continuous_int_demo(void)
 {
-	int iRet = 0;
+	int iChnlNum = 3;											//设置总通道个数	
+
 	csi_adc_config_t tAdcConfig;
-	
 #if (USE_GUI == 0)	
 	//adc 输入管脚配置
 	csi_gpio_set_mux(GPIOC,PC13, PC13_ADC_INA0);				//ADC GPIO作为输入通道
 	csi_gpio_set_mux(GPIOC,PA14, PC14_ADC_INA1);
 	csi_gpio_set_mux(GPIOC,PA15, PC15_ADC_INA2);
-#endif	
-
+#endif		
 	//adc 参数配置初始化
-	tAdcConfig.byClkDiv = 8;									//ADC clk两分频：clk = pclk/2
-	tAdcConfig.eClksel = ADC_CLK_PCLK;							//ADC clk选择：PCLK
+	tAdcConfig.byClkDiv = 0x02;									//ADC clk两分频：clk = pclk/2
+	tAdcConfig.eClkSel = ADC_CLK_PCLK;							//ADC clk选择：PCLK
 	tAdcConfig.bySampHold = 0x06;								//ADC 采样时间： time = 16 + 6 = 22(ADC clk周期)
-	tAdcConfig.eRunMode = ADC_RUN_CONTINU;						//ADC 转换模式： 连续转换；
-	tAdcConfig.eVrefSrc = ADCVERF_VDD_VSS;						//ADC 参考电压： 系统VDD
-	tAdcConfig.ptSeqCfg = (csi_adc_seq_t *)tSeqCfg;				//ADC 采样序列： 具体参考结构体变量 tSeqCfg
-
-	csi_adc_int_enable(ADC0, ADC_INTSRC_EOC);					//设置EOC中断
+	tAdcConfig.eRunMode = ADC_RUN_CONT;							//ADC 转换模式： 单次转换；
+	tAdcConfig.eVrefSrc = ADCVERF_VDD_VSS;						//ADC 参考电压： 系统VDD	
 	csi_adc_init(ADC0, &tAdcConfig);							//初始化ADC参数配置	
-	csi_adc_set_seqx(ADC0, tAdcConfig.ptSeqCfg, byChnlNum);		//配置ADC采样序列
-	csi_adc_start(ADC0);										//启动ADC
 	
-	return iRet;
+	csi_adc_set_seq_num(ADC0,iChnlNum);													//配置ADC总采样通道个数
+	csi_adc_set_seqx(ADC0,0,ADC_INA0,ADC_CV_COUNT_1,ADC_AVG_COF_1,ADCSYNC_NONE);		//配置ADC采样通道0
+	csi_adc_set_seqx(ADC0,1,ADC_INA1,ADC_CV_COUNT_1,ADC_AVG_COF_1,ADCSYNC_NONE);		//配置ADC采样通道1
+	csi_adc_set_seqx(ADC0,2,ADC_INA2,ADC_CV_COUNT_1,ADC_AVG_COF_1,ADCSYNC_NONE);		//配置ADC采样通道2
+	
+	csi_adc_int_enable(ADC0, ADC_INTSRC_SEQ0|ADC_INTSRC_SEQ1|ADC_INTSRC_SEQ2);			//设置采样通道0，1，2的转换完成中断
+	csi_adc_start(ADC0);																//启动ADC
 }
 
 

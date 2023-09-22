@@ -15,7 +15,7 @@
 #define	ADC_SAMP_TIMEOUT		0xFFFF
 /* externs function--------------------------------------------------------*/
 /* externs variablesr------------------------------------------------------*/
-/* Private variablesr------------------------------------------------------*/
+/* Global variablesr------------------------------------------------------*/
 csi_adc_ctrl_t g_tAdcCtrl[ADC_IDX];
 
 /** \brief get adc number 
@@ -59,12 +59,12 @@ csi_error_t csi_adc_register_callback(csp_adc_t *ptAdcBase, void  *callback)
  */ 
 void csi_adc_irqhandler(csp_adc_t *ptAdcBase, uint8_t byIdx)
 {
-	adc_int_e eIsr = csp_adc_get_isr(ptAdcBase);
+	uint32_t wIsr = csp_adc_get_isr(ptAdcBase);//改eisr
 	
 	if(g_tAdcCtrl[byIdx].callback)
-			g_tAdcCtrl[byIdx].callback(ptAdcBase, eIsr);
+			g_tAdcCtrl[byIdx].callback(ptAdcBase, wIsr);
 			
-	csp_adc_clr_sr(ptAdcBase, (adc_sr_e)eIsr);
+	csp_adc_clr_sr(ptAdcBase, (adc_sr_e)wIsr);
 }
 /** \brief initialize adc data structure
  * 
@@ -73,7 +73,7 @@ void csi_adc_irqhandler(csp_adc_t *ptAdcBase, uint8_t byIdx)
  * 				- byClkDiv: adc clkdiv, adc clk = PCLK/(2*byClkDiv)
  * 				- eClksel: adc clk select, \ref csi_adc_clksel_e
  *  			- bySampHold: adc sample hold period,unit: us
- *  			- bySampHold: adc sample hold period,unit: us 
+ *  			- bySampHold: adc sample hold period,unit: us //gai
  *  \return error code \ref csi_error_t
  */ 
 csi_error_t csi_adc_init(csp_adc_t *ptAdcBase, csi_adc_config_t *ptAdcCfg)
@@ -83,9 +83,8 @@ csi_error_t csi_adc_init(csp_adc_t *ptAdcBase, csi_adc_config_t *ptAdcCfg)
 	csi_clk_enable((uint32_t *)ptAdcBase);				//adc peripheral clk enable
 	csp_adc_clk_enable(ptAdcBase);						//adc clk enable
 	csp_adc_sw_rst(ptAdcBase);							//adc mode reset
-	csp_adc_clk_enable(ptAdcBase);						//adc clk enable
 	csp_adc_set_resolution(ptAdcBase, ADC_12BIT);		//adc 12bit
-	csp_adc_enable(ptAdcBase);							//enable adc mode
+	csp_adc_enable(ptAdcBase);							//enable adc
 	
 	if(ptAdcCfg->byClkDiv > 62)
 		ptAdcCfg->byClkDiv = 62;
@@ -95,48 +94,52 @@ csi_error_t csi_adc_init(csp_adc_t *ptAdcBase, csi_adc_config_t *ptAdcCfg)
 	
 	//general configuration 
 	csp_adc_set_clkdiv(ptAdcBase, ptAdcCfg->byClkDiv);					//adc clk div, clk = pclk/div
-	csp_adc_set_clksrc(ptAdcBase, (adc_clksel_e)ptAdcCfg->eClksel);		//adc clk sel
-	csp_adc_set_hold_cycle(ptAdcBase, ptAdcCfg->bySampHold);			//adc sample hold period, sample time = (bySampHold + 16) clk period
+	csp_adc_set_clksrc(ptAdcBase, (adc_clksel_e)ptAdcCfg->eClkSel);		//adc clk sel
+	csp_adc_set_samp_hold(ptAdcBase, ptAdcCfg->bySampHold);				//adc sample hold period, sample time = (bySampHold + 16) clk period
 	csp_adc_set_runmode(ptAdcBase, (adc_runmode_e)ptAdcCfg->eRunMode);	//adc conversion mode, continuous/one shot/wait
-	csp_adc_set_vref(ptAdcBase, (adc_vref_e)ptAdcCfg->eVrefSrc);		//adc vref
+	csp_adc_set_vref(ptAdcBase, (adc_vref_e)ptAdcCfg->eVrefSrc);		//adc vref,if FVR/INTERVREF is selected, the FVR module should be configured first.
 
 	return ret;
 }
 /** \brief config adc sample sequence
  * 
  *  \param[in] ptAdcBase: pointer of adc register structure
- *  \param[in] ptSeqx: pointer of adc seq parameter config structure
- * 			   	- eInChnl: adc input channel , \ref csi_adc_ch_e
- * 			   	- eCvCnt: continuous repeat sample count , \ref csi_adc_cv_cnt_e
- * 			   	- eAvgCof: average coefficient , \ref csi_adc_avg_cof_e
- * 			   	- eTrgSrc: sync source, \ref csi_adc_syncsrc_e
  *  \param[in] byChNum: channel number of sequence
+ *  \param[in] eInChnl: adc input channel , \ref csi_adc_ch_e
+ * 	\param[in] eCvCnt: continuous repeat sample count , \ref csi_adc_cv_cnt_e
+ * 	\param[in] eAvgCof: average coefficient , \ref csi_adc_avg_cof_e
+ * 	\param[in] eSyncSrc: sync source, \ref csi_adc_syncsrc_e
  *  \return error code \ref csi_error_t
  */ 
-csi_error_t csi_adc_set_seqx(csp_adc_t *ptAdcBase, csi_adc_seq_t *ptSeqx, uint8_t byChNum)
+csi_error_t csi_adc_set_seqx(csp_adc_t *ptAdcBase,uint8_t byChNum,csi_adc_ch_e eInChnl,csi_adc_cv_cnt_e eCvCnt,csi_adc_avg_cof_e eAvgCof,csi_adc_syncsrc_e eSyncSrc)
 {
-	uint8_t i;
-	bool bAvgEn;
-	
-	if(NULL == ptSeqx || byChNum == 0 || byChNum > 16)
+	if(byChNum > 15)
 		return CSI_ERROR;
 		
-	for(i = 0; i < byChNum; i++)				//config adc sample sequence
-	{
-		if(ptSeqx->eCvCnt)						//config continuous repeat cample 
-			bAvgEn = ENABLE;
-		else
-			bAvgEn = DISABLE;
-		csp_adc_set_seqx(ptAdcBase, i, (adc_channel_e)ptSeqx->eInChnl, (adc_cnt_e)ptSeqx->eCvCnt, 
-		(adc_avg_e)ptSeqx->eAvgCof, bAvgEn, (adc_sync_source_e)ptSeqx->eSyncSrc);
-		ptSeqx ++;
-	}
-	
-	csp_adc_set_seq_num(ptAdcBase, byChNum);	//config number of channel  
+	if(eAvgCof > 0)
+		csp_adc_set_seqx(ptAdcBase,byChNum,(adc_channel_e)eInChnl,(adc_cnt_e)eCvCnt,(adc_avg_e)eAvgCof,ENABLE,(adc_sync_source_e)eSyncSrc);
+	else
+		csp_adc_set_seqx(ptAdcBase,byChNum,(adc_channel_e)eInChnl,(adc_cnt_e)eCvCnt,(adc_avg_e)eAvgCof,DISABLE,(adc_sync_source_e)eSyncSrc);
 
 	return CSI_OK;
 }
-/** \brief start adc 
+/** \brief config adc sequence total number
+ * 
+ *  \param[in] ptAdcBase: pointer of adc register structure
+ *  \param[in] byChNum: channel number of sequence
+ *  \return error code \ref csi_error_t
+ */ 
+csi_error_t csi_adc_set_seq_num(csp_adc_t *ptAdcBase,uint8_t byChNum)
+{
+	if(byChNum == 0 || byChNum > 16)
+		return CSI_ERROR;
+	
+	byChNum= byChNum-1;
+	csp_adc_set_seq_num(ptAdcBase, byChNum);	//config number of channel
+
+	return CSI_OK;  
+}
+/** \brief start adc conversion
  * 
  *  \param[in] ptAdcBase: pointer of adc register structure
  *  \return error code \ref csi_error_t
@@ -154,7 +157,7 @@ csi_error_t csi_adc_start(csp_adc_t *ptAdcBase)
 		
 	return ret;
 }
-/** \brief stop adc 
+/** \brief stop adc conversion
  * 
  *  \param[in] ptAdcBase: pointer of adc register structure
  *  \return error code \ref csi_error_t
@@ -198,27 +201,10 @@ void csi_adc_set_pri(csp_adc_t *ptAdcBase, uint8_t byPri)
  */
 int16_t csi_adc_read_channel(csp_adc_t *ptAdcBase, uint8_t byChIdx)
 {
-	csi_error_t  ret = CSI_OK;
-	uint32_t wTimeOut = 0;
-	
-	do{
-		if(csp_adc_get_sr(ptAdcBase) & ADC_SEQ(byChIdx))		//sequence channel sample complete?
-		{
-			ret = csp_adc_get_data(ptAdcBase, byChIdx);			//get adc channel value
-			csp_adc_clr_sr(ptAdcBase, ADC_SEQ(byChIdx));		//clr channel status
-			break;
-		}
-		else
-		{
-			wTimeOut ++;
-			if(wTimeOut > ADC_SAMP_TIMEOUT)
-			{
-				ret = CSI_TIMEOUT;
-				break;
-			}
-		}
-	}while(1);
-	
+	int16_t  ret = 0;
+	ret = csp_adc_get_data(ptAdcBase, byChIdx);			//get adc channel value
+	csp_adc_clr_sr(ptAdcBase, ADC_SEQ(byChIdx));		//clr channel status
+
 	return ret;
 }
 
@@ -300,17 +286,16 @@ csi_error_t csi_adc_set_sync(csp_adc_t *ptAdcBase, csi_adc_syncin_e eSyncIn, csi
 	//set sync delay
     if(eSyncIn < ADC_SYNCIN3)		
 	{
-		ptAdcBase->TDL0 = (ptAdcBase->TDL0 & ~(0xFFul << (eSyncIn * 8))) | byDelay;
+		csp_adc_trg_delay0(ptAdcBase,(adc_sync_in_e)eSyncIn,byDelay);
 	}
 	else if(eSyncIn <= ADC_SYNCIN5)
 	{
-		ptAdcBase->TDL1 = (ptAdcBase->TDL1 & ~(0xFFul << ((eSyncIn - 3)  * 8))) | byDelay;
+		csp_adc_trg_delay1(ptAdcBase,(adc_sync_in_e)eSyncIn,byDelay);
 	}
 	else
 		return CSI_ERROR;
 	
 	//set sync source and mode
-	csp_adc_sync_enable(ptAdcBase, (adc_sync_in_e)eSyncIn);
 	csp_adc_set_sync_mode(ptAdcBase, (adc_sync_in_e)eSyncIn,(adc_ostmd_e)eSyncMode);
 	
 	return CSI_OK;
@@ -350,29 +335,39 @@ void csi_adc_sync_disable(csp_adc_t *ptAdcBase, csi_adc_syncin_e eSyncIn)
  *  \param[in] ptAdcBase: pointer of adc register structure
  *  \param[in] byTrgOut: adc evtrg out port (0~1)
  *  \param[in] eTrgSrc: adc evtrg source(0~23) 
- *  \return error code \ref csi_error_t
- */
-csi_error_t  csi_adc_set_evtrg(csp_adc_t *ptAdcBase, csi_adc_trgsrc_e eTrgSrc, csi_adc_trgout_e eTrgOut)
-{	
-	if(eTrgOut>1)
-	return CSI_ERROR;
-	else
-	{
-		csp_adc_set_evtrg_src(ptAdcBase,(adc_evtrg_src_e)eTrgSrc ,(adc_evtrg_out_e) eTrgOut);
-		csp_adc_evtrg_enable(ptAdcBase ,(adc_evtrg_out_e) eTrgOut);
-	}
-	return CSI_OK;
-}
-/** \brief set adc epvs 
- * 
- *  \param[in] ptAdcBase: pointer of adc register structure
- *  \param[in] eTrgOut: adc evtrg out port (0~1)
  *  \param[in] byPeriod: The event triggers the count 
  *  \return error code \ref csi_error_t
  */
-void csi_adc_set_evps(csp_adc_t *ptAdcBase, csi_adc_trgout_e eTrgOut, uint8_t byPeriod)
-{
-	csp_adc_set_trgprd(ptAdcBase,(adc_evtrg_out_e)eTrgOut,byPeriod);
+csi_error_t  csi_adc_set_evtrg(csp_adc_t *ptAdcBase, csi_adc_trgsrc_e eTrgSrc, csi_adc_trgout_e eTrgOut, uint8_t byPeriod)
+{	
+	if(eTrgOut>1)
+		return CSI_ERROR;
+	else
+	{
+		csp_adc_set_evtrg_src(ptAdcBase,(adc_evtrg_src_e)eTrgSrc ,(adc_evtrg_out_e) eTrgOut);
+		csp_adc_set_evtrg_prd(ptAdcBase,(adc_evtrg_out_e)eTrgOut,byPeriod);
+	}
+	return CSI_OK;
+}
+/** \brief  adc evtrg enable
+ * 
+ *  \param[in] ptAdcBase: pointer of adc register structure
+ *  \param[in] byTrgOut: adc evtrg out port (0~1)
+ *  \return error code \ref csi_error_t
+ */
+void  csi_adc_evtrg_enable(csp_adc_t *ptAdcBase,csi_adc_trgout_e eTrgOut)
+{	
+	csp_adc_evtrg_enable(ptAdcBase ,(adc_evtrg_out_e) eTrgOut);
+}
+/** \brief  adc evtrg disable
+ * 
+ *  \param[in] ptAdcBase: pointer of adc register structure
+ *  \param[in] byTrgOut: adc evtrg out port (0~1)
+ *  \return error code \ref csi_error_t
+ */
+void  csi_adc_evtrg_disable(csp_adc_t *ptAdcBase,csi_adc_trgout_e eTrgOut)
+{	
+	csp_adc_evtrg_disable(ptAdcBase ,(adc_evtrg_out_e) eTrgOut);
 }
 /** \brief enable adc INT status
  * 
@@ -393,14 +388,6 @@ void csi_adc_int_disable(csp_adc_t *ptAdcBase, csi_adc_intsrc_e eIntSrc)
 {
 	csp_adc_int_disable(ptAdcBase, (adc_int_e)eIntSrc);
 }
-/** \brief select adc clock
- * 
- *  \param[in] ptAdcBase: ADC handle to operate
- *  \param[in] eClksel:  ADC clock select
- */
-void csi_adc_set_clksrc(csp_adc_t *ptAdcBase,csi_adc_clksel_e eClksel)
-{
-	csp_adc_set_clksrc(ptAdcBase,(adc_clksel_e)eClksel);
-}
+
 
 

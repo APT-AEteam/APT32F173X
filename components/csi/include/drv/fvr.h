@@ -45,8 +45,8 @@ typedef enum{
 /// \brief  fvr configuration, open to users  
 typedef struct {
 	csi_fvr_lvl_e		eFvrLevel;			//Fvr output level
-	csi_fvr_cmpref_e	eCmpref;			//Fvr to compare reference 
-	csi_fvr_opacm_e		eOpacm;				//Fvr to compare reference 
+	csi_fvr_cmpref_e	eCmpRef;			//Fvr to compare reference 
+	csi_fvr_opacm_e		eOpaCm;				//Fvr to compare reference 
 } csi_fvr_config_t;
 
 /**
@@ -85,7 +85,7 @@ void csi_fvr_disable(csp_fvr_t *ptFvrBase);
   \param[in]   eBuflvl:		buffin voltage  level selection
   \return      none
 */
-void csi_buf_init(csp_fvr_t *ptFvrBase,csi_fvr_buflvl_e eBuflvl);
+void csi_set_buf(csp_fvr_t *ptFvrBase,csi_fvr_buflvl_e eBuflvl);
 
 /**
   \brief       set fvr opacm 

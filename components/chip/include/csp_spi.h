@@ -15,6 +15,8 @@
 #ifndef _CSP_SPI_H
 #define _CSP_SPI_H
 
+#define TRUE  		1
+#define FALSE 		0
 /* Includes ------------------------------------------------------------------*/
 #include <soc.h>
 

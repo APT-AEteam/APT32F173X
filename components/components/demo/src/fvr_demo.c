@@ -18,6 +18,7 @@
 /* Private variablesr------------------------------------------------------*/
 
 /** \brief 配置FVR电平，并通过管脚输出
+ *  \brief 由于FVR可以同时提供给ADC,OPA和CMP使用，因此在使用FVR前需确保模块间配置不会冲突
  * 
  *  \param[in] none
  *  \return none
@@ -31,10 +32,10 @@ void fvr_output_demo(void)
 #endif	
 
 	tFvrConfig.eFvrLevel = FVR_LEVEL_1V;					//设置FVR输出电压
-	tFvrConfig.eCmpref = FVR_COMPARER_REF_FVR;				//设置CMP的参考电压为FVR
-	tFvrConfig.eOpacm = FVR_OPACM_HALFFVR;					//设置OPA的基准电压为1/2FVR
-	
+	tFvrConfig.eCmpRef = FVR_COMPARER_REF_FVR;				//设置CMP的参考电压为FVR
+	tFvrConfig.eOpaCm = FVR_OPACM_HALFFVR;					//设置OPA的基准电压为1/2FVR	
 	csi_fvr_init(FVR,&tFvrConfig);
+	
 	csi_fvr_enable(FVR);									//使能FVR
 }
 
@@ -50,6 +51,6 @@ void buf_output_demo(void)
 	csi_gpio_set_mux(GPIOB,PB8, PB8_BUF);					//设置BUF输出管脚PB8
 #endif
 
-	csi_buf_init(FVR,FVR_BUF_LEVEL_EXTERNAL);				//设置buf的输出为外部管脚输入
+	csi_set_buf(FVR,FVR_BUF_LEVEL_EXTERNAL);				//设置buf的输出为外部管脚输入
 	csi_fvr_enable(FVR);		
 }

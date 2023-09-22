@@ -25,8 +25,8 @@ extern "C" {
  * \brief    opa input mode
  */
 typedef enum {
-    SINGEL = 0,
-    DIFFERENCE
+    OPA_SINGLE = 0,
+    OPA_DIFFERENCE
 }csi_opa_mode_input_e;
 
 /**
@@ -75,7 +75,7 @@ typedef struct {
 	csi_opa_pgac_single_e       eSingleGain;		//Internal Single Gain set
 	csi_opa_pgac_difference_e	eDifferenceGain;	//Internal Difference Gain set
 	csi_opa_mode_input_e        eInputMode;			//Input Mode set
-	bool						bOpaNegativeInput;	//Opa Negative Input enable/disable
+	bool						bOpaNInput;			//Opa Negative Input enable/disable
 	bool						bOpaOutput;			//Opa Output enable/disable
 } csi_opa_config_t;
 

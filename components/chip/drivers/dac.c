@@ -78,7 +78,7 @@ void csi_dac_init(csp_dac_t *ptDacBase, csi_dac_config_t *ptDacCfg)
 {	
 	csp_dac_clr_dac(ptDacBase);//clear data
 	csp_dac_set_clk_div(ptDacBase,ptDacCfg->byClkDiv);//set clk div
-	csp_dac_refsel_enable(ptDacBase,ptDacCfg->bRefsel);//reference enable
+	csp_dac_refsel_enable(ptDacBase,ptDacCfg->bRefSel);//reference enable
 	csp_dac_set_datar(ptDacBase,ptDacCfg->hwDatarset);//set voltage data
 	csp_dac_buff_enable(DAC0,ptDacCfg->bBufen);//buffer enable
 }

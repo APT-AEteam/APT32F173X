@@ -75,7 +75,7 @@ extern "C" {
 #define LPT_IDX  			1		//LPTx id number
 #define WWDT_IDX  			1		//WWDTx id number
 
-#if	(CHIP_1732==1)
+#if	(IS_CHIP_1732==1)
 #define ADC_IDX   			2		//ADCx id number
 #else
 #define ADC_IDX   			1		//ADCx id number
