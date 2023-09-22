@@ -39,7 +39,7 @@ int can_send_demo(void)
 	csi_can_config_t 	 tCanConfig;					//CAN init config
 	csi_can_tx_config_t  tCanTxCfg;						//CAN TX config
 	
-#if !defined(USE_GUI)									//用户未选择图形化编程			
+#if (USE_GUI == 0)									//用户未选择图形化编程			
 //	csi_pin_set_mux(PC4, PC4_CAN_RX);					//CAN RX管脚配置
 //	csi_pin_set_mux(PC5, PC5_CAN_TX);					//CAN TX管脚配置
 //	csi_pin_set_mux(PA11, PA11_CAN_RX);					//CAN RX管脚配置
@@ -58,16 +58,16 @@ int can_send_demo(void)
 	//CAN TX CONFIG
 	for(i = CAN_CH1; i < CAN_CH3; i++)
 	{
-		//Ir
-		tCanTxCfg.tIr.byIdmode		= CAN_STD_ID;		//报文ID模式，标准模式(11Bit)
-		tCanTxCfg.tIr.byMsgDir		= CAN_DIR_SEND;		//报文方向
-		tCanTxCfg.tIr.hwStdId 		= 0x700 + i;		//标准11BIT ID
-		tCanTxCfg.tIr.wExtId		= 0x3FFFF;			//扩展ID,标准模式下忽略	
-		//tx mcr
-		tCanTxCfg.tMcr.bTxIeEn		= DISABLE;			//禁止报文发送中断(通道源中断)
-		tCanTxCfg.tMcr.bRmtEn		= DISABLE;			//远程应答帧禁止，即接收到远程帧，不请求发送应答
-		tCanTxCfg.tMcr.bTxReqEn		= DISABLE;			//报文对象请求发送禁止，
-		tCanTxCfg.tMcr.byDataLen	= 0x08;				//发送数据数量
+		//id,识别符配置
+		tCanTxCfg.tId.eIdMode		= CAN_ID_STD;		//报文ID模式，标准模式(11Bit)
+		tCanTxCfg.tId.eMsgDir		= CAN_DIR_SEND;		//报文方向
+		tCanTxCfg.tId.hwStdId 		= 0x700 + i;		//标准11BIT ID
+		tCanTxCfg.tId.wExtId		= 0x3FFFF;			//扩展ID,标准模式下忽略	
+		//tx mcr 发送报文控制配置
+		tCanTxCfg.tMc.bTxIeEn		= DISABLE;			//禁止报文发送中断(通道源中断)
+		tCanTxCfg.tMc.bRmtEn		= DISABLE;			//远程应答帧禁止，即接收到远程帧，不请求发送应答
+		tCanTxCfg.tMc.bTxReqEn		= DISABLE;			//报文对象请求发送禁止，
+		tCanTxCfg.tMc.byDataLen	= 0x08;					//发送数据数量
 		//data a
 		tCanTxCfg.tDataA.bydata[0] 	= i+0x11;			//数据A(低4字节数据配置)配置
 		tCanTxCfg.tDataA.bydata[1] 	= i+0x12;
@@ -79,13 +79,13 @@ int can_send_demo(void)
 		tCanTxCfg.tDataB.bydata[2] 	= i+0x23;
 		tCanTxCfg.tDataB.bydata[3] 	= i+0x24;
 
-		csi_can_tx_config(CAN0, i, &tCanTxCfg);
+		csi_can_set_tx_ch(CAN0, i, &tCanTxCfg);
 	}
 	
 	csi_can_open(CAN0);
 	
 	//通道1发送
-	csi_can_chnl_send(CAN0, CAN_CH1, 6);
+	csi_can_ch_send(CAN0, CAN_CH1, 6);
 	while(1)
 	{
 		if(csi_can_get_status_msg() & CAN_MSG_TXOK)		//可通过查询(TXOK状态)发送是否完成消息
@@ -107,7 +107,7 @@ int can_send_demo(void)
 	}
 	
 	//通道2发送
-	csi_can_chnl_send(CAN0, CAN_CH2, 7);
+	csi_can_ch_send(CAN0, CAN_CH2, 7);
 	while(1)
 	{
 		if(csi_can_get_status_msg() & CAN_MSG_TXOK)		//可通过查询(TXOK状态)发送是否完成消息
@@ -133,27 +133,27 @@ int can_send_demo(void)
 	byData[1] = 0x65;
 	byData[2] = 0x75;
 	byData[3] = 0x85;
-	csi_can_set_data_a(CAN0, CAN_CH1, byData);			//updata DAR 寄存器
+	csi_can_set_data_byte0_3(CAN0, CAN_CH1, byData);	//update DAR 寄存器
 	
 	byData[0] = 0x95;
 	byData[1] = 0xA5;									//发送的数据
 	byData[2] = 0xB5;
 	byData[3] = 0xC5;
-	csi_can_set_data_b(CAN0, CAN_CH2, byData);			//updata DAR 寄存器
+	csi_can_set_data_byte4_7(CAN0, CAN_CH2, byData);	//update DBR 寄存
 	
-	tCanTxCfg.tIr.byIdmode		= CAN_STD_ID;			//报文ID模式，标准模式(11Bit)
-	tCanTxCfg.tIr.byMsgDir		= CAN_DIR_SEND;			//报文方向
-	tCanTxCfg.tIr.hwStdId 		= 0x7e0;				//标准11BIT ID
-	tCanTxCfg.tIr.wExtId		= 0x3FFFF;				//扩展ID,标准模式下忽略	
-	csi_can_set_ir(CAN0, CAN_CH1, &tCanTxCfg.tIr);		//配置报文识别符
+	tCanTxCfg.tId.eIdMode		= CAN_ID_STD;			//报文ID模式，标准模式(11Bit)
+	tCanTxCfg.tId.eMsgDir		= CAN_DIR_SEND;			//报文方向
+	tCanTxCfg.tId.hwStdId 		= 0x7e0;				//标准11BIT ID
+	tCanTxCfg.tId.wExtId		= 0x3FFFF;				//扩展ID,标准模式下忽略	
+	csi_can_set_id(CAN0, CAN_CH1, &tCanTxCfg.tId);		//配置报文识别符
 	
 	
 	for(i = 0; i< 8; i++)
 	{
 		if(i%2)
-			csi_can_chnl_send(CAN0, CAN_CH1, 8);
+			csi_can_ch_send(CAN0, CAN_CH1, 8);
 		else
-			csi_can_chnl_send(CAN0, CAN_CH2, 8);
+			csi_can_ch_send(CAN0, CAN_CH2, 8);
 		
 		//
 		while(1)
@@ -215,15 +215,15 @@ int can_send_int_demo(void)
 	//CAN TX CONFIG
 	//CH1
 	//Ir
-	tCanTxCfg.tIr.byIdmode		= CAN_STD_ID;		//报文ID模式，标准模式(11Bit)
-	tCanTxCfg.tIr.byMsgDir		= CAN_DIR_SEND;		//报文方向
-	tCanTxCfg.tIr.hwStdId 		= 0x700;			//标准11BIT ID
-	tCanTxCfg.tIr.wExtId		= 0x3FFFF;			//扩展ID,标准模式下忽略	
+	tCanTxCfg.tId.eIdMode		= CAN_ID_STD;		//报文ID模式，标准模式(11Bit)
+	tCanTxCfg.tId.eMsgDir		= CAN_DIR_SEND;		//报文方向
+	tCanTxCfg.tId.hwStdId 		= 0x700;			//标准11BIT ID
+	tCanTxCfg.tId.wExtId		= 0x3FFFF;			//扩展ID,标准模式下忽略	
 	//tx mcr
-	tCanTxCfg.tMcr.bTxIeEn		= ENABLE;			//使能报文发送中断(通道源中断)
-	tCanTxCfg.tMcr.bRmtEn		= DISABLE;			//远程应答帧禁止，即接收到远程帧，不请求发送应答
-	tCanTxCfg.tMcr.bTxReqEn		= DISABLE;			//报文对象请求发送禁止，
-	tCanTxCfg.tMcr.byDataLen	= 0x08;				//发送数据数量
+	tCanTxCfg.tMc.bTxIeEn		= ENABLE;			//使能报文发送中断(通道源中断)
+	tCanTxCfg.tMc.bRmtEn		= DISABLE;			//远程应答帧禁止，即接收到远程帧，不请求发送应答
+	tCanTxCfg.tMc.bTxReqEn		= DISABLE;			//报文对象请求发送禁止，
+	tCanTxCfg.tMc.byDataLen	= 0x08;				//发送数据数量
 	//data a
 	tCanTxCfg.tDataA.bydata[0] 	= 0x11;				//数据A(低4字节数据配置)配置
 	tCanTxCfg.tDataA.bydata[1] 	= 0x12;
@@ -234,19 +234,19 @@ int can_send_int_demo(void)
 	tCanTxCfg.tDataB.bydata[1] 	= 0x22;
 	tCanTxCfg.tDataB.bydata[2] 	= 0x23;
 	tCanTxCfg.tDataB.bydata[3] 	= 0x24;
-	csi_can_tx_config(CAN0, CAN_CH1, &tCanTxCfg);
+	csi_can_set_tx_ch(CAN0, CAN_CH1, &tCanTxCfg);
 	
 	//CH2
 	//Ir
-	tCanTxCfg.tIr.byIdmode		= CAN_EXT_ID;		//报文ID模式，扩展模式(29Bit)
-	tCanTxCfg.tIr.byMsgDir		= CAN_DIR_SEND;		//报文方向
-	tCanTxCfg.tIr.hwStdId 		= 0x703;			//标准11BIT ID
-	tCanTxCfg.tIr.wExtId		= 0x2FFFF;			//扩展ID,标准模式下忽略	
+	tCanTxCfg.tId.eIdMode		= CAN_ID_EXT;		//报文ID模式，扩展模式(29Bit)
+	tCanTxCfg.tId.eMsgDir		= CAN_DIR_SEND;		//报文方向
+	tCanTxCfg.tId.hwStdId 		= 0x703;			//标准11BIT ID
+	tCanTxCfg.tId.wExtId		= 0x2FFFF;			//扩展ID,标准模式下忽略	
 	//tx mcr
-	tCanTxCfg.tMcr.bTxIeEn		= ENABLE;			//使能报文发送中断(通道源中断)
-	tCanTxCfg.tMcr.bRmtEn		= DISABLE;			//远程应答帧禁止，即接收到远程帧，不请求发送应答
-	tCanTxCfg.tMcr.bTxReqEn		= DISABLE;			//报文对象请求发送禁止，
-	tCanTxCfg.tMcr.byDataLen	= 0x08;				//发送数据数量
+	tCanTxCfg.tMc.bTxIeEn		= ENABLE;			//使能报文发送中断(通道源中断)
+	tCanTxCfg.tMc.bRmtEn		= DISABLE;			//远程应答帧禁止，即接收到远程帧，不请求发送应答
+	tCanTxCfg.tMc.bTxReqEn		= DISABLE;			//报文对象请求发送禁止，
+	tCanTxCfg.tMc.byDataLen	= 0x08;				//发送数据数量
 	//data a
 	tCanTxCfg.tDataA.bydata[0] 	= 0x13;				//数据A(低4字节数据配置)配置
 	tCanTxCfg.tDataA.bydata[1] 	= 0x14;
@@ -257,7 +257,7 @@ int can_send_int_demo(void)
 	tCanTxCfg.tDataB.bydata[1] 	= 0x24;
 	tCanTxCfg.tDataB.bydata[2] 	= 0x25;
 	tCanTxCfg.tDataB.bydata[3] 	= 0x26;
-	csi_can_tx_config(CAN0, CAN_CH2, &tCanTxCfg);
+	csi_can_set_tx_ch(CAN0, CAN_CH2, &tCanTxCfg);
 	
 	csi_can_open(CAN0);
 	
@@ -268,7 +268,7 @@ int can_send_int_demo(void)
 		else
 			byChNum = CAN_CH2;
 			
-		csi_can_chnl_send(CAN0, byChNum, 8);
+		csi_can_ch_send(CAN0, byChNum, 8);
 		
 		//
 		while(1)
@@ -324,7 +324,7 @@ int can_recv_demo(void)
 	//CAN MR 寄存器配置,即初始化配置
 	tCanConfig.byClkSrc 	= CAN_CLKSRC_PCLK;			//CAN CLK = PCLK		
 	tCanConfig.wBaudRate 	= CAN_BDR_500K;				//500k
-	tCanConfig.hwStaInter 	= CAN_INTSRC_STA_ALL;		//异常中断全部使能	
+	tCanConfig.hwStaInter 	= CAN_INTSRC_ALL;		//异常中断全部使能	
 	tCanConfig.wChnlInter	= 0xFFFF;					//报文通道中断
 	csi_can_init(CAN0, &tCanConfig);
 	
@@ -333,22 +333,22 @@ int can_recv_demo(void)
 	for(i = CAN_CH1; i < CAN_CH4; i++)
 	{
 		//Ir
-		tCanRxCfg.tIr.byIdmode		= CAN_STD_ID;		//报文ID模式，标准模式(11Bit)
-		tCanRxCfg.tIr.byMsgDir		= CAN_DIR_RECV;		//报文方向
-		tCanRxCfg.tIr.hwStdId		= 0x7F0+i;			//标准11BIT ID
-		tCanRxCfg.tIr.wExtId		= 0x3FFFF;			//扩展ID,标准模式下忽略
+		tCanRxCfg.tId.eIdMode		= CAN_ID_STD;		//报文ID模式，标准模式(11Bit)
+		tCanRxCfg.tId.eMsgDir		= CAN_DIR_RECV;		//报文方向
+		tCanRxCfg.tId.hwStdId		= 0x7F0+i;			//标准11BIT ID
+		tCanRxCfg.tId.wExtId		= 0x3FFFF;			//扩展ID,标准模式下忽略
 		//Mskr
-		tCanRxCfg.tMskr.byIdMdMsk	= CAN_STD_ID_MSK;	//ID模式(STD/EXT) MASK
-		tCanRxCfg.tMskr.byIdDirMsk	= CAN_DIR_MSK_DIS;	//报文方向 MASK disable
-		tCanRxCfg.tMskr.hwStdIdMsk  = 0x7F0;			//标准模式ID mask 
-		tCanRxCfg.tMskr.wExtIdMsk	= 0x00000;			//扩展模式ID mask, 标准模式下忽略
+		tCanRxCfg.tMsk.byIdMdMsk	= CAN_STD_ID_MSK;	//ID模式(STD/EXT) MASK
+		tCanRxCfg.tMsk.byIdDirMsk	= CAN_DIR_MSK_DIS;	//报文方向 MASK disable
+		tCanRxCfg.tMsk.hwStdIdMsk  = 0x7F0;			//标准模式ID mask 
+		tCanRxCfg.tMsk.wExtIdMsk	= 0x00000;			//扩展模式ID mask, 标准模式下忽略
 		//rx mcr
-		tCanRxCfg.tMcr.bMskEn		= DISABLE;			//禁止过滤接收mask
-		tCanRxCfg.tMcr.bRxIeEn		= ENABLE;			//使能报文接收中断(通道源中断)，置位ITPAND
-		tCanRxCfg.tMcr.bOverWrEn	= DISABLE;			//关闭报文覆盖模式	
-		tCanRxCfg.tMcr.byDataLen	= 0x08;				//数据长度
+		tCanRxCfg.tMc.bMskEn		= DISABLE;			//禁止过滤接收mask
+		tCanRxCfg.tMc.bRxIeEn		= ENABLE;			//使能报文接收中断(通道源中断)，置位ITPAND
+		tCanRxCfg.tMc.bOverWrEn	= DISABLE;			//关闭报文覆盖模式	
+		tCanRxCfg.tMc.byDataLen	= 0x08;				//数据长度
 		
-		csi_can_rx_config(CAN0, i, &tCanRxCfg);
+		csi_can_set_rx_ch(CAN0, i, &tCanRxCfg);
 	}
 	
 	csi_can_recv_init(&tCanRecv[0], CAN_CH1, 3);		//接收数据结构体
@@ -362,7 +362,7 @@ int can_recv_demo(void)
 		{
 			if(csi_can_get_recv_msg() & CAN_MSG_CH(i))
 			{
-				iRet = csi_can_chnl_read(CAN0,byRxBuf, i);
+				iRet = csi_can_ch_read(CAN0,byRxBuf, i);
 			}
 			mdelay(1);
 		}
@@ -398,7 +398,7 @@ int can_recv_fifo_demo(void)
 	//CAN MR 寄存器配置,即初始化配置
 	tCanConfig.byClkSrc 	= CAN_CLKSRC_PCLK;			//CAN CLK = PCLK		
 	tCanConfig.wBaudRate 	= CAN_BDR_500K;				//500k
-	tCanConfig.hwStaInter 	= CAN_INTSRC_STA_ALL;		//异常中断全部使能	
+	tCanConfig.hwStaInter 	= CAN_INTSRC_ALL;			//异常中断全部使能	
 	tCanConfig.wChnlInter	= 0xFFFF;					//报文通道中断
 	csi_can_init(CAN0, &tCanConfig);
 	
@@ -406,25 +406,25 @@ int can_recv_fifo_demo(void)
 	for(i = CAN_CH1; i < CAN_CH4; i++)
 	{
 		//Ir
-		tCanRxCfg.tIr.byIdmode		= CAN_STD_ID;		//报文ID模式，标准模式(11Bit)
-		tCanRxCfg.tIr.byMsgDir		= CAN_DIR_RECV;		//报文方向
-		tCanRxCfg.tIr.hwStdId		= 0x7F0+i;			//标准11BIT ID
-		tCanRxCfg.tIr.wExtId		= 0x3FFFF;			//扩展ID,标准模式下忽略
+		tCanRxCfg.tId.eIdMode		= CAN_ID_STD;		//报文ID模式，标准模式(11Bit)
+		tCanRxCfg.tId.eMsgDir		= CAN_DIR_RECV;		//报文方向
+		tCanRxCfg.tId.hwStdId		= 0x7F0+i;			//标准11BIT ID
+		tCanRxCfg.tId.wExtId		= 0x3FFFF;			//扩展ID,标准模式下忽略
 		//Mskr
-		tCanRxCfg.tMskr.byIdMdMsk	= CAN_STD_ID_MSK;	//ID模式(STD/EXT) MASK
-		tCanRxCfg.tMskr.byIdDirMsk	= CAN_DIR_MSK_DIS;	//报文方向 MASK disable
-		tCanRxCfg.tMskr.hwStdIdMsk  = 0x7F0;			//标准模式ID mask 
-		tCanRxCfg.tMskr.wExtIdMsk	= 0x00000;			//扩展模式ID mask, 标准模式下忽略
+		tCanRxCfg.tMsk.byIdMdMsk	= CAN_STD_ID_MSK;	//ID模式(STD/EXT) MASK
+		tCanRxCfg.tMsk.byIdDirMsk	= CAN_DIR_MSK_DIS;	//报文方向 MASK disable
+		tCanRxCfg.tMsk.hwStdIdMsk  = 0x7F0;			//标准模式ID mask 
+		tCanRxCfg.tMsk.wExtIdMsk	= 0x00000;			//扩展模式ID mask, 标准模式下忽略
 		//rx mcr
-		tCanRxCfg.tMcr.bMskEn		= DISABLE;			//使能过滤接收mask
-		tCanRxCfg.tMcr.bRxIeEn		= ENABLE;			//使能报文接收中断(通道源中断)，置位ITPAND
-		tCanRxCfg.tMcr.bOverWrEn	= DISABLE;			//关闭报文覆盖模式	
-		tCanRxCfg.tMcr.byDataLen	= 0x08;				//数据长度
+		tCanRxCfg.tMc.bMskEn		= DISABLE;			//使能过滤接收mask
+		tCanRxCfg.tMc.bRxIeEn		= ENABLE;			//使能报文接收中断(通道源中断)，置位ITPAND
+		tCanRxCfg.tMc.bOverWrEn	= DISABLE;			//关闭报文覆盖模式	
+		tCanRxCfg.tMc.byDataLen	= 0x08;				//数据长度
 		
 		if(i == CAN_CH3)
-			tCanRxCfg.tMcr.bOverWrEn = ENABLE;			//最后一个报文 使能报文覆盖功能
+			tCanRxCfg.tMc.bOverWrEn = ENABLE;			//最后一个报文 使能报文覆盖功能
 			
-		csi_can_rx_config(CAN0, i, &tCanRxCfg);
+		csi_can_set_rx_ch(CAN0, i, &tCanRxCfg);
 	}
 	
 	csi_can_recv_init(&tCanRecv[0], CAN_CH1, 3);		//接收数据结构体
@@ -439,7 +439,7 @@ int can_recv_fifo_demo(void)
 		{
 			if(csi_can_get_recv_msg() & CAN_MSG_CH(i))
 			{
-				iRet = csi_can_chnl_read(CAN0,byRxBuf, i);
+				iRet = csi_can_ch_read(CAN0,byRxBuf, i);
 			}
 			mdelay(1);
 		}
@@ -471,83 +471,83 @@ void can_irqhandler(csp_can_t *ptCanBase)
 			wStatus = csp_can_get_sr(ptCanBase) & 0xff1e;		
 			csi_can_post_msg(CAN_MSG_STATUS, wStatus);			//发送(置位)状态消息，供查询应用程序查询					
 			
-			if(wStatus & CAN_ERWARNTR_INT)						//error passive warning transition interrupt
+			if(wStatus & CAN_INT_ERWARNTR)						//error passive warning transition interrupt
 			{
 				nop;
-				csp_can_clr_isr(ptCanBase, CAN_ERWARNTR_INT);	
+				csp_can_clr_isr(ptCanBase, CAN_INT_ERWARNTR);	
 			}
 			//
-			if(wStatus & CAN_ERPASSTR_INT)						//error passive transition interrupt
+			if(wStatus & CAN_INT_ERPASSTR)						//error passive transition interrupt
 			{
 				nop;
-				csp_can_clr_isr(ptCanBase, CAN_ERPASSTR_INT);
+				csp_can_clr_isr(ptCanBase, CAN_INT_ERPASSTR);
 			}
 			//
-			if(wStatus & CAN_BUSOFFTR_INT)						//bus off transition interrupt
+			if(wStatus & CAN_INT_BUSOFFTR)						//bus off transition interrupt
 			{
 				nop;
-				csp_can_clr_isr(ptCanBase, CAN_BUSOFFTR_INT);
+				csp_can_clr_isr(ptCanBase, CAN_INT_BUSOFFTR);
 			}
 			//
-			if(wStatus & CAN_ACTVT_INT)							//activity interrupt
+			if(wStatus & CAN_INT_ACTVT)							//activity interrupt
 			{
 				nop;
-				csp_can_clr_isr(ptCanBase, CAN_ACTVT_INT);
+				csp_can_clr_isr(ptCanBase, CAN_INT_ACTVT);
 			}
 			//
-			if(wStatus & CAN_RXOK_INT)							//successfully received a message interrupt
+			if(wStatus & CAN_INT_RXOK)							//successfully received a message interrupt
 			{
 				nop;
-				csp_can_clr_isr(ptCanBase, CAN_RXOK_INT);
+				csp_can_clr_isr(ptCanBase, CAN_INT_RXOK);
 			}
 			//
-			if(wStatus & CAN_TXOK_INT)							//successfully transmit a message interrupt.
+			if(wStatus & CAN_INT_TXOK)							//successfully transmit a message interrupt.
 			{
 				nop;
-				csp_can_clr_isr(ptCanBase, CAN_TXOK_INT);
+				csp_can_clr_isr(ptCanBase, CAN_INT_TXOK);
 			}
 			//
-			if(wStatus & CAN_STUFF_INT)							//stuff error interrupt
+			if(wStatus & CAN_INT_STUFF)							//stuff error interrupt
 			{
 				nop;
-				csp_can_clr_isr(ptCanBase, CAN_STUFF_INT);
+				csp_can_clr_isr(ptCanBase, CAN_INT_STUFF);
 			}
 			//
-			if(wStatus & CAN_FORM_INT)							//form error interrupt
+			if(wStatus & CAN_INT_FORM)							//form error interrupt
 			{
 				nop;
-				csp_can_clr_isr(ptCanBase, CAN_FORM_INT);
+				csp_can_clr_isr(ptCanBase, CAN_INT_FORM);
 			}
 			//
-			if(wStatus & CAN_ACK_INT)							//acknowledge error interrupt.
+			if(wStatus & CAN_INT_ACK)							//acknowledge error interrupt.
 			{
 				nop;
-				csp_can_clr_isr(ptCanBase, CAN_ACK_INT);
+				csp_can_clr_isr(ptCanBase, CAN_INT_ACK);
 			}
 			//
-			if(wStatus & CAN_BIT1_INT)							//bit to one error interrupt
+			if(wStatus & CAN_INT_BIT1)							//bit to one error interrupt
 			{
 				nop;
-				csp_can_clr_isr(ptCanBase, CAN_BIT1_INT);
+				csp_can_clr_isr(ptCanBase, CAN_INT_BIT1);
 			}
 			//
-			if(wStatus & CAN_BIT0_INT)							//bit to zero error interrupt
+			if(wStatus & CAN_INT_BIT0)							//bit to zero error interrupt
 			{
 				nop;
-				csp_can_clr_isr(ptCanBase, CAN_BIT0_INT);
+				csp_can_clr_isr(ptCanBase, CAN_INT_BIT0);
 			}
 			//
-			if(wStatus & CAN_CRC_INT)							//CRC error interrupt
+			if(wStatus & CAN_INT_CRC)							//CRC error interrupt
 			{
 				nop;
-				csp_can_clr_isr(ptCanBase, CAN_CRC_INT);
+				csp_can_clr_isr(ptCanBase, CAN_INT_CRC);
 			}
 			
 			break;
 		default:			
 			//消息通道中断
 			csp_can_set_tmr(ptCanBase, hwIntNum, 1, CAN_AMCR_MSK | CAN_CLRIT_MSK | CAN_TRND_MSK);	//Write If1 command request, clear NAWDATA and ITPND flag
-			while(csp_can_get_sr(ptCanBase) & CAN_BUSY1_S);											//If1 Busy?	
+			while(csp_can_get_sr(ptCanBase) & CAN_STA_BUSY1);										//If1 Busy?	
 			wStatus = csp_can_get_mcr(ptCanBase);													//Read If1 message control reg, Read first and clean up NAWDATA and ITPND
 			
 			if(wStatus & CAN_NEWDAT_MSK)															//NEWDAT flag == 1 receive msg

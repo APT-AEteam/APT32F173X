@@ -69,7 +69,7 @@ static void set_ch_alloc_status(csi_etcb_ch_e eEtbCh, uint32_t wStatus)
  *  \param[in] bEnable: enable/disable
  *  \return none
  */ 
-static void apt_etcb_channel_enable(csp_etcb_t *ptEtbBase, csi_etcb_ch_e eEtbCh, bool bEnable)
+static void apt_etcb_ch_enable(csp_etcb_t *ptEtbBase, csi_etcb_ch_e eEtbCh, bool bEnable)
 {
 	switch(eEtbCh)
 	{
@@ -291,7 +291,7 @@ void csi_etcb_ch_sw_trg(csi_etcb_ch_e eEtbCh)
 */
 void csi_etcb_ch_start(csi_etcb_ch_e eEtbCh)
 {
-	apt_etcb_channel_enable(ETCB,eEtbCh, ENABLE);
+	apt_etcb_ch_enable(ETCB,eEtbCh, ENABLE);
 }
 /**
  * \brief stop an etcb channel
@@ -300,5 +300,5 @@ void csi_etcb_ch_start(csi_etcb_ch_e eEtbCh)
 */
 void csi_etcb_ch_stop(csi_etcb_ch_e eEtbCh)
 {
-    apt_etcb_channel_enable(ETCB, eEtbCh, DISABLE);
+    apt_etcb_ch_enable(ETCB, eEtbCh, DISABLE);
 }

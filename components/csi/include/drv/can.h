@@ -60,8 +60,8 @@ typedef enum
  */
 typedef enum
 {
-	CAN_STD_ID	= 0,		//CAN standard ID mode
-	CAN_EXT_ID				//CAN extend ID mode
+	CAN_ID_STD	= 0,		//CAN standard ID mode
+	CAN_ID_EXT				//CAN extend ID mode
 }csi_can_id_e;
 
 /**
@@ -119,7 +119,7 @@ typedef enum
 }csi_can_baudRate_e;
 
 /**
- * \enum	csi_can_chnl_e
+ * \enum	csi_can_ch_e
  * \brief   can cource channel
  */
 typedef enum
@@ -156,7 +156,7 @@ typedef enum
 	CAN_CH30,
 	CAN_CH31,	
 	CAN_CH32
-}csi_can_chnl_e;
+}csi_can_ch_e;
 
 #define	CAN_MSG_CH_POS(ch)	(ch-1)					
 #define	CAN_MSG_CH(ch)		(0x01ul << (ch-1))
@@ -220,7 +220,6 @@ typedef enum
  */
 typedef enum
 {
-	CAN_INTSRC_NONE		= (0x00uL << 0),			//no interrupt
 	CAN_INTSRC_ERWARNTR	= (0x01uL << 1),
 	CAN_INTSRC_ERPASSTR	= (0x01uL << 2),
 	CAN_INTSRC_BUSOFFTR	= (0x01uL << 3),
@@ -233,8 +232,8 @@ typedef enum
 	CAN_INTSRC_BIT1		= (0x01uL << 13),
 	CAN_INTSRC_BIT0		= (0x01uL << 14),	
 	CAN_INTSRC_CRC		= (0x01uL << 15),
-	CAN_INTSRC_STA_ALL	= (0xff1e)
-}csi_can_sta_intsrc_e;
+	CAN_INTSRC_ALL		= (0xff1e)
+}csi_can_intsrc_e;
 
 //message channel interrupt source
 #define	CAN_CH_INTSRC_NONE		(0)
@@ -289,10 +288,10 @@ typedef struct {
 typedef struct {
 	uint32_t			wExtId;        		//extend identifier
 	uint16_t			hwStdId;	    	//standard identifier
-	uint8_t				byMsgDir;			//message dir	
-//	uint8_t				byMsgVal;			//message status, valid/invalid
-	uint8_t				byIdmode;			//XTD BIT, identifier, stdid/extid	
-} csi_can_ir_config_t;
+	uint8_t				byMsgVal;			//message status, valid/invalid
+	csi_can_dir_e		eMsgDir;			//message dir	
+	csi_can_id_e		eIdMode;			//XTD BIT, identifier, stdid/extid	
+} csi_can_id_config_t;
 
 
 /// \struct csi_can_mskr_config_t
@@ -301,7 +300,7 @@ typedef struct {
 	uint8_t				byIdDirMsk;			//message identifier dir mask
 	uint16_t			hwStdIdMsk;	    	//standard identifier mask
 	uint32_t			wExtIdMsk;         	//extend identifier mask
-} csi_can_mskr_config_t;
+} csi_can_msk_config_t;
 
 /// \struct csi_can_tx_mcr_config_t
 typedef struct {
@@ -309,7 +308,7 @@ typedef struct {
 	bool				bRmtEn;				//receive remote frame, set TXRQST
 	bool				bTxReqEn;			//message identifier dir mask
 	uint8_t				byDataLen;	    	//tx data length
-} csi_can_tx_mcr_config_t;
+} csi_can_tx_mc_config_t;
 
 /// \struct csi_can_rx_mcr_config_t
 typedef struct {
@@ -317,7 +316,7 @@ typedef struct {
 	bool				bRxIeEn;			//tx interrupt ITPAND enable 	
 	bool				bOverWrEn;			//message identifier dir mask
 	uint8_t				byDataLen;	    	//rx data length
-} csi_can_rx_mcr_config_t;
+} csi_can_rx_mc_config_t;
 
 /// \struct csi_can_data_config_t
 typedef struct {
@@ -339,19 +338,19 @@ typedef struct {
 /// \struct csi_can_config_t
 /// \brief  can tx parameter configuration, open to users  
 typedef struct {
-	csi_can_data_config_t	tDataA;			//data A and B	
-	csi_can_data_config_t	tDataB;			//data A and B	
-	csi_can_ir_config_t		tIr;			//IR
-	csi_can_tx_mcr_config_t	tMcr;			//MCR
+	csi_can_data_config_t	tDataA;			//data A,byte0~3	
+	csi_can_data_config_t	tDataB;			//data B,byte4~7	
+	csi_can_id_config_t		tId;			//identifier reg
+	csi_can_tx_mc_config_t	tMc;			//message contrl reg
 } csi_can_tx_config_t;
 
 
 /// \struct csi_can_rx_config_t
 /// \brief  can rx parameter configuration, open to users  
 typedef struct {
-	csi_can_ir_config_t		tIr;			//IR
-	csi_can_mskr_config_t	tMskr;			//MSKR
-	csi_can_rx_mcr_config_t tMcr;			//MCR
+	csi_can_id_config_t		tId;			//IDR
+	csi_can_msk_config_t	tMsk;			//MSKR
+	csi_can_rx_mc_config_t 	tMc;			//MCR
 } csi_can_rx_config_t;
 
 
@@ -398,13 +397,13 @@ void csi_can_open(csp_can_t *ptCanBase);
 void csi_can_close(csp_can_t *ptCanBase);
 
 /** 
-  \brief 	   can msg channel send enable
+  \brief 	   can msg channel send 
   \param[in]   ptCanBase	pointer of can register structure
   \param[in]   eChNum		number of message
   \param[in]   byDataLen	data length of message
   \return 	   none
  */
-void csi_can_chnl_send(csp_can_t *ptCanBase, csi_can_chnl_e eChNum, uint8_t byDataLen);
+void csi_can_ch_send(csp_can_t *ptCanBase, csi_can_ch_e eChNum, uint8_t byDataLen);
 
 /** 
   \brief can read message channel send enable
@@ -412,25 +411,25 @@ void csi_can_chnl_send(csp_can_t *ptCanBase, csi_can_chnl_e eChNum, uint8_t byDa
   \param[in] eChNum: number of message channel
   \return message length
  */
-uint8_t csi_can_chnl_read(csp_can_t *ptCanBase, uint8_t *pRecvBuf, csi_can_chnl_e eChNum);
+uint8_t csi_can_ch_read(csp_can_t *ptCanBase, uint8_t *pRecvBuf, csi_can_ch_e eChNum);
 
 /** 
-  \brief 	   initialize can tx parameter structure
+  \brief 	   config can tx channel parameter structure
   \param[in]   ptCanBase	pointer of can register structure
   \param[in]   eChNum		number of message
   \param[in]   ptTxCfg		pointer of can tx config structure
   \return 	   none
  */ 
-void csi_can_tx_config(csp_can_t *ptCanBase, csi_can_chnl_e eChNum, csi_can_tx_config_t *ptTxCfg);
+void csi_can_set_tx_ch(csp_can_t *ptCanBase, csi_can_ch_e eChNum, csi_can_tx_config_t *ptTxCfg);
 
 /** 
-  \brief 	   initialize can rx parameter structure
+  \brief 	   config can rx channel parameter structure
   \param[in]   ptCanBase: pointer of can register structure
   \param[in]   eChNum		number of message
   \param[in]   ptRxCfg: pointer of can rx config structure
   \return 	   none
  */ 
-void csi_can_rx_config(csp_can_t *ptCanBase, csi_can_chnl_e eChNum, csi_can_rx_config_t *ptRxCfg);
+void csi_can_set_rx_ch(csp_can_t *ptCanBase, csi_can_ch_e eChNum, csi_can_rx_config_t *ptRxCfg);
 
 /** 
   \brief initialize can rx parameter structure
@@ -439,34 +438,48 @@ void csi_can_rx_config(csp_can_t *ptCanBase, csi_can_chnl_e eChNum, csi_can_rx_c
   \param[in] byChnlNum: channel number of eceive message
   \return none
  */ 
-void csi_can_recv_init(csi_can_recv_t *ptCanRecv, csi_can_chnl_e eChNum, uint8_t byChnlNum);
+void csi_can_recv_init(csi_can_recv_t *ptCanRecv, csi_can_ch_e eChNum, uint8_t byChnlNum);
 
 /** 
   \brief can message status interrupt enable
   \param[in] ptCanBase: pointer of can register structure
   \param[in] eStaIntSrc: can status interrupt source
-  \param[in] bEnable: enable/disable interrupt
   \return none
  */
-void csi_can_sta_int_enable(csp_can_t *ptCanBase, csi_can_sta_intsrc_e eStaIntSrc, bool bEnable);
+void csi_can_int_enable(csp_can_t *ptCanBase, csi_can_intsrc_e eStaIntSrc);
+
+/** 
+  \brief can message status interrupt disable
+  \param[in] ptCanBase: pointer of can register structure
+  \param[in] eStaIntSrc: can status interrupt source
+  \return none
+ */
+void csi_can_int_disable(csp_can_t *ptCanBase, csi_can_intsrc_e eStaIntSrc);
 
 /** 
   \brief can message channel interrupt enable
   \param[in] ptCanBase: pointer of can register structure
   \param[in] eChNum: number of message
-  \param[in] bEnable: enable/disable interrupt
   \return none
  */
-void csi_can_chnl_int_enable(csp_can_t *ptCanBase, csi_can_chnl_e eChNum, bool bEnable);
+void csi_can_ch_int_enable(csp_can_t *ptCanBase, csi_can_ch_e eChNum);
 
 /** 
-  \brief  	   can transfer manage register control 
+  \brief can message channel interrupt disable
+  \param[in] ptCanBase: pointer of can register structure
+  \param[in] eChNum: number of message
+  \return none
+ */
+void csi_can_ch_int_disable(csp_can_t *ptCanBase, csi_can_ch_e eChNum);
+
+/** 
+  \brief  	   can transfer manage register operate
   \param[in]   ptCanBase	pointer of can register structure
   \param[in]   eChNum		number of message
   \param[in]   wTmrCmd		transfer manage register command
   \return 	   none
  */
-csi_error_t csi_can_tmr_ctrl(csp_can_t *ptCanBase, csi_can_chnl_e eChNum, csi_can_ifx_e eIfx, uint32_t wTmrCmd);
+csi_error_t csi_can_set_tmr(csp_can_t *ptCanBase, csi_can_ch_e eChNum, csi_can_ifx_e eIfx, uint32_t wTmrCmd);
 
 /** 
   \brief 	   get can receive data
@@ -475,61 +488,61 @@ csi_error_t csi_can_tmr_ctrl(csp_can_t *ptCanBase, csi_can_chnl_e eChNum, csi_ca
   \param[in]   eIfxReg		interface corresponding register(DAR/DBR)
   \return 	   value of DAR/DBR
  */ 
-//uint32_t csi_can_get_data(csp_can_t *ptCanBase, csi_can_chnl_e eChNum, csi_can_ifx_reg_e eIfxReg);
+//uint32_t csi_can_get_data(csp_can_t *ptCanBase, csi_can_ch_e eChNum, csi_can_ifx_reg_e eIfxReg);
 
 /** 
-  \brief 	   set can message data A bytes
+  \brief 	   set can message data A bytes(0~3bytes)
   \param[in]   ptCanBase	pointer of can register structure
   \param[in]   eChNum		number of message
   \param[in]   pbyData		point of data a
   \return 	   none
  */ 
-void csi_can_set_data_a(csp_can_t *ptCanBase, csi_can_chnl_e eChNum, uint8_t *pbyData);
+void csi_can_set_data_byte0_3(csp_can_t *ptCanBase, csi_can_ch_e eChNum, uint8_t *pbyData);
 
 /** 
-  \brief 	   set can message data A bytes
+  \brief 	   set can message data A bytes(4~7bytes)
   \param[in]   ptCanBase	pointer of can register structure
   \param[in]   eChNum		number of message
   \param[in]   pbyData		point of data b
   \return 	   none
  */ 
-void csi_can_set_data_b(csp_can_t *ptCanBase, csi_can_chnl_e eChNum, uint8_t *pbyData);
+void csi_can_set_data_byte4_7(csp_can_t *ptCanBase, csi_can_ch_e eChNum, uint8_t *pbyData);
 
 /** 
-  \brief 	   set can message mskr 
+  \brief 	   set can message identifier msk 
   \param[in]   ptCanBase	pointer of can register structure
   \param[in]   eChNum		number of message
   \param[in]   ptMskr		point of mskr config structure
   \return 	   none
  */ 
-void csi_can_set_mskr(csp_can_t *ptCanBase, csi_can_chnl_e eChNum, csi_can_mskr_config_t *ptMskr);
+void csi_can_set_msk(csp_can_t *ptCanBase, csi_can_ch_e eChNum, csi_can_msk_config_t *ptMskr);
 
 /** 
-  \brief 	   set can message ir
+  \brief 	   set can message identifier
   \param[in]   ptCanBase	pointer of can register structure
   \param[in]   eChNum		number of message
   \param[in]   ptIr			point of ir config structure
   \return 	   none
  */ 
-void csi_can_set_ir(csp_can_t *ptCanBase, csi_can_chnl_e eChNum, csi_can_ir_config_t *ptIr);
+void csi_can_set_id(csp_can_t *ptCanBase, csi_can_ch_e eChNum, csi_can_id_config_t *ptIr);
 
 /** 
-  \brief 	   set can message tx mcr
+  \brief 	   set can message tx message control
   \param[in]   ptCanBase	pointer of can register structure
   \param[in]   eChNum		number of message
   \param[in]   ptMcr		point of tx mcr config structure
   \return 	   none
  */ 
-void csi_can_set_tx_mcr(csp_can_t *ptCanBase, csi_can_chnl_e eChNum, csi_can_tx_mcr_config_t *ptMcr);
+void csi_can_set_tx_mc(csp_can_t *ptCanBase, csi_can_ch_e eChNum, csi_can_tx_mc_config_t *ptMcr);
 
 /** 
-  \brief 	   set can message rx mcr
+  \brief 	   set can message rx message control
   \param[in]   ptCanBase	pointer of can register structure
   \param[in]   eChNum		number of message
   \param[in]   ptMcr		point of rx mcr config structure
   \return 	   none
  */ 
-void csi_can_set_rx_mcr(csp_can_t *ptCanBase, csi_can_chnl_e eChNum, csi_can_rx_mcr_config_t *ptMcr);
+void csi_can_set_rx_mc(csp_can_t *ptCanBase, csi_can_ch_e eChNum, csi_can_rx_mc_config_t *ptMcr);
 
 
 /** 
@@ -538,7 +551,7 @@ void csi_can_set_rx_mcr(csp_can_t *ptCanBase, csi_can_chnl_e eChNum, csi_can_rx_
   \param[in]   eChNum		number of message
   \return 	   none
  */ 
-void csi_can_txrqst_enable(csp_can_t *ptCanBase, csi_can_chnl_e eChNum);
+void csi_can_txrqst_enable(csp_can_t *ptCanBase, csi_can_ch_e eChNum);
 
 /** 
   \brief 	   set can message valid 
@@ -547,7 +560,7 @@ void csi_can_txrqst_enable(csp_can_t *ptCanBase, csi_can_chnl_e eChNum);
   \param[in]   bEnbale		ENABLE/DISABLE(valid/invalid)
   \return 	   none
  */ 
-void csi_can_msg_valid_enable(csp_can_t *ptCanBase, csi_can_chnl_e eChNum, bool bEnbale);
+void csi_can_msg_valid_enable(csp_can_t *ptCanBase, csi_can_ch_e eChNum, bool bEnbale);
 
 /** 
   \brief  	   can set interface corresponding register value
@@ -556,7 +569,7 @@ void csi_can_msg_valid_enable(csp_can_t *ptCanBase, csi_can_chnl_e eChNum, bool 
   \param[in]   eChNum		number of message
   \return 	   value of interface register
  */
-uint32_t csi_can_get_ifx(csp_can_t *ptCanBase, csi_can_chnl_e eChNum, csi_can_ifx_reg_e eIfxReg);
+uint32_t csi_can_get_ifx(csp_can_t *ptCanBase, csi_can_ch_e eChNum, csi_can_ifx_reg_e eIfxReg);
 
 /**
   \brief  	   can set interface corresponding register value
@@ -566,7 +579,7 @@ uint32_t csi_can_get_ifx(csp_can_t *ptCanBase, csi_can_chnl_e eChNum, csi_can_if
   \param[in]   wValue		value of write ifx register
   \return 	   error code \ref csi_error_t
  */
-csi_error_t csi_can_set_ifx(csp_can_t *ptCanBase, csi_can_chnl_e eChNum, csi_can_ifx_reg_e eIfxReg, uint32_t wValue);
+csi_error_t csi_can_set_ifx(csp_can_t *ptCanBase, csi_can_ch_e eChNum, csi_can_ifx_reg_e eIfxReg, uint32_t wValue);
 
 /** 
   \brief  	   get receive message NEWDAT and clear NEWDAT and ITPND 
@@ -574,7 +587,7 @@ csi_error_t csi_can_set_ifx(csp_can_t *ptCanBase, csi_can_chnl_e eChNum, csi_can
   \param[in]   eChNum		number of message
   \return 	   mcr reg value
  */
-uint32_t csi_can_get_clr_recvflg(csp_can_t *ptCanBase, csi_can_chnl_e eChNum);
+uint32_t csi_can_get_clr_recvflg(csp_can_t *ptCanBase, csi_can_ch_e eChNum);
 
 /** 
   \brief can post(set) Receive/Send and Status msg 
@@ -590,7 +603,7 @@ bool csi_can_post_msg(csi_can_msg_mode_e eMsgMode, uint32_t wMsg);
   \param[in] eChNum: number of channel 
   \return true/false
  */
-bool csi_can_get_msg(csi_can_msg_mode_e eMsgMode, csi_can_chnl_e eChNum);
+bool csi_can_get_msg(csi_can_msg_mode_e eMsgMode, csi_can_ch_e eChNum);
 
 /** 
   \brief  clr msg of can receive/send message channel 
@@ -598,7 +611,7 @@ bool csi_can_get_msg(csi_can_msg_mode_e eMsgMode, csi_can_chnl_e eChNum);
   \param[in] eChNum: number of channel 
   \return none
  */
-void csi_can_clr_msg(csi_can_msg_mode_e eMsgMode, csi_can_chnl_e eChNum);
+void csi_can_clr_msg(csi_can_msg_mode_e eMsgMode, csi_can_ch_e eChNum);
 
 /** 
   \brief  get msg of receive channel message

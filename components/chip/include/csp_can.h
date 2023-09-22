@@ -1,10 +1,11 @@
 /***********************************************************************//** 
  * \file  csp_can.h
  * \brief  CAN description and static inline functions at register level 
- * \copyright Copyright (C) 2015-2021 @ APTCHIP
+ * \copyright Copyright (C) 2015-2023 @ APTCHIP
  * <table>
  * <tr><th> Date  <th>Version  <th>Author  <th>Description
  * <tr><td> 2021-7-08 <td>V0.0  <td>ZJY   <td>initial
+ * <tr><td> 2021-9-21 <td>V0.0  <td>ZJY   <td>code normalization
  * </table>
  * *********************************************************************
 */
@@ -152,74 +153,73 @@ typedef enum{
 * SR, CSR, IER, IDR, IMR: CAN Status/Interrupt Register
 ******************************************************************************/	
 typedef enum{
-	CAN_ISS_S			= (0x01ul << 0),		//Only Status
-	CAN_ERWARNTR_INT	= (0x01ul << 1),		//Iterrupt and Status
-	CAN_ERPASSTR_INT	= (0x01ul << 2),
-	CAN_BUSOFFTR_INT	= (0x01ul << 3),
-	CAN_ACTVT_INT		= (0x01ul << 4),
-	CAN_RXOK_INT		= (0x01ul << 8),
-	CAN_TXOK_INT		= (0x01ul << 9),
-	CAN_STUFF_INT		= (0x01ul << 10),
-	CAN_FORM_INT		= (0x01ul << 11),
-	CAN_ACK_INT			= (0x01ul << 12),
-	CAN_BIT1_INT		= (0x01ul << 13),		
-	CAN_BIT0_INT		= (0x01ul << 14),
-	CAN_CRC_INT			= (0x01ul << 15),
-	CAN_CANENS_S		= (0x01ul << 16),		//Only Status
-	CAN_ERWARN_S		= (0x01ul << 17),		
-	CAN_ERPASS_S		= (0x01ul << 18),		
-	CAN_BUSOFF_S		= (0x01ul << 19),		
-	CAN_BUSY0_S			= (0x01ul << 20),
-	CAN_BUSY1_S			= (0x01ul << 21),
-	CAN_RS_S			= (0x01ul << 22),
-	CAN_TS_S			= (0x01ul << 23),	
-	CAN_CCENS_S			= (0x01ul << 24),
-	CAN_BTXPD_S			= (0x01ul << 25),
-	CAN_STA_ALL_INT		= 0xff1e
+	CAN_STA_ISS			= (0x01ul << 0),		//Only Status
+	CAN_INT_ERWARNTR	= (0x01ul << 1),		//Iterrupt and Status
+	CAN_INT_ERPASSTR	= (0x01ul << 2),
+	CAN_INT_BUSOFFTR	= (0x01ul << 3),
+	CAN_INT_ACTVT		= (0x01ul << 4),
+	CAN_INT_RXOK		= (0x01ul << 8),
+	CAN_INT_TXOK		= (0x01ul << 9),
+	CAN_INT_STUFF		= (0x01ul << 10),
+	CAN_INT_FORM		= (0x01ul << 11),
+	CAN_INT_ACK			= (0x01ul << 12),
+	CAN_INT_BIT1		= (0x01ul << 13),		
+	CAN_INT_BIT0		= (0x01ul << 14),
+	CAN_INT_CRC			= (0x01ul << 15),
+	CAN_STA_CANENS		= (0x01ul << 16),		//Only Status
+	CAN_STA_ERWARN		= (0x01ul << 17),		
+	CAN_STA_ERPASS		= (0x01ul << 18),		
+	CAN_STA_BUSOFF		= (0x01ul << 19),		
+	CAN_STA_BUSY0		= (0x01ul << 20),
+	CAN_STA_BUSY1		= (0x01ul << 21),
+	CAN_STA_RS			= (0x01ul << 22),
+	CAN_STA_TS			= (0x01ul << 23),	
+	CAN_STA_CCENS		= (0x01ul << 24),
+	CAN_STA_BTXPD		= (0x01ul << 25),
+	CAN_INT_ALL			= 0xff1e
 }can_int_e; 
-
 
 /******************************************************************************
 * ISSR, SIER, SIDR, SIMR: CAN Source Interrupt/Status Register
 ******************************************************************************/	
 typedef enum{
-	CAN_CH1_INT			= (0x01ul << 0),		//Iterrupt and Status		
-	CAN_CH2_INT			= (0x01ul << 1),		
-	CAN_CH3_INT			= (0x01ul << 2),
-	CAN_CH4_INT			= (0x01ul << 3),
-	CAN_CH5_INT			= (0x01ul << 4),
-	CAN_CH6_INT			= (0x01ul << 5),			
-	CAN_CH7_INT			= (0x01ul << 6),		
-	CAN_CH8_INT			= (0x01ul << 7),
-	CAN_CH9_INT			= (0x01ul << 8),
-	CAN_CH10_INT		= (0x01ul << 9),
-	CAN_CH11_INT		= (0x01ul << 10),
-	CAN_CH12_INT		= (0x01ul << 11),
-	CAN_CH13_INT		= (0x01ul << 12),
-	CAN_CH14_INT		= (0x01ul << 13),		
-	CAN_CH15_INT		= (0x01ul << 14),
-	CAN_CH16_INT		= (0x01ul << 15),
-	CAN_CH17_INT		= (0x01ul << 16),		
-	CAN_CH18_INT		= (0x01ul << 17),		
-	CAN_CH19_INT		= (0x01ul << 18),		
-	CAN_CH20_INT		= (0x01ul << 19),		
-	CAN_CH21_INT		= (0x01ul << 20),
-	CAN_CH22_INT		= (0x01ul << 21),
-	CAN_CH23_INT		= (0x01ul << 22),
-	CAN_CH24_INT		= (0x01ul << 23),	
-	CAN_CH25_INT		= (0x01ul << 24),
-	CAN_CH26_INT		= (0x01ul << 25),
-	CAN_CH27_INT		= (0x01ul << 26),
-	CAN_CH28_INT		= (0x01ul << 27),
-	CAN_CH29_INT		= (0x01ul << 28),
-	CAN_CH30_INT		= (0x01ul << 29),	
-	CAN_CH31_INT		= (0x01ul << 30),
-	CAN_CH32_INT		= (0x01ul << 31),
-	CAN_CHNL_ALL_INT	= 0xffffffff					
-}can_sint_e; 
+	CAN_INT_CH1			= (0x01ul << 0),		//Iterrupt and Status		
+	CAN_INT_CH2			= (0x01ul << 1),		
+	CAN_INT_CH3			= (0x01ul << 2),
+	CAN_INT_CH4			= (0x01ul << 3),
+	CAN_INT_CH5			= (0x01ul << 4),
+	CAN_INT_CH6			= (0x01ul << 5),			
+	CAN_INT_CH7			= (0x01ul << 6),		
+	CAN_INT_CH8			= (0x01ul << 7),
+	CAN_INT_CH9			= (0x01ul << 8),
+	CAN_INT_CH10		= (0x01ul << 9),
+	CAN_INT_CH11		= (0x01ul << 10),
+	CAN_INT_CH12		= (0x01ul << 11),
+	CAN_INT_CH13		= (0x01ul << 12),
+	CAN_INT_CH14		= (0x01ul << 13),		
+	CAN_INT_CH15		= (0x01ul << 14),
+	CAN_INT_CH16		= (0x01ul << 15),
+	CAN_INT_CH17		= (0x01ul << 16),		
+	CAN_INT_CH18		= (0x01ul << 17),		
+	CAN_INT_CH19		= (0x01ul << 18),		
+	CAN_INT_CH20		= (0x01ul << 19),		
+	CAN_INT_CH21		= (0x01ul << 20),
+	CAN_INT_CH22		= (0x01ul << 21),
+	CAN_INT_CH23		= (0x01ul << 22),
+	CAN_INT_CH24		= (0x01ul << 23),	
+	CAN_INT_CH25		= (0x01ul << 24),
+	CAN_INT_CH26		= (0x01ul << 25),
+	CAN_INT_CH27		= (0x01ul << 26),
+	CAN_INT_CH28		= (0x01ul << 27),
+	CAN_INT_CH29		= (0x01ul << 28),
+	CAN_INT_CH30		= (0x01ul << 29),	
+	CAN_INT_CH31		= (0x01ul << 30),
+	CAN_INT_CH32		= (0x01ul << 31),
+	CAN_INT_CHALL	=	 0xffffffff					
+}can_ch_int_e; 
 
-#define	CAN_CHNL_POS(num)	(num)	
-#define	CAN_CHNL_INT(num)	(0x01 << CAN_CHNL_POS(num))
+#define	CAN_CH_POS(num)		(num)	
+#define	CAN_CH_INT(num)	(	0x01 << CAN_CHNL_POS(num))
 
 /******************************************************************************
 * HPIR: CAN Highest Priority Interrupt Register
@@ -501,37 +501,44 @@ typedef enum{
 /******************************************************************************
 ********************* CAN inline Functions Declaration **********************
 ******************************************************************************/
-static inline void csp_can_clk_en(csp_can_t *ptCanBase)
+static inline void csp_can_clk_enable(csp_can_t *ptCanBase)
 {
 	ptCanBase->ECR = CAN_CLKEN_MSK;
 }
-static inline void csp_can_dbg_en(csp_can_t *ptCanBase)
+static inline void csp_can_dbg_enable(csp_can_t *ptCanBase)
 {
 	ptCanBase->ECR = CAN_DBGEN_MSK;
+}
+static inline void csp_can_clk_disable(csp_can_t *ptCanBase)
+{
+	ptCanBase->DCR = CAN_CLKEN_MSK;
+}
+static inline void csp_can_dbg_disable(csp_can_t *ptCanBase)
+{
+	ptCanBase->DCR = CAN_DBGEN_MSK;
 }
 //
 static inline void csp_can_cr_cmd(csp_can_t *ptCanBase, can_cr_e eCrCmd)
 {
 	ptCanBase->CR = eCrCmd;
 }
-static inline void csp_can_soft_rst(csp_can_t *ptCanBase)
+static inline void csp_can_sw_rst(csp_can_t *ptCanBase)
 {
 	ptCanBase->CR = CAN_SWRST_MSK;
 }
-static inline void csp_can_en(csp_can_t *ptCanBase)
+static inline void csp_can_enable(csp_can_t *ptCanBase)
 {
 	ptCanBase->CR = CAN_CANEN_MSK;
 }
-static inline void csp_can_dis(csp_can_t *ptCanBase)
+static inline void csp_can_disable(csp_can_t *ptCanBase)
 {
 	ptCanBase->CR = CAN_CANDIS_MSK;
 }
-
-static inline void csp_can_ccen(csp_can_t *ptCanBase)
+static inline void csp_can_cc_enable(csp_can_t *ptCanBase)
 {
 	ptCanBase->CR = CAN_CCEN_MSK;
 }
-static inline void csp_can_ccdis(csp_can_t *ptCanBase)
+static inline void csp_can_cc_disable(csp_can_t *ptCanBase)
 {
 	ptCanBase->CR = CAN_CCDIS_MSK;
 }
@@ -543,64 +550,67 @@ static inline void csp_can_set_ar(csp_can_t *ptCanBase, can_ar_e eAr)
 {
 	ptCanBase->MR = (ptCanBase->MR & ~(CAN_AR_MSK)) | (eAr << CAN_AR_POS);
 }
-//
-static inline void csp_can_int_enable(csp_can_t *ptCanBase, can_int_e eCanInt, bool bEnable)
+
+//int
+static inline void csp_can_int_enable(csp_can_t *ptCanBase, can_int_e eCanInt)
 {
-	if(bEnable)
-		ptCanBase->IER = eCanInt;
-	else
-		ptCanBase->IDR = eCanInt;
+	ptCanBase->IER = eCanInt;
+
 }
+static inline void csp_can_int_disable(csp_can_t *ptCanBase, can_int_e eCanInt)
+{
+	ptCanBase->IDR = eCanInt;
+}
+
 static inline void csp_can_clr_isr(csp_can_t *ptCanBase, can_int_e eCanInt)
 {
 	ptCanBase->CSR = eCanInt;
 }
 static inline uint16_t csp_can_get_isr(csp_can_t *ptCanBase)
 {
-	return (uint16_t)(ptCanBase->SR & 0xffff);
-}
-static inline uint32_t csp_can_get_imr(csp_can_t *ptCanBase)
-{
-	return (uint16_t)(ptCanBase->IMR & 0xffff);;
+	return (ptCanBase->SR & CAN_INT_ALL);
 }
 static inline uint32_t csp_can_get_sr(csp_can_t *ptCanBase)
 {
-	return (uint32_t)(ptCanBase->SR);
+	return (ptCanBase->SR);
 }
-//
-static inline void csp_can_sint_enable(csp_can_t *ptCanBase, can_sint_e eCanSrcInt, bool bEnable)
+
+//channel int
+static inline void csp_can_ch_int_enable(csp_can_t *ptCanBase, can_ch_int_e eCanSrcInt)
 {
-	if(bEnable)
-		ptCanBase->SIER = eCanSrcInt;
-	else
-		ptCanBase->SIDR = eCanSrcInt;
+	ptCanBase->SIER = eCanSrcInt;
 }
-static inline uint32_t csp_can_get_sisr(csp_can_t *ptCanBase)
+static inline void csp_can_ch_int_disable(csp_can_t *ptCanBase, can_ch_int_e eCanSrcInt)
 {
-	return (uint32_t)(ptCanBase->ISSR);
+	ptCanBase->SIDR = eCanSrcInt;
 }
-static inline uint32_t csp_can_get_simr(csp_can_t *ptCanBase)
+static inline uint32_t csp_can_get_ch_risr(csp_can_t *ptCanBase)
 {
-	return (uint32_t)(ptCanBase->SIMR);
+	return (ptCanBase->ISSR);
+}
+static inline uint32_t csp_can_get_ch_isr(csp_can_t *ptCanBase)
+{
+	return (ptCanBase->SIMR);
 }
 //
 static inline uint16_t csp_can_get_hpir(csp_can_t *ptCanBase)
 {
-	return (uint16_t)(ptCanBase->HPIR & 0xffff);
+	return (ptCanBase->HPIR);
 }
 static inline uint8_t csp_can_get_rec(csp_can_t *ptCanBase)
 {
-	return (uint8_t)(ptCanBase->ERCR & CAN_REC_MSK);
+	return (ptCanBase->ERCR & CAN_REC_MSK);
 }
 static inline uint8_t csp_can_get_tec(csp_can_t *ptCanBase)
 {
-	return (uint8_t)((ptCanBase->ERCR & CAN_TEC_MSK) >> CAN_TEC_POS);
+	return ((ptCanBase->ERCR & CAN_TEC_MSK) >> CAN_TEC_POS);
 }
 static inline uint8_t csp_can_get_rep(csp_can_t *ptCanBase)
 {
-	return (uint8_t)((ptCanBase->ERCR & CAN_REP_MSK) >> CAN_REP_POS);
+	return ((ptCanBase->ERCR & CAN_REP_MSK) >> CAN_REP_POS);
 }
-//
+
+//ifx[0], write
 static inline void csp_can_tmr_wr(csp_can_t *ptCanBase, uint8_t byNum, can_adbr_e eAdat, can_adbr_e eBdat, can_amskr_e eAmsk, can_air_e eAir, can_amcr_e eAmcr, can_trnd_e eTrnd)
 {
 	ptCanBase->IF[0].TMR = (CAN_WR_WRITE << CAN_WR_POS) | (eAdat << CAN_ADAR_POS) | (eBdat << CAN_ADBR_POS) | (eAmsk << CAN_AMSKR_POS) | 
@@ -611,6 +621,23 @@ static inline void csp_can_tmr_rd(csp_can_t *ptCanBase, uint8_t byNum, can_adbr_
 	ptCanBase->IF[0].TMR = (CAN_WR_READ << CAN_WR_POS) | (eAdat << CAN_ADAR_POS) | (eBdat << CAN_ADBR_POS) | (eAmsk << CAN_AMSKR_POS) | 
 				(eAir << CAN_AIR_POS) | (eAmcr << CAN_AMCR_POS) | (eTrnd << CAN_TRND_POS) | (eClrIt << CAN_CLRIT_POS) | CAN_NUMBER(byNum); 
 } 
+static inline void csp_can_set_adata(csp_can_t *ptCanBase, uint8_t *pbyData)
+{
+	ptCanBase->IF[0].DAR = (uint32_t)(pbyData[0] | (pbyData[1] << 8) | (pbyData[2] << 16) | (pbyData[3] << 24));
+}
+static inline void csp_can_set_bdata(csp_can_t *ptCanBase, uint8_t *pbyData)
+{
+	ptCanBase->IF[0].DBR = (uint32_t)(pbyData[0] | (pbyData[1] << 8) | (pbyData[2] << 16) | (pbyData[3] << 24));
+}
+static inline void csp_can_set_msk_mode(csp_can_t *ptCanBase, uint32_t wExtMsk, uint16_t hwStdMsk, can_mmdir_e eMmdir, can_mxtd_e eMxtd)
+{
+	ptCanBase->IF[0].MASKR =  CAN_EXTMASK(wExtMsk) | CAN_BASEMASK(hwStdMsk) | (eMmdir << CAN_MMDIR_POS) | (eMxtd << CAN_MXTD_POS);
+} 
+static inline void csp_can_set_id_mode(csp_can_t *ptCanBase, uint32_t wExtId, uint16_t hwStdId, can_mdir_e eMdir, can_xtd_e eXtd, can_msgval_e eMsgVal)
+{
+	ptCanBase->IF[0].IR =  CAN_EXTID(wExtId) | CAN_BASEID(hwStdId) | (eMdir << CAN_MDIR_POS) | (eXtd << CAN_XTD_POS) | (eMsgVal << CAN_MSGVAL_POS); 
+} 
+//set reg 
 static inline void csp_can_set_tmr(csp_can_t *ptCanBase, uint8_t byNum, uint8_t byIfx, uint32_t wCmdVal)
 {
 	ptCanBase->IF[byIfx].TMR = CAN_NUMBER(byNum) | wCmdVal; 
@@ -623,28 +650,10 @@ static inline void csp_can_set_dbr(csp_can_t *ptCanBase, uint32_t wBdata)
 {
 	ptCanBase->IF[0].DBR = wBdata;
 }
-static inline void csp_can_set_adata(csp_can_t *ptCanBase, uint8_t *pbyData)
-{
-	ptCanBase->IF[0].DAR = (uint32_t)(pbyData[0] | (pbyData[1] << 8) | (pbyData[2] << 16) | (pbyData[3] << 24));
-}
-static inline void csp_can_set_bdata(csp_can_t *ptCanBase, uint8_t *pbyData)
-{
-	ptCanBase->IF[0].DBR = (uint32_t)(pbyData[0] | (pbyData[1] << 8) | (pbyData[2] << 16) | (pbyData[3] << 24));
-}
-
- 
-static inline void csp_can_mskr_config(csp_can_t *ptCanBase, uint32_t wExtMsk, uint16_t hwStdMsk, can_mmdir_e eMmdir, can_mxtd_e eMxtd)
-{
-	ptCanBase->IF[0].MASKR =  CAN_EXTMASK(wExtMsk) | CAN_BASEMASK(hwStdMsk) | (eMmdir << CAN_MMDIR_POS) | (eMxtd << CAN_MXTD_POS);
-} 
 static inline void csp_can_set_mskr(csp_can_t *ptCanBase, uint32_t wValue)
 {
 	ptCanBase->IF[0].MASKR = wValue;
 }
-static inline void csp_can_ir_config(csp_can_t *ptCanBase, uint32_t wExtId, uint16_t hwStdId, can_mdir_e eMdir, can_xtd_e eXtd, can_msgval_e eMsgVal)
-{
-	ptCanBase->IF[0].IR =  CAN_EXTID(wExtId) | CAN_BASEID(hwStdId) | (eMdir << CAN_MDIR_POS) | (eXtd << CAN_XTD_POS) | (eMsgVal << CAN_MSGVAL_POS); 
-} 
 static inline void csp_can_set_ir(csp_can_t *ptCanBase, uint32_t wValue)
 {
 	ptCanBase->IF[0].IR = wValue;
@@ -662,33 +671,8 @@ static inline void csp_can_set_mcr_rd(csp_can_t *ptCanBase, uint8_t byDataLen, c
 {
 	ptCanBase->IF[0].MCR = CAN_DLC(byDataLen) | (eOverWr << CAN_OVERWR_POS) | (eRxIe << CAN_RXIE_POS) | (eMsk << CAN_UMASK_POS);
 }
-// 
-//static inline uint32_t csp_can_get_mcr(csp_can_t *ptCanBase, uint8_t byIfx)
-//{
-//	return (ptCanBase->IF[byIfx].MCR);
-//}
-//static inline uint32_t csp_can_get_ir(csp_can_t *ptCanBase, uint8_t byIfx)
-//{
-//	return (ptCanBase->IF[byIfx].IR);
-//}
-//static inline uint32_t csp_can_get_mskr(csp_can_t *ptCanBase, uint8_t byIfx)
-//{
-//	return (ptCanBase->IF[byIfx].MASKR);
-//}
-//
-//static inline uint32_t csp_can_get_dbr(csp_can_t *ptCanBase, uint8_t byIfx)
-//{
-//	return (ptCanBase->IF[byIfx].DBR);
-//}
-//static inline uint32_t csp_can_get_dar(csp_can_t *ptCanBase, uint8_t byIfx)
-//{
-//	return (ptCanBase->IF[byIfx].DAR);
-//}
-//
-//static inline uint32_t csp_can_get_stpr(csp_can_t *ptCanBase, uint8_t byIfx)
-//{
-//	return (uint32_t)((ptCanBase->IF[byIfx].STPR));
-//}
+
+//ifx[1], read 
 static inline uint32_t csp_can_get_mcr(csp_can_t *ptCanBase)
 {
 	return (ptCanBase->IF[1].MCR);
@@ -728,7 +712,7 @@ static inline uint32_t csp_can_get_mvr(csp_can_t *ptCanBase)
 	return (uint32_t)(ptCanBase->MVR);
 }
 //
-static inline void csp_can_test_mode(csp_can_t *ptCanBase, can_test_mode_e eTestMode)
+static inline void csp_can_set_test_mode(csp_can_t *ptCanBase, can_test_mode_e eTestMode)
 {
 	ptCanBase->TSTR |= ((CAN_TSTKEY << CAN_TSTKEY_POS) | (0x01 << eTestMode));
 }
@@ -738,9 +722,4 @@ static inline void csp_can_set_tstr(csp_can_t *ptCanBase, uint8_t byValue)
 	ptCanBase->TSTR |= ((CAN_TSTKEY << CAN_TSTKEY_POS) | byValue);
 }
 
-
 #endif
-
-
-
-

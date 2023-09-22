@@ -602,8 +602,7 @@ csi_error_t csi_gpio_irq_mode(csp_gpio_t *ptGpioBase, pin_name_e ePinName, csi_e
 		apt_exi_trg_edge_set(SYSCON,(gpio_igrp_e)eExiGrp, (exi_trigger_e)eTrgEdge);			//interrupt edge
 	
 	csp_exi_clr_isr(SYSCON,(0x01ul << eExiGrp));		
-	csp_exi_int_enable(SYSCON,(0x01ul << eExiGrp));				//EXI interrupt enable
-	
+	csp_exi_int_enable(SYSCON, (gpio_igrp_e)eExiGrp);				//EXI interrupt enable
 	
 	return ret;
 }
