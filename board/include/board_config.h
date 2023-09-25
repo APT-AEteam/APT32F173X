@@ -88,6 +88,7 @@ extern "C" {
 #define USE_WWDT_CALLBACK		1		//WWDT(0)
 #define USE_ADC_CALLBACK		1		//ADC(0/1)
 #define USE_RTC_CALLBACK		1		//RTC
+#define USE_CAN_CALLBACK		1		//CAN(0)
 
 //csi GUI Handling Enable, 1/0(OPEN/CLOSE)
 //可视化编程，通过宏USE_GUI来实现功能选择

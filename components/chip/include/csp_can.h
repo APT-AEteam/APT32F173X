@@ -179,6 +179,8 @@ typedef enum{
 	CAN_INT_ALL			= 0xff1e
 }can_int_e; 
 
+typedef can_int_e 	can_sr_e;					//sr
+
 /******************************************************************************
 * ISSR, SIER, SIDR, SIMR: CAN Source Interrupt/Status Register
 ******************************************************************************/	
@@ -570,10 +572,16 @@ static inline uint16_t csp_can_get_isr(csp_can_t *ptCanBase)
 {
 	return (ptCanBase->SR & CAN_INT_ALL);
 }
+//status
 static inline uint32_t csp_can_get_sr(csp_can_t *ptCanBase)
 {
 	return (ptCanBase->SR);
 }
+static inline void csp_can_clr_sr(csp_can_t *ptCanBase, can_sr_e eSr)
+{
+	ptCanBase->CSR = eSr;
+}
+
 
 //channel int
 static inline void csp_can_ch_int_enable(csp_can_t *ptCanBase, can_ch_int_e eCanSrcInt)

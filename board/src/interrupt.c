@@ -425,32 +425,30 @@ ATTRIBUTE_ISR __attribute__((weak)) void exi2_3_int_handler(void)
 
 ATTRIBUTE_ISR __attribute__((weak)) void exi4_9_int_handler(void) 
 {
-#if	EXI4_9_INT_HANDLE_EN
-    // ISR content ...
+  // ISR content ...
 	CSI_INTRPT_ENTER();
-	gpio_irqhandler(3);  //this is a weak function defined in gpio_demo.c, for better efficiency, we recommand user directly implement IRQ handler here without any function call.
+	csp_exi_clr_isr(SYSCON, csp_exi_get_isr(SYSCON));				//clear interrput 
 	CSI_INTRPT_EXIT();
-#endif
 }
 
 ATTRIBUTE_ISR __attribute__((weak)) void exi10_15_int_handler(void) 
 {
-#if	EXI10_15_INT_HANDLE_EN
-    // ISR content ...
+  // ISR content ...
 	CSI_INTRPT_ENTER();
-	gpio_irqhandler(4); //this is a weak function defined in gpio_demo.c, for better efficiency, we recommand user directly implement IRQ handler here without any function call.
+	csp_exi_clr_isr(SYSCON, csp_exi_get_isr(SYSCON));				//clear interrput 
 	CSI_INTRPT_EXIT();
-#endif
 }
 
 ATTRIBUTE_ISR void __attribute__((weak)) can_int_handler(void) 
 {
-#if	CAN_INT_HANDLE_EN
     // ISR content ...
 	CSI_INTRPT_ENTER();
-	can_irqhandler(CAN0); //this is a weak function defined in can_demo.c, for better efficiency, we recommand user directly implement IRQ handler here without any function call.
-	CSI_INTRPT_EXIT();
+#if (USE_CAN_CALLBACK == 1)
+	csi_can_irqhandler(CAN0, 0);
+#else
+	csp_can_clr_isr(CAN0, csp_can_get_isr(CAN0));
 #endif
+	CSI_INTRPT_EXIT();
 }
 
 ATTRIBUTE_ISR __attribute__((weak)) void cnta_int_handler(void)
