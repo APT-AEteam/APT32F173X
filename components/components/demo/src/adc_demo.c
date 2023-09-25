@@ -71,14 +71,14 @@ void adc_samp_oneshot_demo(void)
 	csi_adc_set_seqx(ADC0,2,ADC_INA2,ADC_CV_COUNT_1,ADC_AVG_COF_1,ADCSYNC_NONE);		//配置ADC采样通道2
 	csi_adc_start(ADC0);																//启动ADC
 	
-	do
+	while(1)
 	{
 		for(i = 0; i < iChnlNum; i++)
 		{
 			nDataBuf[i] = csi_adc_read_channel(ADC0, i);					//分别读ADC采样序列通道：0~iChnlNum			
 			my_printf("ADC channel value of seq: %d \n", nDataBuf[i]);		//串口打印采样值
 		}	
-	}while(0);
+	}
 }
 
 /** \brief ADC连续采样模式
@@ -115,14 +115,14 @@ void adc_samp_continuous_demo(void)
 	csi_adc_set_seqx(ADC0,2,ADC_INA2,ADC_CV_COUNT_1,ADC_AVG_COF_1,ADCSYNC_NONE);		//配置ADC采样通道2
 	csi_adc_start(ADC0);																//启动ADC
 
-	do
+	while(1)
 	{
 		for(i = 0; i < iChnlNum; i++)
 		{
 			nDataBuf[i] = csi_adc_read_channel(ADC0, i);					//分别读ADC采样序列通道：0~iChnlNum			
 			my_printf("ADC channel value of seq: %d \n", nDataBuf[i]);		//串口打印采样值
 		}	
-	}while(0);
+	}
 }
 
 
