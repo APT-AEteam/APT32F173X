@@ -4,7 +4,7 @@
  * \file  soc.h
  * \brief  CSI Core Peripheral Access Layer Header File for
  *           CSKYSOC Device Series
- * \copyright Copyright (C) 2015-2021 @ APTCHIP
+ * \copyright Copyright (C) 2015-2023 @ APTCHIP
  * <table>
  * <tr><th> Date  <th>Version  <th>Author  <th>Description
  * <tr><td> 2021-5-13 <td>V0.0 <td>ZJY     <td>initial
@@ -66,6 +66,7 @@ extern "C" {
 #define USART_IDX  			2		//USARTx id number
 #define SIO_IDX				2		//UART(0/1)
 #define LED_IDX  			1		//LEDx id number
+#define GPTB_IDX  			6		//GPTBx id number
 #define CNTA_IDX  			1		//CNTAx id number
 #define CMP_IDX  			3		//CMPx id number
 #define GPTA_IDX  			4		//GPTAx id number
@@ -73,9 +74,9 @@ extern "C" {
 #define IIC_IDX  			1		//IICx id number
 #define LPT_IDX  			1		//LPTx id number
 #define WWDT_IDX  			1		//WWDTx id number
+#define RTC_IDX   			1		//RTCx id number
 
-
-#if	defined(IS_CHIP_1732)
+#if	(IS_CHIP_1732==1)
 #define ADC_IDX   			2		//ADCx id number
 #else
 #define ADC_IDX   			1		//ADCx id number

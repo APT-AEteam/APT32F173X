@@ -1,167 +1,140 @@
 /***********************************************************************//** 
  * \file  gptb.c
  * \brief  GPTB driver
- * \copyright Copyright (C) 2015-2020 @ APTCHIP
+ * \copyright Copyright (C) 2015-2023 @ APTCHIP
  * <table>
  * <tr><th> Date  <th>Version  <th>Author  <th>Description
  * <tr><td> 2021-6-17 <td>V0.0  <td>ljy   <td>initial
- * <tr><td> 2023-9-17 <td>V0.1  <td>wch   <td>modify
+ * <tr><td> 2023-9-18 <td>V0.1  <td>wch   <td>code normalization
  * </table>
  * *********************************************************************
 */
 #include "drv/gptb.h"
 
-static uint32_t s_wGptbCapBuff[4] = {0};
+/* private macro------------------------------------------------------*/
+/* externs function---------------------------------------------------*/
+/* global variablesr--------------------------------------------------*/
+csi_gptb_ctrl_t g_tGptbCtrl[GPTB_IDX];	
+/* private variablesr-------------------------------------------------*/	
 
-/** \brief gptb0 interrupt handle weak function
- *  \param[in] none
+/** \brief gptb interrupt handle  function
+ *  \param[in] ptGptbBase: pointer of gptb register structure
+ *  \param[in] byIdx: gptb idx(0/1/2/3/4/5)
  *  \return    none
  */
-__attribute__((weak)) void gptb_irqhandler(csp_gptb_t *ptGptbBase)
+void csi_gptb_irqhandler(csp_gptb_t *ptGptbBase, uint8_t byIdx)
 {
-	volatile uint32_t wEMMisr = csp_gptb_get_emisr(ptGptbBase);
-	volatile uint32_t wMisr   = csp_gptb_get_isr(ptGptbBase);	
+	volatile uint32_t wIsr    = csp_gptb_get_isr(ptGptbBase);
+	volatile uint16_t hwEmIsr = csp_gptb_get_emisr(ptGptbBase);	
 	
-	//GPTB emergency interrupt
-	if(wEMMisr > 0)
+	//GPTB interrupt / GPTB emergency interrupt
+	if((wIsr > 0) || (hwEmIsr > 0))
 	{
-		if((wEMMisr & GPTB_EM_INT_EP0) == GPTB_EM_INT_EP0)
-		{
-			csp_gptb_clr_emisr(ptGptbBase, GPTB_EM_INT_EP0);
-		}
-		if((wEMMisr & GPTB_EM_INT_EP1) == GPTB_EM_INT_EP1)
-		{
-			csp_gptb_clr_emisr(ptGptbBase, GPTB_EM_INT_EP1);
-		}
-		if((wEMMisr & GPTB_EM_INT_EP2) == GPTB_EM_INT_EP2)
-		{
-			csp_gptb_clr_emisr(ptGptbBase, GPTB_EM_INT_EP2);
-		}
-		if((wEMMisr & GPTB_EM_INT_EP3) == GPTB_EM_INT_EP3)
-		{
-			csp_gptb_clr_emisr(ptGptbBase, GPTB_EM_INT_EP3);
-		}	
+		if(g_tGptbCtrl[byIdx].callback)
+			g_tGptbCtrl[byIdx].callback(ptGptbBase, wIsr, hwEmIsr);
+			
+		csp_gptb_clr_isr(ptGptbBase, wIsr);	
+		csp_gptb_clr_emisr(ptGptbBase, hwEmIsr);
 	}
+}
 
-	//GPTB interrupt
-	if(wMisr > 0)
+/** \brief get gptb idx 
+ * 
+ *  \param[in] ptGptbBase: pointer of gptb register structure
+ *  \return gptb id number(0~5) or error(0xff)
+ */ 
+static uint8_t apt_get_gptb_idx(csp_gptb_t *ptGptbBase)
+{
+	switch((uint32_t)ptGptbBase)
 	{
-		if((wMisr & GPTB_INT_TRGEV0) == GPTB_INT_TRGEV0)
-		{
-			csp_gptb_clr_isr(ptGptbBase, GPTB_INT_TRGEV0);
-		}
-		if((wMisr & GPTB_INT_TRGEV1) == GPTB_INT_TRGEV1)
-		{
-			csp_gptb_clr_isr(ptGptbBase, GPTB_INT_TRGEV1);
-		}
-		if((wMisr & GPTB_INT_CAPLD0) == GPTB_INT_CAPLD0)
-		{
-			csp_gptb_clr_isr(ptGptbBase, GPTB_INT_CAPLD0);
-			s_wGptbCapBuff[0]=csp_gptb_get_cmpa(ptGptbBase);
-		}
-		if((wMisr & GPTB_INT_CAPLD1) == GPTB_INT_CAPLD1)
-		{
-			csp_gptb_clr_isr(ptGptbBase, GPTB_INT_CAPLD1);
-			s_wGptbCapBuff[0]=csp_gptb_get_cmpa(ptGptbBase);
-			s_wGptbCapBuff[1]=csp_gptb_get_cmpb(ptGptbBase);
-		}
-		if((wMisr & GPTB_INT_CAPLD2) == GPTB_INT_CAPLD2)
-		{
-			csp_gptb_clr_isr(ptGptbBase, GPTB_INT_CAPLD2);
-			s_wGptbCapBuff[0]=csp_gptb_get_cmpa(ptGptbBase);
-			s_wGptbCapBuff[1]=csp_gptb_get_cmpb(ptGptbBase);
-			s_wGptbCapBuff[2]=csp_gptb_get_cmpaa(ptGptbBase);
-		}
-		if((wMisr & GPTB_INT_CAPLD3) == GPTB_INT_CAPLD3)
-		{
-			csp_gptb_clr_isr(ptGptbBase, GPTB_INT_CAPLD3);
-			s_wGptbCapBuff[0]=csp_gptb_get_cmpa(ptGptbBase);
-			s_wGptbCapBuff[1]=csp_gptb_get_cmpb(ptGptbBase);
-			s_wGptbCapBuff[2]=csp_gptb_get_cmpaa(ptGptbBase);
-			s_wGptbCapBuff[3]=csp_gptb_get_cmpba(ptGptbBase);
-		}
-		if((wMisr & GPTB_INT_CAU) == GPTB_INT_CAU)
-		{
-			csp_gptb_clr_isr(ptGptbBase, GPTB_INT_CAU);
-		}
-		if((wMisr & GPTB_INT_CAD) == GPTB_INT_CAD)
-		{
-			csp_gptb_clr_isr(ptGptbBase, GPTB_INT_CAD);
-		}
-		if((wMisr & GPTB_INT_CBU) == GPTB_INT_CBU)
-		{
-			csp_gptb_clr_isr(ptGptbBase, GPTB_INT_CBU);
-		}
-		if((wMisr & GPTB_INT_CBD) == GPTB_INT_CBD)
-		{
-			csp_gptb_clr_isr(ptGptbBase, GPTB_INT_CBD);
-		}
-		if((wMisr & GPTB_INT_PEND) == GPTB_INT_PEND)
-		{	
-			csp_gptb_clr_isr(ptGptbBase, GPTB_INT_PEND);
-		}
-		if((wMisr & GPTB_INT_PRDMA) == GPTB_INT_PRDMA)
-		{
-			csp_gptb_clr_isr(ptGptbBase, GPTB_INT_PRDMA);
-		}
-		if((wMisr & GPTB_INT_ZROMA) == GPTB_INT_ZROMA)
-		{
-			csp_gptb_clr_isr(ptGptbBase, GPTB_INT_ZROMA);
-		}
+		case APB_GPTB0_BASE:
+			return 0;
+		case APB_GPTB1_BASE:
+			return 1;
+		case APB_GPTB2_BASE:
+			return 2;
+		case APB_GPTB3_BASE:
+			return 3;
+		case APB_GPTB4_BASE:
+			return 4;
+		case APB_GPTB5_BASE:
+			return 5;
+		default:
+			return 0xff;		//error
 	}
+}
+
+/** \brief  register gptb interrupt callback function
+ * 
+ *  \param[in] ptGptbBase: pointer of gptb register structure
+ *  \param[in] callback: gptb callback handle function
+ *  \return error code \ref csi_error_t
+ */ 
+csi_error_t csi_gptb_register_callback(csp_gptb_t *ptGptbBase, void  *callback)
+{
+	uint8_t byIdx = apt_get_gptb_idx(ptGptbBase);
+	if(byIdx == 0xff)
+		return CSI_ERROR;
+
+	g_tGptbCtrl[byIdx].callback = callback;
+	
+	return CSI_OK;
 }
 
 /**
  \brief  gptb capture configuration
  \param  ptGptbBase    	pointer of gptb register structure
  \param  ptGptbCapCfg   \refer csi_gptb_capture_config_t
-  * 		- eWorkMode:GPTB work mode \refer csi_gptb_wave_e
+  * 		- eWorkMode:GPTB work mode \refer csi_gptb_workmode_e
   * 		- eCountMode:GPTB counting mode \refer csi_gptb_cntmd_e
   * 		- eRunMode:GPTB run mode \refer csi_gptb_runmode_e
   * 		- eCapMode:GPTB capture mode \refer csi_gptb_capmode_e  		
   * 		- byCapStopWrap:GPTB capture counts
-  * 		- byCapLdaret:CMPA load,counter value reset or not
-  * 		- byCapLdbret:CMPB load,counter value reset or not
-  * 		- byCapLdcret:CMPAA load,counter value reset or not
-  * 		- byCapLddret:CMPBA load,counter value reset or not
- \return CSI_OK /CSI_ERROR
+  * 		- bCapLdaRst:CMPA load,counter value reset or not
+  * 		- bCapLdbRst:CMPB load,counter value reset or not
+  * 		- bCapLdaaRst:CMPAA load,counter value reset or not
+  * 		- bCapLdbaRst:CMPBA load,counter value reset or not
+ \return none
 */
-csi_error_t csi_gptb_capture_init(csp_gptb_t *ptGptbBase, csi_gptb_capture_config_t *ptGptbCapCfg)
+void csi_gptb_capture_init(csp_gptb_t *ptGptbBase, csi_gptb_capture_config_t *ptGptbCapCfg)
 {
 	uint32_t wCrVal;
 
 	csi_clk_enable((uint32_t *)ptGptbBase);	
-	csp_gptb_clken(ptGptbBase);
+	csp_gptb_clk_enable(ptGptbBase);
 	csp_gptb_wr_key(ptGptbBase);	
-	csp_gptb_reset(ptGptbBase);
+	csp_gptb_sw_rst(ptGptbBase);
 
-	wCrVal = (ptGptbCapCfg->eCountMode) | (ptGptbCapCfg->eRunMode << GPTB_CAPMD_POS) | (ptGptbCapCfg->eWorkMode << GPTB_MODE_POS);
-	wCrVal = (wCrVal & ~(0x01<<CAPMODE_SEL_POS))|((ptGptbCapCfg->eCapMode & 0x01)  	<< CAPMODE_SEL_POS);
+	wCrVal = (ptGptbCapCfg -> eCountMode) | (ptGptbCapCfg -> eRunMode << GPTB_CAPMD_POS) | (ptGptbCapCfg -> eWorkMode << GPTB_MODE_POS);
+	wCrVal = (wCrVal & ~(0x01<<CAPMODE_SEL_POS))|((ptGptbCapCfg -> eCapMode & 0x01)  	<< CAPMODE_SEL_POS);
 	
-	wCrVal = (wCrVal & ~(GPTB_STOPWRAP_MSK)) | ((ptGptbCapCfg->byCapStopWrap & 0x03)	<< GPTB_STOPWRAP_POS);
-	wCrVal = (wCrVal & ~(GPTB_CMPA_RST_MSK)) | ((ptGptbCapCfg->byCapLdaret & 0x01)  	<< GPTB_CMPA_RST_POS);
-	wCrVal = (wCrVal & ~(GPTB_CMPB_RST_MSK)) | ((ptGptbCapCfg->byCapLdbret & 0x01)  	<< GPTB_CMPB_RST_POS);
-	wCrVal = (wCrVal & ~(GPTB_CMPC_RST_MSK)) | ((ptGptbCapCfg->byCapLdcret & 0x01)  	<< GPTB_CMPC_RST_POS);
-	wCrVal = (wCrVal & ~(GPTB_CMPD_RST_MSK)) | ((ptGptbCapCfg->byCapLddret & 0x01)  	<< GPTB_CMPD_RST_POS);
+	wCrVal = (wCrVal & ~(GPTB_STOPWRAP_MSK)) | ((ptGptbCapCfg -> byCapStopWrap & 0x03)<< GPTB_STOPWRAP_POS);
+	wCrVal = (wCrVal & ~(GPTB_CMPA_RST_MSK)) | ((ptGptbCapCfg -> bCapLdaRst & 0x01)   << GPTB_CMPA_RST_POS);
+	wCrVal = (wCrVal & ~(GPTB_CMPB_RST_MSK)) | ((ptGptbCapCfg -> bCapLdbRst & 0x01)   << GPTB_CMPB_RST_POS);
+	wCrVal = (wCrVal & ~(GPTB_CMPC_RST_MSK)) | ((ptGptbCapCfg -> bCapLdaaRst & 0x01)  << GPTB_CMPC_RST_POS);
+	wCrVal = (wCrVal & ~(GPTB_CMPD_RST_MSK)) | ((ptGptbCapCfg -> bCapLdbaRst & 0x01)  << GPTB_CMPD_RST_POS);
 
 	wCrVal |= GPTB_CAPLD_EN;
 	wCrVal |= GPTB_CAPREARM;
-
-    csp_gptb_clken(ptGptbBase);  
+	
+	csp_gptb_clk_enable(ptGptbBase);
 	csp_gptb_set_cr(ptGptbBase, wCrVal);
 	csp_gptb_set_pscr(ptGptbBase, 0);	
 	csp_gptb_set_prdr(ptGptbBase, 0xFFFF);	
-	
-	return CSI_OK;
 }
 
- /**
- \brief  wave configuration
+/**
+ \brief  gptb pwm configuration
  \param  ptGptbBase    	pointer of gptb register structure
- \param  ptGptbPwmCfg   	refer to csi_gptb_pwmconfig_t
- \return CSI_OK /CSI_ERROR
+ \param  ptGptbPwmCfg   \refer csi_gptb_capture_config_t
+  * 		- eWorkMode:GPTB work mode \refer csi_gptb_workmode_e
+  * 		- eCountMode:GPTB counting mode \refer csi_gptb_cntmd_e
+  * 		- eRunMode:GPTB run mode \refer csi_gptb_runmode_e
+  * 		- byDutyCycle:PWM duty cycle  		
+  * 		- wFreq:PWM frequency
+ \return error code \ref csi_error_t
 */
-csi_error_t  csi_gptb_wave_init(csp_gptb_t *ptGptbBase, csi_gptb_pwm_config_t *ptGptbPwmCfg)
+csi_error_t csi_gptb_pwm_init(csp_gptb_t *ptGptbBase, csi_gptb_pwm_config_t *ptGptbPwmCfg)
 {
     uint32_t wClkDiv;
 	uint32_t wCrVal;
@@ -169,43 +142,43 @@ csi_error_t  csi_gptb_wave_init(csp_gptb_t *ptGptbBase, csi_gptb_pwm_config_t *p
 	uint32_t wPrdrLoad; 
 	
 	if(ptGptbPwmCfg->wFreq == 0 ){return CSI_ERROR;}
-		
-	csi_clk_enable((uint32_t *)ptGptbBase);								// clk enable
+
+	csi_clk_enable((uint32_t *)ptGptbBase);							
 	
-	csp_gptb_clken(ptGptbBase);
-	csp_gptb_wr_key(ptGptbBase);                                        //Unlocking
-	csp_gptb_reset(ptGptbBase);											// reset 
+	csp_gptb_clk_enable(ptGptbBase);
+	csp_gptb_wr_key(ptGptbBase);                                     
+	csp_gptb_sw_rst(ptGptbBase);
 	
-	if(ptGptbPwmCfg->byCountingMode==GPTB_UPDNCNT){
-		wClkDiv = (csi_get_pclk_freq() / ptGptbPwmCfg->wFreq / 2 / 30000);		// clk div value
+	if(ptGptbPwmCfg -> eCountMode == GPTB_CNT_UPDN)
+	{
+		wClkDiv = (csi_get_pclk_freq() / ptGptbPwmCfg->wFreq / 2 / 30000);		
 		if(wClkDiv == 0)wClkDiv = 1;
-		wPrdrLoad  = (csi_get_pclk_freq()/ptGptbPwmCfg->wFreq/ 2 / wClkDiv);	    //prdr load value
-	}else{
-		wClkDiv = (csi_get_pclk_freq() / ptGptbPwmCfg->wFreq / 30000);		// clk div value
+		wPrdrLoad  = (csi_get_pclk_freq() / ptGptbPwmCfg->wFreq / 2 / wClkDiv);	
+	}
+	else
+	{
+		wClkDiv = (csi_get_pclk_freq() / ptGptbPwmCfg->wFreq / 30000);		
 		if(wClkDiv == 0)wClkDiv = 1;
-		wPrdrLoad  = (csi_get_pclk_freq()/ptGptbPwmCfg->wFreq/ wClkDiv);	    //prdr load value
+		wPrdrLoad  = (csi_get_pclk_freq() / ptGptbPwmCfg->wFreq / wClkDiv);	  
 	}
 
-	wCrVal =ptGptbPwmCfg->byCountingMode | (ptGptbPwmCfg->byStartSrc<<GPTB_STARTSRC_POS) |
-	        ptGptbPwmCfg->byOneshotMode<<GPTB_RUNMD_POS | (ptGptbPwmCfg->byWorkmod<<GPTB_MODE_POS);
-    
-	wCrVal=(wCrVal & ~(GPTB_PSCLD_MSK))   |((ptGptbPwmCfg->byPscld&0x03)   <<GPTB_PSCLD_POS);
-		
-    csp_gptb_clken(ptGptbBase);                                           // clkEN
-	csp_gptb_set_cr(ptGptbBase, wCrVal);									// set bt work mode
-	csp_gptb_set_pscr(ptGptbBase, (uint16_t)wClkDiv - 1);					// clk div
-	csp_gptb_set_prdr(ptGptbBase, (uint16_t)wPrdrLoad);				    // prdr load value
-		
+	wCrVal = (ptGptbPwmCfg -> eCountMode) | (ptGptbPwmCfg -> eRunMode << GPTB_RUNMD_POS) | (ptGptbPwmCfg -> eWorkMode << GPTB_MODE_POS);
+
+	csp_gptb_clk_enable(ptGptbBase);
+	csp_gptb_set_cr(ptGptbBase, wCrVal);								
+	csp_gptb_set_pscr(ptGptbBase, (uint16_t)wClkDiv - 1);				
+	csp_gptb_set_prdr(ptGptbBase, (uint16_t)wPrdrLoad);				   
+
 	if(ptGptbPwmCfg->byDutyCycle >= 100){wCmpLoad = 0;}
 	else if(ptGptbPwmCfg->byDutyCycle == 0){wCmpLoad = wPrdrLoad + 1;}
-	else {wCmpLoad =wPrdrLoad-(wPrdrLoad * ptGptbPwmCfg->byDutyCycle /100);}	// cmp load value
-	csp_gptb_set_cmpa(ptGptbBase, (uint16_t)wCmpLoad);					// cmp load value
+	else {wCmpLoad = wPrdrLoad - (wPrdrLoad * ptGptbPwmCfg -> byDutyCycle /100);}	
+	csp_gptb_set_cmpa(ptGptbBase, (uint16_t)wCmpLoad);				
 	csp_gptb_set_cmpb(ptGptbBase, (uint16_t)wCmpLoad);
 	
-	return CSI_OK;	
+	return CSI_OK;
 }
 
-/** \brief initialize gptb data structure
+/** \brief gptb timer initialize
  * 
  *  \param[in] ptGptbBase: pointer of gptb register structure
  *  \param[in] ptGptbTimCfg of gptb timing parameter config structure
@@ -221,464 +194,489 @@ csi_error_t csi_gptb_timer_init(csp_gptb_t *ptGptbBase, csi_gptb_time_config_t *
 	
 	if((ptGptbTimCfg -> wTimeVal) == 0 ){return CSI_ERROR;}
 		
-	csi_clk_enable((uint32_t *)ptGptbBase);								// clk enable
+	csi_clk_enable((uint32_t *)ptGptbBase);					
 	
-	csp_gptb_clken(ptGptbBase);
-	csp_gptb_wr_key(ptGptbBase);                                           //Unlocking
-	csp_gptb_reset(ptGptbBase);											// reset 
+	csp_gptb_clk_enable(ptGptbBase);
+	csp_gptb_wr_key(ptGptbBase);                                   
+	csp_gptb_sw_rst(ptGptbBase);								
 		
 	if(csi_get_pclk_freq() < 6000000)
 	{
-		wClkDiv = csi_get_pclk_freq() / 1000 * (ptGptbTimCfg -> wTimeVal) / 1000 / 60000;		//gptb clk div value
+		wClkDiv = csi_get_pclk_freq() / 1000 * (ptGptbTimCfg -> wTimeVal) / 1000 / 60000;		
 		if(wClkDiv == 0)
 			wClkDiv  = 1;
-		wPrdrLoad = csi_get_pclk_freq() / 1000 * (ptGptbTimCfg -> wTimeVal) / 1000 / wClkDiv;	//gptb prdr load value
+		wPrdrLoad = csi_get_pclk_freq() / 1000 * (ptGptbTimCfg -> wTimeVal) / 1000 / wClkDiv;	
 		if(wPrdrLoad > 0xffff)
 		{
 			wClkDiv += 1;
-			wPrdrLoad = csi_get_pclk_freq() / 1000 * (ptGptbTimCfg -> wTimeVal) / 1000 / wClkDiv ;	//gptb prdr load value
+			wPrdrLoad = csi_get_pclk_freq() / 1000 * (ptGptbTimCfg -> wTimeVal) / 1000 / wClkDiv ;	
 		}		
 	}
 	else 
 	{
-		wClkDiv = csi_get_pclk_freq() / 1000000 * (ptGptbTimCfg -> wTimeVal) / 60000;		//gptb clk div value
+		wClkDiv = csi_get_pclk_freq() / 1000000 * (ptGptbTimCfg -> wTimeVal) / 60000;		
 		if(wClkDiv == 0)
 			wClkDiv  = 1;
-		wPrdrLoad = csi_get_pclk_freq() / 1000000 * (ptGptbTimCfg -> wTimeVal) / wClkDiv;	//gptb prdr load value
+		wPrdrLoad = csi_get_pclk_freq() / 1000000 * (ptGptbTimCfg -> wTimeVal) / wClkDiv;	
 		if(wPrdrLoad > 0xffff)
 		{
 			wClkDiv += 1;
-			wPrdrLoad = csi_get_pclk_freq() / 1000000 * (ptGptbTimCfg -> wTimeVal) / wClkDiv ;	//gptb prdr load value
+			wPrdrLoad = csi_get_pclk_freq() / 1000000 * (ptGptbTimCfg -> wTimeVal) / wClkDiv ;
 		}			
 	}
-	wCrVal =GPTB_UPCNT | (GPTB_SYNC_START<<GPTB_STARTSRC_POS) | (GPTB_WAVE<<GPTB_MODE_POS);
-	wCrVal=(wCrVal & ~(GPTB_PSCLD_MSK))   |((GPTB_LDPSCR_ZRO&0x03)   <<GPTB_PSCLD_POS);	
+	wCrVal = GPTB_CNT_UP | (GPTB_SYNC_START << GPTB_STARTMODE_POS) | (GPTB_WORK_WAVE << GPTB_MODE_POS);
+	wCrVal = (wCrVal & ~(GPTB_PSCLD_MSK)) | ((GPTB_LDPSCR_ZRO & 0x03) << GPTB_PSCLD_POS);	
 
-    csp_gptb_clken(ptGptbBase);                                         // clkEN
-	csp_gptb_set_cr(ptGptbBase, wCrVal);								// set gptb work mode
-	csi_gptb_set_runmode(ptGptbBase, (ptGptbTimCfg -> eRunMode));        // gptb count mode
-	csp_gptb_set_pscr(ptGptbBase, (uint16_t)wClkDiv - 1);				// clk div
-	csp_gptb_set_prdr(ptGptbBase, (uint16_t)wPrdrLoad);				    // prdr load value
+	csp_gptb_clk_enable(ptGptbBase);
+	csp_gptb_set_cr(ptGptbBase, wCrVal);								
+	csi_gptb_set_run_mode(ptGptbBase, (ptGptbTimCfg -> eRunMode));     
+	csp_gptb_set_pscr(ptGptbBase, (uint16_t)wClkDiv - 1);			
+	csp_gptb_set_prdr(ptGptbBase, (uint16_t)wPrdrLoad);			
 
-	csp_gptb_int_enable(ptGptbBase, GPTB_INT_PEND);		        //enable interrupt
-	
-	return CSI_OK;					
+	csp_gptb_int_enable(ptGptbBase, GPTB_INT_PEND);	
+
+return CSI_OK;					
 }
 
-/** \brief set gptb count mode
+/** \brief set gptb running mode
  * 
  *  \param[in] ptGptbBase: pointer of gptb register structure
- *  \param[in] eRunMode: gptb run mode, one pulse/continuous
+ *  \param[in] eRunMode: gptb running mode, one pulse/continuous, \ref csi_gptb_runmode_e
  *  \return none
  */ 
-void csi_gptb_set_runmode(csp_gptb_t *ptGptbBase, csi_gptb_runmode_e eRunMode)
+void csi_gptb_set_run_mode(csp_gptb_t *ptGptbBase, csi_gptb_run_mode_e eRunMode)
 {
-	csp_gptb_set_runmode(ptGptbBase, (gptb_runmd_e)eRunMode);
+	csp_gptb_set_run_mode(ptGptbBase, (gptb_runmd_e)eRunMode);
 }
 
-/** \brief enable/disable gptb burst 
+/** \brief gptb cgfilter config
  * 
  *  \param[in] ptGptbBase: pointer of gptb register structure 
- *  \param[in] byCgflt \ref cfgcsi_gptb_cgflt_eflt
- *  \return error code \ref csi_error_t
+ *  \param[in] eCgflt \ref csi_gptb_cgflt_e
+ *  \return none
  */
-csi_error_t csi_gptb_set_cgflt(csp_gptb_t *ptGptbBase,csi_gptb_cgflt_e eCgflt)
+void csi_gptb_set_cgflt(csp_gptb_t *ptGptbBase,csi_gptb_cgflt_e eCgflt)
 {
-	csp_gptb_flt_enable(ptGptbBase);	
-	csp_gptb_set_flt(ptGptbBase,eCgflt);
-	return CSI_OK;
+	csp_gptb_set_flt(ptGptbBase,(gptb_cgflt_e)eCgflt);
+	csp_gptb_flt_enable(ptGptbBase);
 }
 
-/** \brief enable/disable gptb burst 
+/** \brief gptb burst config
  * 
  *  \param[in] ptGptbBase: pointer of gptb register structure
- *  \param[in] byCgsrc \ref csi_gptb_cgsrc_e src 
- *  \return error code \ref csi_error_t
+ *  \param[in] byCgsrc \ref csi_gptb_cgsrc_e 
+ *  \return none
  */
-csi_error_t csi_gptb_set_burst(csp_gptb_t *ptGptbBase,csi_gptb_cgsrc_e eCgsrc)
+void csi_gptb_set_burst(csp_gptb_t *ptGptbBase,csi_gptb_cgsrc_e eCgsrc)
 {
-	csp_gptb_burst_enable(ptGptbBase);	
-	csp_gptb_set_cgsrc(ptGptbBase,eCgsrc);
-	return CSI_OK;
+	csp_gptb_set_cgsrc(ptGptbBase,(gptb_cgsrc_e)eCgsrc);
+	csp_gptb_burst_enable(ptGptbBase);
 }
 
  /**
- \brief  Channel configuration
+ \brief  PWM Channel configuration
  \param  ptGptbBase    	pointer of gptb register structure
- \param  ptPwmCfg   	    refer to csi_gptb_pwmchannel_config_t
- \param  channel        Channel label
- \return CSI_OK /CSI_ERROR
+ \param  ptPwmChCfg   	\refer to csi_gptb_pwm_channel_config_t
+ \param  channel        \refer to csi_gptb_channel_e
+ \return none
 */
-csi_error_t csi_gptb_channel_config(csp_gptb_t *ptGptbBase, csi_gptb_pwm_channel_config_t *ptPwmCfg, csi_gptb_channel_e eChannel)
+csi_error_t csi_gptb_pwm_ch_init(csp_gptb_t *ptGptbBase, csi_gptb_pwm_ch_config_t *ptPwmChCfg, csi_gptb_channel_e eChannel)
 {
     uint32_t wVal;
 	
-	wVal=  ptPwmCfg -> byActionZro 
-	              | ( ptPwmCfg -> byActionPrd  << GPTB_ACT_PRD_POS  )
-				  | ( ptPwmCfg -> byActionC1u  << GPTB_ACT_C1U_POS  )
-				  | ( ptPwmCfg -> byActionC1d  << GPTB_ACT_C1D_POS  )
-				  | ( ptPwmCfg -> byActionC2u  << GPTB_ACT_C2U_POS  )
-				  | ( ptPwmCfg -> byActionC2d  << GPTB_ACT_C2D_POS  )
-				  | ( ptPwmCfg -> byActionT1u  << GPTB_ACT_T1U_POS  )
-				  | ( ptPwmCfg -> byActionT1d  << GPTB_ACT_T1D_POS  )
-				  | ( ptPwmCfg -> byActionT2u  << GPTB_ACT_T2U_POS  )
-				  | ( ptPwmCfg -> byActionT2d  << GPTB_ACT_T2D_POS  )
-				  | ( ptPwmCfg -> byChoiceC1sel  << GPTB_C1SEL_POS  )
-				  | ( ptPwmCfg -> byChoiceC2sel  << GPTB_C2SEL_POS  );
-				  
+	wVal=  ptPwmChCfg -> eActionZRO 
+		| (ptPwmChCfg -> eActionPRD << GPTB_ACT_PRD_POS)
+		| (ptPwmChCfg -> eActionC1U << GPTB_ACT_C1U_POS)
+		| (ptPwmChCfg -> eActionC1D << GPTB_ACT_C1D_POS)
+		| (ptPwmChCfg -> eActionC2U << GPTB_ACT_C2U_POS)
+		| (ptPwmChCfg -> eActionC2D << GPTB_ACT_C2D_POS)
+		| (ptPwmChCfg -> eActionT1U << GPTB_ACT_T1U_POS)
+		| (ptPwmChCfg -> eActionT1D << GPTB_ACT_T1D_POS)
+		| (ptPwmChCfg -> eActionT2U << GPTB_ACT_T2U_POS)
+		| (ptPwmChCfg -> eActionT2D << GPTB_ACT_T2D_POS)
+		| (ptPwmChCfg -> eC1Sel  	<< GPTB_C1SEL_POS  )
+		| (ptPwmChCfg -> eC2Sel  	<< GPTB_C2SEL_POS  );
+
 	switch (eChannel)
 	{	
 		case (GPTB_CHANNEL_1):csp_gptb_set_aqcr1(ptGptbBase,wVal);
 			break;
+			
 		case (GPTB_CHANNEL_2):csp_gptb_set_aqcr2(ptGptbBase,wVal);
+			break;
+			
+		default:return CSI_ERROR;
+			break;
+	}
+	
+	return CSI_OK;
+}  
+ 
+/**
+ \brief  gptb deadzone init
+ \param  ptGptbBase    	pointer of gptb register structure
+ \param  ptCfg   \refer csi_gptb_deadzone_config_t
+  * 		-eChxOutSel_S1S0:DeadZone switch S0S1 config:DeadZone output Source Select. \refer csi_gptb_db_outsel_e
+  * 		-eChxPol_S3S2:DeadZone switch S2S3 config:DeadZone output polarity Control. \refer csi_gptb_db_pol_e
+  * 		-eChxInSel_S5S4:DeadZone switch S4S5 config:DeadZone delay module intput Select. \refer csi_gptb_dbcha_insel_e
+  * 		-eChxOutSwap_S8S7:DeadZone switch S7S8 config:DeadZone output Swap Control. \refer csi_gptb_dbcha_outswap_e
+  * 		-eDclkSel:DeadZone Clock Source. \refer csi_gptb_dbclksrc_e
+  * 		-eChxDedb_S6:DeadZone switch S6 config:DeadZone output Select. \refer csi_gptb_dedb_e
+  * 		-hwDpsc:DeadZone Clock Divider
+  * 		-wRisingEdgeTime:DeadZone rising edge delay time,unit:ns
+  * 		-wFallingEdgeTime:DeadZone falling edge delay time,unit:ns
+ \param  eChannel   \refer csi_gptb_channel_e
+ \return CSI_OK /CSI_ERROR
+*/
+csi_error_t csi_gptb_deadzone_init(csp_gptb_t *ptGptbBase, csi_gptb_deadzone_config_t *ptDeadzoneCfg, csi_gptb_channel_e eChannel)
+{  
+	uint32_t w_Val;
+	
+	w_Val=csp_gptb_get_dbcr(ptGptbBase);	
+	
+	switch (eChannel)
+	{	
+		case (GPTB_CHANNEL_1): 
+			w_Val = (w_Val & ~(GPTB_CHA_OUTSEL_MSK)) | (ptDeadzoneCfg-> eChxOutSel_S1S0  << GPTB_CHA_OUTSEL_POS);
+			w_Val = (w_Val & ~(GPTB_CHA_POL_MSK))    | (ptDeadzoneCfg-> eChxPol_S3S2	 << GPTB_CHA_POL_POS);
+			w_Val = (w_Val & ~(GPTB_CHA_INSEL_MSK))  | (ptDeadzoneCfg-> eChxInSel_S5S4   << GPTB_CHA_INSEL_POS);
+			w_Val = (w_Val & ~(GPTB_CHA_OUTSWAP_MSK))| (ptDeadzoneCfg-> eChxOutSwap_S8S7 << GPTB_CHA_OUTSWAP_POS);
+			w_Val = (w_Val & ~(GPTB_DCKSEL_MSK))     | (ptDeadzoneCfg-> eDclkSel 		 << GPTB_DCKSEL_POS);
+			w_Val = (w_Val & ~(GPTB_CHA_DEDB_MSK))   | (ptDeadzoneCfg-> eChxDedb_S6	  	 << GPTB_CHA_DEDB_POS);
 			break;
 
 		default:return CSI_ERROR;
 			break;
 	}
+	csp_gptb_set_dbcr(ptGptbBase, w_Val);	 
+	csp_gptb_set_dpscr(ptGptbBase, ptDeadzoneCfg -> hwDpsc);
+	
+	w_Val=csi_get_pclk_freq();
+	w_Val=(1000000000 / (w_Val / (ptDeadzoneCfg -> hwDpsc+1)));	
+	csp_gptb_set_dbdtr(ptGptbBase, ptDeadzoneCfg -> wRisingEdgeTime / w_Val);
+	csp_gptb_set_dbdtf(ptGptbBase, ptDeadzoneCfg -> wFallingEdgeTime / w_Val);
+	
+	return CSI_OK;	
+}
+
+/**
+ \brief  gptb emergency init
+ \param  ptGptbBase    	pointer of gptb register structure
+ \param  ptEmCfg   \refer csi_gptb_emergency_config_t
+  * 		-eEp:Emergency EP channel select:EP 0/1/2/3. \refer csi_gptb_ep_e
+  * 		-eEmSrc:Emergency source:EBIx/CMPx. \refer csi_gptb_emsrc_e
+  * 		-eEmPol:Emergency polarity:LOW/HIGH. \refer csi_gptb_empol_e
+  * 		-eFltPace0:Emergency filter0 pace config. \refer csi_gptb_epflt_e
+  * 		-eFltPace1:Emergency filter1 pace config. \refer csi_gptb_epflt_e
+  * 		-eEpxLockMode:Emergency EP lock mode:SLCK/HLCK. \refer csi_gptb_ep_lckmd_e
+  * 		-eSlckClrMode:Emergency SLCK clear mode. \refer csi_gptb_slclrmd_e
+  * 		-eOsrShdw:Emergency EMOSR shadow mode. \refer csi_gptb_osrshdw_e
+  * 		-eOsrLoadMode:Emergency EMSOR Shadow load mode. \refer csi_gptb_ldemosr_e
+  * 		-byORL0:Emergency ORL0 source
+  * 		-byORL1:Emergency ORL1 source
+ \return CSI_OK /CSI_ERROR
+*/
+csi_error_t csi_gptb_emergency_init(csp_gptb_t *ptGptbBase, csi_gptb_emergency_config_t *ptEmCfg)
+{ 
+	uint32_t wEmsrc;
+	uint32_t wEmsrc2;
+	uint32_t wEmpol;
+	uint32_t wEmecr;
+	
+	if(ptEmCfg -> eEmSrc == GPTB_EMSRC_ORL0)
+	{
+		wEmsrc2 = csp_gptb_get_emsrc2(ptGptbBase);
+		wEmsrc2 = (wEmsrc2 & (~GPTB_EPPACE0_MSK)) | (ptEmCfg -> eFltPace0  << GPTB_EPPACE0_POS);
+		wEmsrc2 = (wEmsrc2 & ~0xff) | (ptEmCfg -> byORL0);
+		csp_gptb_set_emsrc2(ptGptbBase,wEmsrc2);
+	}
+    
+	if(ptEmCfg -> eEmSrc == GPTB_EMSRC_ORL1)	
+	{
+		wEmsrc2 = csp_gptb_get_emsrc2(ptGptbBase);
+		wEmsrc2 = (wEmsrc2 & (~GPTB_EPPACE1_MSK)) | (ptEmCfg -> eFltPace1 << GPTB_EPPACE1_POS);
+		wEmsrc2 = (wEmsrc2 & ~0xff0000) | ((ptEmCfg -> byORL1) <<16);
+		csp_gptb_set_emsrc2(ptGptbBase,wEmsrc2);
+	}
+	
+	wEmsrc = csp_gptb_get_emsrc(ptGptbBase);
+    wEmsrc=(wEmsrc &~ GPTB_SEL_MSK_EP(ptEmCfg -> eEp)) | (ptEmCfg -> eEmSrc << GPTB_SEL_POS_EP(ptEmCfg -> eEp));
+    csp_gptb_set_emsrc(ptGptbBase,wEmsrc);
+	
+	if((ptEmCfg -> eEmSrc) > 0)
+	{
+		wEmpol=csp_gptb_get_empol(ptGptbBase);	
+		switch (ptEmCfg -> eEmSrc)
+		{    
+			case (GPTB_EMSRC_EBI0):  wEmpol = (wEmpol & ~GPTB_POL_MSK_EBI(0)) | (ptEmCfg -> eEmPol << GPTB_POL_POS_EBI(0));break;
+			case (GPTB_EMSRC_EBI1):  wEmpol = (wEmpol & ~GPTB_POL_MSK_EBI(1)) | (ptEmCfg -> eEmPol << GPTB_POL_POS_EBI(1));break;
+			case (GPTB_EMSRC_EBI2):  wEmpol = (wEmpol & ~GPTB_POL_MSK_EBI(2)) | (ptEmCfg -> eEmPol << GPTB_POL_POS_EBI(2));break;
+			case (GPTB_EMSRC_EBI3):  wEmpol = (wEmpol & ~GPTB_POL_MSK_EBI(3)) | (ptEmCfg -> eEmPol << GPTB_POL_POS_EBI(3));break;
+			case (GPTB_EMSRC_CMP0):  wEmpol = (wEmpol & ~GPTB_POL_MSK_EBI(4)) | (ptEmCfg -> eEmPol << GPTB_POL_POS_EBI(4));break;
+			case (GPTB_EMSRC_CMP1):  wEmpol = (wEmpol & ~GPTB_POL_MSK_EBI(5)) | (ptEmCfg -> eEmPol << GPTB_POL_POS_EBI(5));break;
+			case (GPTB_EMSRC_CMP2):  wEmpol = (wEmpol & ~GPTB_POL_MSK_EBI(6)) | (ptEmCfg -> eEmPol << GPTB_POL_POS_EBI(6));break;
+			case (GPTB_EMSRC_ORL0):  break;
+			case (GPTB_EMSRC_ORL1):  break;
+			default:return CSI_ERROR;break;
+		}
+		csp_gptb_set_empol(ptGptbBase,wEmpol);
+	}
+
+	if(ptEmCfg -> eEpxLockMode)
+	{
+		wEmecr =  csp_gptb_get_emecr(ptGptbBase);	
+		wEmecr =(wEmecr & (~GPTB_LCKMD_MSK_EP(ptEmCfg ->eEp))) | (ptEmCfg  -> eEpxLockMode     <<  GPTB_LCKMD_POS_EP(ptEmCfg -> eEp));
+		wEmecr =(wEmecr & (~GPTB_EMECR_SLCLRMD_MSK         ))  | (ptEmCfg  -> eSlckClrMode     <<  GPTB_EMECR_SLCLRMD_POS          ); 
+		wEmecr =(wEmecr & (~GPTB_EMECR_OSRSHDW_MSK         ))  | ((ptEmCfg -> eOsrShdw & 0x01) <<  GPTB_EMECR_OSRSHDW_POS          );
+		wEmecr =(wEmecr & (~GPTB_EMECR_OSRLDMD_MSK         ))  | (ptEmCfg  -> eOsrLoadMode     <<  GPTB_EMECR_OSRLDMD_POS          );
+		csp_gptb_set_emecr(ptGptbBase,wEmecr);
+	}
+    
+	return CSI_OK;
+}
+
+/**
+ \brief  State of emergency configuration 
+ \param  ptGptbBase    	pointer of gptb register structure
+ \param  eOsrch         \refer to csi_gptb_osrchx_e
+ \param  eEmout         \refer to csi_gptb_emout_e
+ \return CSI_OK /CSI_ERROR
+*/
+csi_error_t csi_gptb_set_emergency_out(csp_gptb_t *ptGptbBase, csi_gptb_osrchx_e eOsrch, csi_gptb_emout_e eEmOut)
+{ 
+	uint32_t wEmosr;
+    wEmosr=csp_gptb_get_emosr(ptGptbBase);	
+	switch (eOsrch)
+	{    
+		case (GPTB_EMCOAX): wEmosr = (wEmosr & ~(GPTB_EMOSR_EM_COAX_MSK)) | (eEmOut << GPTB_EMOSR_EM_COAX_POS);break;
+		case (GPTB_EMCOBX): wEmosr = (wEmosr & ~(GPTB_EMOSR_EM_COBX_MSK)) | (eEmOut << GPTB_EMOSR_EM_COBX_POS);break;
+		case (GPTB_EMCOAY): wEmosr = (wEmosr & ~(GPTB_EMOSR_EM_COAY_MSK)) | (eEmOut << GPTB_EMOSR_EM_COAY_POS);break;		
+		default:return CSI_ERROR;break;
+	}
+    csp_gptb_set_emosr(ptGptbBase,wEmosr);
+	
 	return CSI_OK;
 }
 
 /** \brief Channel CMPLDR configuration
  * 
  *  \param[in] ptGptbBase: pointer of gptb register structure
- *  \param[in] eLdmd: refer to csi_gptb_ldmd_e
- *  \param[in] eShdwldmd: refer to csi_gptb_shdwldmd_e
- *  \param[in] eChannel: refer to csi_gptb_comp_e
+ *  \param[in] eLoadMode: 		\ref to csi_gptb_ldmd_e
+ *  \param[in] eShdwLoadMode:   \ref to csi_gptb_shdwldmd_e
+ *  \param[in] eChannel: 		\ref to csi_gptb_comp_e
  *  \return error code \ref csi_error_t
  */
-csi_error_t csi_gptb_channel_cmpload_config(csp_gptb_t *ptGptbBase, csi_gptb_ldmd_e eLdmd, csi_gptb_shdwldmd_e eShdwldmd ,csi_gptb_comp_e eChannel)
-{			  
-	switch (eChannel)
-	{	
-		case (GPTB_COMPA):   ptGptbBase -> CMPLDR = (ptGptbBase -> CMPLDR &~(GPTB_CMPA_LD_MSK) )    |  (eLdmd    << GPTB_CMPA_LD_POS);
-		                     ptGptbBase -> CMPLDR = (ptGptbBase -> CMPLDR &~(GPTB_CMPA_LDTIME_MSK) )|  (eShdwldmd <<GPTB_CMPA_LDTIME_POS);
-			break;
-		case (GPTB_COMPB):   ptGptbBase -> CMPLDR = (ptGptbBase -> CMPLDR &~(GPTB_CMPB_LD_MSK) )    |  (eLdmd    << GPTB_CMPB_LD_POS);
-		                     ptGptbBase -> CMPLDR = (ptGptbBase -> CMPLDR &~(GPTB_CMPB_LDTIME_MSK) )|  (eShdwldmd << GPTB_CMPB_LDTIME_POS);
-			break;
-
-		default:return CSI_ERROR;
-			break;
-	}
-	return CSI_OK;
-}
-
-/**
- \brief  DeadZoneTime configuration 
- \param  ptGptbBase    	pointer of gptb register structure
- \param  ptCfg           refer to csi_ept_deadzone_config_t
- \return CSI_OK /CSI_ERROR
-*/
-csi_error_t csi_gptb_dz_config(csp_gptb_t *ptGptbBase, csi_gptb_deadzone_config_t *ptCfg)
-{  uint32_t w_Val;
-   
-	w_Val=csp_gptb_get_dbcr(ptGptbBase);	
-	w_Val=(w_Val&~(GPTB_DCKSEL_MSK))  |(ptCfg-> byDcksel <<GPTB_DCKSEL_POS);
-	w_Val=(w_Val&~(GPTB_CHA_DEDB_MSK))|(ptCfg-> byChaDedb<<GPTB_CHA_DEDB_POS);
-	csp_gptb_set_dbcr( ptGptbBase, w_Val);	 
-	csp_gptb_set_dpscr(ptGptbBase, ptCfg-> hwDpsc);
-	
-	w_Val=csi_get_pclk_freq();
-	w_Val=(1000000000/(w_Val/(ptCfg->hwDpsc+1)));    //NS/(1/(48000000/(DPSC+1))*10^9) // 500NS/(1000/48) = 24;	
-	csp_gptb_set_dbdtr(ptGptbBase	,ptCfg-> wRisingEdgeTime /w_Val);
-	csp_gptb_set_dbdtf(ptGptbBase	,ptCfg-> wFallingEdgeTime/w_Val);
-	
-	return CSI_OK;	
-}
- /**
- \brief  DeadZoneTime configuration loading 
- \param  ptGptbBase    	pointer of gptb register structure
- \param  eDbldr         refer to csi_gptb_dbldr_e
- \param  eDbldmd         refer to csi_gptb_dbldmd_e
- \param  eShdwdbldmd	       refer to csi_gptb_shdwdbldmd_e
- \return CSI_OK /CSI_ERROR
-*/
-csi_error_t csi_gptb_dbldrload_config(csp_gptb_t *ptGptbBase, csi_gptb_dbldr_e eDbldr,csi_gptb_dbldmd_e eDbldmd, csi_gptb_shdwdbldmd_e eShdwdbldmd)
-{   uint32_t w_Val;
-	w_Val=csp_gptb_get_dbldr(ptGptbBase);
-	switch (eDbldr)
-	{	
-		case (GPTB_DBCR) :w_Val=( w_Val &~(GPTB_DBLDR_CRSHDWEN_MSK) )|(eDbldmd << GPTB_DBLDR_CRSHDWEN_POS);
-		             w_Val=( w_Val &~(GPTB_DBLDR_LDCRMODE_MSK))|(eShdwdbldmd << GPTB_DBLDR_LDCRMODE_POS);
-			break;
-		case (GPTB_DBDTR):w_Val=( w_Val &~GPTB_DBLDR_SHDWDTR_MSK )|(eDbldmd << GPTB_DBLDR_SHDWDTR_POS );
-		             w_Val=( w_Val &~GPTB_DBLDR_LDDTRMD_MSK )|(eShdwdbldmd << GPTB_DBLDR_LDDTRMD_POS);
-		    break;
-		case (GPTB_DBDTF):w_Val=( w_Val &~GPTB_DBLDR_SHDWDTF_MSK )|(eDbldmd << GPTB_DBLDR_SHDWDTF_POS);
-		             w_Val=( w_Val &~GPTB_DBLDR_LDDTFMD_MSK )|(eShdwdbldmd <<GPTB_DBLDR_LDDTFMD_POS);
-            break;
-		case (GPTB_DCKPSC):w_Val=( w_Val &~GPTB_DBLDR_SHDWPSC_MSK)|(eDbldmd << GPTB_DBLDR_SHDWPSC_POS);
-		              w_Val=( w_Val &~GPTB_DBLDR_LDPSCMD_MSK)|(eShdwdbldmd << GPTB_DBLDR_LDPSCMD_POS);
-		    break;
-		default:return CSI_ERROR;
-			break;
-	}
-	csp_gptb_set_dbldr(ptGptbBase,w_Val);
-			
-	return CSI_OK;
-}   
- /**
- \brief  DeadZoneTime configuration 
- \param  ptGptbBase    	pointer of gptb register structure
- \param  ptCfg           refer to csi_gptb_deadzone_config_t
- \return CSI_OK /CSI_ERROR
-*/
-csi_error_t csi_gptb_dbcr_config(csp_gptb_t *ptGptbBase, csi_gptb_deadzone_config_t *ptCfg)
-{  uint32_t w_Val;
-	w_Val=csp_gptb_get_dbcr(ptGptbBase);	
-	w_Val=(w_Val&~(GPTB_DCKSEL_MSK))|(ptCfg-> byDcksel <<GPTB_DCKSEL_POS);
-	w_Val=(w_Val&~(GPTB_CHA_DEDB_MSK))|(ptCfg-> byChaDedb<<GPTB_CHA_DEDB_POS);
-	csp_gptb_set_dbcr( ptGptbBase, w_Val);	 
-	csp_gptb_set_dpscr(ptGptbBase	,ptCfg-> hwDpsc);
-	csp_gptb_set_dbdtr(ptGptbBase	,ptCfg-> wRisingEdgeTime);
-	csp_gptb_set_dbdtf(ptGptbBase	,ptCfg-> wFallingEdgeTime);
-	return CSI_OK;	
-}
- /**
- \brief  channelmode configuration 
- \param  ptGptbBase    pointer of gptb register structure
- \param  ptCfg         refer to csi_gptb_deadzone_config_t
- \param  eChannel         refer to csi_gptb_channel_e
- \return CSI_OK /CSI_ERROR  
-*/
-csi_error_t csi_gptb_channelmode_config(csp_gptb_t *ptGptbBase,csi_gptb_deadzone_config_t *ptCfg,csi_gptb_channel_e eChannel)
-{    uint32_t w_Val;
-     w_Val=csp_gptb_get_dbcr(ptGptbBase);	
-	 switch (eChannel)
-	{	
-		case (GPTB_CHANNEL_1): w_Val=(w_Val&~(DB_CHA_OUTSEL_MSK)) |(ptCfg-> byChxOuselS1S0   <<DB_CHA_OUTSEL_POS);
-		                      w_Val=(w_Val&~(DB_CHA_POL_MSK))    |(ptCfg-> byChxPolarityS3S2<<DB_CHA_POL_POS);
-							  w_Val=(w_Val&~(DB_CHA_INSEL_MSK))  |(ptCfg-> byChxInselS5S4   <<DB_CHA_INSEL_POS);
-							  w_Val=(w_Val&~(DB_CHA_OUTSWAP_MSK))|(ptCfg-> byChxOutSwapS8S7 <<DB_CHA_OUTSWAP_POS);
-			break;
-
-		default:return CSI_ERROR;
-			break;
-	}
-	csp_gptb_set_dbcr( ptGptbBase, w_Val);
-	return CSI_OK;
-}
-
-/**
- \brief  State of emergency configuration 
- \param  ptGptbBase    	pointer of gptb register structure
- \param  ptCfg           refer to csi_gptb_emergency_config_t
- \return CSI_OK /CSI_ERROR
-//*/
-csi_error_t csi_gptb_emergency_cfg(csp_gptb_t *ptGptbBase, csi_gptb_emergency_config_t *ptCfg)
-{ uint32_t wEmsrc;
-  uint32_t wEmsrc2;
-  uint32_t wEmpol;
-  uint32_t wEmecr;
-	
-	if(ptCfg -> byEpxInt==GPTB_ORL0)
-	{
-		wEmsrc2=csp_gptb_get_src2(ptGptbBase);
-		wEmsrc2=(wEmsrc2 & (~GPTB_EPPACE0_MSK)) | (ptCfg -> byFltpace0  << GPTB_EPPACE0_POS);
-		wEmsrc2=(wEmsrc2 &~0xff)     |  ptCfg ->byOrl0 ;
-		csp_gptb_set_src2(ptGptbBase,wEmsrc2);
-	}
-    
-	if(ptCfg -> byEpxInt==GPTB_ORL1)	
-	{
-		wEmsrc2=csp_gptb_get_src2(ptGptbBase);
-		wEmsrc2=(wEmsrc2  & (~GPTB_EPPACE1_MSK) ) | (ptCfg -> byFltpace1 << GPTB_EPPACE1_POS);
-		wEmsrc2=(wEmsrc2 &~0xff0000) |  ptCfg ->byOrl1 <<16;
-		csp_gptb_set_src2(ptGptbBase,wEmsrc2);
-	}
-	
-	wEmsrc = csp_gptb_get_src(ptGptbBase);
-    wEmsrc=(  wEmsrc &~ GPTB_SEL_MSK_EP(ptCfg -> byEpx) )|( ptCfg -> byEpxInt  << GPTB_SEL_POS_EP(ptCfg -> byEpx));
-    csp_gptb_set_src(ptGptbBase,wEmsrc);
-	
-	if(ptCfg ->byEpxInt>0)
-	{
-		wEmpol=csp_gptb_get_empol(ptGptbBase);	
-		switch (ptCfg ->byEpxInt)
-		{    
-			case (GPTB_EBI0):  wEmpol=( wEmpol  &~ GPTB_POL_MSK_EBI(0)) | (ptCfg -> byPolEbix <<GPTB_POL_POS_EBI(0) );break;
-			case (GPTB_EBI1):  wEmpol=( wEmpol  &~ GPTB_POL_MSK_EBI(1)) | (ptCfg -> byPolEbix <<GPTB_POL_POS_EBI(1) );break;
-			case (GPTB_EBI2):  wEmpol=( wEmpol  &~ GPTB_POL_MSK_EBI(2)) | (ptCfg -> byPolEbix <<GPTB_POL_POS_EBI(2) );break;
-			case (GPTB_EBI3):  wEmpol=( wEmpol  &~ GPTB_POL_MSK_EBI(3)) | (ptCfg -> byPolEbix <<GPTB_POL_POS_EBI(3) );break;
-			case (GPTB_CMP0):  wEmpol=( wEmpol  &~ GPTB_POL_MSK_EBI(4)) | (ptCfg -> byPolEbix <<GPTB_POL_POS_EBI(4) );break;
-			case (GPTB_CMP1):  wEmpol=( wEmpol  &~ GPTB_POL_MSK_EBI(5)) | (ptCfg -> byPolEbix <<GPTB_POL_POS_EBI(5) );break;
-			case (GPTB_CMP2):  wEmpol=( wEmpol  &~ GPTB_POL_MSK_EBI(6)) | (ptCfg -> byPolEbix <<GPTB_POL_POS_EBI(6) );break;
-			case (GPTB_ORL0):  break;
-			case (GPTB_ORL1):  break;
-			default:return CSI_ERROR;break;
-		}
-		csp_gptb_set_empol(ptGptbBase,wEmpol);
-	}
-
-	if(ptCfg ->byEpxLckmd)
-	{
-		wEmecr =  csp_gptb_get_emecr(ptGptbBase);	
-		wEmecr =(wEmecr & (~GPTB_LCKMD_MSK_EP(ptCfg ->byEpx))) | (   ptCfg ->byEpxLckmd      <<  GPTB_LCKMD_POS_EP(ptCfg ->byEpx));
-		wEmecr =(wEmecr & (~GPTB_EMECR_OSRSHDW_MSK         )) | (  (ptCfg ->byOsrshdw&0x01) <<  GPTB_EMECR_OSRSHDW_POS         );
-		wEmecr =(wEmecr & (~GPTB_EMECR_OSRLDMD_MSK         )) | (   ptCfg ->byOsrldmd       <<  GPTB_EMECR_OSRLDMD_POS         );
-		wEmecr =(wEmecr & (~GPTB_EMECR_SLCLRMD_MSK         )) | (   ptCfg ->bySlclrmd       <<  GPTB_EMECR_SLCLRMD_POS         ); 
-		csp_gptb_set_emecr(ptGptbBase,wEmecr);
-	}
-    
-	return CSI_OK;
-}
-/**
- \brief  State of emergency configuration 
- \param  ptGptbBase    	pointer of gptb register structure
- \param  eOsrch         refer to csi_gptb_osrchx_e
- \param  eEmout         refer to csi_gptb_emout_e
- \return CSI_OK /CSI_ERROR
-//*/
-csi_error_t csi_gptb_emergency_pinxout(csp_gptb_t *ptGptbBase,csi_gptb_osrchx_e  eOsrch ,csi_gptb_emout_e eEmout)
-{ uint32_t wEmosr;
-    wEmosr=csp_gptb_get_emosr(ptGptbBase);	
-	 switch (eOsrch)
-	 {    case (GPTB_EMCOAX): wEmosr=( wEmosr &~(GPTB_EMOSR_EM_COAX_MSK) )|( eEmout <<GPTB_EMOSR_EM_COAX_POS);break;
-		  case (GPTB_EMCOBX): wEmosr=( wEmosr &~(GPTB_EMOSR_EM_COBX_MSK) )|( eEmout <<GPTB_EMOSR_EM_COBX_POS);break;
-		  case (GPTB_EMCOAY): wEmosr=( wEmosr &~(GPTB_EMOSR_EM_COAY_MSK) )|( eEmout <<GPTB_EMOSR_EM_COAY_POS);break;		
-		  default:return CSI_ERROR;break;
-	 }
-    csp_gptb_set_emosr(ptGptbBase,wEmosr);
-	return CSI_OK;
+void csi_gptb_set_cmpload(csp_gptb_t *ptGptbBase, csi_gptb_ldmd_e eLoadMode, csi_gptb_shdwldmd_e eShdwLoadMode,csi_gptb_comp_e eCmp)
+{			 
+	csp_gptb_set_cmpldr(ptGptbBase,(gptb_ldmd_e)eLoadMode, (gptb_shdwldmd_e)eShdwLoadMode, (gptb_comp_e)eCmp);
 }
 
 /** \brief Channel AQLDR configuration
  * 
  *  \param[in] ptGptbBase: pointer of gptb register structure
- *  \param[in] eLdmd: refer to csi_gptb_ldmd_e
- *  \param[in] eShdwldmd: refer to csi_gptb_shdwldmd_e
- *  \param[in] eChannel: refer to csi_gptb_channel_e
+ *  \param[in] eLoadMode: 	  \ref to csi_gptb_ldmd_e
+ *  \param[in] eShdwLoadMode: \ref to csi_gptb_shdwldmd_e
+ *  \param[in] eChannel:      \ref to csi_gptb_channel_e
  *  \return error code \ref csi_error_t
  */
-csi_error_t csi_gptb_channel_aqload_config(csp_gptb_t *ptGptbBase, csi_gptb_ldmd_e eLdmd, csi_gptb_shdwldmd_e eShdwldmd ,csi_gptb_channel_e eChannel)
-{			  
-	switch (eChannel)
-	{	
-		case (GPTB_CHANNEL_1):ptGptbBase -> AQLDR = (ptGptbBase -> AQLDR &~(GPTB_AQCR1_SHDWEN_MSK) )|  (eLdmd << GPTB_AQCR1_SHDWEN_POS);
-		                      ptGptbBase -> AQLDR = (ptGptbBase -> AQLDR &~(GPTB_LDAMD_MSK) )|  (eShdwldmd << GPTB_LDAMD_POS);
-			break;
-		case (GPTB_CHANNEL_2):ptGptbBase -> AQLDR = (ptGptbBase -> AQLDR &~(GPTB_AQCR2_SHDWEN_MSK) )|  (eLdmd << GPTB_AQCR2_SHDWEN_POS);
-		                      ptGptbBase -> AQLDR = (ptGptbBase -> AQLDR &~(GPTB_LDBMD_MSK) )|  (eShdwldmd << GPTB_LDBMD_POS);
-			break;
+void csi_gptb_set_aqload(csp_gptb_t *ptGptbBase, csi_gptb_ldmd_e eLoadMode, csi_gptb_shdwldmd_e eShdwLoadMode ,csi_gptb_channel_e eChannel)
+{			
+	csp_gptb_set_aqldr(ptGptbBase,(gptb_ldmd_e)eLoadMode, (gptb_shdwldmd_e)eShdwLoadMode, (gptb_channel_e)eChannel);  
+}
 
+/**
+ \brief  DeadZoneTime configuration loading 
+ \param  ptGptbBase    	pointer of gptb register structure
+ \param  eDbldr         \ref to csi_gptb_dbldr_e
+ \param  eDbldmd        \ref to csi_gptb_dbldmd_e
+ \param  eShdwdbldmd	\ref to csi_gptb_shdwdbldmd_e
+ \return CSI_OK /CSI_ERROR
+*/
+csi_error_t csi_gptb_set_dbload(csp_gptb_t *ptGptbBase, csi_gptb_dbldr_e eDbldr,csi_gptb_dbldmd_e eDbldmd, csi_gptb_shdwdbldmd_e eShdwdbldmd)
+{   
+	uint32_t w_Val;
+	w_Val=csp_gptb_get_dbldr(ptGptbBase);
+	switch (eDbldr)
+	{	
+		case (GPTB_DBCR):
+			w_Val = ( w_Val & ~(GPTB_DBLDR_SHDWCR_MSK))   | (eDbldmd     << GPTB_DBLDR_SHDWCR_POS);
+			w_Val = ( w_Val & ~(GPTB_DBLDR_LDCRMODE_MSK)) | (eShdwdbldmd << GPTB_DBLDR_LDCRMODE_POS);
+			break;
+			
+		case (GPTB_DBDTR):
+			w_Val = ( w_Val & ~GPTB_DBLDR_SHDWDTR_MSK)    | (eDbldmd     << GPTB_DBLDR_SHDWDTR_POS);
+			w_Val = ( w_Val & ~GPTB_DBLDR_LDDTRMD_MSK)    | (eShdwdbldmd << GPTB_DBLDR_LDDTRMD_POS);
+		    break;
+			
+		case (GPTB_DBDTF):
+			w_Val = ( w_Val & ~GPTB_DBLDR_SHDWDTF_MSK)    | (eDbldmd     << GPTB_DBLDR_SHDWDTF_POS);
+			w_Val = ( w_Val & ~GPTB_DBLDR_LDDTFMD_MSK)    | (eShdwdbldmd << GPTB_DBLDR_LDDTFMD_POS);
+            break;
+			
+		case (GPTB_DCKPSC):
+			w_Val = ( w_Val & ~GPTB_DBLDR_SHDWPSC_MSK) 	  | (eDbldmd     << GPTB_DBLDR_SHDWPSC_POS);
+			w_Val = ( w_Val & ~GPTB_DBLDR_LDPSCMD_MSK)	  | (eShdwdbldmd << GPTB_DBLDR_LDPSCMD_POS);
+		    break;
+			
 		default:return CSI_ERROR;
 			break;
 	}
+	csp_gptb_set_dbldr(ptGptbBase,w_Val);
+	
 	return CSI_OK;
 }
 
 /**
- \brief  gptb configuration Loading
+ \brief  gptb global load config
  \param  ptGptbBase    	pointer of gptb register structure
- \param  ptGlobal       refer to csi_gptb_Global_load_control_config_t
+ \param  ptGldCfg       \refer csi_gptb_global_load_config_t
+  * 		- eGldEnable:Global load enable control \refer csi_gptb_gld_en_e
+  * 		- eGldMode:Global load mode \refer csi_gptb_gldmd_e
+  * 		- eGldOstMode:Global oneshot control \refer csi_gptb_gld_ostmd_e
+  * 		- byGldprd:Global load period select   		
+  * 		- byGldcnt:Global event count
  \return CSI_OK /CSI_ERROR
 */
-csi_error_t csi_gptb_global_config(csp_gptb_t *ptGptbBase,csi_gptb_Global_load_control_config_t *ptGlobal)
-{   uint32_t wGLDCR;	
+void csi_gptb_set_gldcr(csp_gptb_t *ptGptbBase, csi_gptb_global_load_config_t *ptGldCfg)
+{   
+	uint32_t wGLDCR;	
+	
 	wGLDCR =0;
-    wGLDCR = (wGLDCR &~GPTB_GLDEN_MSK)       | ((ptGlobal->bGlden & 0x01)<<GPTB_GLDEN_POS);
-	wGLDCR = (wGLDCR &~GPTB_GLDMD_MSK)       | ((ptGlobal->byGldmd & 0x0f)<<GPTB_GLDMD_POS);
-	wGLDCR = (wGLDCR &~GPTB_GLDCR_OSTMD_MSK) | ((ptGlobal->bOstmd & 0x01)<<GPTB_GLDCR_OSTMD_POS);
-	wGLDCR = (wGLDCR &~GPTB_GLDPRD_MSK)      | ((ptGlobal->byGldprd & 0x07)<<GPTB_GLDPRD_POS);
+    wGLDCR = (wGLDCR & ~GPTB_GLDEN_MSK)       | ((ptGldCfg -> eGldEnable  & 0x01) << GPTB_GLDEN_POS);
+	wGLDCR = (wGLDCR & ~GPTB_GLDMD_MSK)       | ((ptGldCfg -> eGldMode    & 0x0f) << GPTB_GLDMD_POS);
+	wGLDCR = (wGLDCR & ~GPTB_GLDCR_OSTMD_MSK) | ((ptGldCfg -> eGldOstMode & 0x01) << GPTB_GLDCR_OSTMD_POS);
+	wGLDCR = (wGLDCR & ~GPTB_GLDPRD_MSK)      | ((ptGldCfg -> byGldprd 	  & 0x07) << GPTB_GLDPRD_POS);
 	csp_gptb_set_gldcr(ptGptbBase,wGLDCR);	
-	return CSI_OK;
 }
 
 /** \brief GLDCFG loading
  * 
  *  \param[in] ptGPTBBase of GPTB register structure
- *  \param[in] Glo:  csi_GPTB_Global_load_gldcfg  
+ *  \param[in] Glo:  \ref csi_gptb_gldcfg_e
  *  \param[in] bEnable ENABLE or DISABLE
  *  \return CSI_OK
  */
-csi_error_t csi_gptb_gldcfg(csp_gptb_t *ptGptbBase ,csi_gptb_gldcfg_e eGlo, bool bEnable)
+void csi_gptb_set_gldcfg(csp_gptb_t *ptGptbBase ,csi_gptb_gldcfg_e eGloCfg, bool bEnable)
 {
-   	switch (eGlo)
+   	switch (eGloCfg)
 	{	
-		case (GPTB_GLO_PRDR): ptGptbBase  -> GLDCFG   = (ptGptbBase -> GLDCFG  & ~(GPTB_LD_PRDR_MSK))   |(bEnable << GPTB_LD_PRDR_POS) ;
+		case (GPTB_GLO_PRDR): 
+			csp_gptb_set_gldcfg(ptGptbBase, GPTB_LD_PRDR_MSK, (bEnable << GPTB_LD_PRDR_POS));
 			break;
-		case (GPTB_GLO_CMPA): ptGptbBase  -> GLDCFG   = (ptGptbBase -> GLDCFG  & ~(GPTB_LD_CMPA_MSK))   |(bEnable << GPTB_LD_CMPA_POS) ;
+	
+		case (GPTB_GLO_CMPA): 
+			csp_gptb_set_gldcfg(ptGptbBase, GPTB_LD_CMPA_MSK, (bEnable << GPTB_LD_CMPA_POS));
 			break;
-		case (GPTB_GLO_CMPB): ptGptbBase  -> GLDCFG   = (ptGptbBase -> GLDCFG  & ~(GPTB_LD_CMPB_MSK))   |(bEnable << GPTB_LD_CMPB_POS) ;
+			
+		case (GPTB_GLO_CMPB): 
+			csp_gptb_set_gldcfg(ptGptbBase, GPTB_LD_CMPB_MSK, (bEnable << GPTB_LD_CMPB_POS));
 		    break;
-		case (GPTB_GLO_DBDTR): ptGptbBase -> GLDCFG   = (ptGptbBase -> GLDCFG  & ~(GPTB_LD_DBDTR_MSK))  |(bEnable << GPTB_LD_DBDTR_POS) ;
+			
+		case (GPTB_GLO_DBDTR): 
+			csp_gptb_set_gldcfg(ptGptbBase, GPTB_LD_DBDTR_MSK, (bEnable << GPTB_LD_DBDTR_POS));
 			break;
-		case (GPTB_GLO_DBDTF): ptGptbBase -> GLDCFG   = (ptGptbBase -> GLDCFG  & ~(GPTB_LD_DBDTF_MSK))  |(bEnable << GPTB_LD_DBDTF_POS) ;
+			
+		case (GPTB_GLO_DBDTF): 
+			csp_gptb_set_gldcfg(ptGptbBase, GPTB_LD_DBDTF_MSK, (bEnable << GPTB_LD_DBDTF_POS));
 			break;
-		case (GPTB_GLO_DBCR): ptGptbBase  -> GLDCFG   = (ptGptbBase -> GLDCFG  & ~(GPTB_LD_DBCR_MSK))   |(bEnable << GPTB_LD_DBCR_POS) ;
+			
+		case (GPTB_GLO_DBCR): 
+			csp_gptb_set_gldcfg(ptGptbBase, GPTB_LD_DBCR_MSK, (bEnable << GPTB_LD_DBCR_POS));
 		    break;
-		case (GPTB_GLO_AQCR1):ptGptbBase  -> GLDCFG   = (ptGptbBase -> GLDCFG  & ~(GPTB_LD_AQCR1_MSK))  |(bEnable << GPTB_LD_AQCR1_POS );
+			
+		case (GPTB_GLO_AQCR1):
+			csp_gptb_set_gldcfg(ptGptbBase, GPTB_LD_AQCR1_MSK, (bEnable << GPTB_LD_AQCR1_POS));
 		    break;
-		case (GPTB_GLO_AQCR2):ptGptbBase  -> GLDCFG   = (ptGptbBase -> GLDCFG  & ~(GPTB_LD_AQCR2_MSK))  |(bEnable << GPTB_LD_AQCR2_POS );
+			
+		case (GPTB_GLO_AQCR2):
+			csp_gptb_set_gldcfg(ptGptbBase, GPTB_LD_AQCR2_MSK, (bEnable << GPTB_LD_AQCR2_POS));
 		    break;
-	    case (GPTB_GLO_AQCSF):ptGptbBase  -> GLDCFG   = (ptGptbBase -> GLDCFG  & ~(GPTB_LD_AQCSF_MSK))  |(bEnable << GPTB_LD_AQCSF_POS );
-			 break;
-		case (GPTB_GLO_EMOSR):ptGptbBase  -> GLDCFG   = (ptGptbBase -> GLDCFG  & ~(GPTB_LD_EMOSR_MSK))  |(bEnable << GPTB_LD_EMOSR_POS );
-			 break;
-		default: return CSI_ERROR;
+			
+	    case (GPTB_GLO_AQCSF):
+			csp_gptb_set_gldcfg(ptGptbBase, GPTB_LD_AQCSF_MSK, (bEnable << GPTB_LD_AQCSF_POS));
+			break;
+			
+		case (GPTB_GLO_EMOSR):
+			csp_gptb_set_gldcfg(ptGptbBase, GPTB_LD_EMOSR_MSK, (bEnable << GPTB_LD_EMOSR_POS));
+			break;
+			
+		default: 
 			break;
 	}   
-	return CSI_OK;
 }
 
 /**
- \brief  Software trigger loading
+ \brief  Software global load
  \param  ptGptbBase    	pointer of gptb register structure
  \return CSI_OK
 */
-csi_error_t csi_gptb_global_sw(csp_gptb_t *ptGptbBase)
+void csi_gptb_sw_global_load(csp_gptb_t *ptGptbBase) 
 {
 	csp_gptb_set_gldcr2(ptGptbBase,GPTB_SW_GLD);
-	return CSI_OK;
 }
+
 /**
  \brief  rearm  loading
  \param  ptGptbBase    	pointer of gptb register structure
  \return CSI_OK
 */
-csi_error_t csi_gptb_global_rearm(csp_gptb_t *ptGptbBase)
+void csi_gptb_global_rearm(csp_gptb_t *ptGptbBase)
 {
 	csp_gptb_set_gldcr2(ptGptbBase,GPTB_OSREARM_EN);
-	return CSI_OK;
 }
-/** \brief start gptb
- *  \param ptGptbBase:  pointer of bt register structure
- *  \return error code \ref csi_error_t
+
+/** \brief start GPTB counter
+ *  \param ptGptbBase:  pointer of gptb register structure
+ *  \return none
  */ 
-csi_error_t csi_gptb_start(csp_gptb_t *ptGptbBase)
+void csi_gptb_start(csp_gptb_t *ptGptbBase)
 {   
 	csp_gptb_wr_key(ptGptbBase); 
 	csp_gptb_start(ptGptbBase);
-	return CSI_OK;
 }
+
 /**
- \brief SW stop GPTB counter
- \param ptGptbBase    pointer of gptb register structure
+ \brief stop GPTB counter
+ \param ptGptbBase  pointer of gptb register structure
+ \return none
 */
-void csi_gptb_swstop(csp_gptb_t *ptGptbBase)
+void csi_gptb_stop(csp_gptb_t *ptGptbBase)
 {
   csp_gptb_wr_key(ptGptbBase);
   csp_gptb_stop(ptGptbBase);
 }
+
 /**
- \brief set GPTB start mode. 
- \param ptGptbBase    pointer of gptb register structure
- \return eMode 隆锚oGPTB_SW/GPTB_SYNC
+ \brief GPTB clock source select
+ \param ptGptbBase pointer of gptb register structure
+ \param eClkSrc \ref to csi_gptb_clksrc_e
+ \return none
 */
-void csi_gptb_set_start_mode(csp_gptb_t *ptGptbBase, csi_gptb_stmd_e eMode)
+void csi_gptb_set_clksrc(csp_gptb_t *ptGptbBase,csi_gptb_clksrc_e eClkSrc)
 {
-	csp_gptb_set_start_src(ptGptbBase, (gptb_startsrc_e)eMode);
+  csp_gptb_set_clksrc(ptGptbBase, (gptb_clksrc_e)eClkSrc);
 }
 
 /**
- \brief set GPTB stop status
+ \brief set GPTB start mode. 
  \param ptGptbBase    pointer of gptb register structure
- \param eSt 	 GPTB_STP_HZ/GPTB_STP_LOW
+ \param eMode \ref csi_gptb_start_mode_e
+ \return none
 */
-void csi_gptb_set_stop_st(csp_gptb_t *ptGptbBase, csi_gptb_stpst_e eSt)
+void csi_gptb_set_start_mode(csp_gptb_t *ptGptbBase, csi_gptb_start_mode_e eMode)
+{
+	csp_gptb_set_start_mode(ptGptbBase, (gptb_startmode_e)eMode);
+}
+
+/**
+ \brief set GPTB pwm stop status
+ \param ptGptbBase    pointer of gptb register structure
+ \param eStpSt \ref csi_gptb_stpst_e
+ \return none
+*/
+void csi_gptb_set_stop_status(csp_gptb_t *ptGptbBase, csi_gptb_stpst_e eStpSt)
 {	
-  csp_gptb_set_stop_st(ptGptbBase,(gptb_stpst_e)eSt);
+  csp_gptb_set_stop_status(ptGptbBase,(gptb_stpst_e)eStpSt);
 }
 
 /**
@@ -691,17 +689,26 @@ uint16_t csi_gptb_get_prdr(csp_gptb_t *ptGptbBase)
 	return csp_gptb_get_prdr(ptGptbBase);
 }
 
-/** \brief  update gptb PRDR and CMPx reg value
+/** \brief  update gptb PRDR reg value
  * 
  *  \param[in] ptGptbBase: pointer of gptb register structure
- *  \param[in] eComp: select which COMP to set(COMPA or COMPB)
  *  \param[in] hwPrdr: gptb PRDR reg  value
+ *  \return none
+ */
+void csi_gptb_prdr_update(csp_gptb_t *ptGptbBase, uint16_t hwPrdr) 
+{
+	csp_gptb_set_prdr(ptGptbBase, (uint16_t)hwPrdr);
+}
+
+/** \brief  update gptb CMPx reg value
+ * 
+ *  \param[in] ptGptbBase: pointer of gptb register structure
+ *  \param[in] eComp: \ref  csi_gptb_comp_e.select which COMP to set(COMPA or COMPB)
  *  \param[in] hwCmp: gptb COMP reg value
  *  \return none
  */
-csi_error_t csi_gptb_prdr_cmp_update(csp_gptb_t *ptGptbBase,csi_gptb_comp_e eComp, uint16_t hwPrdr, uint16_t hwCmp) 
+void csi_gptb_cmp_update(csp_gptb_t *ptGptbBase,csi_gptb_comp_e eComp, uint16_t hwCmp) 
 {
-	csp_gptb_set_prdr(ptGptbBase, (uint16_t)hwPrdr);		//set GPTB PRDR Value
 	switch (eComp)
 	{	
 		case (GPTB_COMPA):
@@ -713,64 +720,78 @@ csi_error_t csi_gptb_prdr_cmp_update(csp_gptb_t *ptGptbBase,csi_gptb_comp_e eCom
 			break;
 
 		default: 
-			return CSI_ERROR;
 			break;
 	}
-    return (CSI_OK);
 }
 
-/**
- \brief change gptb output dutycycle. 
- \param ptGptbBase   pointer of gptb register structure
- \param eCh          refer to csi_gptb_comp_e
- \param wDuty        duty of PWM:0%-100%
-*/
-csi_error_t csi_gptb_change_ch_duty(csp_gptb_t *ptGptbBase, csi_gptb_comp_e eCh, uint32_t wDuty)
-{ 
-	uint16_t  hwCmpLoad;
+/** \brief  update gptb pwm freq and duty cycle
+ * 
+ *  \param[in] ptBtBase: pointer of gptb register structure
+ *  \param[in] wFreq: pwm frequency  
+ *  \param[in] byDutyCycle: pwm duty cycle(0 -> 100)
+ *  \param[in] eComp: \refer to csi_gptb_comp_e
+ *  \return error code \ref csi_error_t
+ */ 
+csi_error_t csi_gptb_pwm_update(csp_gptb_t *ptGptbBase, uint32_t wFreq, uint8_t byDutyCycle, csi_gptb_comp_e eComp)
+{
+	uint8_t byCntMd = 0;
+	uint16_t hwClkDiv = 0;
+	uint16_t hwCmpLoad = 0; 
+	uint16_t hwPrdrLoad = 0; 
 	
-	uint16_t  hwPrd;
-    hwPrd = csp_gptb_get_prdr(ptGptbBase);
-	if(wDuty >= 100)
+	if(wFreq == 0 ){return CSI_ERROR;}
+
+	byCntMd = csp_gptb_get_count_mode(ptGptbBase);
+	
+	if((csi_gptb_cnt_mode_e)byCntMd == GPTB_CNT_UPDN)
 	{
-		hwCmpLoad = 0;
-	}
-	else if(wDuty == 0)
-	{
-		hwCmpLoad = hwPrd+1;
+		hwClkDiv = (csi_get_pclk_freq() / wFreq / 2 / 30000);		
+		if(hwClkDiv == 0)hwClkDiv = 1;
+		hwPrdrLoad  = (csi_get_pclk_freq() / wFreq / 2 / hwClkDiv);	
 	}
 	else
 	{
-		hwCmpLoad = hwPrd - ( hwPrd * wDuty / 100 );
+		hwClkDiv = (csi_get_pclk_freq() / wFreq / 30000);		
+		if(hwClkDiv == 0)hwClkDiv = 1;
+		hwPrdrLoad  = (csi_get_pclk_freq() / wFreq / hwClkDiv);	  
 	}
-    
-	switch (eCh)
+	
+	csp_gptb_set_pscr(ptGptbBase, (uint16_t)hwClkDiv - 1);				
+	csp_gptb_set_prdr(ptGptbBase, (uint16_t)hwPrdrLoad);				   
+
+	if(byDutyCycle >= 100){hwCmpLoad = 0;}
+	else if(byDutyCycle == 0){hwCmpLoad = hwPrdrLoad + 1;}
+	else {hwCmpLoad = hwPrdrLoad - (hwPrdrLoad * byDutyCycle /100);}	
+	
+	switch (eComp)
 	{	
 		case (GPTB_COMPA):csp_gptb_set_cmpa(ptGptbBase, (uint16_t)hwCmpLoad);
 			break;
+			
 		case (GPTB_COMPB):csp_gptb_set_cmpb(ptGptbBase, (uint16_t)hwCmpLoad);
 			break;
 
-		default: return (CSI_ERROR);
+		default: 
 			break;
 	}
-    return (CSI_OK);
+	
+	return CSI_OK;
 }
 
 /**
  \brief get harklock status
- \param ptEpt    pointer of gptb register structure
- \return uint8_t 0 or 1
+ \param ptGptbBase    pointer of gptb register structure
+ \return  0 or 1
 */
-uint8_t csi_gptb_get_hdlck_st(csp_gptb_t *ptGptbBase)
+bool csi_gptb_get_hdlck_status(csp_gptb_t *ptGptbBase)
 {	
 	return (csp_gptb_get_emhdlck(ptGptbBase));
 }
 
 /**
  \brief clear harklock status
- \param ptEpt   pointer of gptb register structure
- \return  eEp 	 external emergency input: csi_gptb_ep_e                 
+ \param ptGptbBase   pointer of gptb register structure
+ \return  eEp: emergency channel:  \refer to csi_gptb_ep_e                 
 */
 void csi_gptb_clr_hdlck(csp_gptb_t *ptGptbBase, csi_gptb_ep_e eEp)
 {
@@ -778,19 +799,19 @@ void csi_gptb_clr_hdlck(csp_gptb_t *ptGptbBase, csi_gptb_ep_e eEp)
 }
 
 /**
- \brief get 	 softlock status
- \param ptEpt    pointer of gptb register structure
- \return uint8_t 0 or 1
+ \brief get softlock status
+ \param ptGptbBase  pointer of gptb register structure
+ \return  0 or 1
 */
-uint8_t csi_gptb_get_sftlck_st(csp_gptb_t *ptGptbBase)
+bool csi_gptb_get_sftlck_status(csp_gptb_t *ptGptbBase)
 {	
 	return (csp_gptb_get_emsdlck(ptGptbBase));
 }
 
 /**
  \brief clear softlock status
- \param ptEpt   pointer of gptb register structure
- \return  eEp 	 external emergency input: csi_gptb_ep_e
+ \param ptGptbBase  pointer of gptb register structure
+ \return eEp: emergency channel:  \refer to csi_gptb_ep_e
 */
 void csi_gptb_clr_sftlck(csp_gptb_t *ptGptbBase, csi_gptb_ep_e eEp)
 {	
@@ -800,7 +821,7 @@ void csi_gptb_clr_sftlck(csp_gptb_t *ptGptbBase, csi_gptb_ep_e eEp)
 /** \brief software force emergency
  * 
  *  \param[in] ptGptbBase: pointer of gptb register structure
- *  \param[in] eEp: external emergency input: GPTB_EP0~3
+ *  \param[in] eEp: emergency channel:  \refer to csi_gptb_ep_e
  *  \return none
  */
 void csi_gptb_force_em(csp_gptb_t *ptGptbBase, csi_gptb_ep_e eEp)
@@ -810,9 +831,8 @@ void csi_gptb_force_em(csp_gptb_t *ptGptbBase, csi_gptb_ep_e eEp)
 
 /**
   \brief       enable gptb in debug mode
-  \param[in]   ptGptbBase      pointer of gptb register structure
+  \param[in]   ptGptbBase  pointer of gptb register structure
 */
-
 void csi_gptb_debug_enable(csp_gptb_t *ptGptbBase)
 {
 	csp_gptb_dbg_enable(ptGptbBase);
@@ -820,9 +840,8 @@ void csi_gptb_debug_enable(csp_gptb_t *ptGptbBase)
 
 /**
   \brief       disable gptb in debug mode
-  \param[in]   ptGptbBase      pointer of gptb register structure
+  \param[in]   ptGptbBase pointer of gptb register structure
 */
-
 void csi_gptb_debug_disable(csp_gptb_t *ptGptbBase)
 {
 	csp_gptb_dbg_disable(ptGptbBase);
@@ -830,8 +849,8 @@ void csi_gptb_debug_disable(csp_gptb_t *ptGptbBase)
 
 /**
   \brief       enable gptb emergency interrupt
-  \param[in]   ptGptbBase   pointer of gptb register structure
-  \param[in]   eEmint		refer to csi_gptb_emint_e
+  \param[in]   ptGptbBase  pointer of gptb register structure
+  \param[in]   eEmint	\refer to csi_gptb_emint_e
 */
 void csi_gptb_emint_enable(csp_gptb_t *ptGptbBase, csi_gptb_emint_e eEmint)
 {
@@ -841,7 +860,7 @@ void csi_gptb_emint_enable(csp_gptb_t *ptGptbBase, csi_gptb_emint_e eEmint)
 /**
   \brief       disable gptb emergency interrupt
   \param[in]   ptGptbBase   pointer of gptb register structure
-  \param[in]   eEmint		refer to csi_gptb_emint_e
+  \param[in]   eEmint		\refer to csi_gptb_emint_e
 */
 void csi_gptb_emint_disable(csp_gptb_t *ptGptbBase, csi_gptb_emint_e eEmint)
 {
@@ -851,69 +870,49 @@ void csi_gptb_emint_disable(csp_gptb_t *ptGptbBase, csi_gptb_emint_e eEmint)
 /**
   \brief   enable/disable gptb out trigger 
   \param   ptGptbBase   pointer of gptb register structure
-  \param   byCh			0/1
+  \param   eTrgEv		\refer to csi_gptb_trgev_e
+  \return CSI_OK /CSI_ERROR
 */
-csi_error_t csi_gptb_evtrg_enable(csp_gptb_t *ptGptbBase, uint8_t byCh)
+csi_error_t csi_gptb_evtrg_enable(csp_gptb_t *ptGptbBase, csi_gptb_trgev_e eTrgEv)
 {	
-	if (byCh > 1)return CSI_ERROR;
-    csp_gptb_trgoe_enable(ptGptbBase, byCh);
+	if (eTrgEv > GPTB_TRG_EV1)
+		return CSI_ERROR;
+		
+    csp_gptb_evtrg_enable(ptGptbBase, (gptb_trgev_e)eTrgEv);
 	return CSI_OK;
 }
 
 /**
-  \brief   One time software output 
-  \param   ptGptbBase      pointer of gptb register structure 
-  \param   byCh	         GPTB_OSTSFA/GPTB_OSTSFB		
-  \param   eAction 		GPTB_LDAQCR_ZRO/GPTB_LDAQCR_PRD/GPTB_LDAQCR_ZROPRD
+  \brief   Onetime software waveform control 
+  \param   ptGptbBase    pointer of gptb register structure 
+  \param   eChannel	    \refer to csi_gptb_channel_e  		
+  \param   eAction 		\refer to csi_gptb_action_e
+  \return  none
 */
-csi_error_t csi_gptb_onetimesoftwareforce_output(csp_gptb_t *ptGptbBase, csi_gptb_channel_e eChannel, csi_gptb_action_e eAction)
+void csi_gptb_set_aqosf(csp_gptb_t *ptGptbBase, csi_gptb_channel_e eChannel, csi_gptb_action_e eAction)
 {	
-	switch (eChannel)
-	{
-	case GPTB_CHANNEL_1: 
-		ptGptbBase ->AQOSF |= GPTB_OSTSFA;
-		ptGptbBase ->AQOSF = (ptGptbBase ->AQOSF &~(GPTB_ACTA_MSK))|((eAction&0x03)<<GPTB_ACTA_POS);
-		break;
-	
-	case GPTB_CHANNEL_2:
-		ptGptbBase ->AQOSF |= GPTB_OSTSFB;
-		ptGptbBase ->AQOSF = (ptGptbBase ->AQOSF &~(GPTB_ACTB_MSK))|((eAction&0x03)<<GPTB_ACTB_POS);
-		break;	
-
-	default: 
-		return CSI_ERROR;
-		break;
-    }
-	return CSI_OK;
+	csp_gptb_set_aqosf(ptGptbBase, (gptb_channel_e)eChannel, (gptb_action_e)eAction);
 }
+
 /** \brief  Continuous software waveform loading control
  *  \param[in] ptGptbBase: pointer of gptb register structure
- *  \param[in] eLoadtime:    refer to csi_gptb_aqosf_e
+ *  \param[in] eLoadMode:  \refer to csi_gptb_aqcsf_ldmd_e
  *  \return  none
  */
-void csi_gptb_loading_method_aqcsf(csp_gptb_t *ptGptbBase, csi_gptb_aqosf_e eLoadtime)
+void csi_gptb_set_aqcsf_loadmode(csp_gptb_t *ptGptbBase, csi_gptb_aqcsf_ldmd_e eLoadMode)
 {
-	ptGptbBase ->AQOSF  = (ptGptbBase ->AQOSF &~(GPTB_AQCSF_LDTIME_MSK))|((eLoadtime&0x03)<<GPTB_AQCSF_LDTIME_POS);
+	csp_gptb_set_aqcsf_load_mode(ptGptbBase, (gptb_aqcsf_ldmd_e)eLoadMode);
 }
+
 /** \brief Continuous software waveform control
  *  \param[in] ptGptbBase: pointer of gptb register structure
- *  \param[in] byCh        refer to csi_gptb_channel_e
- *  \param[in] eAction:    refer to  csi_gptb_aqosf_e
+ *  \param[in] byCh        \refer to csi_gptb_channel_e
+ *  \param[in] eAction:    \refer to  csi_gptb_aqcsf_e
  *  \return  none
  */
-csi_error_t csi_gptb_continuoussoftwareforce_output(csp_gptb_t *ptGptbBase, csi_gptb_channel_e eChannel, csi_gptb_aqcsf_e eAction)
+void csi_gptb_set_aqcsf(csp_gptb_t *ptGptbBase, csi_gptb_channel_e eChannel, csi_gptb_aqcsf_act_e eAction)
 {
-	
-	switch (eChannel){
-	case GPTB_CHANNEL_1:  ptGptbBase ->AQCSF = (ptGptbBase ->AQCSF &~(0x03))|(eAction&0x03);            
-	     break;
-	case GPTB_CHANNEL_2:  ptGptbBase ->AQCSF = (ptGptbBase ->AQCSF &~(0x0c))|(eAction&0x03)<<2;
-	     break;	
-
-	default: return CSI_ERROR;
-	     break;
-    }		
-	return CSI_OK;
+	csp_gptb_set_aqcsf(ptGptbBase, (gptb_channel_e)eChannel, (gptb_aqcsf_act_e)eAction);
 }
 
 /** \brief gptb interrupt clear  
@@ -950,94 +949,109 @@ void csi_gptb_int_disable(csp_gptb_t *ptGptbBase, csi_gptb_int_e eInt)
 /** \brief gptb sync input evtrg config  
  * 
  *  \param[in] ptGptbBase: pointer of gptb register structure
- *  \param[in] eSyncIn: gptb sync evtrg input channel(0~6)
- *  \param[in] eSyncMode: gptb sync evtrg mode, continuous/once
- *  \param[in] eAutoRearm: refer to csi_gptb_arearm_e 
+ *  \param[in] eSyncIn:    \refer to csi_gptb_syncin_e
+ *  \param[in] eSyncMode:  \refer to csi_gptb_syncmode_e
+ *  \param[in] eAutoRearm: \refer to csi_gptb_arearm_e 
  *  \return none
  */
 void csi_gptb_set_sync(csp_gptb_t *ptGptbBase, csi_gptb_syncin_e eSyncIn, csi_gptb_syncmode_e eSyncMode, csi_gptb_arearm_e eAutoRearm)
 {
-	csp_gptb_set_sync_mode(ptGptbBase, eSyncIn, (gptb_syncmd_e)eSyncMode);
+	csp_gptb_set_sync_mode(ptGptbBase, (gptb_syncin_e)eSyncIn, (gptb_syncmd_e)eSyncMode);
 	csp_gptb_set_auto_rearm(ptGptbBase, (gptb_arearm_e)eAutoRearm);
-	csp_gptb_sync_enable(ptGptbBase, eSyncIn);
 }
 
-/** \brief gptb extsync input select
+/** \brief gptb sync enable
  * 
  *  \param[in] ptGptbBase: pointer of gptb register structure
- *  \param[in] eSyncIn: gptb sync evtrg input channel(0~6)
- *  \param[in] byTrgChx: trgxsel channel(0~1)
+ *  \param[in] eSyncIn: gptb sync input channel, \ref csi_gptb_syncin_e
+ *  \return none
+ */
+void csi_gptb_sync_enable(csp_gptb_t *ptGptbBase, csi_gptb_syncin_e eSyncIn)
+{
+	csp_gptb_sync_enable(ptGptbBase, (gptb_syncin_e)eSyncIn);
+}
+
+/** \brief gptb sync->trgout select
+ * 
+ *  \param[in] ptGptbBase: pointer of gptb register structure
+ *  \param[in] eSyncIn:  \refer to csi_gptb_syncin_e
+ *  \param[in] eTrgOut: \refer to csi_gptb_trgout_e
  *  \return error code \ref csi_error_t
  */
-csi_error_t csi_gptb_set_extsync_chnl(csp_gptb_t *ptGptbBase, csi_gptb_syncin_e eSyncIn, csi_gptb_syncrout_e eTrgChx)
+void csi_gptb_set_extsync_bypass(csp_gptb_t *ptGptbBase, csi_gptb_syncin_e eSyncIn, csi_gptb_trgout_e eTrgOut)
 {
-	switch(eTrgChx)
+	switch(eTrgOut)
 	{
-		case 0:
-			csp_gptb_sync_trg0sel(ptGptbBase, eSyncIn);
+		case GPTB_TRGOUT0_SEL:
+			csp_gptb_sync_trg0sel(ptGptbBase, (gptb_syncin_e)eSyncIn);
 			break;
-		case 1:
-			csp_gptb_sync_trg1sel(ptGptbBase, eSyncIn);
+			
+		case GPTB_TRGOUT1_SEL:
+			csp_gptb_sync_trg1sel(ptGptbBase, (gptb_syncin_e)eSyncIn);
 			break;
+			
 		default:
-			return CSI_ERROR;
-		
+			break;
 	}
-	return CSI_OK;
 }
 
 /** \brief gptb sync input filter config  
  * 
  *  \param[in] ptGptbBase: pointer of gptb register structure
  *  \param[in] ptFilter: pointer of sync input filter parameter config structure
+ * 				- eFltSrc:Filter input signal source \refer csi_gptb_fltsrc_e
+ * 				- eWinInv:Filter window inversion control \refer csi_gptb_wininv_e
+ * 				- eAlignMode:Filter window alignment mode control \refer csi_gptb_alignmd_e
+ * 				- eCrossMode:Filter window cross mode control \refer csi_gptb_crossmd_e  		
+ * 				- hwWinOffset:Filter window offset config
+ * 				- hwWinWidth:Filter window width config
  *  \return error code \ref csi_error_t
  */
-csi_error_t csi_gptb_set_sync_filter(csp_gptb_t *ptGptbBase, csi_gptb_filter_config_t *ptFilter)
+csi_error_t csi_gptb_set_sync_filter(csp_gptb_t *ptGptbBase, csi_gptb_filter_config_t *ptFilterCfg)
 {
 	uint32_t wFiltCr;
 	uint32_t wWindow;
 	
-	if(ptFilter->byFiltSrc > GPTB_SYNCIN6)
+	if((ptFilterCfg -> eFltSrc) > GPTB_FLTSRC_SYNCIN6)
 		return CSI_ERROR;
-	wFiltCr = ptFilter->byFiltSrc | (ptFilter->byWinInv << GPTB_FLTBLKINV_POS) | 
-			(ptFilter->byWinAlign << GPTB_ALIGNMD_POS) | (ptFilter->byWinCross << GPTB_CROSSMD_POS);
-	wWindow = ptFilter->hwWinOffset | (ptFilter->hwWinWidth << GPTB_FLT_WDW_POS);
+		
+	wFiltCr = (ptFilterCfg -> eFltSrc) | ((ptFilterCfg -> eWinInv) << GPTB_FLTBLKINV_POS) | 
+			((ptFilterCfg -> eAlignMode) << GPTB_ALIGNMD_POS) | ((ptFilterCfg -> eCrossMode) << GPTB_CROSSMD_POS);
+	wWindow = (ptFilterCfg -> hwWinOffset) | ((ptFilterCfg -> hwWinWidth) << GPTB_FLT_WDW_POS);
 	
 	csp_gptb_set_trgftcr(ptGptbBase, wFiltCr);
 	csp_gptb_set_trgftwr(ptGptbBase, wWindow);
 	
 	return CSI_OK;
 }
-/** \brief rearm gptb sync evtrg  
+
+/** \brief rearm gptb sync rearm  
  * 
  *  \param[in] ptGptbBase: pointer of gptb register structure
- *  \param[in] eSyncin: gptb sync evtrg input channel(0~6)
+ *  \param[in] eSyncin: gptb sync evtrg input channel(0~6), \ref to csi_gptb_syncin_e
  *  \return none
  */
-void csi_gptb_rearm_sync(csp_gptb_t *ptGptbBase,csi_gptb_syncin_e eSyncin)
+void csi_gptb_sync_rearm(csp_gptb_t *ptGptbBase,csi_gptb_syncin_e eSyncin)
 {
-	csp_gptb_rearm_sync(ptGptbBase, eSyncin);
+	csp_gptb_sync_rearm(ptGptbBase, (gptb_syncin_e)eSyncin);
 }
+
 /** \brief gptb evtrg output config
  * 
  *  \param[in] ptGptbBase: pointer of gptb register structure
- *  \param[in] byTrgOut: evtrg out port(0~1)
- *  \param[in] eTrgSrc: evtrg source(1~15) 
+ *  \param[in] eTrgEv: \ref to csi_gptb_trgev_e
+ *  \param[in] eTrgSrc: \ref to csi_gptb_trgsrc_e 
  *  \return error code \ref csi_error_t
  */
-csi_error_t csi_gptb_set_evtrg(csp_gptb_t *ptGptbBase, csi_gptb_trgout_e eTrgOut, csi_gptb_trgsrc_e eTrgSrc)
+void csi_gptb_set_evtrg(csp_gptb_t *ptGptbBase, csi_gptb_trgev_e eTrgEv, csi_gptb_trgsrc_e eTrgSrc)
 {
-	csp_gptb_set_trgsel(ptGptbBase, eTrgOut, (gptb_trgsrc_e)eTrgSrc);			    
-	csp_gptb_trgoe_enable(ptGptbBase, eTrgOut);				//evtrg out enable
-	
-	return CSI_OK;//
+	csp_gptb_set_evtrg_src(ptGptbBase, (gptb_trgev_e)eTrgEv, (gptb_trgsrc_e)eTrgSrc);			    
 }
-
 
 /** \brief gptb evtrg cntxinit control
  * 
  *  \param[in] ptGptbBase: pointer of gptb register structure
- *  \param[in] byCntChx: evtrg countinit channel(0~1)
+ *  \param[in] eCntChx: evtrg countinit channel(0~1)   \ref to csi_gptb_cntinit_e
  *  \param[in] byCntVal: evtrg cnt value(1~16)
  *  \param[in] byCntInitVal: evtrg cntxinit value(1~16)
  *  \return error code \ref csi_error_t
@@ -1047,35 +1061,36 @@ csi_error_t csi_gptb_set_evcntinit(csp_gptb_t *ptGptbBase, csi_gptb_cntinit_e eC
 	if(eCntChx > GPTB_CNT1INIT)
 		return CSI_ERROR;
  
-	csp_gptb_set_trgprd(ptGptbBase, eCntChx, byCntVal);    //evtrg count
-	csp_gptb_trg_cntxinit(ptGptbBase, eCntChx, byCntInitVal);
-	csp_gptb_trg_cntxiniten_enable(ptGptbBase, eCntChx);
+	csp_gptb_set_evtrg_prd(ptGptbBase, (gptb_trgev_e)eCntChx, byCntVal);    //evtrg count
+	csp_gptb_set_evcntinit(ptGptbBase, (gptb_trgev_e)eCntChx, byCntInitVal);
+	csp_gptb_evtrg_cntiniten_enable(ptGptbBase, (gptb_trgev_e)eCntChx);
  
 	return CSI_OK;
 }
 
 /**
- \brief  gptb configuration Loading
+ \brief  gptb reg link configuration
  \param  ptGptbBase    	pointer of gptb register structure
- \param  ptCfg           refer to csi_gptb_reglk_config_t
- \return CSI_OK /CSI_ERROR
+ \param  ptGlobal       \refer csi_gptb_reglk_config_t
+ \return none
 */
-csi_error_t csi_gptb_reglk_config(csp_gptb_t *ptGptbBase,csi_gptb_reglk_config_t *ptGlobal)
-{   uint32_t wRegLk;	
+void csi_gptb_set_reglk(csp_gptb_t *ptGptbBase,csi_gptb_reglk_config_t *ptGlobal)
+{   
+	uint32_t wRegLk;	
 	wRegLk =0;
-    wRegLk = (wRegLk & ~GPTB_PRDR_MSK )| ((ptGlobal-> byPrdr & 0xF)<< GPTB_PRDR_POS);
-	wRegLk = (wRegLk & ~GPTB_CMPA_MSK )| ((ptGlobal-> byCmpa & 0xF)<< GPTB_CMPA_POS);
-	wRegLk = (wRegLk & ~GPTB_CMPB_MSK )| ((ptGlobal-> byCmpb & 0xF)<< GPTB_CMPB_POS);
-	wRegLk = (wRegLk & ~GPTB_GLD2_MSK )| ((ptGlobal-> byGld2 & 0xF)<< GPTB_GLD2_POS);
-	wRegLk = (wRegLk & ~GPTB_RSSR_MSK )| ((ptGlobal-> byRssr & 0xF)<< GPTB_RSSR_POS);
+    wRegLk = (wRegLk & ~GPTB_PRDR_MSK) | ((ptGlobal-> byPrdr & 0xF) << GPTB_PRDR_POS);
+	wRegLk = (wRegLk & ~GPTB_CMPA_MSK) | ((ptGlobal-> byCmpa & 0xF) << GPTB_CMPA_POS);
+	wRegLk = (wRegLk & ~GPTB_CMPB_MSK) | ((ptGlobal-> byCmpb & 0xF) << GPTB_CMPB_POS);
+	wRegLk = (wRegLk & ~GPTB_GLD2_MSK) | ((ptGlobal-> byGld2 & 0xF) << GPTB_GLD2_POS);
+	wRegLk = (wRegLk & ~GPTB_RSSR_MSK) | ((ptGlobal-> byRssr & 0xF) << GPTB_RSSR_POS);
 	csp_gptb_set_reglk(ptGptbBase,wRegLk);
+	
 	wRegLk =0;
-	wRegLk = (wRegLk & ~GPTB_EMSLCLR_MSK )| ((ptGlobal-> byEmslclr & 0xF)<< GPTB_EMSLCLR_POS);
-	wRegLk = (wRegLk & ~GPTB_EMHLCLR_MSK )| ((ptGlobal-> byEmhlclr & 0xF)<< GPTB_EMHLCLR_POS);
-	wRegLk = (wRegLk & ~GPTB_EMICR_MSK )  | ((ptGlobal-> byEmicr   & 0xF)<< GPTB_EMICR_POS);
-	wRegLk = (wRegLk & ~GPTB_EMFRCR_MSK ) | ((ptGlobal-> byEmfrcr  & 0xF)<< GPTB_EMFRCR_POS);
-	wRegLk = (wRegLk & ~GPTB_AQOSF_MSK )  | ((ptGlobal-> byAqosf   & 0xF)<< GPTB_AQOSF_POS);
-	wRegLk = (wRegLk & ~GPTB_AQCSF_MSK )  | ((ptGlobal-> byAqcsf   & 0xF)<< GPTB_AQCSF_POS);
+	wRegLk = (wRegLk & ~GPTB_EMSLCLR_MSK) | ((ptGlobal-> byEmslclr & 0xF) << GPTB_EMSLCLR_POS);
+	wRegLk = (wRegLk & ~GPTB_EMHLCLR_MSK) | ((ptGlobal-> byEmhlclr & 0xF) << GPTB_EMHLCLR_POS);
+	wRegLk = (wRegLk & ~GPTB_EMICR_MSK)   | ((ptGlobal-> byEmicr   & 0xF) << GPTB_EMICR_POS);
+	wRegLk = (wRegLk & ~GPTB_EMFRCR_MSK)  | ((ptGlobal-> byEmfrcr  & 0xF) << GPTB_EMFRCR_POS);
+	wRegLk = (wRegLk & ~GPTB_AQOSF_MSK)   | ((ptGlobal-> byAqosf   & 0xF) << GPTB_AQOSF_POS);
+	wRegLk = (wRegLk & ~GPTB_AQCSF_MSK)   | ((ptGlobal-> byAqcsf   & 0xF) << GPTB_AQCSF_POS);
 	csp_gptb_set_reglk2(ptGptbBase,wRegLk);	
-	return CSI_OK;
 }

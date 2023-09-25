@@ -9,6 +9,7 @@ hw_info:
 def_config:
   CONFIG_ARCH_INTERRUPTSTACK: 1024
   DBG_PRINT2PC: 1
+  IS_CHIP_1732: 1
 name: apt32f173x
 version: v1.1.0
 description: 我的第一个方案工程
@@ -32,8 +33,8 @@ build_config:
     - ../components/components/csi_kernel/freertosv10.3.1/FreeRTOS/Source/portable/GCC/riscv/
     - ../components/components/csi_kernel/freertosv10.3.1/FreeRTOS/Source/portable/GCC/riscv/chip_specific_extensions/thead_rv32/
   internal_include: 
-  cflag: -O1  -g1
-  cxxflag: -O1  -g1
+  cflag: -Og
+  cxxflag: -Og
   asmflag: -Wa,--gdwarf2
   define: 
   libs: 

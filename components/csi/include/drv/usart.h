@@ -1,14 +1,14 @@
-/*
- * Copyright (C) 2017-2020 Alibaba Group Holding Limited
- */
-
-/******************************************************************************
- * @file     usart.h
- * @brief    header file for usart driver
- * @version  V1.0
- * @date     08. Apr 2020
- * @model    usart
- ******************************************************************************/
+/***********************************************************************//** 
+ * \file  usart.h
+ * \brief  head file for USART
+ * \copyright Copyright (C) 2015-2023 @ APTCHIP
+ * <table>
+ * <tr><th> Date  <th>Version  <th>Author  <th>Description
+ * <tr><td> 2021-12-23 <td>V0.0  <td>ZJY   <td>initial
+ * <tr><td> 2023-9-22 <td>V0.1  <td>GQQ   <td>fix bug,code normalization
+ * </table>
+ * *********************************************************************
+*/
 
 #ifndef _DRV_USART_H_
 #define _DRV_USART_H_
@@ -324,7 +324,7 @@ int16_t csi_usart_send(csp_usart_t *ptUsartBase, const void *pData, uint16_t hwS
  *  \param[in] bEnable: ENABLE/DISABLE
  *  \return  error code \ref csi_error_t
  */
-void csi_usart_set_txdma(csp_usart_t *ptUsartBase, csi_usdma_txfifo_md_e eTxDmaMode); 
+void csi_usart_set_send_dma(csp_usart_t *ptUsartBase, csi_usdma_txfifo_md_e eTxDmaMode); 
 
 /** \brief usart dma rx mode set
  * 
@@ -333,7 +333,7 @@ void csi_usart_set_txdma(csp_usart_t *ptUsartBase, csi_usdma_txfifo_md_e eTxDmaM
  *  \param[in] bEnable: ENABLE/DISABLE
  *  \return  error code \ref csi_error_t
  */
-void csi_usart_set_rxdma(csp_usart_t *ptUsartBase, csi_usdma_rxfifo_md_e eRxDmaMode); 
+void csi_usart_set_recieve_dma(csp_usart_t *ptUsartBase, csi_usdma_rxfifo_md_e eRxDmaMode); 
 
 /** \brief send data from usart, this function is dma transfer
  * 

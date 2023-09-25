@@ -1,10 +1,11 @@
 /***********************************************************************//** 
  * \file  gpio.c
  * \brief  csi gpio driver
- * \copyright Copyright (C) 2015-2020 @ APTCHIP
+ * \copyright Copyright (C) 2015-2023 @ APTCHIP
  * <table>
  * <tr><th> Date  <th>Version  <th>Author  <th>Description
  * <tr><td> 2021-5-13 <td>V0.0 <td>ZJY     <td>initial
+ * <tr><td> 2023-9-21 <td>V0.1 <td>ZJY     <td>code normalization 
  * </table>
  * *********************************************************************
 */
@@ -601,8 +602,7 @@ csi_error_t csi_gpio_irq_mode(csp_gpio_t *ptGpioBase, pin_name_e ePinName, csi_e
 		apt_exi_trg_edge_set(SYSCON,(gpio_igrp_e)eExiGrp, (exi_trigger_e)eTrgEdge);			//interrupt edge
 	
 	csp_exi_clr_isr(SYSCON,(0x01ul << eExiGrp));		
-	csp_exi_int_enable(SYSCON,(0x01ul << eExiGrp));				//EXI interrupt enable
-	
+	csp_exi_int_enable(SYSCON, (gpio_igrp_e)eExiGrp);				//EXI interrupt enable
 	
 	return ret;
 }

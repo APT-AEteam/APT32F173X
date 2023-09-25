@@ -63,8 +63,8 @@ void dac_demo(void)
 	//dac 参数配置初始化
 
 	tDacConfig.byClkDiv 	= 0x02;					//DAC clk两分频：FCK = FHCLK / 2
-	tDacConfig.bRefsel	 	= DISABLE;				//DAC 参考电平选择
-	tDacConfig.hwDatarset 	= 0x00;					//DAC 电平码值设置
+	tDacConfig.bRefSel	 	= DISABLE;				//DAC 参考电平选择
+	tDacConfig.hwDatarset 	= 0x00;					//DAC 电平码值设置0-0xfff
 	tDacConfig.bBufen 		= ENABLE;				//DAC BUF enable时，PA4输出，BUF disable时，PA8输出	
 	csi_dac_init(DAC0, &tDacConfig);
 	
@@ -88,8 +88,8 @@ void dac_sync_demo(void)
 
 	//dac 参数配置初始化
 	tDacConfig.byClkDiv 	= 0x02;					//DAC clk两分频：FCK = FHCLK / 2
-	tDacConfig.bRefsel	 	= DISABLE;				//DAC 参考电平选择
-	tDacConfig.hwDatarset 	= 0x00;					//DAC 电平码值设置
+	tDacConfig.bRefSel	 	= DISABLE;				//DAC 参考电平选择
+	tDacConfig.hwDatarset 	= 0x00;					//DAC 电平码值设置0-0xfff
 	tDacConfig.bBufen 		= ENABLE;				//DAC BUF enable时，PA4输出，BUF disable时，PA8输出
 	csi_dac_init(DAC0, &tDacConfig);
 	

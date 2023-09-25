@@ -14,7 +14,7 @@
 #define _DEMO_H
 
 /* Includes ------------------------------------------------------------------*/
-#include "common.h"
+#include "drv/common.h"
 
 //gpio port demo
 extern int gpio_port_ouput_demo(void);
@@ -76,23 +76,15 @@ extern int adc_samp_oneshot_int_demo(void);
 extern int adc_samp_continuous_int_demo(void);
 
 //sio demo
-//sio led
 extern int sio_led_rgb_demo(void);
 extern int sio_led_rgb_int_demo(void);
-extern int sio_led_rgb_receive_int_demo(void);
+extern int sio_led_rgb_txdne_int_demo(void);
+extern int sio_led_rgb_txbufempt_int_demo(void);
 extern int sio_led_rgb_send_dma_demo(void);
-extern int sio_led_rgb_receive_dma_demo(void);
-
+//sio hdq
 extern int sio_hdq_master_wrcmd_demo(void);
-extern int sio_hdq_slave_receive_wrcmd_demo(void);
 extern int sio_hdq_master_rdcmd_demo(void);
-extern int sio_hdq_slave_receive_rdcmd_demo(void);
-
-//hdq
-extern int sio_hdq_send_demo(void);
-extern int sio_hdq_recv_wrcmd_demo(void);
-extern int sio_hdq_send_recv_demo(void);
-extern int sio_hdq_recv_rdcmd_demo(void);
+extern int sio_hdq_slave_demo(void);
 
 //lpt demo
 extern int lpt_timer_demo(void);
@@ -124,11 +116,14 @@ extern void ifc_program_demo();
 extern void rtc_set_time_demo(void);
 extern void rtc_alarm_demo(void);
 extern void rtc_timer_demo(void);
-extern void rtc_trgev_demo(void);
+extern void rtc_etcb_bt_pwm_demo(void);
 
 //low power demo
-extern void lp_lpt_wakeup_deepsleep_demo(void);
+extern void lp_lpt_wakeup_demo(void);
 extern void lp_exi_wakeup_demo(void);
+extern void lp_lvd_wakeup_demo(void);
+extern void lp_rtc_wakeup_demo(void);
+extern void lp_iwdt_wakeup_demo(void);
 
 //iic demo
 extern void iic_master_eeprom_demo(void);

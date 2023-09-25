@@ -1,10 +1,11 @@
 /***********************************************************************//** 
  * \file  usart.c
  * \brief  csi usart driver
- * \copyright Copyright (C) 2015-2021 @ APTCHIP
+ * \copyright Copyright (C) 2015-2023 @ APTCHIP
  * <table>
  * <tr><th> Date  <th>Version  <th>Author  <th>Description
  * <tr><td> 2021-8-03 <td>V0.0  <td>ZJY   <td>initial
+ * <tr><td> 2023-9-22 <td>V0.1  <td>GQQ   <td>fix bug,code normalization
  * </table>
  * *********************************************************************
 */
@@ -494,7 +495,7 @@ csi_error_t csi_usart_receive_int(csp_usart_t *ptUsartBase, void *pData, uint16_
  *  \param[in] bEnable: ENABLE/DISABLE
  *  \return  error code \ref csi_error_t
  */
-void csi_usart_set_txdma(csp_usart_t *ptUsartBase, csi_usdma_txfifo_md_e eTxDmaMode ) 
+void csi_usart_set_send_dma(csp_usart_t *ptUsartBase, csi_usdma_txfifo_md_e eTxDmaMode ) 
 {
 	csp_usart_set_txdma(ptUsartBase, (usart_tdma_md_e)eTxDmaMode, ENABLE); 
 }
@@ -506,7 +507,7 @@ void csi_usart_set_txdma(csp_usart_t *ptUsartBase, csi_usdma_txfifo_md_e eTxDmaM
  *  \param[in] bEnable: ENABLE/DISABLE
  *  \return  error code \ref csi_error_t
  */
-void csi_usart_set_rxdma(csp_usart_t *ptUsartBase, csi_usdma_rxfifo_md_e eRxDmaMode ) 
+void csi_usart_set_recieve_dma(csp_usart_t *ptUsartBase, csi_usdma_rxfifo_md_e eRxDmaMode ) 
 {
 	csp_usart_set_rxdma(ptUsartBase, (usart_rdma_md_e)eRxDmaMode,ENABLE); 
 }

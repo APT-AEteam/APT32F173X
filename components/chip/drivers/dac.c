@@ -6,7 +6,7 @@
  * <tr><th> Date  <th>Version  <th>Author  <th>Description
  * <tr><td> 2020-8-12 <td>V0.0  <td>ZJY   <td>initial
  * <tr><td> 2021-1-8  <td>V0.1  <td>WNN   <td>modify
- * <tr><td> 2023-9-11 <td>V0.2  <td>xs    <td>modify
+ * <tr><td> 2023-9-11 <td>V0.2  <td>xs    <td>fix bug,code normalization
  * </table>
  * *********************************************************************
 */
@@ -57,11 +57,11 @@ csi_error_t csi_dac_register_callback(csp_dac_t *ptDacBase, void  *callback)
  */ 
 void csi_dac_irqhandler(csp_dac_t *ptDacBase, uint8_t byIdx)
 {
-	uint8_t byIsr = csp_dac_get_isr(ptDacBase);
+	dac_int_e eIsr = csp_dac_get_isr(ptDacBase);
 	if(g_tDacCtrl[byIdx].callback)
-		g_tDacCtrl[byIdx].callback(ptDacBase, byIsr);
+		g_tDacCtrl[byIdx].callback(ptDacBase, eIsr);
 			
-	csp_dac_clr_isr(ptDacBase, byIsr);
+	csp_dac_clr_isr(ptDacBase, eIsr);
 }
 
 /** \brief initialize dac data structure
@@ -78,7 +78,7 @@ void csi_dac_init(csp_dac_t *ptDacBase, csi_dac_config_t *ptDacCfg)
 {	
 	csp_dac_clr_dac(ptDacBase);//clear data
 	csp_dac_set_clk_div(ptDacBase,ptDacCfg->byClkDiv);//set clk div
-	csp_dac_refsel_enable(ptDacBase,ptDacCfg->bRefsel);//reference enable
+	csp_dac_refsel_enable(ptDacBase,ptDacCfg->bRefSel);//reference enable
 	csp_dac_set_datar(ptDacBase,ptDacCfg->hwDatarset);//set voltage data
 	csp_dac_buff_enable(DAC0,ptDacCfg->bBufen);//buffer enable
 }

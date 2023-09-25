@@ -233,7 +233,7 @@ int spi_etcb_dma_send_demo(void)
 	tDmaConfig.eDetHinc 	= DMA_ADDR_CONSTANT;	//高位传输目标地址固定不变
 	tDmaConfig.eDataWidth 	= DMA_DSIZE_8_BITS;		//传输数据宽度8bit
 	tDmaConfig.eReload 	= DMA_RELOAD_DISABLE;	//禁止自动重载
-	tDmaConfig.eTransMode 	= DMA_TRANS_ONCE;		//DMA服务模式(传输模式)，连续服务
+	tDmaConfig.eRunMode 	= DMA_RUN_ONCE;		//DMA服务模式(传输模式)，连续服务
 	tDmaConfig.eTsizeMode  = DMA_TSIZE_ONE_DSIZE;	//传输数据大小，一个 DSIZE , 即DSIZE定义大小
 	tDmaConfig.eReqMode	= DMA_REQ_HARDWARE;		//DMA请求模式，硬件请求（硬件触发）
 //	tDmaConfig.wInt 		= DMA_INTSRC_NONE;		//不使用中断
@@ -303,7 +303,7 @@ int spi_etcb_dma_send_receive_demo(void)
 	tDmaConfigSend.eDetHinc 	= DMA_ADDR_CONSTANT;		//高位传输目标地址固定不变
 	tDmaConfigSend.eDataWidth 	= DMA_DSIZE_8_BITS;		    //传输数据宽度8bit
 	tDmaConfigSend.eReload 	= DMA_RELOAD_DISABLE;		//禁止自动重载
-	tDmaConfigSend.eTransMode 	= DMA_TRANS_ONCE;			//DMA服务模式(传输模式)，连续服务
+	tDmaConfigSend.eRunMode 	= DMA_RUN_ONCE;			//DMA服务模式(传输模式)，连续服务
 	tDmaConfigSend.eTsizeMode  = DMA_TSIZE_ONE_DSIZE;		//传输数据大小，一个 DSIZE , 即DSIZE定义大小
 	tDmaConfigSend.eReqMode	= DMA_REQ_HARDWARE;			//DMA请求模式，硬件请求（硬件触发）
 //	tDmaConfigSend.wInt 		= DMA_INTSRC_NONE;			//不使用中断
@@ -316,7 +316,7 @@ int spi_etcb_dma_send_receive_demo(void)
 	tDmaConfigRecv.eDetHinc 	= DMA_ADDR_CONSTANT;		//高位传输目标地址固定不变
 	tDmaConfigRecv.eDataWidth  = DMA_DSIZE_8_BITS;		    //传输数据宽度8bit
 	tDmaConfigRecv.eReload 	= DMA_RELOAD_DISABLE;		//禁止自动重载
-	tDmaConfigRecv.eTransMode  = DMA_TRANS_ONCE;			//DMA服务模式(传输模式)，连续服务
+	tDmaConfigRecv.eRunMode  = DMA_RUN_ONCE;			//DMA服务模式(传输模式)，连续服务
 	tDmaConfigRecv.eTsizeMode  = DMA_TSIZE_ONE_DSIZE;		//传输数据大小，一个 DSIZE , 即DSIZE定义大小
 	tDmaConfigRecv.eReqMode	= DMA_REQ_HARDWARE;			//DMA请求模式，硬件请求
 //	tDmaConfigRecv.wInt		    = DMA_INTSRC_NONE;			//不使用中断

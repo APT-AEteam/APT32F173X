@@ -1,11 +1,12 @@
 /***********************************************************************//** 
  * \file  sio.h
  * \brief  head file of csi sio
- * \copyright Copyright (C) 2015-2020 @ APTCHIP
+ * \copyright Copyright (C) 2015-2023 @ APTCHIP
  * <table>
  * <tr><th> Date  <th>Version  <th>Author  <th>Description
  * <tr><td> 2020-9-03 <td>V0.0  <td>XB   <td>initial
- * <tr><td> 2021-1-03 <td>V0.0  <td>ZJY   <td>modify
+ * <tr><td> 2021-1-03 <td>V0.1  <td>ZJY   <td>modify
+ * <tr><td> 2023-9-21 <td>V0.2  <td>ZJY   <td>code normalization 
  * </table>
  * *********************************************************************
 */
@@ -244,10 +245,10 @@ typedef struct {
 	csi_sio_spmode_e	eSampMode;		//receive samping mode
 	csi_sio_extract_e	eSampExtra;		//receive samping extract select
 	csi_sio_rdir_e		eRxDir;			//sio receive dir, LSB OR MSB
-	uint8_t				byDebPerLen;	//debounce period length, (1~8)period
+	uint8_t				byDebLen;		//debounce period length, (1~8)period
 	uint8_t				byDebClkDiv;	//debounce clk div
-	uint8_t				byHithr;		//extract high Threshold 
-	uint8_t				bySpBitLen;		//receive samping one bit count length
+	uint8_t				byHiThres;		//extract high Threshold 
+	uint8_t				bySampBitLen;	//receive samping one bit count length
 	uint8_t				byRxCnt;		//sio rx bit count, Mux Num = 256bit(32bytes)	 
 	uint8_t				byRxBufLen;		//sio rx buffer length, Max Len = 32bit(4bytes)
 	uint32_t			wRxFreq;		//sio rx samping frequency 
@@ -318,9 +319,9 @@ csi_error_t csi_sio_tx_init(csp_sio_t *ptSioBase, csi_sio_tx_config_t *ptTxCfg);
   				- eSampMode		receive samping mode
   				- eSampExtra	receive samping extract select
   				- eRxDir		sio receive dir, LSB OR MSB
-  				- byDebPerLen	debounce period length, (1~8)period
+  				- byDebLen		debounce period length, (1~8)period
   				- byDebClkDiv	debounce clk div
- 				- byHithr		extract high Threshold 
+ 				- byHiThres		extract high Threshold 
   				- bySpBitLen	receive samping one bit count length
   				- byRxCnt		sio rx bit count, Mux Num = 256bit(32bytes)
   				- byRxBufLen	sio rx buffer length, Max Len = 32bit(4bytes)
@@ -378,7 +379,7 @@ csi_error_t csi_sio_set_break(csp_sio_t *ptSioBase, csi_sio_bklev_e eBkLev, uint
   \param[in]   bEnable    	ENABLE/DISABLE sample timeout reset
   \return      error code \ref csi_error_t
 */
-csi_error_t csi_sio_set_samp_timeout(csp_sio_t *ptSioBase, uint8_t byToCnt ,bool bEnable);
+csi_error_t csi_sio_set_timeout(csp_sio_t *ptSioBase, uint8_t byToCnt ,bool bEnable);
 
 /**
   \brief	   send data from sio, this function is polling  
@@ -397,14 +398,6 @@ int32_t csi_sio_send(csp_sio_t *ptSioBase, const uint32_t *pwData, uint16_t hwSi
   \return error code \ref csi_error_t or receive data size
  */
 csi_error_t csi_sio_send_int(csp_sio_t *ptSioBase, const uint32_t *pwSend, uint16_t hwSize);
-
-/** 
-  \brief 	   set sio receive data buffer
-  \param[in]   pwData		pointer of sio transport data buffer
-  \param[in]   hwLen		sio transport data length
-  \return 	   error code \ref csi_error_t
- */ 
-csi_error_t csi_sio_set_buffer(uint32_t *pwData, uint16_t hwLen);
 
 /**
   \brief       sio receive data, use rxbuffull interrupt 
@@ -437,18 +430,16 @@ int32_t csi_sio_receive(csp_sio_t *ptSioBase, uint32_t *pwRecv, uint16_t hwSize)
 /** 
   \brief 	   sio send dma enable
   \param[in]   ptSioBase	pointer of sio register structure
-  \param[in]   bEnable		enable/disable send dma
   \return  	   none
  */
-void csi_sio_send_dma_enable(csp_sio_t *ptSioBase, bool bEnable);
+void csi_sio_send_dma_enable(csp_sio_t *ptSioBase);
 
 /** 
   \brief 	   sio receive dma enable
   \param[in]   ptSioBase	pointer of sio register structure
-  \param[in]   bEnable		enable/disable receive dma
   \return  	   none
  */
-void csi_sio_receive_dma_enable(csp_sio_t *ptSioBase, bool bEnable);
+void csi_sio_receive_dma_enable(csp_sio_t *ptSioBase);
 
 /** 
   \brief 	   send data from sio, this function is dma mode
@@ -470,7 +461,7 @@ csi_error_t csi_sio_send_dma(csp_sio_t *ptSioBase, csp_dma_t *ptDmaBase, csi_dma
   \param[in]   hwSize		number of data to send (byte); hwSize <= 0xfff
   \return error code \ref csi_error_t
  */
-csi_error_t csi_sio_recv_dma(csp_sio_t *ptSioBase, csp_dma_t *ptDmaBase, csi_dma_ch_e eDmaCh, const void *pData, uint16_t hwSize);
+csi_error_t csi_sio_receive_dma(csp_sio_t *ptSioBase, csp_dma_t *ptDmaBase, csi_dma_ch_e eDmaCh, const void *pData, uint16_t hwSize);
 
 
 #ifdef __cplusplus

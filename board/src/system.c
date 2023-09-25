@@ -3,7 +3,7 @@
 /***********************************************************************//** 
  * \file  system.c
  * \brief  CSI Device System Source File
- * \copyright Copyright (C) 2015-2020 @ APTCHIP
+ * \copyright Copyright (C) 2015-2023 @ APTCHIP
  * <table>
  * <tr><th> Date  <th>Version  <th>Author  <th>Description
  * <tr><td> 2021-5-13 <td>V0.0 <td>ZJY     <td>initial
@@ -119,7 +119,8 @@ __attribute__((weak)) void system_init(void)
 	csi_iram_init();  //Need to work with gcc_flash_dram16k_iram16k.ld or gcc_flash_dram24k_iram8k.ld
 #endif	
 	
-
+	
+	
 	__disable_excp_irq();
 
 	
@@ -128,6 +129,7 @@ __attribute__((weak)) void system_init(void)
     mstatus |= (1 << 13);
     __set_MSTATUS(mstatus);
 
+	
 	/* get interrupt level from info */
     CLIC->CLICCFG = (((CLIC->CLICINFO & CLIC_INFO_CLICINTCTLBITS_Msk) >> CLIC_INFO_CLICINTCTLBITS_Pos) << CLIC_CLICCFG_NLBIT_Pos);
 
@@ -138,7 +140,7 @@ __attribute__((weak)) void system_init(void)
 		/* enable vector interrupt without exi*/
 		if(i > 15)						/* interrupt number = 16~63 */					
 		{
-			if((i != 22) && (i != 23) && (i != 48) && (i != 49) && (i != 50))
+			if((i != 22) && (i != 23) && (i != 48) && (i != 49) && (i != 50)&& (i != 54))
 				CLIC->CLICINT[i].IE |= CLIC_INTIE_IE_Msk;
 		}
 		

@@ -1,10 +1,11 @@
 /***********************************************************************//** 
  * \file  csp_usart.h
  * \brief  USART description and static inline functions at register level 
- * \copyright Copyright (C) 2015-2020 @ APTCHIP
+ * \copyright Copyright (C) 2015-2023 @ APTCHIP
  * <table>
  * <tr><th> Date  <th>Version  <th>Author  <th>Description
  * <tr><td> 2020-12-01 <td>V0.0  <td>ZJY   <td>initial
+ * <tr><td> 2023-9-22 <td>V0.1  <td>GQQ   <td>fix bug,code normalization
  * </table>
  * *********************************************************************
 */
@@ -262,7 +263,6 @@ typedef enum{
 * IMSCR, RISR, MISR: USART Interrupt Registers
 ******************************************************************************/
 typedef enum{
-	US_INT_NONE			= (0x00ul << 0),
 	US_INT_RXRDY		= (0x01ul << 0),
 	US_INT_TXRDY		= (0x01ul << 1),
 	US_INT_RXBRK		= (0x01ul << 2),

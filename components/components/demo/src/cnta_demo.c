@@ -12,11 +12,8 @@
 */
 
 /* include ----------------------------------------------------------------*/
-#include "drv/gpio.h"
-#include "drv/cnta.h"
-#include "drv/bt.h"
+#include "csi_drv.h"
 #include "board_config.h"
-
 	
 /* externs function--------------------------------------------------------*/
 /* private function--------------------------------------------------------*/

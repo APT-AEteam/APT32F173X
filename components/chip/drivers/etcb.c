@@ -2,12 +2,12 @@
 /***********************************************************************//** 
  * \file  etcb.c
  * \brief  ETCB(event trigger control block) driver
- * \copyright Copyright (C) 2015-2020 @ APTCHIP
+ * \copyright Copyright (C) 2015-2023 @ APTCHIP
  * <table>
  * <tr><th> Date  <th>Version   <th>Author  <th>Description
  * <tr><td> 2020-10-8 <td>V0.0  <td>WNN   <td>initial
  * <tr><td> 2021-1-8  <td>V0.1  <td>WNN   <td>SW trigger
- * <tr><td> 2021-5-14 <td>V0.1  <td>ZJY   <td>initial
+ * <tr><td> 2023-9-21 <td>V0.3  <td>ZJY   <td>code normalization 
  * </table>
  * *********************************************************************
 */
@@ -18,7 +18,7 @@
 /* externs variablesr-------------------------------------------------*/
 /* Private variablesr-------------------------------------------------*/
 
-#define ETCB_BUF_LEN        ((ETCB_CH_MAX_NUM-1)/ETCB_CH_ALLOC_LEN +1)
+#define ETCB_BUF_LEN	((ETCB_CH_MAX_NUM-1)/ETCB_CH_ALLOC_LEN +1)
 static uint32_t s_wEtbAllocStatus[ETCB_BUF_LEN] = {0};
 
 
@@ -69,7 +69,7 @@ static void set_ch_alloc_status(csi_etcb_ch_e eEtbCh, uint32_t wStatus)
  *  \param[in] bEnable: enable/disable
  *  \return none
  */ 
-static void apt_etcb_channel_enable(csp_etcb_t *ptEtbBase, csi_etcb_ch_e eEtbCh, bool bEnable)
+static void apt_etcb_ch_enable(csp_etcb_t *ptEtbBase, csi_etcb_ch_e eEtbCh, bool bEnable)
 {
 	switch(eEtbCh)
 	{
@@ -291,7 +291,7 @@ void csi_etcb_ch_sw_trg(csi_etcb_ch_e eEtbCh)
 */
 void csi_etcb_ch_start(csi_etcb_ch_e eEtbCh)
 {
-	apt_etcb_channel_enable(ETCB,eEtbCh, ENABLE);
+	apt_etcb_ch_enable(ETCB,eEtbCh, ENABLE);
 }
 /**
  * \brief stop an etcb channel
@@ -300,5 +300,5 @@ void csi_etcb_ch_start(csi_etcb_ch_e eEtbCh)
 */
 void csi_etcb_ch_stop(csi_etcb_ch_e eEtbCh)
 {
-    apt_etcb_channel_enable(ETCB, eEtbCh, DISABLE);
+    apt_etcb_ch_enable(ETCB, eEtbCh, DISABLE);
 }

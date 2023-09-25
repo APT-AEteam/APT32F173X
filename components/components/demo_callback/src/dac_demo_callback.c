@@ -50,7 +50,7 @@ int dac_callback_demo(void)
 	csi_gpio_set_mux(GPIOA,PA4,PA4_DAC0_OUT);	
 	//dac 参数配置初始化
 	tDacConfig.byClkDiv 	= 0x02;				//DAC clk两分频：FCK = FHCLK / 2
-	tDacConfig.bRefsel	 	= DISABLE;			//DAC 参考电平选择
+	tDacConfig.bRefSel	 	= DISABLE;			//DAC 参考电平选择
 	tDacConfig.hwDatarset 	= 0x00;				//DAC 电平码值设置
 	tDacConfig.bBufen 		= ENABLE;			//DAC BUF enable时，PA4输出，BUF disable时，PA8输出	
 	csi_dac_init(DAC0, &tDacConfig);

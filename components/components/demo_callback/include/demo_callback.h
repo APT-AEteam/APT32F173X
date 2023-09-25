@@ -21,34 +21,21 @@ extern int gpio_port_ouput_demo(void);
 extern int gpio_port_input_demo(void);
 extern int gpio_port_irq_demo(void);
 
-//pin demo
-extern int pin_output_demo(void);
-extern int pin_input_demo(void);
-extern int pin_irq_demo(void);
-
 //bt demo
 extern int bt_timer_callback_demo(void);
 extern int bt_pwm_callback_demo(void);
-
-//extern int bt_sync_trg_start_demo(void);
-//extern int bt_sync_trg_count_demo(void);
-//extern int bt_sync_trg_stop_demo(void);
-//extern int bt_trg_out_demo(void);
 
 //iwdt demo
 extern int iwdt_normal_demo(void);
 extern int iwdt_irq_demo(void);
 
 //etcb demo
-
 extern int etcb_one_trg_one_demo(void);
 extern int etcb_one_trg_more_demo(void);
 
 //uart demo
-//uart send
 extern int uart_send_int_callback_demo(void);
 extern int uart_receive_int_callback_demo(void);
-
 
 //usart demo
 extern int usart_send_int_callback_demo(void);
@@ -66,15 +53,7 @@ extern int adc_samp_oneshot_int_demo(void);
 extern int adc_samp_continuous_int_demo(void);
 
 //sio demo
-//sio led
 extern int sio_led_rgb_int_callback_demo(void);
-extern int sio_led_rgb_receive_rxfull_int_callback_demo(void);
-extern int sio_led_rgb_receive_rxdone_int_callback_demo(void);
-//hdq
-extern int sio_hdq_send_demo(void);
-extern int sio_hdq_recv_wrcmd_demo(void);
-extern int sio_hdq_send_recv_demo(void);
-extern int sio_hdq_recv_rdcmd_demo(void);
 
 //lpt demo
 extern int lpt_timer_int_callback_demo(void);
@@ -97,10 +76,7 @@ extern void ifc_pflash_page_program_demo();
 extern void ifc_program_demo();
 
 //rtc_demo
-extern void rtc_set_time_demo(void);
-extern void rtc_alarm_demo(void);
-extern void rtc_timer_demo(void);
-extern void rtc_trgev_demo(void);
+extern void rtc_alarm_callback_demo(void);
 
 //low power demo
 extern void lp_lpt_wakeup_deepsleep_demo(void);
@@ -123,16 +99,11 @@ extern int spi_etcb_dma_send_demo(void);
 extern int spi_etcb_dma_send_receive_demo(void);
 
 //cmp demo
-extern int cmp_base_callback_demo(void);
+extern int cmp_base_int_callback_demo(void);
 
 //gpta demo
-extern int gpta_timer_demo(void);
-extern int gpta_capture_sync_demo0(void);
-extern int gpta_capture_sync_demo1(void);
-extern int gpta_capture_sync_demo2(void);
-extern int gpta_pwm_demo(void);
-extern int gpta_pwm_waveform_demo(void);
-extern int gpta_reglk_demo(void);
+extern int gpta_timer_int_callback_demo(void);
+extern int gpta_capture_sync_int_callback_demo0(void);
 
 //gptb demo
 extern int gptb_timer_demo(void);

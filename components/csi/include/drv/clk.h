@@ -14,7 +14,7 @@
 #ifndef _DRV_CLK_H_
 #define _DRV_CLK_H_
 
-#include <drv/common.h>
+#include "drv/common.h"
 
 #ifdef __cplusplus
 extern "C" {

@@ -5,7 +5,7 @@
  * <table>
  * <tr><th> Date  		<th>Version  <th>Author  <th>Description
  * <tr><td> 2023-02-28  <td>V0.0  	 <th>XS    	 <td>initial
- * <tr><td> 2023-9-11   <td>V0.1  	 <th>xs      <td>modify
+ * <tr><td> 2023-9-11   <td>V0.1  	 <th>xs      <td>fix bug,code normalization
  * </table>
  * *********************************************************************
 */
@@ -23,8 +23,8 @@ extern "C" {
  */
 typedef struct {
 	uint8_t				byClkDiv;		//dac clkdiv, dac clk = FHCLK/(byClkDiv+1)
-	bool				bRefsel;		//dac reference enable
 	uint16_t			hwDatarset;		//dac output voltage data set
+	bool				bRefSel;		//dac reference enable
 	bool				bBufen;			//dac buf enable
 } csi_dac_config_t;
 /**

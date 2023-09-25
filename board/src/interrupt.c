@@ -1,7 +1,7 @@
 /***********************************************************************//** 
  * \file  interrupt.c
  * \brief  source file for interrypt handlers
- * \copyright Copyright (C) 2015-2020 @ APTCHIP
+ * \copyright Copyright (C) 2015-2023 @ APTCHIP
  * <table>
  * <tr><th> Date  <th>Version  <th>Author  <th>Description
  * <tr><td> 2020-8-10 <td>V0.0  <td>WNN   <td>initial
@@ -22,13 +22,8 @@
 			
 /* externs function--------------------------------------------------------*/
 extern void nmi_int_handler(void);
-extern void usart_irqhandler(csp_usart_t *ptUsartBase,uint8_t byIdx);
 extern void can_irqhandler(csp_can_t *ptCanBase);
 extern void dma_irqhandler(csp_dma_t *ptDmaBase);						//DMA
-extern void gpta_irqhandler0(csp_gpta_t *ptGptaBase);
-extern void gpta_irqhandler1(csp_gpta_t *ptGptaBase);
-extern void gpta_irqhandler2(csp_gpta_t *ptGptaBase);
-extern void gpta_irqhandler3(csp_gpta_t *ptGptaBase);
 extern void gpio_irqhandler(uint8_t byExiNum);
 extern void ifc_irqhandler(void);
 extern void bt_irqhandler0(csp_bt_t *ptBtBase);
@@ -41,7 +36,6 @@ extern void syscon_irqhandler(csp_syscon_t *ptSysconBase);
 extern void i2c_irqhandler(csp_iic_t *ptIicBase);
 
 extern void sio_irqhandler(csp_sio_t *ptSioBase);
-extern void rtc_irqhandler(csp_rtc_t *ptRtcBase);
 
 extern void lpt_irqhandler(csp_lpt_t *ptLptBase);
 extern void dac_irqhandler(csp_dac_t *ptDacBase);
@@ -99,24 +93,28 @@ ATTRIBUTE_ISR void ifc_int_handler(void)
 
 ATTRIBUTE_ISR __attribute__((weak)) void adc0_int_handler(void) 
 {	
-#if	ADC0_INT_HANDLE_EN
-	// ISR content ...
+    //ISR content ...
 	CSI_INTRPT_ENTER();
-	adc_irqhandler(ADC0); //this is a weak function defined in adc_demo.c, for better efficiency, we recommand user directly implement IRQ handler here without any function call.
-	CSI_INTRPT_EXIT();
-#endif	
+#if (USE_ADC_CALLBACK == 1)
+	csi_adc_irqhandler(ADC0, 0);
+#else
+	csp_adc_clr_sr(ADC0, csp_adc_get_isr(ADC0));
+#endif
+	CSI_INTRPT_EXIT();	
 }
 
 ATTRIBUTE_ISR __attribute__((weak)) void adc1_int_handler(void) 
 {
-#if	ADC1_INT_HANDLE_EN
-	// ISR content ...
-	#if	defined(IS_CHIP_1732) 
-		CSI_INTRPT_ENTER();	
-		adc_irqhandler(ADC1);//this is a weak function defined in adc_demo.c, for better efficiency, we recommand user directly implement IRQ handler here without any function call.
-		CSI_INTRPT_EXIT();
-	#endif	
-#endif	
+    //ISR content ...
+	CSI_INTRPT_ENTER();
+#if	(IS_CHIP_1732==1)
+#if (USE_ADC_CALLBACK == 1)
+	csi_adc_irqhandler(ADC1, 1);
+#else
+	csp_adc_clr_sr(ADC1, csp_adc_get_isr(ADC1));
+#endif
+#endif
+	CSI_INTRPT_EXIT();	
 }
 
 ATTRIBUTE_ISR __attribute__((weak)) void dma0_int_handler(void)
@@ -149,43 +147,51 @@ ATTRIBUTE_ISR __attribute__((weak)) void wwdt_int_handler(void)
 
 ATTRIBUTE_ISR __attribute__((weak)) void gpta0_int_handler(void)
 {
-#if GPTA0_INT_HANDLE_EN	
-	 // ISR content ...
-	 CSI_INTRPT_ENTER();
-	gpta_irqhandler0(GPTA0);//this is a weak function defined in gpta_demo.c, for better efficiency, we recommand user directly implement IRQ handler here without any function call.
-	CSI_INTRPT_EXIT();
+	// ISR content ...
+	CSI_INTRPT_ENTER();
+#if (USE_GPTA_CALLBACK == 1)
+	csi_gpta_irqhandler(GPTA0, 0);
+#else
+	csp_gpta_clr_isr(GPTA0, csp_gpta_get_isr(GPTA0));	
 #endif
+	CSI_INTRPT_EXIT();
 }
 
 ATTRIBUTE_ISR __attribute__((weak)) void gpta1_int_handler(void) 
 {
-#if GPTA1_INT_HANDLE_EN	
-	 // ISR content ...
-	 CSI_INTRPT_ENTER();
-	gpta_irqhandler1(GPTA1);//this is a weak function defined in gpta_demo.c, for better efficiency, we recommand user directly implement IRQ handler here without any function call.
-	CSI_INTRPT_EXIT();
-#endif	
+	// ISR content ...
+	CSI_INTRPT_ENTER();
+#if (USE_GPTA_CALLBACK == 1)
+	csi_gpta_irqhandler(GPTA1, 1);
+#else
+	csp_gpta_clr_isr(GPTA1, csp_gpta_get_isr(GPTA1));	
+#endif
+	CSI_INTRPT_EXIT();	
 }
 
 
 ATTRIBUTE_ISR __attribute__((weak)) void gpta2_int_handler(void)
 {
-#if GPTA2_INT_HANDLE_EN	
-	 // ISR content ...
-	 CSI_INTRPT_ENTER();
-	gpta_irqhandler2(GPTA2);//this is a weak function defined in gpta_demo.c, for better efficiency, we recommand user directly implement IRQ handler here without any function call.
-	CSI_INTRPT_EXIT();
+	// ISR content ...
+	CSI_INTRPT_ENTER();
+#if (USE_GPTA_CALLBACK == 1)
+	csi_gpta_irqhandler(GPTA2, 2);
+#else
+	csp_gpta_clr_isr(GPTA2, csp_gpta_get_isr(GPTA2));	
 #endif
+	CSI_INTRPT_EXIT();
 }
 
 ATTRIBUTE_ISR __attribute__((weak)) void gpta3_int_handler(void) 
 {
-#if GPTA3_INT_HANDLE_EN	
+	// ISR content ...
 	CSI_INTRPT_ENTER();
-	gpta_irqhandler3(GPTA3);//this is a weak function defined in gpta_demo.c, for better efficiency, we recommand user directly implement IRQ handler here without any function call.
-	CSI_INTRPT_EXIT();
-	 // ISR content ...
+#if (USE_GPTA_CALLBACK == 1)
+	csi_gpta_irqhandler(GPTA3, 3);
+#else
+	csp_gpta_clr_isr(GPTA3, csp_gpta_get_isr(GPTA3));	
 #endif
+	CSI_INTRPT_EXIT();
 }
 
 ATTRIBUTE_ISR __attribute__((weak)) void gptb0_int_handler(void) 
@@ -196,6 +202,7 @@ ATTRIBUTE_ISR __attribute__((weak)) void gptb0_int_handler(void)
 	csi_gptb_irqhandler(GPTB0, 0);
 #else
 	csp_gptb_clr_isr(GPTB0, csp_gptb_get_isr(GPTB0));
+	csp_gptb_clr_emisr(GPTB0, csp_gptb_get_emisr(GPTB0));
 #endif
 	CSI_INTRPT_EXIT();
 }
@@ -208,6 +215,7 @@ ATTRIBUTE_ISR __attribute__((weak)) void gptb1_int_handler(void)
 	csi_gptb_irqhandler(GPTB1, 1);
 #else
 	csp_gptb_clr_isr(GPTB1, csp_gptb_get_isr(GPTB1));
+	csp_gptb_clr_emisr(GPTB1, csp_gptb_get_emisr(GPTB1));
 #endif
 	CSI_INTRPT_EXIT();	
 }
@@ -220,6 +228,7 @@ ATTRIBUTE_ISR __attribute__((weak)) void gptb2_int_handler(void)
 	csi_gptb_irqhandler(GPTB2, 2);
 #else
 	csp_gptb_clr_isr(GPTB2, csp_gptb_get_isr(GPTB2));
+	csp_gptb_clr_emisr(GPTB2, csp_gptb_get_emisr(GPTB2));
 #endif
 	CSI_INTRPT_EXIT();	
 }
@@ -232,6 +241,7 @@ ATTRIBUTE_ISR __attribute__((weak)) void gptb3_int_handler(void)
 	csi_gptb_irqhandler(GPTB3, 3);
 #else
 	csp_gptb_clr_isr(GPTB3, csp_gptb_get_isr(GPTB3));
+	csp_gptb_clr_emisr(GPTB3, csp_gptb_get_emisr(GPTB3));
 #endif
 	CSI_INTRPT_EXIT();
 }
@@ -244,6 +254,7 @@ ATTRIBUTE_ISR __attribute__((weak)) void gptb4_int_handler(void)
 	csi_gptb_irqhandler(GPTB4, 4);
 #else
 	csp_gptb_clr_isr(GPTB4, csp_gptb_get_isr(GPTB4));
+	csp_gptb_clr_emisr(GPTB4, csp_gptb_get_emisr(GPTB4));
 #endif
 	CSI_INTRPT_EXIT();	
 }
@@ -256,6 +267,7 @@ ATTRIBUTE_ISR __attribute__((weak)) void gptb5_int_handler(void)
 	csi_gptb_irqhandler(GPTB5, 5);
 #else
 	csp_gptb_clr_isr(GPTB5, csp_gptb_get_isr(GPTB5));
+	csp_gptb_clr_emisr(GPTB5, csp_gptb_get_emisr(GPTB5));
 #endif
 	CSI_INTRPT_EXIT();
 }
@@ -468,7 +480,7 @@ ATTRIBUTE_ISR __attribute__((weak)) void rtc_int_handler(void)
 {
 	CSI_INTRPT_ENTER();
 #if (USE_RTC_CALLBACK == 1)
-	
+	csi_rtc_irqhandler(RTC,0);
 #else
 	csp_rtc_clr_isr(RTC, csp_rtc_get_isr(RTC));
 #endif

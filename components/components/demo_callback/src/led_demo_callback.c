@@ -2,10 +2,11 @@
  * \file  led_demo.c
  * \brief  LED  callback功能示例代码
 
- * \copyright Copyright (C) 2015-2021 @ APTCHIP
+ * \copyright Copyright (C) 2015-2023 @ APTCHIP
  * <table>
  * <tr><th> Date       <th>Version    <th>Author  <th>Description
  * <tr><td> 2023-9-4   <td>V0.0       <td>WCH     <td>initial
+ * <tr><td> 2023-9-18  <td>V0.1  	  <td>wch     <td>code normalization
  * </table>
  * *********************************************************************
 */

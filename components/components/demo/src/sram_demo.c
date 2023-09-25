@@ -1,4 +1,15 @@
 
+/***********************************************************************//** 
+ * \file  sram_demo.c
+ * \brief  SRAM_DEMO include ISRAM demo 
+ * \copyright Copyright (C) 2015-2023 @ APTCHIP
+ * <table>
+ * <tr><th> Date  <th>Version  <th>Author  <th>Description
+ * <tr><td> 2023-7-11 <td>V0.0 <td>YYM    <td>initial
+ * <tr><td> 2023-9-22 <td>V0.1  <td>GQQ   <td>fix bug,code normalization
+ * </table>
+ * *********************************************************************
+*/
 /* include ----------------------------------------------------------------*/
 
 #include "gpio.h"
@@ -13,7 +24,7 @@
 
 /** \brief user_fast_func，本函数会被写到SRAM1中，从而加速代码运行	
  *	
- *  	   此处用PA6翻转作为简单示例，用户可替换成		
+ *  	   此处用PA6翻转作为简单示例，用户可替换成自己需要加速的代码		
  *
  * 	注意：SRAM1最大可配置为16K ISRAM。
  *      

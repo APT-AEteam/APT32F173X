@@ -34,12 +34,12 @@ void opa_internal_gain_mode_demo(void)
 #endif	
 	//OPA 参数配置
 	tOpaConfig.eMode = OPA_INTERNAL_MODE;		//内部增益模式
-	tOpaConfig.eInputMode = SINGEL;				//单端输入
+	tOpaConfig.eInputMode = OPA_SINGLE;				//单端输入
 	tOpaConfig.eSingleGain = OPA_SINGLE_GAIN_X2;//两倍增益
-	tOpaConfig.bOpaNegativeInput = DISABLE;		//关闭负端使能
+	tOpaConfig.bOpaNInput = DISABLE;		//关闭负端使能
 	tOpaConfig.bOpaOutput = ENABLE;				//开启放大器输出
-	
 	csi_opa_init(OPA0,&tOpaConfig);
+	
 	csi_opa_enable(OPA0);
 }
 
@@ -63,10 +63,10 @@ void opa_external_gain_mode_demo(void)
 #endif
 	//OPA 参数配置
 	tOpaConfig.eMode = OPA_EXTERNAL_MODE;		//外部增益模式
-	tOpaConfig.bOpaNegativeInput = DISABLE;		//关闭负端使能
+	tOpaConfig.bOpaNInput = ENABLE;				//开启负端使能
 	tOpaConfig.bOpaOutput = ENABLE;				//开启放大器输出
-	
 	csi_opa_init(OPA0,&tOpaConfig);
+	
 	csi_opa_enable(OPA0);
 }
 

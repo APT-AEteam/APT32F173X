@@ -69,13 +69,17 @@ void user_demo(void)
 //	rtc_set_time_demo();
 //	rtc_alarm_demo();
 //	rtc_timer_demo();
-//	rtc_trgev_demo();
+//	rtc_etcb_bt_pwm_demo();
 
+//	rtc_alarm_callback_demo();
 /// ***************************************************
 ///  低功耗相关的示例代码
 /// ***************************************************
 //	lp_exi_wakeup_demo();
-//	lp_lpt_wakeup_deepsleep_demo();
+//	lp_lpt_wakeup_demo();
+//	lp_lvd_wakeup_demo();
+//	lp_rtc_wakeup_demo();
+//	lp_iwdt_wakeup_demo();
 	
 /// ***************************************************
 ///  BT相关的示例代码

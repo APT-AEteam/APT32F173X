@@ -1,12 +1,12 @@
 /***********************************************************************//** 
  * \file  sio.c
  * \brief  csi sio driver
- * \copyright Copyright (C) 2015-2021 @ APTCHIP
+ * \copyright Copyright (C) 2015-2023 @ APTCHIP
  * <table>
  * <tr><th> Date  <th>Version  <th>Author  <th>Description
  * <tr><td> 2020-9-03 <td>V0.0  <td>XB   <td>initial
- * <tr><td> 2021-1-03 <td>V0.0  <td>ZJY   <td>modify
- * <tr><td> 2021-12-03 <td>V0.1  <td>LQ   <td>modify
+ * <tr><td> 2021-1-03 <td>V0.1  <td>ZJY   <td>modify
+ * <tr><td> 2023-9-21 <td>V0.2  <td>ZJY   <td>code normalization 
  * </table>
  * *********************************************************************
 */
@@ -92,7 +92,7 @@ void csi_sio_irqhandler(csp_sio_t *ptSioBase, uint8_t byIdx)
 				if(g_tSioCtrl[byIdx].hwTransNum >= g_tSioCtrl[byIdx].hwSize)
 				{
 					g_tSioCtrl[byIdx].byRxStat = SIO_STATE_RX_DNE;			//receive buf full, g_tSioCtrl.hwTransNum = receive data len = receive buf len
-					csp_sio_logic_rst(ptSioBase);
+					csp_sio_logic_sw_rst(ptSioBase);
 					
 					if(g_tSioCtrl[byIdx].recv_callback)
 						g_tSioCtrl[byIdx].recv_callback(ptSioBase, byIsr, g_tSioCtrl[byIdx].pwData, g_tSioCtrl[byIdx].hwSize);
@@ -212,10 +212,10 @@ csi_error_t csi_sio_rx_init(csp_sio_t *ptSioBase, csi_sio_rx_config_t *ptRxCfg)
 		return CSI_ERROR;
 	
 	//rx receive config
-	csp_sio_set_rx_deb(ptSioBase, ptRxCfg->byDebPerLen - 1, ptRxCfg->byDebClkDiv - 1);													//set rx sampling debounce 
-	csp_sio_set_sample_mode(ptSioBase,(sio_bstsel_e)ptRxCfg->eTrgEdge,(sio_trgmode_e)ptRxCfg->eTrgMode,(sio_rmode_e)ptRxCfg->eSampMode);//set rx samping mode
-	csp_sio_set_sample(ptSioBase, (sio_extract_e)ptRxCfg->eSampExtra, SIO_ALIGN_EN, ptRxCfg->bySpBitLen - 1, ptRxCfg->byHithr);			//set rx samping control
-	csp_sio_set_receive(ptSioBase, (sio_rdir_e)ptRxCfg->eRxDir, ptRxCfg->byRxBufLen - 1, ptRxCfg->byRxCnt - 1);							//set receive para
+	csp_sio_set_rx_debounce(ptSioBase, ptRxCfg->byDebLen - 1, ptRxCfg->byDebClkDiv - 1);													//set rx sampling debounce 
+	csp_sio_set_samp_mode(ptSioBase,(sio_bstsel_e)ptRxCfg->eTrgEdge,(sio_trgmode_e)ptRxCfg->eTrgMode,(sio_rmode_e)ptRxCfg->eSampMode);		//set rx samping mode
+	csp_sio_set_samp_extract(ptSioBase, (sio_extract_e)ptRxCfg->eSampExtra, SIO_ALIGN_EN, ptRxCfg->bySampBitLen - 1, ptRxCfg->byHiThres);	//set rx samping control
+	csp_sio_set_receive(ptSioBase, (sio_rdir_e)ptRxCfg->eRxDir, ptRxCfg->byRxBufLen - 1, ptRxCfg->byRxCnt - 1);								//set receive para
 	
 	//callback init
 	g_tSioCtrl[byIdx].send_callback = NULL;
@@ -248,12 +248,12 @@ csi_error_t csi_sio_set_break(csp_sio_t *ptSioBase, csi_sio_bklev_e eBkLev, uint
  *  \param[in] bEnable: ENABLE/DISABLE sample timeout reset
  *  \return error code \ref csi_error_t
  */
-csi_error_t csi_sio_set_samp_timeout(csp_sio_t *ptSioBase, uint8_t byToCnt ,bool bEnable)
+csi_error_t csi_sio_set_timeout(csp_sio_t *ptSioBase, uint8_t byToCnt ,bool bEnable)
 {
 	if(byToCnt == 0)
 		return CSI_ERROR;
 		
-	csp_sio_set_samp_timeout(ptSioBase, (byToCnt - 1), bEnable);
+	csp_sio_set_timeout(ptSioBase, (byToCnt - 1), bEnable);
 	
 	return CSI_OK; 
 }
@@ -399,22 +399,20 @@ csi_error_t csi_sio_receive_rxdne_int(csp_sio_t *ptSioBase, uint32_t *pwRecv, ui
 /** \brief sio send dma enable
  * 
  *  \param[in] ptSioBase: pointer of sio register structure
- *  \param[in] bEnable: enable/disable send dma
  *  \return  none
  */
-void csi_sio_send_dma_enable(csp_sio_t *ptSioBase, bool bEnable)
+void csi_sio_send_dma_enable(csp_sio_t *ptSioBase)
 {
-	csp_sio_txdma_enable(ptSioBase, bEnable);
+	csp_sio_txdma_enable(ptSioBase);
 }
 /** \brief sio receive dma enable
  * 
  *  \param[in] ptSioBase: pointer of sio register structure
- *  \param[in] bEnable: enable/disable receive dma
  *  \return  none
  */
-void csi_sio_receive_dma_enable(csp_sio_t *ptSioBase, bool bEnable)
+void csi_sio_receive_dma_enable(csp_sio_t *ptSioBase)
 {
-	csp_sio_rxdma_enable(ptSioBase, bEnable);
+	csp_sio_rxdma_enable(ptSioBase);
 }
 /** \brief send data from sio, this function is dma mode
  * 
