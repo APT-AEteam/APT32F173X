@@ -64,7 +64,8 @@ extern "C" {
 #define BT_IDX   			4		//BTx id number
 #define UART_IDX   			3		//UARTx id number
 #define USART_IDX  			2		//USARTx id number
-#define SIO_IDX				2		//UART(0/1)
+#define SIO_IDX				2		//SIO id number
+#define CAN_IDX				2		//CAN id number
 #define LED_IDX  			1		//LEDx id number
 #define GPTB_IDX  			6		//GPTBx id number
 #define CNTA_IDX  			1		//CNTAx id number
