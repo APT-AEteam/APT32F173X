@@ -133,8 +133,7 @@ csi_error_t csi_adc_set_seq_num(csp_adc_t *ptAdcBase,uint8_t byChNum)
 {
 	if(byChNum == 0 || byChNum > 16)
 		return CSI_ERROR;
-	
-	byChNum= byChNum-1;
+
 	csp_adc_set_seq_num(ptAdcBase, byChNum);	//config number of channel
 
 	return CSI_OK;  
