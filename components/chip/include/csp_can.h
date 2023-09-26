@@ -153,7 +153,7 @@ typedef enum{
 * SR, CSR, IER, IDR, IMR: CAN Status/Interrupt Register
 ******************************************************************************/	
 typedef enum{
-	CAN_STA_ISS			= (0x01ul << 0),		//Only Status
+	CAN_SR_ISS			= (0x01ul << 0),		//Only Status
 	CAN_INT_ERWARNTR	= (0x01ul << 1),		//Iterrupt and Status
 	CAN_INT_ERPASSTR	= (0x01ul << 2),
 	CAN_INT_BUSOFFTR	= (0x01ul << 3),
@@ -166,16 +166,16 @@ typedef enum{
 	CAN_INT_BIT1		= (0x01ul << 13),		
 	CAN_INT_BIT0		= (0x01ul << 14),
 	CAN_INT_CRC			= (0x01ul << 15),
-	CAN_STA_CANENS		= (0x01ul << 16),		//Only Status
-	CAN_STA_ERWARN		= (0x01ul << 17),		
-	CAN_STA_ERPASS		= (0x01ul << 18),		
-	CAN_STA_BUSOFF		= (0x01ul << 19),		
-	CAN_STA_BUSY0		= (0x01ul << 20),
-	CAN_STA_BUSY1		= (0x01ul << 21),
-	CAN_STA_RS			= (0x01ul << 22),
-	CAN_STA_TS			= (0x01ul << 23),	
-	CAN_STA_CCENS		= (0x01ul << 24),
-	CAN_STA_BTXPD		= (0x01ul << 25),
+	CAN_SR_CANENS		= (0x01ul << 16),		//Only Status
+	CAN_SR_ERWARN		= (0x01ul << 17),		
+	CAN_SR_ERPASS		= (0x01ul << 18),		
+	CAN_SR_BUSOFF		= (0x01ul << 19),		
+	CAN_SR_BUSY0		= (0x01ul << 20),
+	CAN_SR_BUSY1		= (0x01ul << 21),
+	CAN_SR_RS			= (0x01ul << 22),
+	CAN_SR_TS			= (0x01ul << 23),	
+	CAN_SR_CCENS		= (0x01ul << 24),
+	CAN_SR_BTXPD		= (0x01ul << 25),
 	CAN_INT_ALL			= 0xff1e
 }can_int_e; 
 

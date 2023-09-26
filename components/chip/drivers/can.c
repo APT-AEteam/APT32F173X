@@ -13,7 +13,6 @@
 /* Includes ---------------------------------------------------------------*/
 #include <drv/can.h>
 
-
 /* Private function--------------------------------------------------------*/
 static void apt_can_msg_clr(csp_can_t *ptCanBase);
 static uint8_t apt_get_can_idx(csp_can_t *ptCanBase);
@@ -26,7 +25,7 @@ extern 	csi_can_bittime_t  g_tBitTime[];
 csi_can_ctrl_t g_tCanCtrl[CAN_IDX];
 
 /* Private variablesr------------------------------------------------------*/
-static uint32_t s_wCanStaMsg	= 0;			//Status Interrupt Msg
+static uint32_t s_wCanStatus	= 0;			//Status Interrupt Msg
 static uint32_t s_wCanRecvMsg	= 0;			//Receive Source Channel Interrupt Msg
 static uint32_t s_wCanSendMsg	= 0;			//Receive Source Channel Interrupt Msg
 
@@ -39,7 +38,8 @@ static uint32_t s_wCanSendMsg	= 0;			//Receive Source Channel Interrupt Msg
  */ 
 void csi_can_irqhandler(csp_can_t *ptCanBase,uint8_t byIdx)
 {
-	volatile uint32_t wStatus = 0;
+	volatile uint8_t byRecvPos = 0;
+	volatile uint32_t wIrVal, wStatus = 0;
 	volatile uint16_t hwIntNum = csp_can_get_hpir(ptCanBase);		//get interrupt pointer							
 	
 	switch(hwIntNum)												//receive handle
@@ -47,70 +47,46 @@ void csi_can_irqhandler(csp_can_t *ptCanBase,uint8_t byIdx)
 		case 0x00:													//end handle, 
 			break;
 		case 0x8000:												//status change  handle
-			wStatus = csp_can_get_sr(ptCanBase);
+			wStatus = csp_can_get_sr(ptCanBase) & CAN_INT_ALL;
 			//callback 
 			if(g_tCanCtrl[byIdx].status_callback)
-				g_tCanCtrl[byIdx].status_callback(ptCanBase, (wStatus & CAN_INT_ALL));
+				g_tCanCtrl[byIdx].status_callback(ptCanBase, wStatus);
 			
-			csp_can_clr_isr(ptCanBase, (wStatus & CAN_INT_ALL));	//clr status interrupt
+			csp_can_clr_isr(ptCanBase, wStatus);					//clr status interrupt
 			break;
-		default:													//message channel 		
-			//消息通道中断
-//			csp_can_set_tmr(ptCanBase, hwIntNum, 1, CAN_AMCR_MSK | CAN_CLRIT_MSK | CAN_TRND_MSK);	//Write If1 command request, clear NAWDATA and ITPND flag
-//			while(csp_can_get_sr(ptCanBase) & CAN_STA_BUSY1);										//If1 Busy?	
-//			wStatus = csp_can_get_mcr(ptCanBase);													//Read If1 message control reg, Read first and clean up NAWDATA and ITPND
-//			
-//			if(wStatus & CAN_NEWDAT_MSK)															//NEWDAT flag == 1 receive msg
-//			{
-//				//receive message
-//				if(g_tCanCtrl[0].ptCanRecv)
-//				{
-//					byRecvPos = hwIntNum - g_tCanCtrl[0].byStrChnl;
-//					if(s_byRecvMode == 0)
-//					{
-//						//不使用FIFO缓存，数据接收报文不覆盖
-//						if((g_tCanCtrl[0].ptCanRecv + byRecvPos)->wRecvId != 0)			//判断接收BUF中ID是否为0(读的时候会清除)，BUF中有数据则不读入到BUF
-//							return;
-//					}
-//					else 
-//					{
-//						//判断接收BUF通道中是否有数据，有的话把数据接收到BUF下一个通道中，直到BUF中最后一个通道，
-//						//若BUF中都有数据，则覆盖到最后一个BUF通道中
-//						while(1)
-//						{
-//							if((g_tCanCtrl[0].ptCanRecv + byRecvPos)->wRecvId != 0)		//接收BUF通道中有数据
-//							{
-//								if(byRecvPos < (g_tCanCtrl[0].byChTolNum -1))
-//									byRecvPos++;
-//								else
-//									 break;
-//							}
-//							else 
-//								break;
-//						}
-//					}
-//					
-//				
-//					wIrVal = csi_can_get_ifx(ptCanBase, hwIntNum, CAN_IFX_IR);
-//					if(wIrVal & CAN_XTD_MSK)														
-//						wIrVal &= (CAN_EXTID_MSK | CAN_EXTID_MSK);						//extid
-//					else
-//						wIrVal = (wIrVal & CAN_BASEID_MSK) >> 18;						//stdid
-//					
-//					(g_tCanCtrl[0].ptCanRecv + byRecvPos)->wRecvId =	wIrVal;				//ID
-//					(g_tCanCtrl[0].ptCanRecv + byRecvPos)->wRecvData[0] = csi_can_get_ifx(ptCanBase, hwIntNum, CAN_IFX_DAR);		//DATA_A
-//					(g_tCanCtrl[0].ptCanRecv + byRecvPos)->wRecvData[1] = csi_can_get_ifx(ptCanBase, hwIntNum, CAN_IFX_DBR);		//DATA_B
-//					(g_tCanCtrl[0].ptCanRecv + byRecvPos)->byDataLen = wStatus & 0x0f;												//DATA LEN
-//					(g_tCanCtrl[0].ptCanRecv + byRecvPos)->byChnlNum = hwIntNum;													//Channel Num
-//					
-//					csi_can_post_msg(CAN_MSG_RECV, (0x01ul << byRecvPos));				//发送接收数据消息
-//				}
-//			}
-//			else 
-//			{
-//				//message send complete
-//				csi_can_post_msg((0x01ul << (hwIntNum -1)), CAN_MSG_SEND);			//发送通道发送成功消息	
-//			}
+		default:													//message channel interrupt	
+			csp_can_set_tmr(ptCanBase, hwIntNum, 1, CAN_AMCR_MSK | CAN_CLRIT_MSK | CAN_TRND_MSK);	//Write If1 command request, clear NAWDATA and ITPND flag
+			while(csp_can_get_sr(ptCanBase) & CAN_STA_BUSY1);										//If1 Busy?	
+			wStatus = csp_can_get_mcr(ptCanBase);													//Read If1 message control reg, Read first and clean up NAWDATA and ITPND
+			
+			if(wStatus & CAN_NEWDAT_MSK)															//NEWDAT flag == 1, receive new message
+			{
+				//receive message
+				if(g_tCanCtrl[byIdx].ptCanRecv)
+				{
+					byRecvPos = hwIntNum - g_tCanCtrl[byIdx].byStrCh;								//receive buffer position
+					
+					wIrVal = csi_can_get_ifx(ptCanBase, hwIntNum, CAN_IFX_IR);
+					if(wIrVal & CAN_XTD_MSK)														
+						wIrVal &= (CAN_EXTID_MSK | CAN_EXTID_MSK);									//extid
+					else
+						wIrVal = (wIrVal & CAN_BASEID_MSK) >> 18;									//stdid
+					
+					(g_tCanCtrl[byIdx].ptCanRecv + byRecvPos)->wRecvId =	wIrVal;					//id
+					(g_tCanCtrl[byIdx].ptCanRecv + byRecvPos)->byDataLen = wStatus & 0x0f;			//data len
+					(g_tCanCtrl[byIdx].ptCanRecv + byRecvPos)->byChNum = hwIntNum;					//message channel number
+					(g_tCanCtrl[byIdx].ptCanRecv + byRecvPos)->wRecvData[0] = csi_can_get_ifx(ptCanBase, hwIntNum, CAN_IFX_DAR);		//DATA_A
+					(g_tCanCtrl[byIdx].ptCanRecv + byRecvPos)->wRecvData[1] = csi_can_get_ifx(ptCanBase, hwIntNum, CAN_IFX_DBR);		//DATA_B
+					
+					if(g_tCanCtrl[byIdx].recv_callback)							//message channel send complete
+						g_tCanCtrl[byIdx].recv_callback(ptCanBase, (g_tCanCtrl[0].ptCanRecv + byRecvPos));
+				}
+			}
+			else 
+			{
+				if(g_tCanCtrl[byIdx].send_callback)								//message channel send complete
+					g_tCanCtrl[byIdx].send_callback(ptCanBase, hwIntNum);
+			}
 			break;
 	}
 }
@@ -124,7 +100,8 @@ void csi_can_irqhandler(csp_can_t *ptCanBase,uint8_t byIdx)
 csi_error_t csi_can_init(csp_can_t *ptCanBase, csi_can_config_t *ptCanCfg)
 {
 	csi_can_bittime_t *ptBitTime = NULL;
-				
+	uint8_t byIdx = apt_get_can_idx(ptCanBase);
+	
 	csi_clk_enable((uint32_t *)ptCanBase);		//can peripheral clk enable
 	csp_can_clk_enable(ptCanBase);				//clk enable
 	csp_can_sw_rst(ptCanBase);					//soft reset
@@ -142,22 +119,14 @@ csi_error_t csi_can_init(csp_can_t *ptCanBase, csi_can_config_t *ptCanCfg)
 	else
 		return CSI_ERROR;										//clk source = emclk,
 		
-	apt_can_msg_clr(ptCanBase);
-	
 	csp_can_cc_enable(ptCanBase);								//ccen
 	csp_can_set_mode(ptCanBase, ptBitTime->byBdrDiv, ptCanCfg->byClkSrc, ptCanCfg->bAuReTran, ptBitTime->bySyncJw, ptBitTime->byPhSeg1, ptBitTime->byPhSeg2);	
 	csp_can_cc_disable(ptCanBase);								//ccdis
 	
-	//set can interrupt
-	if(ptCanCfg->hwStaInter || ptCanCfg->wChnlInter)
-	{
-		csi_irq_enable(ptCanBase);
-		
-		if(ptCanCfg->hwStaInter)
-			csp_can_int_enable(ptCanBase, ptCanCfg->hwStaInter);
-		if(ptCanCfg->wChnlInter)
-			csp_can_ch_int_enable(ptCanBase, ptCanCfg->wChnlInter);
-	}
+	//init callback
+	g_tCanCtrl[byIdx].recv_callback = NULL;
+	g_tCanCtrl[byIdx].send_callback = NULL;
+	g_tCanCtrl[byIdx].status_callback = NULL;
 	
 	return CSI_OK;
 }
@@ -179,6 +148,9 @@ csi_error_t csi_can_register_callback(csp_can_t *ptCanBase, csi_can_callback_id_
 	{
 		case CAN_CALLBACK_RECV:
 			g_tCanCtrl[byIdx].recv_callback = callback;
+			break;
+		case CAN_CALLBACK_SEND:
+			g_tCanCtrl[byIdx].send_callback = callback;
 			break;
 		case CAN_CALLBACK_STATUS:
 			g_tCanCtrl[byIdx].status_callback = callback;
@@ -235,7 +207,8 @@ void csi_can_set_tx_msg(csp_can_t *ptCanBase, csi_can_ch_e eChNum, csi_can_tx_co
 void csi_can_set_rx_msg(csp_can_t *ptCanBase, csi_can_ch_e eChNum, csi_can_rx_config_t *ptRxCfg)
 {
 	csp_can_set_id_mode(ptCanBase, ptRxCfg->tId.wExtId, ptRxCfg->tId.hwStdId, CAN_MDIR_RECV, (can_xtd_e)ptRxCfg->tId.eIdMode, CAN_MSGVAL_VALID);
-	csp_can_set_msk_mode(ptCanBase, ptRxCfg->tMsk.wExtIdMsk, ptRxCfg->tMsk.hwStdIdMsk, CAN_MMDIR_DIS, ptRxCfg->tMsk.byIdMdMsk);
+	if((ptRxCfg->tMsk.hwStdIdMsk == 0) && (ptRxCfg->tMsk.wExtIdMsk	== 0))
+		csp_can_set_msk_mode(ptCanBase, ptRxCfg->tMsk.wExtIdMsk, ptRxCfg->tMsk.hwStdIdMsk, CAN_MMDIR_DIS, (can_mxtd_e)ptRxCfg->tMsk.eIdMdMsk);
 	csp_can_set_mcr_rd(ptCanBase, ptRxCfg->tMc.byDataLen, ptRxCfg->tMc.bOverWrEn, ptRxCfg->tMc.bRxIeEn, ptRxCfg->tMc.bMskEn);
 	
 	while(csp_can_get_sr(ptCanBase) & CAN_STA_BUSY0);
@@ -252,8 +225,8 @@ void csi_can_set_rx_msg(csp_can_t *ptCanBase, csi_can_ch_e eChNum, csi_can_rx_co
 void csi_can_recv_init(csi_can_recv_t *ptCanRecv, csi_can_ch_e eStrChNum, uint8_t byChTolNum)
 {
 	g_tCanCtrl[0].ptCanRecv = ptCanRecv;
-	g_tCanCtrl[0].byStrChnl = eStrChNum;
-	g_tCanCtrl[0].byChTolNum = byChTolNum;
+	g_tCanCtrl[0].byStrCh = eStrChNum;
+	g_tCanCtrl[0].byTolChNum = byChTolNum;
 }
 /** \brief can interrupt(message status) enable
  * 
@@ -295,19 +268,43 @@ void csi_can_ch_int_disable(csp_can_t *ptCanBase, csi_can_ch_e eChNum)
 {
 	csp_can_ch_int_disable(ptCanBase, (0x01ul << (eChNum -1)));
 }
-/** \brief can message channel send 
+/** \brief can message send, no interrupt 
  * 
  *  \param[in] ptCanBase: pointer of can register structure
- *  \param[in] eChNum: number of message channel
- *  \param[in] eTxIe: TX interrupt ITPAND SET enable
- *  \param[in] byDataLen: data length of message
+ *  \param[in] eChNum: channel number of message, \ref csi_can_ch_e
+ *  \param[in] byDataLen: data length of message, 1~8
  *  \return none
  */
-void csi_can_ch_send(csp_can_t *ptCanBase, csi_can_ch_e eChNum, uint8_t byDataLen)
+void csi_can_msg_send(csp_can_t *ptCanBase, csi_can_ch_e eChNum, uint8_t byDataLen)
 {
 	uint32_t wMcrVal;
+	
 	//read MCR reg
-	//while(csp_can_get_sr(ptCanBase) & CAN_STA_BUSY1);
+	csp_can_clr_sr(CAN0, CAN_INT_TXOK);											//clear TXOK status 
+	csp_can_set_tmr(ptCanBase, eChNum, CAN_IF1, CAN_AMCR_MSK);
+	while(csp_can_get_sr(ptCanBase) & CAN_STA_BUSY1);
+	wMcrVal = (csp_can_get_mcr(ptCanBase) & 0xfe80);
+	//write MCR reg
+	csp_can_set_mcr(ptCanBase, (wMcrVal | CAN_DLC(byDataLen) | (CAN_TXREQST_EN << CAN_TXREQST_POS)));
+	while(csp_can_get_sr(ptCanBase) & CAN_STA_BUSY0);
+	csp_can_set_tmr(ptCanBase, eChNum, CAN_IF0, CAN_DIR_WRITE | CAN_AMCR_MSK);
+}
+
+/** \brief can message send, interrupt mode(enable all status interrupt and eChNum channel interrupt) 
+ * 
+ *  \param[in] ptCanBase: pointer of can register structure
+ *  \param[in] eChNum: channel number of message, \ref csi_can_ch_e
+ *  \param[in] byDataLen: data length of message, 1~8
+ *  \return none
+ */
+void csi_can_msg_send_int(csp_can_t *ptCanBase, csi_can_ch_e eChNum, uint8_t byDataLen)
+{
+	uint32_t wMcrVal;
+	
+	csp_can_clr_sr(CAN0, CAN_INT_ALL);									//clear all status interrupt 
+	csp_can_int_enable(ptCanBase, CAN_INT_ALL);							//enable all status interrupt
+	csp_can_ch_int_enable(ptCanBase, (0x01ul << (eChNum -1)));			//enable channel interrupt
+	//read MCR reg
 	csp_can_set_tmr(ptCanBase, eChNum, CAN_IF1, CAN_AMCR_MSK);
 	while(csp_can_get_sr(ptCanBase) & CAN_STA_BUSY1);
 	wMcrVal = (csp_can_get_mcr(ptCanBase) & 0xfe80);
@@ -321,29 +318,25 @@ void csi_can_ch_send(csp_can_t *ptCanBase, csi_can_ch_e eChNum, uint8_t byDataLe
  * 
  *  \param[in] ptCanBase: pointer of can register structure
  *  \param[in] pRecvBuf: pointer of  receive buffer
- *  \param[in] eChNum: number of message channel
+ *  \param[in] byStrCh: the start channel of message receive config
+ *  \param[in] byTolChNum: the total number of message receive channels
  *  \return message length
  */
-uint8_t csi_can_ch_read(csp_can_t *ptCanBase, uint8_t *pRecvBuf, csi_can_ch_e eChNum)
+void csi_can_msg_receive_int(csp_can_t *ptCanBase, csi_can_recv_t *ptRecv, uint8_t byStrCh, uint8_t byTolChNum)
 {
-	uint8_t byBufNum = eChNum - g_tCanCtrl[0].byStrChnl;						//buf number
-	uint8_t byMsgLen = 4 + g_tCanCtrl[0].ptCanRecv[byBufNum].byDataLen;	
-	uint8_t byRet = 0;
+	uint8_t i, byIdx = apt_get_can_idx(ptCanBase);
 	
-	csi_irq_disable(ptCanBase);
-	if(g_tCanCtrl[0].ptCanRecv[byBufNum].wRecvId != 0)		
-	{
-		
-		pRecvBuf[0] = g_tCanCtrl[0].ptCanRecv[byBufNum].byDataLen;
-		memcpy((pRecvBuf+1), (uint8_t *)&g_tCanCtrl[0].ptCanRecv[byBufNum].wRecvId, byMsgLen);
-		g_tCanCtrl[0].ptCanRecv[byBufNum].wRecvId = 0;							//clear id
-		s_wCanRecvMsg &= ~(0x01ul << (eChNum - 1));								//clear receive channel msg
-		
-		byRet =  g_tCanCtrl[0].ptCanRecv[byBufNum].byDataLen;
+	g_tCanCtrl[byIdx].ptCanRecv = ptRecv;
+	g_tCanCtrl[byIdx].byStrCh = byStrCh;
+	g_tCanCtrl[byIdx].byTolChNum= byTolChNum;
+	
+	csp_can_clr_sr(CAN0, CAN_INT_ALL);							//clear all status interrupt 
+	csp_can_int_enable(ptCanBase, CAN_INT_ALL);					//enable all status interrupt
+	
+	for(i = byStrCh; i < (byStrCh + byTolChNum); i++)	
+	{						
+		csp_can_ch_int_enable(ptCanBase, (0x01ul << (i-1)));	//enable message receive channel interrupt
 	}
-	csi_irq_enable(ptCanBase);
-	
-	return byRet;
 }
 
 /** \brief  can transfer manage register operate 
@@ -416,7 +409,7 @@ void csi_can_set_msk(csp_can_t *ptCanBase, csi_can_ch_e eChNum, csi_can_msk_conf
 	csp_can_set_tmr(ptCanBase, eChNum, 1, CAN_AMSKR_MSK);				//first read
 	while(csp_can_get_sr(ptCanBase) & CAN_STA_BUSY1);
 	//csp_can_get_mskr(ptCanBase);
-	csp_can_set_msk_mode(ptCanBase, ptMsk->wExtIdMsk, ptMsk->hwStdIdMsk, CAN_MMDIR_DIS, ptMsk->byIdMdMsk);
+	csp_can_set_msk_mode(ptCanBase, ptMsk->wExtIdMsk, ptMsk->hwStdIdMsk, CAN_MMDIR_DIS, (can_mxtd_e)ptMsk->eIdMdMsk);
 	while(csp_can_get_sr(ptCanBase) & CAN_STA_BUSY0);
 	csp_can_set_tmr(ptCanBase, eChNum, 0, CAN_WR_MSK | CAN_AMSKR_MSK);	//write
 }
@@ -649,7 +642,7 @@ bool csi_can_post_msg(csi_can_msg_mode_e eMsgMode, uint32_t wMsg)
 	switch(eMsgMode)
 	{
 		case CAN_MSG_STATUS:
-			s_wCanStaMsg |= wMsg;			//Status Msg
+			s_wCanStatus |= wMsg;			//Status Msg
 			break;
 		case CAN_MSG_RECV:
 			s_wCanRecvMsg |= wMsg;			//Receive Source Msg
@@ -730,7 +723,7 @@ uint32_t csi_can_get_recv_msg(void)
  */
 uint32_t csi_can_get_trans_status(void)
 {
-	return s_wCanStaMsg;
+	return s_wCanStatus;
 }
 
 /** \brief  clr msg of can status msg
@@ -740,7 +733,7 @@ uint32_t csi_can_get_trans_status(void)
  */
 void csi_can_clr_trans_status(csi_can_status_e eStaMsg)
 {
-	s_wCanStaMsg &= ~eStaMsg;
+	s_wCanStatus &= ~eStaMsg;
 }
 
 /** \brief get can idx 
@@ -752,7 +745,7 @@ static uint8_t apt_get_can_idx(csp_can_t *ptCanBase)
 {
 	switch((uint32_t)ptCanBase)
 	{
-		case APB_CNTA_BASE:
+		case APB_CAN_BASE:
 			return 0;
 		default:
 			return 0xff;		//error

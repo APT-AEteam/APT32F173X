@@ -76,8 +76,8 @@ typedef enum
  */
 typedef enum
 {
-	CAN_DIR_MSK_DIS	= 0,	//CAN message dir receive
-	CAN_DIR_MSK_EN			//CAN message dir send
+	CAN_DIRMSK_DIS	= 0,	//CAN message dir receive
+	CAN_DIRMSK_EN			//CAN message dir send
 }csi_can_dirmsk_e;
 
 /**
@@ -86,8 +86,8 @@ typedef enum
  */
 typedef enum
 {
-	CAN_STD_ID_MSK	= 0,	//CAN message standard ID mask
-	CAN_EXT_ID_MSK			//CAN message extend ID mask 
+	CAN_IDMSK_STD	= 0,	//CAN message standard ID mask
+	CAN_IDMSK_EXT			//CAN message extend ID mask 
 }csi_can_idmsk_e;
 
 /**
@@ -267,8 +267,18 @@ typedef enum
 	CAN_STA_BIT1		= (0x01uL << 13),		//报文高位错误		
 	CAN_STA_BIT0		= (0x01uL << 14),		//报文低位错误	
 	CAN_STA_CRC			= (0x01uL << 15),		//报文CRC校验错误
-	CAN_STA_STATUS_ERR	= (0xfc0e),
-	CAN_STA_STATUS_ALL	= (0xff1e)
+	CAN_STA_CANENS		= (0x01ul << 16),		//Only Status
+	CAN_STA_ERWARN		= (0x01ul << 17),		
+	CAN_STA_ERPASS		= (0x01ul << 18),		
+	CAN_STA_BUSOFF		= (0x01ul << 19),		
+	CAN_STA_BUSY0		= (0x01ul << 20),
+	CAN_STA_BUSY1		= (0x01ul << 21),
+	CAN_STA_RS			= (0x01ul << 22),
+	CAN_STA_TS			= (0x01ul << 23),	
+	CAN_STA_CCENS		= (0x01ul << 24),
+	CAN_STA_BTXPD		= (0x01ul << 25),
+	CAN_STA_ERR			= (0x3fffc0e),
+	CAN_STA_ALL			= (0x3ffff1f)
 }csi_can_status_e;
 
 /**
@@ -276,8 +286,9 @@ typedef enum
  * \brief    CAN callback id
  */
 typedef enum{
-	CAN_CALLBACK_RECV	=	0,		//can rteceive callback id
-	CAN_CALLBACK_STATUS,			//can status callback id
+	CAN_CALLBACK_RECV	=	0,				//can rteceive callback id
+	CAN_CALLBACK_SEND,						//can rteceive callback id
+	CAN_CALLBACK_STATUS						//can status callback id
 }csi_can_callback_id_e;
 
 
@@ -301,8 +312,8 @@ typedef struct {
 
 /// \struct csi_can_mskr_config_t
 typedef struct {
-	uint8_t				byIdMdMsk;			//message identifier mode mask
-	uint8_t				byIdDirMsk;			//message identifier dir mask
+	csi_can_idmsk_e		eIdMdMsk;			//message identifier mode mask
+	csi_can_dirmsk_e	eIdDirMsk;			//message identifier dir mask
 	uint16_t			hwStdIdMsk;	    	//standard identifier mask
 	uint32_t			wExtIdMsk;         	//extend identifier mask
 } csi_can_msk_config_t;
@@ -362,7 +373,7 @@ typedef struct {
 /// \struct csi_can_recv_t
 /// \brief  can receive handle, open to users 
 typedef struct {
-	uint8_t				byChnlNum;			//message channel number
+	uint8_t				byChNum;			//message channel number
 	uint8_t				byDataLen;			//message data length
 	uint32_t			wRecvId;			//receive id
 	uint32_t			wRecvData[2];		//receive status
@@ -371,12 +382,13 @@ typedef struct {
 /// \struct csi_can_ctrl_t
 /// \brief  can receive handle, not open to users 
 typedef struct {
-	uint8_t				byStrChnl;			//receive start channel
-	uint8_t 			byChTolNum;			//receive number of channels
+	uint8_t				byStrCh;			//receive start channel
+	uint8_t 			byTolChNum;			//receive number of channels
 	csi_can_recv_t 		*ptCanRecv;
 	
 	//CallBack		
-	void(*recv_callback)(csp_can_t *ptCanBase, uint32_t *pwBuf, uint16_t hwSzie);
+	void(*recv_callback)(csp_can_t *ptCanBase, csi_can_recv_t *ptRecv);
+	void(*send_callback)(csp_can_t *ptCanBase, uint8_t byCh);
 	void(*status_callback)(csp_can_t *ptCanBase, uint32_t byIsr);
 	
 } csi_can_ctrl_t;
@@ -423,13 +435,32 @@ void csi_can_start(csp_can_t *ptCanBase);
 void csi_can_stop(csp_can_t *ptCanBase);
 
 /** 
-  \brief 	   can msg channel send 
+  \brief 	   can message send 
   \param[in]   ptCanBase	pointer of can register structure
-  \param[in]   eChNum		number of message
-  \param[in]   byDataLen	data length of message
+  \param[in]   eChNum		channel number of message, \ref csi_can_ch_e
+  \param[in]   byDataLen	data length of message, 1~8
   \return 	   none
  */
-void csi_can_ch_send(csp_can_t *ptCanBase, csi_can_ch_e eChNum, uint8_t byDataLen);
+void csi_can_msg_send(csp_can_t *ptCanBase, csi_can_ch_e eChNum, uint8_t byDataLen);
+
+/** 
+  \brief 	   can message send, interrupt mode
+  \param[in]   ptCanBase	pointer of can register structure
+  \param[in]   eChNum		channel number of message, \ref csi_can_ch_e
+  \param[in]   byDataLen	data length of message, 1~8
+  \return 	   none
+ */
+void csi_can_msg_send_int(csp_can_t *ptCanBase, csi_can_ch_e eChNum, uint8_t byDataLen);
+
+/** 
+  \brief can read message channel send enable
+  \param[in] ptCanBase: pointer of can register structure
+  \param[in] pRecvBuf: pointer of  receive buffer
+  \param[in] byStrCh: the start channel of message receive config
+  \param[in] byTolChNum: the total number of message receive channels
+  \return message length
+ */
+void csi_can_msg_receive_int(csp_can_t *ptCanBase, csi_can_recv_t *ptRecv, uint8_t byStrCh, uint8_t byTolChNum);
 
 /** 
   \brief can read message channel send enable

@@ -44,7 +44,7 @@ ATTRIBUTE_ISR void uart1_int_handler(void)
 		else
 		{
 			hwSendLen = 0;
-			csp_uart_int_disable(UART1, UART_INT_RXFIFO);		//关闭rxfifo/中断	
+			csp_uart_int_disable(UART1, UART_INT_TXFIFO);		//关闭txfifo/中断	
 		}
 	}
 	
