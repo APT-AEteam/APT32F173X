@@ -14,9 +14,27 @@
 
 /* Private macro------------------------------------------------------*/
 /* externs function---------------------------------------------------*/
+/* Private function-------------------------------------------------*/
+static uint8_t apt_get_led_idx(csp_led_t *ptLedBase);
 /* externs variablesr-------------------------------------------------*/
 /* Private variablesr-------------------------------------------------*/
 csi_led_ctrl_t g_tLedCtrl[LED_IDX];
+
+/** \brief led interrupt handler function
+ * 
+ *  \param[in] ptLedBase: pointer of led register structure
+ *  \param[in] byIdx: led idx(0)
+ *  \return none
+ */ 
+void csi_led_irqhandler(csp_led_t *ptLedBase, uint8_t byIdx)
+{
+	uint8_t byIsr = csp_led_get_isr(ptLedBase);
+	
+	if(g_tLedCtrl[byIdx].callback)
+		g_tLedCtrl[byIdx].callback(ptLedBase, byIsr);
+
+	csp_led_clr_isr(ptLedBase, byIsr);
+}
 
  /** \brief initialize uart parameter structure
  * 
@@ -135,22 +153,6 @@ void csi_led_clr_isr(csp_led_t *ptLedBase,csi_led_intsrc_e eInt)
 	csp_led_clr_isr(ptLedBase,(led_int_e)eInt);
 }
 
-/** \brief get led number 
- * 
- *  \param[in] ptLedBase: pointer of led register structure
- *  \return led number 0/1
- */ 
-static uint8_t apt_get_led_idx(csp_led_t *ptLedBase)
-{
-	switch((uint32_t)ptLedBase)
-	{
-		case APB_LED_BASE:		//LED0
-			return 0;		
-
-		default:
-			return 0xff;		//error
-	}
-}
 /** \brief  register led interrupt callback function
  * 
  *  \param[in] ptLedBase: pointer of led register structure
@@ -168,18 +170,19 @@ csi_error_t csi_led_register_callback(csp_led_t *ptLedBase, void  *callback)
 	return CSI_OK;
 }
 
-/** \brief led interrupt handler function
+/** \brief get led number 
  * 
  *  \param[in] ptLedBase: pointer of led register structure
- *  \param[in] byIdx: led idx(0)
- *  \return none
+ *  \return led number 0/1
  */ 
-void csi_led_irqhandler(csp_led_t *ptLedBase, uint8_t byIdx)
+static uint8_t apt_get_led_idx(csp_led_t *ptLedBase)
 {
-	uint8_t byIsr = csp_led_get_isr(ptLedBase);
-	
-	if(g_tLedCtrl[byIdx].callback)
-		g_tLedCtrl[byIdx].callback(ptLedBase, byIsr);
+	switch((uint32_t)ptLedBase)
+	{
+		case APB_LED_BASE:		//LED0
+			return 0;		
 
-	csp_led_clr_isr(ptLedBase, byIsr);
+		default:
+			return 0xff;		//error
+	}
 }
