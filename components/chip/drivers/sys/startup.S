@@ -61,7 +61,7 @@ __Vectors:
     .long   Default_Handler
     .long   sio0_int_handler
     .long   sio1_int_handler			
-    .long   i2c_int_handler
+    .long   iic_int_handler
     .long   spi0_int_handler
     .long   spi1_int_handler
     .long   can_int_handler		

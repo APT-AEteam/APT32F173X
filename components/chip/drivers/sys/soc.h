@@ -1133,7 +1133,7 @@ void uart1_int_handler(void);			//UART1 interrupt
 void uart2_int_handler(void);			//UART2 interrupt
 void sio0_int_handler(void);			//SIO0 interrupt
 void sio1_int_handler(void);			//SIO1 interrupt
-void i2c_int_handler(void);				//IIC  interrupt
+void iic_int_handler(void);				//IIC  interrupt
 void spi0_int_handler(void);			//SPI0 interrupt
 void spi1_int_handler(void);			//SPI1 interrupt
 void can_int_handler(void);				//CAN interrupt

@@ -84,7 +84,7 @@ extern "C" {
 #define USE_DAC_CALLBACK		1		//DAC(0)
 #define USE_USART_CALLBACK		0		//USART(0/1)
 #define USE_LIN_CALLBACK        0       //LIN(0/1) LIN和USART使用的都是USART模块，同一个USART,使用了普通的USART功能，LIN功能就不能使用了
-#define USE_I2C_CALLBACK		1		//IIC(0)
+#define USE_IIC_CALLBACK		1		//IIC(0)
 #define USE_LPT_CALLBACK		1		//LPT(0)
 #define USE_WWDT_CALLBACK		1		//WWDT(0)
 #define USE_ADC_CALLBACK		1		//ADC(0/1)

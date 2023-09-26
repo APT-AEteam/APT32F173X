@@ -4,7 +4,7 @@
  * \copyright Copyright (C) 2015-2023 @ APTCHIP
  * <table>
  * <tr><th> Date  <th>Version  <th>Author  <th>Description
- * <tr><td> 2023-9-14 <td>V0.0  <td>YT     <td>initial
+ * <tr><td> 2023-9-14 <td>V0.0  <td>YT     <td>initial,code normalization
  * </table>
  * *********************************************************************
 */
@@ -52,13 +52,11 @@ void user_wwdt_callback(csp_wwdt_t * ptWwdtBase)
 	
 	csi_wwdt_register_callback(WWDT, user_wwdt_callback);	//注册中断回调函数
 	csi_wwdt_open();							//WWDT一旦使能，软件将不能停止
-
-	//csi_wwdt_feed();							//如果在这里（窗口外）喂狗，将会引起芯片复位
 	
 	while(1) {
 		temp = csi_wwdt_get_remaining_time() ;
 		if (temp< 30) {						//此处仅为示例喂狗操作。实际应用需要对代码运行时间有全局的了解。只有在窗口内喂狗，芯片才不会复位
-			csi_wwdt_feed();			
+//			csi_wwdt_feed();		     // 屏蔽此处代码，会进中断	
 			if (csi_wwdt_get_remaining_time()  < 79) {
 				return CSI_ERROR;
 			}

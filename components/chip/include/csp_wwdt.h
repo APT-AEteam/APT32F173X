@@ -7,6 +7,7 @@
  * <tr><td> 2020-9-4 <td>V0.0  <td>WNN   <td>initial
  * <tr><td> 2020-12-7 <td>V0.1  <td>WNN   <td>bug fix
  * <tr><td> 2021-1-7 <td>V0.2  <td>ZJY   <td> add csp_wwdt_vic_irq_en()
+ * <tr><td> 2023-9-14 <td>V0.2  <td>YT     <td>code normalization
  * </table>
  * *********************************************************************
 */

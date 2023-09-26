@@ -23,11 +23,11 @@ volatile static uint8_t s_byWriteBuffer[32];
 volatile uint8_t g_wTxBuff[32] = {0,1,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20};// 前两个为wWriteAddrs
 volatile uint8_t g_bRxBuff[32] = {0};
 
-volatile uint32_t g_wIicErrorCont = 0;
-volatile uint8_t g_bySendIndex = 0;
-volatile uint8_t g_byWriteIndex = 0;
-volatile uint32_t g_wIicSlaveWriteAddress;
-csi_iic_ctrl_t g_tIicCtrl[IIC_IDX];
+//extern volatile uint32_t g_wIicErrorCont = 0;
+//extern volatile uint8_t g_bySendIndex = 0;
+//extern volatile uint8_t g_byWriteIndex = 0;
+//extern volatile uint32_t g_wIicSlaveWriteAddress;
+//extern csi_iic_ctrl_t g_tIicCtrl[IIC_IDX];
 
 
 #if (USE_IIC_CALLBACK == 0)
@@ -49,23 +49,23 @@ ATTRIBUTE_ISR  void iic_int_handler(void)
 	
 	if(csp_iic_get_isr(IIC0)&IIC_INT_RX_FULL)        //receive data full
 	{
-		if(g_bySendIndex == 0)
-		{
-			g_bySendIndex = 1;
-			g_wIicSlaveWriteAddress = csp_iic_get_data(IIC0);
-			g_byWriteIndex = g_wIicSlaveWriteAddress;
-		}
-		else
-		{
-			if(g_wIicSlaveWriteAddress<g_tSlave.hwRxSize)
-			{
-				*(g_tSlave.pbySlaveRxBuf+g_wIicSlaveWriteAddress)= csp_iic_get_data(IIC0);
-			}
-			g_wIicSlaveWriteAddress++;
-		}
-			csp_iic_clr_isr(IIC0,IIC_INT_RX_FULL);
-			g_wIicErrorCont=0;
-		}
+//		if(g_bySendIndex == 0)
+//		{
+//			g_bySendIndex = 1;
+//			g_wIicSlaveWriteAddress = csp_iic_get_data(IIC0);
+//			g_byWriteIndex = g_wIicSlaveWriteAddress;
+//		}
+//		else
+//		{
+//			if(g_wIicSlaveWriteAddress<g_tSlave.hwRxSize)
+//			{
+//				*(g_tSlave.pbySlaveRxBuf+g_wIicSlaveWriteAddress)= csp_iic_get_data(IIC0);
+//			}
+//			g_wIicSlaveWriteAddress++;
+//		}
+//			csp_iic_clr_isr(IIC0,IIC_INT_RX_FULL);
+//			g_wIicErrorCont=0;
+	}
 }
 
 #endif

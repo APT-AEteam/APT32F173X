@@ -140,7 +140,7 @@ ATTRIBUTE_ISR __attribute__((weak)) void wwdt_int_handler(void)
 #if (USE_WWDT_CALLBACK==1)
 	csi_wwdt_irqhandler(WWDT,0);
 #else
-	csp_wwdt_clr_isr(WWDT,csp_wwdt_get_isr(WWDT));
+	csp_wwdt_clr_isr(WWDT);
 #endif
 	CSI_INTRPT_EXIT();
 }
@@ -368,13 +368,13 @@ ATTRIBUTE_ISR __attribute__((weak)) void sio1_int_handler(void)
 	CSI_INTRPT_EXIT();
 }
 
-ATTRIBUTE_ISR __attribute__((weak)) void i2c_int_handler(void) 
+ATTRIBUTE_ISR __attribute__((weak)) void iic_int_handler(void) 
 {
 	CSI_INTRPT_ENTER();
-#if (USE_I2C_CALLBACK==1)
+#if (USE_IIC_CALLBACK==1)
 	csi_iic_irqhandler(IIC0,0);
 #else
-	csp_i2c_clr_isr(IIC0, csp_i2c_get_isr(IIC0));
+	csp_iic_clr_isr(IIC0, csp_iic_get_isr(IIC0));
 #endif
 	CSI_INTRPT_EXIT();
 }
