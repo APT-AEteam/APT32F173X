@@ -82,6 +82,12 @@ typedef enum {
     CSI_UNSUPPORTED = -4,
 } csi_error_t;
 
+typedef enum {
+    CSP_SUCCESS     =  0,
+    CSP_FAIL        = -1,
+    CSP_UNSUPPORTED = -4
+} csp_error_t;
+
 typedef struct {
    uint8_t    readable;
    uint8_t    writeable;

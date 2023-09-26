@@ -381,22 +381,26 @@ ATTRIBUTE_ISR __attribute__((weak)) void i2c_int_handler(void)
 
 ATTRIBUTE_ISR __attribute__((weak)) void spi0_int_handler(void) 
 {
-#if	SPI0_INT_HANDLE_EN
-   // ISR content ...
+	// ISR content ...
 	CSI_INTRPT_ENTER();
-	spi_irqhandler(SPI0);//this is a weak function defined in spi_demo.c, for better efficiency, we recommand user directly implement IRQ handler here without any function call.
+#if (USE_SPI_CALLBACK == 1)
+	csi_spi_irqhandler(SPI0, 0);
+#else
+	csp_spi_clr_isr(SPI0, csp_spi_get_isr(SPI0));
+#endif
 	CSI_INTRPT_EXIT();
-#endif   
 }
 
 ATTRIBUTE_ISR __attribute__((weak)) void spi1_int_handler(void) 
 {
-#if	SPI1_INT_HANDLE_EN
-   // ISR content ...
+	// ISR content ...
 	CSI_INTRPT_ENTER();
-	spi_irqhandler(SPI1);//this is a weak function defined in spi_demo.c, for better efficiency, we recommand user directly implement IRQ handler here without any function call.
-	CSI_INTRPT_EXIT();
+#if (USE_SPI_CALLBACK == 1)
+	csi_spi_irqhandler(SPI1, 0);
+#else
+	csp_spi_clr_isr(SPI1, csp_spi_get_isr(SPI1));
 #endif
+	CSI_INTRPT_EXIT();
 }
 
 ATTRIBUTE_ISR __attribute__((weak)) void exi0_int_handler(void) 
