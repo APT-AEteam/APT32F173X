@@ -1,13 +1,14 @@
 /***********************************************************************//** 
  * \file  csp_iic.h
  * \brief  IIC description and static inline functions at register level 
- * \copyright Copyright (C) 2015-2020 @ APTCHIP
+ * \copyright Copyright (C) 2015-2023 @ APTCHIP
  * <table>
  * <tr><th> Date  <th>Version  <th>Author  <th>Description
  * <tr><td> 2020-9-01 <td>V0.0  <td>ZJY   <td>initial
  * <tr><td> 2021-1-21 <td>V0.1  <td>ZJY   <td> modified in 110
-  * <tr><td> 2021-1-22 <td>V0.2  <td>WNN   <td> move to 102
-  * <tr><td> 2023-3-2 <td>V0.3  <td>YT   <td> move to 173
+ * <tr><td> 2021-1-22 <td>V0.2  <td>WNN   <td> move to 102
+ * <tr><td> 2023-3-2 <td>V0.3   <td>YT    <td> move to 173
+ * <tr><td> 2023-9-14 <td>V0.4  <td>YT    <td>code normalization
  * </table>
  * *********************************************************************
 */

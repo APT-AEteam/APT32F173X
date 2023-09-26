@@ -1,7 +1,7 @@
 /***********************************************************************//** 
  * \file  wdt.h
  * \brief  head file of window WDT and indepedent WDT 
- * \copyright Copyright (C) 2015-2020 @ APTCHIP
+ * \copyright Copyright (C) 2015-2023 @ APTCHIP
  * <table>
  * <tr><th> Date  <th>Version  <th>Author  <th>Description
  * <tr><td> 2020-8-24 <td>V0.0 <td>WNN     <td>initial
