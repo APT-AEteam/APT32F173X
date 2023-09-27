@@ -21,7 +21,7 @@
 /* Private variablesr------------------------------------------------------*/
 
 
-#if (USE_SPI_CALLBACK == 0)	
+#if (USE_SPI_CALLBACK == 1)	
 
 static uint16_t hwSendLen = 0;	
 static uint8_t s_byRecvBuf[64]={0};	

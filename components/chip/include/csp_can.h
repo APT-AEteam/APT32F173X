@@ -5,7 +5,7 @@
  * <table>
  * <tr><th> Date  <th>Version  <th>Author  <th>Description
  * <tr><td> 2021-7-08 <td>V0.0  <td>ZJY   <td>initial
- * <tr><td> 2021-9-21 <td>V0.0  <td>ZJY   <td>code normalization
+ * <tr><td> 2023-9-27 <td>V0.1  <td>ZJY   <td>code normalization
  * </table>
  * *********************************************************************
 */
@@ -671,11 +671,11 @@ static inline void csp_can_set_mcr(csp_can_t *ptCanBase, uint32_t wValue)
 	ptCanBase->IF[0].MCR = wValue;
 }
 //
-static inline void csp_can_set_mcr_wr(csp_can_t *ptCanBase, uint8_t byDataLen, can_txreqst_e eTxReq, can_txie_e eTxIe, can_rmten_e eRem)
+static inline void csp_can_set_mcr_tx(csp_can_t *ptCanBase, uint8_t byDataLen, can_txreqst_e eTxReq, can_txie_e eTxIe, can_rmten_e eRem)
 {
 	ptCanBase->IF[0].MCR = (CAN_DLC(byDataLen)) | (eTxReq << CAN_TXREQST_POS) | (eTxIe << CAN_TXIE_POS) | (eRem << CAN_RMTEN_POS);
 } 
-static inline void csp_can_set_mcr_rd(csp_can_t *ptCanBase, uint8_t byDataLen, can_overwrite_e eOverWr, can_rxie_e eRxIe, can_unmask_e eMsk)
+static inline void csp_can_set_mcr_rx(csp_can_t *ptCanBase, uint8_t byDataLen, can_overwrite_e eOverWr, can_rxie_e eRxIe, can_unmask_e eMsk)
 {
 	ptCanBase->IF[0].MCR = CAN_DLC(byDataLen) | (eOverWr << CAN_OVERWR_POS) | (eRxIe << CAN_RXIE_POS) | (eMsk << CAN_UMASK_POS);
 }

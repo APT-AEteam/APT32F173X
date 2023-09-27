@@ -1,11 +1,11 @@
 /***********************************************************************//** 
  * \file  can_demo.c
  * \brief  CAN_DEMO description and static inline functions at register level 
- * \copyright Copyright (C) 2015-2020 @ APTCHIP
+ * \copyright Copyright (C) 2015-2023 @ APTCHIP
  * <table>
  * <tr><th> Date  <th>Version  <th>Author  <th>Description
  * <tr><td> 2021-07-19 <td>V0.0  <td>ZJY   <td>initial
- * <tr><td> 2021-09-25 <td>V0.1  <td>ZJY   <td>code normalization
+ * <tr><td> 2021-09-27 <td>V0.1  <td>ZJY   <td>code normalization
  * </table>
  * *********************************************************************
 */
@@ -14,15 +14,16 @@
 #include "board_config.h"
 
 /* externs function--------------------------------------------------------*/
-
 /* externs variablesr------------------------------------------------------*/
-
 /* Private macro-----------------------------------------------------------*/
 
 /* Private variablesr------------------------------------------------------*/
-static csi_can_recv_t s_tCanRecv[3];		//接收数据结构体缓存
 
-#if (USE_CAN_CALLBACK == 1)	
+
+#if (USE_CAN_CALLBACK == 0)	
+	
+static csi_can_recv_t s_tCanRecv[4];		//接收数据结构体缓存
+
 
 /** \brief  can_int_handler: CAN中断服务函数
  * 
@@ -94,7 +95,6 @@ ATTRIBUTE_ISR void can_int_handler(void)
 			}
 			break;
 	}
-	
 }
 
 #endif
@@ -121,7 +121,7 @@ int can_send_demo(void)
 #endif
 
 	//初始化配置
-	tCanConfig.byClkSrc  = CAN_CLKSRC_PCLK;					//CAN CLK = PCLK		
+	tCanConfig.eClkSrc  = CAN_CLKSRC_PCLK;					//CAN CLK = PCLK		
 	tCanConfig.wBaudRate = CAN_BDR_500K;					//500k
 	tCanConfig.bAuReTran = DISABLE;							//自动重新传输关闭
 	csi_can_init(CAN0, &tCanConfig);						//CAN初始化
@@ -152,7 +152,7 @@ int can_send_demo(void)
 		tCanTxConfig.tDataB.bydata[1] 	= i+0x22;
 		tCanTxConfig.tDataB.bydata[2] 	= i+0x23;
 		tCanTxConfig.tDataB.bydata[3] 	= i+0x24;
-		csi_can_set_tx_msg(CAN0, i, &tCanTxConfig);			//配置发送报文通道
+		csi_can_set_msg_tx(CAN0, i, &tCanTxConfig);			//配置发送报文通道
 	}
 	
 	csi_can_start(CAN0);									//使能(打开)CAN模块
@@ -259,7 +259,7 @@ int can_send_int_demo(void)
 #endif
 	
 	//CAN MR 寄存器配置,即初始化配置
-	tCanConfig.byClkSrc 	= CAN_CLKSRC_PCLK;				//CAN CLK = PCLK		
+	tCanConfig.eClkSrc 	= CAN_CLKSRC_PCLK;				//CAN CLK = PCLK		
 	tCanConfig.wBaudRate 	= CAN_BDR_500K;					//500k
 	tCanConfig.bAuReTran = DISABLE;							//自动重新传输关闭
 	csi_can_init(CAN0, &tCanConfig);
@@ -287,7 +287,7 @@ int can_send_int_demo(void)
 	tCanTxConfig.tDataB.bydata[1] 	= 0x32;
 	tCanTxConfig.tDataB.bydata[2] 	= 0x33;
 	tCanTxConfig.tDataB.bydata[3] 	= 0x34;
-	csi_can_set_tx_msg(CAN0, CAN_CH1, &tCanTxConfig);		//配置发送报文
+	csi_can_set_msg_tx(CAN0, CAN_CH1, &tCanTxConfig);		//配置发送报文
 
 	csi_can_int_enable(CAN0, CAN_INTSRC_ALL);				//使能所有状态中断
 	csi_can_ch_int_enable(CAN0, CAN_CH1);					//使能发送报文对应的报文通道中断
@@ -324,7 +324,7 @@ int can_receive_int_demo(void)
 	
 	//CAN MR 寄存器配置,即初始化配置
 	//初始化配置
-	tCanConfig.byClkSrc  = CAN_CLKSRC_PCLK;					//CAN CLK = PCLK		
+	tCanConfig.eClkSrc  = CAN_CLKSRC_PCLK;					//CAN CLK = PCLK		
 	tCanConfig.wBaudRate = CAN_BDR_500K;					//500k
 	tCanConfig.bAuReTran = DISABLE;							//自动重新传输关闭
 	csi_can_init(CAN0, &tCanConfig);						//CAN初始化
@@ -350,7 +350,7 @@ int can_receive_int_demo(void)
 		tCanRxConfig.tMc.bRxIeEn		= ENABLE;			//使能报文接收中断(通道源中断), 置位ITPAND; 若使用报文通道中断(源中断)，必须使能
 		tCanRxConfig.tMc.bOverWrEn		= DISABLE;			//关闭报文覆盖模式	
 		tCanRxConfig.tMc.byDataLen		= 0x08;				//报文数据长度，设置为最大，实际接收到的数据 <= 8
-		csi_can_set_rx_msg(CAN0, i, &tCanRxConfig);			//配置接收报文
+		csi_can_set_msg_rx(CAN0, i, &tCanRxConfig);			//配置接收报文
 		
 		csi_can_ch_int_enable(CAN0, i);						//使能对应报文接收通道中断
 	}
@@ -395,7 +395,7 @@ int can_receive_fifo_init_demo(void)
 #endif
 	
 	//CAN MR 寄存器配置,即初始化配置
-	tCanConfig.byClkSrc 	= CAN_CLKSRC_PCLK;				//CAN CLK = PCLK		
+	tCanConfig.eClkSrc 	= CAN_CLKSRC_PCLK;				//CAN CLK = PCLK		
 	tCanConfig.wBaudRate 	= CAN_BDR_500K;					//500k
 	tCanConfig.bAuReTran = DISABLE;							//自动重新传输关闭
 	csi_can_init(CAN0, &tCanConfig);
@@ -424,7 +424,7 @@ int can_receive_fifo_init_demo(void)
 		tCanRxConfig.tMc.byDataLen		= 0x08;				//报文数据长度，设置为最大，实际接收到的数据 <= 8
 		if(i == CAN_CH5)
 			tCanRxConfig.tMc.bOverWrEn = ENABLE;			//最后一个报文 使能报文覆盖功能，
-		csi_can_set_rx_msg(CAN0, i, &tCanRxConfig);			//配置接收报文
+		csi_can_set_msg_rx(CAN0, i, &tCanRxConfig);			//配置接收报文
 		
 		csi_can_ch_int_enable(CAN0, i);						//使能对应报文接收通道中断
 	}
@@ -470,7 +470,7 @@ int can_remote_frames_demo(void)
 	
 	//CAN MR 寄存器配置,即初始化配置
 	//初始化配置
-	tCanConfig.byClkSrc  = CAN_CLKSRC_PCLK;					//CAN CLK = PCLK		
+	tCanConfig.eClkSrc  = CAN_CLKSRC_PCLK;					//CAN CLK = PCLK		
 	tCanConfig.wBaudRate = CAN_BDR_500K;					//500k
 	tCanConfig.bAuReTran = DISABLE;							//自动重新传输关闭
 	csi_can_init(CAN0, &tCanConfig);						//CAN初始化
@@ -502,7 +502,7 @@ int can_remote_frames_demo(void)
 		tCanTxConfig.tDataB.bydata[1] 	= i+0x22;
 		tCanTxConfig.tDataB.bydata[2] 	= i+0x23;
 		tCanTxConfig.tDataB.bydata[3] 	= i+0x24;
-		csi_can_set_tx_msg(CAN0, i, &tCanTxConfig);			//配置发送报文通道
+		csi_can_set_msg_tx(CAN0, i, &tCanTxConfig);			//配置发送报文通道
 	}
 	
 	//报文接收到CH3~CH5, ID为全匹配，匹配上的ID数据接收到对应的报文接收通道中
@@ -527,7 +527,7 @@ int can_remote_frames_demo(void)
 		tCanRxConfig.tMc.bRxIeEn		= ENABLE;			//使能报文接收中断(通道源中断), 置位ITPAND; 若使用报文通道中断(源中断)，必须使能
 		tCanRxConfig.tMc.bOverWrEn		= DISABLE;			//关闭报文覆盖模式	
 		tCanRxConfig.tMc.byDataLen		= 0x08;				//报文数据长度，设置为最大，实际接收到的数据 <= 8
-		csi_can_set_rx_msg(CAN0, i, &tCanRxConfig);			//配置接收报文
+		csi_can_set_msg_rx(CAN0, i, &tCanRxConfig);			//配置接收报文
 		
 		csi_can_ch_int_enable(CAN0, i);						//使能对应报文接收通道中断
 	}
