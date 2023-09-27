@@ -129,6 +129,9 @@ extern void lp_iwdt_wakeup_demo(void);
 extern void iic_master_eeprom_demo(void);
 extern void iic_master_demo(void);
 extern void iic_slave_demo(void);
+extern void iic_multi_slave_demo(void);
+extern  void iic_dma_send_demo(void);
+extern  void iic_dma_receive_demo(void);
 
 //cnta demo
 extern int cnta_timer_demo(void);
