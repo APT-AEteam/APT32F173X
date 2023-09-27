@@ -381,22 +381,6 @@ uint8_t csi_uart_getc(csp_uart_t *ptUartBase);
 */
 void csi_uart_putc(csp_uart_t *ptUartBase, uint8_t byData);
 
-/** 
-  \brief 	   get uart receive/send complete message and (Do not) clear message
-  \param[in]   ptUartBase	pointer of uart reg structure.
-  \param[in]   eWkMode		tx or rx mode, \ref csi_uart_wkmode_e
-  \param[in]   bClrEn		clear uart receive/send complete message enable; ENABLE: clear , DISABLE: Do not clear 
-  \return  	   bool type true/false
- */ 
-bool csi_uart_get_msg(csp_uart_t *ptUartBase, csi_uart_wkmode_e eWkMode, bool bClrEn);
-
-/** 
-  \brief 	   clr uart receive/send status message (set uart recv/send status idle) 
-  \param[in]   ptUartBase	pointer of uart reg structure.
-  \param[in]   eWkMode		tx or rx mode, \ref csi_uart_wkmode_e
-  \return      none
- */ 
-void csi_uart_clr_msg(csp_uart_t *ptUartBase, csi_uart_wkmode_e eWkMode);
 
 #ifdef __cplusplus
 }

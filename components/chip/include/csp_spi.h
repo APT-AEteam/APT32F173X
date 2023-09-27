@@ -17,7 +17,7 @@
 #define _CSP_SPI_H
 
 /* Includes ------------------------------------------------------------------*/
-#include <soc.h>
+#include "soc.h"
 
 /// \struct csp_spi_t
 /// \brief SPI reg description
@@ -34,8 +34,6 @@ typedef struct
 	__OM   uint32_t  ICR;		//0x0020	Interrupt clear register 
     __IOM  uint32_t  DMACR;     //0x0024    Dma Control Register
 	__OM   uint32_t  SRR;		//0x0028	Software Reset Register
-//	__IM   uint32_t  RXFL;		//0x002C	rx fifo level
-//	__IM   uint32_t  TXFL;		//0x0030	tx fifo level
 } csp_spi_t;
 
 /*****************************************************************************
@@ -59,43 +57,38 @@ typedef struct
 /*****************************************************************************
 * SPICR0 : Control Register 0
 ******************************************************************************/
-#define	SPI_DSS_POS		(0)							//Data Size Select    
-#define	SPI_DSS_MSK		(0x0Ful << SPI_DSS_POS)
-#define SPI_DSS(val)	(((val-1) & 0x0Ful) << SPI_DSS_POS)	
+#define	SPI_DATA_LEN_POS	(0)							//Data Size Select    
+#define	SPI_DATA_LEN_MSK	(0x0Ful << SPI_DATA_LEN_POS)
+#define SPI_DATA_LEN(val)	(((val-1) & 0x0Ful) << SPI_DATA_LEN_POS)	
 typedef enum
 {
-	SPI_DSS_4		= 3,            
-	SPI_DSS_5,            
-	SPI_DSS_6,            
-	SPI_DSS_7,            
-	SPI_DSS_8,  
-	SPI_DSS_9,      
-	SPI_DSS_10,            
-	SPI_DSS_11,            
-	SPI_DSS_12,            
-	SPI_DSS_13,            
-	SPI_DSS_14,  
-	SPI_DSS_15,  
-	SPI_DSS_16
-}spi_data_size_e;
+	SPI_LEN_4		= 3,            
+	SPI_LEN_5,            
+	SPI_LEN_6,            
+	SPI_LEN_7,            
+	SPI_LEN_8,  
+	SPI_LEN_9,      
+	SPI_LEN_10,            
+	SPI_LEN_11,            
+	SPI_LEN_12,            
+	SPI_LEN_13,            
+	SPI_LEN_14,  
+	SPI_LEN_15,  
+	SPI_LEN_16
+}spi_data_len_e;
 
 #define	SPI_RFR_POS		(4)							//Frame Format 		
 #define	SPI_RFR_MSK		(0x03ul << SPI_RFR_POS)
-typedef enum
-{
-	SPI_RFR_MOTO	= 0,            
-	SPI_RFR_1          
-}spi_rfr_e;
 
-#define SPI_SPO_H_POS	(6)							//SPICLK Polarity / Phase   
-#define SPI_SPO_H_MSK	(0x03ul << SPI_SPO_H_POS)
+#define SPI_WORK_MODE_POS	(6)							//SPICLK Polarity / Phase   
+#define SPI_WORK_MODE_MSK	(0x03ul << SPI_WORK_MODE_POS)
 typedef enum
 {
-	SPI_SPO0_SPH0	= (0x00ul),            
-	SPI_SPO0_SPH1	= (0x02ul),  
-    SPI_SPO1_SPH0	= (0x01ul),            
-	SPI_SPO1_SPH1   = (0x03ul)            
-}spi_spo_h_e;
+	SPI_MODE_0	= (0x00ul),            
+	SPI_MODE_1	= (0x02ul),  
+    SPI_MODE_2	= (0x01ul),            
+	SPI_MODE_3  = (0x03ul)            
+}spi_work_mode_e;
 
 #define SPI_SCR_POS		(8)							//Serial Clock Rate   			
 #define SPI_SCR_MSK		(0xFFul << SPI_SCR_POS)						
@@ -187,18 +180,14 @@ typedef enum
 #define SPI_CPSDVSR(val)	(((val) & 0xFFul) << SPI_CPSDVSR_POS)
 
 /******************************************************************************
-* SPIIMSC : SPIIMSC : SPIMIS : SPIICR
+* interrupt
 ******************************************************************************/
-// SPIIMSC : Interrupt mask set and clear register
-// SPIRIS : Raw interrupt status register
-// SPIMIS : Masked interrupt status register
-// SPIICR : Interrupt clear register
 typedef enum
 {
-	SPI_INT_ROIM	= (0x01ul << 0), 		//Receive Overrun Interrupt              
-	SPI_INT_RTIM  	= (0x01ul << 1), 		//Receive Timeout Interrupt          
-	SPI_INT_RXIM   	= (0x01ul << 2),		//Receive FIFO Interrupt           
-	SPI_INT_TXIM	= (0x01ul << 3),   		//Transmit FIFO interrupt 
+	SPI_INT_RX_OV	= (0x01ul << 0), 		//Receive Over flow Interrupt              
+	SPI_INT_RXTO  	= (0x01ul << 1), 		//Receive Timeout Interrupt          
+	SPI_INT_RXFIFO  = (0x01ul << 2),		//Receive FIFO Interrupt           
+	SPI_INT_TXFIFO	= (0x01ul << 3),   		//Transmit FIFO interrupt 
 	SPI_INT_ALL		= (0x0F),   			//ALL interrupt 
 }spi_int_e;
 
@@ -236,12 +225,14 @@ typedef enum{
 /******************************************************************************
 * SRR : Software Reset register 
 ******************************************************************************/
-typedef enum{
-	SPI_PCLK_SWRST		= (0x01ul << 0),   		//pclk softreset
-	SPI_SCLK_SWRST		= (0x01ul << 1), 		//spi clk softreset              
-	SPI_RXFIFO_RST    	= (0x01ul << 8), 		//rx fifo reset          
-	SPI_TXFIFO_RST   	= (0x01ul << 9),		//tx fifo reset           
-}spi_softreset_e;
+#define	SPI_SWRST_POS			(0)			 
+#define	SPI_SWRST_MSK			(0x01ul << SPI_SWRST_POS)
+
+#define	SPI_RXFIFO_RST_POS		(8)			 
+#define SPI_RXFIFO_RST_MSK		(0x01ul << SPI_RXFIFO_RST_POS)
+
+#define	SPI_TXFIFO_RST_POS		(9)			 
+#define SPI_TXFIFO_RST_MSK		(0x01ul << SPI_TXFIFO_RST_POS)
 
 /******************************************************************************
 ********************* SPI inline Functions Declaration **********************
@@ -266,32 +257,32 @@ static inline void csp_spi_set_data(csp_spi_t *ptSpiBase,uint16_t hwData)
 	ptSpiBase->DR = hwData;
 }
 
-static inline void csp_spi_set_work_mode(csp_spi_t *ptSpiBase,spi_mode_e eMode)
+static inline void csp_spi_set_mode(csp_spi_t *ptSpiBase,spi_mode_e eMode)
 {
 	ptSpiBase->CR1 = (ptSpiBase->CR1 & (~SPI_MODE_MSK)) | (eMode << SPI_MODE_POS);
 }
 
-static inline uint8_t csp_spi_get_work_mode(csp_spi_t *ptSpiBase)
+static inline uint8_t csp_spi_get__mode(csp_spi_t *ptSpiBase)
 {
 	return (uint8_t)((ptSpiBase->CR1 & SPI_MODE_MSK) >> SPI_MODE_POS);
 }
 
-static inline void csp_spi_set_spo_sph(csp_spi_t *ptSpiBase, spi_spo_h_e eSpoSph)
+static inline void csp_spi_set_work_mode(csp_spi_t *ptSpiBase, spi_work_mode_e eSpoSph)
 {
-	ptSpiBase->CR0 = (ptSpiBase->CR0 & (~SPI_SPO_H_MSK)) | (eSpoSph << SPI_SPO_H_POS);
+	ptSpiBase->CR0 = (ptSpiBase->CR0 & (~SPI_WORK_MODE_MSK)) | (eSpoSph << SPI_WORK_MODE_POS);
 }
 
-static inline void csp_spi_set_data_size(csp_spi_t *ptSpiBase,spi_data_size_e eSize)
+static inline void csp_spi_set_data_size(csp_spi_t *ptSpiBase,spi_data_len_e eSize)
 {
-	ptSpiBase->CR0 = (ptSpiBase->CR0 & (~SPI_DSS_MSK)) | (eSize << SPI_DSS_POS);
+	ptSpiBase->CR0 = (ptSpiBase->CR0 & (~SPI_DATA_LEN_MSK)) | (eSize << SPI_DATA_LEN_POS);
 }
 
 static inline uint8_t csp_spi_get_data_size(csp_spi_t *ptSpiBase)
 {
-	return (uint8_t)(ptSpiBase->CR0 & SPI_DSS_MSK);
+	return (uint8_t)(ptSpiBase->CR0 & SPI_DATA_LEN_MSK);
 }
 
-static inline void csp_spi_set_rxifl(csp_spi_t *ptSpiBase,spi_rxifl_e eRxIfl)
+static inline void csp_spi_set_fifo(csp_spi_t *ptSpiBase,spi_rxifl_e eRxIfl)
 {
 	ptSpiBase->CR1  = (ptSpiBase->CR1 & (~SPI_RXIFL_MSK)) | (eRxIfl << SPI_RXIFL_POS);
 }
@@ -311,7 +302,7 @@ static inline uint32_t csp_spi_get_sr(csp_spi_t *ptSpiBase)
 	return (uint32_t)(ptSpiBase->SR);
 }
 
-static inline uint8_t csp_spi_get_rxifl(csp_spi_t *ptSpiBase)
+static inline uint8_t csp_spi_get_fifo(csp_spi_t *ptSpiBase)
 {
 	return ptSpiBase->CR1 & (SPI_RXIFL_MSK) ;
 }
@@ -347,11 +338,22 @@ static inline void csp_spi_clr_isr(csp_spi_t *ptSpiBase, spi_int_e eSpiInt)
 	ptSpiBase->ICR = eSpiInt;
 }
 
-static inline void csp_spi_sw_rst(csp_spi_t *ptSpiBase,spi_softreset_e eRstSource)
+static inline void csp_spi_sw_rst(csp_spi_t *ptSpiBase)
 {
-	ptSpiBase->SRR |= eRstSource;
+	ptSpiBase->SRR = SPI_SWRST_MSK;
 }
 
+static inline void csp_spi_rxfifo_sw_rst(csp_spi_t *ptSpiBase)
+{
+	ptSpiBase->SRR = SPI_RXFIFO_RST_MSK;	
+}
+
+static inline void	csp_spi_txfifo_sw_rst(csp_spi_t *ptSpiBase)		
+{ 
+	ptSpiBase->SRR = SPI_TXFIFO_RST_MSK;	
+}
+
+#if 0
 static inline void csp_spi_set_rxdma(csp_spi_t *ptSpiBase, spi_rdma_en_e eRxDmaEn, spi_rdma_md_e eRxDmaMode) 
 {
 	ptSpiBase->DMACR = (ptSpiBase->DMACR & ~(SPI_RDMA_EN_MSK | SPI_RDMA_MD_MSK)) | (eRxDmaEn << SPI_RDMA_EN_POS) | (eRxDmaMode << SPI_RDMA_MD_POS);
@@ -360,5 +362,15 @@ static inline void csp_spi_set_rxdma(csp_spi_t *ptSpiBase, spi_rdma_en_e eRxDmaE
 static inline void csp_spi_set_txdma(csp_spi_t *ptSpiBase, spi_tdma_en_e eTxDmaEn, spi_tdma_md_e eTxDmaMode) 
 {
 	ptSpiBase->DMACR = (ptSpiBase->DMACR & ~(SPI_TDMA_EN_MSK | SPI_TDMA_MD_MSK)) | (eTxDmaEn << SPI_TDMA_EN_POS) | (eTxDmaMode << SPI_TDMA_MD_POS);
+}
+#endif
+static inline void csp_spi_set_rxdma(csp_spi_t *ptSpiBase,  spi_rdma_md_e eRxDmaMode)
+{
+	ptSpiBase->DMACR = (ptSpiBase->DMACR & ~SPI_RDMA_MD_MSK) | (SPI_RDMA_EN << SPI_RDMA_EN_POS) | (eRxDmaMode << SPI_RDMA_MD_POS);
+}
+
+static inline void csp_spi_set_txdma(csp_spi_t *ptSpiBase, spi_rdma_md_e eTxDmaMode)	
+{
+	ptSpiBase->DMACR = (ptSpiBase->DMACR & ~SPI_TDMA_MD_MSK) | (SPI_TDMA_EN << SPI_TDMA_EN_POS) | (eTxDmaMode << SPI_TDMA_MD_POS);
 }
 #endif
