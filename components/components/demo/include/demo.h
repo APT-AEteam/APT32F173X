@@ -189,7 +189,10 @@ extern void fvr_buf_demo(void);
 
 //can
 extern int can_send_demo(void);
-extern int can_recv_demo(void);
+extern int can_send_int_demo(void);
+extern int can_receive_int_demo(void);
+extern int can_remote_frames_demo(void);
+extern int can_receive_fifo_init_demo(void);
 
 //dac demo
 extern void dac_demo(void);	

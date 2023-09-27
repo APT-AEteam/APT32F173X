@@ -66,7 +66,7 @@ void csi_can_irqhandler(csp_can_t *ptCanBase,uint8_t byIdx)
 				{
 					byRecvPos = hwIntNum - g_tCanCtrl[byIdx].byStrCh;								//receive buffer position
 					
-					wIrVal = csi_can_get_ifx(ptCanBase, hwIntNum, CAN_IFX_IR);
+					wIrVal = csi_can_get_ifx(ptCanBase, hwIntNum, CAN_IFX_IR);						//get id
 					if(wIrVal & CAN_XTD_MSK)														
 						wIrVal &= (CAN_EXTID_MSK | CAN_EXTID_MSK);									//extid
 					else
@@ -207,7 +207,7 @@ void csi_can_set_tx_msg(csp_can_t *ptCanBase, csi_can_ch_e eChNum, csi_can_tx_co
 void csi_can_set_rx_msg(csp_can_t *ptCanBase, csi_can_ch_e eChNum, csi_can_rx_config_t *ptRxCfg)
 {
 	csp_can_set_id_mode(ptCanBase, ptRxCfg->tId.wExtId, ptRxCfg->tId.hwStdId, CAN_MDIR_RECV, (can_xtd_e)ptRxCfg->tId.eIdMode, CAN_MSGVAL_VALID);
-	if((ptRxCfg->tMsk.hwStdIdMsk == 0) && (ptRxCfg->tMsk.wExtIdMsk	== 0))
+	if(ptRxCfg->tMc.bMskEn)
 		csp_can_set_msk_mode(ptCanBase, ptRxCfg->tMsk.wExtIdMsk, ptRxCfg->tMsk.hwStdIdMsk, CAN_MMDIR_DIS, (can_mxtd_e)ptRxCfg->tMsk.eIdMdMsk);
 	csp_can_set_mcr_rd(ptCanBase, ptRxCfg->tMc.byDataLen, ptRxCfg->tMc.bOverWrEn, ptRxCfg->tMc.bRxIeEn, ptRxCfg->tMc.bMskEn);
 	
@@ -436,7 +436,7 @@ void csi_can_set_id(csp_can_t *ptCanBase, csi_can_ch_e eChNum, csi_can_id_config
  *  \param[in] ptMcr: point of tx mcr config structure
  *  \return none
  */ 
-void csi_can_set_tx_mc(csp_can_t *ptCanBase, csi_can_ch_e eChNum, csi_can_tx_mc_config_t *ptMcr)
+void csi_can_set_mc_tx(csp_can_t *ptCanBase, csi_can_ch_e eChNum, csi_can_mc_tx_config_t *ptMcr)
 {
 	csp_can_set_tmr(ptCanBase, eChNum, 1, CAN_AMCR_MSK);				//first read
 	while(csp_can_get_sr(ptCanBase) & CAN_STA_BUSY1);
@@ -452,7 +452,7 @@ void csi_can_set_tx_mc(csp_can_t *ptCanBase, csi_can_ch_e eChNum, csi_can_tx_mc_
  *  \param[in] ptMcr: point of rx mcr config structure
  *  \return none
  */ 
-void csi_can_set_rx_mc(csp_can_t *ptCanBase, csi_can_ch_e eChNum, csi_can_rx_mc_config_t *ptMcr)
+void csi_can_set_mc_rx(csp_can_t *ptCanBase, csi_can_ch_e eChNum, csi_can_mc_rx_config_t *ptMcr)
 {
 	csp_can_set_tmr(ptCanBase, eChNum, 1, CAN_AMCR_MSK);				//first read
 	while(csp_can_get_sr(ptCanBase) & CAN_STA_BUSY1);

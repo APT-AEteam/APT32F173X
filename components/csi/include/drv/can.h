@@ -324,7 +324,7 @@ typedef struct {
 	bool				bRmtEn;				//receive remote frame, set TXRQST
 	bool				bTxReqEn;			//message identifier dir mask
 	uint8_t				byDataLen;	    	//tx data length
-} csi_can_tx_mc_config_t;
+} csi_can_mc_tx_config_t;
 
 /// \struct csi_can_rx_mcr_config_t
 typedef struct {
@@ -332,7 +332,7 @@ typedef struct {
 	bool				bRxIeEn;			//tx interrupt ITPAND enable 	
 	bool				bOverWrEn;			//message identifier dir mask
 	uint8_t				byDataLen;	    	//rx data length
-} csi_can_rx_mc_config_t;
+} csi_can_mc_rx_config_t;
 
 /// \struct csi_can_data_config_t
 typedef struct {
@@ -357,7 +357,7 @@ typedef struct {
 	csi_can_data_config_t	tDataA;			//data A,byte0~3	
 	csi_can_data_config_t	tDataB;			//data B,byte4~7	
 	csi_can_id_config_t		tId;			//identifier reg
-	csi_can_tx_mc_config_t	tMc;			//message contrl reg
+	csi_can_mc_tx_config_t	tMc;			//message contrl reg
 } csi_can_tx_config_t;
 
 
@@ -366,7 +366,7 @@ typedef struct {
 typedef struct {
 	csi_can_id_config_t		tId;			//IDR
 	csi_can_msk_config_t	tMsk;			//MSKR
-	csi_can_rx_mc_config_t 	tMc;			//MCR
+	csi_can_mc_rx_config_t 	tMc;			//MCR
 } csi_can_rx_config_t;
 
 
@@ -466,7 +466,7 @@ void csi_can_msg_receive_int(csp_can_t *ptCanBase, csi_can_recv_t *ptRecv, uint8
   \brief can read message channel send enable
   \param[in] pRecvBuf: pointer of  receive buffer
   \param[in] eChNum: number of message channel
-  \return message length
+  \return message leng
  */
 uint8_t csi_can_ch_read(csp_can_t *ptCanBase, uint8_t *pRecvBuf, csi_can_ch_e eChNum);
 
@@ -590,7 +590,7 @@ void csi_can_set_id(csp_can_t *ptCanBase, csi_can_ch_e eChNum, csi_can_id_config
   \param[in]   ptMcr		point of tx mcr config structure
   \return 	   none
  */ 
-void csi_can_set_tx_mc(csp_can_t *ptCanBase, csi_can_ch_e eChNum, csi_can_tx_mc_config_t *ptMcr);
+void csi_can_set_tx_mc(csp_can_t *ptCanBase, csi_can_ch_e eChNum, csi_can_mc_tx_config_t *ptMcr);
 
 /** 
   \brief 	   set can message rx message control
@@ -599,7 +599,7 @@ void csi_can_set_tx_mc(csp_can_t *ptCanBase, csi_can_ch_e eChNum, csi_can_tx_mc_
   \param[in]   ptMcr		point of rx mcr config structure
   \return 	   none
  */ 
-void csi_can_set_rx_mc(csp_can_t *ptCanBase, csi_can_ch_e eChNum, csi_can_rx_mc_config_t *ptMcr);
+void csi_can_set_rx_mc(csp_can_t *ptCanBase, csi_can_ch_e eChNum, csi_can_mc_rx_config_t *ptMcr);
 
 
 /** 
