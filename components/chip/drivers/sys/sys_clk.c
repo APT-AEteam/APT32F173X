@@ -252,22 +252,22 @@ csi_error_t csi_sysclk_config(csi_clk_config_t tClkCfg)
 
 	IFC->CEDR = IFC_CLKEN;
 	if (wTargetSclk > 80000000) {
-		csp_ifc_flash_set_speed_wait(IFC, HIGH_SPEED,PF_WAIT4);
+		csp_ifc_flash_set_speed_wait(IFC, IFC_HIGH_SPEED,IFC_PF_WAIT4);
 	}
 	else if(wTargetSclk > 64000000) {
-		csp_ifc_flash_set_speed_wait(IFC, HIGH_SPEED,PF_WAIT3);
+		csp_ifc_flash_set_speed_wait(IFC, IFC_HIGH_SPEED,IFC_PF_WAIT3);
 	}
 	else if(wTargetSclk > 48000000) {
-		csp_ifc_flash_set_speed_wait(IFC, HIGH_SPEED,PF_WAIT2);
+		csp_ifc_flash_set_speed_wait(IFC, IFC_HIGH_SPEED,IFC_PF_WAIT2);
 	}
 	else if(wTargetSclk > 16000000) {
-		csp_ifc_flash_set_speed_wait(IFC, HIGH_SPEED,PF_WAIT1);
+		csp_ifc_flash_set_speed_wait(IFC, IFC_HIGH_SPEED,IFC_PF_WAIT1);
 	}
 	else if(wTargetSclk > 8000000) {
-		csp_ifc_flash_set_speed_wait(IFC, HIGH_SPEED,PF_WAIT0);
+		csp_ifc_flash_set_speed_wait(IFC, IFC_HIGH_SPEED,IFC_PF_WAIT0);
 	}
 	else{
-		csp_ifc_flash_set_speed_wait(IFC, LOW_SPEED,PF_WAIT0);
+		csp_ifc_flash_set_speed_wait(IFC, IFC_LOW_SPEED,IFC_PF_WAIT0);
 	}
 	csp_set_sdiv(SYSCON, tClkCfg.eSdiv);
 	csp_set_clksrc(SYSCON, eSckSel);
