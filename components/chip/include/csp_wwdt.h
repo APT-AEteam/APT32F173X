@@ -1,12 +1,13 @@
 /***********************************************************************//** 
  * \file  csp_wwdt.h
  * \brief  WWDT description and static inline functions at register level 
- * \copyright Copyright (C) 2015-2020 @ APTCHIP
+ * \copyright Copyright (C) 2015-2023 @ APTCHIP
  * <table>
  * <tr><th> Date  <th>Version  <th>Author  <th>Description
  * <tr><td> 2020-9-4 <td>V0.0  <td>WNN   <td>initial
  * <tr><td> 2020-12-7 <td>V0.1  <td>WNN   <td>bug fix
  * <tr><td> 2021-1-7 <td>V0.2  <td>ZJY   <td> add csp_wwdt_vic_irq_en()
+ * <tr><td> 2023-9-14 <td>V0.2  <td>YT     <td>code normalization
  * </table>
  * *********************************************************************
 */

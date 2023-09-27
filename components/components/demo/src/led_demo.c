@@ -88,6 +88,7 @@ void led_io_init(void)
 * \brief byDisplayStatus=3：闪烁控制，关闭COM0/1/2，显示4
 * \return  error code
 * 四位一体共阴数码管(SM420564W32U3A/AB092716)引脚图：
+*  <pre>
 					  COM1  a   f COM2 COM3 b
 						|	|	|	|	|	|
 						|	|	|	|	|	|									
@@ -101,6 +102,7 @@ void led_io_init(void)
 						|	|	|	|	|	|
 						|	|	|	|	|	|
 					    e   d   dp  c   g  COM4
+* </pre>
 */
 int led_demo(void)
 {	

@@ -13,6 +13,8 @@
 
 /* private macro------------------------------------------------------*/
 /* externs function---------------------------------------------------*/
+/* private function-------------------------------------------------*/	
+static uint8_t apt_get_gptb_idx(csp_gptb_t *ptGptbBase);
 /* global variablesr--------------------------------------------------*/
 csi_gptb_ctrl_t g_tGptbCtrl[GPTB_IDX];	
 /* private variablesr-------------------------------------------------*/	
@@ -36,49 +38,6 @@ void csi_gptb_irqhandler(csp_gptb_t *ptGptbBase, uint8_t byIdx)
 		csp_gptb_clr_isr(ptGptbBase, wIsr);	
 		csp_gptb_clr_emisr(ptGptbBase, hwEmIsr);
 	}
-}
-
-/** \brief get gptb idx 
- * 
- *  \param[in] ptGptbBase: pointer of gptb register structure
- *  \return gptb id number(0~5) or error(0xff)
- */ 
-static uint8_t apt_get_gptb_idx(csp_gptb_t *ptGptbBase)
-{
-	switch((uint32_t)ptGptbBase)
-	{
-		case APB_GPTB0_BASE:
-			return 0;
-		case APB_GPTB1_BASE:
-			return 1;
-		case APB_GPTB2_BASE:
-			return 2;
-		case APB_GPTB3_BASE:
-			return 3;
-		case APB_GPTB4_BASE:
-			return 4;
-		case APB_GPTB5_BASE:
-			return 5;
-		default:
-			return 0xff;		//error
-	}
-}
-
-/** \brief  register gptb interrupt callback function
- * 
- *  \param[in] ptGptbBase: pointer of gptb register structure
- *  \param[in] callback: gptb callback handle function
- *  \return error code \ref csi_error_t
- */ 
-csi_error_t csi_gptb_register_callback(csp_gptb_t *ptGptbBase, void  *callback)
-{
-	uint8_t byIdx = apt_get_gptb_idx(ptGptbBase);
-	if(byIdx == 0xff)
-		return CSI_ERROR;
-
-	g_tGptbCtrl[byIdx].callback = callback;
-	
-	return CSI_OK;
 }
 
 /**
@@ -235,42 +194,7 @@ csi_error_t csi_gptb_timer_init(csp_gptb_t *ptGptbBase, csi_gptb_time_config_t *
 
 	csp_gptb_int_enable(ptGptbBase, GPTB_INT_PEND);	
 
-return CSI_OK;					
-}
-
-/** \brief set gptb running mode
- * 
- *  \param[in] ptGptbBase: pointer of gptb register structure
- *  \param[in] eRunMode: gptb running mode, one pulse/continuous, \ref csi_gptb_runmode_e
- *  \return none
- */ 
-void csi_gptb_set_run_mode(csp_gptb_t *ptGptbBase, csi_gptb_run_mode_e eRunMode)
-{
-	csp_gptb_set_run_mode(ptGptbBase, (gptb_runmd_e)eRunMode);
-}
-
-/** \brief gptb cgfilter config
- * 
- *  \param[in] ptGptbBase: pointer of gptb register structure 
- *  \param[in] eCgflt \ref csi_gptb_cgflt_e
- *  \return none
- */
-void csi_gptb_set_cgflt(csp_gptb_t *ptGptbBase,csi_gptb_cgflt_e eCgflt)
-{
-	csp_gptb_set_flt(ptGptbBase,(gptb_cgflt_e)eCgflt);
-	csp_gptb_flt_enable(ptGptbBase);
-}
-
-/** \brief gptb burst config
- * 
- *  \param[in] ptGptbBase: pointer of gptb register structure
- *  \param[in] byCgsrc \ref csi_gptb_cgsrc_e 
- *  \return none
- */
-void csi_gptb_set_burst(csp_gptb_t *ptGptbBase,csi_gptb_cgsrc_e eCgsrc)
-{
-	csp_gptb_set_cgsrc(ptGptbBase,(gptb_cgsrc_e)eCgsrc);
-	csp_gptb_burst_enable(ptGptbBase);
+	return CSI_OK;					
 }
 
  /**
@@ -433,6 +357,41 @@ csi_error_t csi_gptb_emergency_init(csp_gptb_t *ptGptbBase, csi_gptb_emergency_c
 	}
     
 	return CSI_OK;
+}
+
+/** \brief set gptb running mode
+ * 
+ *  \param[in] ptGptbBase: pointer of gptb register structure
+ *  \param[in] eRunMode: gptb running mode, one pulse/continuous, \ref csi_gptb_runmode_e
+ *  \return none
+ */ 
+void csi_gptb_set_run_mode(csp_gptb_t *ptGptbBase, csi_gptb_run_mode_e eRunMode)
+{
+	csp_gptb_set_run_mode(ptGptbBase, (gptb_runmd_e)eRunMode);
+}
+
+/** \brief gptb cgfilter config
+ * 
+ *  \param[in] ptGptbBase: pointer of gptb register structure 
+ *  \param[in] eCgflt \ref csi_gptb_cgflt_e
+ *  \return none
+ */
+void csi_gptb_set_cgflt(csp_gptb_t *ptGptbBase,csi_gptb_cgflt_e eCgflt)
+{
+	csp_gptb_set_flt(ptGptbBase,(gptb_cgflt_e)eCgflt);
+	csp_gptb_flt_enable(ptGptbBase);
+}
+
+/** \brief gptb burst config
+ * 
+ *  \param[in] ptGptbBase: pointer of gptb register structure
+ *  \param[in] byCgsrc \ref csi_gptb_cgsrc_e 
+ *  \return none
+ */
+void csi_gptb_set_burst(csp_gptb_t *ptGptbBase,csi_gptb_cgsrc_e eCgsrc)
+{
+	csp_gptb_set_cgsrc(ptGptbBase,(gptb_cgsrc_e)eCgsrc);
+	csp_gptb_burst_enable(ptGptbBase);
 }
 
 /**
@@ -1093,4 +1052,47 @@ void csi_gptb_set_reglk(csp_gptb_t *ptGptbBase,csi_gptb_reglk_config_t *ptGlobal
 	wRegLk = (wRegLk & ~GPTB_AQOSF_MSK)   | ((ptGlobal-> byAqosf   & 0xF) << GPTB_AQOSF_POS);
 	wRegLk = (wRegLk & ~GPTB_AQCSF_MSK)   | ((ptGlobal-> byAqcsf   & 0xF) << GPTB_AQCSF_POS);
 	csp_gptb_set_reglk2(ptGptbBase,wRegLk);	
+}
+
+/** \brief  register gptb interrupt callback function
+ * 
+ *  \param[in] ptGptbBase: pointer of gptb register structure
+ *  \param[in] callback: gptb callback handle function
+ *  \return error code \ref csi_error_t
+ */ 
+csi_error_t csi_gptb_register_callback(csp_gptb_t *ptGptbBase, void  *callback)
+{
+	uint8_t byIdx = apt_get_gptb_idx(ptGptbBase);
+	if(byIdx == 0xff)
+		return CSI_ERROR;
+
+	g_tGptbCtrl[byIdx].callback = callback;
+	
+	return CSI_OK;
+}
+
+/** \brief get gptb idx 
+ * 
+ *  \param[in] ptGptbBase: pointer of gptb register structure
+ *  \return gptb id number(0~5) or error(0xff)
+ */ 
+static uint8_t apt_get_gptb_idx(csp_gptb_t *ptGptbBase)
+{
+	switch((uint32_t)ptGptbBase)
+	{
+		case APB_GPTB0_BASE:
+			return 0;
+		case APB_GPTB1_BASE:
+			return 1;
+		case APB_GPTB2_BASE:
+			return 2;
+		case APB_GPTB3_BASE:
+			return 3;
+		case APB_GPTB4_BASE:
+			return 4;
+		case APB_GPTB5_BASE:
+			return 5;
+		default:
+			return 0xff;		//error
+	}
 }

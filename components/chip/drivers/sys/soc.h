@@ -64,9 +64,11 @@ extern "C" {
 #define BT_IDX   			4		//BTx id number
 #define UART_IDX   			3		//UARTx id number
 #define USART_IDX  			2		//USARTx id number
-#define SIO_IDX				2		//UART(0/1)
+#define SIO_IDX				2		//SIO id number
+#define CAN_IDX				1		//CAN id number
 #define LED_IDX  			1		//LEDx id number
 #define GPTB_IDX  			6		//GPTBx id number
+#define SPI_IDX  			2		//SPIx id number
 #define CNTA_IDX  			1		//CNTAx id number
 #define CMP_IDX  			3		//CMPx id number
 #define GPTA_IDX  			4		//GPTAx id number
@@ -1131,7 +1133,7 @@ void uart1_int_handler(void);			//UART1 interrupt
 void uart2_int_handler(void);			//UART2 interrupt
 void sio0_int_handler(void);			//SIO0 interrupt
 void sio1_int_handler(void);			//SIO1 interrupt
-void i2c_int_handler(void);				//IIC  interrupt
+void iic_int_handler(void);				//IIC  interrupt
 void spi0_int_handler(void);			//SPI0 interrupt
 void spi1_int_handler(void);			//SPI1 interrupt
 void can_int_handler(void);				//CAN interrupt

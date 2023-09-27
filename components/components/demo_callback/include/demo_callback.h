@@ -130,8 +130,8 @@ extern void fvr_output_demo(void);
 extern void fvr_buf_demo(void);
 
 //can
-extern int can_send_demo(void);
-extern int can_recv_demo(void);
+extern int can_send_int_callback_demo(void);
+extern int can_receive_int_callback_demo(void);
 
 //dac demo
 extern int dac_callback_demo(void);

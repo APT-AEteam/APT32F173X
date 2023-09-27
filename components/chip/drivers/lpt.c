@@ -1,12 +1,13 @@
 /***********************************************************************//** 
  * \file  lpt.c
  * \brief  csi lpt driver
- * \copyright Copyright (C) 2015-2020 @ APTCHIP
+ * \copyright Copyright (C) 2015-2023 @ APTCHIP
  * <table>
  * <tr><th> Date  <th>Version  <th>Author  <th>Description
  * <tr><td> 2020-9-28 <td>V0.0  <td>ZJY   <td>initial
  * <tr><td> 2021-1-8  <td>V0.1  <td>WNN   <td>modify
  * <tr><td> 2021-5-20 <td>V0.2  <td>YYM   <td>modify
+ * <tr><td> 2023-9-14 <td>V0.2  <td>YT     <td>code normalization
  * </table>
  * *********************************************************************
 */
@@ -171,6 +172,7 @@ csi_error_t csi_lpt_timer_init(csp_lpt_t *ptLptBase,csi_lpt_time_config_t *ptLpt
 	csp_lpt_set_opmd(ptLptBase, (lpt_opm_e) ptLptTimCfg->eRunMode);
 	
 	wLptClk = apt_get_lpt_clk(ptLptTimCfg->eClksrc);
+//	wLptClk = 2000000;   // If using an external clock as an LPT clock source, open this line of code and mask the previous line of code
 	wMult = wLptClk/1000*ptLptTimCfg->wTimeVal;
 		
 	g_wLptPrd = apt_set_lpt_clk(ptLptBase,ptLptTimCfg->eClksrc,wMult);
@@ -182,7 +184,7 @@ csi_error_t csi_lpt_timer_init(csp_lpt_t *ptLptBase,csi_lpt_time_config_t *ptLpt
 	{
 		csp_lpt_set_prdr(ptLptBase, (uint16_t)g_wLptPrd);
 	}
-	csi_lpt_int_enable(ptLptBase,LPT_INTSRC_PEND);	 //enable PEND interrupt  
+	csi_lpt_int_enable(ptLptBase,LPT_INTSRC_PEND|LPT_INTSRC_TRGEV0);	 //enable PEND interrupt  
 	
 	return tRet;	
 }

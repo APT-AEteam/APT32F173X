@@ -13,59 +13,15 @@
 #include "drv/sio.h"
 
 /* Private macro------------------------------------------------------*/
-/* externs function---------------------------------------------------*/
+/* Private function---------------------------------------------------*/
+static uint8_t apt_get_sio_idx(csp_sio_t *ptSioBase);
+
 /* global variablesr--------------------------------------------------*/
 csi_sio_ctrl_t g_tSioCtrl[SIO_IDX];	
 
 /* Private variablesr-------------------------------------------------*/
 
 
-/** \brief get sio idx 
- * 
- *  \param[in] ptSioBase: pointer of sio register structure
- *  \return sio id number(0~1) or error(0xff)
- */ 
-static uint8_t apt_get_sio_idx(csp_sio_t *ptSioBase)
-{
-	switch((uint32_t)ptSioBase)
-	{
-		case APB_SIO0_BASE:
-			return 0;
-		case APB_SIO1_BASE:
-			return 1;
-		default:
-			return 0xff;		//error
-	}
-}
-/** \brief  register sio interrupt callback function
- * 
- *  \param[in] ptSioBase: pointer of sio register structure
- *  \param[in] eCallBkId: sio interrupt callback type, \ref csi_uart_callback_id_e
- *  \param[in] callback: sio interrupt handle function
- *  \return error code \ref csi_error_t
- */ 
-csi_error_t csi_sio_register_callback(csp_sio_t *ptSioBase, csi_sio_callback_id_e eCallBkId, void  *callback)
-{
-	uint8_t byIdx = apt_get_sio_idx(ptSioBase);
-	if(byIdx == 0xff)
-		return CSI_ERROR;
-
-	switch(eCallBkId)
-	{
-		case SIO_CALLBACK_RECV:
-			g_tSioCtrl[byIdx].recv_callback = callback;
-			break;
-		case SIO_CALLBACK_SEND:
-			g_tSioCtrl[byIdx].send_callback = callback;
-			break;
-		case SIO_CALLBACK_ERR:
-			g_tSioCtrl[byIdx].err_callback = callback;
-			break;
-		default:
-			return CSI_ERROR;
-	}
-	return CSI_OK;
-}
 /** \brief sio interrupt handler function
  * 
  *  \param[in] ptSioBase: pointer of sio sio structure
@@ -221,6 +177,35 @@ csi_error_t csi_sio_rx_init(csp_sio_t *ptSioBase, csi_sio_rx_config_t *ptRxCfg)
 	g_tSioCtrl[byIdx].send_callback = NULL;
 	g_tSioCtrl[byIdx].err_callback = NULL;
 	
+	return CSI_OK;
+}
+/** \brief  register sio interrupt callback function
+ * 
+ *  \param[in] ptSioBase: pointer of sio register structure
+ *  \param[in] eCallBkId: sio interrupt callback type, \ref csi_sio_callback_id_e
+ *  \param[in] callback: sio interrupt handle function
+ *  \return error code \ref csi_error_t
+ */ 
+csi_error_t csi_sio_register_callback(csp_sio_t *ptSioBase, csi_sio_callback_id_e eCallBkId, void  *callback)
+{
+	uint8_t byIdx = apt_get_sio_idx(ptSioBase);
+	if(byIdx == 0xff)
+		return CSI_ERROR;
+
+	switch(eCallBkId)
+	{
+		case SIO_CALLBACK_RECV:
+			g_tSioCtrl[byIdx].recv_callback = callback;
+			break;
+		case SIO_CALLBACK_SEND:
+			g_tSioCtrl[byIdx].send_callback = callback;
+			break;
+		case SIO_CALLBACK_ERR:
+			g_tSioCtrl[byIdx].err_callback = callback;
+			break;
+		default:
+			return CSI_ERROR;
+	}
 	return CSI_OK;
 }
 /** \brief sio receive break reset config
@@ -449,5 +434,23 @@ csi_error_t csi_sio_recv_dma(csp_sio_t *ptSioBase, csp_dma_t *ptDmaBase, csi_dma
 	csi_dma_ch_start(ptDmaBase, eDmaCh, (void *)&(ptSioBase->RXBUF), (void *)pData, hwSize, 1);
 	
 	return CSI_OK;
+}
+
+/** \brief get sio idx 
+ * 
+ *  \param[in] ptSioBase: pointer of sio register structure
+ *  \return sio id number(0~1) or error(0xff)
+ */ 
+static uint8_t apt_get_sio_idx(csp_sio_t *ptSioBase)
+{
+	switch((uint32_t)ptSioBase)
+	{
+		case APB_SIO0_BASE:
+			return 0;
+		case APB_SIO1_BASE:
+			return 1;
+		default:
+			return 0xff;		//error
+	}
 }
 

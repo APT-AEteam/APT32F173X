@@ -80,14 +80,16 @@ extern "C" {
 #define USE_CMP_CALLBACK		1		//CMP(0/1/2)
 #define USE_GPTA_CALLBACK		1		//GPTA(0/1/2/3)
 #define USE_GPTB_CALLBACK		0		//GPTB(0/1/2/3/4/5)
+#define USE_SPI_CALLBACK		0		//SPI(0/1)
 #define USE_DAC_CALLBACK		1		//DAC(0)
 #define USE_USART_CALLBACK		0		//USART(0/1)
 #define USE_LIN_CALLBACK        0       //LIN(0/1) LIN和USART使用的都是USART模块，同一个USART,使用了普通的USART功能，LIN功能就不能使用了
-#define USE_I2C_CALLBACK		1		//IIC(0)
+#define USE_IIC_CALLBACK		1		//IIC(0)
 #define USE_LPT_CALLBACK		1		//LPT(0)
 #define USE_WWDT_CALLBACK		1		//WWDT(0)
 #define USE_ADC_CALLBACK		1		//ADC(0/1)
 #define USE_RTC_CALLBACK		1		//RTC
+#define USE_CAN_CALLBACK		1		//CAN(0)
 
 //csi GUI Handling Enable, 1/0(OPEN/CLOSE)
 //可视化编程，通过宏USE_GUI来实现功能选择

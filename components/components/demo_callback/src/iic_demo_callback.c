@@ -14,7 +14,7 @@
 #include "board_config.h"
 
 
-#if (USE_I2C_CALLBACK == 1)	
+#if (USE_IIC_CALLBACK == 1)	
 
 csi_iic_master_config_t  g_tIicMasterCfg;	//主机初始化结构体变量
 csi_iic_slave_config_t  g_tIicSlaveCfg;	//从机初始化结构体变量
@@ -61,7 +61,7 @@ void iic_slave_int_callback_demo(void)
 	g_tIicSlaveCfg.eQualMode=I2C_QUALMASK;        //从机地址限定模式， 地址扩展模式
 	csi_iic_slave_init(IIC0,&g_tIicSlaveCfg);		//初始化从机
 				
-//	csi_iic_set_slave_buffer(s_byWriteBuffer,32,s_bySendBuffer,32); //从机就是数组和发送数组设置
+	csi_iic_set_slave_buffer(s_byWriteBuffer,32,s_bySendBuffer,32); //从机就是数组和发送数组设置
 	csi_iic_register_callback(IIC0,IIC_CALLBACK_RECV, user_iic_receive_callback);	//注册中断回调函数
 	csi_iic_int_enable(IIC0, IIC_INTSRC_SCL_SLOW | IIC_INTSRC_STOP_DET |IIC_INTSRC_RD_REQ | IIC_INTSRC_RX_FULL | IIC_INTSRC_TX_ABRT);     //使能需要的中断
 	csi_iic_slave_init(IIC0,&g_tIicSlaveCfg);

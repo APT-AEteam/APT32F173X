@@ -6,7 +6,7 @@
  * <tr><th> Date  <th>Version  <th>Author  <th>Description
  * <tr><td> 2021-7-27 <td>V2.0 <td>WNN    <td>initial
  * <tr><td> 2023-3-15 <td>V0.1  <td>YT     <td>modify
- * <tr><td> 2023-9-14 <td>V0.2  <td>YT     <td>modify
+ * <tr><td> 2023-9-14 <td>V0.2  <td>YT     <td>code normalization
  * </table>
  * *********************************************************************
 */
@@ -54,16 +54,15 @@ csi_error_t wwdt_demo(void)
 	csi_wwdt_init(80);							//设置timeout时间为80ms 时间设置过大 会返回错误
 	csi_wwdt_debug_enable(WWDT);				//可以配置在debug模式下，wdt是否继续计时		
 	csi_wwdt_set_window_time(40);				//设置窗口值为40ms
-//	csi_wwdt_int_enable( );                     //中断使能
+	csi_wwdt_int_enable( );                     //中断使能
 	
 	csi_wwdt_open();							//WWDT一旦使能，软件将不能停止
 	
-	//csi_wwdt_feed();							//如果在这里（窗口外）喂狗，将会引起芯片复位
-	
+//	csi_wwdt_feed();							//如果在这里（窗口外）喂狗，将会引起芯片复位
 	while(1) {
 		temp = csi_wwdt_get_remaining_time() ;
 		if (temp< 30) {						//此处仅为示例喂狗操作。实际应用需要对代码运行时间有全局的了解。只有在窗口内喂狗，芯片才不会复位
-			csi_wwdt_feed();			
+			csi_wwdt_feed();		        //屏蔽此处代码，会进中断	
 			if (csi_wwdt_get_remaining_time()  < 79) {
 				return CSI_ERROR;
 			}
@@ -71,6 +70,12 @@ csi_error_t wwdt_demo(void)
 	}
 	
 	return CSI_ERROR;
+	
+
+	
+	
+	
+	
 }
 
 

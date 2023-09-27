@@ -201,8 +201,8 @@ typedef enum{
 }csi_sio_wkmode_e;
 
 /**
- * \enum     csi_uart_callbackid_e
- * \brief    UART callback id
+ * \enum     csi_sio_callback_id_e
+ * \brief    SIO callback id
  */
 typedef enum{
 	SIO_CALLBACK_RECV	=	0,		//sio rteceive callback id

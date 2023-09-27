@@ -1,12 +1,13 @@
 /***********************************************************************//** 
  * \file  csp_spi.h
  * \brief  SPI description and static inline functions at register level 
- * \copyright Copyright (C) 2015-2021 @ APTCHIP
+ * \copyright Copyright (C) 2015-2023 @ APTCHIP
  * <table>
  * <tr><th> Date  <th>Version  <th>Author  <th>Description
- * <tr><td> 2020-8-27 <td>V0.0  <td>ZJY   <td>initial
- * <tr><td> 2021-1-12 <td>V0.1  <td>ZJY   <td>macro definition style, modify
- * <tr><td> 2021-5-31 <td>V0.2  <td>LQ    <td>macro definition style, modify
+ * <tr><td> 2020-8-27 <td>V0.0  <td>ZJY    <td>initial
+ * <tr><td> 2021-1-12 <td>V0.1  <td>ZJY    <td>macro definition style, modify
+ * <tr><td> 2021-5-31 <td>V0.2  <td>LQ     <td>macro definition style, modify
+ * <tr><td> 2023-9-25 <td>V0.3  <td>WCH    <td>code normalization
  * </table>
  * *********************************************************************
 */
@@ -17,9 +18,8 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include <soc.h>
-#include "csp_common.h"
 
-/// \struct csp_adc_t
+/// \struct csp_spi_t
 /// \brief SPI reg description
 typedef struct
 {
@@ -34,17 +34,15 @@ typedef struct
 	__OM   uint32_t  ICR;		//0x0020	Interrupt clear register 
     __IOM  uint32_t  DMACR;     //0x0024    Dma Control Register
 	__OM   uint32_t  SRR;		//0x0028	Software Reset Register
-	__IM   uint32_t  RXFL;		//0x002C	rx fifo level
-	__IM   uint32_t  TXFL;		//0x0030	tx fifo level
+//	__IM   uint32_t  RXFL;		//0x002C	rx fifo level
+//	__IM   uint32_t  TXFL;		//0x0030	tx fifo level
 } csp_spi_t;
 
 /*****************************************************************************
-************************** ssp Function defined *****************************
+************************** SPI Function defined *****************************
 ******************************************************************************/
-#define SPI_RECV_TIMEOUT		(0x10ff)
+#define SPI_RECV_TIMEOUT		(0x1FFF)
 #define SPI_SEND_TIMEOUT		(0x1FFF)
-#define SPI_TIMEOUT_DIS			(0x01)
-
 
 //SPI Registers RST  Value
 #define SPI_CR0_RST          	(0x00000000)    	//CR0 reset value     
@@ -61,10 +59,6 @@ typedef struct
 /*****************************************************************************
 * SPICR0 : Control Register 0
 ******************************************************************************/
-// SPICR0 : Control Register 0
-//#define SPI_SPO  	   	(0x01ul << 6)				//SPICLK Polarity 	 
-//#define SPI_SPH  	    (0x01ul << 7)				//SPICLK Phase    	 
-
 #define	SPI_DSS_POS		(0)							//Data Size Select    
 #define	SPI_DSS_MSK		(0x0Ful << SPI_DSS_POS)
 #define SPI_DSS(val)	(((val-1) & 0x0Ful) << SPI_DSS_POS)	
@@ -109,13 +103,7 @@ typedef enum
 
 /******************************************************************************
 * SPICR1 : Control Register 1
-******************************************************************************/
-// SPICR1 : Control Register 0
-//#define SPI_SSE  	    (0x01ul << 1)		//SSerial Port Enable 		 
-//#define SPI_SOD  	    (0x01ul << 3)		//Slave Mode Output Disable   
-//#define SPI_LPDM  	(0x01ul << 7)		//Slave Mode Output Disable   
-//#define SPI_LPTXOE  	(0x01ul << 8)		//Slave Mode Output Disable   
-
+******************************************************************************/ 
 #define	SPI_LBM_POS		(0)					//Loopback mode 				 				
 #define	SPI_LBM_MSK		(0x01ul << SPI_LBM_POS)
 typedef enum
@@ -124,20 +112,16 @@ typedef enum
 	SPI_LBM_EN   
 }spi_lbm_e;
 
-#define	SPI_SSE_POS		(1)								 				
+#define	SPI_SSE_POS		(1)	
+#define	SPI_SSE_EN		(0x01ul << SPI_SSE_POS)							 				
 #define	SPI_SSE_MSK		(0x01ul << SPI_SSE_POS)
-typedef enum
-{
-	SPI_DIS		= 0,            
-	SPI_EN   
-}spi_sse_e;
 
 #define	SPI_MODE_POS	(2)					//Master / Slave Mode Select  	
 #define	SPI_MODE_MSK	(0x01ul << SPI_MODE_POS)
 typedef enum
 {
-	SPI_MODE_MASTER	= 0,            
-	SPI_MODE_SLAVE      
+	SPI_MASTER	= 0,            
+	SPI_SLAVE      
 }spi_mode_e;
 
 #define	SPI_SOD_POS		(3)					
@@ -162,7 +146,7 @@ typedef enum
 #define	SPI_LPMD_MSK		(0x01ul << SPI_LPMD_POS)
 typedef enum
 {
-	SPI_LPMD_NOR	= 0,            
+	SPI_LPMD_NORMAL	= 0,            
 	SPI_LPMD_SINGLE      
 }spi_lpmd_e;
 
@@ -211,11 +195,11 @@ typedef enum
 // SPIICR : Interrupt clear register
 typedef enum
 {
-	SPI_NONE_INT		= (0x00ul << 0),   		//none interrupt 
-	SPI_ROTIM_INT		= (0x01ul << 0), 		//Receive Overrun Interrupt              
-	SPI_RTIM_INT    	= (0x01ul << 1), 		//Receive Timeout Interrupt          
-	SPI_RXIM_INT   		= (0x01ul << 2),		//Receive FIFO Interrupt           
-	SPI_TXIM_INT		= (0x01ul << 3),   		//Transmit FIFO interrupt 
+	SPI_INT_ROIM	= (0x01ul << 0), 		//Receive Overrun Interrupt              
+	SPI_INT_RTIM  	= (0x01ul << 1), 		//Receive Timeout Interrupt          
+	SPI_INT_RXIM   	= (0x01ul << 2),		//Receive FIFO Interrupt           
+	SPI_INT_TXIM	= (0x01ul << 3),   		//Transmit FIFO interrupt 
+	SPI_INT_ALL		= (0x0F),   			//ALL interrupt 
 }spi_int_e;
 
 /******************************************************************************
@@ -260,90 +244,73 @@ typedef enum{
 }spi_softreset_e;
 
 /******************************************************************************
-********************** SPI External Functions Declaration *********************
-******************************************************************************/
-//extern void csp_spi_default_init(csp_spi_t *ptSpiBase);
-//extern void csp_spi_set_int(csp_spi_t *ptSpiBase,spi_int_e eSpiInt,bool bEnable);
-//extern void csp_spi_set_clk_div(csp_spi_t *ptSpiBase,uint8_t wScr,uint8_t wCpsdvsr);
-//extern void csp_spi_set_slave(csp_spi_t *ptSpiBase,spi_data_size_e eSize,spi_spo_h_e eSph, spi_rxifl_e eRxfifo, spi_sod_e eSod);
-//extern void csp_spi_set_master(csp_spi_t *ptSpiBase,spi_data_size_e eSize,spi_spo_h_e eSpoH, spi_rxifl_e eRxfifo, spi_lbm_e eLbm);
-//extern void csp_spi_write_byte(csp_spi_t *ptSpiBase,uint16_t hwData);
-
-//extern uint16_t csp_spi_read_byte(csp_spi_t *ptSpiBase,uint16_t hwWdata);
-//extern int16_t  csp_spi_read_write_byte(csp_spi_t *ptSpiBase,uint16_t hwWdata);
-
-//extern uint8_t  csp_spi_busy(csp_spi_t *ptSpiBase);
-//extern uint8_t  csp_spi_read_ready(csp_spi_t *ptSpiBase);
-//extern uint8_t  csp_spi_write_ready(csp_spi_t *ptSpiBase);
-
-/******************************************************************************
 ********************* SPI inline Functions Declaration **********************
 ******************************************************************************/
-static inline void csp_spi_en(csp_spi_t *ptSpiBase)
+static inline void csp_spi_enable(csp_spi_t *ptSpiBase)
 {
-	ptSpiBase->CR1 |= (SPI_EN << SPI_SSE_POS);
+	ptSpiBase->CR1 |= SPI_SSE_EN;
 }
-static inline void csp_spi_dis(csp_spi_t *ptSpiBase)
+
+static inline void csp_spi_disable(csp_spi_t *ptSpiBase)
 {
-	ptSpiBase->CR1 &= ~SPI_SSE_MSK;
+	ptSpiBase->CR1 &= ~SPI_SSE_EN;
 }
-//
+
 static inline uint16_t csp_spi_get_data(csp_spi_t *ptSpiBase)
 {
 	return (uint16_t)(ptSpiBase->DR);
 }
+
 static inline void csp_spi_set_data(csp_spi_t *ptSpiBase,uint16_t hwData)
 {
 	ptSpiBase->DR = hwData;
 }
-//
-static inline void csp_spi_set_mode(csp_spi_t *ptSpiBase,spi_mode_e eMode)
+
+static inline void csp_spi_set_work_mode(csp_spi_t *ptSpiBase,spi_mode_e eMode)
 {
 	ptSpiBase->CR1 = (ptSpiBase->CR1 & (~SPI_MODE_MSK)) | (eMode << SPI_MODE_POS);
 }
-static inline uint8_t csp_spi_get_mode(csp_spi_t *ptSpiBase)
+
+static inline uint8_t csp_spi_get_work_mode(csp_spi_t *ptSpiBase)
 {
 	return (uint8_t)((ptSpiBase->CR1 & SPI_MODE_MSK) >> SPI_MODE_POS);
 }
-static inline void csp_spi_set_spo_sph(csp_spi_t *ptSpiBase, spi_spo_h_e eSpoH)
+
+static inline void csp_spi_set_spo_sph(csp_spi_t *ptSpiBase, spi_spo_h_e eSpoSph)
 {
-	ptSpiBase->CR0 = (ptSpiBase->CR0 & (~SPI_SPO_H_MSK)) | (eSpoH << SPI_SPO_H_POS);
+	ptSpiBase->CR0 = (ptSpiBase->CR0 & (~SPI_SPO_H_MSK)) | (eSpoSph << SPI_SPO_H_POS);
 }
+
 static inline void csp_spi_set_data_size(csp_spi_t *ptSpiBase,spi_data_size_e eSize)
 {
 	ptSpiBase->CR0 = (ptSpiBase->CR0 & (~SPI_DSS_MSK)) | (eSize << SPI_DSS_POS);
 }
+
 static inline uint8_t csp_spi_get_data_size(csp_spi_t *ptSpiBase)
 {
 	return (uint8_t)(ptSpiBase->CR0 & SPI_DSS_MSK);
 }
+
 static inline void csp_spi_set_rxifl(csp_spi_t *ptSpiBase,spi_rxifl_e eRxIfl)
 {
 	ptSpiBase->CR1  = (ptSpiBase->CR1 & (~SPI_RXIFL_MSK)) | (eRxIfl << SPI_RXIFL_POS);
 }
-static inline void csp_spi_set_lbm(csp_spi_t *ptSpiBase, spi_lbm_e eLbmSel)
+
+static inline void csp_spi_set_loop_back_mode(csp_spi_t *ptSpiBase, spi_lbm_e eLbmSel)
 {
 	ptSpiBase->CR1  = (ptSpiBase->CR1 & (~SPI_LBM_MSK)) | (eLbmSel << SPI_LBM_POS);
 }
-static inline void csp_spi_master_single(csp_spi_t *ptSpiBase, spi_lpmd_e eLpmd, spi_lptxoe_e eLptxoe)
+
+static inline void csp_spi_set_single_wire_mode(csp_spi_t *ptSpiBase, spi_lpmd_e eLpmd, spi_lptxoe_e eLptxoe)
 {
 	ptSpiBase->CR1  = (ptSpiBase->CR1 & ~(SPI_LPMD_MSK | SPI_LPTXOE_MSK)) | (eLpmd << SPI_LPMD_POS) | (eLptxoe << SPI_LPTXOE_POS);
 }
-//
+
 static inline uint32_t csp_spi_get_sr(csp_spi_t *ptSpiBase)
 {
 	return (uint32_t)(ptSpiBase->SR);
 }
-static inline uint32_t csp_spi_get_isr(csp_spi_t *ptSpiBase)
-{
-	return (uint32_t)(ptSpiBase->MISR);
-}
-static inline void csp_spi_clr_isr(csp_spi_t *ptSpiBase, spi_int_e eSpiInt)
-{
-	ptSpiBase->ICR = eSpiInt;
-}
 
-//lin add
 static inline uint8_t csp_spi_get_rxifl(csp_spi_t *ptSpiBase)
 {
 	return ptSpiBase->CR1 & (SPI_RXIFL_MSK) ;
@@ -355,55 +322,34 @@ static inline void csp_spi_set_clk_div(csp_spi_t *ptSpiBase,uint8_t wScr,uint8_t
 	ptSpiBase->CPSR  = wCpsdvsr;	
 }
 
-static inline uint8_t csp_spi_write_ready(csp_spi_t *ptSpiBase)
-{	
-	if(csp_spi_get_sr(ptSpiBase) & SPI_TNF)
-		return 1;			//no full
-	else
-		return 0;			//full
+static inline void csp_spi_int_enable(csp_spi_t *ptSpiBase,spi_int_e eSpiInt)
+{
+	ptSpiBase->IMCR |= eSpiInt;
 }
 
-static inline uint8_t csp_spi_busy(csp_spi_t *ptSpiBase)
+static inline void csp_spi_int_disable(csp_spi_t *ptSpiBase,spi_int_e eSpiInt)
 {
-	if(csp_spi_get_sr(ptSpiBase) & SPI_BSY)
-		return 1;			//busy
-	else
-		return 0;			//idle
+	ptSpiBase->IMCR &= ~eSpiInt;
 }
 
-static inline void csp_spi_default_init(csp_spi_t *ptSpiBase)
+static inline uint32_t csp_spi_get_risr(csp_spi_t *ptSpiBase)
 {
-	ptSpiBase->CR0	 = SPI_CR0_RST;
-    ptSpiBase->CR1   = SPI_CR1_RST;
-    //ptSpiBase->DR    = SPI_DR_RST;
-    //ptSpiBase->SR    = SPI_SR_RST;
-    ptSpiBase->CPSR  = SPI_CPSR_RST;
-    ptSpiBase->IMCR = SPI_IMCR_RST;
-   //ptSpiBase->RISR  = SPI_RISR_RST;
-    //ptSpiBase->MISR  = SPI_MISR_RST;
-    ptSpiBase->ICR	 = SPI_ICR_RST; 
+	return (ptSpiBase->RISR);
 }
 
-static inline void csp_spi_set_int(csp_spi_t *ptSpiBase,spi_int_e eSpiInt,bool bEnable)
+static inline uint32_t csp_spi_get_isr(csp_spi_t *ptSpiBase)
 {
-	if(bEnable)
-		ptSpiBase->IMCR |= eSpiInt;
-	else
-		ptSpiBase->IMCR &= ~eSpiInt;
-
+	return (ptSpiBase->MISR);
 }
 
-static inline uint8_t csp_spi_read_ready(csp_spi_t *ptSpiBase)
+static inline void csp_spi_clr_isr(csp_spi_t *ptSpiBase, spi_int_e eSpiInt)
 {
-	if(csp_spi_get_sr(ptSpiBase) & SPI_RNE)
-		return 1;			//no empty
-	else
-		return 0;			//empty
+	ptSpiBase->ICR = eSpiInt;
 }
 
-static inline void csp_spi_softreset(csp_spi_t *ptSpiBase,spi_softreset_e eRstSource)
+static inline void csp_spi_sw_rst(csp_spi_t *ptSpiBase,spi_softreset_e eRstSource)
 {
-		ptSpiBase->SRR |= eRstSource;
+	ptSpiBase->SRR |= eRstSource;
 }
 
 static inline void csp_spi_set_rxdma(csp_spi_t *ptSpiBase, spi_rdma_en_e eRxDmaEn, spi_rdma_md_e eRxDmaMode) 
@@ -415,7 +361,4 @@ static inline void csp_spi_set_txdma(csp_spi_t *ptSpiBase, spi_tdma_en_e eTxDmaE
 {
 	ptSpiBase->DMACR = (ptSpiBase->DMACR & ~(SPI_TDMA_EN_MSK | SPI_TDMA_MD_MSK)) | (eTxDmaEn << SPI_TDMA_EN_POS) | (eTxDmaMode << SPI_TDMA_MD_POS);
 }
-
-
 #endif
-

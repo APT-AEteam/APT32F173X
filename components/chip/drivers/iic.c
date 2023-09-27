@@ -1,12 +1,13 @@
 /***********************************************************************//** 
  * \file  iic.c
  * \brief  csi iic driver
- * \copyright Copyright (C) 2015-2020 @ APTCHIP
+ * \copyright Copyright (C) 2015-2023 @ APTCHIP
  * <table>
  * <tr><th> Date  <th>Version  <th>Author  <th>Description
  * <tr><td> 2020-9-03 <td>V0.0  <td>ZJY   <td>initial
  * <tr><td> 2021-1-21 <td>V0.1  <td>ZJY   <td> modified in 110
-  * <tr><td> 2021-1-22 <td>V0.2  <td>WNN   <td> move to 102
+ * <tr><td> 2021-1-22 <td>V0.2  <td>WNN   <td> move to 102
+ * <tr><td> 2023-9-14 <td>V0.3  <td>YT     <td>code normalization
  * </table>
  * *********************************************************************
 */
@@ -33,7 +34,7 @@ csi_iic_ctrl_t g_tIicCtrl[IIC_IDX];
 void apt_iic_deinit(csp_iic_t *ptIicBase)
 {
 	csp_iic_disable(ptIicBase);
-	csp_iic_int_disable(ptIicBase,IIC_INT_ALL);
+//	csp_iic_int_disable(ptIicBase,IIC_INT_ALL);
 	csp_iic_clr_isr(ptIicBase,IIC_INT_ALL);
 }
 
@@ -139,7 +140,9 @@ csi_error_t csi_iic_slave_init(csp_iic_t *ptIicBase, csi_iic_slave_config_t *ptI
 	uint16_t hwSclH;
 	if((ptIicBase == NULL)||(ptIicSlaveCfg == NULL))
 		return CSI_ERROR;
-	csp_pcer0_clk_enable(SYSCON,22);
+//	csp_pcer0_clk_enable(SYSCON,22);
+	csi_clk_enable((uint32_t *)ptIicBase);
+	
 	apt_iic_deinit(ptIicBase);
 	
 	csp_iic_set_saddr(ptIicBase, ptIicSlaveCfg->hwSlaveAddr >> 1);
@@ -441,8 +444,8 @@ csi_error_t csi_iic_master_init(csp_iic_t *ptIicBase, csi_iic_master_config_t *p
 	uint16_t hwSclH ;
 	if((ptIicBase == NULL)||(ptIicMasterCfg == NULL))
 		return CSI_ERROR;
-	csp_pcer0_clk_enable(SYSCON,22);
-	
+//	csp_pcer0_clk_enable(SYSCON,22);
+	csi_clk_enable((uint32_t *)ptIicBase);
 	apt_iic_deinit(ptIicBase);
 	wIicClk = csi_get_pclk_freq() / 1000000U;
 	
@@ -842,4 +845,20 @@ void csi_iic_set_send_dma(csp_iic_t *ptI2cBase, iic_tdma_en_e eTxDmaEn, iic_tdma
 void csi_iic_clr_isr(csp_iic_t *ptI2cBase, csi_iic_intsrc_e eIntSrc)
 {
 	csp_iic_clr_isr(ptI2cBase, (iic_int_e)eIntSrc);	
+}
+
+/** \brief  set iic slave  tx/rx buffer
+ * 
+ * 	\param[in] pbyIicRxBuf: pointer of iic RX data buffer
+ *  \param[in] hwIicRxSize: Rx buffer size
+ * 	\param[in] pbyIicTxBuf: pointer of iic TX data buffer
+ * 	\param[in] hwIicTxSize: Tx buffer size
+ *  \return none
+ */ 
+void csi_iic_set_slave_buffer(volatile uint8_t *pbyIicRxBuf,uint16_t hwIicRxSize,volatile uint8_t *pbyIicTxBuf,uint16_t hwIicTxSize)
+{
+	g_tSlave.pbySlaveRxBuf = pbyIicRxBuf;
+	g_tSlave.pbySlaveTxBuf = pbyIicTxBuf;
+	g_tSlave.hwRxSize = hwIicRxSize;
+	g_tSlave.hwTxSize = hwIicTxSize;
 }
