@@ -15,7 +15,7 @@
 
 /* Private macro------------------------------------------------------*/
 /* externs function---------------------------------------------------*/
-/* Private function------------------------------------------------------*/
+/* Private function---------------------------------------------------*/
 static uint8_t apt_get_spi_idx(csp_spi_t *ptSpiBase);
 /* externs variablesr-------------------------------------------------*/
 /* Private variablesr-------------------------------------------------*/ 
@@ -24,70 +24,112 @@ csi_spi_ctrl_t g_tSpiCtrl[SPI_IDX];
 /** \brief spi interrupt handle weak function
  * 
  *  \param[in] ptSpiBase: pointer of spi register structure
+ *  \param[in] byIdx: spi idx(0/1)
  *  \return none
  */ 
-void csi_spi_irqhandler(csp_spi_t *ptSpiBase)
+void csi_spi_irqhandler(csp_spi_t *ptSpiBase, uint8_t byIdx)
 {	
-#if 0
-	uint32_t wStatus = csp_spi_get_isr(ptSpiBase);
-	volatile uint8_t receive_data[4];
-	//fifo rx 
-	if(wStatus & SPI_INT_RXIM)
+	//TXFIFO中断 
+	if(csp_spi_get_isr(ptSpiBase) & SPI_INTSRC_TXIM)		
 	{
-		//for reference
-		if(0==g_tSpiTransmit.byWorkMode)//主机
-		{
-			apt_spi_intr_recv_data(ptSpiBase);//when use"csi_spi_send_receive_async"function need open
+		//发送16字节数据
+		csp_spi_set_data(ptSpiBase, *g_tSpiCtrl[byIdx].pbyTxBuf);
+		g_tSpiCtrl[byIdx].wTxSize --;
+		g_tSpiCtrl[byIdx].pbyTxBuf ++;
+			
+		if(g_tSpiCtrl[byIdx].wTxSize == 0)	
+		{	
+			g_tSpiCtrl[byIdx].eTxState = SPI_STATE_TX_DNE;					//send complete
+			csp_spi_int_disable(ptSpiBase, SPI_INT_TXIM);					//disable interrupt
+	
+			//send complete, callback
+			if(g_tSpiCtrl[byIdx].send_callback)
+				g_tSpiCtrl[byIdx].send_callback(ptSpiBase);
 		}
-		else//从机
+	}
+	
+	//RXFIFO中断 
+	if(csp_spi_get_isr(ptSpiBase) & SPI_INTSRC_RXIM)
+	{
+		while(csp_spi_get_sr(ptSpiBase) & SPI_RNE)					
 		{
-			for(uint8_t byIdx = 0; byIdx < g_tSpiTransmit.byRxFifoLength; byIdx++)
+			if(g_tSpiCtrl[byIdx].wTransNum < g_tSpiCtrl[byIdx].wRxSize)
+				g_tSpiCtrl[byIdx].pbyRxBuf[g_tSpiCtrl[byIdx].wTransNum ++] = csp_spi_get_data(ptSpiBase);		//read data
+			else													//receive complete										
 			{
-				receive_data[byIdx] = csi_spi_receive_slave(ptSpiBase);
-				csi_spi_send_slave(ptSpiBase, receive_data[byIdx]);
+				csp_spi_sw_rst(ptSpiBase,SPI_RXFIFO_RST);        	//clear rx fifo
+				csp_spi_int_disable(ptSpiBase, SPI_INT_RXIM);		//disable RXFIFO interrupt
+				g_tSpiCtrl[byIdx].wTransNum = 0;						
+				g_tSpiCtrl[byIdx].eRxState  = SPI_STATE_RX_DNE;		
+	
+				//receive complete, callback
+				if(g_tSpiCtrl[byIdx].recv_callback)
+					g_tSpiCtrl[byIdx].recv_callback(ptSpiBase, SPI_STATE_RX_DNE, g_tSpiCtrl[byIdx].pbyRxBuf, &g_tSpiCtrl[byIdx].wRxSize);
 			}
 		}
 	}
-	//fifo tx 
-	if(wStatus & SPI_INT_TXIM)		
+	
+	//RXFIFO timeout中断  
+	if(csp_spi_get_isr(ptSpiBase) & SPI_INTSRC_RTIM)
 	{
-		//for reference
-		apt_spi_intr_send_data(ptSpiBase);
-	}
-	
-	//fifo overflow
-	if(wStatus & SPI_INT_ROTIM)
-	{	
-		//for reference
-		csp_spi_sw_rst(ptSpiBase,SPI_RXFIFO_RST);
-		csp_spi_clr_isr(ptSpiBase, SPI_INT_ROTIM);
-	}
-	
-	//fifo rx timeout
-	if(wStatus & SPI_INT_RTIM)		
-	{	
-		//for reference
+		if(g_tSpiCtrl[byIdx].eRxState != SPI_STATE_RX_DNE)
+		{
+			while(csp_spi_get_sr(ptSpiBase) & SPI_RNE)
+			{
+				g_tSpiCtrl[byIdx].pbyRxBuf[g_tSpiCtrl[byIdx].wTransNum ++] = csp_spi_get_data(ptSpiBase);
+			}
+				
+			if(g_tSpiCtrl[byIdx].wTransNum  < g_tSpiCtrl[byIdx].wRxSize)	
+			{
+				g_tSpiCtrl[byIdx].eRxState = SPI_STATE_RX_TO;				//receive timeout flag
+				//receive complete, callback
+				if(g_tSpiCtrl[byIdx].recv_callback)							
+					g_tSpiCtrl[byIdx].recv_callback(ptSpiBase, SPI_STATE_RX_TO, g_tSpiCtrl[byIdx].pbyRxBuf, &g_tSpiCtrl[byIdx].wTransNum);
+			}
+			else																
+			{
+				g_tSpiCtrl[byIdx].wTransNum = 0;								
+				g_tSpiCtrl[byIdx].eRxState = SPI_STATE_RX_DNE;				//receive complete flag
+				//receive complete, callback
+				if(g_tSpiCtrl[byIdx].recv_callback)
+					g_tSpiCtrl[byIdx].recv_callback(ptSpiBase, SPI_STATE_RX_DNE, g_tSpiCtrl[byIdx].pbyRxBuf, &g_tSpiCtrl[byIdx].wRxSize);
+			}
+		}
 		csp_spi_clr_isr(ptSpiBase, SPI_INT_RTIM);
-		
-		for(uint8_t byIdx = 0; byIdx < g_tSpiTransmit.byRxFifoLength-1; byIdx++)
-		{
-			
-			if(csp_spi_get_sr(ptSpiBase) & SPI_RNE)
-			{
-				*g_tSpiTransmit.pbyRxData = csp_spi_get_data(ptSpiBase);		//receive data
-				g_tSpiTransmit.pbyRxData++;
-			}
-			else
-			{
-				break;
-			}
-			
-		}		
-		g_tSpiTransmit.byRxSize = 0;
-		g_tSpiTransmit.byReadable = SPI_STATE_IDLE;
-		csp_spi_int_disable(ptSpiBase, SPI_INT_RXIM | SPI_INT_RTIM);			//disable fifo rx int
 	}
-#endif
+	
+	//RXFIFO overflow中断
+	if(csp_spi_get_isr(ptSpiBase) & SPI_INTSRC_ROIM)
+	{
+		csp_spi_clr_isr(ptSpiBase, SPI_INT_ROIM);
+	}
+}
+
+/** \brief  register spi interrupt callback function
+ * 
+ *  \param[in] ptSpiBase: pointer of spi register structure
+ *  \param[in] eCallBkId: spi interrupt callback type, \ref csi_uart_callback_id_e
+ *  \param[in] callback: spi interrupt handle function
+ *  \return error code \ref csi_error_t
+ */ 
+csi_error_t csi_spi_register_callback(csp_spi_t *ptSpiBase, csi_spi_callback_id_e eCallBkId, void  *callback)
+{
+	uint8_t byIdx = apt_get_spi_idx(ptSpiBase);
+	if(byIdx == 0xff)
+		return CSI_ERROR;
+
+	switch(eCallBkId)
+	{
+		case SPI_CALLBACK_RECV:
+			g_tSpiCtrl[byIdx].recv_callback = callback;
+			break;
+		case SPI_CALLBACK_SEND:
+			g_tSpiCtrl[byIdx].send_callback = callback;
+			break;
+		default:
+			return CSI_ERROR;
+	}
+	return CSI_OK;
 }
 
 /** \brief initialize spi data structure
@@ -376,7 +418,7 @@ int32_t csi_spi_send_receive(csp_spi_t *ptSpiBase, void *pDataout, void *pDatain
 		if(wTimeOut ==0)
 			break;		
 		if(pbySend)
-			csp_spi_set_data(ptSpiBase, *(pbySend + i));
+			csp_spi_set_data(ptSpiBase, *pbySend++);
 		else
 			csp_spi_set_data(ptSpiBase,0x00);
 
@@ -386,12 +428,35 @@ int32_t csi_spi_send_receive(csp_spi_t *ptSpiBase, void *pDataout, void *pDatain
 		if(wTimeOut ==0)
 			break;
 		if(pbyRecv)
-			pbyRecv[i++] = csp_spi_get_data(ptSpiBase);			//recv data
+			*pbyRecv++ = csp_spi_get_data(ptSpiBase);			//recv data
 		else
 			csp_spi_get_data(ptSpiBase);
 	}
 
 	return i;
+}
+
+/** \brief spi slave receive data
+ * 
+ *  \param[in] ptSpiBase: pointer of spi register structure
+ *  \param[in] hwDataout: data of send
+ *  \return none
+ */ 
+void csi_spi_send_slave(csp_spi_t *ptSpiBase, uint16_t hwDataout)
+{
+	while(!(csp_spi_get_sr(ptSpiBase) & SPI_TNF));	//send fifo not full: write 	
+	csp_spi_set_data(ptSpiBase, hwDataout);
+}
+
+/** \brief spi slave receive data
+ * 
+ *  \param[in] ptSpiBase: pointer of spi register structure
+ *  \return the slave receive data
+ */ 
+uint16_t csi_spi_receive_slave(csp_spi_t *ptSpiBase)
+{
+	while(!(csp_spi_get_sr(ptSpiBase) & SPI_RNE));	//receive not empty:read
+	return csp_spi_get_data(ptSpiBase);
 }
 
 #if 0
@@ -439,31 +504,6 @@ csi_error_t csi_spi_send_receive_async(csp_spi_t *ptSpiBase, void *pDataout, voi
 	return tRet;
 }
 
-
-/** \brief spi slave receive data
- * 
- *  \param[in] ptSpiBase: pointer of spi register structure
- *  \return the slave receive data
- */ 
-uint16_t csi_spi_receive_slave(csp_spi_t *ptSpiBase)
-{
-	while(!(csp_spi_get_sr(ptSpiBase) & SPI_RNE));	//receive not empty:read
-	return csp_spi_get_data(ptSpiBase);
-}
-
-/** \brief spi slave receive data
- * 
- *  \param[in] ptSpiBase: pointer of spi register structure
- *  \param[in] hwDataout: data of send
- *  \return error code \ref csi_error_t
- */ 
-csi_error_t csi_spi_send_slave(csp_spi_t *ptSpiBase, uint16_t hwDataout)
-{
-	while(!(csp_spi_get_sr(ptSpiBase) & SPI_TNF));	//send fifo not full: write 	
-	csp_spi_set_data(ptSpiBase, hwDataout);
-	
-	return CSI_OK;
-}
 //------------------------------------------------------------------------------------------
 //interrupt process,just for reference
 //------------------------------------------------------------------------------------------

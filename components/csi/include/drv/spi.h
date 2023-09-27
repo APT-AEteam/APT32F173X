@@ -83,12 +83,22 @@ typedef enum {
 }csi_spi_state_e;
 
 /**
+ * \enum     csi_uart_callbackid_e
+ * \brief    UART callback id
+ */
+typedef enum{
+	SPI_CALLBACK_RECV	=	0,	//spi rteceive callback id
+	SPI_CALLBACK_SEND,			//spi send callback id
+	SPI_CALLBACK_ERR,			//spi error callback id
+}csi_spi_callback_id_e;
+
+/**
  *  \enum     csi_spi_intsrc_e
  *  \brief    Interrupt source set of spi
  */
 typedef enum
 {
-	SPI_INTSRC_ROTIM	= (0x01ul << 0), 		//Receive Overflow Interrupt              
+	SPI_INTSRC_ROIM	= (0x01ul << 0), 		//Receive Overflow Interrupt              
 	SPI_INTSRC_RTIM    	= (0x01ul << 1), 		//Receive Timeout Interrupt          
 	SPI_INTSRC_RXIM   	= (0x01ul << 2),		//Receive FIFO Interrupt           
 	SPI_INTSRC_TXIM		= (0x01ul << 3),    	//Transmit FIFO interrupt 
@@ -113,7 +123,7 @@ typedef struct {
 	uint8_t				*pbyTxBuf;				//pointer of send buf 
 	uint8_t				*pbyRxBuf;				//pointer of recv buf 
 	//CallBack		
-	void(*recv_callback)(csp_spi_t *ptSpiBase, csi_spi_state_e eState, uint8_t *pbyBuf, uint16_t *hwSzie);
+	void(*recv_callback)(csp_spi_t *ptSpiBase, csi_spi_state_e eState, uint8_t *pbyBuf, uint32_t *wSzie);
 	void(*send_callback)(csp_spi_t *ptSpiBase);
 }csi_spi_ctrl_t;
 
@@ -121,9 +131,19 @@ typedef struct {
 /** \brief spi interrupt handle weak function
  * 
  *  \param[in] ptSpiBase: pointer of spi register structure
+ *  \param[in] byIdx: spi idx(0/1)
  *  \return none
  */ 
-void csi_spi_irqhandler(csp_spi_t *ptSpiBase);
+void csi_spi_irqhandler(csp_spi_t *ptSpiBase, uint8_t byIdx);
+
+/** \brief  register spi interrupt callback function
+ * 
+ *  \param[in] ptSpiBase: pointer of spi register structure
+ *  \param[in] eCallBkId: spi interrupt callback type, \ref csi_uart_callback_id_e
+ *  \param[in] callback: spi interrupt handle function
+ *  \return error code \ref csi_error_t
+ */ 
+csi_error_t csi_spi_register_callback(csp_spi_t *ptSpiBase, csi_spi_callback_id_e eCallBkId, void  *callback);
 
 /** \brief initialize spi data structure
  * 
@@ -259,6 +279,21 @@ csi_error_t csi_spi_receive_int(csp_spi_t *ptSpiBase, void *pData, uint32_t wSiz
  *  \return error code \ref csi_error_t
  */
 int32_t csi_spi_send_receive(csp_spi_t *ptSpiBase, void *pDataout, void *pDatain, uint32_t wSize);
+
+/** \brief spi slave receive data
+ * 
+ *  \param[in] ptSpiBase: pointer of spi register structure
+ *  \param[in] hwDataout: data of send
+ *  \return none
+ */ 
+void csi_spi_send_slave(csp_spi_t *ptSpiBase, uint16_t hwDataout);
+
+/** \brief spi slave receive data
+ * 
+ *  \param[in] ptSpiBase: pointer of spi register structure
+ *  \return the slave receive data
+ */ 
+uint16_t csi_spi_receive_slave(csp_spi_t *ptSpiBase);
 
 /** \brief send data of spi by DMA
  * 
