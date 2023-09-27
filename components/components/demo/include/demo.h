@@ -152,9 +152,7 @@ extern int cmp_wfcr_demo(void);
 
 //gpta demo
 extern int gpta_timer_demo(void);
-extern int gpta_capture_sync_demo0(void);
-extern int gpta_capture_sync_demo1(void);
-extern int gpta_capture_sync_demo2(void);
+extern int gpta_capture_demo(void);
 extern int gpta_pwm_demo(void);
 extern int gpta_pwm_waveform_demo(void);
 extern int gpta_reglk_demo(void);
@@ -189,7 +187,10 @@ extern void fvr_buf_demo(void);
 
 //can
 extern int can_send_demo(void);
-extern int can_recv_demo(void);
+extern int can_send_int_demo(void);
+extern int can_receive_int_demo(void);
+extern int can_remote_frames_demo(void);
+extern int can_receive_fifo_init_demo(void);
 
 //dac demo
 extern void dac_demo(void);	

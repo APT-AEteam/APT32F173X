@@ -103,7 +103,8 @@ extern int cmp_base_int_callback_demo(void);
 
 //gpta demo
 extern int gpta_timer_int_callback_demo(void);
-extern int gpta_capture_sync_int_callback_demo0(void);
+extern int gpta_capture_int_callback_demo(void);
+extern int gpta_pwm_int_callback_demo(void);
 
 //gptb demo
 extern int gptb_timer_demo(void);

@@ -2,12 +2,12 @@
  * \file  cnta_demo.c
  * \brief  counterA 示例代码
 
- * \copyright Copyright (C) 2015-2021 @ APTCHIP
+ * \copyright Copyright (C) 2015-2023 @ APTCHIP
  * <table>
  * <tr><th> Date  <th>Version    <th>Author  <th>Description
  * <tr><td> 2020-09-21 <td>V0.0  <td>ZJY     <td>initial
  * <tr><td> 2020-05-27 <td>V0.1  <td>LQ      <td>modify
- * <tr><td> 2023-09-05 <td>V0.2  <td>LHY     <td>modify
+ * <tr><td> 2023-09-05 <td>V1.0  <td>LHY     <td>code normalization
  * </table>
  * *********************************************************************
 */

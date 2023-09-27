@@ -20,8 +20,8 @@ csi_iic_slave_config_t  g_tIicSlaveCfg;	//从机初始化结构体变量
 volatile static uint8_t s_bySendBuffer[32]={1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20};
 volatile static uint8_t s_byWriteBuffer[32];
 
-volatile uint8_t g_wTxBuff[32] = {0,1,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20};// 前两个为wWriteAddrs
-volatile uint8_t g_bRxBuff[32] = {0};
+volatile uint32_t g_wTxBuff[32] = {0,1,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20};// DMA发送数据。前两个为wWriteAddrs
+volatile uint8_t g_bRxBuff[32] = {0};   //DMA接收数据
 
 //extern volatile uint32_t g_wIicErrorCont = 0;
 //extern volatile uint8_t g_bySendIndex = 0;
@@ -66,6 +66,10 @@ ATTRIBUTE_ISR  void iic_int_handler(void)
 //			csp_iic_clr_isr(IIC0,IIC_INT_RX_FULL);
 //			g_wIicErrorCont=0;
 	}
+	
+	
+	
+	
 }
 
 #endif
@@ -207,20 +211,12 @@ void iic_multi_slave_demo(void)
 	csi_iic_int_enable(IIC0, IIC_INTSRC_SCL_SLOW | IIC_INTSRC_STOP_DET |IIC_INTSRC_RD_REQ | IIC_INTSRC_RX_FULL | IIC_INTSRC_TX_ABRT);     //使能需要的中断
 	
 	csi_iic_slave_init(IIC0,&g_tIicSlaveCfg);		//初始化从机
-	
-	
-	
-	
-//	csi_iic_qualmode_set(IIC0,IIC_QUAL_EXTEND);   //QUALMODE=1,地址扩展模式
-////	csi_iic_qualmode_set(IIC0,IIC_QUAL_MASK);    //QUALMODE=0,地址屏蔽模式模式
-//
-//	csp_iic_set_slvqual(IIC0,maskaddr);
-	
+
 	while(1);
 }
 
 /** \brief IIC DMA tx demo
- * 
+ * IIC做主机，将g_wTxBuff数据通过dma发送给从机
  *  \param[in] none
  *  \return none
  */
@@ -250,7 +246,6 @@ void iic_multi_slave_demo(void)
 	csi_etcb_ch_init(ETCB_CH21, &tEtbConfig);      //初始化ETCB，DMA ETCB CHANNEL > ETCB_CH19_ID 
 
 	
-	
 	//iic tx dma config
 	tDmaConfig.eSrcLinc  = DMA_ADDR_INC;  			//低位传输原地址固定不变
 	tDmaConfig.eSrcHinc  = DMA_ADDR_INC;		    //高位传输原地址自增
@@ -275,11 +270,11 @@ void iic_multi_slave_demo(void)
 	csi_iic_set_receive_dma(IIC0, IIC_RDMA_EN, IIC_RDMA_FIFO_NSPACE);
 	csi_iic_set_send_dma(IIC0, IIC_TDMA_EN, IIC_TDMA_FIF0_TX_FLSEL); 
 	
+	
 	g_wTxBuff[8] |=  IIC_CMD_STOP;     // 最后一个数添加stop
 	
 	csi_iic_disable(IIC0);
 	csi_iic_set_taddr(IIC0,0xa0 >> 1);
-	
 	csi_iic_enable(IIC0);
 	while(1);
 }
@@ -287,7 +282,7 @@ void iic_multi_slave_demo(void)
 
 
 /** \brief IIC DMA rx demo
- * 
+ * IIC做主机，通过DMA，接收从机发送的数据
  *  \param[in] none
  *  \return none
  */

@@ -1,11 +1,11 @@
 /***********************************************************************//** 
  * \file  cmp_demo.c
  * \brief  CMP_DEMO description and static inline functions at register level 
- * \copyright Copyright (C) 2015-2020 @ APTCHIP
+ * \copyright Copyright (C) 2015-2023 @ APTCHIP
  * <table>
  * <tr><th> Date  <th>Version  <th>Author  <th>Description
  * <tr><td> 2021-11-25 <td>V0.0 <td>YYM     <td>initial
- * <tr><td> 2023-09-07 <td>V0.1 <td>LHY     <td>modify
+ * <tr><td> 2023-09-07 <td>V1.0 <td>LHY     <td>code normalization
  * </table>
  * *********************************************************************
 */
