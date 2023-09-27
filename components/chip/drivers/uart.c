@@ -13,118 +13,16 @@
 #include <drv/tick.h>
 
 /* private macro------------------------------------------------------*/
-/* externs function---------------------------------------------------*/
+/* private function---------------------------------------------------*/
+static uint8_t apt_get_uart_idx(csp_uart_t *ptUartBase);
+
 /* global variablesr--------------------------------------------------*/
 csi_uart_ctrl_t g_tUartCtrl[UART_IDX];	
 
 /* private variablesr-------------------------------------------------*/
 
 
-//static uint32_t s_wCtrlRegBack = 0;	
 
-/** \brief get uart idx 
- * 
- *  \param[in] ptUartBase: pointer of uart register structure
- *  \return uart id number(0~2) or error(0xff)
- */ 
-static uint8_t apt_get_uart_idx(csp_uart_t *ptUartBase)
-{
-	switch((uint32_t)ptUartBase)
-	{
-		case APB_UART0_BASE:
-			return 0;
-		case APB_UART1_BASE:
-			return 1;
-		case APB_UART2_BASE:
-			return 2;
-		default:
-			return 0xff;		//error
-	}
-}
-/** \brief initialize uart parameter structure
- * 
- *  \param[in] ptUartBase: pointer of uart register structure
- *  \param[in] ptUartCfg: pointer of uart parameter config structure
- * 			   	- wBaudRate: baud rate
- * 			   	- hwRecvTo: rx byte timeout
- * 			   	- eParity: parity bit, \ref csi_uart_rxfifo_trg_e
- * 			   	- eRxFifoTrg: rx FIFO level to trigger UART_RNE interrupt, \ref csi_uart_rxfifo_trg_e
- *  \return error code \ref csi_error_t
- */ 
-csi_error_t csi_uart_init(csp_uart_t *ptUartBase, csi_uart_config_t *ptUartCfg)
-{
-	uart_parity_e eParity = UART_PAR_NONE;
-	uint32_t wBrDiv;
-	uint8_t byIdx = apt_get_uart_idx(ptUartBase);
-	
-	csi_clk_enable((uint32_t *)ptUartBase);						//uart peripheral clk enable
-	csp_uart_sw_rst(ptUartBase);								//reset ip
-	
-	wBrDiv = csi_get_pclk_freq()/ptUartCfg->wBaudRate;	
-	if(wBrDiv < 16)
-		wBrDiv = 16;
-	csp_uart_set_brdiv(ptUartBase, wBrDiv);						//set uart baud rate 
-	
-	//databits = 8/stopbits = 1; fixed, can not be configured 
-	if(ptUartCfg->eParity == UART_PARITY_ODD)					//set uart parity bits
-		eParity = UART_PAR_ODD;
-	else if(ptUartCfg->eParity == UART_PARITY_EVEN)
-		eParity = UART_PAR_EVEN;
-	else if(ptUartCfg->eParity == UART_PARITY_NONE)
-		 eParity = UART_PAR_NONE;
-	else
-		 return CSI_ERROR;
-	csp_uart_set_parity(ptUartBase, eParity);					//parity
-	
-	if((ptUartCfg->eRxFifoTrg != UART_RXFIFOTRG_ONE) && (ptUartCfg->eRxFifoTrg != UART_RXFIFOTRG_TWO) && (ptUartCfg->eRxFifoTrg != UART_RXFIFOTRG_FOUR))
-		ptUartCfg->eRxFifoTrg = UART_RXFIFOTRG_ONE;
-	csp_uart_set_fifo(ptUartBase, (uart_fifo_bit_e)ptUartCfg->eRxFifoTrg, ENABLE);	//set fxfifo and enable
-	
-	if(ptUartCfg->hwRecvTo > 0)	
-	{
-		csp_uart_set_rtor(ptUartBase, ptUartCfg->hwRecvTo);			//set receive timeout 
-		csp_uart_rto_enable(ptUartBase);
-	}
-	else
-		csp_uart_rto_disable(ptUartBase);	
-	
-	//callback init
-	g_tUartCtrl[byIdx].recv_callback = NULL;
-	g_tUartCtrl[byIdx].send_callback = NULL;
-	g_tUartCtrl[byIdx].err_callback = NULL;
-	
-	return CSI_OK;
-}
-
-/** \brief  register uart interrupt callback function
- * 
- *  \param[in] ptUartBase: pointer of uart register structure
- *  \param[in] eCallBkId: uart interrupt callback type, \ref csi_uart_callback_id_e
- *  \param[in] callback: uart interrupt handle function
- *  \return error code \ref csi_error_t
- */ 
-csi_error_t csi_uart_register_callback(csp_uart_t *ptUartBase, csi_uart_callback_id_e eCallBkId, void  *callback)
-{
-	uint8_t byIdx = apt_get_uart_idx(ptUartBase);
-	if(byIdx == 0xff)
-		return CSI_ERROR;
-
-	switch(eCallBkId)
-	{
-		case UART_CALLBACK_RECV:
-			g_tUartCtrl[byIdx].recv_callback = callback;
-			break;
-		case UART_CALLBACK_SEND:
-			g_tUartCtrl[byIdx].send_callback = callback;
-			break;
-		case UART_CALLBACK_ERR:
-			g_tUartCtrl[byIdx].err_callback = callback;
-			break;
-		default:
-			return CSI_ERROR;
-	}
-	return CSI_OK;
-}
 /** \brief uart interrupt handler function
  * 
  *  \param[in] ptUartBase: pointer of uart register structure
@@ -218,6 +116,91 @@ void csi_uart_irqhandler(csp_uart_t *ptUartBase, uint8_t byIdx)
 			break;
 	}
 }
+/** \brief initialize uart parameter structure
+ * 
+ *  \param[in] ptUartBase: pointer of uart register structure
+ *  \param[in] ptUartCfg: pointer of uart parameter config structure
+ * 			   	- wBaudRate: baud rate
+ * 			   	- hwRecvTo: rx byte timeout
+ * 			   	- eParity: parity bit, \ref csi_uart_rxfifo_trg_e
+ * 			   	- eRxFifoTrg: rx FIFO level to trigger UART_RNE interrupt, \ref csi_uart_rxfifo_trg_e
+ *  \return error code \ref csi_error_t
+ */ 
+csi_error_t csi_uart_init(csp_uart_t *ptUartBase, csi_uart_config_t *ptUartCfg)
+{
+	uart_parity_e eParity = UART_PAR_NONE;
+	uint32_t wBrDiv;
+	uint8_t byIdx = apt_get_uart_idx(ptUartBase);
+	
+	csi_clk_enable((uint32_t *)ptUartBase);						//uart peripheral clk enable
+	csp_uart_sw_rst(ptUartBase);								//reset ip
+	
+	wBrDiv = csi_get_pclk_freq()/ptUartCfg->wBaudRate;	
+	if(wBrDiv < 16)
+		wBrDiv = 16;
+	csp_uart_set_brdiv(ptUartBase, wBrDiv);						//set uart baud rate 
+	
+	//databits = 8/stopbits = 1; fixed, can not be configured 
+	if(ptUartCfg->eParity == UART_PARITY_ODD)					//set uart parity bits
+		eParity = UART_PAR_ODD;
+	else if(ptUartCfg->eParity == UART_PARITY_EVEN)
+		eParity = UART_PAR_EVEN;
+	else if(ptUartCfg->eParity == UART_PARITY_NONE)
+		 eParity = UART_PAR_NONE;
+	else
+		 return CSI_ERROR;
+	csp_uart_set_parity(ptUartBase, eParity);					//parity
+	
+	if((ptUartCfg->eRxFifoTrg != UART_RXFIFOTRG_ONE) && (ptUartCfg->eRxFifoTrg != UART_RXFIFOTRG_TWO) && (ptUartCfg->eRxFifoTrg != UART_RXFIFOTRG_FOUR))
+		ptUartCfg->eRxFifoTrg = UART_RXFIFOTRG_ONE;
+	csp_uart_set_fifo(ptUartBase, (uart_fifo_bit_e)ptUartCfg->eRxFifoTrg, ENABLE);	//set fxfifo and enable
+	
+	if(ptUartCfg->hwRecvTo > 0)	
+	{
+		csp_uart_set_rtor(ptUartBase, ptUartCfg->hwRecvTo);			//set receive timeout 
+		csp_uart_rto_enable(ptUartBase);
+	}
+	else
+		csp_uart_rto_disable(ptUartBase);	
+	
+	//callback init
+	g_tUartCtrl[byIdx].recv_callback = NULL;
+	g_tUartCtrl[byIdx].send_callback = NULL;
+	g_tUartCtrl[byIdx].err_callback = NULL;
+	
+	return CSI_OK;
+}
+
+/** \brief  register uart interrupt callback function
+ * 
+ *  \param[in] ptUartBase: pointer of uart register structure
+ *  \param[in] eCallBkId: uart interrupt callback type, \ref csi_uart_callback_id_e
+ *  \param[in] callback: uart interrupt handle function
+ *  \return error code \ref csi_error_t
+ */ 
+csi_error_t csi_uart_register_callback(csp_uart_t *ptUartBase, csi_uart_callback_id_e eCallBkId, void  *callback)
+{
+	uint8_t byIdx = apt_get_uart_idx(ptUartBase);
+	if(byIdx == 0xff)
+		return CSI_ERROR;
+
+	switch(eCallBkId)
+	{
+		case UART_CALLBACK_RECV:
+			g_tUartCtrl[byIdx].recv_callback = callback;
+			break;
+		case UART_CALLBACK_SEND:
+			g_tUartCtrl[byIdx].send_callback = callback;
+			break;
+		case UART_CALLBACK_ERR:
+			g_tUartCtrl[byIdx].err_callback = callback;
+			break;
+		default:
+			return CSI_ERROR;
+	}
+	return CSI_OK;
+}
+
 /** \brief enable/disbale receive timeout function
  * 
  *  \param[in] ptSioBase: pointer of uart register structure
@@ -508,4 +491,22 @@ void csi_uart_recv_dma(csp_uart_t *ptUartBase, csp_dma_t *ptDmaBase, csi_dma_ch_
 	csi_dma_ch_start(ptDmaBase, eDmaCh, (void *)&(ptUartBase->DATA), (void *)pData, hwSize,1);
 }
 
-
+/** \brief get uart idx 
+ * 
+ *  \param[in] ptUartBase: pointer of uart register structure
+ *  \return uart id number(0~2) or error(0xff)
+ */ 
+static uint8_t apt_get_uart_idx(csp_uart_t *ptUartBase)
+{
+	switch((uint32_t)ptUartBase)
+	{
+		case APB_UART0_BASE:
+			return 0;
+		case APB_UART1_BASE:
+			return 1;
+		case APB_UART2_BASE:
+			return 2;
+		default:
+			return 0xff;		//error
+	}
+}
