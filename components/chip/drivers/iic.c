@@ -862,3 +862,94 @@ void csi_iic_set_slave_buffer(volatile uint8_t *pbyIicRxBuf,uint16_t hwIicRxSize
 	g_tSlave.hwRxSize = hwIicRxSize;
 	g_tSlave.hwTxSize = hwIicTxSize;
 }
+
+
+
+/** \brief  iic  master  read n byte data by dma
+ * 
+ *  \param[in] ptIicBase: pointer of iic register structure
+ * 	\param[in] wDevAddr: Addrress of slave device
+ *  \param[in] wReadAdds: Read address
+ * 	\param[in] byReadAddrNumByte: Read address length (unit byte)
+ * 	\param[in] pbyIicData: Read the address pointer of the data storage array
+ * 	\param[in] wNumByteRead: Read data length
+ *  \return error code \ref csi_error_t
+ */ 
+csi_error_t csi_iic_read_nbyte_dma(csp_iic_t *ptIicBase,uint32_t wDevAddr, uint32_t wReadAdds, uint8_t byReadAddrNumByte,volatile uint8_t *pbyIicData,uint32_t wNumByteRead)
+{
+	uint32_t i;
+	uint8_t byreadnum = 1;
+	uint8_t byReadAdds = 0;
+	if((ptIicBase == NULL)||(pbyIicData == NULL)||(wNumByteRead == 0)||(byReadAddrNumByte == 0))
+		return CSI_ERROR;
+	
+	
+	csi_iic_disable(ptIicBase);
+	csp_iic_set_taddr(ptIicBase,wDevAddr >> 1);
+	csi_iic_enable(ptIicBase);
+	
+	switch(byReadAddrNumByte)
+	{
+		case 1:
+				byReadAdds = wReadAdds&0xff;
+				csp_iic_set_data_cmd(ptIicBase,IIC_CMD_WRITE|byReadAdds|IIC_CMD_RESTART1);
+			break;
+		case 2:
+				byReadAdds = (wReadAdds>>8)&0xff;
+				csp_iic_set_data_cmd(ptIicBase,IIC_CMD_WRITE|byReadAdds|IIC_CMD_RESTART1);
+				byReadAdds = wReadAdds;
+				csp_iic_set_data_cmd(ptIicBase,IIC_CMD_WRITE|byReadAdds);
+			break;
+		case 3:
+				byReadAdds = (wReadAdds>>16)&0xff;
+				csp_iic_set_data_cmd(ptIicBase,IIC_CMD_WRITE|byReadAdds|IIC_CMD_RESTART1);
+				byReadAdds = (wReadAdds>>8)&0xff;
+				csp_iic_set_data_cmd(ptIicBase,IIC_CMD_WRITE|byReadAdds);
+				byReadAdds = wReadAdds&0xff;
+				csp_iic_set_data_cmd(ptIicBase,IIC_CMD_WRITE|byReadAdds);
+				
+			break;
+		case 4:
+				byReadAdds = (wReadAdds>>24)&0xff;
+				csp_iic_set_data_cmd(ptIicBase,IIC_CMD_WRITE|byReadAdds|IIC_CMD_RESTART1);
+				byReadAdds = (wReadAdds>>16)&0xff;
+				csp_iic_set_data_cmd(ptIicBase,IIC_CMD_WRITE|byReadAdds);
+				byReadAdds = (wReadAdds>>8)&0xff;
+				csp_iic_set_data_cmd(ptIicBase,IIC_CMD_WRITE|byReadAdds);
+				byReadAdds = wReadAdds&0xff;
+				csp_iic_set_data_cmd(ptIicBase,IIC_CMD_WRITE|byReadAdds);
+			break;	
+		default:
+			break;
+	}
+	for(i=0;i<wNumByteRead;i++)
+	{
+		
+		if(byreadnum == 1)
+		{	
+			if(wNumByteRead > 1)
+			{
+				csp_iic_set_data_cmd(ptIicBase,IIC_CMD_READ);
+				byreadnum = 0;
+			}				
+		}	
+		if(wNumByteRead == 1)
+		{
+			csp_iic_set_data_cmd(ptIicBase,IIC_CMD_READ|IIC_CMD_STOP);
+		}else{
+		
+			if(i>=wNumByteRead-2)
+			{
+				if(i == wNumByteRead-2)
+					csp_iic_set_data_cmd(ptIicBase,IIC_CMD_READ|IIC_CMD_STOP);
+			}
+			else
+			{
+				csp_iic_set_data_cmd(ptIicBase,IIC_CMD_READ);
+				mdelay(1);
+			}
+		}
+
+	}
+	return CSI_OK;
+}
