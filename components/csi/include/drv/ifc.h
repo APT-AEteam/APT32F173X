@@ -1,7 +1,7 @@
 /***********************************************************************//** 
  * \file  ifc.h
  * \brief  head file of ifc.c
- * \copyright Copyright (C) 2015-2020 @ APTCHIP
+ * \copyright Copyright (C) 2015-2023 @ APTCHIP
  * <table>
  * <tr><th> Date  <th>Version  <th>Author  <th>Description
  * <tr><td> 2020-8-18 <td>V0.0  <td>WNN   <td>initial for csi
@@ -9,20 +9,18 @@
  * </table>
  * *********************************************************************
 */
-#ifndef _DRV_EFLASH_H_
-#define _DRV_EFLASH_H_
+#ifndef _DRV_IFC_H_
+#define _DRV_IFC_H_
 
-#include "common.h"
 #include "csp.h"
 
-/**
- \brief  Data Flash information
-*/
-typedef struct {
-    uint32_t          flash_size;         ///< Chip End address (start+size-1)
-    uint32_t          sector_size;        ///< Uniform sector size in bytes
-    uint32_t          erased_value;       ///< erased value
-} csi_ifc_info_t ;
+extern volatile bool g_bFlashCheckPass;
+extern volatile bool g_bFlashPgmDne;
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 
 /**
 \brief Flash Status
@@ -108,12 +106,6 @@ csi_error_t csi_ifc_program(csp_ifc_t *ptIfcBase, uint32_t wAddr, uint32_t *pwDa
 csi_error_t csi_ifc_page_erase(csp_ifc_t *ptIfcBase, uint32_t wPageStAddr);
 
 
-/**
-  \brief       Get Data Flash information.
-  \param[in]   ptIfcBase  pointer of ifc register structure.
-*/
-void csi_ifc_info(csp_ifc_t *ptIfcBase,csi_ifc_info_t *ifc_info);
-
 /** 
   \brief get flash status
   \param ptIfcBase pointer of ifc register structure.
@@ -127,7 +119,7 @@ csi_ifc_status_t csi_ifc_get_status(csp_ifc_t *ptIfcBase);
  *  \param wData data that to be written into USER OPTION area
  *  \return csi_error_t
  */
-csi_error_t csi_ifc_wr_useroption(csp_ifc_t *ptIfcBase, uint32_t wData);
+csi_error_t csi_ifc_set_useroption(csp_ifc_t *ptIfcBase, uint32_t wData);
 
 
 /** \brief write flash protection
@@ -135,11 +127,11 @@ csi_error_t csi_ifc_wr_useroption(csp_ifc_t *ptIfcBase, uint32_t wData);
  *  \param eProt：Flash protection mode \ref ifc_prot_e
  *  \return csi_error_t
  */
-csi_error_t csi_ifc_wr_protection(csp_ifc_t *ptIfcBase, ifc_prot_e eProt);
-
-extern volatile bool g_bFlashCheckPass;
-extern volatile bool g_bFlashPgmDne;
+csi_error_t csi_ifc_set_protection(csp_ifc_t *ptIfcBase, ifc_prot_e eProt);
 
 
+#ifdef __cplusplus
+}
+#endif
 
-#endif /* _CSI_EFLASH_H_ */
+#endif /* _DRV_IFC_H_ */
