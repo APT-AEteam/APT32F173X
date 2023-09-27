@@ -16,8 +16,8 @@
 #include "board_config.h"
 
 #if (USE_SPI_CALLBACK == 1)	
-
-static uint8_t s_byRecvBuf[100]={0};
+static uint8_t s_bySendBuf[16]={1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16};	
+static uint8_t s_byRecvBuf[16]={0};	
 
 /** \brief  user_send_callback：SPI中断发送回调函数
  * 
@@ -35,25 +35,14 @@ static void	user_send_callback(csp_spi_t *ptSpiBase)
 
 static void user_receive_callback(csp_spi_t *ptSpiBase, csi_spi_state_e eState, uint8_t *pbyBuf, uint32_t *wLen)
 {
-	volatile uint32_t wRecvLen = *wLen;								//获取接收长度
-	uint32_t wTimeOut;
-	
 	switch(eState) 
 	{
-		case SPI_STATE_RX_DNE:										//指定长度接收
+		case SPI_STATE_RX_DNE:								//指定长度接收
 			//添加用户处理
-			//csi_spi_send(ptSpiBase,(void *)pbyBuf, wRecvLen);		//UART发送采用轮询方式
-			for(uint32_t i=0; i < wRecvLen; i++)
-			{
-				wTimeOut = SPI_SEND_TIMEOUT;
-				while(!(csp_spi_get_sr(ptSpiBase) & SPI_TNF) && wTimeOut --);	//fifo full? wait;			
-				csp_spi_set_data(ptSpiBase, *(pbyBuf + i));
-				s_byRecvBuf[i] = *pbyBuf++;
-			}
-			csi_spi_receive_int(ptSpiBase, pbyBuf, 16);				//重新开启接收
+			csi_spi_receive_int(ptSpiBase, s_byRecvBuf, 16);//重新开启一次新的接收,接收长度可以重新指定
 			break;
 			
-		case SPI_STATE_RX_TO:										//动态长度接收
+		case SPI_STATE_RX_TO:								//动态长度接收
 			//添加用户处理
 			break;
 			
@@ -70,7 +59,6 @@ static void user_receive_callback(csp_spi_t *ptSpiBase, csi_spi_state_e eState, 
  int spi_master_send_int_callback_demo(void)
 {
 	int iRet = 0;
-	uint8_t bySendData[16] = {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16};
 	csi_spi_config_t tSpiCfg;  //spi初始化参数配置结构体
 
 #if (USE_GUI == 0)
@@ -81,10 +69,10 @@ static void user_receive_callback(csp_spi_t *ptSpiBase, csi_spi_state_e eState, 
 	csi_gpio_set_mux(GPIOB, PB15, PB15_SPI0_MOSI);
 #endif
 	
-	tSpiCfg.eWorkMode 		= SPI_MODE_MASTER;			//SPI作为主机
-	tSpiCfg.eCpolCpohMode 	= SPI_MODE_CPOL0_CPHA0; 	//SPI CPOL=0,CPOH=0
-	tSpiCfg.eFrameLen 		= SPI_FRAME_LEN_8;          //SPI数据帧长度为8bit
-	tSpiCfg.wSpiBaud 		= 1000000; 					//SPI通讯速率1Mbps			
+	tSpiCfg.eMode 			= SPI_MODE_MASTER;		//SPI作为主机
+	tSpiCfg.eWorkMode 		= SPI_WORK_MODE_0; 		//SPI Mode0:CPOL=0,CPOH=0
+	tSpiCfg.eDataLen 		= SPI_DATA_LEN_8;  		//SPI数据帧长度为8bit
+	tSpiCfg.wSpiBaud 		= 1000000; 				//SPI通讯速率1Mbps			
 	csi_spi_init(SPI0,&tSpiCfg);
 	
 	//注册SPI0发送中断回调函数
@@ -92,7 +80,7 @@ static void user_receive_callback(csp_spi_t *ptSpiBase, csi_spi_state_e eState, 
 	csi_spi_start(SPI0);
 	while(1)
 	{
-		csi_spi_send_int(SPI0, bySendData, 16);
+		csi_spi_send_int(SPI0, s_bySendBuf, sizeof(s_bySendBuf));
 		mdelay(10);		
 	}
 	return iRet;
@@ -106,7 +94,6 @@ static void user_receive_callback(csp_spi_t *ptSpiBase, csi_spi_state_e eState, 
 int spi_slave_receive_int_callback_demo(void)
 {
 	int iRet = 0;
-	uint8_t byRecvData[16] = {0};
 	csi_spi_config_t tSpiCfg;  //spi初始化参数配置结构体
 
 #if (USE_GUI == 0)
@@ -117,18 +104,17 @@ int spi_slave_receive_int_callback_demo(void)
 	csi_gpio_set_mux(GPIOB, PB15, PB15_SPI0_MOSI);
 #endif
 	
-	tSpiCfg.eWorkMode 		= SPI_MODE_SLAVE;			//SPI作为从机
-	tSpiCfg.eCpolCpohMode 	= SPI_MODE_CPOL0_CPHA0; 	//SPI CPOL=0,CPOH=0
-	tSpiCfg.eFrameLen 		= SPI_FRAME_LEN_8;          //SPI数据帧长度为8bit
-	tSpiCfg.eRxFifoTrg		= SPI_RXFIFOTRG_1_8;		//SPI接收FIFO占用>=1/8时触发RXFIFO中断
-	tSpiCfg.wSpiBaud 		= 0; 						//SPI通讯速率由主机决定			
+	tSpiCfg.eMode 		= SPI_MODE_SLAVE;		//SPI作为从机
+	tSpiCfg.eWorkMode 	= SPI_WORK_MODE_0; 		//SPI Mode0:CPOL=0,CPOH=0
+	tSpiCfg.eDataLen 	= SPI_DATA_LEN_8;  		//SPI数据帧长度为8bit
+	tSpiCfg.eRxFifoTrg	= SPI_RXFIFOTRG_FOUR;	//SPI接收FIFO的中断触发点设置为4，即RXFIFO接收到>=4个数据,就会触发RXFIFO中断；支持三种配置(1/2/4)		
 	csi_spi_init(SPI0,&tSpiCfg);				
 
 	//注册SPI0接收中断回调函数
 	csi_spi_register_callback(SPI0, SPI_CALLBACK_RECV, user_receive_callback);
 	csi_spi_start(SPI0);
 	
-	csi_spi_receive_int(SPI0, byRecvData, 16);
+	csi_spi_receive_int(SPI0, s_byRecvBuf, 16);
 	
 	while(1)
 	{	

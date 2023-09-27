@@ -30,7 +30,7 @@ csi_spi_ctrl_t g_tSpiCtrl[SPI_IDX];
 void csi_spi_irqhandler(csp_spi_t *ptSpiBase, uint8_t byIdx)
 {	
 	//TXFIFO中断 
-	if(csp_spi_get_isr(ptSpiBase) & SPI_INTSRC_TXIM)		
+	if(csp_spi_get_isr(ptSpiBase) & SPI_INTSRC_TXFIFO)		
 	{
 		//发送16字节数据
 		csp_spi_set_data(ptSpiBase, *g_tSpiCtrl[byIdx].pbyTxBuf);
@@ -39,8 +39,8 @@ void csi_spi_irqhandler(csp_spi_t *ptSpiBase, uint8_t byIdx)
 			
 		if(g_tSpiCtrl[byIdx].wTxSize == 0)	
 		{	
-			g_tSpiCtrl[byIdx].eTxState = SPI_STATE_TX_DNE;					//send complete
-			csp_spi_int_disable(ptSpiBase, SPI_INT_TXIM);					//disable interrupt
+			g_tSpiCtrl[byIdx].byTxState = SPI_STATE_TX_DNE;					//send complete
+			csp_spi_int_disable(ptSpiBase, SPI_INT_TXFIFO);					//disable interrupt
 	
 			//send complete, callback
 			if(g_tSpiCtrl[byIdx].send_callback)
@@ -49,7 +49,7 @@ void csi_spi_irqhandler(csp_spi_t *ptSpiBase, uint8_t byIdx)
 	}
 	
 	//RXFIFO中断 
-	if(csp_spi_get_isr(ptSpiBase) & SPI_INTSRC_RXIM)
+	if(csp_spi_get_isr(ptSpiBase) & SPI_INTSRC_RXFIFO)
 	{
 		while(csp_spi_get_sr(ptSpiBase) & SPI_RNE)					
 		{
@@ -57,10 +57,10 @@ void csi_spi_irqhandler(csp_spi_t *ptSpiBase, uint8_t byIdx)
 				g_tSpiCtrl[byIdx].pbyRxBuf[g_tSpiCtrl[byIdx].wTransNum ++] = csp_spi_get_data(ptSpiBase);		//read data
 			else													//receive complete										
 			{
-				csp_spi_sw_rst(ptSpiBase,SPI_RXFIFO_RST);        	//clear rx fifo
-				csp_spi_int_disable(ptSpiBase, SPI_INT_RXIM);		//disable RXFIFO interrupt
+				csp_spi_rxfifo_sw_rst(ptSpiBase);        			//clear rx fifo
+				csp_spi_int_disable(ptSpiBase, SPI_INT_RXFIFO);		//disable RXFIFO interrupt
 				g_tSpiCtrl[byIdx].wTransNum = 0;						
-				g_tSpiCtrl[byIdx].eRxState  = SPI_STATE_RX_DNE;		
+				g_tSpiCtrl[byIdx].byRxState  = SPI_STATE_RX_DNE;		
 	
 				//receive complete, callback
 				if(g_tSpiCtrl[byIdx].recv_callback)
@@ -70,9 +70,9 @@ void csi_spi_irqhandler(csp_spi_t *ptSpiBase, uint8_t byIdx)
 	}
 	
 	//RXFIFO timeout中断  
-	if(csp_spi_get_isr(ptSpiBase) & SPI_INTSRC_RTIM)
+	if(csp_spi_get_isr(ptSpiBase) & SPI_INTSRC_RXTO)
 	{
-		if(g_tSpiCtrl[byIdx].eRxState != SPI_STATE_RX_DNE)
+		if(g_tSpiCtrl[byIdx].byRxState != SPI_STATE_RX_DNE)
 		{
 			while(csp_spi_get_sr(ptSpiBase) & SPI_RNE)
 			{
@@ -81,7 +81,7 @@ void csi_spi_irqhandler(csp_spi_t *ptSpiBase, uint8_t byIdx)
 				
 			if(g_tSpiCtrl[byIdx].wTransNum  < g_tSpiCtrl[byIdx].wRxSize)	
 			{
-				g_tSpiCtrl[byIdx].eRxState = SPI_STATE_RX_TO;				//receive timeout flag
+				g_tSpiCtrl[byIdx].byRxState = SPI_STATE_RX_TO;				//receive timeout flag
 				//receive complete, callback
 				if(g_tSpiCtrl[byIdx].recv_callback)							
 					g_tSpiCtrl[byIdx].recv_callback(ptSpiBase, SPI_STATE_RX_TO, g_tSpiCtrl[byIdx].pbyRxBuf, &g_tSpiCtrl[byIdx].wTransNum);
@@ -89,19 +89,19 @@ void csi_spi_irqhandler(csp_spi_t *ptSpiBase, uint8_t byIdx)
 			else																
 			{
 				g_tSpiCtrl[byIdx].wTransNum = 0;								
-				g_tSpiCtrl[byIdx].eRxState = SPI_STATE_RX_DNE;				//receive complete flag
+				g_tSpiCtrl[byIdx].byRxState = SPI_STATE_RX_DNE;				//receive complete flag
 				//receive complete, callback
 				if(g_tSpiCtrl[byIdx].recv_callback)
 					g_tSpiCtrl[byIdx].recv_callback(ptSpiBase, SPI_STATE_RX_DNE, g_tSpiCtrl[byIdx].pbyRxBuf, &g_tSpiCtrl[byIdx].wRxSize);
 			}
 		}
-		csp_spi_clr_isr(ptSpiBase, SPI_INT_RTIM);
+		csp_spi_clr_isr(ptSpiBase, SPI_INT_RXTO);
 	}
 	
 	//RXFIFO overflow中断
-	if(csp_spi_get_isr(ptSpiBase) & SPI_INTSRC_ROIM)
+	if(csp_spi_get_isr(ptSpiBase) & SPI_INTSRC_RX_OV)
 	{
-		csp_spi_clr_isr(ptSpiBase, SPI_INT_ROIM);
+		csp_spi_clr_isr(ptSpiBase, SPI_INT_RX_OV);
 	}
 }
 
@@ -136,25 +136,25 @@ csi_error_t csi_spi_register_callback(csp_spi_t *ptSpiBase, csi_spi_callback_id_
  * 
  *  \param[in] ptSpiBase: pointer of spi register structure
  *  \param[in] ptSpiCfg: pointer of user spi parameter config
- * 				-eWorkMode:SPI work mode:master/slave
- * 				-eCpolCpohMode:SPI CPOL/CPOH mode:0/1/2/3
- * 				-eFrameLen;SPI data size:4-16 bit
- * 				-eRxFifoTrg:SPI rxfifo Trigger point
- * 				-wSpiBaud:SPI clk
+ * 				-eMode:SPI work mode:master/slave, \ref to csi_spi_mode_e
+ * 				-eWorkMode:SPI CPOL/CPOH mode:0/1/2/3, \ref to csi_spi_work_mode_e
+ * 				-eDataLen;SPI data size:4-16 bit, \ref to csi_spi_data_len_e
+ * 				-eRxFifoTrg:SPI rxfifo Trigger point, \ref to csi_spi_rxfifo_trg_e
+ * 				-wSpiBaud:SPI baudrate
  *  \return none
  */ 
 void csi_spi_init(csp_spi_t *ptSpiBase,csi_spi_config_t *ptSpiCfg)
 {
-	csi_clk_enable((uint32_t *)ptSpiBase);				       //打开时钟
+	csi_clk_enable((uint32_t *)ptSpiBase);
 
-	if((ptSpiCfg->eRxFifoTrg != SPI_RXFIFOTRG_1_8) && (ptSpiCfg->eRxFifoTrg != SPI_RXFIFOTRG_1_4) && (ptSpiCfg->eRxFifoTrg != SPI_RXFIFOTRG_1_2))
-		ptSpiCfg->eRxFifoTrg = SPI_RXFIFOTRG_1_8;
-	csp_spi_set_rxifl(ptSpiBase, (spi_rxifl_e)ptSpiCfg->eRxFifoTrg);	//set fxfifo and enable
+	if((ptSpiCfg->eRxFifoTrg != SPI_RXFIFOTRG_ONE) && (ptSpiCfg->eRxFifoTrg != SPI_RXFIFOTRG_TWO) && (ptSpiCfg->eRxFifoTrg != SPI_RXFIFOTRG_FOUR))
+		ptSpiCfg->eRxFifoTrg = SPI_RXFIFOTRG_ONE;
+	csp_spi_set_fifo(ptSpiBase, (spi_rxifl_e)ptSpiCfg->eRxFifoTrg);
 
-	csi_spi_set_work_mode(ptSpiBase, ptSpiCfg->eWorkMode);			   //主从机
-	csi_spi_set_cpol_cpoh(ptSpiBase, ptSpiCfg->eCpolCpohMode); //极性和相位设置	
-	csi_spi_set_data_size(ptSpiBase, ptSpiCfg->eFrameLen);	   //格式帧长度设置
-	csi_spi_set_clk(ptSpiBase, ptSpiCfg->wSpiBaud);              //通信速率		
+	csi_spi_set_mode(ptSpiBase, ptSpiCfg->eMode);
+	csi_spi_set_work_mode(ptSpiBase, ptSpiCfg->eWorkMode); 		
+	csi_spi_set_data_len(ptSpiBase, ptSpiCfg->eDataLen);	
+	csi_spi_set_baud(ptSpiBase, ptSpiCfg->wSpiBaud);  	
 }
 
 /** \brief enable spi interrupt 
@@ -210,35 +210,35 @@ void csi_spi_stop(csp_spi_t *ptSpiBase)
   csp_spi_disable(ptSpiBase);	
 }
 
-/** \brief set spi work mode, master or slave
+/** \brief set spi mode, master or slave
  * 
  *  \param[in] ptSpiBase: pointer of spi register structure
  *  \param[in] eMode: \ref to csi_spi_mode_e
  *  \return none
  */ 
-void csi_spi_set_work_mode(csp_spi_t *ptSpiBase, csi_spi_work_mode_e eMode)
+void csi_spi_set_mode(csp_spi_t *ptSpiBase, csi_spi_mode_e eMode)
 {
-	csp_spi_set_work_mode(ptSpiBase, (spi_mode_e)eMode);
+	csp_spi_set_mode(ptSpiBase, (spi_mode_e)eMode);
 }
 
-/** \brief set spi cp format
+/** \brief set spi work mode
  * 
  *  \param[in] ptSpiBase: pointer of spi register structure
- *  \param[in] eFormat: \ref to csi_spi_cp_format_e
+ *  \param[in] eWorkMode: \ref to csi_spi_work_mode_e
  *  \return none
  */
-void csi_spi_set_cpol_cpoh(csp_spi_t *ptSpiBase, csi_spi_cpol_cpoh_mode_e eFormat)
+void csi_spi_set_work_mode(csp_spi_t *ptSpiBase, csi_spi_work_mode_e eWorkMode) 
 {
-    csp_spi_set_spo_sph(ptSpiBase, (spi_spo_h_e)eFormat);
+    csp_spi_set_work_mode(ptSpiBase, (spi_work_mode_e)eWorkMode);
 } 
 
-/** \brief set spi work frequency
+/** \brief set spi baudrate
  * 
  *  \param[in] ptSpiBase: pointer of spi register structure
- *  \param[in] wBaud: spi work baud
+ *  \param[in] wBaud: spi baudrate
  *  \return spi config frequency
  */
-uint32_t csi_spi_set_clk(csp_spi_t *ptSpiBase, uint32_t wBaud)
+uint32_t csi_spi_set_baud(csp_spi_t *ptSpiBase, uint32_t wBaud)  
 {
     uint32_t wDiv;
     uint32_t wFreq = 0U;
@@ -260,17 +260,17 @@ uint32_t csi_spi_set_clk(csp_spi_t *ptSpiBase, uint32_t wBaud)
     return wFreq;
 }
 
-/** \brief set spi frame length
+/** \brief set spi data length
  * 
  *  \param[in] ptSpiBase: pointer of spi register structure
- *  \param[in] eLength: \ref to csi_spi_frame_len_e
+ *  \param[in] eDataLen: \ref to csi_spi_data_len_e
  *  \return error code \ref csi_error_t
  */
-csi_error_t csi_spi_set_data_size(csp_spi_t *ptSpiBase, csi_spi_frame_len_e eLength)
+csi_error_t csi_spi_set_data_len(csp_spi_t *ptSpiBase, csi_spi_data_len_e eDataLen) 
 {	
-    if ((eLength < SPI_FRAME_LEN_4) || (eLength > SPI_FRAME_LEN_16)) 
+    if ((eDataLen < SPI_DATA_LEN_4) || (eDataLen > SPI_DATA_LEN_16)) 
 		return CSI_ERROR;
-	csp_spi_set_data_size(ptSpiBase, (spi_data_size_e)eLength);
+	csp_spi_set_data_size(ptSpiBase, (spi_data_len_e)eDataLen);
 	
     return CSI_OK;
 }
@@ -291,7 +291,7 @@ int32_t csi_spi_send(csp_spi_t *ptSpiBase, const void *pData, uint32_t wSize)
 	if(NULL == pData || 0 == wSize)
 		return -1;
 	
-	csp_spi_sw_rst(ptSpiBase,SPI_TXFIFO_RST);        //clear tx fifo
+	csp_spi_txfifo_sw_rst(ptSpiBase);        //clear tx fifo
 	
 	for(i = 0; i < wSize; i++)
 	{
@@ -301,7 +301,7 @@ int32_t csi_spi_send(csp_spi_t *ptSpiBase, const void *pData, uint32_t wSize)
 	}
 	
 	wTimeOut = SPI_SEND_TIMEOUT;
-	while(csp_spi_get_sr(ptSpiBase) & SPI_BSY)								//wait for transmition finish
+	while(csp_spi_get_sr(ptSpiBase) & SPI_BSY)							//wait for transmition finish
 	{
 		wTimeOut --;
 		if(wTimeOut == 0)
@@ -326,11 +326,11 @@ csi_error_t csi_spi_send_int(csp_spi_t *ptSpiBase, const void *pData, uint32_t w
 		return CSI_ERROR;
 
 	g_tSpiCtrl[byIdx].wTxSize 	= wSize;
-	g_tSpiCtrl[byIdx].pbyTxBuf = (uint8_t *)pData;
-	g_tSpiCtrl[byIdx].eTxState = SPI_STATE_SEND;
+	g_tSpiCtrl[byIdx].pbyTxBuf 	= (uint8_t *)pData;
+	g_tSpiCtrl[byIdx].byTxState = SPI_STATE_SEND;
 	
-	csp_spi_sw_rst(ptSpiBase,SPI_TXFIFO_RST);        //clear tx fifo
-	csp_spi_int_enable(ptSpiBase, SPI_INT_TXIM);	//enable tx fifo int
+	csp_spi_txfifo_sw_rst(ptSpiBase);        		//clear tx fifo
+	csp_spi_int_enable(ptSpiBase, SPI_INT_TXFIFO);	//enable tx fifo int
 	
 	return CSI_OK;
 }
@@ -351,15 +351,15 @@ int32_t csi_spi_receive(csp_spi_t *ptSpiBase, void *pData, uint32_t wSize)
 	if(NULL == pData || 0 == wSize)
 		return -1;
 
-	csp_spi_sw_rst(ptSpiBase,SPI_RXFIFO_RST);        //clear rx fifo
+	csp_spi_rxfifo_sw_rst(ptSpiBase);        	//clear rx fifo
 
 	while(hwRecvNum < wSize)
 	{
 		wTimeOut = SPI_RECV_TIMEOUT;
-		while(!(csp_spi_get_sr(ptSpiBase) & SPI_RNE) && wTimeOut --);		//recv fifo empty? wait	
+		while(!(csp_spi_get_sr(ptSpiBase) & SPI_RNE) && wTimeOut --);//recv fifo empty? wait	
 		if(wTimeOut ==0)
 			break;
-		pbyRecv[hwRecvNum ++] = csp_spi_get_data(ptSpiBase);	//recv data
+		pbyRecv[hwRecvNum ++] = csp_spi_get_data(ptSpiBase);		//recv data
 	}
 	return hwRecvNum;
 }
@@ -381,10 +381,10 @@ csi_error_t csi_spi_receive_int(csp_spi_t *ptSpiBase, void *pData, uint32_t wSiz
 	g_tSpiCtrl[byIdx].pbyRxBuf 	= (uint8_t *)pData;
 	g_tSpiCtrl[byIdx].wRxSize 	= wSize;
 	g_tSpiCtrl[byIdx].wTransNum = 0;
-	g_tSpiCtrl[byIdx].eRxState 	= SPI_STATE_RECV;
+	g_tSpiCtrl[byIdx].byRxState = SPI_STATE_RECV;
 
-	csp_spi_sw_rst(ptSpiBase,SPI_RXFIFO_RST); 					//clear rx fifo  
-	csp_spi_int_enable(ptSpiBase, SPI_INT_RXIM | SPI_INT_RTIM);	//enable rx_fifo & rx_timeout int
+	csp_spi_rxfifo_sw_rst(ptSpiBase); 								//clear rx fifo  
+	csp_spi_int_enable(ptSpiBase, SPI_INT_RXFIFO | SPI_INT_RXTO);	//enable rx_fifo & rx_timeout int
 	
 	return CSI_OK;
 }
@@ -407,8 +407,8 @@ int32_t csi_spi_send_receive(csp_spi_t *ptSpiBase, void *pDataout, void *pDatain
 	if((0 == wSize) || ((NULL == pDataout) && (NULL == pDatain)))
 		return -1;
 
-	csp_spi_sw_rst(ptSpiBase,SPI_RXFIFO_RST);	//clear rx fifo		
-	csp_spi_sw_rst(ptSpiBase,SPI_TXFIFO_RST);	//clear tx fifo		
+	csp_spi_rxfifo_sw_rst(ptSpiBase);	//clear rx fifo		
+	csp_spi_txfifo_sw_rst(ptSpiBase);	//clear tx fifo		
 
 	for(i = 0; i < wSize; i++)
 	{
@@ -869,6 +869,56 @@ csi_error_t csi_spi_send_receive_d8(csp_spi_t *ptSpiBase, uint8_t *pDataOut,uint
 }
 #endif
 //---------------------------------------------DMA-------------------------------------------------
+/** \brief set spi send dma mode and enable
+ * 
+ *  \param[in] ptSpiBase: pointer of spi register structure
+ *  \param[in] eDmaMode: ctx dma mode, \ref csi_uart_dma_md_e
+ *  \return  none
+ */
+void csi_spi_set_send_dma(csp_spi_t *ptSpiBase, csi_spi_dma_md_e eDmaMode)
+{
+	csp_spi_set_txdma(ptSpiBase, (spi_rdma_md_e)eDmaMode);
+}
+/** \brief set spi receive dma mode and enable
+ * 
+ *  \param[in] ptSpiBase: pointer of spi register structure
+ *  \param[in] eDmaMode: rx dma mode, \ref csi_uart_dma_md_e
+ *  \return  none
+ */
+void csi_spi_set_receive_dma(csp_spi_t *ptSpiBase, csi_spi_dma_md_e eDmaMode)
+{
+	csp_spi_set_rxdma(ptSpiBase, (spi_rdma_md_e)eDmaMode);
+}
+
+/** \brief send data from spi, this function is dma mode
+ * 
+ *  \param[in] ptSpiBase: pointer of spi register structure
+ *  \param[in] ptDmaBase: pointer of dma register structure
+ *  \param[in] eDmaCh: channel number of dma(20~31), \ref csi_dma_ch_e
+ *  \param[in] pData: pointer to buffer with data to send to spi transmitter.
+ *  \param[in] hwSize: number of data to send (byte).
+ *  \return  none
+ */
+void csi_spi_send_dma(csp_spi_t *ptSpiBase, csp_dma_t *ptDmaBase, csi_dma_ch_e eDmaCh, const void *pData, uint16_t hwSize)
+{	
+	csi_dma_ch_start(ptDmaBase, eDmaCh, (void *)pData, (void *)&(ptSpiBase->DR), hwSize, 1);
+}
+
+/** \brief receive data from spi, this function is dma mode
+ * 
+ *  \param[in] ptSpiBase: pointer of spi register structure
+ *  \param[in] ptDmaBase: pointer of dma register structure
+ *  \param[in] eDmaCh: channel number of dma(20~31), \ref csi_dma_ch_e
+ *  \param[in] pData: pointer to buffer with data to receive to spi transmitter.
+ *  \param[in] hwSize: number of data to receive (byte).
+ *  \return  none
+ */
+void csi_spi_recv_dma(csp_spi_t *ptSpiBase, csp_dma_t *ptDmaBase, csi_dma_ch_e eDmaCh, void *pData, uint16_t hwSize)
+{
+	csi_dma_ch_start(ptDmaBase, eDmaCh, (void *)&(ptSpiBase->DR), (void *)pData, hwSize, 1);
+}
+
+#if 0
 /** \brief send data of spi by DMA
  * 
  *  \param[in] ptSpiBase: pointer of SPI reg structure.
@@ -904,6 +954,7 @@ csi_error_t csi_spi_recv_dma(csp_spi_t *ptSpiBase, void *pbyRecv, uint16_t hwSiz
 	
 	return CSI_OK;
 }
+#endif
 
 /** \brief get spi idx 
  * 

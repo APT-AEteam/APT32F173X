@@ -27,46 +27,50 @@ extern "C" {
  *  \brief   Function mode of spi
  */
 typedef enum {
-    SPI_MODE_MASTER,             //SPI work in master mode
-    SPI_MODE_SLAVE               //SPI work in slave mode
-}csi_spi_work_mode_e;
+    SPI_MODE_MASTER,         //SPI work in master mode
+    SPI_MODE_SLAVE           //SPI work in slave mode
+}csi_spi_mode_e;
 
 /**
- *  \enum     csi_spi_frame_len_e
- *  \brief    SPI data width (4bit ~ 16bit)
+ *  \enum     csi_spi_data_len_e
+ *  \brief    SPI data length (4bit~16bit)
  */
 typedef enum {
-    SPI_FRAME_LEN_4  = 3,
-    SPI_FRAME_LEN_5,
-    SPI_FRAME_LEN_6,
-    SPI_FRAME_LEN_7,
-    SPI_FRAME_LEN_8,
-    SPI_FRAME_LEN_9,
-    SPI_FRAME_LEN_10,
-    SPI_FRAME_LEN_11,
-    SPI_FRAME_LEN_12,
-    SPI_FRAME_LEN_13,
-    SPI_FRAME_LEN_14,
-    SPI_FRAME_LEN_15,
-    SPI_FRAME_LEN_16
-}csi_spi_frame_len_e;
+    SPI_DATA_LEN_4  = 3,
+    SPI_DATA_LEN_5,
+    SPI_DATA_LEN_6,
+    SPI_DATA_LEN_7,
+    SPI_DATA_LEN_8,
+    SPI_DATA_LEN_9,
+    SPI_DATA_LEN_10,
+    SPI_DATA_LEN_11,
+    SPI_DATA_LEN_12,
+    SPI_DATA_LEN_13,
+    SPI_DATA_LEN_14,
+    SPI_DATA_LEN_15,
+    SPI_DATA_LEN_16
+}csi_spi_data_len_e;
 
 /**
  *  \enum     csi_spi_cp_format_e
  *  \brief    Timing format of spi
  */
 typedef enum {
-    SPI_MODE_CPOL0_CPHA0 = 0,  //Clock Polarity 0, Clock Phase 0
-    SPI_MODE_CPOL0_CPHA1,      //Clock Polarity 0, Clock Phase 1
-    SPI_MODE_CPOL1_CPHA0,      //Clock Polarity 1, Clock Phase 0
-    SPI_MODE_CPOL1_CPHA1       //Clock Polarity 1, Clock Phase 1
-}csi_spi_cpol_cpoh_mode_e;
+    SPI_WORK_MODE_0 = 0,  //work mode0:CPOL 0, CPHA 0
+    SPI_WORK_MODE_1,      //work mode1:CPOL 0, CPHA 1
+    SPI_WORK_MODE_2,      //work mode2:CPOL 1, CPHA 0
+    SPI_WORK_MODE_3       //work mode3:CPOL 1, CPHA 1
+}csi_spi_work_mode_e;
 
+/**
+ *  \enum     csi_spi_rxfifo_trg_e
+ *  \brief    SPI rxfifo interrupt trigger level
+ */
 typedef enum
 {
-	SPI_RXFIFOTRG_1_8	= (0x01ul),            
-	SPI_RXFIFOTRG_1_4   = (0x02ul),        
-	SPI_RXFIFOTRG_1_2   = (0x04ul)   
+	SPI_RXFIFOTRG_ONE	= (0x01ul),            
+	SPI_RXFIFOTRG_TWO   = (0x02ul),        
+	SPI_RXFIFOTRG_FOUR  = (0x04ul)   
 }csi_spi_rxfifo_trg_e;
 
 /**
@@ -89,7 +93,6 @@ typedef enum {
 typedef enum{
 	SPI_CALLBACK_RECV	=	0,	//spi rteceive callback id
 	SPI_CALLBACK_SEND,			//spi send callback id
-	SPI_CALLBACK_ERR,			//spi error callback id
 }csi_spi_callback_id_e;
 
 /**
@@ -98,30 +101,43 @@ typedef enum{
  */
 typedef enum
 {
-	SPI_INTSRC_ROIM	= (0x01ul << 0), 		//Receive Overflow Interrupt              
-	SPI_INTSRC_RTIM    	= (0x01ul << 1), 		//Receive Timeout Interrupt          
-	SPI_INTSRC_RXIM   	= (0x01ul << 2),		//Receive FIFO Interrupt           
-	SPI_INTSRC_TXIM		= (0x01ul << 3),    	//Transmit FIFO interrupt 
-	SPI_INTSRC_ALL		= (0x0F),				//ALL interrupt 
+	SPI_INTSRC_RX_OV	= (0x01ul << 0), 	//Receive Overflow Interrupt              
+	SPI_INTSRC_RXTO    	= (0x01ul << 1), 	//Receive Timeout Interrupt          
+	SPI_INTSRC_RXFIFO   = (0x01ul << 2),	//Receive FIFO Interrupt           
+	SPI_INTSRC_TXFIFO	= (0x01ul << 3),    //Transmit FIFO Interrupt 
+	SPI_INTSRC_ALL		= (0x0F),			//ALL interrupt 
 }csi_spi_intsrc_e;
+
+/**
+ * \enum     csi_uart_dma_md_e
+ * \brief    UART dma mode 
+ */
+typedef enum{
+	//rx
+	SPI_DMA_RXFIFO_NSPACE 	= 0,	//RXFIFO no space
+	SPI_DMA_RXFIFO_TRG		= 1,	//RXFIFO receive trigger piont
+	//tx
+	SPI_DMA_TXFIFO_NFULL 	= 0,	//TXFIFO no full
+	SPI_DMA_TXFIFO_TRG		= 1		//TXFIFO <= 1/2
+}csi_spi_dma_md_e;
 
 typedef struct 
 {	
-	csi_spi_work_mode_e      	eWorkMode;	    //SPI work mode:master/slave
-	csi_spi_cpol_cpoh_mode_e 	eCpolCpohMode;  //SPI CPOL/CPOH mode:0/1/2/3
-	csi_spi_frame_len_e 		eFrameLen;      //SPI data size:4-16 bit
-	csi_spi_rxfifo_trg_e		eRxFifoTrg;     //SPI rxfifo Trigger point 
-	uint32_t     				wSpiBaud;		//SPI clk
+	csi_spi_mode_e      	eMode;	    	//SPI mode:master/slave
+	csi_spi_work_mode_e 	eWorkMode;  	//SPI work mode:0/1/2/3
+	csi_spi_data_len_e 		eDataLen;       //SPI data length:4-16 bit
+	csi_spi_rxfifo_trg_e	eRxFifoTrg;     //SPI rxfifo Trigger point 
+	uint32_t     			wSpiBaud;		//SPI baudrate:master baudrate up to PCLK/2;slave baudrate up to PCLK/12
 }csi_spi_config_t;
 
 typedef struct {
-	csi_spi_state_e 	eTxState;				//send state
-	csi_spi_state_e 	eRxState;				//receive state	
-	uint32_t            wTxSize;				//tx send data size
-	uint32_t            wRxSize;				//rx receive data size
-	uint32_t			wTransNum;				//send/receive data num
-	uint8_t				*pbyTxBuf;				//pointer of send buf 
-	uint8_t				*pbyRxBuf;				//pointer of recv buf 
+	uint8_t 		byTxState;		//send state
+	uint8_t 		byRxState;		//receive state	
+	uint32_t        wTxSize;		//tx send data size
+	uint32_t        wRxSize;		//rx receive data size
+	uint32_t		wTransNum;		//send/receive data num
+	uint8_t			*pbyTxBuf;		//pointer of send buf 
+	uint8_t			*pbyRxBuf;		//pointer of recv buf 
 	//CallBack		
 	void(*recv_callback)(csp_spi_t *ptSpiBase, csi_spi_state_e eState, uint8_t *pbyBuf, uint32_t *wSzie);
 	void(*send_callback)(csp_spi_t *ptSpiBase);
@@ -195,37 +211,37 @@ void csi_spi_start(csp_spi_t *ptSpiBase);
 */
 void csi_spi_stop(csp_spi_t *ptSpiBase);
 
-/** \brief set spi work mode, master or slave
+/** \brief set spi mode, master or slave
  * 
  *  \param[in] ptSpiBase: pointer of spi register structure
  *  \param[in] eMode: \ref to csi_spi_mode_e
  *  \return none
  */ 
-void csi_spi_set_work_mode(csp_spi_t *ptSpiBase, csi_spi_work_mode_e eMode);
+void csi_spi_set_mode(csp_spi_t *ptSpiBase, csi_spi_mode_e eMode);
 
-/** \brief set spi cp format
+/** \brief set spi work mode
  * 
  *  \param[in] ptSpiBase: pointer of spi register structure
- *  \param[in] eFormat: \ref to csi_spi_cp_format_e
+ *  \param[in] eWorkMode: \ref to csi_spi_work_mode_e
  *  \return none
  */
-void csi_spi_set_cpol_cpoh(csp_spi_t *ptSpiBase, csi_spi_cpol_cpoh_mode_e eFormat);
+void csi_spi_set_work_mode(csp_spi_t *ptSpiBase, csi_spi_work_mode_e eWorkMode);
 
-/** \brief set spi work frequency
+/** \brief set spi baudrate
  * 
  *  \param[in] ptSpiBase: pointer of spi register structure
  *  \param[in] wBaud: spi work baud
  *  \return spi config frequency
  */
-uint32_t csi_spi_set_clk(csp_spi_t *ptSpiBase, uint32_t wBaud);
+uint32_t csi_spi_set_baud(csp_spi_t *ptSpiBase, uint32_t wBaud);
 
-/** \brief set spi frame length
+/** \brief set spi data length
  * 
  *  \param[in] ptSpiBase: pointer of spi register structure
- *  \param[in] eLength: \ref to csi_spi_frame_len_e
+ *  \param[in] eDataLen: \ref to csi_spi_data_len_e
  *  \return error code \ref csi_error_t
  */
-csi_error_t csi_spi_set_data_size(csp_spi_t *ptSpiBase, csi_spi_frame_len_e eLength);
+csi_error_t csi_spi_set_data_len(csp_spi_t *ptSpiBase, csi_spi_data_len_e eDataLen);
 
 /** \brief get the tState of spi device
  * 
@@ -280,42 +296,43 @@ csi_error_t csi_spi_receive_int(csp_spi_t *ptSpiBase, void *pData, uint32_t wSiz
  */
 int32_t csi_spi_send_receive(csp_spi_t *ptSpiBase, void *pDataout, void *pDatain, uint32_t wSize);
 
-/** \brief spi slave receive data
+/** \brief set spi send dma mode and enable
  * 
  *  \param[in] ptSpiBase: pointer of spi register structure
- *  \param[in] hwDataout: data of send
- *  \return none
- */ 
-void csi_spi_send_slave(csp_spi_t *ptSpiBase, uint16_t hwDataout);
+ *  \param[in] eDmaMode: ctx dma mode, \ref csi_uart_dma_md_e
+ *  \return  none
+ */
+void csi_spi_set_send_dma(csp_spi_t *ptSpiBase, csi_spi_dma_md_e eDmaMode);
 
-/** \brief spi slave receive data
+/** \brief set spi receive dma mode and enable
  * 
  *  \param[in] ptSpiBase: pointer of spi register structure
- *  \return the slave receive data
- */ 
-uint16_t csi_spi_receive_slave(csp_spi_t *ptSpiBase);
+ *  \param[in] eDmaMode: rx dma mode, \ref csi_uart_dma_md_e
+ *  \return  none
+ */
+void csi_spi_set_receive_dma(csp_spi_t *ptSpiBase, csi_spi_dma_md_e eDmaMode);
 
-/** \brief send data of spi by DMA
+/** \brief send data from spi, this function is dma mode
  * 
- *  \param[in] ptSpiBase: pointer of SPI reg structure.
- *  \param[in] pData: pointer to buffer data of SPI transmitter.
+ *  \param[in] ptSpiBase: pointer of spi register structure
+ *  \param[in] ptDmaBase: pointer of dma register structure
+ *  \param[in] eDmaCh: channel number of dma(20~31), \ref csi_dma_ch_e
+ *  \param[in] pData: pointer to buffer with data to send to spi transmitter.
  *  \param[in] hwSize: number of data to send (byte).
- *  \param[in] ptDmaBase: pointer of DMA reg structure.
- *  \param[in] byDmaCh: channel of DMA(0 -> 5)
- *  \return  error code \ref csi_error_t
+ *  \return  none
  */
-csi_error_t csi_spi_send_dma(csp_spi_t *ptSpiBase, const void *pData, uint16_t hwSize, csp_dma_t *ptDmaBase,uint8_t byDmaCh);
+void csi_spi_send_dma(csp_spi_t *ptSpiBase, csp_dma_t *ptDmaBase, csi_dma_ch_e eDmaCh, const void *pData, uint16_t hwSize);
 
-/** \brief receive data of spi by DMA
+/** \brief receive data from spi, this function is dma mode
  * 
- *  \param[in] ptSpiBase: pointer of SPI reg structure.
- *  \param[in] pbyRecv: pointer to buffer data of SPI receive.
+ *  \param[in] ptSpiBase: pointer of spi register structure
+ *  \param[in] ptDmaBase: pointer of dma register structure
+ *  \param[in] eDmaCh: channel number of dma(20~31), \ref csi_dma_ch_e
+ *  \param[in] pData: pointer to buffer with data to receive to spi transmitter.
  *  \param[in] hwSize: number of data to receive (byte).
- *  \param[in] ptDmaBase: pointer of DMA reg structure.
- *  \param[in] byDmaCh: channel of DMA(0 -> 5)
- *  \return  error code \ref csi_error_t
+ *  \return  none
  */
-csi_error_t csi_spi_recv_dma(csp_spi_t *ptSpiBase, void *pbyRecv, uint16_t hwSize, csp_dma_t *ptDmaBase,uint8_t byDmaCh);
+void csi_spi_recv_dma(csp_spi_t *ptSpiBase, csp_dma_t *ptDmaBase, csi_dma_ch_e eDmaCh, void *pData, uint16_t hwSize);
 
 #ifdef __cplusplus
 }
