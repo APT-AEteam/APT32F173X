@@ -8,8 +8,8 @@
  * </table>
  * *********************************************************************
 */
-#ifndef _TRIM_ADC_H_
-#define _TRIM_ADC_H_
+#ifndef _ADC_TRIM_H_
+#define _ADC_TRIM_H_
 
 extern void adc0_offset_trim();
 extern void adc1_offset_trim();

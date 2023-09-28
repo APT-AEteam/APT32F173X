@@ -31,14 +31,12 @@ extern void bt_irqhandler1(csp_bt_t *ptBtBase);
 extern void bt_irqhandler2(csp_bt_t *ptBtBase);
 extern void bt_irqhandler3(csp_bt_t *ptBtBase);
 extern void wwdt_irqhandler(void);
-extern void adc_irqhandler(csp_adc_t *ptAdcBase);
 extern void syscon_irqhandler(csp_syscon_t *ptSysconBase);
 extern void i2c_irqhandler(csp_iic_t *ptIicBase);
 
 extern void sio_irqhandler(csp_sio_t *ptSioBase);
 
 extern void lpt_irqhandler(csp_lpt_t *ptLptBase);
-extern void dac_irqhandler(csp_dac_t *ptDacBase);
 
 
 /*************************************************************/
