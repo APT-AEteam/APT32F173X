@@ -12,8 +12,6 @@
 #ifndef _DRV_OPA_H_
 #define _DRV_OPA_H_
 
-#include <drv/common.h>
-#include <drv/ringbuf.h>
 #include "csp.h"
 
 #ifdef __cplusplus

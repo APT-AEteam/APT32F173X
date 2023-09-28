@@ -11,244 +11,18 @@
 */
 #include "drv/gpio.h"
 
+/* Private macro------------------------------------------------------*/
+/* Private function---------------------------------------------------*/
+static uint8_t apt_get_gpio_num_low(pin_name_e ePinName);
+static uint8_t apt_get_gpio_num(pin_name_e ePinName);
+static int32_t apt_gpio_intgroup_set(csp_gpio_t *ptGpioBase, uint8_t byPinNum, gpio_igrp_e eExiGrp);
+static void apt_exi_trg_edge_set(csp_syscon_t *ptSysconBase, gpio_igrp_e eExiGrp, exi_trigger_e eGpioTrg);
+static void apt_iomap_handle(pin_name_e ePinName, csi_gpio_iomap_e eIoMap, uint8_t byGrp);
 
-/** \brief get gpio pin number 
- * 
- *  \param[in] ePinFunc: pointer of gpio register structure
- *  \return gpio port total number(16/6) or error(0xff)
- */ 
-static uint8_t apt_get_gpio_num_low(pin_name_e ePinName)
-{
-	uint16_t byPinNum = 0;
-	
-	switch((uint8_t)ePinName)
-	{
-		case 0x01:
-			break;
-		case 0x02:
-		case 0x04:
-			byPinNum = ePinName >> 1;
-			break;
-		case 0x08:
-		case 0x10:
-			byPinNum = (ePinName >> 3) + 2;
-			break;
-		case 0x20:
-		case 0x40:
-			byPinNum = (ePinName >> 5) + 4;
-			break;
-		case 0x80:
-			byPinNum =7;
-			break; 
-		default:
-			byPinNum = 0;
-			break;
-	}
-	
-	return byPinNum;
-}
+/* global variablesr--------------------------------------------------*/
+/* Private variablesr-------------------------------------------------*/
 
-/** \brief get gpio pin number 
- * 
- *  \param[in] ePinFunc: pointer of gpio register structure
- *  \return gpio port total number(16/6) or error(0xff)
- */ 
-static uint8_t apt_get_gpio_num(pin_name_e ePinName)
-{
-	uint8_t byPinNum = 0;
-	
-	if(ePinName > 0x80)
-		byPinNum = apt_get_gpio_num_low(ePinName >> 8) + 8;
-	else
-		byPinNum = apt_get_gpio_num_low((uint8_t)ePinName);
-		
-	return byPinNum;
-}
 
-/** \brief set gpio interrupt group
- * 
- *  \param[in] ptGpioBase: pointer of gpio register structure
- *  \param[in] byPinNum: pin0~15
- *  \param[in] eExiGrp:	EXI_IGRP0 ~ EXI_IGRP19
- *  \return none
- */ 
-static int apt_gpio_intgroup_set(csp_gpio_t *ptGpioBase, uint8_t byPinNum, gpio_igrp_e eExiGrp)
-{
-	uint32_t byMaskShift,byMask;
-	gpio_group_e eIoGroup = GRP_GPIOA;
-	
-	switch((uint32_t)ptGpioBase)
-	{
-		case APB_GPIOA_BASE:
-			eIoGroup = GRP_GPIOA;
-			break;
-		case APB_GPIOB_BASE:
-			eIoGroup = GRP_GPIOB;
-			break;
-		case APB_GPIOC_BASE:
-			eIoGroup = GRP_GPIOC;
-			break;
-		case APB_GPIOD_BASE:
-			eIoGroup = GRP_GPIOD;
-			break;
-		default:
-			return CSI_ERROR;
-	}
-	
-	if(eExiGrp < EXI_IGRP16)
-	{
-		if(byPinNum < 8)
-		{
-			byMaskShift = (byPinNum << 2);
-			byMask = ~(0x0Ful << byMaskShift);
-			GPIOGRP->IGRPL = ((GPIOGRP->IGRPL) & byMask) | (eIoGroup << byMaskShift);
-		}
-		else if(byPinNum < 16)
-		{
-			byMaskShift = ((byPinNum-8) << 2);
-			byMask = ~(0x0Ful << byMaskShift);
-			GPIOGRP->IGRPH = ((GPIOGRP->IGRPH) & byMask) | (eIoGroup << byMaskShift);
-		}
-		else
-			return CSI_ERROR;
-	}
-	else 
-	{
-		switch(eExiGrp)
-		{
-			case EXI_IGRP16:
-				if(GRP_GPIOA != eIoGroup)
-					return CSI_ERROR;
-					
-				break;
-			case EXI_IGRP17:
-				if(GRP_GPIOB != eIoGroup)
-					return CSI_ERROR;
-					
-				break;
-			case EXI_IGRP18:
-				if(GRP_GPIOC != eIoGroup)
-					return CSI_ERROR;
-					
-				break;
-			case EXI_IGRP19:
-				if(GRP_GPIOD != eIoGroup)
-					return CSI_ERROR;
-					
-				break;
-			default:
-				return CSI_ERROR;
-		}
-		
-		byMaskShift = (eExiGrp - EXI_IGRP16) << 2;
-		byMask = ~(0x0Ful << byMaskShift);
-		GPIOGRP->IGREX = ((GPIOGRP->IGREX) & byMask) | (byPinNum << byMaskShift);
-	}
-	
-	return CSI_OK;
-}
-
-/** \brief set gpio exi interrupt trigger 
- * 
- *  \param[in] ptSysconBase: pionter of SYSCON reg structure.
- *  \param[in] eExiGrp: EXI_IGRP0~EXI_IGRP19
- *  \param[in] eGpioTrg: EXI_IRT,EXI_IFT,
- *  \return none
- */ 
-static void apt_exi_trg_edge_set(csp_syscon_t *ptSysconBase, gpio_igrp_e eExiGrp, exi_trigger_e eGpioTrg)
-{
-	uint32_t wPinMsak = (0x01ul << eExiGrp);
-	
-	ptSysconBase->EXIRT &= (~wPinMsak);					//trig edg
-	ptSysconBase->EXIFT &= (~wPinMsak);
-	
-	switch(eGpioTrg)
-	{
-		case EXI_EDGE_IRT:
-			ptSysconBase->EXIRT |= wPinMsak;
-			ptSysconBase->EXIFT &= ~wPinMsak;
-			break;
-		case EXI_EDGE_IFT:
-			ptSysconBase->EXIFT |= wPinMsak;
-			ptSysconBase->EXIRT &= ~wPinMsak;
-			break;
-		case EXI_EDGE_BOTH:
-			ptSysconBase->EXIRT |= wPinMsak;
-			ptSysconBase->EXIFT |= wPinMsak;
-			break;
-		default:
-			break;
-	}
-}
-/** \brief set gpio iomap function
- * 
- *  \param[in] ePinName: gpio pin name
- *  \param[in] eIoMap: gpio pin remap function
- *  \param[in] byGrp: iomap group0/group1, 0/1
- *  \return none
- */  
-static void apt_iomap_handle(pin_name_e ePinName, csi_gpio_iomap_e eIoMap, uint8_t byGrp)
-{
-	uint8_t i,j;
-	volatile uint8_t wFlag = 0x00;
-	uint32_t *pwIoMap = NULL;
-	
-	if(byGrp == 0)
-		pwIoMap = (uint32_t *)&SYSCON->IOMAP0;
-	else
-	{
-		pwIoMap = (uint32_t *)&SYSCON->IOMAP1;
-		eIoMap = eIoMap - 8;
-	}
-	
-	for(i = 0; i < ePinName; i++)
-	{
-		if((((*pwIoMap) >> 4*i) & 0x0f) == eIoMap)
-		{
-			for(j = 0; j < ePinName; j++)
-			{
-				switch(((*pwIoMap) >> 4*j) & 0x0f) 
-				{
-					case IOMAP0_I2C_SCL:
-						wFlag |= (0x01 << IOMAP0_I2C_SCL);
-						break;
-					case IOMAP0_I2C_SDA:
-						wFlag |= (0x01 << IOMAP0_I2C_SDA);
-						break;
-					case IOMAP0_USART0_TX:
-						wFlag |= (0x01 << IOMAP0_USART0_TX);
-						break;
-					case IOMAP0_USART0_RX:
-						wFlag |= (0x01 << IOMAP0_USART0_RX);
-						break;
-					case IOMAP0_SPI0_NSS:
-						wFlag |= (0x01 << IOMAP0_SPI0_NSS);
-						break;
-					case IOMAP0_SPI0_SCK:
-						wFlag |= (0x01 << IOMAP0_SPI0_SCK);
-						break;
-					case IOMAP0_SPI0_MISO:
-						wFlag |= (0x01 << IOMAP0_SPI0_MISO);
-						break;
-					case IOMAP0_SPI0_MOSI:
-						wFlag |= (0x01 << IOMAP0_SPI0_MOSI);
-						break;
-				}
-			}
-			
-			for(j = 0; j < 8; j++)
-			{
-				if(((wFlag & 0x01) == 0) && (j != eIoMap))
-				{
-					break;
-				}
-				wFlag = (wFlag >> 1);
-			}
-			
-			*pwIoMap = ((*pwIoMap) & ~(0x0F << 4*i)) | (j << 4*i);			//no select
-		}
-	}
-}
 /** \brief set gpio mux function
  * 
  *  \param[in] ptGpioBase: pointer of gpio register structure
@@ -741,4 +515,241 @@ void csi_exi_evtrg_disable(csi_exi_trgout_e eTrgOut)
 void csi_exi_sw_evtrg(csi_exi_trgout_e eTrgOut)
 {
 	csp_exi_sw_evtrg(SYSCON, eTrgOut);
+}
+/** \brief get gpio pin number 
+ * 
+ *  \param[in] ePinFunc: pointer of gpio register structure
+ *  \return gpio port total number(16/6) or error(0xff)
+ */ 
+static uint8_t apt_get_gpio_num_low(pin_name_e ePinName)
+{
+	uint16_t byPinNum = 0;
+	
+	switch((uint8_t)ePinName)
+	{
+		case 0x01:
+			break;
+		case 0x02:
+		case 0x04:
+			byPinNum = ePinName >> 1;
+			break;
+		case 0x08:
+		case 0x10:
+			byPinNum = (ePinName >> 3) + 2;
+			break;
+		case 0x20:
+		case 0x40:
+			byPinNum = (ePinName >> 5) + 4;
+			break;
+		case 0x80:
+			byPinNum =7;
+			break; 
+		default:
+			byPinNum = 0;
+			break;
+	}
+	
+	return byPinNum;
+}
+
+/** \brief get gpio pin number 
+ * 
+ *  \param[in] ePinFunc: pointer of gpio register structure
+ *  \return gpio port total number(16/6) or error(0xff)
+ */ 
+static uint8_t apt_get_gpio_num(pin_name_e ePinName)
+{
+	uint8_t byPinNum = 0;
+	
+	if(ePinName > 0x80)
+		byPinNum = apt_get_gpio_num_low(ePinName >> 8) + 8;
+	else
+		byPinNum = apt_get_gpio_num_low((uint8_t)ePinName);
+		
+	return byPinNum;
+}
+
+/** \brief set gpio interrupt group
+ * 
+ *  \param[in] ptGpioBase: pointer of gpio register structure
+ *  \param[in] byPinNum: pin0~15
+ *  \param[in] eExiGrp:	EXI_IGRP0 ~ EXI_IGRP19
+ *  \return none
+ */ 
+static int32_t apt_gpio_intgroup_set(csp_gpio_t *ptGpioBase, uint8_t byPinNum, gpio_igrp_e eExiGrp)
+{
+	uint32_t byMaskShift,byMask;
+	gpio_group_e eIoGroup = GRP_GPIOA;
+	
+	switch((uint32_t)ptGpioBase)
+	{
+		case APB_GPIOA_BASE:
+			eIoGroup = GRP_GPIOA;
+			break;
+		case APB_GPIOB_BASE:
+			eIoGroup = GRP_GPIOB;
+			break;
+		case APB_GPIOC_BASE:
+			eIoGroup = GRP_GPIOC;
+			break;
+		case APB_GPIOD_BASE:
+			eIoGroup = GRP_GPIOD;
+			break;
+		default:
+			return CSI_ERROR;
+	}
+	
+	if(eExiGrp < EXI_IGRP16)
+	{
+		if(byPinNum < 8)
+		{
+			byMaskShift = (byPinNum << 2);
+			byMask = ~(0x0Ful << byMaskShift);
+			GPIOGRP->IGRPL = ((GPIOGRP->IGRPL) & byMask) | (eIoGroup << byMaskShift);
+		}
+		else if(byPinNum < 16)
+		{
+			byMaskShift = ((byPinNum-8) << 2);
+			byMask = ~(0x0Ful << byMaskShift);
+			GPIOGRP->IGRPH = ((GPIOGRP->IGRPH) & byMask) | (eIoGroup << byMaskShift);
+		}
+		else
+			return CSI_ERROR;
+	}
+	else 
+	{
+		switch(eExiGrp)
+		{
+			case EXI_IGRP16:
+				if(GRP_GPIOA != eIoGroup)
+					return CSI_ERROR;
+					
+				break;
+			case EXI_IGRP17:
+				if(GRP_GPIOB != eIoGroup)
+					return CSI_ERROR;
+					
+				break;
+			case EXI_IGRP18:
+				if(GRP_GPIOC != eIoGroup)
+					return CSI_ERROR;
+					
+				break;
+			case EXI_IGRP19:
+				if(GRP_GPIOD != eIoGroup)
+					return CSI_ERROR;
+					
+				break;
+			default:
+				return CSI_ERROR;
+		}
+		
+		byMaskShift = (eExiGrp - EXI_IGRP16) << 2;
+		byMask = ~(0x0Ful << byMaskShift);
+		GPIOGRP->IGREX = ((GPIOGRP->IGREX) & byMask) | (byPinNum << byMaskShift);
+	}
+	
+	return CSI_OK;
+}
+
+/** \brief set gpio exi interrupt trigger 
+ * 
+ *  \param[in] ptSysconBase: pionter of SYSCON reg structure.
+ *  \param[in] eExiGrp: EXI_IGRP0~EXI_IGRP19
+ *  \param[in] eGpioTrg: EXI_IRT,EXI_IFT,
+ *  \return none
+ */ 
+static void apt_exi_trg_edge_set(csp_syscon_t *ptSysconBase, gpio_igrp_e eExiGrp, exi_trigger_e eGpioTrg)
+{
+	uint32_t wPinMsak = (0x01ul << eExiGrp);
+	
+	ptSysconBase->EXIRT &= (~wPinMsak);					//trig edg
+	ptSysconBase->EXIFT &= (~wPinMsak);
+	
+	switch(eGpioTrg)
+	{
+		case EXI_EDGE_IRT:
+			ptSysconBase->EXIRT |= wPinMsak;
+			ptSysconBase->EXIFT &= ~wPinMsak;
+			break;
+		case EXI_EDGE_IFT:
+			ptSysconBase->EXIFT |= wPinMsak;
+			ptSysconBase->EXIRT &= ~wPinMsak;
+			break;
+		case EXI_EDGE_BOTH:
+			ptSysconBase->EXIRT |= wPinMsak;
+			ptSysconBase->EXIFT |= wPinMsak;
+			break;
+		default:
+			break;
+	}
+}
+/** \brief set gpio iomap function
+ * 
+ *  \param[in] ePinName: gpio pin name
+ *  \param[in] eIoMap: gpio pin remap function
+ *  \param[in] byGrp: iomap group0/group1, 0/1
+ *  \return none
+ */  
+static void apt_iomap_handle(pin_name_e ePinName, csi_gpio_iomap_e eIoMap, uint8_t byGrp)
+{
+	uint8_t i,j;
+	volatile uint8_t wFlag = 0x00;
+	uint32_t *pwIoMap = NULL;
+	
+	if(byGrp == 0)
+		pwIoMap = (uint32_t *)&SYSCON->IOMAP0;
+	else
+	{
+		pwIoMap = (uint32_t *)&SYSCON->IOMAP1;
+		eIoMap = eIoMap - 8;
+	}
+	
+	for(i = 0; i < ePinName; i++)
+	{
+		if((((*pwIoMap) >> 4*i) & 0x0f) == eIoMap)
+		{
+			for(j = 0; j < ePinName; j++)
+			{
+				switch(((*pwIoMap) >> 4*j) & 0x0f) 
+				{
+					case IOMAP0_I2C_SCL:
+						wFlag |= (0x01 << IOMAP0_I2C_SCL);
+						break;
+					case IOMAP0_I2C_SDA:
+						wFlag |= (0x01 << IOMAP0_I2C_SDA);
+						break;
+					case IOMAP0_USART0_TX:
+						wFlag |= (0x01 << IOMAP0_USART0_TX);
+						break;
+					case IOMAP0_USART0_RX:
+						wFlag |= (0x01 << IOMAP0_USART0_RX);
+						break;
+					case IOMAP0_SPI0_NSS:
+						wFlag |= (0x01 << IOMAP0_SPI0_NSS);
+						break;
+					case IOMAP0_SPI0_SCK:
+						wFlag |= (0x01 << IOMAP0_SPI0_SCK);
+						break;
+					case IOMAP0_SPI0_MISO:
+						wFlag |= (0x01 << IOMAP0_SPI0_MISO);
+						break;
+					case IOMAP0_SPI0_MOSI:
+						wFlag |= (0x01 << IOMAP0_SPI0_MOSI);
+						break;
+				}
+			}
+			
+			for(j = 0; j < 8; j++)
+			{
+				if(((wFlag & 0x01) == 0) && (j != eIoMap))
+				{
+					break;
+				}
+				wFlag = (wFlag >> 1);
+			}
+			
+			*pwIoMap = ((*pwIoMap) & ~(0x0F << 4*i)) | (j << 4*i);			//no select
+		}
+	}
 }

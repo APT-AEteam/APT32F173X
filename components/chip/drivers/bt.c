@@ -12,34 +12,31 @@
 #include "drv/bt.h"
 
 /* private macro------------------------------------------------------*/
-/* externs function---------------------------------------------------*/
+/* private function---------------------------------------------------*/
+static uint8_t apt_get_bt_idx(csp_bt_t *ptBtBase);
+
 /* global variablesr--------------------------------------------------*/
 csi_bt_ctrl_t g_tBtCtrl[BT_IDX];
 
 /* Private variablesr-------------------------------------------------*/
 
 
-/** \brief get bt number 
+/** \brief bt interrupt handler function
  * 
  *  \param[in] ptBtBase: pointer of bt register structure
- *  \return bt number 0/1/2/3
+ *  \param[in] byIdx: bt idx(0/1/2/3)
+ *  \return none
  */ 
-static uint8_t apt_get_bt_idx(csp_bt_t *ptBtBase)
+void csi_bt_irqhandler(csp_bt_t *ptBtBase, uint8_t byIdx)
 {
-	switch((uint32_t)ptBtBase)
-	{
-		case APB_BT0_BASE:		//bt0
-			return 0;		
-		case APB_BT1_BASE:		//bt1
-			return 1;
-		case APB_BT2_BASE:		//bt2
-			return 2;		
-		case APB_BT3_BASE:		//bt3
-			return 3;
-		default:
-			return 0xff;		//error
-	}
+	bt_int_e eIsr = csp_bt_get_isr(ptBtBase);
+	
+	if(g_tBtCtrl[byIdx].callback)
+			g_tBtCtrl[byIdx].callback(ptBtBase, eIsr);
+			
+	csp_bt_clr_isr(ptBtBase, eIsr);
 }
+
 /** \brief  register bt interrupt callback function
  * 
  *  \param[in] ptBtBase: pointer of bt register structure
@@ -55,21 +52,6 @@ csi_error_t csi_bt_register_callback(csp_bt_t *ptBtBase, void  *callback)
 	g_tBtCtrl[byIdx].callback = callback;
 	
 	return CSI_OK;
-}
-/** \brief bt interrupt handler function
- * 
- *  \param[in] ptBtBase: pointer of bt register structure
- *  \param[in] byIdx: bt idx(0/1/2/3)
- *  \return none
- */ 
-void csi_bt_irqhandler(csp_bt_t *ptBtBase, uint8_t byIdx)
-{
-	bt_int_e eIsr = csp_bt_get_isr(ptBtBase);
-	
-	if(g_tBtCtrl[byIdx].callback)
-			g_tBtCtrl[byIdx].callback(ptBtBase, eIsr);
-			
-	csp_bt_clr_isr(ptBtBase, eIsr);
 }
 
 /** \brief initialize bt data structure
@@ -400,4 +382,26 @@ void csi_bt_evtrg_disable(csp_bt_t *ptBtBase)
 void csi_bt_sw_evtrg(csp_bt_t *ptBtBase)
 {
 	csp_bt_sw_evtrg(ptBtBase);
+}
+
+/** \brief get bt number 
+ * 
+ *  \param[in] ptBtBase: pointer of bt register structure
+ *  \return bt number 0/1/2/3
+ */ 
+static uint8_t apt_get_bt_idx(csp_bt_t *ptBtBase)
+{
+	switch((uint32_t)ptBtBase)
+	{
+		case APB_BT0_BASE:		//bt0
+			return 0;		
+		case APB_BT1_BASE:		//bt1
+			return 1;
+		case APB_BT2_BASE:		//bt2
+			return 2;		
+		case APB_BT3_BASE:		//bt3
+			return 3;
+		default:
+			return 0xff;		//error
+	}
 }

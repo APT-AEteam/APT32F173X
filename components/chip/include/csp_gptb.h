@@ -13,7 +13,7 @@
 #ifndef _CSP_GPTB_H
 #define _CSP_GPTB_H
 
-#include <soc.h>
+#include "soc.h"
 
 /// \struct csp_gptb_t
 /// \brief GPTB reg description

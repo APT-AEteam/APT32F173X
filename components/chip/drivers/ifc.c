@@ -6,37 +6,34 @@
  * <tr><th> Date  <th>Version  <th>Author  <th>Description
  * <tr><td> 2021-5-28 <td>V2.0 <td>WNN    <td>initial
  * <tr><td> 2022-8-28 <td>V3.0 <td>WNN    <td> add page erase/PGM unction; support SWD/user option PGM; bug fix
+ * <tr><td> 2029-9-27 <td>V4.0 <td>WNN    <td> support protection PGM,bug fix, code normalization
  * </table>
  * *********************************************************************
 */
 
 /* include ----------------------------------------------------------------*/
-#include "csp.h"
-#include "irq.h"
-#include "soc.h"
 #include "ifc.h"
 
-/* externs function--------------------------------------------------------*/
+/* global variables--------------------------------------------------------*/
+volatile bool g_bFlashCheckPass = 1;
+volatile bool g_bFlashPgmDne = 1;
+
 /* private function--------------------------------------------------------*/
 static void apt_ifc_step_sync(csp_ifc_t * ptIfcBase, ifc_cmd_e eStepn, uint32_t wPageStAddr);
 static void apt_ifc_step_async(csp_ifc_t * ptIfcBase, ifc_cmd_e eStepn, uint32_t wPageStAddr);
-static csp_error_t apt_ifc_wr_nword(csp_ifc_t * ptIfcBase, uint8_t bFlashType, uint32_t wAddr, uint32_t wDataNum, uint32_t *pwData);
-
-/* externs variables------------------------------------------------------*/
+static csi_error_t apt_ifc_wr_nword(csp_ifc_t * ptIfcBase, uint8_t bFlashType, uint32_t wAddr, uint32_t wDataNum, uint32_t *pwData);
 
 /* Private variables------------------------------------------------------*/
-volatile bool g_bFlashCheckPass = 1;
-volatile bool g_bFlashPgmDne = 1;
 volatile static uint32_t s_wPageStAddr;
-volatile static uint32_t s_wBuffForCheck[DFLASH_PAGE_SZ];
+volatile static uint32_t s_wBuffForCheck[IFC_DFLASH_PAGE_SZ];
 
 
-/** \brief ifc interrupt handle function,mainly used for para mode PGM of DFLASH
+/** \brief ifc interrupt handle function,only used for para-mode PGM of DFLASH
  * 
  *  \param[in] none
  *  \return none
  */ 
-__attribute__((weak)) void ifc_irqhandler(void)
+void ifc_irqhandler(void)
 {
 	uint32_t i;
 
@@ -45,7 +42,7 @@ __attribute__((weak)) void ifc_irqhandler(void)
 		csp_ifc_int_disable(IFC, IFC_INT_ERS_END);
 		csp_ifc_clr_int(IFC, IFC_INT_ERS_END);
 		///DFLASH step6
-		apt_ifc_step_async(IFC, PROGRAM, s_wPageStAddr);
+		apt_ifc_step_async(IFC, IFC_PROGRAM, s_wPageStAddr);
 	}
 	if (csp_ifc_get_isr(IFC) == IFC_INT_PGM_END)
 	{
@@ -53,7 +50,7 @@ __attribute__((weak)) void ifc_irqhandler(void)
 		csp_ifc_clr_int(IFC, IFC_INT_PGM_END);
 		///whole page check, only DFlash Write would use INT scheme
 		g_bFlashCheckPass = 1;
-		for (i=0; i<DFLASH_PAGE_SZ; i++)
+		for (i=0; i<IFC_DFLASH_PAGE_SZ; i++)
 		{
 			if ((*(uint32_t *)(s_wPageStAddr+4*i)) !=  s_wBuffForCheck[i]) {
 				g_bFlashCheckPass = 0;
@@ -67,7 +64,7 @@ __attribute__((weak)) void ifc_irqhandler(void)
 }
 
 /// csi API
-/** \brief config data flash workmode
+/** \brief config data flash PGM mode
  * 
  *  \param[in] ptIfcBase: pointer of ifc register structure
  *  \param[in] bEnable: ENABLE/DISABLE
@@ -81,10 +78,10 @@ void csi_ifc_dflash_paramode_enable(csp_ifc_t *ptIfcBase, bool bEnable)
 
 /** \brief Read data from Flash.
  * 
- *  \param[in] ptIfcBase：pointer of ifc register structure.
- *  \param[in] wAddr：Data address（(SHOULD BE WORD ALLIGNED)）
+ *  \param[in] 	ptIfcBase：pointer of ifc register structure.
+ *  \param[in] 	wAddr：data address（(SHOULD BE WORD ALLIGNED)）
  *  \param[out] wData：data  Pointer to a buffer storing the data read from Flash.
- *  \param[in] wDataNum：Number of data（WORDs）to read.
+ *  \param[in] 	wDataNum：Number of data（WORDs）to read.
  *  \return error code
  */
 csi_error_t csi_ifc_read(csp_ifc_t *ptIfcBase, uint32_t wAddr, uint32_t *wData, uint32_t wDataNum)
@@ -115,18 +112,19 @@ csi_error_t csi_ifc_read(csp_ifc_t *ptIfcBase, uint32_t wAddr, uint32_t *wData, 
 }
 
 
-/** \brief Program data (<page size)to DFLASH. NOTE!!! Extra ERASE is NOT needed before programming.
+/** \brief Program data (<page size)to DFLASH. 
+ *  \brief NOTE!!! Extra ERASE is NOT needed before programming.
  * 
- *  \param[in] ptIfcBase：pointer of ifc register structure
- *  \param[in] wAddr：Data address (SHOULD BE WORD ALLIGNED)
- *  \param[in] pwData: data  Pointer to a buffer containing the data to be programmed to Flash.
- *  \param[in] wDataWordNum: Number of data(WORDS) items to program.
+ *  \param[in] ptIfcBase：	pointer of ifc register structure
+ *  \param[in] wAddr：		data address (SHOULD BE WORD ALLIGNED)
+ *  \param[in] pwData: 		data  Pointer to a buffer containing the data to be programmed to Flash.
+ *  \param[in] wDataWordNum:number of data(WORDS) items to program.
  *  \return error code
  */
 csi_error_t csi_ifc_dflash_page_program(csp_ifc_t *ptIfcBase, uint32_t wAddr, uint32_t *pwData, uint32_t wDataWordNum)
 {
 	csi_error_t tRet = CSI_OK;
-	uint32_t wPageLimit = (wAddr & (DFLASH_PAGE_MSK)) + DFLASH_PAGE_SZ*4;
+	uint32_t wPageLimit = (wAddr & (IFC_DFLASH_PAGE_MSK)) + IFC_DFLASH_PAGE_SZ*4;
 	
 	//return error when address is not word alligned, or addr goes beyond space size or addr goes across pages
 	if (wAddr % 4 != 0 || (wPageLimit > DFLASH_LIMIT) || ((wAddr + (wDataWordNum<<2))> wPageLimit) ) 
@@ -137,7 +135,7 @@ csi_error_t csi_ifc_dflash_page_program(csp_ifc_t *ptIfcBase, uint32_t wAddr, ui
 	
 	csp_ifc_clk_enable(ptIfcBase);
 	
-	tRet = (csi_error_t)apt_ifc_wr_nword(ptIfcBase, DFLASH, wAddr, wDataWordNum, pwData);	
+	tRet = (csi_error_t)apt_ifc_wr_nword(ptIfcBase, IFC_DFLASH, wAddr, wDataWordNum, pwData);	
 	if (tRet == CSI_ERROR)
 		return tRet;
 	while (csi_ifc_get_status(ptIfcBase).busy);
@@ -157,7 +155,7 @@ csi_error_t csi_ifc_dflash_page_program(csp_ifc_t *ptIfcBase, uint32_t wAddr, ui
 csi_error_t csi_ifc_pflash_page_program(csp_ifc_t *ptIfcBase, uint32_t wAddr, uint32_t *pwData, uint32_t wDataWordNum)
 {
 	csi_error_t tRet = CSI_OK;
-	uint32_t wPageLimit = (wAddr & (PFLASH_PAGE_MSK)) + PFLASH_PAGE_SZ*4;
+	uint32_t wPageLimit = (wAddr & (IFC_PFLASH_PAGE_MSK)) + IFC_PFLASH_PAGE_SZ*4;
 	
 	//return error when address is not word alligned, or addr goes beyond space size or addr goes across pages
 	if (wAddr % 4 != 0 || (wPageLimit > PFLASH_LIMIT) || ((wAddr + (wDataWordNum<<2))> wPageLimit) ) 
@@ -168,7 +166,7 @@ csi_error_t csi_ifc_pflash_page_program(csp_ifc_t *ptIfcBase, uint32_t wAddr, ui
 	
 	csp_ifc_clk_enable(ptIfcBase);
 	
-	tRet = (csi_error_t)apt_ifc_wr_nword(ptIfcBase, PFLASH, wAddr, wDataWordNum, pwData);	
+	tRet = (csi_error_t)apt_ifc_wr_nword(ptIfcBase, IFC_PFLASH, wAddr, wDataWordNum, pwData);	
 	if (tRet == CSI_ERROR)
 		return tRet;
 	return CSI_OK;
@@ -214,10 +212,106 @@ csi_error_t csi_ifc_page_erase(csp_ifc_t *ptIfcBase, uint32_t wPageStAddr)
 	}
 	csp_ifc_clk_enable(ptIfcBase);
 	
-	apt_ifc_step_sync(ptIfcBase, PAGE_ERASE, wPageStAddr);
+	apt_ifc_step_sync(ptIfcBase, IFC_PAGE_ERASE, wPageStAddr);
 
 	return CSI_OK;
 	
+}
+
+
+/** \brief Change user option
+ *  \param ptIfcBase pointer of ifc register structure.
+ *  \param wData data that to be written into USER OPTION area
+ *  \return csi_error_t
+ */
+csi_error_t csi_ifc_set_useroption(csp_ifc_t *ptIfcBase, uint32_t wData)
+{
+	
+	csi_error_t tRet = CSI_OK;
+    uint32_t i,wBuff[16],wPageStAddr,wOffsetAddr,bPageSize = 16;
+	
+    wPageStAddr = USEROPTION_ADDR;
+    wOffsetAddr = 0;
+	
+	csp_ifc_clk_enable(IFC);
+	///step1
+	apt_ifc_step_sync(ptIfcBase, IFC_PAGE_LAT_CLR_HIDM1, 0);
+	///step2
+	for(i=0; i< bPageSize; i++) {
+      if( i == wOffsetAddr )
+	  {
+		wBuff[i++] = wData;
+		
+	  }
+      else {
+        wBuff[i] = *(uint32_t *)(wPageStAddr+4*i);
+      }
+    }
+	for(i=0; i<bPageSize; i++) {
+        *(uint32_t *)(wPageStAddr+4*i) = wBuff[i];
+    }
+	///step3
+	apt_ifc_step_sync(ptIfcBase, IFC_PRE_PGM_HIDM1, 0);
+	///step4
+	apt_ifc_step_sync(ptIfcBase, IFC_USEROPTION_PGM, 0);
+	///step5
+	apt_ifc_step_sync(ptIfcBase, IFC_USEROPTION_ERASE, 0);
+	///step6
+	apt_ifc_step_sync(ptIfcBase, IFC_USEROPTION_PGM, 0);
+	///check
+	
+	
+	if (*(uint32_t *)USEROPTION_ADDR != wData) {
+		g_bFlashCheckPass = 0;
+		tRet = CSI_ERROR;
+
+	}
+	else {
+		g_bFlashCheckPass = 1;
+		tRet = CSI_OK;
+	}
+	
+	g_bFlashPgmDne = 1;	
+	return tRet;
+}
+
+
+/** \brief write flash protection
+ *  \param ptIfcBase：ptIfcBase pointer of ifc register structure.
+ *  \param eProt：Flash protection mode \ref ifc_prot_e
+ *  \return csi_error_t
+ */
+csi_error_t csi_ifc_set_protection(csp_ifc_t *ptIfcBase, ifc_prot_e eProt)
+{
+	csi_error_t tRet = CSI_OK;
+    uint16_t i, hwPageSize = 16;
+	uint32_t wBuff[16];
+	uint32_t wPageStAddr = USEROPTION_ADDR;
+	
+	csp_ifc_clk_enable(IFC);
+	///step1
+	apt_ifc_step_sync(ptIfcBase, IFC_PAGE_LAT_CLR_HIDM1, 0);
+	///step2
+	csp_ifc_unlock(ptIfcBase);
+	csp_ifc_wr_cmd(ptIfcBase, IFC_USEROPTION_PGM| eProt);
+	
+	wBuff[0] = *(uint32_t *)USEROPTION_ADDR;
+	wBuff[0] = 0x5;
+	
+	for(i=0; i<hwPageSize; i++) {
+        *(uint32_t *)(wPageStAddr+4*i) = wBuff[i];
+    }
+	///step3
+	apt_ifc_step_sync(ptIfcBase, IFC_PRE_PGM_HIDM1, 0);
+	///step4
+	apt_ifc_step_sync(ptIfcBase, IFC_USEROPTION_PGM, 0);
+
+	///step5
+	apt_ifc_step_sync(ptIfcBase, IFC_USEROPTION_ERASE, 0);
+	///step6
+	apt_ifc_step_sync(ptIfcBase, IFC_USEROPTION_PGM| eProt, 0);
+	
+	return tRet;
 }
 
 
@@ -230,14 +324,14 @@ static void apt_ifc_step_sync(csp_ifc_t * ptIfcBase, ifc_cmd_e eStepn, uint32_t 
 	csp_ifc_set_addr(ptIfcBase, wPageStAddr);
 	csp_ifc_start(ptIfcBase);
 	
-	if (((ptIfcBase -> MR) & DFLASH_PMODE) && (wPageStAddr >= DFLASH_BASE))
+	if (((ptIfcBase -> MR) & IFC_DFLASH_PMODE) && (wPageStAddr >= DFLASH_BASE))
 	{
 		switch (eStepn)
 		{
-			case (PROGRAM): while(ptIfcBase->RISR != IFC_INT_PEP_END){}; 	// Wait for operation done
+			case (IFC_PROGRAM): while(ptIfcBase->RISR != IFC_INT_PEP_END){}; 	// Wait for operation done
 							csp_ifc_clr_int(ptIfcBase, IFC_INT_PEP_END);
 							break;
-			case (PAGE_ERASE): while(ptIfcBase->RISR != IFC_INT_ERS_END){}; // Wait for operation done
+			case (IFC_PAGE_ERASE): while(ptIfcBase->RISR != IFC_INT_ERS_END){}; // Wait for operation done
 							csp_ifc_clr_int(ptIfcBase, IFC_INT_ERS_END);
 							break;
 			default: break;
@@ -253,10 +347,10 @@ void apt_ifc_step_async(csp_ifc_t * ptIfcBase, ifc_cmd_e eStepn, uint32_t wPageS
 	csp_ifc_unlock(ptIfcBase);
 	switch (eStepn)
 	{
-		case (PAGE_ERASE):
+		case (IFC_PAGE_ERASE):
 			csp_ifc_int_enable(ptIfcBase, IFC_INT_ERS_END);
 			break;
-		case (PROGRAM):
+		case (IFC_PROGRAM):
 			csp_ifc_int_enable(ptIfcBase, IFC_INT_PGM_END);
 			break;
 		default: 
@@ -269,30 +363,30 @@ void apt_ifc_step_async(csp_ifc_t * ptIfcBase, ifc_cmd_e eStepn, uint32_t wPageS
 } 
 
 
-static csp_error_t apt_ifc_wr_nword(csp_ifc_t * ptIfcBase, uint8_t bFlashType, uint32_t wAddr, uint32_t wDataNum, uint32_t *pwData)
+static csi_error_t apt_ifc_wr_nword(csp_ifc_t * ptIfcBase, uint8_t bFlashType, uint32_t wAddr, uint32_t wDataNum, uint32_t *pwData)
 {
-	uint32_t i, j, wPageStAddr, wBuff[PFLASH_PAGE_SZ];
-	uint8_t bPageSize = DFLASH_PAGE_SZ;
-	csp_error_t tRet = CSP_SUCCESS;
+	uint32_t i, j, wPageStAddr, wBuff[IFC_PFLASH_PAGE_SZ];
+	uint8_t bPageSize = IFC_DFLASH_PAGE_SZ;
+	csi_error_t tRet = CSI_OK;
 	
 	csi_ifc_get_status(IFC);
 	while(!g_bFlashPgmDne);
 	g_bFlashPgmDne = 0;
 	
-	if (bFlashType == PFLASH) {
-		bPageSize = PFLASH_PAGE_SZ;
-		wPageStAddr = wAddr & PFLASH_PAGE_MSK;
+	if (bFlashType == IFC_PFLASH) {
+		bPageSize = IFC_PFLASH_PAGE_SZ;
+		wPageStAddr = wAddr & IFC_PFLASH_PAGE_MSK;
 	}
 	else {
-		bPageSize = DFLASH_PAGE_SZ;
-		wPageStAddr = wAddr & DFLASH_PAGE_MSK;
+		bPageSize = IFC_DFLASH_PAGE_SZ;
+		wPageStAddr = wAddr & IFC_DFLASH_PAGE_MSK;
 	}
 	
 	wAddr -= wPageStAddr;
 	wAddr = wAddr >> 2;	
 
 	///step1
-	apt_ifc_step_sync(ptIfcBase, PAGE_LAT_CLR, wPageStAddr);
+	apt_ifc_step_sync(ptIfcBase, IFC_PAGE_LAT_CLR, wPageStAddr);
 	///step2
 	for(i=0; i< bPageSize; i++) {
       if( i == wAddr )
@@ -309,132 +403,38 @@ static csp_error_t apt_ifc_wr_nword(csp_ifc_t * ptIfcBase, uint8_t bFlashType, u
         *(uint32_t *)(wPageStAddr+4*i) = wBuff[i];
     }
 	///step3
-	apt_ifc_step_sync(ptIfcBase, PRE_PGM, wPageStAddr);
+	apt_ifc_step_sync(ptIfcBase, IFC_PRE_PGM, wPageStAddr);
 	///step4
-	apt_ifc_step_sync(ptIfcBase, PROGRAM, wPageStAddr);
+	apt_ifc_step_sync(ptIfcBase, IFC_PROGRAM, wPageStAddr);
 
-	if (bFlashType == DFLASH && csp_ifc_get_dflash_paramode(ptIfcBase) == 1)
+	if (bFlashType == IFC_DFLASH && csp_ifc_get_dflash_paramode(ptIfcBase) == 1)
 	{
 		///DFLASH step4 
-		for (i=0; i< DFLASH_PAGE_SZ;i++)
+		for (i=0; i< IFC_DFLASH_PAGE_SZ;i++)
 		{
 			s_wBuffForCheck[i] = wBuff[i];
 		}
 		s_wPageStAddr = wPageStAddr;
-		apt_ifc_step_async(ptIfcBase, PAGE_ERASE, wPageStAddr);
+		apt_ifc_step_async(ptIfcBase, IFC_PAGE_ERASE, wPageStAddr);
 	}
 	else 
 	{
 	///step5
-		apt_ifc_step_sync(ptIfcBase, PAGE_ERASE, wPageStAddr);
+		apt_ifc_step_sync(ptIfcBase, IFC_PAGE_ERASE, wPageStAddr);
 	///step6
-		apt_ifc_step_sync(ptIfcBase, PROGRAM, wPageStAddr);
+		apt_ifc_step_sync(ptIfcBase, IFC_PROGRAM, wPageStAddr);
 	///whole page check
 		for (i=0; i<bPageSize; i++)
 		{
-			if (*(uint32_t *)(wPageStAddr+4*i) != wBuff[i]){
-				tRet = CSP_FAIL;
-				g_bFlashCheckPass = 0;
-				g_bFlashPgmDne = 1;
-				return tRet;
-			}
-		}
-		if (tRet != CSP_FAIL)
-			g_bFlashPgmDne = 1;
-	}
-	return tRet;
-}
-
-
-
-/** \brief Change user option
- *  \param ptIfcBase pointer of ifc register structure.
- *  \param wData data that to be written into USER OPTION area
- *  \return csi_error_t
- */
-csi_error_t csi_ifc_wr_useroption(csp_ifc_t *ptIfcBase, uint32_t wData)
-{
-	
-	csi_error_t tRet = CSI_OK;
-    uint32_t i,wBuff[16],wPageStAddr,wOffsetAddr,bPageSize = 16;
-	
-    wPageStAddr = USEROPTION_ADDR;
-    wOffsetAddr = 0;
-	
-	///step1
-	apt_ifc_step_sync(ptIfcBase, PAGE_LAT_CLR_HIDM1, 0);
-	///step2
-	for(i=0; i< bPageSize; i++) {
-      if( i == wOffsetAddr )
-	  {
-		wBuff[i++] = wData;
-		
-	  }
-      else {
-        wBuff[i] = *(uint32_t *)(wPageStAddr+4*i);
-      }
-    }
-	for(i=0; i<bPageSize; i++) {
-        *(uint32_t *)(wPageStAddr+4*i) = wBuff[i];
-    }
-	///step3
-	apt_ifc_step_sync(ptIfcBase, PRE_PGM_HIDM1, 0);
-	///step4
-	apt_ifc_step_sync(ptIfcBase, USEROPTION_PGM, 0);
-	///step5
-	apt_ifc_step_sync(ptIfcBase, USEROPTION_ERASE, 0);
-	///step6
-	apt_ifc_step_sync(ptIfcBase, USEROPTION_PGM, 0);
-	///whole page check
-	for (i=0; i<bPageSize; i++)
-	{
 			if (*(uint32_t *)(wPageStAddr+4*i) != wBuff[i]){
 				tRet = CSI_ERROR;
 				g_bFlashCheckPass = 0;
 				g_bFlashPgmDne = 1;
 				return tRet;
 			}
+		}
+		if (tRet != CSI_ERROR)
+			g_bFlashPgmDne = 1;
 	}
-	if (tRet != CSI_ERROR)
-		g_bFlashPgmDne = 1;
-	
-	return tRet;
-}
-
-
-/** \brief write flash protection
- *  \param ptIfcBase：ptIfcBase pointer of ifc register structure.
- *  \param eProt：Flash protection mode \ref ifc_prot_e
- *  \return csi_error_t
- */
-csi_error_t csi_ifc_wr_protection(csp_ifc_t *ptIfcBase, ifc_prot_e eProt)
-{
-	csi_error_t tRet = CSI_OK;
-    uint16_t i, hwPageSize = 16;
-	uint32_t wBuff[16];
-	uint32_t wPageStAddr = USEROPTION_ADDR;
-	
-	///step1
-	apt_ifc_step_sync(ptIfcBase, PAGE_LAT_CLR_HIDM1, 0);
-	///step2
-	csp_ifc_unlock(ptIfcBase);
-	csp_ifc_wr_cmd(ptIfcBase, USEROPTION_PGM| eProt);
-	
-	wBuff[0] = *(uint32_t *)USEROPTION_ADDR;
-	wBuff[0] = 0x5;
-	
-	for(i=0; i<hwPageSize; i++) {
-        *(uint32_t *)(wPageStAddr+4*i) = wBuff[i];
-    }
-	///step3
-	apt_ifc_step_sync(ptIfcBase, PRE_PGM_HIDM1, 0);
-	///step4
-	apt_ifc_step_sync(ptIfcBase, USEROPTION_PGM, 0);
-
-	///step5
-	apt_ifc_step_sync(ptIfcBase, USEROPTION_ERASE, 0);
-	///step6
-	apt_ifc_step_sync(ptIfcBase, USEROPTION_PGM| eProt, 0);
-	
 	return tRet;
 }
