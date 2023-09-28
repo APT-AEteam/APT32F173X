@@ -37,8 +37,11 @@ typedef volatile struct {
 } csp_ifc_t ;
 
 
-#define IFC_PFLASH	(0x0)
-#define IFC_DFLASH  (0x1)
+typedef enum{
+	IFC_PFLASH = 0,
+	IFC_DFLASH
+}ifc_type_e;
+
 #define IFC_PFLASH_PAGE_SZ	(64)		//unit: word
 #define IFC_DFLASH_PAGE_SZ	(16)		//unit: word
 

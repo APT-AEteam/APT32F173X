@@ -32,102 +32,86 @@ typedef struct {
 
 
 
-// Function documentation
+// Function Declaration
 
 /**
   \brief       config data flash workmode
+   * 
   \param[in]   ptIfcBase    pointer of ifc register structure
   \param[in]   bEnable	   	0: normal mode
 							1: para mode
 */
 void csi_ifc_dflash_paramode_enable(csp_ifc_t *ptIfcBase, bool bEnable);
 
-/**
-  \brief       Read data from Flash.
-  \param[in]   ptIfcBase  pointer of ifc register structure.
-  \param[in]   wAddr  Data address（(SHOULD BE WORD ALLIGNED)）
-  \param[out]  data  Pointer to a buffer storing the data read from Flash.
-  \param[in]   wDataNum   Number of data（bytes）to read.
-  \return      error code
-*/
+/** \brief Read data from Flash.
+ * 
+ *  \param[in] 	ptIfcBase：	pointer of ifc register structure.
+ *  \param[in] 	wAddr：		data address（(SHOULD BE WORD ALLIGNED)）
+ *  \param[out] wData：		data  Pointer to a buffer storing the data read from Flash.
+ *  \param[in] 	wDataNum：	number of data（WORDs）to read.
+ *  \return error code:		return error when start address is not word alligned or address beyonds accessable range \ref csi_error_t
+ */
 csi_error_t csi_ifc_read(csp_ifc_t *ptIfcBase, uint32_t wAddr, uint32_t *data, uint32_t wDataNum);
 
 
-/** \brief Program data (<page size)to DFLASH. NOTE!!! Extra ERASE is NOT needed before programming.
+/** \brief Program data (<page size)to DFLASH. 
+ *  \brief NOTE!!! Extra ERASE is NOT needed before programming.
  * 
- *  \param[in] ptIfcBase：pointer of ifc register structure
- *  \param[in] wAddr：Data address (SHOULD BE WORD ALLIGNED)
- *  \param[in] pwData: data  Pointer to a buffer containing the data to be programmed to Flash.
- *  \param[in] wDataWordNum: Number of data(WORDS) items to program.
- *  \return error code
+ *  \param[in] ptIfcBase：	pointer of ifc register structure
+ *  \param[in] wAddr：		data address (SHOULD BE WORD ALLIGNED)
+ *  \param[in] pwData: 		data  Pointer to a buffer containing the data to be programmed to Flash.
+ *  \param[in] wDataWordNum:number of data(WORDS) items to program.
+ *  \return error code: 	return CSI_ERROR when address is not valid or PGM verify fails  \ref csi_error_t
  */
 csi_error_t csi_ifc_dflash_page_program(csp_ifc_t *ptIfcBase, uint32_t wAddr, uint32_t *pwData, uint32_t wDataWordNum);
 
 
-/** \brief Program data (<page size)to PFLASH. NOTE!!! Extra ERASE is NOT needed before programming.
+/** \brief Program data (<page size)to PFLASH. 
+ *  \brief NOTE!!! Extra ERASE is NOT needed before programming.
  * 
- *  \param[in] ptIfcBase：pointer of ifc register structure
- *  \param[in] wAddr：Data address (SHOULD BE WORD ALLIGNED)
- *  \param[in] pwData: data  Pointer to a buffer containing the data to be programmed to Flash.
- *  \param[in] wDataWordNum: Number of data(WORDS) items to program.
- *  \return error code
+ *  \param[in] ptIfcBase：	pointer of ifc register structure
+ *  \param[in] wAddr：		Data address (SHOULD BE WORD ALLIGNED)
+ *  \param[in] pwData: 		data  Pointer to a buffer containing the data to be programmed to Flash.
+ *  \param[in] wDataWordNum:number of data(WORDS) items to program.
+ *  \return error code: 	return CSI_ERROR when address is not valid or PGM verify fails  \ref csi_error_t
  */
 csi_error_t csi_ifc_pflash_page_program(csp_ifc_t *ptIfcBase, uint32_t wAddr, uint32_t *pwData, uint32_t wDataWordNum);
 
 
-/** \brief Program data (<page size)to Flash. NOTE!!! Extra ERASE is NOT needed before programming.
+/** \brief erase one page(DFLASH or PFLASH). 
+ *  \brief NOTE!!! Extra ERASE is NOT needed before programming.
  * 
- *  \param[in] ptIfcBase：pointer of ifc register structure
- *  \param[in] wAddr：Data address (SHOULD BE WORD ALLIGNED)
- *  \param[in] pwData: data  Pointer to a buffer containing the data to be programmed to Flash.
- *  \param[in] wDataNum: Number of data(WORDS) items to program.
- *  \return error code
- */
-csi_error_t csi_ifc_page_program(csp_ifc_t *ptIfcBase, uint32_t wAddr, uint32_t *pwData, uint32_t wDataNum);
-
-
-/**
-  \brief       Program data to Flash.
-  \param[in]   ptEflash  ifc handle to operate.
-  \param[in]   wAddr  Data address (SHOULD BE WORD ALLIGNED)
-  \param[in]   data  Pointer to a buffer containing the data to be programmed to Flash.
-  \param[in]   wDataNum   Number of data(BYTES) items to program.
-  \return      error code
-*/
-csi_error_t csi_ifc_program(csp_ifc_t *ptIfcBase, uint32_t wAddr, uint32_t *pwData, uint32_t wDataNum);
-
-
-/** \brief erase one page(DFLASH or PFLASH). NOTE!!! Extra ERASE is NOT needed before programming.
- * 
- *  \param[in] ptIfcBase：pointer of ifc register structure
+ *  \param[in] ptIfcBase：	pointer of ifc register structure
  *  \param[in] wPageStAddr: Page start address
- *  \return ifc_status_t
+ *  \return error code:		return CSI_ERROR when wPageStAddr beyonds accessable range
  */
 csi_error_t csi_ifc_page_erase(csp_ifc_t *ptIfcBase, uint32_t wPageStAddr);
 
 
-/** 
-  \brief get flash status
-  \param ptIfcBase pointer of ifc register structure.
-  \return ifc_status_t
+/** \brief get flash status
+ * 
+ *  \param ptIfcBase:	pointer of ifc register structure.
+ *  \return tStatus:	ifc status, \ref ifc_status_t
  */
 csi_ifc_status_t csi_ifc_get_status(csp_ifc_t *ptIfcBase);
 
 
 /** \brief Change user option
- *  \param ptIfcBase pointer of ifc register structure.
- *  \param wData data that to be written into USER OPTION area
- *  \return csi_error_t
+ * 
+ *  \param ptIfcBase:	pointer of ifc register structure.
+ *  \param wData:		data that to be written into USER OPTION area
+ *  \return error code: return CSI_ERROR when PGM verify fails \ref csi_error_t
  */
 csi_error_t csi_ifc_set_useroption(csp_ifc_t *ptIfcBase, uint32_t wData);
 
 
-/** \brief write flash protection
- *  \param ptIfcBase：ptIfcBase pointer of ifc register structure.
- *  \param eProt：Flash protection mode \ref ifc_prot_e
- *  \return csi_error_t
+/** \brief enable flash protection
+ * 
+ *  \param ptIfcBase：	ptIfcBase pointer of ifc register structure.
+ *  \param eProt：		Flash protection mode \ref ifc_prot_e
+ *  \return none 
  */
-csi_error_t csi_ifc_set_protection(csp_ifc_t *ptIfcBase, ifc_prot_e eProt);
+void csi_ifc_set_protection(csp_ifc_t *ptIfcBase, ifc_prot_e eProt);
 
 
 #ifdef __cplusplus
