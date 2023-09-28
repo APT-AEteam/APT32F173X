@@ -20,7 +20,7 @@
 static int32_t check_is_alloced(csi_etcb_ch_e eEtbCh);
 static void set_ch_alloc_status(csi_etcb_ch_e eEtbCh, uint32_t wStatus);
 static void apt_etcb_ch_enable(csp_etcb_t *ptEtbBase, csi_etcb_ch_e eEtbCh, bool bEnable);
-static void etcb_set_one_trg_more(csp_etcb_t *ptEtbBase, uint8_t byChNum, uint8_t bySrc, uint8_t byDst0, uint8_t byDst1, uint8_t byDst2, etcb_ch_trg_mode_e eTrgMode);
+static void apt_etcb_set_one_trg_more(csp_etcb_t *ptEtbBase, uint8_t byChNum, uint8_t bySrc, uint8_t byDst0, uint8_t byDst1, uint8_t byDst2, etcb_ch_trg_mode_e eTrgMode);
 
 /* externs variablesr-------------------------------------------------*/
 /* Private variablesr-------------------------------------------------*/
@@ -128,7 +128,7 @@ csi_error_t csi_etcb_ch_init(csi_etcb_ch_e eEtbCh, csi_etcb_config_t *ptConfig)
 			break;
 		case ETCB_ONE_TRG_MORE:						//channel num = [0:2]		
 			if(eEtbCh < ETCB_CH3)
-				etcb_set_one_trg_more(ETCB, eEtbCh, ptConfig->eSrcIp, ptConfig->eDstIp, ptConfig->eDstIp1, ptConfig->eDstIp2, (etcb_ch_trg_mode_e)ptConfig->eTrgMode);
+				apt_etcb_set_one_trg_more(ETCB, eEtbCh, ptConfig->eSrcIp, ptConfig->eDstIp, ptConfig->eDstIp1, ptConfig->eDstIp2, (etcb_ch_trg_mode_e)ptConfig->eTrgMode);
 			else
 				ret = CSI_ERROR;
 				
@@ -257,7 +257,7 @@ static void apt_etcb_ch_enable(csp_etcb_t *ptEtbBase, csi_etcb_ch_e eEtbCh, bool
  *  \param[in] eTrgMode: trigger mode(hard/soft), \ref csi_etcb_ch_e
  *  \return none
  */ 
-static void etcb_set_one_trg_more(csp_etcb_t *ptEtbBase, uint8_t byChNum, uint8_t bySrc, uint8_t byDst0, uint8_t byDst1, uint8_t byDst2, etcb_ch_trg_mode_e eTrgMode)
+static void apt_etcb_set_one_trg_more(csp_etcb_t *ptEtbBase, uint8_t byChNum, uint8_t bySrc, uint8_t byDst0, uint8_t byDst1, uint8_t byDst2, etcb_ch_trg_mode_e eTrgMode)
 {
 	ptEtbBase->CH1_2[byChNum-1].CFG0 = (ETCB_CH1_2_TRG_DST0(byDst0) | ETCB_CH1_2_TRG_DST1(byDst1) | ETCB_CH1_2_TRG_DST2(byDst2)); 
 	if(byDst0 != ETCB_DST_NOT_USE)

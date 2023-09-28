@@ -11,6 +11,49 @@
 */
 #include "drv/fvr.h"
 
+/** \brief fvr init 
+ *  \brief FVR can be provided to ADC,OPA, and CMP at the same time, ensuring that there is no conflict between modules
+ * 
+ *  \param[in] ptFvrBase:	pointer of fvr register structure
+ *  \param[in] ptFvrCfg: 	pointer of fvr config structure
+ *             	- eFvrLevel:Fvr output level, \ref csi_fvr_lvl_e
+ *             	- eCmpref: 	Fvr to cmp reference, \ref csi_fvr_cmpref_e
+ * 			   	- eOpacm: 	Fvr to opa reference, \ref csi_fvr_opacm_e
+ * 			   
+ *  \return error code \ref csi_error_t
+ */ 
+csi_error_t csi_fvr_init(csp_fvr_t *ptFvrBase,csi_fvr_config_t *ptFvrCfg)
+{	
+	csi_clk_enable((uint32_t *)ptFvrBase);
+	csi_fvr_set_lvl(FVR, ptFvrCfg->eFvrLevel);
+	csi_fvr_set_cmpref(FVR,ptFvrCfg->eCmpRef);
+	csi_fvr_set_opacm(FVR,ptFvrCfg->eOpaCm);
+	return CSI_OK;
+}
+
+/**
+  \brief       fvr buffer int 
+  \param[in]   ptFvrBase:	pointer of fvr register structure
+  \param[in]   eBuflvl:		buffin voltage  level selection
+  \return      none
+*/
+void csi_set_buf(csp_fvr_t *ptFvrBase,csi_fvr_buflvl_e eBuflvl)
+{
+	csi_clk_enable((uint32_t *)ptFvrBase);
+	csp_fvr_bufkey_unlock(ptFvrBase);
+	csp_fvr_buf_enable(ptFvrBase);
+	if(eBuflvl == FVR_BUF_LEVEL_EXTERNAL)
+	{	
+		csp_fvr_set_buflvl(ptFvrBase, (fvr_buflvl_e)eBuflvl);
+		csp_fvr_bufin_enable(ptFvrBase);
+	}
+	else 
+	{
+		csp_fvr_bufin_disable(ptFvrBase);
+		csp_fvr_set_buflvl(ptFvrBase, (fvr_buflvl_e)eBuflvl);
+	}
+}
+
 /**
   \brief       set fvr lvl 
   \param[in]   ptFvrBase:	pointer of fvr register structure
@@ -54,29 +97,6 @@ void csi_fvr_disable(csp_fvr_t *ptFvrBase)
 }
 
 /**
-  \brief       fvr buffer int 
-  \param[in]   ptFvrBase:	pointer of fvr register structure
-  \param[in]   eBuflvl:		buffin voltage  level selection
-  \return      none
-*/
-void csi_set_buf(csp_fvr_t *ptFvrBase,csi_fvr_buflvl_e eBuflvl)
-{
-	csi_clk_enable((uint32_t *)ptFvrBase);
-	csp_fvr_bufkey_unlock(ptFvrBase);
-	csp_fvr_buf_enable(ptFvrBase);
-	if(eBuflvl == FVR_BUF_LEVEL_EXTERNAL)
-	{	
-		csp_fvr_set_buflvl(ptFvrBase, (fvr_buflvl_e)eBuflvl);
-		csp_fvr_bufin_enable(ptFvrBase);
-	}
-	else 
-	{
-		csp_fvr_bufin_disable(ptFvrBase);
-		csp_fvr_set_buflvl(ptFvrBase, (fvr_buflvl_e)eBuflvl);
-	}
-}
-
-/**
   \brief       set fvr opacm 
   \param[in]   ptFvrBase:	pointer of fvr register structure
   \param[in]   eOpacm:		opa voltage reference select
@@ -85,24 +105,4 @@ void csi_set_buf(csp_fvr_t *ptFvrBase,csi_fvr_buflvl_e eBuflvl)
 void csi_fvr_set_opacm(csp_fvr_t *ptFvrBase,csi_fvr_opacm_e eOpacm)
 {
 	csp_fvr_set_opacm(ptFvrBase, (fvr_opacm_e)eOpacm);
-}
-
-/** \brief fvr init 
- *  \brief FVR can be provided to ADC,OPA, and CMP at the same time, ensuring that there is no conflict between modules
- * 
- *  \param[in] ptFvrBase:	pointer of fvr register structure
- *  \param[in] ptFvrCfg: 	pointer of fvr config structure
- *             	- eFvrLevel:Fvr output level, \ref csi_fvr_lvl_e
- *             	- eCmpref: 	Fvr to cmp reference, \ref csi_fvr_cmpref_e
- * 			   	- eOpacm: 	Fvr to opa reference, \ref csi_fvr_opacm_e
- * 			   
- *  \return error code \ref csi_error_t
- */ 
-csi_error_t csi_fvr_init(csp_fvr_t *ptFvrBase,csi_fvr_config_t *ptFvrCfg)
-{	
-	csi_clk_enable((uint32_t *)ptFvrBase);
-	csi_fvr_set_lvl(FVR, ptFvrCfg->eFvrLevel);
-	csi_fvr_set_cmpref(FVR,ptFvrCfg->eCmpRef);
-	csi_fvr_set_opacm(FVR,ptFvrCfg->eOpaCm);
-	return CSI_OK;
 }
