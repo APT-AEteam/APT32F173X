@@ -89,7 +89,7 @@ typedef volatile struct {                   	  /*!< SYSCON Structure            
 	__IOM uint32_t	TRIMUREG;                     /*!< 0x10C: User defined reg0                              */
 	__IM  uint32_t	_RSVD7[2];					
 	__IOM uint32_t	CQCR;                         /*!< 0x118: Clock Quality check control reg                */
-	__IM  uint32_t	CQSR;						  /*!< 0x11C: Clock Qualifty check control reg  			   */
+	__IM  uint32_t	CQSR;						  /*!< 0x11C: Clock Qualifty check control reg  			 */
 	__IM  uint32_t	_RSVD8[2];
 	__IOM uint32_t	DBGCR;						  /*!< 0x128: Debug Control Register			   */
 	__IOM uint32_t	BRPKEY;						  /*!< 0x12c: SRBREG, ERBREG  protect reg			   */	
@@ -109,14 +109,23 @@ typedef enum{
 #define SYSCON_IDKEY		(0xE11Eul << 16)
 
 /// GCER/GCDR/GCSR/CKST reg content
-#define ISOSC 		(0x01ul)
-#define IMOSC 		(0x01ul << 1)
-#define ESOSC 		(0x01ul << 2)
-#define EMOSC 		(0x01ul << 3)
-#define HFOSC 		(0x01ul << 4)
-#define PLL 		(0x01ul << 5)
+//#define ISOSC 		(0x01ul)
+//#define IMOSC 		(0x01ul << 1)
+//#define ESOSC 		(0x01ul << 2)
+//#define EMOSC 		(0x01ul << 3)
+//#define HFOSC 		(0x01ul << 4)
+//#define PLL 		(0x01ul << 5)
 #define SYSCLK		(0x01ul << 8)
-#define SYSTICK 	(0x01ul << 11)
+//#define SYSTICK 	(0x01ul << 11)
+
+typedef enum{
+	ISOSC  = 0x01ul,
+	IMOSC  = (0x01ul << 1),
+	ESOSC  = (0x01ul << 2), 
+	EMOSC  = (0x01ul << 3),
+	HFOSC  = (0x01ul << 4),
+	PLL    = (0x01ul << 5)
+}clk_src_e;
 
 #define CKST_MSK	0x13f
 #define GCSR_MSK	0x0ffb1f
@@ -451,12 +460,10 @@ typedef enum{
 
 
 typedef enum {
-	
 	WKUP_IWDT = 8,
 	WKUP_RTC,
 	WKUP_LPT,
 	WKUP_LVD
-	
 } wakeup_src_e;
 
 
@@ -488,24 +495,27 @@ typedef enum{
 /// EXI interrupt regs: EXIER/EXIDR/EXIRS/EXIAR/EXICR/EXIRS
 
 /// RSR reset register
-#define RSR_MSK		(0x3fff)
+#define RSR_MSK		(0xffff)
 typedef enum{
-	PORST	= 0,
-	LVRST,
-	EXTRST,
-	IWDTRST = 4,
-	EMCMRST = 6,
-	CPURST,
-	SWRST,
-	CPUFAULTRST,
-	SRAMRST = 11,
-	EFLRST,
-	WWDTRST
+	PORST			= (0x1ul <<0),
+	LVRST			= (0x1ul <<1),
+	EXTRST			= (0x1ul <<2),
+	IWDTRST			= (0x1ul <<4),
+	ESCMRST 		= (0x1ul <<5),
+	EMCMRST 		= (0x1ul <<6),
+	CPURST			= (0x1ul <<7),
+	SWRST			= (0x1ul <<8),
+	CPUFAULTRST		= (0x1ul <<9),
+	PLLUNLOCKRST	= (0x1ul <<10),
+	SRAMRST 		= (0x1ul <<11),
+	EFLRST			= (0x1ul <<12),
+	WWDTRST			= (0x1ul <<13),
+	CPU1RST			= (0x1ul <<15),
+	ALLRSTST 		= 0xFFFF
 }rst_st_e;
 
 
 ///IWDCR
-
 #define IWDTCR_KEY (0x8778ul << 16)
 
 #define IWDT_INTV_POS	(2)
@@ -665,6 +675,11 @@ typedef enum{
 
 #define CQSR_MSK				0xFFFFF
 
+//dbgcr
+
+#define SWD_LOCK			0
+#define SWD_UNLOCK			0x5a
+
 ///inline functions
 
 //CKST
@@ -687,9 +702,14 @@ static inline void csp_set_clksrc(csp_syscon_t *ptSysconBase, uint32_t wClkSrc)
 }
 
 //PLLCR
-static inline void csp_pll_clk_sel(csp_syscon_t *ptSysconBase, pll_clk_sel_e eClkSel)
+static inline void csp_pll_set_clk_src(csp_syscon_t *ptSysconBase, pll_clk_sel_e eClkSel)
 {
 	ptSysconBase->PLLCR = (ptSysconBase->PLLCR & (~PLL_CLK_SEL_MSK)) | eClkSel << PLL_CLK_SEL_POS;
+}
+
+static inline uint8_t csp_pll_get_clk_src(csp_syscon_t *ptSysconBase)
+{
+	return (uint8_t)(ptSysconBase->PLLCR & PLL_CLK_SEL_MSK);
 }
 
 static inline void csp_pll_set_div_m(csp_syscon_t *ptSysconBase, uint8_t byDivM)
@@ -723,15 +743,15 @@ static inline void csp_pll_set_ckq_div(csp_syscon_t *ptSysconBase, uint8_t byCkp
 }
 
 //OPT1
-static inline void csp_set_hfosc_fre(csp_syscon_t *ptSysconBase, uint32_t wFreq)
+static inline void csp_set_hfosc_freq(csp_syscon_t *ptSysconBase, uint32_t wFreq)
 {
 	ptSysconBase->OPT1 = (ptSysconBase->OPT1 & (~HFO_MSK)) | wFreq << HFO_POS;
 }
-static inline uint32_t csp_get_hfosc_fre(csp_syscon_t *ptSysconBase)
+static inline uint32_t csp_get_hfosc_freq(csp_syscon_t *ptSysconBase)
 {
 	return (uint32_t) (((ptSysconBase->OPT1) & HFO_MSK) >> HFO_POS);
 }
-static inline void csp_set_imosc_fre(csp_syscon_t *ptSysconBase, uint32_t wFreq)
+static inline void csp_set_imosc_freq(csp_syscon_t *ptSysconBase, uint32_t wFreq)
 {
 	ptSysconBase->OPT1 = (ptSysconBase->OPT1 & (~IMO_MSK)) | wFreq;
 }
@@ -755,7 +775,7 @@ static inline uint32_t	csp_get_pdiv(csp_syscon_t *ptSysconBase)
 	return (uint32_t ) (((ptSysconBase->PCLKCR) & PCLK_DIV_MSK) >> PCLK_DIV_POS);
 }
 
-static inline uint32_t csp_get_clksrc(csp_syscon_t *ptSysconBase)
+static inline uint32_t csp_get_clk_src(csp_syscon_t *ptSysconBase)
 {
 	return (uint32_t) ((ptSysconBase->SCLKCR) & SYSCLK_SRC_MSK);
 }
@@ -765,7 +785,7 @@ static inline  uint32_t csp_get_hclk_div(csp_syscon_t *ptSysconBase)
 	return (uint32_t) (((ptSysconBase->SCLKCR) & HCLK_DIV_MSK) >> HCLK_DIV_POS);
 }
 
-static inline  uint8_t csp_get_imsrc(csp_syscon_t *ptSysconBase)
+static inline  uint8_t csp_get_im_src(csp_syscon_t *ptSysconBase)
 {
 	return (uint8_t) (ptSysconBase->OPT1 & IMO_MSK);
 }
@@ -800,9 +820,14 @@ static inline void csp_pder1_clk_disable(csp_syscon_t *ptSysconBase, uint32_t wI
 	ptSysconBase->PCDR1 = (0x01ul << wIdx);
 }
 
-static inline void csp_src_clk_enable(csp_syscon_t *ptSysconBase, uint8_t byClk)
+static inline void csp_src_clk_enable(csp_syscon_t *ptSysconBase, clk_src_e eSrcClk)
 {
-	ptSysconBase->GCER = (0x01ul << byClk);
+	ptSysconBase->GCER = eSrcClk;
+}
+
+static inline void csp_src_clk_disable(csp_syscon_t *ptSysconBase,clk_src_e eSrcClk)
+{
+	ptSysconBase->GCDR = eSrcClk;
 }
 
 static inline void csp_clk_pm_enable(csp_syscon_t *ptSysconBase, clk_pm_e eClk)
@@ -810,16 +835,50 @@ static inline void csp_clk_pm_enable(csp_syscon_t *ptSysconBase, clk_pm_e eClk)
 	ptSysconBase->GCER = (0x1ul << eClk);
 }
 
-static inline void csp_src_clk_disable(csp_syscon_t *ptSysconBase, uint8_t byClk)
-{
-	ptSysconBase->GCDR = (0x01ul << byClk);
-}
-
 static inline void csp_clk_pm_disable(csp_syscon_t *ptSysconBase, clk_pm_e eClk)
 {
 	ptSysconBase->GCDR = (0x1ul << eClk);
 }
 
+static inline void csp_emcm_enable(csp_syscon_t *ptSysconBase)
+{
+	ptSysconBase -> GCER = EM_CM_EN;
+}
+
+static inline void csp_emcm_disable(csp_syscon_t *ptSysconBase)
+{
+	ptSysconBase -> GCDR = EM_CM_EN;
+}
+
+static inline void csp_emcm_rst(csp_syscon_t *ptSysconBase)
+{
+	ptSysconBase -> GCER = EM_CMRST;
+}
+
+static inline void csp_emcm_switch_im(csp_syscon_t *ptSysconBase)
+{
+	ptSysconBase -> GCDR = EM_CMRST;
+}
+
+static inline void csp_escm_enable(csp_syscon_t *ptSysconBase)
+{
+	ptSysconBase -> GCER = ES_CM_EN;
+}
+
+static inline void csp_escm_disable(csp_syscon_t *ptSysconBase)
+{
+	ptSysconBase -> GCDR = ES_CM_EN;
+}
+
+static inline void csp_escm_rst(csp_syscon_t *ptSysconBase)
+{
+	ptSysconBase -> GCER = ES_CMRST;
+}
+
+static inline void csp_escm_switch_im(csp_syscon_t *ptSysconBase)
+{
+	ptSysconBase -> GCDR = ES_CMRST;
+}
 
 static inline void  csp_em_lfmd_enable(csp_syscon_t *ptSysconBase)	
 {
@@ -841,7 +900,7 @@ static inline void csp_em_flt_disable(csp_syscon_t *ptSysconBase)
 	ptSysconBase->OSTR = (ptSysconBase->OSTR & ~EM_FLTEN_MSK)| (DISABLE << EM_FLTEN_POS);	
 }
 
-static inline void csp_em_flt_sel(csp_syscon_t *ptSysconBase,em_fltsel_e eFltSel)
+static inline void csp_em_set_flt(csp_syscon_t *ptSysconBase,em_fltsel_e eFltSel)
 {
 	ptSysconBase->OSTR = (ptSysconBase->OSTR & ~EM_FLTSEL_MSK)| (eFltSel << EM_FLTSEL_POS);	
 }
@@ -856,12 +915,12 @@ static inline void csp_eflash_lpmd_disable(csp_syscon_t *ptSysconBase)
 	ptSysconBase->OPT1 = (ptSysconBase->OPT1 & ~FLASH_LPMODE_MSK)| (DISABLE << FLASH_LPMODE_POS);
 }
 
-static inline void csp_sram1_func_ctrl(csp_syscon_t *ptSysconBase, sram1_func_e eSram1Func)
+static inline void csp_sram1_set_func(csp_syscon_t *ptSysconBase, sram1_func_e eSram1Func)
 {
 	ptSysconBase->OPT1 = (ptSysconBase->OPT1 & ~SRAM1FUNCCTRL_MSK)| (eSram1Func << SRAM1FUNCCTRL_POS);
 }
 
-static inline void csp_sram_blk_ctrl(csp_syscon_t *ptSysconBase, sram_blk_e eSramBlk)
+static inline void csp_sram_set_blk(csp_syscon_t *ptSysconBase, sram_blk_e eSramBlk)
 {
 	ptSysconBase->OPT1 = (ptSysconBase->OPT1 & ~SRAMBLKCTRL_MSK)| (eSramBlk << SRAMBLKCTRL_POS);
 }
@@ -876,22 +935,22 @@ static inline void csp_nmi_int_disable(csp_syscon_t *ptSysconBase, nmi_sel_e eNm
 	ptSysconBase->OPT1 &= ~eNmiSel;
 }
 
-static inline void csp_set_em_gain(csp_syscon_t *ptSysconBase, uint8_t byGn)
+static inline void csp_em_set_gain(csp_syscon_t *ptSysconBase, uint8_t byGn)
 {
 	ptSysconBase->OSTR = (ptSysconBase->OSTR & (~EM_GM_MSK)) | (byGn << EM_GM_POS);
 }
-static inline void csp_set_es_gain(csp_syscon_t *ptSysconBase, uint8_t byGn)
+static inline void csp_es_set_gain(csp_syscon_t *ptSysconBase, uint8_t byGn)
 {
 	ptSysconBase->OSTR = (ptSysconBase->OSTR & (~ES_GM_MSK)) | (byGn << ES_GM_POS);
 }
 
 //lvdcr
-static inline void csp_lvr_set_level(csp_syscon_t *ptSysconBase,lvr_level_e eLvl)
+static inline void csp_lvr_set_lvl(csp_syscon_t *ptSysconBase,lvr_level_e eLvl)
 {
 	ptSysconBase->LVDCR = (ptSysconBase->LVDCR & (~LVR_LV_MSK)) | (eLvl) << LVR_LV_POS | LVD_KEY;
 }
 
-static inline void csp_lvd_set_level(csp_syscon_t *ptSysconBase,lvd_level_e eLvl)
+static inline void csp_lvd_set_lvl(csp_syscon_t *ptSysconBase,lvd_level_e eLvl)
 {
 	ptSysconBase->LVDCR = (ptSysconBase->LVDCR & (~LVD_LV_MSK)) | (eLvl) << LVD_LV_POS | LVD_KEY;
 }
@@ -903,7 +962,7 @@ static inline void csp_lvd_set_int_pol(csp_syscon_t *ptSysconBase, lvdint_pol_e 
 
 static inline void csp_lvd_lvr_enable(csp_syscon_t *ptSysconBase)
 {
-	ptSysconBase->LVDCR = (ptSysconBase->LVDCR &(~LVDEN_MSK)) | 5 | LVD_KEY; 
+	ptSysconBase->LVDCR = (ptSysconBase->LVDCR &(~LVDEN_MSK)) | LVD_KEY; 
 }
 
 static inline void csp_lvd_lvr_disable(csp_syscon_t *ptSysconBase)
@@ -921,17 +980,12 @@ static inline void csp_lvr_rst_disable(csp_syscon_t *ptSysconBase)
 	ptSysconBase->LVDCR |= LVR_SRT_MSK | LVD_KEY;
 }
 
-static inline void csp_lvd_reset_regs(csp_syscon_t *ptSysconBase)
-{
-	ptSysconBase -> LVDCR = LVD_KEY | LVD_DIS; 
-}
-
 static inline uint32_t csp_lvd_get_flag(csp_syscon_t *ptSysconBase)
 {
 	return ((ptSysconBase->LVDCR) & LVD_FLAG);
 }
 
-static inline uint16_t csp_lvd_get_intlvl(csp_syscon_t *ptSysconBase)
+static inline uint16_t csp_lvd_get_int_lvl(csp_syscon_t *ptSysconBase)
 {
 	return (uint16_t)((ptSysconBase->LVDCR) & LVD_LV_MSK);
 }
@@ -944,11 +998,11 @@ static inline uint16_t csp_lvr_get_lvl(csp_syscon_t *ptSysconBase)
 //imer
 static inline void csp_syscon_int_enable(csp_syscon_t *ptSysconBase, syscon_int_e eInt)
 {
-	ptSysconBase->IMER |= eInt; 
+	ptSysconBase->IMER = eInt; 
 }
 static inline void csp_syscon_int_disable(csp_syscon_t *ptSysconBase, syscon_int_e eInt)
 {
-	ptSysconBase->IMDR |= eInt;
+	ptSysconBase->IMDR = eInt;
 }
 
 static inline void csp_syscon_clr_isr(csp_syscon_t *ptSysconBase, syscon_int_e eInt)
@@ -961,12 +1015,13 @@ static inline uint32_t csp_syscon_get_isr(csp_syscon_t *ptSysconBase)
 	return (ptSysconBase->MISR);
 }
 
+//iwdt
 static inline void csp_iwdt_set_ovt(csp_syscon_t *ptSysconBase, iwdt_ovt_e eLvl)
 {
 	ptSysconBase -> IWDCR = (ptSysconBase -> IWDCR & (~IWDT_OVT_MSK)) | eLvl << IWDT_OVT_POS | IWDTCR_KEY;
 }
 
-static inline void csp_iwdt_set_int(csp_syscon_t *ptSysconBase, iwdt_intv_e eLvl)
+static inline void csp_iwdt_set_int_lvl(csp_syscon_t *ptSysconBase, iwdt_intv_e eLvl)
 {
 	ptSysconBase -> IWDCR = (ptSysconBase -> IWDCR & (~IWDT_INTV_MSK)) | eLvl << IWDT_INTV_POS | IWDTCR_KEY;
 }
@@ -976,6 +1031,11 @@ static inline void csp_iwdt_disable(csp_syscon_t *ptSysconBase)
 	ptSysconBase -> IWDEDR = DIS_IWDT | IWDTE_KEY;
 }
 
+static inline void csp_iwdt_enable(csp_syscon_t *ptSysconBase)
+{
+	ptSysconBase -> IWDEDR = EN_IWDT | IWDTE_KEY;
+	while((ptSysconBase->IWDCR & IWDT_ST) != IWDT_BUSY);
+}
 
 static inline void csp_iwdt_clr(csp_syscon_t *ptSysconBase)
 {
@@ -988,15 +1048,11 @@ static inline uint32_t csp_iwdt_get_cnt(csp_syscon_t *ptSysconBase)
 	return (ptSysconBase->IWDCNT & 0xfff);
 }
 
-static inline bool csp_iwdt_rd_st(csp_syscon_t *ptSysconBase)
+static inline bool csp_iwdt_get_status(csp_syscon_t *ptSysconBase)
 {
 	return ((ptSysconBase->IWDCR & IWDT_ST) >> 12);
 }
 
-static inline void csp_rst_clr_st(csp_syscon_t *ptSysconBase)
-{
-	ptSysconBase->RSR = RSR_MSK;
-}
 
 static inline void csp_iwdt_debug_enable(csp_syscon_t *ptSysconBase)
 {
@@ -1008,17 +1064,17 @@ static inline void csp_iwdt_debug_disable(csp_syscon_t *ptSysconBase)
 	ptSysconBase->IWDCR = (ptSysconBase->IWDCR & (~IWDT_DBGEN_MSK)) | (DISABLE<< IWDT_DBGEN_POS) |IWDTCR_KEY;
 }
 
-static inline uint32_t csp_rst_rd_st(csp_syscon_t *ptSysconBase)
+static inline uint32_t csp_get_rsr(csp_syscon_t *ptSysconBase)
 {
 	return (ptSysconBase->RSR);
 }
 
-static inline void csp_rst_clr_rsr(csp_syscon_t *ptSysconBase, uint16_t bySrcMsk)
+static inline void csp_rst_clr_rsr(csp_syscon_t *ptSysconBase, rst_st_e eRstStatus)
 {
-	ptSysconBase->RSR = bySrcMsk;
+	ptSysconBase->RSR = (ptSysconBase->RSR &(~eRstStatus))|eRstStatus;
 }
 
-static inline void csp_sramcheck_set_times(csp_syscon_t *ptSysconBase, uint32_t wVal)
+static inline void csp_sramcheck_set_time(csp_syscon_t *ptSysconBase, uint32_t wVal)
 {
 	ptSysconBase -> RAMCHK = (ptSysconBase -> RAMCHK & (~RAMCHK_TIMES_MSK)) | wVal;
 }
@@ -1033,7 +1089,7 @@ static inline void csp_sramcheck_disable(csp_syscon_t *ptSysconBase)
 	ptSysconBase -> RAMCHK = (ptSysconBase -> RAMCHK & (~RAMCHK_MSK)) | RAMCHK_DIS;
 }
 
-static inline void csp_sramcheck_rst(csp_syscon_t *ptSysconBase)
+static inline void csp_sramcheck_rst_enable(csp_syscon_t *ptSysconBase)
 {
 	ptSysconBase -> RAMCHK = (ptSysconBase -> RAMCHK & (~RAMCHK_RST_MSK)) | RAMCHK_RST;
 }
@@ -1043,7 +1099,7 @@ static inline void csp_sramcheck_int_enable(csp_syscon_t *ptSysconBase)
 	ptSysconBase -> RAMCHK = (ptSysconBase -> RAMCHK & (~RAMCHK_RST_MSK)) | RAMCHK_INT;
 }
 
-static inline void csp_flashcheck_set_times(csp_syscon_t *ptSysconBase, uint32_t wVal)
+static inline void csp_flashcheck_set_time(csp_syscon_t *ptSysconBase, uint32_t wVal)
 {
 	ptSysconBase -> EFLCHK = (ptSysconBase -> EFLCHK & (~EFLCHK_TIMES_MSK)) | wVal;
 }
@@ -1058,45 +1114,6 @@ static inline void csp_flashcheck_disable(csp_syscon_t *ptSysconBase)
 	ptSysconBase -> EFLCHK = (ptSysconBase -> EFLCHK & (~EFLCHK_MSK)) | EFLCHK_DIS;
 }
 
-static inline void csp_emcm_enable(csp_syscon_t *ptSysconBase)
-{
-	ptSysconBase -> GCER = EM_CM_EN;
-}
-
-static inline void csp_emcm_disable(csp_syscon_t *ptSysconBase)
-{
-	ptSysconBase -> GCDR = EM_CM_EN;
-}
-
-static inline void csp_emcm_rst_enable(csp_syscon_t *ptSysconBase)
-{
-	ptSysconBase -> GCER = EM_CMRST;
-}
-
-static inline void csp_emcm_rst_disable(csp_syscon_t *ptSysconBase)
-{
-	ptSysconBase -> GCDR = EM_CMRST;
-}
-
-static inline void csp_escm_enable(csp_syscon_t *ptSysconBase)
-{
-	ptSysconBase -> GCER = ES_CM_EN;
-}
-
-static inline void csp_escm_disable(csp_syscon_t *ptSysconBase)
-{
-	ptSysconBase -> GCDR = ES_CM_EN;
-}
-
-static inline void csp_escm_rst_enable(csp_syscon_t *ptSysconBase)
-{
-	ptSysconBase -> GCER = ES_CMRST;
-}
-
-static inline void csp_escm_rst_disable(csp_syscon_t *ptSysconBase)
-{
-	ptSysconBase -> GCDR = ES_CMRST;
-}
 
 //pwrcr
 ///\param eVcref,eVddcore \ref sleep_vcref_e ,sleep_vddcore_e
@@ -1153,19 +1170,20 @@ static inline void csp_sw_rst(csp_syscon_t *ptSysconBase, sw_rst_e eSwRst)
 	ptSysconBase->IDCCR |= (SYSCON_IDKEY | (eSwRst << SYSCON_SWRST_POS));
 }
 
-static inline void csp_exi_flt(csp_syscon_t *ptSysconBase, uint8_t byFltNum, exi_flt_e eFlt)
+static inline void csp_exi_set_flt(csp_syscon_t *ptSysconBase, uint8_t byFltNum, exi_flt_e eFlt)
 {
 	ptSysconBase->EXICFG = (ptSysconBase->EXICFG & ~EXI_FLT_MSK(byFltNum)) | (eFlt << EXI_FLT_POS(byFltNum));
 }
 
-static inline void csp_set_swd_lock(csp_syscon_t *ptSysconBase)
+//dbgcr
+static inline void csp_swd_lock(csp_syscon_t *ptSysconBase)
 {
-	ptSysconBase->DBGCR = 0x00;
+	ptSysconBase->DBGCR = SWD_LOCK;
 }
 
-static inline void csp_set_swd_unlock(csp_syscon_t *ptSysconBase)
+static inline void csp_swd_unlock(csp_syscon_t *ptSysconBase)
 {
-	ptSysconBase->DBGCR = 0x5a;
+	ptSysconBase->DBGCR = SWD_UNLOCK;  
 }
 
 //cqcr
@@ -1186,12 +1204,12 @@ static inline uint8_t csp_cqcr_get_status(csp_syscon_t *ptSysconBase)
 	return (uint8_t) ((ptSysconBase->CQCR) & CQCR_EN_MSK);
 }
 
-static inline void csp_cqcr_set_ref_sel(csp_syscon_t *ptSysconBase,cqcr_refsel_e eRefSel)
+static inline void csp_cqcr_set_ref(csp_syscon_t *ptSysconBase,cqcr_refsel_e eRefSel)
 {
 	ptSysconBase->CQCR = (ptSysconBase->CQCR & (~CQCR_REFSEL_MSK)) | (eRefSel  << CQCR_REFSEL_POS);
 }
 
-static inline void csp_cqcr_set_src_sel(csp_syscon_t *ptSysconBase,cqcr_srcsel_e eSrcSel)
+static inline void csp_cqcr_set_src(csp_syscon_t *ptSysconBase,cqcr_srcsel_e eSrcSel)
 {
 	ptSysconBase->CQCR = (ptSysconBase->CQCR & (~CQCR_SRCSEL_MSK)) | (eSrcSel  << CQCR_SRCSEL_POS);
 }

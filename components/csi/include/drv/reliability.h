@@ -170,12 +170,12 @@ typedef enum{
 */
 uint16_t csi_get_rst_reason(void);
 
-/**
-  \brief       clr chip reset reason
-  \param       hwRstSrc: reset reason
-  \return      none
-*/
-void csi_clr_rst_reason(uint16_t hwRstSrc);
+/** \brief clr chip reset status
+ * 
+ *  \param[in] eRstSrc: reset reason \ref rst_st_e
+ *  \return none
+ */
+void csi_clr_rst_reason(rst_st_e eRstSrc);
 
 /**
   \brief       chip software reset

@@ -42,7 +42,7 @@ void soc_pm_attach_callback(csi_pm_mode_t eMd, void *pBeforeSlp, void *pWkup)
 }
 #endif
 
-static csi_error_t soc_sleep(csi_pm_mode_e mode)
+static csi_error_t csi_soc_sleep(csi_pm_mode_e mode)
 {
 	csi_error_t ret = CSI_OK;
 	switch (mode)
@@ -62,7 +62,7 @@ static csi_error_t soc_sleep(csi_pm_mode_e mode)
 /**
   \brief       choose the pmu mode to enter
   \param[in]   handle  pmu handle to operate.
-  \param[in]   mode    \ref pmu_mode_e
+  \param[in]   mode    \ref csi_pm_mode_e
   \return      error code
 */
 csi_error_t csi_pm_enter_sleep(csi_pm_mode_e mode)
@@ -79,7 +79,7 @@ csi_error_t csi_pm_enter_sleep(csi_pm_mode_e mode)
 			csp_sleep_mainreg_power_enable(ptSysconBase); //enable main reg power under sleep mode
 			csp_sleep_vos_enable(ptSysconBase); //enable VOS under sleep mode
 			
-			soc_sleep(PM_MODE_SLEEP);	
+			csi_soc_sleep(PM_MODE_SLEEP);	
 			#ifdef CONFIG_USER_PM
 			g_tPmCore.wkup_frm_sleep();		
 			#endif
@@ -88,7 +88,7 @@ csi_error_t csi_pm_enter_sleep(csi_pm_mode_e mode)
 			#ifdef CONFIG_USER_PM
 			g_tPmCore.prepare_to_deepsleep();
 			#endif
-			soc_sleep(PM_MODE_DEEPSLEEP);	
+			csi_soc_sleep(PM_MODE_DEEPSLEEP);	
 			#ifdef CONFIG_USER_PM
 			g_tPmCore.wkup_frm_deepsleep();
 			#endif
@@ -105,7 +105,7 @@ csi_error_t csi_pm_enter_sleep(csi_pm_mode_e mode)
   \param[in]   enable  flag control the wakeup source is enable or not
   \return      error code
 */
-csi_error_t csi_pm_config_wakeup_source(csi_wakeup_src_e eWkupSrc, bool bEnable)
+csi_error_t csi_pm_set_wakeup_src(csi_wakeup_src_e eWkupSrc, bool bEnable)
 {
 	csi_error_t ret = CSI_OK;
 	csp_syscon_t *ptSysconBase  = (csp_syscon_t*)APB_SYS_BASE;
@@ -128,7 +128,6 @@ void csi_pm_clk_enable(csi_pm_clk_e eOsc)
 {
 	csp_syscon_t *ptSysconBase  = (csp_syscon_t*)APB_SYS_BASE;
 	
-//		ptSysconBase->GCER |= eOsc;
 	csp_clk_pm_enable(ptSysconBase,(clk_pm_e)eOsc);
 	while(!(csp_get_gcsr(ptSysconBase) & (0x1<<eOsc)));
 
@@ -147,23 +146,3 @@ void csi_pm_clk_disable(csi_pm_clk_e eOsc)
 	while(csp_get_gcsr(ptSysconBase) & (0x1<<eOsc));
 
 }
-///** \brief clear wkalv int status
-// * 
-// *  \param[in] byWkInt: WkInt Mask WKINT0~3 
-// *  \return none
-// */
-//void csi_pm_clr_wkint(uint8_t byWkInt)
-//{
-//	csp_syscon_t *ptSysconBase  = (csp_syscon_t*)APB_SYS_BASE;
-//	ptSysconBase->ICR = ((byWkInt & 0x0f) << 24);				//PA00/PB011/PA12/PB011
-//}
-///** \brief clear wkalv int status
-// * 
-// *  \param[in] none
-// *  \return WkInt Mask
-// */
-//uint8_t csi_pm_get_wkint(void)
-//{
-//	csp_syscon_t *ptSysconBase  = (csp_syscon_t*)APB_SYS_BASE;
-//	return (uint8_t)((ptSysconBase->RISR >> 24) & 0x0f);
-//}

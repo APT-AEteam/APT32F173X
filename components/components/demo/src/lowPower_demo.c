@@ -229,7 +229,7 @@ void lp_rtc_wakeup_demo(void)
 	tRtcConfig.eClkSrc = RTC_CLKSRC_ISOSC;  					//选择时钟源
 	tRtcConfig.eFmt = RTC_MODE_24FMT;				  			//选择时间模式
 	csi_rtc_init(RTC, &tRtcConfig);				  				//初始化RTC
-//	csi_rtc_set_time(RTC, RTC_TIMER_0_5S);						//每0.5s进一次中断
+//	csi_rtc_set_timer(RTC, RTC_TIMER_0_5S);						//每0.5s进一次中断
 	csi_rtc_start(RTC);	
 	
 	delay_ums(200);

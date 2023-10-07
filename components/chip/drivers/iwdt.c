@@ -1,20 +1,20 @@
 /***********************************************************************//** 
  * \file  wdt.c
  * \brief  window WDT and indepedent WDT driver
- * \copyright Copyright (C) 2015-2020 @ APTCHIP
+ * \copyright Copyright (C) 2015-2023 @ APTCHIP
  * <table>
  * <tr><th> Date  <th>Version  <th>Author  <th>Description
  * <tr><td> 2020-8-24 <td>V0.0 <td>WNN     <td>initial
  * <tr><td> 2021-5-13 <td>V0.0 <td>ZJY     <td>support INT
+ * <tr><td> 2023-9-27 <td>V0.1  <td>GQQ   <td>code normalization
  * </table>
  * *********************************************************************
 */
 
-#include <sys_clk.h>
-#include <drv/iwdt.h>
-#include <drv/irq.h>
+#include "sys_clk.h"
+#include "drv/iwdt.h"
+#include "drv/irq.h"
 
-#include "math.h"
 
 /* Private macro------------------------------------------------------*/
 /* externs function---------------------------------------------------*/
@@ -69,12 +69,8 @@ csi_error_t csi_iwdt_init(csi_iwdt_to_e eTimeOut)
  */ 
 void csi_iwdt_open(void)
 {
-	SYSCON -> IWDEDR = EN_IWDT | IWDTE_KEY;
-	while((SYSCON->IWDCR & IWDT_ST) != IWDT_BUSY);
-	SYSCON -> IWDCNT = (SYSCON -> IWDCNT & (~IWDT_CLR_MSK)) | IWDT_CLR << IWDT_CLR_POS;
-	
-	NOP;
-	while((SYSCON->IWDCNT & IWDT_CLR_BUSY) == IWDT_CLR_BUSY);
+	csp_iwdt_enable(SYSCON);
+	csp_iwdt_clr(SYSCON);
 }
 
 /** \brief close(stop) iwdt
@@ -97,41 +93,43 @@ void csi_iwdt_feed(void)
 	csp_iwdt_clr(SYSCON);
 }
 
-/** \brief iwdt irq enable/disable
+/** \brief iwdt int enable
  * 
  *  \param[in] eAlarmTo: iwdt interrupt alarm timer length(timer out), 1/2/3/4/5/6/7_8
- *  \param[in] bEnable: enable/disable INT
  *  \return none
  */
-void csi_iwdt_irq_enable(csi_iwdt_alarm_e eAlarmTo, bool bEnable)
+void csi_iwdt_int_enable(csi_iwdt_alarm_e eAlarmTo)
 {
-	csp_iwdt_set_int(SYSCON, (iwdt_intv_e)eAlarmTo);					//iwdt interrupt timer, 1/2/3/4/5/6/7_8
+	csp_iwdt_set_int_lvl(SYSCON, (iwdt_intv_e)eAlarmTo);	//iwdt interrupt timer, 1/2/3/4/5/6/7_8
 	
-	
-	if(bEnable)
-	{
-		csp_syscon_int_enable(SYSCON, IWDT_INT);	//enable iwdt interrupt
-		csi_vic_enable_irq(SYSCON_IRQ_NUM);				//enable iwdt irq
-	}
-	else
-	{
-		csp_syscon_int_disable(SYSCON, IWDT_INT);
-		csi_vic_disable_irq(SYSCON_IRQ_NUM);				//disable iwdt irq
-	}
+	csp_syscon_int_enable(SYSCON, IWDT_INT);				//enable iwdt interrupt
 }
-/** \brief check if wdt is running
+
+/** \brief iwdt int disable
+ * 
+ *  \param[in] eAlarmTo: iwdt interrupt alarm timer length(timer out), 1/2/3/4/5/6/7_8
+ *  \return none
+ */
+void csi_iwdt_int_disable(csi_iwdt_alarm_e eAlarmTo)
+{
+	csp_iwdt_set_int_lvl(SYSCON, (iwdt_intv_e)eAlarmTo);					//iwdt interrupt timer, 1/2/3/4/5/6/7_8
+	
+	csp_syscon_int_disable(SYSCON, IWDT_INT);
+}
+
+/** \brief check if iwdt is running
  * 
  *  \return true->running, false->stopped
 */
 bool csi_iwdt_is_running(void)
 {
-	return csp_iwdt_rd_st(SYSCON);;
+	return csp_iwdt_get_status(SYSCON);;
 }
 
 /** \brief get the remaining time to timeout
  * 
  *  \param[in] none
- *  \return the remaining time of wdt, unit: ms
+ *  \return the remaining time of iwdt, unit: ms
 */
 uint32_t csi_iwdt_get_remaining_time(void)
 {
@@ -165,15 +163,13 @@ uint32_t csi_iwdt_get_remaining_time(void)
 
 /** \brief enable iwdt when stop in debug mode
  * 
- *  \param[in] none
+ *  \param[in] none 
  *  \return  none
 */
 void csi_iwdt_debug_enable(void)
 {
 	csp_iwdt_debug_enable(SYSCON);
-	
 }
-
 /** \brief disable iwdt when stop in debug mode
  * 
  *  \param[in] none

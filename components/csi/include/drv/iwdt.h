@@ -126,7 +126,7 @@ void csi_iwdt_debug_enable(void);
  *  \param[in] none
  *  \return  none
 */
-void csi_iwdt_debug_disable(void);
+void csi_iwdt_debug_disable();
 
 #ifdef __cplusplus
 }
