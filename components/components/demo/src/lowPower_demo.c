@@ -229,7 +229,7 @@ void lp_rtc_wakeup_demo(void)
 	tRtcConfig.eClkSrc = RTC_CLKSRC_ISOSC;  					//选择时钟源
 	tRtcConfig.eFmt = RTC_MODE_24FMT;				  			//选择时间模式
 	csi_rtc_init(RTC, &tRtcConfig);				  				//初始化RTC
-	csi_rtc_start_as_timer(RTC, RTC_TIMER_0_5S);				//每0.5s进一次中断
+//	csi_rtc_set_timer(RTC, RTC_TIMER_0_5S);						//每0.5s进一次中断
 	csi_rtc_start(RTC);	
 	
 	delay_ums(200);
@@ -270,7 +270,7 @@ void lp_iwdt_wakeup_demo(void)
 
 	//IWDT WAKEUP DeepSleep
 	csi_iwdt_init(IWDT_TO_1024);								//初始化看门狗，溢出时间为1024ms(系统复位时间)
-	csi_iwdt_irq_enable(IWDT_ALARMTO_4_8, ENABLE);				//使能看门狗报警中断，报警时间为4/8溢出时间(500ms)
+	csi_iwdt_int_enable(IWDT_ALARMTO_4_8);						//使能看门狗报警中断，报警时间为4/8溢出时间(500ms)
 	csi_iwdt_open();	
 	csi_iwdt_feed();
 	

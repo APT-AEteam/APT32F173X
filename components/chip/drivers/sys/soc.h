@@ -134,7 +134,7 @@ typedef enum {
 	NMI_EXPn                        = -2,      /* NMI Exception */
 	SOFTWARE_IRQn					= 3U,
 	CORET_IRQn						= 7U,
-	SYSCON_IRQ_NUM			        = 16U,						 					
+	SYSCON_IRQn			        = 16U,						 					
 	IFC_IRQn						= 17U,
 	ADC0_IRQn						= 18U,						 					
 	ADC1_IRQn						= 19U,

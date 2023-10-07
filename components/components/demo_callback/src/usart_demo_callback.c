@@ -62,11 +62,11 @@ int usart_send_int_callback_demo(void)
 	csi_gpio_pull_mode(GPIOA, PA10, GPIO_PULLUP);				//RX管脚上拉使能, 建议配置
 #endif
 	
-	tUsartConfig.byClkSrc 		= USART_CLKSRC_DIV1;		//clk = PCLK
-	tUsartConfig.byMode			= USART_MODE_ASYNC;			//异步模式
-	tUsartConfig.byDatabit 		= USART_DATA_BITS_8;		//字节长度，8bit
-	tUsartConfig.byStopbit 		= USART_STOP_BITS_1;		//停止位，1个
-	tUsartConfig.byParity		= USART_PARITY_EVEN;		//偶校验
+	tUsartConfig.eClkSrc 		= USART_CLKSRC_DIV1;		//clk = PCLK
+	tUsartConfig.eMode			= USART_MODE_ASYNC;			//异步模式
+	tUsartConfig.eDatabit 		= USART_DATA_BITS_8;		//字节长度，8bit
+	tUsartConfig.eStopbit 		= USART_STOP_BITS_1;		//停止位，1个
+	tUsartConfig.eParity		= USART_PARITY_EVEN;		//偶校验
 	tUsartConfig.wBaudRate 		= 115200;					//波特率：115200
 	csi_usart_init(USART0, &tUsartConfig);					//初始化串口
 	
@@ -153,11 +153,11 @@ int usart_receive_int_callback_demo(void)
 	csi_gpio_pull_mode(GPIOA, PA10, GPIO_PULLUP);				//RX管脚上拉使能, 建议配置
 #endif	
 
-	tUsartConfig.byClkSrc 	= USART_CLKSRC_DIV1;				//clk = PCLK
-	tUsartConfig.byMode		= USART_MODE_ASYNC;					//异步模式
-	tUsartConfig.byDatabit 	= USART_DATA_BITS_8;				//字节长度，8bit
-	tUsartConfig.byStopbit 	= USART_STOP_BITS_1;				//停止位，1个
-	tUsartConfig.byParity	= USART_PARITY_EVEN;				//偶校验
+	tUsartConfig.eClkSrc 	= USART_CLKSRC_DIV1;				//clk = PCLK
+	tUsartConfig.eMode		= USART_MODE_ASYNC;					//异步模式
+	tUsartConfig.eDatabit 	= USART_DATA_BITS_8;				//字节长度，8bit
+	tUsartConfig.eStopbit 	= USART_STOP_BITS_1;				//停止位，1个
+	tUsartConfig.eParity	= USART_PARITY_EVEN;				//偶校验
 	tUsartConfig.wBaudRate 	= 115200;							//波特率：115200
 	tUsartConfig.hwRecvTo 	= 88;								//USART接收超时时间，单位：bit位周期，8个bytes(11bit*8=88, 115200波特率时=764us)，若参数初始化为0，则关闭超时功能
 	tUsartConfig.eRxFifoTrg = USART_RXFIFOTRG_FOUR;				//USART的RXFIFO的中断触发点设置为4，即RXFIFO接收到数据>=4,才会触发RXFIFO中断；支持三种配置(1/2/4)，此参数若不被初始化，则配置为1	

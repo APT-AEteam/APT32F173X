@@ -47,10 +47,7 @@ typedef struct
     __IOM uint32_t  LCP2;       //0x0058    Limit counter protocol 2        
     __IOM uint32_t  DMACR;		//0x005C    DMA control register    
 	__IM  uint32_t  RSVD1[8];	//0x0060~0x007C  
-	__IOM uint32_t  IRDA;       //0X0080
-	__IM  uint32_t  RSVD2[3];   //0X0084~0X008C  
-//	__IM  uint32_t  RXFL;		//0x0090    Recieve FIFO status register  
-//	__IM  uint32_t  TXFL;		//0x0094    Transmit FIFO status register          
+	__IOM uint32_t  IRDA;       //0X0080       
 } csp_usart_t; 
 
 /*****************************************************************************
@@ -541,12 +538,12 @@ static inline void csp_usart_set_ckdiv(csp_usart_t *ptUsartBase, usart_clks_e eC
 	ptUsartBase->MR = (ptUsartBase->MR & ~US_CLKS_MSK) | (eClk << US_CLKS_POS);
 }
 
-static inline void csp_usart_clko_enable(csp_usart_t *ptUsartBase)
+static inline void csp_usart_clkout_enable(csp_usart_t *ptUsartBase)
 {
 	ptUsartBase->MR |= US_CLKO_MSK;
 }
 
-static inline void csp_usart_clko_disable(csp_usart_t *ptUsartBase)
+static inline void csp_usart_clkout_disable(csp_usart_t *ptUsartBase)
 {
 	ptUsartBase->MR &= ~US_CLKO_MSK;
 }

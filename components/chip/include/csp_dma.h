@@ -234,7 +234,7 @@ static inline void csp_dma_sw_rst(csp_dma_t *ptDmaBase)
 	ptDmaBase->SRR = DMA_SWRST_MSK;
 }
 
-static inline void csp_dma_ch_swtrig(csp_dma_t *ptDmaBase)										
+static inline void csp_dma_ch_sw_trg(csp_dma_t *ptDmaBase)										
 { 
 	ptDmaBase->MTRX |= DMA_SWTRIG_MSK;
 }	

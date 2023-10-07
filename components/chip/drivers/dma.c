@@ -5,7 +5,7 @@
  * <table>
  * <tr><th> Date  <th>Version  <th>Author  <th>Description
  * <tr><td> 2021-12-23 <td>V0.0  <td>ZJY   <td>initial
- * <tr><td> 2023-9-22 <td>V0.1  <td>GQQ   <td>fix bug,code normalization
+ * <tr><td> 2023-9-22 <td>V0.1  <td>GQQ   <td>code normalization
  * </table>
  * *********************************************************************
 */
@@ -17,54 +17,21 @@
 
 /* Private macro-----------------------------------------------------------*/
 /* externs function--------------------------------------------------------*/
+/* Private function--------------------------------------------------------*/
+static uint8_t apt_get_dma_idx(csp_dma_t *ptDmaBase);
+static uint8_t apt_dma_post_msg(csp_dma_t *ptDmaBase, csi_dma_int_msg_e eIntMsg, uint8_t byPost);
+
 /* externs variablesr------------------------------------------------------*/
 /* Private variablesr------------------------------------------------------*/
 static uint16_t s_hwDmaMsg[2]	= {0, 0};
 
-/** \brief get dma number 
- * 
- *  \param[in] ptDmaBase: pointer of dma register structure
- *  \return dma number 0/1
- */ 
-static uint8_t apt_get_dma_idx(csp_dma_t *ptDmaBase)
-{
-	switch((uint32_t)ptDmaBase)
-	{
-		case APB_DMA0_BASE:		//dma0
-			return 0;		
-		case APB_DMA1_BASE:		//dma1
-			return 1;
-		default:
-			return 0xff;		//error
-	}
-}
 
-/** \brief dma interrupt handle function
- * 
- *  \param[in] eIntMsg: dma interrupt message
- *  \param[in] byPost: dma interrupt message post
- *  \return none
- */ 
-static uint8_t apt_dma_post_msg(csp_dma_t *ptDmaBase, csi_dma_int_msg_e eIntMsg, uint8_t byPost)
-{
-	uint8_t byIdx = apt_get_dma_idx(ptDmaBase);
-	
-	if(0 == (s_hwDmaMsg[byIdx] & eIntMsg))
-	{
-		if(byPost)
-			s_hwDmaMsg[byIdx] |= eIntMsg;
-		return true;
-	}
-	else
-		return false;
-
-}
 /** \brief dma interrupt handle function
  * 
  *  \param[in] ptDmaBase: pointer of dma register structure
  *  \return none
  */ 
-__attribute__((weak)) void dma_irqhandler(csp_dma_t *ptDmaBase)
+void csi_dma_irqhandler(csp_dma_t *ptDmaBase)
 {
 	volatile uint32_t wIsr = csp_dma_get_isr(ptDmaBase) & 0x003f003f;
 	
@@ -111,17 +78,11 @@ csi_error_t csi_dma_ch_init(csp_dma_t *ptDmaBase, csi_dma_ch_e eDmaCh, csi_dma_c
 	if(eDmaCh >= DMA_CH_MAX_NUM)
 		return CSI_ERROR;
 	
-	csp_dma_set_ch_saddr_mode(ptDmaChBase, (dma_linc_e)ptChCfg->eSrcLinc, (dma_hinc_e)ptChCfg->eSrcHinc);										///Src addr control mode
-	csp_dma_set_ch_daddr_mode(ptDmaChBase, (dma_linc_e)ptChCfg->eDetLinc, (dma_hinc_e)ptChCfg->eDetHinc);										///Det addr control mode
-	csp_dma_set_ch(ptDmaChBase, (dma_dsize_e)ptChCfg->eDataWidth, (dma_reload_e)ptChCfg->eReload, (dma_smode_e)ptChCfg->eRunMode, (dma_tsize_e)ptChCfg->eTsizeMode);	///dma ch para config
-	csp_dma_set_ch_req(ptDmaChBase, (dma_req_e)ptChCfg->eReqMode);																///software or hardware request
-	
-//	if(ptChCfg->wInt)
-//	{
-//		csp_dma_int_enable(ptDmaChBase, ptChCfg->wInt);		//nable dma xxx interrupt
-//		//csi_irq_enable((uint32_t *)ptDmaBase);				//enable dma irq		
-//	}
-	
+	csp_dma_set_ch_saddr_mode(ptDmaChBase, (dma_linc_e)ptChCfg->eSrcLinc, (dma_hinc_e)ptChCfg->eSrcHinc);										//Src addr control mode
+	csp_dma_set_ch_daddr_mode(ptDmaChBase, (dma_linc_e)ptChCfg->eDetLinc, (dma_hinc_e)ptChCfg->eDetHinc);										//Det addr control mode
+	csp_dma_set_ch(ptDmaChBase, (dma_dsize_e)ptChCfg->eDataWidth, (dma_reload_e)ptChCfg->eReload, (dma_smode_e)ptChCfg->eRunMode, (dma_tsize_e)ptChCfg->eTsizeMode);	//dma ch para config
+	csp_dma_set_ch_req(ptDmaChBase, (dma_req_e)ptChCfg->eReqMode);																//software or hardware request
+		
 	return CSI_OK;	
 }
 /** \brief dma channel transfer start
@@ -143,12 +104,15 @@ csi_error_t csi_dma_ch_start(csp_dma_t *ptDmaBase, csi_dma_ch_e eDmaCh, void *pS
 	if((eDmaCh >= DMA_CH_MAX_NUM) || ((hwHTranNum == 0) && (hwLTranNum == 0)))
 		return CSI_ERROR;
 
-	csp_dma_set_ch_trans_num(ptDmaChBase, hwLTranNum, hwHTranNum);	///continuous mode: data length
-	csp_dma_set_ch_src_addr(ptDmaChBase, (uint32_t)pSrcAddr);		///Src addr
-	csp_dma_set_ch_dst_addr(ptDmaChBase, (uint32_t)pDstAddr);		///dst addr
-	csp_dma_ch_enable(ptDmaChBase);									///channel enable
+	csp_dma_set_ch_trans_num(ptDmaChBase, hwLTranNum, hwHTranNum);	//continuous mode: data length
+	csp_dma_set_ch_src_addr(ptDmaChBase, (uint32_t)pSrcAddr);		//Src addr
+	csp_dma_set_ch_dst_addr(ptDmaChBase, (uint32_t)pDstAddr);		//dst addr
+	
+	while(csp_dma_get_ltcst(ptDmaChBase) == 1);						//waite until DMA idle
+	csp_dma_ch_enable(ptDmaChBase);									//channel enable
+
 	if(!csp_dma_get_rsrx(ptDmaChBase))
-		csp_dma_ch_swtrig(ptDmaChBase);								///sw triger 
+		csp_dma_ch_sw_trg(ptDmaChBase);								//sw triger 
 	
 	return CSI_OK;
 }
@@ -170,7 +134,7 @@ csi_error_t csi_dma_ch_restart(csp_dma_t *ptDmaBase, csi_dma_ch_e eDmaCh)
 	if(csp_dma_get_crx(ptDmaChBase) & DMA_RELOAD_MSK)               ///if reload disable,enable channel
 		csp_dma_ch_enable(ptDmaChBase);									
 	if(!csp_dma_get_rsrx(ptDmaChBase))
-		csp_dma_ch_swtrig(ptDmaChBase);								///sw triger 
+		csp_dma_ch_sw_trg(ptDmaChBase);								///sw triger 
 	
 	return CSI_OK;
 }
@@ -186,7 +150,7 @@ void csi_dma_int_enable(csp_dma_t *ptDmaBase, csi_dma_ch_e eDmaCh, csi_dma_intsr
 {
 	csp_dma_t *ptDmaChBase = (csp_dma_t *)DMA_REG_BASE(ptDmaBase, eDmaCh);
 	
-	csp_dma_clr_isr(ptDmaChBase, (dma_int_e)eIntSrc);
+	csp_dma_clr_isr(ptDmaChBase, 0x1<<eDmaCh);
 	csp_dma_int_enable(ptDmaChBase, (dma_int_e)eIntSrc);
 }
 
@@ -236,6 +200,45 @@ void csi_dma_ch_stop(csp_dma_t *ptDmaBase, csi_dma_ch_e eDmaCh)
 void csi_dma_sw_rst(csp_dma_t *ptDmaBase)
 {
 	csp_dma_sw_rst(ptDmaBase);
+}
+
+/** \brief get dma number 
+ * 
+ *  \param[in] ptDmaBase: pointer of dma register structure
+ *  \return dma number 0/1
+ */ 
+static uint8_t apt_get_dma_idx(csp_dma_t *ptDmaBase)
+{
+	switch((uint32_t)ptDmaBase)
+	{
+		case APB_DMA0_BASE:		//dma0
+			return 0;		
+		case APB_DMA1_BASE:		//dma1
+			return 1;
+		default:
+			return 0xff;		//error
+	}
+}
+
+/** \brief dma interrupt handle function
+ * 
+ *  \param[in] eIntMsg: dma interrupt message
+ *  \param[in] byPost: dma interrupt message post
+ *  \return none
+ */ 
+static uint8_t apt_dma_post_msg(csp_dma_t *ptDmaBase, csi_dma_int_msg_e eIntMsg, uint8_t byPost)
+{
+	uint8_t byIdx = apt_get_dma_idx(ptDmaBase);
+	
+	if(0 == (s_hwDmaMsg[byIdx] & eIntMsg))
+	{
+		if(byPost)
+			s_hwDmaMsg[byIdx] |= eIntMsg;
+		return true;
+	}
+	else
+		return false;
+
 }
 
 /** \brief get dma interrupt message and (D0 not)clear message

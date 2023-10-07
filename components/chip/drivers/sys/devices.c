@@ -17,7 +17,7 @@
 const csi_irqmap_t g_tIrqMap[] = {
 	
 	{CORE_ADDR_BASE,			CORET_IRQn		},
-    {APB_SYS_BASE,				SYSCON_IRQ_NUM	},
+    {APB_SYS_BASE,				SYSCON_IRQn	},
 	{APB_IFC_BASE,				IFC_IRQn		},
     {APB_ADC0_BASE,             ADC0_IRQn		},
     {APB_ADC1_BASE,             ADC1_IRQn		},

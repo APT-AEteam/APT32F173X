@@ -57,9 +57,9 @@ extern int uart_receive_dma_demo(void);
 //usart demo
 extern int usart_send_demo(void);
 extern int usart_send_int_demo(void);
-extern int usart_recv_int_demo(void);
+extern int usart_receive_int_demo(void);
 extern int usart_send_dma_demo(void);
-extern int usart_recv_dma_demo(void);
+extern int usart_receive_dma_demo(void);
 
 extern int usart_send_int_callback_demo(void);
 extern int usart_receive_int_callback_demo(void);
@@ -129,9 +129,6 @@ extern void lp_iwdt_wakeup_demo(void);
 extern void iic_master_eeprom_demo(void);
 extern void iic_master_demo(void);
 extern void iic_slave_demo(void);
-extern void iic_multi_slave_demo(void);
-extern  void iic_dma_send_demo(void);
-extern  void iic_dma_receive_demo(void);
 
 //cnta demo
 extern int cnta_timer_demo(void);
@@ -155,7 +152,9 @@ extern int cmp_wfcr_demo(void);
 
 //gpta demo
 extern int gpta_timer_demo(void);
-extern int gpta_capture_demo(void);
+extern int gpta_capture_sync_demo0(void);
+extern int gpta_capture_sync_demo1(void);
+extern int gpta_capture_sync_demo2(void);
 extern int gpta_pwm_demo(void);
 extern int gpta_pwm_waveform_demo(void);
 extern int gpta_reglk_demo(void);
@@ -192,8 +191,9 @@ extern void fvr_buf_demo(void);
 extern int can_send_demo(void);
 extern int can_send_int_demo(void);
 extern int can_receive_int_demo(void);
-extern int can_remote_frames_demo(void);
 extern int can_receive_fifo_init_demo(void);
+extern int can_remote_frames_send_demo(void);
+extern int can_remote_frames_response_demo(void);
 
 //dac demo
 extern void dac_demo(void);	

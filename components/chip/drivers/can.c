@@ -21,7 +21,7 @@ static csi_can_bittime_t *apt_can_get_bittime(csi_can_baudRate_e eBaudRate);
 /* externs variablesr------------------------------------------------------*/
 extern 	csi_can_bittime_t  g_tBitTime[];
 
-/* global variablesr--------------------------------------------------------*/
+/* global variablesr-------------------------------------------------------*/
 csi_can_ctrl_t g_tCanCtrl[CAN_IDX];
 
 /* Private variablesr------------------------------------------------------*/
@@ -46,8 +46,8 @@ void csi_can_irqhandler(csp_can_t *ptCanBase,uint8_t byIdx)
 		case 0x8000:												//status change  handle
 			wStatus = csp_can_get_sr(ptCanBase) & CAN_INT_ALL;
 			//callback 
-			if(g_tCanCtrl[byIdx].status_callback)
-				g_tCanCtrl[byIdx].status_callback(ptCanBase, wStatus);
+			if(g_tCanCtrl[byIdx].err_callback)
+				g_tCanCtrl[byIdx].err_callback(ptCanBase, wStatus);
 			
 			csp_can_clr_isr(ptCanBase, wStatus);					//clr status interrupt
 			break;
@@ -126,7 +126,7 @@ csi_error_t csi_can_init(csp_can_t *ptCanBase, csi_can_config_t *ptCanCfg)
 	//init callback
 	g_tCanCtrl[byIdx].recv_callback = NULL;
 	g_tCanCtrl[byIdx].send_callback = NULL;
-	g_tCanCtrl[byIdx].status_callback = NULL;
+	g_tCanCtrl[byIdx].err_callback = NULL;
 	
 	return CSI_OK;
 }
@@ -152,8 +152,8 @@ csi_error_t csi_can_register_callback(csp_can_t *ptCanBase, csi_can_callback_id_
 		case CAN_CALLBACK_SEND:
 			g_tCanCtrl[byIdx].send_callback = callback;
 			break;
-		case CAN_CALLBACK_STATUS:
-			g_tCanCtrl[byIdx].status_callback = callback;
+		case CAN_CALLBACK_ERR:
+			g_tCanCtrl[byIdx].err_callback = callback;
 			break;
 		default:
 			return CSI_ERROR;
@@ -295,9 +295,9 @@ void csi_can_msg_send_int(csp_can_t *ptCanBase, csi_can_ch_e eChNum, uint8_t byD
 {
 	uint32_t wMcrVal;
 	
-	csp_can_clr_sr(CAN0, CAN_INT_ALL);									//clear all status interrupt 
-	csp_can_int_enable(ptCanBase, CAN_INT_ALL);							//enable all status interrupt
-	csp_can_ch_int_enable(ptCanBase, (0x01ul << (eChNum -1)));			//enable channel interrupt
+	csp_can_clr_sr(CAN0, CAN_INT_ERR_ALL);							//clear all error status interrupt 
+	csp_can_int_enable(ptCanBase, CAN_INT_ERR_ALL);					//enable all error status interrupt
+	csp_can_ch_int_enable(ptCanBase, (0x01ul << (eChNum -1)));		//enable channel interrupt
 	//read MCR reg
 	csp_can_set_tmr(ptCanBase, eChNum, CAN_IF1, CAN_AMCR_MSK);
 	while(csp_can_get_sr(ptCanBase) & CAN_STA_BUSY1);
@@ -324,8 +324,8 @@ void csi_can_msg_receive_int(csp_can_t *ptCanBase, csi_can_recv_t *ptRecv, uint8
 	g_tCanCtrl[byIdx].byStrCh = byStrCh;
 	g_tCanCtrl[byIdx].byTolChNum= byTolChNum;
 	
-	csp_can_clr_sr(CAN0, CAN_INT_ALL);							//clear all status interrupt 
-	csp_can_int_enable(ptCanBase, CAN_INT_ALL);					//enable all status interrupt
+	csp_can_clr_sr(CAN0, CAN_INT_ERR_ALL);						//clear all error status interrupt 
+	csp_can_int_enable(ptCanBase, CAN_INT_ERR_ALL);				//enable all error status interrupt
 	
 	for(i = byStrCh; i < (byStrCh + byTolChNum); i++)	
 	{						

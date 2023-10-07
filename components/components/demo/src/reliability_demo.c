@@ -104,8 +104,10 @@ void memorycheck_demo(void)
  */
 void emcm_demo(void)
 {
+#if (USE_GUI==0)
 	csi_gpio_set_mux(XIN_PORT,XIN_PIN, XIN_PIN_FUNC);
 	csi_gpio_set_mux(XOUT_PORT,XOUT_PIN, XOUT_PIN_FUNC);
+#endif
 	
 	csi_emosc_enable(8000000);			//使能外部晶振驱动电路,输入频率参数，以调整内部增益
 	csi_emcm_2_imosc_int();				//一旦检测到外部晶振失常，系统时钟切到IMOSC，并触发中断。注意：
@@ -124,9 +126,10 @@ void emcm_demo(void)
  */
 void escm_demo(void)
 {
+#if (USE_GUI==0)
 	csi_gpio_set_mux(SXIN_PORT,SXIN_PIN, SXIN_PIN_FUNC);
 	csi_gpio_set_mux(SXOUT_PORT,SXOUT_PIN, SXOUT_PIN_FUNC);
-	
+#endif	
 	csi_esosc_enable();			 		//使能外部晶振驱动电路,输入频率参数，以调整内部增益
 	
 	csi_escm_2_imosc_int();				//一旦检测到外部晶振失常，系统时钟切到IMOSC，并触发中断。注意：

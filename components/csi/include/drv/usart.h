@@ -73,7 +73,6 @@ typedef enum {
  */
 typedef enum {
     USART_STOP_BITS_1	= 0,    //1 Stop bit (default)
-	//USART_STOP_BITS_1_5,      //1.5 Stop bits for async mode, reserved for sync mode
     USART_STOP_BITS_2  = 2 ,    //2 Stop bits
     
 } csi_usart_stop_bits_e;
@@ -148,6 +147,11 @@ typedef enum{
 	USDMA_RX_FIFO_NSPACE  = 0,
 	USDMA_RX_FIF0_TRG
 }csi_usdma_rxfifo_md_e;
+
+typedef enum{
+	USART_DSB_LSB =0,
+	USART_DSB_MSB
+}csi_usart_dsb_sel_e;
 /**
  * \enum     csi_usart_intsrc_e
  * \brief    USART interrupt source 
@@ -210,12 +214,13 @@ typedef enum{
 typedef struct {
 	uint32_t           	 		wBaudRate;			//baud rate	
 	uint16_t					hwRecvTo;			//receive timeout
-	uint8_t						byParity;           //parity type 
-	uint8_t						byDatabit;			//data bits
-	uint8_t						byStopbit;			//stop bits
-	uint8_t						byClkSrc;			//clk source
-	uint8_t						byMode;				//usart mode, sync/async
+	csi_usart_parity_e			eParity;            //parity type 
+	csi_usart_data_bits_e		eDatabit;			//data bits
+	csi_usart_stop_bits_e		eStopbit;			//stop bits
+	csi_usart_clksrc_e			eClkSrc;			//clk source
+	csi_usart_mode_e			eMode;				//usart mode, sync/async
 	csi_usart_rxfifo_trg_e 		eRxFifoTrg;     	//rxfifo Trigger point
+	csi_usart_dsb_sel_e			eDsbSel	;			//data start bit LSB/MSB		
 
 } csi_usart_config_t;
 
@@ -333,7 +338,7 @@ void csi_usart_set_send_dma(csp_usart_t *ptUsartBase, csi_usdma_txfifo_md_e eTxD
  *  \param[in] bEnable: ENABLE/DISABLE
  *  \return  error code \ref csi_error_t
  */
-void csi_usart_set_recieve_dma(csp_usart_t *ptUsartBase, csi_usdma_rxfifo_md_e eRxDmaMode); 
+void csi_usart_set_receive_dma(csp_usart_t *ptUsartBase, csi_usdma_rxfifo_md_e eRxDmaMode); 
 
 /** \brief send data from usart, this function is dma transfer
  * 
@@ -353,7 +358,7 @@ csi_error_t csi_usart_send_dma(csp_usart_t *ptUsartBase,  const void *pData, uin
   \param[in]   wSize		number of data to send (byte), hwSize <= 0xfff.
   \return      error code \ref csi_error_t
  */
-csi_error_t csi_usart_recv_dma(csp_usart_t *ptUsartBase, void *pData, uint8_t byDmaCh, uint16_t hwSize);
+csi_error_t csi_usart_receive_dma(csp_usart_t *ptUsartBase, void *pData, uint8_t byDmaCh, uint16_t hwSize);
 
 /**
   \brief       Query data from USART receiver FIFO, this function is blocking.

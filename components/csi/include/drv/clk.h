@@ -14,20 +14,19 @@
 #ifndef _DRV_CLK_H_
 #define _DRV_CLK_H_
 
+
 #include "drv/common.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-//GCER GDCR CLK bit
-#define CLK_ISOSC	0
-#define	CLK_IMOSC	1
-#define CLK_ESOSC	2
-#define CLK_EMOSC	3
-#define CLK_HFOSC	4
-#define CLK_PLL		5
-
+typedef enum {
+	EMFLT_5NS = 0,
+	EMFLT_10NS,
+	EMFLT_15NS,
+	EMFLT_20NS,
+}csi_em_fltsel_e;
 
 typedef struct {
 	uint32_t wRegBase;
@@ -36,6 +35,14 @@ typedef struct {
 
 void csi_clk_enable(uint32_t *pIpBase);
 void csi_clk_disable(uint32_t *pIpBase);
+
+/** \brief emosc filter enable
+ * 
+ * 
+ *  \param[in] eFltSel: filter select \ref csi_em_fltsel_e
+ *  \return none
+ */
+void csi_emosc_flt_enable(csi_em_fltsel_e eFltSel);
 
 /** \brief emosc enable
  * 
@@ -69,9 +76,10 @@ csi_error_t csi_esosc_enable(void);
  *  disable external sub oscillator in SYSCON
  * 
  *  \param[in] none
- *  \return csi_error_t.
+ *  \return none
  */
-csi_error_t csi_esosc_disable(void);
+void csi_esosc_disable(void);
+
 /** \brief imosc enable
  * 
  *  enable internal main oscillator in SYSCON
@@ -88,29 +96,29 @@ csi_error_t csi_imosc_enable(uint8_t byFre);
  * 
  *  disable internal main oscillator in SYSCON
  * 
- *  \param none
- *  \return csi_error_t.
+ *  \param[in] none
+ *  \return none.
  */
-csi_error_t csi_imosc_disable(void );
+void csi_imosc_disable(void);
 
 /** \brief hfosc enable
  * 
  *  enable high frequency oscillator in SYSCON
- * 
- *  \param none
- *  \return csi_error_t
- */
-csi_error_t csi_hfosc_enable(uint8_t byFre);
-
-/** \brief hfosc disable
- * 
- *  disable high frequency oscillator in SYSCON
- * 
+ *  * 
  *  \param byFre. 	0 - 48MHz
  * 					1 - 24MHz
  * 					2 - 12MHz
-					3 - 6MHz
+ *					3 - 6MHz
  *  \return csi_error_t.
+ */
+csi_error_t csi_hfosc_enable(uint8_t byFre);
+
+ /** \brief hfosc disable
+ * 
+ *  disable high frequency oscillator in SYSCON
+ * 
+ *  \param none
+ *  \return error code \ref csi_error_t
  */
 csi_error_t csi_hfosc_disable(void);
 
@@ -146,9 +154,9 @@ csi_error_t csi_pll_enable(void);
  *  disable internal sub pll in SYSCON
  * 
  *  \param none
- *  \return csi_error_t.
+ *  \return none.
  */
-csi_error_t csi_pll_disable(void);
+void csi_pll_disable(void);
 
 #ifdef __cplusplus
 }

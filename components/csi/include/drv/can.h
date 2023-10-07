@@ -205,6 +205,7 @@ typedef enum
 	CAN_INTSRC_BIT1		= (0x01uL << 13),
 	CAN_INTSRC_BIT0		= (0x01uL << 14),	
 	CAN_INTSRC_CRC		= (0x01uL << 15),
+	CAN_INTSRC_ERR_ALL	= (0xfc1e),
 	CAN_INTSRC_ALL		= (0xff1e)
 }csi_can_intsrc_e;
 
@@ -255,7 +256,7 @@ typedef enum
 typedef enum{
 	CAN_CALLBACK_RECV	=	0,				//can rteceive callback id
 	CAN_CALLBACK_SEND,						//can rteceive callback id
-	CAN_CALLBACK_STATUS						//can status callback id
+	CAN_CALLBACK_ERR						//can error status callback id
 }csi_can_callback_id_e;
 
 
@@ -354,7 +355,7 @@ typedef struct {
 	//CallBack		
 	void(*recv_callback)(csp_can_t *ptCanBase, csi_can_recv_t *ptRecv);
 	void(*send_callback)(csp_can_t *ptCanBase, uint8_t byCh);
-	void(*status_callback)(csp_can_t *ptCanBase, uint32_t byIsr);
+	void(*err_callback)(csp_can_t *ptCanBase, uint32_t wIsr);
 	
 } csi_can_ctrl_t;
 

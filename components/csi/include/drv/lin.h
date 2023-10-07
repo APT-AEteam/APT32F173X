@@ -55,7 +55,6 @@ typedef enum{
  */
 typedef enum
 {
-	LIN_INTSRC_NONE 	= (0x00ul << 0),		//LIN none interrupt
 	LIN_INTSRC_ENDHEADER= (0x01ul << 24),		//Ended header Interrupt 
 	LIN_INTSRC_ENDMESS	= (0x01ul << 25),		//Ended message Interrupt
 	LIN_INTSRC_NOTREPS	= (0x01ul << 26),		//Not responding error Interrupt
@@ -95,21 +94,18 @@ typedef enum{
 /// \struct csi_lin_config_t
 /// \brief  lin parameter configuration, open to users  
 typedef struct {
-	uint8_t				byClkSrc;			//clk source
-	uint8_t				byCheck;            //checksum selection 
-	uint8_t				byLinVer;			//lin versions
+	csi_lin_clksrc_e	eClkSrc;			//clk source
+	csi_lin_chk_e		eCheck;            //checksum selection 
+	csi_lin_ver_e		eLinVer;			//lin versions
 	uint8_t				bySyncBrk;			//lin Synchronous break length
 	uint16_t			hwWkUpTime;         //checksum selection 
-	uint16_t            hwBaudRate;			//baud rate < 20k(200000)
-	uint8_t				byLcp1[4];			//Limit Counter Protocol0~3		
-	uint8_t				byLcp2[4];			//Limit Counter Protocol4~7			
+	uint16_t            hwBaudRate;			//baud rate < 20k(200000)		
 } csi_lin_config_t;
 
 /// \struct csi_lin_ctrl_t
 /// \brief  usart transport handle, not open to users  
 typedef struct {
-//	uint8_t				bySendStat;			//send state
-//	uint8_t				byRecvStat;			//receive state
+
 	uint8_t				byWkStat;			//work state mode
 	uint8_t				byWkMode;			//send or receive
 	uint8_t				byRxSize;			//size of receive

@@ -81,8 +81,6 @@ ATTRIBUTE_ISR void usart1_int_handler(void)
 				csp_usart_clr_isr(LIN1,LIN_INT_ENDMESS_S);	//clear interrupt status
 				break;
 			case LIN_INT_ENDHEADER:								//Ended header Interrupt
-//				if(g_tLinTran.byWkMode == LIN_RECV)
-//					csp_usart_cr_cmd(LIN1, LIN_STRESP);	
 
 				csp_usart_clr_isr(LIN1,LIN_INT_ENDHEADER_S);	//clear interrupt status
 				break;
@@ -114,19 +112,11 @@ int lin_send_demo(void)
 	csi_gpio_pull_mode(GPIOC, PC11, GPIO_PULLUP);		//RX管脚上拉使能, 建议配置
 #endif
 	
-	tLinCfg.byClkSrc	= LIN_CLKSRC_DIV1;				//时钟源clk = pclk
-	tLinCfg.byLinVer	= LIN_VER1_2;					//LIN总线版本 支持lin1.2/lin2.0
+	tLinCfg.eClkSrc	= LIN_CLKSRC_DIV1;					//时钟源clk = pclk
+	tLinCfg.eLinVer	= LIN_VER1_2;						//LIN总线版本 支持lin1.2/lin2.0
 	tLinCfg.bySyncBrk	= 13;							//同步间隔段位数，>=13
-	tLinCfg.byCheck		= LIN_CHKSUM_CLASSIC;			//校验和选择,经典的
+	tLinCfg.eCheck		= LIN_CHKSUM_CLASSIC;			//校验和选择,经典的
 	tLinCfg.hwWkUpTime  = 0x3ad4;						//LIN2.0 唤醒时间
-	tLinCfg.byLcp1[0]	= 0x4c;							//LCP0~8设置，超时限制，如果超时会产生无响应错误标志
-	tLinCfg.byLcp1[1]	= 0x5b;
-	tLinCfg.byLcp1[2]	= 0x68;
-	tLinCfg.byLcp1[3]	= 0x77;
-	tLinCfg.byLcp2[0]	= 0x84;
-	tLinCfg.byLcp2[1]	= 0x92;
-	tLinCfg.byLcp2[2]	= 0xa0;
-	tLinCfg.byLcp2[3]	= 0xaf;
 	tLinCfg.hwBaudRate	= 9600;							//速率 <= 20kpbs
 	csi_lin_init(LIN1, &tLinCfg);						//初始化LIN
 	
@@ -137,7 +127,7 @@ int lin_send_demo(void)
 
 	while(1)
 	{
-		csi_lin_send(LIN1, 0x0e, (void *)bySdBuf, 8);		//发送完整帧
+		csi_lin_send(LIN1, 0x0e, (void *)bySdBuf, 8);	//发送完整帧
 		while(1)
 		{
 			if(csi_lin_get_msg(LIN1, ENABLE))
@@ -162,7 +152,7 @@ int lin_send_demo(void)
  *  \param[in] none
  *  \return error code
  */
-int lin_send_recv_demo(void)
+int lin_send_rec_demo(void)
 {
 	volatile int iRet = 0;
 	uint8_t byReBuf[8] = {0};
@@ -175,19 +165,11 @@ int lin_send_recv_demo(void)
 	csi_gpio_pull_mode(GPIOC, PC11, GPIO_PULLUP);		//RX管脚上拉使能, 建议配置
 #endif
 	
-	tLinCfg.byClkSrc	= LIN_CLKSRC_DIV1;				//时钟源clk = pclk
-	tLinCfg.byLinVer	= LIN_VER2_0;					//LIN总线版本 支持lin1.2/lin2.0
+	tLinCfg.eClkSrc	    = LIN_CLKSRC_DIV1;				//时钟源clk = pclk
+	tLinCfg.eLinVer	    = LIN_VER2_0;					//LIN总线版本 支持lin1.2/lin2.0
 	tLinCfg.bySyncBrk	= 15;							//同步间隔段位数，>=13
-	tLinCfg.byCheck		= LIN_CHKSUM_CLASSIC;			//校验和选择,经典的
+	tLinCfg.eCheck		= LIN_CHKSUM_CLASSIC;			//校验和选择,经典的
 	tLinCfg.hwWkUpTime  = 0x3ad4;						//LIN2.0 唤醒时间
-	tLinCfg.byLcp1[0]	= 0x4c;							//LCP0~8设置，超时限制，如果超时会产生无响应错误标志
-	tLinCfg.byLcp1[1]	= 0x5b;
-	tLinCfg.byLcp1[2]	= 0x68;
-	tLinCfg.byLcp1[3]	= 0x77;
-	tLinCfg.byLcp2[0]	= 0x84;
-	tLinCfg.byLcp2[1]	= 0x92;
-	tLinCfg.byLcp2[2]	= 0xa0;
-	tLinCfg.byLcp2[3]	= 0xaf;
 	tLinCfg.hwBaudRate	= 9600;							//速率 <= 20kpbs
 	csi_lin_init(LIN1, &tLinCfg);						//初始化LIN
 	

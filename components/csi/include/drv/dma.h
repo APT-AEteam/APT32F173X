@@ -5,7 +5,7 @@
  * <table>
  * <tr><th> Date  <th>Version  <th>Author  <th>Description
  * <tr><td> 2021-12-23 <td>V0.0  <td>ZJY   <td>initial
- * <tr><td> 2023-9-22 <td>V0.1  <td>GQQ   <td>fix bug,code normalization
+ * <tr><td> 2023-9-22 <td>V0.1  <td>GQQ   <td>code normalization
  * </table>
  * *********************************************************************
 */
@@ -115,9 +115,9 @@ typedef enum {
  */
 typedef enum
 {
-	DMA_INTSRC_NONE   	=	(0x00ul << 0), 		//NONE interrupt
 	DMA_INTSRC_LTCIT  	=	(0x01ul << 29),		//LTICT interrupt
-	DMA_INTSRC_TCIT   	=	(0x01ul << 30)		//LTICT interrupt
+	DMA_INTSRC_TCIT   	=	(0x01ul << 30),		//LTICT interrupt
+	DMA_INTSRC_ALL		=   (0x03ul << 29)
 }csi_dma_intsrc_e;
 
 /**
@@ -131,9 +131,7 @@ typedef enum
 	DMA_INTSTA_CH2		=	(0x01ul << 2),		//CH2 INT STATUS
 	DMA_INTSTA_CH3  	=	(0x01ul << 3),		//CH3 INT STATUS
 	DMA_INTSTA_CH4   	=	(0x01ul << 4),		//CH4 INT STATUS
-	DMA_INTSTA_CH5		=	(0x01ul << 5),		//CH5 INT STATUS	
-	DMA_INTSTA_ALL		=	0x3F				//ALL CHs INT STATUS
-	
+	DMA_INTSTA_CH5		=	(0x01ul << 5),		//CH5 INT STATUS		
 }csi_dma_intsta_e;
 
 
@@ -152,6 +150,12 @@ typedef struct
 	csi_dma_req_e			eReqMode;		//request mode
 } csi_dma_ch_config_t;
 
+/** \brief dma interrupt handle function
+ * 
+ *  \param[in] ptDmaBase: pointer of dma register structure
+ *  \return none
+ */ 
+void csi_dma_irqhandler(csp_dma_t *ptDmaBase);
 
 /** 
   \brief 	   Init dma channel parameter config structure
@@ -242,18 +246,6 @@ uint8_t csi_get_dma_idx(csp_dma_t *ptDmaBase);
  */ 
 bool csi_dma_get_msg(csp_dma_t *ptDmaBase, csi_dma_ch_e eDmaCh, bool bClrEn);
 
-/**
-  \brief       enable dma power manage
-  \param[in]   dma  dma handle to operate.
-  \return      error code
-*/
-//csi_error_t csi_dma_enable_pm(csi_dma_t *dma);
-
-/**
-  \brief       disable dma power manage
-  \param[in]   dma  dma handle to operate.
-*/
-//void        csi_dma_disable_pm(csi_dma_t *dma);
 
 #ifdef __cplusplus
 }

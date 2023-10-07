@@ -176,6 +176,7 @@ typedef enum{
 	CAN_SR_TS			= (0x01ul << 23),	
 	CAN_SR_CCENS		= (0x01ul << 24),
 	CAN_SR_BTXPD		= (0x01ul << 25),
+	CAN_INT_ERR_ALL		= 0xfc1e,
 	CAN_INT_ALL			= 0xff1e
 }can_int_e; 
 

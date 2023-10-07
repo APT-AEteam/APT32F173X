@@ -5,7 +5,7 @@
  * <table>
  * <tr><th> Date  <th>Version  <th>Author  <th>Description
  * <tr><td> 2020-8-25 <td>V0.0  <td>WNN   <td>initial
- * <tr><td> 2023-9-22 <td>V0.1  <td>GQQ   <td>fix bug,code normalization
+ * <tr><td> 2023-9-22 <td>V0.1  <td>GQQ   <td>code normalization
  * </table>
  * *********************************************************************
 */
