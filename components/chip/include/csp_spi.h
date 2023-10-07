@@ -353,17 +353,6 @@ static inline void	csp_spi_txfifo_sw_rst(csp_spi_t *ptSpiBase)
 	ptSpiBase->SRR = SPI_TXFIFO_RST_MSK;	
 }
 
-#if 0
-static inline void csp_spi_set_rxdma(csp_spi_t *ptSpiBase, spi_rdma_en_e eRxDmaEn, spi_rdma_md_e eRxDmaMode) 
-{
-	ptSpiBase->DMACR = (ptSpiBase->DMACR & ~(SPI_RDMA_EN_MSK | SPI_RDMA_MD_MSK)) | (eRxDmaEn << SPI_RDMA_EN_POS) | (eRxDmaMode << SPI_RDMA_MD_POS);
-}
-
-static inline void csp_spi_set_txdma(csp_spi_t *ptSpiBase, spi_tdma_en_e eTxDmaEn, spi_tdma_md_e eTxDmaMode) 
-{
-	ptSpiBase->DMACR = (ptSpiBase->DMACR & ~(SPI_TDMA_EN_MSK | SPI_TDMA_MD_MSK)) | (eTxDmaEn << SPI_TDMA_EN_POS) | (eTxDmaMode << SPI_TDMA_MD_POS);
-}
-#endif
 static inline void csp_spi_set_rxdma(csp_spi_t *ptSpiBase,  spi_rdma_md_e eRxDmaMode)
 {
 	ptSpiBase->DMACR = (ptSpiBase->DMACR & ~SPI_RDMA_MD_MSK) | (SPI_RDMA_EN << SPI_RDMA_EN_POS) | (eRxDmaMode << SPI_RDMA_MD_POS);
