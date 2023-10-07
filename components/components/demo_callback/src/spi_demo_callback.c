@@ -78,6 +78,7 @@ static void user_receive_callback(csp_spi_t *ptSpiBase, csi_spi_state_e eState, 
 	//注册SPI0发送中断回调函数
 	csi_spi_register_callback(SPI0, SPI_CALLBACK_SEND, user_send_callback);
 	csi_spi_start(SPI0);
+	
 	while(1)
 	{
 		csi_spi_send_int(SPI0, s_bySendBuf, sizeof(s_bySendBuf));

@@ -165,11 +165,11 @@ csi_error_t csi_spi_register_callback(csp_spi_t *ptSpiBase, csi_spi_callback_id_
  * 
  *  \param[in] ptSpiBase: pointer of spi register structure
  *  \param[in] ptSpiCfg: pointer of user spi parameter config
- * 				-eWorkMode:SPI work mode:master/slave
- * 				-eCpolCpohMode:SPI CPOL/CPOH mode:0/1/2/3
- * 				-eFrameLen;SPI data size:4-16 bit
- * 				-eRxFifoTrg:SPI rxfifo Trigger point
- * 				-wSpiBaud:SPI clk
+ * 				-eMode:SPI work mode:master/slave, \ref to csi_spi_mode_e
+ * 				-eWorkMode:SPI CPOL/CPOH mode:0/1/2/3, \ref to csi_spi_work_mode_e
+ * 				-eDataLen;SPI data size:4-16 bit, \ref to csi_spi_data_len_e
+ * 				-eRxFifoTrg:SPI rxfifo Trigger point, \ref to csi_spi_rxfifo_trg_e
+ * 				-wSpiBaud:SPI baudrate
  *  \return none
  */ 
 void csi_spi_init(csp_spi_t *ptSpiBase,csi_spi_config_t *ptSpiCfg);
@@ -225,15 +225,15 @@ void csi_spi_set_mode(csp_spi_t *ptSpiBase, csi_spi_mode_e eMode);
  *  \param[in] eWorkMode: \ref to csi_spi_work_mode_e
  *  \return none
  */
-void csi_spi_set_work_mode(csp_spi_t *ptSpiBase, csi_spi_work_mode_e eWorkMode);
+void csi_spi_set_work_mode(csp_spi_t *ptSpiBase, csi_spi_work_mode_e eWorkMode); 
 
 /** \brief set spi baudrate
  * 
  *  \param[in] ptSpiBase: pointer of spi register structure
- *  \param[in] wBaud: spi work baud
+ *  \param[in] wBaud: spi baudrate
  *  \return spi config frequency
  */
-uint32_t csi_spi_set_baud(csp_spi_t *ptSpiBase, uint32_t wBaud);
+uint32_t csi_spi_set_baud(csp_spi_t *ptSpiBase, uint32_t wBaud)  ;
 
 /** \brief set spi data length
  * 
@@ -241,14 +241,7 @@ uint32_t csi_spi_set_baud(csp_spi_t *ptSpiBase, uint32_t wBaud);
  *  \param[in] eDataLen: \ref to csi_spi_data_len_e
  *  \return error code \ref csi_error_t
  */
-csi_error_t csi_spi_set_data_len(csp_spi_t *ptSpiBase, csi_spi_data_len_e eDataLen);
-
-/** \brief get the tState of spi device
- * 
- *  \param[in] eWorkMode
- *  \return read/write state or CSI_ERROR/CSI_OK
- */ 
-int8_t csi_spi_get_state(csi_spi_work_mode_e eWorkMode);
+csi_error_t csi_spi_set_data_len(csp_spi_t *ptSpiBase, csi_spi_data_len_e eDataLen) ;
 
 /** \brief sending data to spi transmitter(received data is ignored),blocking mode
  * 
@@ -296,6 +289,30 @@ csi_error_t csi_spi_receive_int(csp_spi_t *ptSpiBase, void *pData, uint32_t wSiz
  */
 int32_t csi_spi_send_receive(csp_spi_t *ptSpiBase, void *pDataout, void *pDatain, uint32_t wSize);
 
+//-----------------------------------------------------------------------------------------------------------
+//high speed spi function for reference
+//-----------------------------------------------------------------------------------------------------------
+
+/** \brief (this funtion will ignore the receive)
+ * 
+ *  \param[in] ptSpiBase: pointer of spi register structure
+ *  \param[in] pDataOut :send data buffer pointer
+ *  \param[in] bySize ：length
+ *  \return error code \ref csi_error_t
+ */ 
+csi_error_t csi_spi_send_fast(csp_spi_t *ptSpiBase, void *pDataOut, uint8_t bySize);
+
+/** \brief spi send and receive fast
+ * 
+ *  \param[in] ptSpiBase: pointer of spi register structure
+ *  \param[in] pDataOut :send data buffer pointer 
+ *  \param[in] pDataIn  :receive data buffer pointer 
+ *  \param[in] wSize ：length
+ *  \return error code \ref csi_error_t
+ */ 
+csi_error_t csi_spi_send_receive_fast(csp_spi_t *ptSpiBase, uint8_t *pbyDataOut,uint8_t *pbyDataIn, uint32_t wSize);
+
+//---------------------------------------------DMA-------------------------------------------------
 /** \brief set spi send dma mode and enable
  * 
  *  \param[in] ptSpiBase: pointer of spi register structure
