@@ -20,7 +20,7 @@
 /* Private variablesr------------------------------------------------------*/
 
 
-#if (USE_CAN_CALLBACK == 1)	
+#if (USE_CAN_CALLBACK == 0)	
 	
 static csi_can_recv_t s_tCanRecv[4];		//接收数据结构体缓存
 
@@ -64,7 +64,7 @@ ATTRIBUTE_ISR void can_int_handler(void)
 					
 			break;
 		default:												//消息通道中断, CAN_CH1~CAN_CH32(channel: 1~32)		
-			
+			//读报文控制寄存器，读出后自动清除NAWDATA和ITPND位
 			csp_can_set_tmr(CAN0, hwIntNum,1,CAN_AMCR_MSK | CAN_CLRIT_MSK | CAN_TRND_MSK);	//通过传输管理寄存器(TMR)写IF1命令请求，清除NAWDATA和ITPND标志 
 			while(csp_can_get_sr(CAN0) & CAN_STA_BUSY1);									//查询IF1是否忙?
 			wStatus = csp_can_get_mcr(CAN0);												//读报文控制寄存器(MCR)，读出后，自动清除MCR中的NAWDATA和ITPND标志
@@ -74,24 +74,31 @@ ATTRIBUTE_ISR void can_int_handler(void)
 				//获取接收数据存储的位置，即按照接收报文的通道号存储在接收BUF数组中，CH[3-6] -> BUF[0-2]
 				//demo中将接收通道配置为CH3开始的通道，方便中断处理满足不同demo
 				byRecvPos = hwIntNum - CAN_CH3;												//对应中断的通道号-接收报文的起始通道(请将接收报文配置在连续通道中)
-				wIrVal = csi_can_get_ifx(CAN0, hwIntNum, CAN_IFX_IR);						//get id
+				wIrVal = csi_can_get_ifx(CAN0, hwIntNum, CAN_IFX_IR);						//获取ID
 				if(wIrVal & CAN_XTD_MSK)														
-					wIrVal &= (CAN_EXTID_MSK | CAN_EXTID_MSK);								//extid
+					wIrVal &= (CAN_EXTID_MSK | CAN_EXTID_MSK);								//扩展ID模式
 				else
-					wIrVal = (wIrVal & CAN_BASEID_MSK) >> 18;								//stdid
+					wIrVal = (wIrVal & CAN_BASEID_MSK) >> 18;								//标准ID模式
 				
-				s_tCanRecv[byRecvPos].wRecvId =	wIrVal;										//id
-				s_tCanRecv[byRecvPos].byDataLen = wStatus & 0x0f;							//data len
-				s_tCanRecv[byRecvPos].byChNum = hwIntNum;									//message channel number
+				s_tCanRecv[byRecvPos].wRecvId =	wIrVal;										//ID
+				s_tCanRecv[byRecvPos].byDataLen = wStatus & 0x0f;							//帧数据长度
+				s_tCanRecv[byRecvPos].byChNum = hwIntNum;									//帧通道号
 				s_tCanRecv[byRecvPos].wRecvData[0] = csi_can_get_ifx(CAN0, hwIntNum, CAN_IFX_DAR);		//DATA_A
 				s_tCanRecv[byRecvPos].wRecvData[1] = csi_can_get_ifx(CAN0, hwIntNum, CAN_IFX_DBR);		//DATA_B
+				
+				//清除接收OK状态
+				csp_can_clr_sr(CAN0, CAN_INT_RXOK);		
 			}
 			else 																			//如果NEWDAT标志 == 0，则为对应报文通道发送报文完成产生的中断
 			{
 				//用户添加处理
 				//demo中将发送通道配置为CH1开始的通道，方便中断处理满足不同demo
 				if(hwIntNum ==  CAN_CH1)
+				{
 					nop;
+				}
+				
+				csp_can_clr_sr(CAN0, CAN_INT_TXOK);		//清除发送OK状态			
 			}
 			break;
 	}
@@ -108,10 +115,8 @@ ATTRIBUTE_ISR void can_int_handler(void)
 int can_send_demo(void)
 {
 	int iRet = 0;
-	uint8_t	i = 0;
 	uint8_t byData[4];
 	uint32_t wSdDelay = 0x00;
-	
 	csi_can_config_t 	 tCanConfig;						//CAN 初始化结构体
 	csi_can_tx_config_t  tCanTxConfig;						//CAN 发送报文配置结构体
 	
@@ -131,24 +136,24 @@ int can_send_demo(void)
 	//id,识别符配置
 	tCanTxConfig.tId.eIdMode	= CAN_ID_STD;				//报文ID模式，标准模式(11Bit)
 	tCanTxConfig.tId.eMsgDir	= CAN_DIR_SEND;				//报文方向
-	tCanTxConfig.tId.hwStdId 	= 0x700 + i;				//标准11BIT ID
+	tCanTxConfig.tId.hwStdId 	= 0x701;					//标准11BIT ID
 	tCanTxConfig.tId.wExtId		= 0x3FFFF;					//扩展ID,标准模式下忽略	
 	//tx mcr 发送报文控制配置
 	tCanTxConfig.tMc.bTxIeEn	= DISABLE;					//禁止报文发送中断(通道源中断)
 	tCanTxConfig.tMc.bRmtEn		= DISABLE;					//远程应答帧禁止，即接收到远程帧，不请求发送应答
 	tCanTxConfig.tMc.bTxReqEn	= DISABLE;					//报文对象请求发送禁止，
-	tCanTxConfig.tMc.byDataLen	= 0x08;						//发送数据数量
+	tCanTxConfig.tMc.byDataLen	= 0x08;						//发送数据长度(数量)
 	//data a
-	tCanTxConfig.tDataA.bydata[0] 	= i+0x11;				//数据A(低4字节数据配置)配置
-	tCanTxConfig.tDataA.bydata[1] 	= i+0x12;
-	tCanTxConfig.tDataA.bydata[2] 	= i+0x13;
-	tCanTxConfig.tDataA.bydata[3] 	= i+0x14;
+	tCanTxConfig.tDataA.bydata[0] 	= 0x11;					//数据A(低4字节数据配置)配置
+	tCanTxConfig.tDataA.bydata[1] 	= 0x12;
+	tCanTxConfig.tDataA.bydata[2] 	= 0x13;
+	tCanTxConfig.tDataA.bydata[3] 	= 0x14;
 	//data b
-	tCanTxConfig.tDataB.bydata[0] 	= i+0x21;				//数据B(高4字节数据配置)配置
-	tCanTxConfig.tDataB.bydata[1] 	= i+0x22;
-	tCanTxConfig.tDataB.bydata[2] 	= i+0x23;
-	tCanTxConfig.tDataB.bydata[3] 	= i+0x24;
-	csi_can_set_msg_tx(CAN0, i, &tCanTxConfig);				//配置发送报文通道
+	tCanTxConfig.tDataB.bydata[0] 	= 0x21;					//数据B(高4字节数据配置)配置
+	tCanTxConfig.tDataB.bydata[1] 	= 0x22;
+	tCanTxConfig.tDataB.bydata[2] 	= 0x23;
+	tCanTxConfig.tDataB.bydata[3] 	= 0x24;
+	csi_can_set_msg_tx(CAN0, CAN_CH1, &tCanTxConfig);				//配置发送报文通道
 	
 	csi_can_start(CAN0);									//使能(打开)CAN模块
 	
@@ -216,8 +221,6 @@ int can_send_demo(void)
 				wSdDelay++;
 		}
 	}
-	udelay(400);
-	
 	
 	return iRet;
 }
@@ -249,14 +252,14 @@ int can_send_int_demo(void)
 	//id 识别符配置
 	tCanTxConfig.tId.eIdMode		= CAN_ID_EXT;			//报文ID模式，扩展模式(11Bit)
 	tCanTxConfig.tId.eMsgDir		= CAN_DIR_SEND;			//报文方向
-	tCanTxConfig.tId.hwStdId 		= 0x700;				//标准11BIT ID
+	tCanTxConfig.tId.hwStdId 		= 0x701;				//标准11BIT ID
 	tCanTxConfig.tId.wExtId			= 0x3FFFF;				//扩展ID,标准模式下忽略	
 	
 	//tx mcr 发送报文控制配置
 	tCanTxConfig.tMc.bTxIeEn		= ENABLE;				//使能报文发送中断(通道源中断)
 	tCanTxConfig.tMc.bRmtEn			= DISABLE;				//远程应答帧禁止，即接收到远程帧，不请求发送应答
 	tCanTxConfig.tMc.bTxReqEn		= DISABLE;				//报文对象请求发送禁止，
-	tCanTxConfig.tMc.byDataLen		= 0x08;					//发送数据数量
+	tCanTxConfig.tMc.byDataLen		= 0x08;					//发送数据长度(数量)
 	
 	//data a
 	tCanTxConfig.tDataA.bydata[0] 	= 0x21;					//数据A(低4字节数据配置)配置
@@ -275,7 +278,6 @@ int can_send_int_demo(void)
 	csi_can_ch_int_enable(CAN0, CAN_CH1);					//使能发送报文对应的报文通道中断
 	csi_can_start(CAN0);									//使能(打开)CAN模块
 		
-	//
 	while(1)
 	{
 		csi_can_msg_send(CAN0, CAN_CH1, 8);					//报文通道1中的报文，发送8字节数据
@@ -407,13 +409,13 @@ int can_receive_fifo_init_demo(void)
 	tCanConfig.bAuReTran = DISABLE;							//自动重新传输关闭
 	csi_can_init(CAN0, &tCanConfig);
 	
-	//报文接收到CH3~CH5, ID为滤波匹配，在一个范围内ID匹配，数据接收到对应的报文接收通道中
+	//报文接收到CH3~CH5, ID为滤波匹配，在一个范围内ID匹配(0x7F0~0x7FF)，数据接收到对应的报文接收通道中
 	//接收报文通道3配置(CAN_CH3)
 	{
 		//id,识别符配置
 		tCanRxConfig.tId.eIdMode		= CAN_ID_STD;		//报文ID模式，标准模式(11Bit)
 		tCanRxConfig.tId.eMsgDir		= CAN_DIR_RECV;		//报文方向
-		tCanRxConfig.tId.hwStdId 		= 0x700 + 3;		//标准11BIT ID
+		tCanRxConfig.tId.hwStdId 		= 0x703;			//标准11BIT ID
 		tCanRxConfig.tId.wExtId			= 0x3FFFF;			//扩展ID,标准模式下忽略	
 		
 		//rx mskr 接收报文mask配置(参与接收滤波),
@@ -438,7 +440,7 @@ int can_receive_fifo_init_demo(void)
 		//id,识别符配置
 		tCanRxConfig.tId.eIdMode		= CAN_ID_STD;		//报文ID模式，标准模式(11Bit)
 		tCanRxConfig.tId.eMsgDir		= CAN_DIR_RECV;		//报文方向
-		tCanRxConfig.tId.hwStdId 		= 0x700 + 3;		//标准11BIT ID
+		tCanRxConfig.tId.hwStdId 		= 0x704;			//标准11BIT ID
 		tCanRxConfig.tId.wExtId			= 0x3FFFF;			//扩展ID,标准模式下忽略	
 		
 		//rx mskr 接收报文mask配置(参与接收滤波),
@@ -463,7 +465,7 @@ int can_receive_fifo_init_demo(void)
 		//id,识别符配置
 		tCanRxConfig.tId.eIdMode		= CAN_ID_STD;		//报文ID模式，标准模式(11Bit)
 		tCanRxConfig.tId.eMsgDir		= CAN_DIR_RECV;		//报文方向
-		tCanRxConfig.tId.hwStdId 		= 0x700 + 3;		//标准11BIT ID
+		tCanRxConfig.tId.hwStdId 		= 0x705;			//标准11BIT ID
 		tCanRxConfig.tId.wExtId			= 0x3FFFF;			//扩展ID,标准模式下忽略	
 		
 		//rx mskr 接收报文mask配置(参与接收滤波),
@@ -605,8 +607,11 @@ int can_remote_frames_send_demo(void)
  * 			发送对应的数据帧对远程帧做出应答；将发送报文对象的bRmtEn参数使能，那么该报文通道接收到与该报文识别符(ID)匹配
  * 			的远程帧时，会主动置位该报文的TXRQST，发送数据帧对远程帧做出应答。
  *
+ *  \brief	数据长度：远程应答帧的数据长度和接收到的远程数据请求帧中的数据长度无关，和发送帧的配置长度有关。	
+ * 
  * 	\brief	注意：远程应答帧配置时，应选择通道号比接收报文通道号低的通道，以免造成远程帧无法正常应答；即CAN报文配置配置
- * 			时，发送报文对象配置在序号低的通道，接收报文对象配置在序号高的通道。			
+ * 			时，发送报文对象配置在序号低的通道，接收报文对象配置在序号高的通道。
+ *			
  * 
  *  \param[in] none
  *  \return none
@@ -643,7 +648,7 @@ int can_remote_frames_response_demo(void)
 		tCanTxConfig.tMc.bTxIeEn	= DISABLE;				//禁止报文发送中断(通道源中断)
 		tCanTxConfig.tMc.bRmtEn		= ENABLE;				//远程帧使能，即接收到远程帧数据请求，发送数据
 		tCanTxConfig.tMc.bTxReqEn	= DISABLE;				//报文对象请求发送禁止，
-		tCanTxConfig.tMc.byDataLen	= 0x08;					//发送数据数量
+		tCanTxConfig.tMc.byDataLen	= 0x07;					//发送数据长度(数量)
 		//data a
 		tCanTxConfig.tDataA.bydata[0] 	= 0x11;				//数据A(低4字节数据配置)配置
 		tCanTxConfig.tDataA.bydata[1] 	= 0x12;
@@ -662,23 +667,23 @@ int can_remote_frames_response_demo(void)
 		//id,识别符配置
 		tCanTxConfig.tId.eIdMode	= CAN_ID_STD;			//报文ID模式，标准模式(11Bit)
 		tCanTxConfig.tId.eMsgDir	= CAN_DIR_SEND;			//报文方向
-		tCanTxConfig.tId.hwStdId 	= 0x751;				//标准11BIT ID
+		tCanTxConfig.tId.hwStdId 	= 0x752;				//标准11BIT ID
 		tCanTxConfig.tId.wExtId		= 0x3FFFF;				//扩展ID,标准模式下忽略	
 		//tx mcr 发送报文控制配置
 		tCanTxConfig.tMc.bTxIeEn	= DISABLE;				//禁止报文发送中断(通道源中断)
 		tCanTxConfig.tMc.bRmtEn		= ENABLE;				//远程帧使能，即接收到远程帧数据请求，发送数据
 		tCanTxConfig.tMc.bTxReqEn	= DISABLE;				//报文对象请求发送禁止，
-		tCanTxConfig.tMc.byDataLen	= 0x08;					//发送数据数量
+		tCanTxConfig.tMc.byDataLen	= 0x08;					//发送数据长度(数量)
 		//data a
-		tCanTxConfig.tDataA.bydata[0] 	= 0x11;				//数据A(低4字节数据配置)配置
-		tCanTxConfig.tDataA.bydata[1] 	= 0x12;
-		tCanTxConfig.tDataA.bydata[2] 	= 0x13;
-		tCanTxConfig.tDataA.bydata[3] 	= 0x14;
+		tCanTxConfig.tDataA.bydata[0] 	= 0x31;				//数据A(低4字节数据配置)配置
+		tCanTxConfig.tDataA.bydata[1] 	= 0x32;
+		tCanTxConfig.tDataA.bydata[2] 	= 0x33;
+		tCanTxConfig.tDataA.bydata[3] 	= 0x34;
 		//data b
-		tCanTxConfig.tDataB.bydata[0] 	= 0x21;				//数据B(高4字节数据配置)配置
-		tCanTxConfig.tDataB.bydata[1] 	= 0x22;
-		tCanTxConfig.tDataB.bydata[2] 	= 0x23;
-		tCanTxConfig.tDataB.bydata[3] 	= 0x24;
+		tCanTxConfig.tDataB.bydata[0] 	= 0x41;				//数据B(高4字节数据配置)配置
+		tCanTxConfig.tDataB.bydata[1] 	= 0x42;
+		tCanTxConfig.tDataB.bydata[2] 	= 0x43;
+		tCanTxConfig.tDataB.bydata[3] 	= 0x44;
 		csi_can_set_msg_tx(CAN0, CAN_CH2, &tCanTxConfig);	//配置发送报文通道
 	}
 	

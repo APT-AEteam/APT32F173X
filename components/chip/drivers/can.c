@@ -77,12 +77,16 @@ void csi_can_irqhandler(csp_can_t *ptCanBase,uint8_t byIdx)
 					
 					if(g_tCanCtrl[byIdx].recv_callback)							//message channel send complete
 						g_tCanCtrl[byIdx].recv_callback(ptCanBase, (g_tCanCtrl[0].ptCanRecv + byRecvPos));
+						
+					csp_can_clr_sr(CAN0, CAN_INT_RXOK);							//clear TX_OK status	
 				}
 			}
 			else 
 			{
 				if(g_tCanCtrl[byIdx].send_callback)								//message channel send complete
 					g_tCanCtrl[byIdx].send_callback(ptCanBase, hwIntNum);
+					
+				csp_can_clr_sr(CAN0, CAN_INT_TXOK);								//clear TX_OK status	
 			}
 			break;
 	}
