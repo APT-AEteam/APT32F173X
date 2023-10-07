@@ -18,9 +18,7 @@
 
 extern csi_clkmap_t g_tClkMap[];
 
-/** \brief clock enable
- * 
- *  Enable peripheral clock in SYSCON
+/** \brief enable peripheral clock
  * 
  *  \param[in] pIpBase: pointer of peripheral Base address
  *  \return none.
@@ -33,7 +31,7 @@ void csi_clk_enable(uint32_t *pIpBase)
 	{
         if((uint32_t)pIpBase == ptMap->wRegBase) 
 		{
-            soc_clk_enable((csi_clk_module_e)ptMap->wModule);
+            soc_clk_enable((csi_pclk_e)ptMap->wModule);
             break;
         }
 		
@@ -41,9 +39,7 @@ void csi_clk_enable(uint32_t *pIpBase)
     }
 }
 
-/** \brief clock disable
- * 
- *  Disable peripheral clock in SYSCON
+/** \brief disable peripheral clock 
  * 
  *  \param[in] pIpBase: pointer of peripheral Base address
  *  \return none.
@@ -56,11 +52,31 @@ void csi_clk_disable(uint32_t *pIpBase)
 	{
         if((uint32_t)pIpBase == ptMap->wRegBase) 
 		{
-            soc_clk_disable((csi_clk_module_e)ptMap->wModule);
+            soc_clk_disable((csi_pclk_e)ptMap->wModule);
             break;
         }
         ptMap++;
     }
+}
+
+/** \brief fast enable peripheral clock
+ * 
+ *  \param[in] ePclk: peripheral clock \ref csi_pclk_e
+ *  \return none.
+ */
+void csi_pclk_enable(csi_pclk_e ePclk)
+{
+	soc_clk_enable(ePclk);
+}
+
+/** \brief fast disable peripheral clock
+ * 
+ *  \param[in] ePclk: peripheral clock \ref csi_pclk_e
+ *  \return none.
+ */
+void csi_pclk_disable(csi_pclk_e ePclk)
+{
+	soc_clk_disable(ePclk);
 }
 
 /** \brief emosc filter enable

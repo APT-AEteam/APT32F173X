@@ -138,17 +138,9 @@ typedef enum{
 	CLO_DIV16	
 }csi_clo_div_e;
 
-//typedef struct {
-//    csi_clk_src_e	    eSysClkSrc;      /* select sysclk source clock */
-//	  uint32_t 	        wOscFreq;        /* select frequence */
-//    csi_hclk_div_e 	eHclkDivider;    /* ratio between fs_mclk clock and mclk clock */
-//    csi_pclk_div_e 	ePclkDivider;    /* ratio between mclk clock and apb0 clock */
-//} system_clk_config_t;
-
-/// \enum csi_clk_module_e
+/// \enum csi_pclk_e
 /// \brief all the peri clock enable bits in SYSCON level
-/// \todo  csi_clk_module_e 
-
+/// \todo  csi_pclk_e 
 typedef enum {
     IFC_SYS_CLK		= 0U,
 	FVR_SYS_CLK		= 3U,
@@ -198,9 +190,7 @@ typedef enum {
 	BT2_SYS_CLK		= 62U,
 	BT3_SYS_CLK		= 63U,
 
-} csi_clk_module_e;
-
-
+} csi_pclk_e;
 //global variable: sysclkclk 
 extern uint32_t g_wSystemClk;
 
@@ -237,17 +227,6 @@ csi_error_t csi_sysclk_config(csi_clk_config_t tClkCfg);
  */
 csi_error_t csi_clo_config(csi_clo_src_e eCloSrc, csi_clo_div_e eCloDiv);
 
-///** 
-//  \brief to set clock status in PM mode 
-//   when IWDT is enabled, trying to stop ISOSC in stop mode would be invalid
-//   refer to GCER in SYSCON chapter for detailed description
-//  \param[in] eClk: clock to be configured
-//  \param[in] bEnable: enable or disable
-//  \return none.
-// */ 
-//void csi_clk_pm_enable(csi_clk_pm_e eClk, bool bEnable);
-
-
 /** 
   \brief to calculate SCLK and PCLK frequence according to the current reg content
    g_tClkConfig.wSclk and g_tClkConfig.wPclk will be updated after excuting this function
@@ -270,6 +249,34 @@ uint32_t csi_get_sclk_freq(void);
 */
 uint32_t csi_get_pclk_freq(void);
 
+/** \brief fast enable peripheral clock
+ * 
+ *  \param[in] ePclk: peripheral clock \ref csi_pclk_e
+ *  \return none.
+ */
+void csi_pclk_enable(csi_pclk_e ePclk);
+
+/** \brief fast disable peripheral clock
+ * 
+ *  \param[in] ePclk: peripheral clock \ref csi_pclk_e
+ *  \return none.
+ */
+void csi_pclk_disable(csi_pclk_e ePclk);
+
+/*
+  \brief       Soc enable device clock
+  \param[in]   eModule   clock module, defined in sys_clk.h, \ref csi_pclk_e
+  \return      none
+*/
+void soc_clk_enable(csi_pclk_e eModule);
+
+/*
+  \brief       Soc disable device clock
+  \param[in]   eModule   clock module, defined in sys_clk.h, \ref csi_pclk_e
+  \return      none
+*/
+void soc_clk_disable(csi_pclk_e eModule);
+
 /**
   \brief       Soc get coret frequence.
   \param[in]   none
@@ -283,63 +290,6 @@ uint32_t soc_get_coret_freq(void);
 //  \return      bt frequence
 //*/
 //uint32_t soc_get_bt_freq(uint8_t byIdx);
-
-/*
-  \brief       Soc enable device clock
-  \param[in]   eModule   clock module, defined in sys_clk.h, \ref csi_clk_module_e
-  \return      none
-*/
-void soc_clk_enable(csi_clk_module_e eModule);
-
-/*
-  \brief       Soc disable device clock
-  \param[in]   eModule   clock module, defined in sys_clk.h, \ref csi_clk_module_e
-  \return      none
-*/
-void soc_clk_disable(csi_clk_module_e eModule);
-
-/**
-  \brief       Soc get device frequence.
-  \param[in]   freq     cpu frequence
-  \return      none
-*/
-//void soc_set_sys_freq(uint32_t freq);
-
-/**
-  \brief       SOC Dcache clean & invalid by range.
-  \return      none
-*/
-//void soc_dcache_clean_invalid_range(uint32_t addr, uint32_t size);
-
-/**
-  \brief       SOC Dcache clean & invalid all.
-  \return      none
-*/
-//void soc_dcache_clean_invalid_all(void);
-
-/**
-  \brief       SOC Dcache invalid by range.
-  \return      none
-*/
-//void soc_dcache_invalid_range(uint32_t addr, uint32_t size);
-
-/**
-  \brief       SOC dma address remap.
-  \return      remaped address
-*/
-//extern uint32_t soc_dma_address_remap(uint32_t addr);
-
-
-//#ifdef CONFIG_PM
-/**
-  \brief       SoC enter low-power mode, each chip's implementation is different
-               called by csi_pm_enter_sleep
-  \param[in]   mode        low-power mode
-  \return      error code
-*/
-//csi_error_t soc_pm_enter_sleep(csi_pm_mode_t mode);
-
-
 
 
 #endif /* _SYS_CLK_H_ */

@@ -9,10 +9,7 @@
  * *********************************************************************
 */
 
-#include "soc.h"
 #include "sys_clk.h"
-
-
 
 const csi_irqmap_t g_tIrqMap[] = {
 	

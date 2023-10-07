@@ -33,7 +33,18 @@ typedef struct {
     uint32_t wModule;
 } csi_clkmap_t;
 
+/** \brief enable peripheral clock
+ * 
+ *  \param[in] pIpBase: pointer of peripheral Base address
+ *  \return none.
+ */
 void csi_clk_enable(uint32_t *pIpBase);
+
+/** \brief disable peripheral clock 
+ * 
+ *  \param[in] pIpBase: pointer of peripheral Base address
+ *  \return none.
+ */
 void csi_clk_disable(uint32_t *pIpBase);
 
 /** \brief emosc filter enable

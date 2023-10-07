@@ -72,9 +72,9 @@ extern "C" {
 
 //csi interrupt user callback enable: 1/0 = ENABLE/DISABLE
 //csi库函数中断支持回调函数，通过宏USE_XXX_CALLBACK来实现次功能选择，若使能需用
-#define USE_BT_CALLBACK			1		//BT(0/1/2/3)
-#define USE_UART_CALLBACK		1		//UART(0/1/2)
-#define USE_SIO_CALLBACK		1		//SIO(0/1)
+#define USE_BT_CALLBACK			0		//BT(0/1/2/3)
+#define USE_UART_CALLBACK		0		//UART(0/1/2)
+#define USE_SIO_CALLBACK		0		//SIO(0/1)
 #define USE_LED_CALLBACK		0		//LED(0)
 #define USE_CNTA_CALLBACK		1		//CNTA(0)
 #define USE_CMP_CALLBACK		1		//CMP(0/1/2)
@@ -89,7 +89,7 @@ extern "C" {
 #define USE_WWDT_CALLBACK		1		//WWDT(0)
 #define USE_ADC_CALLBACK		1		//ADC(0/1)
 #define USE_RTC_CALLBACK		1		//RTC
-#define USE_CAN_CALLBACK		1		//CAN(0)
+#define USE_CAN_CALLBACK		0		//CAN(0)
 #define USE_IWDT_CALLBACK		1		//IWDT(0)
 
 //csi GUI Handling Enable, 1/0(OPEN/CLOSE)

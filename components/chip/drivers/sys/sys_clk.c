@@ -394,13 +394,13 @@ csi_error_t csi_clo_config(csi_clo_src_e eCloSrc, csi_clo_div_e eCloDiv)
  *  \param[in] wModule: module name
  *  \return none
  */
-void soc_clk_enable(csi_clk_module_e eModule)
+void soc_clk_enable(csi_pclk_e ePclk)
 {
     //TODO
-	if(eModule < 32U)
-		csp_pcer0_clk_enable(SYSCON, (uint32_t)eModule);
+	if(ePclk < 32U)
+		csp_pcer0_clk_enable(SYSCON, (uint32_t)ePclk);
 	else
-		csp_pcer1_clk_enable(SYSCON, ((uint32_t)eModule - 32U));
+		csp_pcer1_clk_enable(SYSCON, ((uint32_t)ePclk - 32U));
 }
 
 /** \brief prei clk disable in SYSCON level
@@ -408,13 +408,13 @@ void soc_clk_enable(csi_clk_module_e eModule)
  *  \param[in] wModule: module name
  *  \return none
  */
-void soc_clk_disable(csi_clk_module_e eModule)
+void soc_clk_disable(csi_pclk_e ePclk)
 {
     //TODO
-	if(eModule < 32U)
-		csp_pder0_clk_disable(SYSCON, (uint32_t)eModule);
+	if(ePclk < 32U)
+		csp_pder0_clk_disable(SYSCON, (uint32_t)ePclk);
 	else
-		csp_pder1_clk_disable(SYSCON, ((uint32_t)eModule - 32U));
+		csp_pder1_clk_disable(SYSCON, ((uint32_t)ePclk - 32U));
 }
 
 /** \brief to calculate SCLK and PCLK frequence according to the current reg content
