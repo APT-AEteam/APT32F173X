@@ -23,11 +23,10 @@ volatile static uint8_t s_byWriteBuffer[32];
 volatile uint32_t g_wTxBuff[32] = {0,1,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20};// DMA发送数据。前两个为wWriteAddrs
 volatile uint8_t g_bRxBuff[32] = {0};   //DMA接收数据
 
-//extern volatile uint32_t g_wIicErrorCont = 0;
-//extern volatile uint8_t g_bySendIndex = 0;
-//extern volatile uint8_t g_byWriteIndex = 0;
-//extern volatile uint32_t g_wIicSlaveWriteAddress;
-//extern csi_iic_ctrl_t g_tIicCtrl[IIC_IDX];
+volatile static  uint32_t s_wIicErrorCont = 0;
+volatile static  uint8_t s_bySendIndex = 0;
+volatile static  uint8_t s_byWriteIndex = 0;
+volatile static  uint32_t s_wIicSlaveWriteAddress;
 
 
 #if (USE_IIC_CALLBACK == 0)
@@ -43,36 +42,105 @@ volatile uint8_t g_bRxBuff[32] = {0};   //DMA接收数据
 ATTRIBUTE_ISR  void iic_int_handler(void)
 {
 	// 用户直接在中断服务接口函数里处理中断，建议客户使用此模式
-	// USER TODO
 	
 	//receive buffer 接收处理程序  添加
-	
-	if(csp_iic_get_isr(IIC0)&IIC_INT_RX_FULL)        //receive data full
+	if((csp_iic_get_isr(IIC0)&IIC_INT_SCL_SLOW)||(csp_iic_get_isr(IIC0)&IIC_INT_TX_ABRT))			 //SCLK锁死,IIC发送中止))
 	{
-//		if(g_bySendIndex == 0)
-//		{
-//			g_bySendIndex = 1;
-//			g_wIicSlaveWriteAddress = csp_iic_get_data(IIC0);
-//			g_byWriteIndex = g_wIicSlaveWriteAddress;
-//		}
-//		else
-//		{
-//			if(g_wIicSlaveWriteAddress<g_tSlave.hwRxSize)
-//			{
-//				*(g_tSlave.pbySlaveRxBuf+g_wIicSlaveWriteAddress)= csp_iic_get_data(IIC0);
-//			}
-//			g_wIicSlaveWriteAddress++;
-//		}
-//			csp_iic_clr_isr(IIC0,IIC_INT_RX_FULL);
-//			g_wIicErrorCont=0;
+		csi_iic_disable(IIC0);
+		csp_iic_set_data_cmd(IIC0, 0x00);
+		csi_iic_enable(IIC0);
+		s_bySendIndex=0;
+		csp_iic_clr_isr(IIC0,IIC_INT_SCL_SLOW|IIC_INT_TX_ABRT);  // 清中断原来的位置
+		s_wIicErrorCont=0;
+		csp_iic_int_disable(IIC0,IIC_INT_TX_EMPTY);
+	}else
+	{
+
+		if(csp_iic_get_isr(IIC0)&IIC_INT_RX_FULL)        //有接收到数据
+		{
+			if(s_bySendIndex == 0)
+			{
+				s_bySendIndex = 1;
+				s_wIicSlaveWriteAddress = csp_iic_get_data(IIC0);
+				s_byWriteIndex = s_wIicSlaveWriteAddress;
+			}
+			else
+			{
+				if(s_wIicSlaveWriteAddress<g_tSlave.hwRxSize)
+				{
+					*(g_tSlave.pbySlaveRxBuf+s_wIicSlaveWriteAddress)= csp_iic_get_data(IIC0);
+				}
+				s_wIicSlaveWriteAddress++;
+			}
+			csp_iic_clr_isr(IIC0,IIC_INT_RX_FULL);
+			s_wIicErrorCont=0;
+		}
+		
+		if(csp_iic_get_isr(IIC0)&IIC_INT_RD_REQ)			//读请求产生
+		{
+			if(s_bySendIndex==1)
+			{
+				s_bySendIndex=2;
+				csp_iic_int_enable(IIC0,IIC_INT_TX_EMPTY);
+				if(s_byWriteIndex<g_tSlave.hwTxSize)
+				{
+					csp_iic_set_data_cmd(IIC0, *(g_tSlave.pbySlaveTxBuf+s_byWriteIndex));
+					
+				}else{
+					csp_iic_set_data_cmd(IIC0, 0xFF);
+				}
+				s_byWriteIndex++;
+			}
+
+			csp_iic_clr_isr(IIC0,IIC_INT_RD_REQ);
+			s_wIicErrorCont=0;
+		} 
+
+		if(csp_iic_get_isr(IIC0)&IIC_INT_TX_EMPTY)				//IIC发送为空
+		{
+			if(s_bySendIndex==2)
+			{
+				if(s_byWriteIndex<g_tSlave.hwTxSize)
+				{
+					csp_iic_set_data_cmd(IIC0, *(g_tSlave.pbySlaveTxBuf+s_byWriteIndex));
+				}
+				else{
+					csp_iic_set_data_cmd(IIC0, 0xFF);
+				}
+				s_byWriteIndex++;
+			}
+			else
+			{
+				csp_iic_int_disable(IIC0,IIC_INT_TX_EMPTY);
+				if(s_wIicErrorCont>10000)
+				{
+					csi_iic_disable(IIC0);
+					csp_iic_set_data_cmd(IIC0, 0x00);
+					csi_iic_enable(IIC0);
+					s_wIicErrorCont=0;
+				}
+				else
+				{
+					s_wIicErrorCont++;
+				}
+			}
+			csp_iic_clr_isr(IIC0,IIC_INT_TX_EMPTY);
+		}
+		if(csp_iic_get_isr(IIC0)&IIC_INT_STOP_DET)
+		{
+			csp_iic_int_disable(IIC0,IIC_INT_TX_EMPTY);
+			csp_iic_clr_isr(IIC0,IIC_INT_STOP_DET);
+			if(s_bySendIndex!=0)
+			{
+				s_bySendIndex=0;
+			}
+			s_wIicErrorCont=0;
+		}
 	}
-	
-	
-	
-	
 }
 
 #endif
+
 
 /** \brief IIC master eeprom demo
  * IIC主机向eeprom中写数据，并且读取eeprom中的数据
@@ -173,7 +241,7 @@ void iic_slave_demo(void)
 	g_tIicSlaveCfg.hwMaskAddr = 0x00;           //配置SLVQUAL
 	g_tIicSlaveCfg.eQualMode=I2C_QUALMASK;        //从机地址限定模式， 地址扩展模式
 	csi_iic_int_enable(IIC0, IIC_INTSRC_SCL_SLOW | IIC_INTSRC_STOP_DET | IIC_INTSRC_RD_REQ | IIC_INTSRC_RX_FULL | IIC_INTSRC_TX_ABRT|IIC_INTSRC_TX_OVER);   //使能需要的中断
-//	csi_iic_set_slave_buffer(g_byWriteBuffer,32,g_bySendBuffer,32); //从机就是数组和发送数组设置
+	csi_iic_set_slave_buffer(s_byWriteBuffer,32,s_bySendBuffer,32); //从机就是数组和发送数组设置
 	csi_iic_slave_init(IIC0,&g_tIicSlaveCfg);		//初始化从机
 	
 	while(1);
@@ -205,7 +273,7 @@ void iic_multi_slave_demo(void)
 	g_tIicSlaveCfg.hwSlaveAddr = 0x30;				//设置从机地址,SADDR>>1
 	g_tIicSlaveCfg.hwMaskAddr = 0x70;           //配置SLVQUAL
 	g_tIicSlaveCfg.eQualMode=I2C_QUALEXTEND;        //从机地址限定模式， 地址扩展模式
-//	csi_iic_set_slave_buffer(s_byWriteBuffer,32,s_bySendBuffer,32); //从机就是数组和发送数组设置
+	csi_iic_set_slave_buffer(s_byWriteBuffer,32,s_bySendBuffer,32); //从机就是数组和发送数组设置
 	g_tIicMasterCfg.wSdaTimeout = 0XFFFF;						//SDA 超时时间设置，  1/主频 * g_tIicMasterCfg.wSdaTimeout  ms
 	g_tIicMasterCfg.wSclTimeout = 0XFFFF;						//SCL 超时时间设置，  1/主频 * g_tIicMasterCfg.wSdaTimeout  ms
 	csi_iic_int_enable(IIC0, IIC_INTSRC_SCL_SLOW | IIC_INTSRC_STOP_DET |IIC_INTSRC_RD_REQ | IIC_INTSRC_RX_FULL | IIC_INTSRC_TX_ABRT);     //使能需要的中断
