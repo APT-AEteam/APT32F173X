@@ -632,7 +632,7 @@ void csi_gptb_set_burst(csp_gptb_t *ptGptbBase,csi_gptb_cgsrc_e eCgsrc);
  \param  channel        \refer to csi_gptb_channel_e
  \return none
 */
-csi_error_t csi_gptb_pwm_ch_init(csp_gptb_t *ptGptbBase, csi_gptb_pwm_ch_config_t *ptPwmChCfg, csi_gptb_channel_e eChannel); 
+csi_error_t csi_gptb_set_channel(csp_gptb_t *ptGptbBase, csi_gptb_pwm_ch_config_t *ptPwmChCfg, csi_gptb_channel_e eChannel); 
  
 /**
  \brief  gptb deadzone init

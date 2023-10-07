@@ -43,16 +43,18 @@ static uint8_t	s_byDipData[24] =
 	0x0A,	0x07,	0x06 	//rgb8
 };
 
-static uint32_t		s_wSioRxBuf[24];		//接收缓存
+
 static uint32_t 	s_wSioTxbuf[24];
+static uint32_t 	s_wTxData = 0;
 static uint8_t		s_byHdqDneFlg = 0;
 
-#if (USE_SIO_CALLBACK == 1)	
+#if (USE_SIO_CALLBACK == 0)	
 	
+static uint32_t		s_wSioRxBuf[24];		//接收缓存	
 static uint16_t s_hwSendLen = 0;	
 static uint16_t s_hwRecvLen = 0;
 
-static uint32_t s_wTxData = 0;
+
 
 /** \brief  siox_int_handler: SIO中断服务函数
  * 

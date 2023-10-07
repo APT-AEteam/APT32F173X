@@ -35,16 +35,23 @@ ATTRIBUTE_ISR  void bt1_int_handler(void)
 	//用户直接在中断服务接口函数里处理中断，建议客户使用此模式
 	volatile uint32_t byIsr = csp_bt_get_isr(BT1);
 	
-	if(byIsr & BT_INT_PEND)					//PEND interrupt
+	if(byIsr & BT_INT_PEND)					//PEND 中断
 	{
 		csp_bt_clr_isr(BT1, BT_INT_PEND);
 		csi_gpio_toggle(GPIOA, PA6);		//PA6翻转
 	}
-	if(byIsr & BT_INT_CMP)					//CMP interrupt
+	
+	if(byIsr & BT_INT_CMP)					//CMP 中断
 	{
 		csp_bt_clr_isr(BT1, BT_INT_CMP);	
 	}
-	if(byIsr & BT_INT_EVTRG)				//EVTRG interrupt
+	
+	if(byIsr & BT_INT_OVF)					//OVF 中断
+	{
+		csp_bt_clr_isr(BT1, BT_INT_OVF);
+	}
+	
+	if(byIsr & BT_INT_EVTRG)				//EVTRG 中断
 	{
 		csp_bt_clr_isr(BT1, BT_INT_EVTRG);
 	}
@@ -135,16 +142,23 @@ ATTRIBUTE_ISR  void bt0_int_handler(void)
 	//用户直接在中断服务接口函数里处理中断，建议客户使用此模式
 	volatile uint8_t byIsr = csp_bt_get_isr(BT0);
 	
-	if(byIsr & BT_INT_PEND)					//PEND interrupt
+	if(byIsr & BT_INT_PEND)					//PEND 中断
 	{
 		csp_bt_clr_isr(BT0, BT_INT_PEND);
 		csi_gpio_toggle(GPIOA, PA6);		//PA6翻转
 	}
-	if(byIsr & BT_INT_CMP)					//CMP interrupt
+	
+	if(byIsr & BT_INT_CMP)					//CMP 中断
 	{
 		csp_bt_clr_isr(BT0, BT_INT_CMP);	
 	}
-	if(byIsr & BT_INT_EVTRG)				//EVTRG interrupt
+	
+	if(byIsr & BT_INT_OVF)					//OVF 中断
+	{
+		csp_bt_clr_isr(BT0, BT_INT_OVF);
+	}
+	
+	if(byIsr & BT_INT_EVTRG)				//EVTRG 中断
 	{
 		csp_bt_clr_isr(BT0, BT_INT_EVTRG);
 	}
@@ -218,6 +232,7 @@ int bt_sync_trg_count_demo(void)
 
 
 /** \brief	bt evtrg out: BT0 触发输出demo
+ * 
  *  \brief	用BT0定时触发 BT1 PWM输出，当BT0定时周期到时触发BT1输出PWM
  * 		
  *  \param[in] none

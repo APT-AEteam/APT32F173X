@@ -22,21 +22,7 @@
 			
 /* externs function--------------------------------------------------------*/
 extern void nmi_int_handler(void);
-extern void can_irqhandler(csp_can_t *ptCanBase);
-extern void gpio_irqhandler(uint8_t byExiNum);
 extern void ifc_irqhandler(void);
-extern void bt_irqhandler0(csp_bt_t *ptBtBase);
-extern void bt_irqhandler1(csp_bt_t *ptBtBase);
-extern void bt_irqhandler2(csp_bt_t *ptBtBase);
-extern void bt_irqhandler3(csp_bt_t *ptBtBase);
-extern void wwdt_irqhandler(void);
-extern void syscon_irqhandler(csp_syscon_t *ptSysconBase);
-extern void i2c_irqhandler(csp_iic_t *ptIicBase);
-
-extern void sio_irqhandler(csp_sio_t *ptSioBase);
-
-extern void lpt_irqhandler(csp_lpt_t *ptLptBase);
-
 
 /*************************************************************/
 //CORET Interrupt

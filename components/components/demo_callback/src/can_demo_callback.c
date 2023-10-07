@@ -1,6 +1,6 @@
 /***********************************************************************//** 
- * \file  can_demo.c
- * \brief  CAN_DEMO description and static inline functions at register level 
+ * \file  can_demo_callback.c
+ * \brief  CAN_DEMO_CALLBACK description and static inline functions at register level 
  * \copyright Copyright (C) 2015-2023 @ APTCHIP
  * <table>
  * <tr><th> Date  <th>Version  <th>Author  <th>Description
@@ -66,11 +66,6 @@ static void	user_receive_callback(csp_can_t *ptCanBase, csi_can_recv_t *ptRecv)
 	{
 		nop;
 	}
-	
-	if(ptRecv->byChNum == CAN_CH5)
-	{
-		nop;
-	}
 }
 
 /** \brief  user_err_callback：CAN报文接收发送异常状态回调函数
@@ -113,7 +108,6 @@ static void	user_err_callback(csp_can_t *ptCanBase, uint32_t wIsr)
 int can_send_int_callback_demo(void)
 {
 	int iRet = 0;
-	uint8_t	i = 0;
 	csi_can_config_t 	 tCanConfig;						//CAN 初始化结构体
 	csi_can_tx_config_t  tCanTxConfig;						//CAN 发送报文配置结构体
 	
@@ -134,7 +128,7 @@ int can_send_int_callback_demo(void)
 		//id,识别符配置
 		tCanTxConfig.tId.eIdMode	= CAN_ID_STD;			//报文ID模式，标准模式(11Bit)
 		tCanTxConfig.tId.eMsgDir	= CAN_DIR_SEND;			//报文方向
-		tCanTxConfig.tId.hwStdId 	= 0x700 + i;			//标准11BIT ID
+		tCanTxConfig.tId.hwStdId 	= 0x701;				//标准11BIT ID
 		tCanTxConfig.tId.wExtId		= 0x3FFFF;				//扩展ID,标准模式下忽略	
 		//tx mcr 发送报文控制配置
 		tCanTxConfig.tMc.bTxIeEn	= ENABLE;				//使能报文中断，若使用报文通道中断(源中断)，必须使能
@@ -159,7 +153,7 @@ int can_send_int_callback_demo(void)
 		//id,识别符配置
 		tCanTxConfig.tId.eIdMode	= CAN_ID_EXT;			//报文ID模式，扩展模式(29Bit)
 		tCanTxConfig.tId.eMsgDir	= CAN_DIR_SEND;			//报文方向
-		tCanTxConfig.tId.hwStdId 	= 0x700 + i;			//标准11BIT ID
+		tCanTxConfig.tId.hwStdId 	= 0x702;				//标准11BIT ID
 		tCanTxConfig.tId.wExtId		= 0x3FFFF;				//扩展18BIT ID,标准模式下忽略	
 		//tx mcr 发送报文控制配置
 		tCanTxConfig.tMc.bTxIeEn	= ENABLE;				//使能报文中断，若使用报文通道中断(源中断)，必须使能

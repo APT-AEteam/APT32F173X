@@ -1,6 +1,6 @@
 /***********************************************************************//** 
- * \file  uart_demo.c
- * \brief  UART_DEMO description and static inline functions at register level 
+ * \file  uart_demo_callback.c
+ * \brief  UART_DEMO_CALLBACK description and static inline functions at register level 
  * \copyright Copyright (C) 2015-2023 @ APTCHIP
  * <table>
  * <tr><th> Date  <th>Version  <th>Author  <th>Description

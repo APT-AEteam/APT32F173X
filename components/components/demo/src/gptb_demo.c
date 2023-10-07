@@ -213,7 +213,7 @@ int gptb_pwm_demo(void)
 	tPwmChCfg.eActionT2D    =   GPTB_ACT_NA;		//CNT=T2D时，波形输出不变													
 	tPwmChCfg.eC1Sel 		=   GPTB_COMPA;			//C1选择CMPA为数据源		
 	tPwmChCfg.eC2Sel 		=   GPTB_COMPA;			//C2选择CMPA为数据源
-	csi_gptb_pwm_ch_init(GPTB0, &tPwmChCfg,  GPTB_CHANNEL_1);
+	csi_gptb_set_channel(GPTB0, &tPwmChCfg,  GPTB_CHANNEL_1);
 //------------------------------------------------------------------------------------------------------------------------
 	csi_gptb_start(GPTB0);
 
@@ -269,7 +269,7 @@ int gptb_pwm_dz_demo(void)
 	tPwmChCfg.eActionT2D    =   GPTB_ACT_NA;		//CNT=T2D时，波形输出不变													
 	tPwmChCfg.eC1Sel 		=   GPTB_COMPA;			//C1选择CMPA为数据源		
 	tPwmChCfg.eC2Sel 		=   GPTB_COMPA;			//C2选择CMPA为数据源
-	csi_gptb_pwm_ch_init(GPTB0, &tPwmChCfg,  GPTB_CHANNEL_1);
+	csi_gptb_set_channel(GPTB0, &tPwmChCfg,  GPTB_CHANNEL_1);
 //------------------------------------------------------------------------------------------------------------------------	
 	tDeadZoneCfg.eChxOutSel_S1S0    = GPTB_DBOUT_AR_BF;             //使能通道A的上升沿延时，使能通道B的下降沿延时
 	tDeadZoneCfg.eChxPol_S3S2   	= GPTB_DBPOL_B;                 //通道A和通道B延时输出电平是否反向
@@ -334,7 +334,7 @@ int gptb_pwm_dz_em_demo(void)
 	tPwmChCfg.eActionT2D    =   GPTB_ACT_NA;		//CNT=T2D时，波形输出不变													
 	tPwmChCfg.eC1Sel 		=   GPTB_COMPA;			//C1选择CMPA为数据源		
 	tPwmChCfg.eC2Sel 		=   GPTB_COMPA;			//C2选择CMPA为数据源
-	csi_gptb_pwm_ch_init(GPTB0, &tPwmChCfg,  GPTB_CHANNEL_1);
+	csi_gptb_set_channel(GPTB0, &tPwmChCfg,  GPTB_CHANNEL_1);
 //------------------------------------------------------------------------------------------------------------------------
 	tDeadZoneCfg.eChxOutSel_S1S0    = GPTB_DBOUT_AR_BF;             //使能通道A的上升沿延时，使能通道B的下降沿延时
 	tDeadZoneCfg.eChxPol_S3S2       = GPTB_DBPOL_B;                 //通道A和通道B延时输出电平是否反向
@@ -371,4 +371,79 @@ int gptb_pwm_dz_em_demo(void)
 		mdelay(1);
 	}	
 	return iRet;
+}
+
+/** \brief GPTB链接代码实例,通过GPTB0链接GPTB1,实现波形的输出。GPTB1启动会出发GPTB0同事启动，且更新GPTB1 PWM参数时，GPTB0的PWM参数也会随之更新。
+ *          0x0:不链接
+ * 			0x1:GPTA0
+ * 			0x2:GPTA1
+ * 			0x3:GPTA2
+ * 			0x4:GPTA3 
+ *          0x5:GPTB0
+ * 			0x6:GPTB1
+ * 			0x7:GPTB2
+ * 			0x8:GPTB3
+ * 			0x9:GPTB4
+ * 			0xA:GPTB5
+ *  \param[in] none
+ *  \return error code
+ */
+int gptb_reglk_demo(void)
+{
+	int iRet = 0;	
+	csi_gptb_pwm_config_t 		tPwmCfg;
+	csi_gptb_pwm_ch_config_t  	tPwmChCfg;
+	csi_gptb_reglk_config_t  	tReglkCfg;       
+//------------------------------------------------------------------------------------------------------------------------	
+#if (USE_GUI == 0)		
+	csi_gpio_set_mux(GPIOC,  PC13, PC13_GPTB0_CHAX);//初始化PC13为CHAX 
+	csi_gpio_set_mux(GPIOC,  PC14, PC14_GPTB1_CHAX);//初始化PC14为CHAY	
+#endif	
+//------------------------------------------------------------------------------------------------------------------------		
+	tPwmCfg.eWorkMode       = GPTB_WORK_WAVE;       //GPTB工作模式：捕获/波形输出
+	tPwmCfg.eCountMode   	= GPTB_CNT_UP;          //GPTB计数模式：递增/递减/递增递减
+	tPwmCfg.eRunMode    	= GPTB_RUN_CONT;        //GPTB运行模式：连续/一次性
+	tPwmCfg.byDutyCycle 	= 50;					//GPTB输出PWM占空比			
+	tPwmCfg.wFreq 			= 10000;				//GPTB输出PWM频率	
+	csi_gptb_pwm_init(GPTB0, &tPwmCfg);
+	csi_gptb_pwm_init(GPTB1, &tPwmCfg);
+//------------------------------------------------------------------------------------------------------------------------		
+	tPwmChCfg.eActionZRO    =   GPTB_ACT_LO;
+	tPwmChCfg.eActionPRD    =   GPTB_ACT_NA;
+	tPwmChCfg.eActionC1U    =   GPTB_ACT_HI;
+	tPwmChCfg.eActionC1D    =   GPTB_ACT_LO;
+	tPwmChCfg.eActionC2U    =   GPTB_ACT_NA;
+	tPwmChCfg.eActionC2D    =   GPTB_ACT_NA;
+	tPwmChCfg.eActionT1U    =   GPTB_ACT_NA;
+	tPwmChCfg.eActionT1D    =   GPTB_ACT_NA;
+	tPwmChCfg.eActionT2U    =   GPTB_ACT_NA;
+	tPwmChCfg.eActionT2D    =   GPTB_ACT_NA;
+	tPwmChCfg.eC1Sel        =   GPTB_COMPA;
+	tPwmChCfg.eC2Sel        =   GPTB_COMPA;	
+	csi_gptb_set_channel(GPTB0, &tPwmChCfg,  GPTB_CHANNEL_1);
+	csi_gptb_set_channel(GPTB1, &tPwmChCfg,  GPTB_CHANNEL_1);
+//------------------------------------------------------------------------------------------------------------------------	
+	tReglkCfg.byPrdr	= 6;                                                             
+	tReglkCfg.byRssr    = 6;																                   
+	tReglkCfg.byCmpa    = 6;																					
+	tReglkCfg.byCmpb    = 6;																					
+	tReglkCfg.byGld2    = 0;																					
+	tReglkCfg.byEmslclr = 0;																					
+	tReglkCfg.byEmhlclr = 0;																					
+	tReglkCfg.byEmicr   = 0;																					 
+	tReglkCfg.byEmfrcr  = 0;																					 
+	tReglkCfg.byAqosf   = 0;																					
+	tReglkCfg.byAqcsf   = 0;  																				 
+    csi_gptb_set_reglk(GPTB0, &tReglkCfg);
+//------------------------------------------------------------------------------------------------------------------------	
+	csi_gptb_start(GPTB1);	
+	
+	while(1)
+	{	
+		csi_gptb_pwm_update(GPTB1, 10000, 20, GPTB_COMPA);	//修改PWM参数为10KHz/20%
+		mdelay(1);        
+		csi_gptb_pwm_update(GPTB1, 10000, 50, GPTB_COMPA);	//修改PWM参数为10KHz/50%                
+		mdelay(1);	
+	}	
+	return iRet;	
 }
