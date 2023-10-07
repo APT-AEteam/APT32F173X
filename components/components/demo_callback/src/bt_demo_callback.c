@@ -1,6 +1,6 @@
 /***********************************************************************//** 
- * \file  bt_demo.c
- * \brief  TIMER_DEMO description and static inline functions at register level 
+ * \file  bt_demo_callback.c
+ * \brief  BT_DEMO_CALLBACK description and static inline functions at register level 
  * \copyright Copyright (C) 2015-2023 @ APTCHIP
  * <table>
  * <tr><th> Date  <th>Version  <th>Author  <th>Description

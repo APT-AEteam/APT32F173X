@@ -1,6 +1,6 @@
 /***********************************************************************//** 
  * \file  can_demo_callback.c
- * \brief  CAN_DEMO witch callback description and static inline functions at register level 
+ * \brief  CAN_DEMO_CALLBACK description and static inline functions at register level 
  * \copyright Copyright (C) 2015-2023 @ APTCHIP
  * <table>
  * <tr><th> Date  <th>Version  <th>Author  <th>Description

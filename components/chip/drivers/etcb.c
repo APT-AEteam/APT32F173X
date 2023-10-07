@@ -7,7 +7,7 @@
  * <tr><th> Date  <th>Version   <th>Author  <th>Description
  * <tr><td> 2020-10-8 <td>V0.0  <td>WNN   <td>initial
  * <tr><td> 2021-1-8  <td>V0.1  <td>WNN   <td>SW trigger
- * <tr><td> 2023-9-21 <td>V0.3  <td>ZJY   <td>code normalization 
+ * <tr><td> 2023-9-21 <td>V0.2  <td>ZJY   <td>code normalization 
  * </table>
  * *********************************************************************
 */
