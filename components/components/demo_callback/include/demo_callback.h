@@ -28,6 +28,7 @@ extern int bt_pwm_callback_demo(void);
 //iwdt demo
 extern int iwdt_normal_demo(void);
 extern int iwdt_irq_demo(void);
+extern  csi_error_t iwdt_int_callback_demo(void);
 
 //etcb demo
 extern int etcb_one_trg_one_demo(void);
