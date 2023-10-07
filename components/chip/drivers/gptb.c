@@ -204,7 +204,7 @@ csi_error_t csi_gptb_timer_init(csp_gptb_t *ptGptbBase, csi_gptb_time_config_t *
  \param  channel        \refer to csi_gptb_channel_e
  \return none
 */
-csi_error_t csi_gptb_pwm_ch_init(csp_gptb_t *ptGptbBase, csi_gptb_pwm_ch_config_t *ptPwmChCfg, csi_gptb_channel_e eChannel)
+csi_error_t csi_gptb_set_channel(csp_gptb_t *ptGptbBase, csi_gptb_pwm_ch_config_t *ptPwmChCfg, csi_gptb_channel_e eChannel)
 {
     uint32_t wVal;
 	
