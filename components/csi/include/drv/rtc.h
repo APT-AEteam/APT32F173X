@@ -158,7 +158,7 @@ void csi_rtc_uninit(csi_rtc_t *rtc);
  * \param[in]   rtctime    pointer to rtc time
  * \return      error code \ref csi_error_t
 */
-csi_error_t csi_rtc_set_time(csp_rtc_t *rtc, csi_rtc_time_t *rtctime);
+csi_error_t csi_rtc_set_current_time(csp_rtc_t *rtc, csi_rtc_time_t *rtctime);
 
 /**\brief       To start RTC 
  * 
@@ -251,7 +251,7 @@ bool csi_rtc_is_running(csi_rtc_t *rtc);
  * \param 	ePrd    time interval of the timer.
  * \param[in]   rtc    rtc handle to operate
 */
-void csi_rtc_start_as_timer(csp_rtc_t *ptRtc, csi_rtc_timer_e ePrd);
+void csi_rtc_set_timer(csp_rtc_t *ptRtc, csi_rtc_timer_e ePrd);
 
 /** \brief       Config RTC alarm ture timer
  * 
@@ -261,15 +261,23 @@ void csi_rtc_start_as_timer(csp_rtc_t *ptRtc, csi_rtc_timer_e ePrd);
 */
 void csi_rtc_set_alarm_out(csp_rtc_t *ptRtc, csi_rtc_osel_e eOut);
 
-/** \brief evtrg source output config  
+/** \brief rtc event trigger source output config  
  * 
  *  \param[in] ptRtc: RTC handle to operate
- *  \param[in] eTrg: rtc evtrgout channel
- *  \param[in] eTrgSrc: rtc evtrg source
+ *  \param[in] eTrg: rtc evtrgout channel \ref csi_rtc_trgout_e
+ *  \param[in] eTrgSrc: rtc evtrg source  \ref csi_rtc_trgsrc_e
  *  \param[in] trg_prd: event count period 
- *  \return error code \ref csi_error_t
+ *  \return none
  */
-csi_error_t csi_rtc_set_evtrg(csp_rtc_t *ptRtc, csi_rtc_trgout_e eTrg, csi_rtc_trgsrc_e eTrgSrc, uint8_t byTrgPrd);
+void csi_rtc_set_evtrg(csp_rtc_t *ptRtc, csi_rtc_trgout_e eTrg, csi_rtc_trgsrc_e eTrgSrc, uint8_t byTrgPrd);
+
+/** \brief rtc event trigger enable  
+ * 
+ *  \param[in] ptRtc: RTC handle to operate
+ *  \param[in] eTrg: rtc evtrgout channel \ref csi_rtc_trgout_e
+ *  \return none
+ */
+void csi_rtc_evtrg_enable(csp_rtc_t *ptRtc, csi_rtc_trgout_e eTrg);
 
 /** \brief  register rtc interrupt callback function
  * 

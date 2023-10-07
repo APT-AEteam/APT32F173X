@@ -21,15 +21,31 @@
 static void apt_rtc_alm_set_time(csp_rtc_t *ptRtc, uint8_t byAlm, uint8_t byDay, bool byPm, uint8_t byHor, uint8_t byMin,uint8_t bySec);
 static csp_error_t apt_rtc_set_time(csp_rtc_t *ptRtc, bool bPm, uint8_t byHor, uint8_t byMin,uint8_t bySec);
 static csp_error_t apt_rtc_set_date(csp_rtc_t *ptRtc, uint8_t byYear, uint8_t byMon, uint8_t byWday, uint8_t byDay);
-csp_error_t apt_rtc_set_trgsrc(csp_rtc_t *ptRtc, csi_rtc_trgout_e eTrg, csi_rtc_trgsrc_e eSrc);
-csp_error_t apt_rtc_set_trgprd(csp_rtc_t *ptRtc, csi_rtc_trgout_e eTrg, uint8_t byPrd);
+//csp_error_t apt_rtc_set_trgsrc(csp_rtc_t *ptRtc, csi_rtc_trgout_e eTrg, csi_rtc_trgsrc_e eSrc);
+//csp_error_t apt_rtc_set_trgprd(csp_rtc_t *ptRtc, csi_rtc_trgout_e eTrg, uint8_t byPrd);
+static uint8_t apt_get_rtc_idx(csp_rtc_t *ptRtcBase);
 
 /* externs variable------------------------------------------------------*/
 csi_rtc_ctrl_t g_tRtcCtrl[RTC_IDX];
 
 /* Private variable------------------------------------------------------*/
-//csp_rtc_time_t tRtcAlarmTime;
 
+
+/** \brief rtc interrupt handler function
+ * 
+ *  \param[in] ptRtcBase: pointer of rtc register structure
+ *  \param[in] byIdx: rtc idx(0)
+ *  \return none
+ */ 
+void csi_rtc_irqhandler(csp_rtc_t *ptRtcBase,  uint8_t byIdx)
+{
+	rtc_int_e eIsr = csp_rtc_get_isr(ptRtcBase);
+	
+	if(g_tRtcCtrl[byIdx].callback)
+		g_tRtcCtrl[byIdx].callback(ptRtcBase, eIsr);
+			
+	csp_rtc_clr_isr(ptRtcBase, eIsr);
+}
 
 /**\brief	Initialize RTC Interface. Initializes the resources needed for the RTC interface
  * 
@@ -195,16 +211,12 @@ void csi_rtc_sw_rst(csp_rtc_t *ptRtc)
  * \param       rtctime    pointer to rtc time
  * \return      error code \ref csi_error_t
 */
-csi_error_t csi_rtc_set_time(csp_rtc_t *ptRtc, csi_rtc_time_t *ptRtcTime)
+csi_error_t csi_rtc_set_current_time(csp_rtc_t *ptRtc, csi_rtc_time_t *ptRtcTime)
 {   
     csi_error_t ret = CSI_OK;
 	
 		
 	do {
-//		if (csp_rtc_get_fmt(ptRtc) == RTC_12FMT && ptRtcTime->tm_hour>12) {
-//			ret = CSI_ERROR;
-//			break;
-//		}
 		
 		ret = (csi_error_t) clock_check_tm_ok((const struct tm *)ptRtcTime);
         if (ret < CSI_OK) {
@@ -234,8 +246,6 @@ csi_error_t csi_rtc_set_time(csp_rtc_t *ptRtc, csi_rtc_time_t *ptRtcTime)
         }
 	}while(0);
 	
-	//csp_rtc_run(ptRtc);
-
 	return ret;
 }
 
@@ -308,8 +318,6 @@ csi_error_t csi_rtc_set_alarm(csp_rtc_t *ptRtc, uint8_t byAlm, uint8_t byMode, c
 			return CSI_ERROR;
 	}
 	
-//	csi_rtc_int_enable(ptRtc, RTCINT_ALMA);
-	
 	csp_rtc_set_key(ptRtc);
 	csp_rtc_alm_disable(ptRtc, byAlm);
 	csp_rtc_clr_key(ptRtc);
@@ -378,14 +386,13 @@ void csi_rtc_set_alarm_out(csp_rtc_t *ptRtc, csi_rtc_osel_e eOut)
  * \param 	ePrd    time interval of the timer.
  * \param[in]   rtc    pointer of rtc register structure to operate
 */
-void csi_rtc_start_as_timer(csp_rtc_t *ptRtc, csi_rtc_timer_e ePrd)
+void csi_rtc_set_timer(csp_rtc_t *ptRtc, csi_rtc_timer_e ePrd)
 {	
 	csp_rtc_set_key(ptRtc);
 	csp_rtc_set_cprd(ptRtc, (rtc_cprd_e)ePrd);
 	csp_rtc_clr_key(ptRtc);
 	while(csp_rtc_get_status(ptRtc));
 	csi_rtc_int_enable(ptRtc, RTCINT_CPRD);
-	//csp_rtc_run(ptRtc);
 }
 
 /**\brief   RTC interrupt enable
@@ -531,41 +538,35 @@ uint32_t csi_rtc_get_alarm_remaining_time(csp_rtc_t *ptRtc, uint8_t byAlm)
 }
 
 
-/** \brief evtrg source output config  
+/** \brief rtc event trigger source output config  
  * 
  *  \param[in] ptRtc: RTC handle to operate
- *  \param[in] eTrg: rtc evtrgout channel 
- *  \param[in] eTrgSrc: rtc evtrg source
+ *  \param[in] eTrg: rtc evtrgout channel \ref csi_rtc_trgout_e
+ *  \param[in] eTrgSrc: rtc evtrg source  \ref csi_rtc_trgsrc_e
  *  \param[in] trg_prd: event count period 
- *  \return error code \ref csi_error_t
+ *  \return none
  */
-csi_error_t csi_rtc_set_evtrg(csp_rtc_t *ptRtc, csi_rtc_trgout_e eTrg, csi_rtc_trgsrc_e eTrgSrc, uint8_t byTrgPrd)
+void csi_rtc_set_evtrg(csp_rtc_t *ptRtc, csi_rtc_trgout_e eTrg, csi_rtc_trgsrc_e eTrgSrc, uint8_t byTrgPrd)
 {
 	
-	csi_error_t ret = CSI_OK;
+	csp_rtc_set_evtrg(ptRtc,(rtc_trgsrc_e)eTrgSrc,(rtc_trgout_e)eTrg);		//set trigger source and trigger out
 	
-	if (apt_rtc_set_trgsrc(ptRtc, eTrg, eTrgSrc)<0)
-		return CSI_ERROR;
-	if (apt_rtc_set_trgprd(ptRtc, eTrg, byTrgPrd)<0)
-		return CSI_ERROR;
-	return ret;
+	csp_rtc_set_prd(ptRtc,(rtc_trgout_e)eTrg,byTrgPrd);	//set trigger period
+	
+//	csp_rtc_evtrg_enable(ptRtc,(rtc_trgout_e)eTrg);				//enable event trigger
 }
 
-/** \brief get rtc number 
- * 
- *  \param[in] ptRtcBase: pointer of rtc register structure
- *  \return rtc number 0
- */ 
-static uint8_t apt_get_rtc_idx(csp_rtc_t *ptRtcBase)
-{
-	switch((uint32_t)ptRtcBase)
-	{
-		case APB_RTC_BASE:		//rtc
-			return 0;		
 
-		default:
-			return 0xff;		//error
-	}
+/** \brief rtc event trigger enable  
+ * 
+ *  \param[in] ptRtc: RTC handle to operate
+ *  \param[in] eTrg: rtc evtrgout channel \ref csi_rtc_trgout_e
+ *  \return none
+ */
+void csi_rtc_evtrg_enable(csp_rtc_t *ptRtc, csi_rtc_trgout_e eTrg)
+{
+	
+	csp_rtc_evtrg_enable(ptRtc,(rtc_trgout_e)eTrg);
 }
 
 /** \brief  register rtc interrupt callback function
@@ -586,24 +587,26 @@ csi_error_t csi_rtc_register_callback(csp_rtc_t *ptRtcBase, void  *callback)
 	return CSI_OK;
 }
 
-/** \brief rtc interrupt handler function
- * 
- *  \param[in] ptRtcBase: pointer of rtc register structure
- *  \param[in] byIdx: rtc idx(0)
- *  \return none
- */ 
-void csi_rtc_irqhandler(csp_rtc_t *ptRtcBase,  uint8_t byIdx)
-{
-	rtc_int_e eIsr = csp_rtc_get_isr(ptRtcBase);
-	
-	if(g_tRtcCtrl[byIdx].callback)
-		g_tRtcCtrl[byIdx].callback(ptRtcBase, eIsr);
-			
-	csp_rtc_clr_isr(ptRtcBase, eIsr);
-}
+
 
 //*****************************************************************************//
 
+/** \brief get rtc number 
+ * 
+ *  \param[in] ptRtcBase: pointer of rtc register structure
+ *  \return rtc number 0
+ */ 
+static uint8_t apt_get_rtc_idx(csp_rtc_t *ptRtcBase)
+{
+	switch((uint32_t)ptRtcBase)
+	{
+		case APB_RTC_BASE:		//rtc
+			return 0;		
+
+		default:
+			return 0xff;		//error
+	}
+}
 
 uint8_t  apt_dec2bcd(uint32_t wData)
 {	
@@ -693,27 +696,27 @@ static void apt_rtc_alm_set_time(csp_rtc_t *ptRtc, uint8_t byAlm, uint8_t byDay,
 
 
 
-csp_error_t apt_rtc_set_trgsrc(csp_rtc_t *ptRtc, csi_rtc_trgout_e eTrg, csi_rtc_trgsrc_e eSrc)
-{
-	if(eTrg == RTC_TRGOUT0)
-		ptRtc -> EVTRG = (ptRtc->EVTRG & ~(RTC_TRGSEL0_MSK)) | eSrc | RTC_TRG0OE;
-	else if(eTrg == RTC_TRGOUT1)
-		ptRtc -> EVTRG = (ptRtc->EVTRG & ~(RTC_TRGSEL1_MSK)) | (eSrc << RTC_TRGSEL1_POS) | RTC_TRG1OE;
-	else
-		return CSP_FAIL;
-	return CSP_SUCCESS;
-}
-
-
-csp_error_t apt_rtc_set_trgprd(csp_rtc_t *ptRtc, csi_rtc_trgout_e eTrg, uint8_t byPrd)
-{	
-	if(eTrg == RTC_TRGOUT0)
-		ptRtc -> EVPS = (ptRtc->EVPS & ~(RTC_TRGEV0PRD_MSK)) | byPrd ;
-	else if(eTrg == RTC_TRGOUT1)
-		ptRtc -> EVPS = (ptRtc->EVPS & ~(RTC_TRGSEL1_MSK)) | (byPrd << RTC_TRGEV1PRD_POS);
-	else
-		return CSP_FAIL;
-		
-	return CSP_SUCCESS;
-}
+//csp_error_t apt_rtc_set_trgsrc(csp_rtc_t *ptRtc, csi_rtc_trgout_e eTrg, csi_rtc_trgsrc_e eSrc)
+//{
+//	if(eTrg == RTC_TRGOUT0)
+//		ptRtc -> EVTRG = (ptRtc->EVTRG & ~(RTC_TRGSEL0_MSK)) | eSrc | RTC_TRG0OE;
+//	else if(eTrg == RTC_TRGOUT1)
+//		ptRtc -> EVTRG = (ptRtc->EVTRG & ~(RTC_TRGSEL1_MSK)) | (eSrc << RTC_TRGSEL1_POS) | RTC_TRG1OE;
+//	else
+//		return CSP_FAIL;
+//	return CSP_SUCCESS;
+//}
+//
+//
+//csp_error_t apt_rtc_set_trgprd(csp_rtc_t *ptRtc, csi_rtc_trgout_e eTrg, uint8_t byPrd)
+//{	
+//	if(eTrg == RTC_TRGOUT0)
+//		ptRtc -> EVPS = (ptRtc->EVPS & ~(RTC_TRGEV0PRD_MSK)) | byPrd ;
+//	else if(eTrg == RTC_TRGOUT1)
+//		ptRtc -> EVPS = (ptRtc->EVPS & ~(RTC_TRGSEL1_MSK)) | (byPrd << RTC_TRGEV1PRD_POS);
+//	else
+//		return CSP_FAIL;
+//		
+//	return CSP_SUCCESS;
+//}
 

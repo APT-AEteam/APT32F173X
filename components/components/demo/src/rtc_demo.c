@@ -87,7 +87,7 @@ void rtc_set_time_demo(void)
 	tRtcTime.iHour = 15;										//如果是12小时制，回读到的hour范围为1->12；如果是24小时制，回读到的hour范围是0->23
 	tRtcTime.iMin  = 15;
 	tRtcTime.iSec  = 0;	
-	csi_rtc_set_time(RTC, &tRtcTime);							//设置时间
+	csi_rtc_set_current_time(RTC, &tRtcTime);							//设置时间
 	csi_rtc_start(RTC);											//RTC开始计时
 	
 	mdelay(1000);												//因为RTC时钟源频率远低于系统时钟频率，故设置完时间，需要延时一段时间，进行回读，才能保证读到的时间是需要的时间
@@ -143,7 +143,7 @@ void rtc_alarm_demo(void)
 	tRtcTime.iHour = 15;
 	tRtcTime.iMin  = 15;
 	tRtcTime.iSec  = 50;	
-	csi_rtc_set_time(RTC, &tRtcTime);					//设置时间
+	csi_rtc_set_current_time(RTC, &tRtcTime);					//设置时间
 	csi_rtc_start(RTC);									//RTC开始工作
 	
 	//RTC闹钟时间设置
@@ -197,7 +197,7 @@ void rtc_timer_demo(void)
 	
 	csi_rtc_init(RTC, &tRtcConfig);									//初始化设置
 
-	csi_rtc_start_as_timer(RTC, RTC_TIMER_1S);	 				 	//每1s进一次中断
+	csi_rtc_set_timer(RTC, RTC_TIMER_1S);	 				 		//每1s进一次中断
 	csi_rtc_start(RTC);	
 	
 	while(1)
@@ -238,7 +238,7 @@ void rtc_etcb_bt_pwm_demo(void)
 	tRtcTime.iMin = 59;
 	tRtcTime.iSec = 55;
 	tRtcTime.iPm  = RTC_AM;	
-	csi_rtc_set_time(RTC, &tRtcTime);			//设置时间
+	csi_rtc_set_current_time(RTC, &tRtcTime);			//设置时间
 	csi_rtc_start(RTC);							//RTC开始计时
 	
 	
@@ -253,7 +253,7 @@ void rtc_etcb_bt_pwm_demo(void)
 	
 	//RTC触发设置	
 	csi_rtc_set_evtrg(RTC, RTC_TRGOUT1, RTC_TRGOUT_ALRMB, 0);  			//RTC TRGEV1 闹铃B到时产生trigger event
-	
+	csi_rtc_evtrg_enable(RTC, RTC_TRGOUT1);
 	
 	//ETCB 配置
 	tEtbConfig1.eChType = ETCB_ONE_TRG_ONE;  							//单个源触发单个目标

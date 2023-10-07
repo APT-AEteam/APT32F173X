@@ -70,7 +70,7 @@ void rtc_alarm_callback_demo(void)
 	tRtcTime.iHour = 15;
 	tRtcTime.iMin  = 15;
 	tRtcTime.iSec  = 50;	
-	csi_rtc_set_time(RTC, &tRtcTime);					//设置时间
+	csi_rtc_set_current_time(RTC, &tRtcTime);					//设置时间
 	csi_rtc_register_callback(RTC, user_rtc_callback);	//注册中断回调函数
 	csi_rtc_start(RTC);	
 	
