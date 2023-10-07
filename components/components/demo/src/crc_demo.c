@@ -5,7 +5,7 @@
  * <table>
  * <tr><th> Date  <th>Version  <th>Author  <th>Description
  * <tr><td> 2021-5-11 <td>V0.0 <td>CWL     <td>initial
- * <tr><td> 2023-9-22 <td>V0.1  <td>GQQ   <td>fix bug,code normalization
+ * <tr><td> 2023-9-22 <td>V0.1  <td>GQQ   <td>code normalization
  * </table>
  * *********************************************************************
 */
@@ -20,7 +20,7 @@
 /* externs variablesr------------------------------------------------------*/
 /* Private variablesr------------------------------------------------------*/
 
-uint8_t byTransData[] = {0x4, 0x3, 0x2, 0x1, 0x8, 0x44, 0x33, 0x22, 0x11, 0x44, 0x33, 0x22, 0x11, 0x44, 0x33, 0x22, 0x11} ; //需要CRC计算的数据
+static uint8_t byTransData[] = {0x4, 0x3, 0x2, 0x1, 0x8, 0x44, 0x33, 0x22, 0x11, 0x44, 0x33, 0x22, 0x11, 0x44, 0x33, 0x22, 0x11} ; //需要CRC计算的数据
 /* device instance------------------------------------------------------*/
 
 

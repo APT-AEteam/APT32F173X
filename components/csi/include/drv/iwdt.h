@@ -100,21 +100,33 @@ uint32_t csi_iwdt_get_remaining_time(void);
 */
 bool csi_iwdt_is_running(void);
 
-/** 
-  \brief 	   iwdt irq enable/disable
-  \param[in]   eIntTv		iwdt interrupt timer length(timer over), 1/2/3/4/5/6/7_8
-  \param[in]   bEnable		enable/disable irq
-  \return 	   none
+/** \brief iwdt int enable
+ * 
+ *  \param[in] eAlarmTo: iwdt interrupt alarm timer length(timer out), 1/2/3/4/5/6/7_8
+ *  \return none
  */
-void csi_iwdt_irq_enable(csi_iwdt_alarm_e eIntTo, bool bEnable);
+void csi_iwdt_int_enable(csi_iwdt_alarm_e eAlarmTo);
 
-/**
-  \brief       enable or disable iwdt when stop in debug mode
-  \param[in]   bEnable 
-  \return      none
+/** \brief iwdt int disable
+ * 
+ *  \param[in] eAlarmTo: iwdt interrupt alarm timer length(timer out), 1/2/3/4/5/6/7_8
+ *  \return none
+ */
+void csi_iwdt_int_disable(csi_iwdt_alarm_e eAlarmTo);
+
+/** \brief enable iwdt when stop in debug mode
+ * 
+ *  \param[in] none 
+ *  \return  none
 */
-void csi_iwdt_debug_enable(bool bEnable);
+void csi_iwdt_debug_enable(void);
 
+/** \brief disable iwdt when stop in debug mode
+ * 
+ *  \param[in] none
+ *  \return  none
+*/
+void csi_iwdt_debug_disable(void);
 
 #ifdef __cplusplus
 }

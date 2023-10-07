@@ -163,15 +163,23 @@ uint32_t csi_iwdt_get_remaining_time(void)
 	return wRTime;
 }
 
-/** \brief enable or disable iwdt when stop in debug mode
+/** \brief enable iwdt when stop in debug mode
  * 
- *  \param[in] bEnable: enable/disable 
+ *  \param[in] none
  *  \return  none
 */
-void csi_iwdt_debug_enable(bool bEnable)
+void csi_iwdt_debug_enable(void)
 {
-	if(bEnable)
-		csp_iwdt_debug_enable(SYSCON);
-	else
-		csp_iwdt_debug_disable(SYSCON);
+	csp_iwdt_debug_enable(SYSCON);
+	
+}
+
+/** \brief disable iwdt when stop in debug mode
+ * 
+ *  \param[in] none
+ *  \return  none
+*/
+void csi_iwdt_debug_disable(void)
+{
+	csp_iwdt_debug_disable(SYSCON);
 }

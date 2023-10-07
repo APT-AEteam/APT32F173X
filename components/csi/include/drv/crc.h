@@ -32,7 +32,7 @@ void csi_crc_init(void);
  * \brief    Reset CRC Interface. 1.Reset the CRC module 
  * \return   none
  */
-void csi_crc_rst(void);
+void csi_crc_sw_rst(void);
 
 
 /**

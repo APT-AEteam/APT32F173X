@@ -84,11 +84,11 @@ int usart_send_demo(void)
 	csi_gpio_pull_mode(GPIOA, PA10, GPIO_PULLUP);		//RX管脚上拉使能, 建议配置
 #endif
 	
-	tUsartCfg.byClkSrc 		= USART_CLKSRC_DIV1;		//clk = PCLK
-	tUsartCfg.byMode		= USART_MODE_ASYNC;			//异步模式
-	tUsartCfg.byDatabit 	= USART_DATA_BITS_8;		//字节长度，8bit
-	tUsartCfg.byStopbit 	= USART_STOP_BITS_1;		//停止位，1个
-	tUsartCfg.byParity		= USART_PARITY_EVEN;		//偶校验
+	tUsartCfg.eClkSrc 		= USART_CLKSRC_DIV1;		//clk = PCLK
+	tUsartCfg.eMode			= USART_MODE_ASYNC;			//异步模式
+	tUsartCfg.eDatabit 		= USART_DATA_BITS_8;		//字节长度，8bit
+	tUsartCfg.eStopbit 		= USART_STOP_BITS_1;		//停止位，1个
+	tUsartCfg.eParity		= USART_PARITY_EVEN;		//偶校验
 	tUsartCfg.wBaudRate 	= 115200;					//波特率：115200
 	csi_usart_init(USART0, &tUsartCfg);					//初始化串口	
 	
@@ -126,11 +126,11 @@ int usart_send_int_demo(void)
 
 #endif	
 
-	tUsartCfg.byClkSrc 		= USART_CLKSRC_DIV1;		//clk = PCLK
-	tUsartCfg.byMode		= USART_MODE_ASYNC;			//异步模式
-	tUsartCfg.byDatabit 	= USART_DATA_BITS_8;		//字节长度，8bit
-	tUsartCfg.byStopbit 	= USART_STOP_BITS_1;		//停止位，1个
-	tUsartCfg.byParity		= USART_PARITY_EVEN;		//偶校验
+	tUsartCfg.eClkSrc 		= USART_CLKSRC_DIV1;		//clk = PCLK
+	tUsartCfg.eMode			= USART_MODE_ASYNC;			//异步模式
+	tUsartCfg.eDatabit 		= USART_DATA_BITS_8;		//字节长度，8bit
+	tUsartCfg.eStopbit 		= USART_STOP_BITS_1;		//停止位，1个
+	tUsartCfg.eParity		= USART_PARITY_EVEN;		//偶校验
 	tUsartCfg.wBaudRate 	= 115200;					//波特率：115200
 	csi_usart_init(USART0, &tUsartCfg);					//初始化串口
 	
@@ -147,7 +147,7 @@ int usart_send_int_demo(void)
 
 
 
-/** \brief  usart_recv_int_demo：usart中断接收数据
+/** \brief  usart_receive_int_demo：usart中断接收数据
  * 
  *  \brief  使用RXFIFO中断接收，用户直接在中断服务函数(usart0_int_handler)里处理
  * 
@@ -164,7 +164,7 @@ int usart_send_int_demo(void)
  *  \param[in] none
  *  \return error code
  */
-int usart_recv_int_demo(void)
+int usart_receive_int_demo(void)
 {
 	int iRet = 0;
 	csi_usart_config_t tUsartCfg;							//USART0 参数配置结构体
@@ -175,11 +175,11 @@ int usart_recv_int_demo(void)
 	csi_gpio_pull_mode(GPIOA, PA10, GPIO_PULLUP);			//RX管脚上拉使能, 建议配置	
 #endif	
 
-	tUsartCfg.byClkSrc 		= USART_CLKSRC_DIV1;			//clk = PCLK
-	tUsartCfg.byMode		= USART_MODE_ASYNC;				//异步模式
-	tUsartCfg.byDatabit 	= USART_DATA_BITS_8;			//字节长度，8bit
-	tUsartCfg.byStopbit 	= USART_STOP_BITS_1;			//停止位，1个
-	tUsartCfg.byParity		= USART_PARITY_EVEN;			//偶校验
+	tUsartCfg.eClkSrc 		= USART_CLKSRC_DIV1;			//clk = PCLK
+	tUsartCfg.eMode			= USART_MODE_ASYNC;				//异步模式
+	tUsartCfg.eDatabit 		= USART_DATA_BITS_8;			//字节长度，8bit
+	tUsartCfg.eStopbit 		= USART_STOP_BITS_1;			//停止位，1个
+	tUsartCfg.eParity		= USART_PARITY_EVEN;			//偶校验
 	tUsartCfg.wBaudRate 	= 115200;						//波特率：115200
 	tUsartCfg.hwRecvTo		= 88;							//USART接收超时时间，单位：bit位周期，8个bytes(11bit*8=88, 115200波特率时=764us)
 	tUsartCfg.eRxFifoTrg    = USART_RXFIFOTRG_ONE;
@@ -200,6 +200,8 @@ int usart_recv_int_demo(void)
 /** \brief  usart_send_dma_demo
  *  	 	USART通过DMA发送数据例程。使用USART0_TX作为触发源，通过ETCB的CH20，触发DMA0的通道CH0，
  * 			将缓存bySendBuf中的数据搬到usart的发送数据寄存器，完成DMA发送
+ * 			
+ * 			注意：需要获取中断DMA发送完成状态需要开启中断，获取相应的中断标志位
  * 
  *  \param[in] none
  *  \return error code
@@ -218,11 +220,11 @@ int usart_send_dma_demo(void)
 #endif	
 
 	//usart 参数配置
-	tUsartCfg.byClkSrc 		= USART_CLKSRC_DIV1;		//clk = PCLK
-	tUsartCfg.byMode		= USART_MODE_ASYNC;			//异步模式
-	tUsartCfg.byDatabit 	= USART_DATA_BITS_8;		//字节长度，8bit
-	tUsartCfg.byStopbit 	= USART_STOP_BITS_1;		//停止位，1个
-	tUsartCfg.byParity		= USART_PARITY_EVEN;		//偶校验
+	tUsartCfg.eClkSrc 		= USART_CLKSRC_DIV1;		//clk = PCLK
+	tUsartCfg.eMode			= USART_MODE_ASYNC;			//异步模式
+	tUsartCfg.eDatabit 		= USART_DATA_BITS_8;		//字节长度，8bit
+	tUsartCfg.eStopbit 		= USART_STOP_BITS_1;		//停止位，1个
+	tUsartCfg.eParity		= USART_PARITY_EVEN;		//偶校验
 	tUsartCfg.wBaudRate 	= 115200;					//波特率：115200
 	csi_usart_init(USART0, &tUsartCfg);					//初始化串口
 	
@@ -268,15 +270,17 @@ int usart_send_dma_demo(void)
 	return iRet;
 }
 
-/** \brief usart_recv_dma_demo
+/** \brief usart_receive_dma_demo
  *  	 - USART通过DMA接收数据例程。使用USART0_RX作为触发源，通过ETCB的CH20，触发DMA0的通道CH3，
  * 			将usart接收数据寄存器中的数据搬到缓存byRecvBuf中，完成DMA接收。并将接收来的数据，
  * 			通过USART轮询发送出去
  * 
+ * 		注意：需要获取中断DMA发送完成状态需要开启中断，获取相应的中断标志位
+ * 
  *  \param[in] none
  *  \return error code
  */
-int usart_recv_dma_demo(void)
+int usart_receive_dma_demo(void)
 {
 	int iRet = 0;
 	csi_usart_config_t tUsartCfg;						//USART0 参数配置结构体
@@ -290,15 +294,15 @@ int usart_recv_dma_demo(void)
 #endif	
 
 	//usart 参数配置
-	tUsartCfg.byClkSrc 		= USART_CLKSRC_DIV1;		//clk = PCLK
-	tUsartCfg.byMode		= USART_MODE_ASYNC;			//异步模式
-	tUsartCfg.byDatabit 	= USART_DATA_BITS_8;		//字节长度，8bit
-	tUsartCfg.byStopbit 	= USART_STOP_BITS_1;		//停止位，1个
-	tUsartCfg.byParity		= USART_PARITY_EVEN;		//偶校验
+	tUsartCfg.eClkSrc 		= USART_CLKSRC_DIV1;		//clk = PCLK
+	tUsartCfg.eMode			= USART_MODE_ASYNC;			//异步模式
+	tUsartCfg.eDatabit 		= USART_DATA_BITS_8;		//字节长度，8bit
+	tUsartCfg.eStopbit 		= USART_STOP_BITS_1;		//停止位，1个
+	tUsartCfg.eParity		= USART_PARITY_EVEN;		//偶校验
 	tUsartCfg.wBaudRate 	= 115200;					//波特率：115200
 	csi_usart_init(USART0, &tUsartCfg);					//初始化串口
 	
-	csi_usart_set_recieve_dma(USART0, USDMA_RX_FIFO_NSPACE); //配置USART 接收DMA模式，并使能
+	csi_usart_set_receive_dma(USART0, USDMA_RX_FIFO_NSPACE); //配置USART 接收DMA模式，并使能
 	csi_usart_start(USART0, USART_FUNC_RX_TX);			//开启USART的RX和TX功能，也可单独开启RX或者TX功能
 	
 	
@@ -325,7 +329,7 @@ int usart_recv_dma_demo(void)
 	iRet = csi_etcb_ch_init(ETCB_CH20, &tEtbConfig);	//初始化ETB，DMA ETB CHANNEL > ETB_CH19_ID
 
 
-	csi_usart_recv_dma(USART0,(void*)byRecvBuf, DMA_CH3, 25);	//DMA接收
+	csi_usart_receive_dma(USART0,(void*)byRecvBuf, DMA_CH3, 25);	//DMA接收
 	
 	while(1)
 	{

@@ -22,6 +22,8 @@
 /* Private variablesr------------------------------------------------------*/
 
 
+#if	(IS_CHIP_1732 == 1) 
+
 /** \brief user_fast_func，本函数会被写到SRAM1中，从而加速代码运行	
  *	
  *  	   此处用PA6翻转作为简单示例，用户可替换成自己需要加速的代码		
@@ -96,3 +98,5 @@ void use_sram1_as_isram_demo(void)
 	user_fast_func();
 	
 }
+
+#endif

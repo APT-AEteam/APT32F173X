@@ -5,7 +5,7 @@
  * <table>
  * <tr><th> Date  <th>Version  <th>Author  <th>Description
  * <tr><td> 2021-5-28 <td>V0.0  <td>WNN   <td>initial
- * <tr><td> 2023-9-22 <td>V0.1  <td>GQQ   <td>fix bug,code normalization
+ * <tr><td> 2023-9-22 <td>V0.1  <td>GQQ   <td>code normalization
  * </table>
  * *********************************************************************
 */
@@ -27,7 +27,7 @@ void csi_crc_init(void)
  * 
  *  \return   none
  */
-void csi_crc_rst(void)
+void csi_crc_sw_rst(void)
 {
 	csp_crc_sw_rst(CRC);               //software reset
 }  

@@ -23,7 +23,6 @@
 /* externs function--------------------------------------------------------*/
 extern void nmi_int_handler(void);
 extern void can_irqhandler(csp_can_t *ptCanBase);
-extern void dma_irqhandler(csp_dma_t *ptDmaBase);						//DMA
 extern void gpio_irqhandler(uint8_t byExiNum);
 extern void ifc_irqhandler(void);
 extern void bt_irqhandler0(csp_bt_t *ptBtBase);
@@ -48,13 +47,11 @@ ATTRIBUTE_ISR void nmi_int_handler(void)
 {
 	if(csp_syscon_get_isr(SYSCON) & LVD_INT)
 	{
-		nop;
 		csp_syscon_clr_isr(SYSCON, LVD_INT);
 	}
 	if(csp_exi_get_isr(SYSCON) & EXI_STATUS_GRP0)
 	{
 		nop;
-		//gpio_irqhandler(0);
 	}
 }
 
@@ -67,18 +64,23 @@ ATTRIBUTE_ISR void syscon_int_handler(void)
 {
     // ISR content ...
 
-	if(csp_syscon_get_isr(SYSCON) & LVD_INT)
+	if(csp_syscon_get_isr(SYSCON) & LVD_INT) //LVD INT
 	{
-		nop;
 		csp_syscon_clr_isr(SYSCON, LVD_INT);
 	}
 	
-	if(csp_syscon_get_isr(SYSCON) & IWDT_INT)
+	if(csp_syscon_get_isr(SYSCON) & IWDT_INT) //IWDT INT
 	{
-		nop;
-		//csi_pin_toggle(PA05);
 		csp_syscon_clr_isr(SYSCON, IWDT_INT);
 		//csi_iwdt_feed();
+	}
+	if(csp_syscon_get_isr(SYSCON) & EMFAIL_INT) //EMOSC FAIL INT
+	{
+		csp_syscon_clr_isr(SYSCON, EMFAIL_INT);
+	}
+	if(csp_syscon_get_isr(SYSCON) & ESFAIL_INT) //ESOSC FAIL INT
+	{
+		csp_syscon_clr_isr(SYSCON, ESFAIL_INT);
 	}
 }
 
@@ -119,7 +121,7 @@ ATTRIBUTE_ISR __attribute__((weak)) void dma0_int_handler(void)
 {
     // ISR content ...
 	CSI_INTRPT_ENTER();
-	dma_irqhandler(DMA0);
+	csi_dma_irqhandler(DMA0);
 	CSI_INTRPT_EXIT();
 }
 
@@ -128,7 +130,7 @@ ATTRIBUTE_ISR __attribute__((weak)) void dma1_int_handler(void)
 {
     // ISR content ...
 	CSI_INTRPT_ENTER();
-	dma_irqhandler(DMA1);
+	csi_dma_irqhandler(DMA1);
 	CSI_INTRPT_EXIT();
 }
 
