@@ -38,17 +38,6 @@
    __OM	 uint32_t   EVSWF;  	//0x003C
 } csp_rtc_t;
 
-/****** RTC time *****/
-typedef struct {
-    int sec;             ///< Second.      [0-59]
-    int min;             ///< Minute.      [0-59]
-    int hour;            ///< Hour.        [0-23]
-    int mday;            ///< Day.         [1-31]
-    int mon;             ///< Month.       [0-11]
-    int year;            ///< Year-2000.   [0- 99]     !NOTE:0=2000       
-    int wday;            ///< Day of week. [0-6 ]      !NOTE:Sunday = 0     
-    int yday;            ///< Days in year.[0-365]     !NOTE:January 1st = 0
-} csp_rtc_time_t;
 
 /******************************************************************************
 ************************** RTC Registers Definition ****************************
@@ -235,12 +224,26 @@ typedef enum{
 
 #define RTC_TRGSEL1_POS		(4)
 #define RTC_TRGSEL1_MSK		(0xf << RTC_TRGSEL1_POS)
-typedef enum {
-	RTC_TRG_DIS = 0,
-	RTC_TRG_A,
-	RTC_TRG_B,
-	RTC_TRG_CPRD
-}csp_rtc_trgsel_e;
+//typedef enum {
+//	RTC_TRG_DIS = 0,
+//	RTC_TRG_A,
+//	RTC_TRG_B,
+//	RTC_TRG_CPRD
+//}rtc_trgsel_e;
+
+typedef enum{
+	RTC_TRGSRC_DIS = 0,
+	RTC_TRGSRC_ALRMA,
+	RTC_TRGSRC_ALRMB,
+	RTC_TRGSRC_ALRMA_ALRMB,
+	RTC_TRGSRC_CPRD
+}rtc_trgsrc_e;
+
+typedef enum{
+	RTC_EVTRGOUT0 = 0,
+	RTC_EVTRGOUT1
+}rtc_trgout_e;
+
 #define RTC_TRG0OE			(0x1 << 20)
 #define RTC_TRG1OE			(0x1 << 21)
 
@@ -262,17 +265,17 @@ typedef enum {
 ******************************************************************************/
 
 //timr
-static inline void csp_rtc_set_time_hour(csp_rtc_t *ptRtcBase, bool bPm, uint8_t byVal)
+static inline void csp_rtc_set_hour(csp_rtc_t *ptRtcBase, bool bPm, uint8_t byVal)
 {
 	ptRtcBase->TIMR = (ptRtcBase->TIMR  & (~RTC_HOR_MSK) & (~RTC_PM_MSK)) |(byVal << RTC_HORU_POS) | (bPm << RTC_PM_POS);
 }
 
-static inline void csp_rtc_set_time_min(csp_rtc_t *ptRtcBase, uint8_t byVal)
+static inline void csp_rtc_set_min(csp_rtc_t *ptRtcBase, uint8_t byVal)
 {
 	ptRtcBase->TIMR = (ptRtcBase->TIMR  & (~RTC_MIN_MSK)) | (byVal << RTC_MINU_POS);
 }
 
-static inline void csp_rtc_set_time_sec(csp_rtc_t *ptRtcBase, uint8_t byVal)
+static inline void csp_rtc_set_sec(csp_rtc_t *ptRtcBase, uint8_t byVal)
 {
 	ptRtcBase->TIMR = (ptRtcBase->TIMR  & (~RTC_SEC_MSK)) |  (byVal << RTC_SECU_POS);
 }
@@ -298,27 +301,27 @@ static inline uint8_t csp_rtc_read_sec(csp_rtc_t *ptRtcBase)
 }
 
 //datr
-static inline void csp_rtc_set_date_year(csp_rtc_t *ptRtcBase, uint8_t byVal)
+static inline void csp_rtc_set_year(csp_rtc_t *ptRtcBase, uint8_t byVal)
 {
 	ptRtcBase->DATR = (ptRtcBase->DATR  & (~RTC_YEA_MSK)) |  (byVal << RTC_YEAU_POS);
 }
 
-static inline void csp_rtc_set_date_mon(csp_rtc_t *ptRtcBase,  uint8_t byVal)
+static inline void csp_rtc_set_mon(csp_rtc_t *ptRtcBase,  uint8_t byVal)
 {
 	ptRtcBase->DATR = (ptRtcBase->DATR  & (~RTC_MON_MSK)) |  (byVal << RTC_MONU_POS);
 }
 
-static inline void csp_rtc_set_date_wday(csp_rtc_t *ptRtcBase, uint8_t byVal)
+static inline void csp_rtc_set_wday(csp_rtc_t *ptRtcBase, uint8_t byVal)
 {
 	ptRtcBase->DATR = (ptRtcBase->DATR  & (~RTC_WKD_MSK)) | (byVal << RTC_WKD_POS);
 }
 
-static inline void csp_rtc_set_date_day(csp_rtc_t *ptRtcBase, uint8_t byVal)
+static inline void csp_rtc_set_day(csp_rtc_t *ptRtcBase, uint8_t byVal)
 {
 	ptRtcBase->DATR = (ptRtcBase->DATR  & (~RTC_DAY_MSK)) |  (byVal << RTC_DAYU_POS);
 }
 
-static inline void csp_rtc_set_date_week(csp_rtc_t *ptRtcBase, uint8_t byVal)
+static inline void csp_rtc_set_week(csp_rtc_t *ptRtcBase, uint8_t byVal)
 {
 	ptRtcBase->DATR = (ptRtcBase->DATR  & (~RTC_WKD_MSK)) | (byVal << RTC_WKD_POS);
 }
@@ -584,7 +587,7 @@ static inline uint32_t csp_rtc_get_isr(csp_rtc_t *ptRtcBase)
 }
 
 //key
-static inline uint8_t  csp_rtc_update_status(csp_rtc_t *ptRtcBase)						
+static inline uint8_t  csp_rtc_get_status(csp_rtc_t *ptRtcBase)						
 { 
 	return (uint8_t)(ptRtcBase->CR & RTC_BSY);
 }
@@ -599,8 +602,47 @@ static inline void csp_rtc_clr_key(csp_rtc_t *ptRtcBase)
 	ptRtcBase->KEY = 0x0;
 }
 
+//evtrg
+static inline void csp_rtc_set_evtrg(csp_rtc_t *ptRtcBase,rtc_trgsrc_e eTrgSrc,rtc_trgout_e eTrgOut)							
+{ 
+	if(eTrgOut == RTC_EVTRGOUT1)
+	{
+		ptRtcBase -> EVTRG = (ptRtcBase->EVTRG & ~(RTC_TRGSEL1_MSK)) | (eTrgSrc << RTC_TRGSEL1_POS);
+	}
+	else 
+	{
+		ptRtcBase -> EVTRG = (ptRtcBase->EVTRG & ~(RTC_TRGSEL0_MSK)) | eTrgSrc | RTC_TRG0OE ;
+	}
+}
+
+//evtrg
+static inline void csp_rtc_set_prd(csp_rtc_t *ptRtcBase,rtc_trgout_e eTrgOut,uint8_t byPrd)							
+{ 
+	if(eTrgOut == RTC_EVTRGOUT1)
+	{
+		ptRtcBase -> EVPS = (ptRtcBase->EVPS & ~(RTC_TRGEV1PRD_MSK)) | (byPrd << RTC_TRGEV1PRD_POS);
+	}
+	else 
+	{
+		ptRtcBase -> EVPS = (ptRtcBase->EVPS & ~(RTC_TRGEV0PRD_MSK)) | byPrd ;
+	}
+}
+
+static inline void csp_rtc_evtrg_enable(csp_rtc_t *ptRtcBase,rtc_trgout_e eTrgOut)							
+{ 
+	if(eTrgOut == RTC_EVTRGOUT1)
+	{
+		ptRtcBase -> EVTRG |= RTC_TRG1OE;
+	}
+	else
+    {
+		ptRtcBase -> EVTRG |= RTC_TRG0OE ;
+	}
+}
+
+
 //evswf
-static inline void csp_rtc_swf_trg(csp_rtc_t *ptRtcBase,uint8_t byTrg)						
+static inline void csp_rtc_sw_trg(csp_rtc_t *ptRtcBase,uint8_t byTrg)						
 { 
 	ptRtcBase -> EVSWF = 0x1 << byTrg;
 }

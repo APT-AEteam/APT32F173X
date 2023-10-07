@@ -28,7 +28,7 @@ csp_error_t apt_rtc_set_trgprd(csp_rtc_t *ptRtc, csi_rtc_trgout_e eTrg, uint8_t 
 csi_rtc_ctrl_t g_tRtcCtrl[RTC_IDX];
 
 /* Private variable------------------------------------------------------*/
-csp_rtc_time_t tRtcAlarmTime;
+//csp_rtc_time_t tRtcAlarmTime;
 
 
 /**\brief	Initialize RTC Interface. Initializes the resources needed for the RTC interface
@@ -48,7 +48,7 @@ void csi_rtc_init(csp_rtc_t *ptRtc, csi_rtc_config_t *tConfig)
 	csp_rtc_set_key(ptRtc);		
 	csp_rtc_stop(ptRtc);
 	csp_rtc_clr_key(ptRtc);
-	while(csp_rtc_update_status(ptRtc));
+	while(csp_rtc_get_status(ptRtc));
 	
 	switch (tConfig->eClkSrc)
 	{ 
@@ -106,7 +106,7 @@ void csi_rtc_init(csp_rtc_t *ptRtc, csi_rtc_config_t *tConfig)
 	csp_rtc_alm_disable(ptRtc, RTC_ALMA);
 	
 	csp_rtc_clr_key(ptRtc);
-	while(csp_rtc_update_status(ptRtc));
+	while(csp_rtc_get_status(ptRtc));
 	
 	csp_rtc_int_disable(ptRtc, RTC_INT_ALL);
 	csp_rtc_clr_isr(ptRtc,RTC_INT_ALL);
@@ -123,7 +123,7 @@ void csi_rtc_rb_enable(csp_rtc_t *ptRtc)
 	csp_rtc_set_key(ptRtc);
 	csp_rtc_rb_enable(ptRtc);
 	csp_rtc_clr_key(ptRtc);
-	while(csp_rtc_update_status(ptRtc));
+	while(csp_rtc_get_status(ptRtc));
 }
 
 /**\brief	 To save current, disable read back.
@@ -136,7 +136,7 @@ void csi_rtc_rb_disable(csp_rtc_t *ptRtc)
 	csp_rtc_set_key(ptRtc);
 	csp_rtc_rb_disable(ptRtc);
 	csp_rtc_clr_key(ptRtc);
-	while(csp_rtc_update_status(ptRtc));
+	while(csp_rtc_get_status(ptRtc));
 }
 /**\brief To set/change RTC format
  * 
@@ -149,7 +149,7 @@ void csi_rtc_change_fmt(csp_rtc_t *ptRtc,  rtc_fmt_e eFmt)
 	csp_rtc_set_key(ptRtc);
 	csp_rtc_set_fmt(ptRtc, (rtc_fmt_e)eFmt);
 	csp_rtc_clr_key(ptRtc);
-	while(csp_rtc_update_status(ptRtc));
+	while(csp_rtc_get_status(ptRtc));
 }
 
 /**\brief To start RTC 
@@ -162,7 +162,7 @@ void csi_rtc_start(csp_rtc_t *ptRtc)
 	csp_rtc_set_key(ptRtc);
 	csp_rtc_run(ptRtc);
 	csp_rtc_clr_key(ptRtc);
-	while(csp_rtc_update_status(ptRtc));
+	while(csp_rtc_get_status(ptRtc));
 }
 
 
@@ -176,7 +176,7 @@ void csi_rtc_stop(csp_rtc_t *ptRtc)
 	csp_rtc_set_key(ptRtc);		
 	csp_rtc_stop(ptRtc);
 	csp_rtc_clr_key(ptRtc);
-	while(csp_rtc_update_status(ptRtc));
+	while(csp_rtc_get_status(ptRtc));
 }
 
 /**\brief To reset RTC 
@@ -215,7 +215,7 @@ csi_error_t csi_rtc_set_time(csp_rtc_t *ptRtc, csi_rtc_time_t *ptRtcTime)
 		csp_rtc_set_key(ptRtc);		
 		csp_rtc_stop(ptRtc);
 		csp_rtc_clr_key(ptRtc);
-		while(csp_rtc_update_status(ptRtc));
+		while(csp_rtc_get_status(ptRtc));
 		
 		ptRtcTime->iWday = get_week_by_date((struct tm *)ptRtcTime);
 		
@@ -313,7 +313,7 @@ csi_error_t csi_rtc_set_alarm(csp_rtc_t *ptRtc, uint8_t byAlm, uint8_t byMode, c
 	csp_rtc_set_key(ptRtc);
 	csp_rtc_alm_disable(ptRtc, byAlm);
 	csp_rtc_clr_key(ptRtc);
-	while(csp_rtc_update_status(ptRtc));
+	while(csp_rtc_get_status(ptRtc));
 	
 	apt_rtc_alm_set_time(ptRtc, byAlm, ptAlmTime->iMday, bFmt,  ptAlmTime->iHour, ptAlmTime->iMin,ptAlmTime->iSec);
 	
@@ -327,7 +327,7 @@ csi_error_t csi_rtc_set_alarm(csp_rtc_t *ptRtc, uint8_t byAlm, uint8_t byMode, c
 	}
 	csp_rtc_alm_enable(ptRtc, byAlm);
 	csp_rtc_clr_key(ptRtc);
-	while(csp_rtc_update_status(ptRtc));
+	while(csp_rtc_get_status(ptRtc));
 	
 	return CSI_OK;
 }
@@ -343,7 +343,7 @@ void csi_rtc_cancel_alarm(csp_rtc_t *ptRtc, uint8_t byAlm)
 	csp_rtc_set_key(ptRtc);
 	csp_rtc_alm_disable(ptRtc, byAlm);
 	csp_rtc_clr_key(ptRtc);
-	while(csp_rtc_update_status(ptRtc));	
+	while(csp_rtc_get_status(ptRtc));	
 	
 	switch (byAlm)
 	{
@@ -368,7 +368,7 @@ void csi_rtc_set_alarm_out(csp_rtc_t *ptRtc, csi_rtc_osel_e eOut)
 	csp_rtc_set_key(ptRtc);
 	csp_rtc_set_osel(ptRtc, (rtc_osel_e)eOut);
 	csp_rtc_clr_key(ptRtc);
-	while(csp_rtc_update_status(ptRtc));
+	while(csp_rtc_get_status(ptRtc));
 }
 
 
@@ -383,7 +383,7 @@ void csi_rtc_start_as_timer(csp_rtc_t *ptRtc, csi_rtc_timer_e ePrd)
 	csp_rtc_set_key(ptRtc);
 	csp_rtc_set_cprd(ptRtc, (rtc_cprd_e)ePrd);
 	csp_rtc_clr_key(ptRtc);
-	while(csp_rtc_update_status(ptRtc));
+	while(csp_rtc_get_status(ptRtc));
 	csi_rtc_int_enable(ptRtc, RTCINT_CPRD);
 	//csp_rtc_run(ptRtc);
 }
@@ -620,13 +620,13 @@ static csp_error_t apt_rtc_set_date(csp_rtc_t *ptRtc, uint8_t byYear, uint8_t by
 		
 	csp_rtc_set_key(ptRtc);
 	byVal = apt_dec2bcd(byYear);
-	csp_rtc_set_date_year(ptRtc, byVal);
+	csp_rtc_set_year(ptRtc, byVal);
 	byVal = apt_dec2bcd(byMon);
-	csp_rtc_set_date_mon(ptRtc, byVal);
+	csp_rtc_set_mon(ptRtc, byVal);
 	byVal = apt_dec2bcd(byWday);
-	csp_rtc_set_date_wday(ptRtc, byVal);
+	csp_rtc_set_wday(ptRtc, byVal);
 	byVal = apt_dec2bcd(byDay);
-	csp_rtc_set_date_day(ptRtc, byVal);	
+	csp_rtc_set_day(ptRtc, byVal);	
 	csp_rtc_clr_key(ptRtc);
 	
 	return ret;
@@ -643,11 +643,11 @@ static csp_error_t apt_rtc_set_time(csp_rtc_t *ptRtc, bool bPm, uint8_t byHor, u
 			
 	csp_rtc_set_key(ptRtc);
 	byVal = apt_dec2bcd(byHor);
-	csp_rtc_set_time_hour(ptRtc, bPm, byVal);
+	csp_rtc_set_hour(ptRtc, bPm, byVal);
 	byVal = apt_dec2bcd(byMin);
-	csp_rtc_set_time_min(ptRtc, byVal);
+	csp_rtc_set_min(ptRtc, byVal);
 	byVal = apt_dec2bcd(bySec);
-	csp_rtc_set_time_sec(ptRtc, byVal);
+	csp_rtc_set_sec(ptRtc, byVal);
 	csp_rtc_clr_key(ptRtc);
 
 	

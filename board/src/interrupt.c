@@ -71,8 +71,14 @@ ATTRIBUTE_ISR void syscon_int_handler(void)
 	
 	if(csp_syscon_get_isr(SYSCON) & IWDT_INT) //IWDT INT
 	{
+#if (USE_IWDT_CALLBACK == 1)
+	
+		csi_iwdt_irqhandler(SYSCON,0);
+#else
 		csp_syscon_clr_isr(SYSCON, IWDT_INT);
 		//csi_iwdt_feed();
+#endif
+		
 	}
 	if(csp_syscon_get_isr(SYSCON) & EMFAIL_INT) //EMOSC FAIL INT
 	{

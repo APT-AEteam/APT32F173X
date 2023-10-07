@@ -18,10 +18,28 @@
 
 /* Private macro------------------------------------------------------*/
 /* externs function---------------------------------------------------*/
+/* Private function------------------------------------------------------*/
+static uint8_t apt_get_iwdt_idx(csp_syscon_t * ptSysBase);
 /* externs variablesr-------------------------------------------------*/
 /* Private variablesr-------------------------------------------------*/
 static uint32_t s_wIwdtTimeout	= 8200;
+csi_iwdt_ctrl_t g_tIwdtCtrl[IWDT_IDX];
 
+
+/** \brief iwdt interrupt handler function
+ * 
+ *  \param[in] ptWwdtBase: pointer of wwdt register structure
+ *  \param[in] byIdx: wwdt idx 0 
+ *  \return none
+ */ 
+void csi_iwdt_irqhandler(csp_syscon_t * ptSysBase, uint8_t byIdx)
+{
+
+	if(g_tIwdtCtrl[byIdx].callback)
+			g_tIwdtCtrl[byIdx].callback(ptSysBase);
+			
+	csp_syscon_clr_isr(SYSCON, IWDT_INT);
+}
 
 /** \brief Initialize IWDT Interface. Initializes the resources needed for the WDT interface
  * 
@@ -80,6 +98,7 @@ void csi_iwdt_open(void)
  */ 
 void csi_iwdt_close(void)
 {
+	while(!(csp_get_ckst(SYSCON)& ISOSC));
 	csp_iwdt_disable(SYSCON);
 }
 
@@ -178,4 +197,38 @@ void csi_iwdt_debug_enable(void)
 void csi_iwdt_debug_disable(void)
 {
 	csp_iwdt_debug_disable(SYSCON);
+}
+
+/** \brief  register iwdt interrupt callback function
+ * 
+ *  \param[in] ptSysBase: pointer of iwdt register structure
+ *  \param[in] callback: iwdt interrupt handle function
+ *  \return error code \ref csi_error_t
+ */ 
+csi_error_t csi_iwdt_register_callback(csp_syscon_t * ptSysBase, void  *callback)
+{
+	uint8_t byIdx = apt_get_iwdt_idx(ptSysBase);
+	if(byIdx == 0xff)
+		return CSI_ERROR;
+		
+	g_tIwdtCtrl[byIdx].callback = callback;
+	
+	return CSI_OK;
+}
+
+
+/** \brief get ptSysBase number 
+ * 
+ *  \param[in] ptWwdtBase: pointer of iwdt register structure
+ *  \return iwdt 0/error
+ */ 
+static uint8_t apt_get_iwdt_idx(csp_syscon_t * ptSysBase)
+{
+	switch((uint32_t)ptSysBase)
+	{
+		case APB_SYS_BASE:		//IWDT
+			return 0;		
+		default:
+			return 0xff;		//error
+	}
 }

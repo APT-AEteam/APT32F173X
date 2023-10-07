@@ -58,6 +58,15 @@ typedef enum
 	IWDT_INTSRC_ALARM    =	(0x01ul << 8)		//ALARM interrupt
 }csi_iwdt_intsrc_e;
 
+/// \struct csi_iwdt_ctrl_t
+/// \brief  iwdt control handle, not open to users  
+typedef struct 
+{
+    void(*callback)(csp_syscon_t * ptSysBase);
+} csi_iwdt_ctrl_t;
+
+extern csi_iwdt_ctrl_t g_tIwdtCtrl[IWDT_IDX];
+
 /**
   \brief       Initialize iwdt Interface. Initializes the resources needed for the WDT interface 
   \param[in]   eTimeOut    time length of system reset
@@ -127,6 +136,23 @@ void csi_iwdt_debug_enable(void);
  *  \return  none
 */
 void csi_iwdt_debug_disable();
+
+/** \brief  register iwdt interrupt callback function
+ * 
+ *  \param[in] ptSysBase: pointer of iwdt register structure
+ *  \param[in] callback: iwdt interrupt handle function
+ *  \return error code \ref csi_error_t
+ */ 
+csi_error_t csi_iwdt_register_callback(csp_syscon_t * ptSysBase, void  *callback);
+
+
+/** \brief iwdt interrupt handler function
+ * 
+ *  \param[in] ptWwdtBase: pointer of wwdt register structure
+ *  \param[in] byIdx: wwdt idx 0 
+ *  \return none
+ */ 
+void csi_iwdt_irqhandler(csp_syscon_t * ptSysBase, uint8_t byIdx);
 
 #ifdef __cplusplus
 }
