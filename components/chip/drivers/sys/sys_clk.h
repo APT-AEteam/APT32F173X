@@ -139,7 +139,7 @@ typedef enum{
 }csi_clo_div_e;
 
 /// \enum csi_pclk_e
-/// \brief all the peri clock enable bits in SYSCON level
+/// \brief all the peri clock enable bits in SYSCON
 /// \todo  csi_pclk_e 
 typedef enum {
     IFC_SYS_CLK		= 0U,
@@ -191,6 +191,7 @@ typedef enum {
 	BT3_SYS_CLK		= 63U,
 
 } csi_pclk_e;
+
 //global variable: sysclkclk 
 extern uint32_t g_wSystemClk;
 
