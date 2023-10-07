@@ -11,7 +11,6 @@
 
 /* include ----------------------------------------------------------------*/
 #include "drv/rtc.h"
-#include "rtc_alg.h"
 #include "board_config.h"
 
 /* externs function--------------------------------------------------------*/
@@ -21,14 +20,16 @@
 static void apt_rtc_alm_set_time(csp_rtc_t *ptRtc, uint8_t byAlm, uint8_t byDay, bool byPm, uint8_t byHor, uint8_t byMin,uint8_t bySec);
 static csp_error_t apt_rtc_set_time(csp_rtc_t *ptRtc, bool bPm, uint8_t byHor, uint8_t byMin,uint8_t bySec);
 static csp_error_t apt_rtc_set_date(csp_rtc_t *ptRtc, uint8_t byYear, uint8_t byMon, uint8_t byWday, uint8_t byDay);
-//csp_error_t apt_rtc_set_trgsrc(csp_rtc_t *ptRtc, csi_rtc_trgout_e eTrg, csi_rtc_trgsrc_e eSrc);
-//csp_error_t apt_rtc_set_trgprd(csp_rtc_t *ptRtc, csi_rtc_trgout_e eTrg, uint8_t byPrd);
 static uint8_t apt_get_rtc_idx(csp_rtc_t *ptRtcBase);
+static csi_error_t apt_clock_check_tm_ok(csi_rtc_time_t *ptRtcTime);
+static int apt_get_week_by_date(csi_rtc_time_t *ptRtcTime);
 
 /* externs variable------------------------------------------------------*/
 csi_rtc_ctrl_t g_tRtcCtrl[RTC_IDX];
 
 /* Private variable------------------------------------------------------*/
+static const int8_t  leap_year[12] = {31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+static const int8_t  noleap_year[12] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 
 
 /** \brief rtc interrupt handler function
@@ -218,7 +219,7 @@ csi_error_t csi_rtc_set_current_time(csp_rtc_t *ptRtc, csi_rtc_time_t *ptRtcTime
 		
 	do {
 		
-		ret = (csi_error_t) clock_check_tm_ok((const struct tm *)ptRtcTime);
+		ret = apt_clock_check_tm_ok(ptRtcTime);
         if (ret < CSI_OK) {
             break;
 		
@@ -229,7 +230,7 @@ csi_error_t csi_rtc_set_current_time(csp_rtc_t *ptRtc, csi_rtc_time_t *ptRtcTime
 		csp_rtc_clr_key(ptRtc);
 		while(csp_rtc_get_status(ptRtc));
 		
-		ptRtcTime->iWday = get_week_by_date((struct tm *)ptRtcTime);
+		ptRtcTime->iWday = apt_get_week_by_date(ptRtcTime);
 		
 		
 		apt_rtc_set_date(ptRtc, ptRtcTime->iYear, ptRtcTime->iMon, ptRtcTime->iWday, ptRtcTime->iMday);
@@ -552,8 +553,6 @@ void csi_rtc_set_evtrg(csp_rtc_t *ptRtc, csi_rtc_trgout_e eTrg, csi_rtc_trgsrc_e
 	csp_rtc_set_evtrg(ptRtc,(rtc_trgsrc_e)eTrgSrc,(rtc_trgout_e)eTrg);		//set trigger source and trigger out
 	
 	csp_rtc_set_prd(ptRtc,(rtc_trgout_e)eTrg,byTrgPrd);	//set trigger period
-	
-//	csp_rtc_evtrg_enable(ptRtc,(rtc_trgout_e)eTrg);				//enable event trigger
 }
 
 
@@ -693,30 +692,76 @@ static void apt_rtc_alm_set_time(csp_rtc_t *ptRtc, uint8_t byAlm, uint8_t byDay,
 	}
 }
 
+/**
+ * \brief   check if any member of the input time structure is valid
+ * \param[in]   ptRtcTime : pointer to time structure
+ * \return  error code  \ref csi_error_t
+*/
+static csi_error_t apt_clock_check_tm_ok(csi_rtc_time_t *ptRtcTime)
+{
+    int32_t ret = CSI_OK;
 
+    do {
 
+        /**
+         * First check whether the regular date is legal
+        */
+        if ((ptRtcTime->iSec  > RTC_TIME_MAX_VAL_SEC)  ||  \
+            (ptRtcTime->iMin > RTC_TIME_MAX_VAL_MIN)  ||  \
+            (ptRtcTime->iHour > RTC_TIME_MAX_VAL_HOUR) ||  \
+            (ptRtcTime->iMon  > RTC_TIME_MAX_VAL_MON)  ||  \
+            ((ptRtcTime->iYear > RTC_TIME_MAX_VAL_YEAR)  || (ptRtcTime->iYear < RTC_TIME_MIN_VAL_YEAR))) {
+            ret = CSI_ERROR;
+            break;
+        }
 
-//csp_error_t apt_rtc_set_trgsrc(csp_rtc_t *ptRtc, csi_rtc_trgout_e eTrg, csi_rtc_trgsrc_e eSrc)
-//{
-//	if(eTrg == RTC_TRGOUT0)
-//		ptRtc -> EVTRG = (ptRtc->EVTRG & ~(RTC_TRGSEL0_MSK)) | eSrc | RTC_TRG0OE;
-//	else if(eTrg == RTC_TRGOUT1)
-//		ptRtc -> EVTRG = (ptRtc->EVTRG & ~(RTC_TRGSEL1_MSK)) | (eSrc << RTC_TRGSEL1_POS) | RTC_TRG1OE;
-//	else
-//		return CSP_FAIL;
-//	return CSP_SUCCESS;
-//}
-//
-//
-//csp_error_t apt_rtc_set_trgprd(csp_rtc_t *ptRtc, csi_rtc_trgout_e eTrg, uint8_t byPrd)
-//{	
-//	if(eTrg == RTC_TRGOUT0)
-//		ptRtc -> EVPS = (ptRtc->EVPS & ~(RTC_TRGEV0PRD_MSK)) | byPrd ;
-//	else if(eTrg == RTC_TRGOUT1)
-//		ptRtc -> EVPS = (ptRtc->EVPS & ~(RTC_TRGSEL1_MSK)) | (byPrd << RTC_TRGEV1PRD_POS);
-//	else
-//		return CSP_FAIL;
-//		
-//	return CSP_SUCCESS;
-//}
+        /**
+         * Second check whether the day less than the minimum
+        */
+        if (ptRtcTime->iMday < RTC_TIME_MIN_VAL_DAY) {
+            ret = CSI_ERROR;
+            break;
+        }
 
+        /**
+         * Third check whether the day more than the maximum(based on whether the year is a leap year or not)
+        */
+        if (RTC_IS_LEAPYEAR(ptRtcTime->iYear + RTC_TIME_BASE_YEAR)) {
+            if (ptRtcTime->iMday > leap_year[(ptRtcTime->iMon )-1]) {
+                ret = CSI_ERROR;
+            }
+        } else {
+            if (ptRtcTime->iMday > noleap_year[(ptRtcTime->iMon )-1]) {
+                ret = CSI_ERROR;
+            }
+        }
+
+    }while(0);
+
+    return ret;
+}
+
+/**
+ * \brief   calculate weekday from date
+ * \param[in]   ptRtcTime : pointer to time structure
+ * \return   weekday
+*/
+static int apt_get_week_by_date(csi_rtc_time_t *ptRtcTime)
+{
+    int year, mon, day, week;
+
+    year = ptRtcTime->iYear + RTC_TIME_BASE_YEAR;
+    mon  = ptRtcTime->iMon;
+    day  = ptRtcTime->iMday;
+
+    week = day;
+    week += (2 * mon);
+    week += ((3 * (mon + 1)) / 5);
+    week += year;
+    week += (year / 4);
+    week -= (year / 100);
+    week += (year / 400);
+    week %= 7;
+
+    return RTC_CALCULATE_WEEK(week);
+}

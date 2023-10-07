@@ -20,6 +20,39 @@ extern "C" {
 #endif  
 
 
+#define RTC_TIME_BASE_YEAR                          (2000)                                 //< Year,      Effective range[2000,2099]
+
+#define RTC_TIME_MAX_VAL_YEAR                       (99)                                   ///< Year,     Maximum value
+#define RTC_TIME_MAX_VAL_MON                        (12)                                   ///< Month,    Maximum value
+#define RTC_TIME_MAX_VAL_DAY                        (31)                                   ///< Day,      Maximum value
+#define RTC_TIME_MAX_VAL_HOUR                       (23)                                   ///< Hour,     Maximum value
+#define RTC_TIME_MAX_VAL_MIN                        (59)                                   ///< Minute,   Maximum value
+#define RTC_TIME_MAX_VAL_SEC                        (59)                                   ///< Second,   Maximum value
+
+
+#define RTC_TIME_MIN_VAL_YEAR                       (0)                                   ///< Year,     Minimum value
+#define RTC_TIME_MIN_VAL_DAY                        (1)                                    ///< Day,      Minimum value
+
+/**
+ * \brief Determine if it is a leap year
+ * 0 - this is not leapyear 
+ * 1  - this is leapyear 
+*/
+#define RTC_IS_LEAPYEAR(_year_)                  (((_year_) % 400) ? (((_year_) % 100) ? (((_year_) % 4) ? (int)0 : (int)1) : (int)0) : (int)1)
+
+/**
+ * week:                 tm_wday:
+ * 0 is Monday           0 is Sunday
+ * 1 is Tuesday          1 is Monday
+ * 2 is Wednesday        2 is Tuesday
+ * 3 is Thursday         3 is Wednesday
+ * 4 is Friday           4 is Thursday
+ * 5 is Saturday         5 is Friday
+ * 6 is Sunday           6 is Saturday
+*/
+#define RTC_CALCULATE_WEEK(_week_)               ((_week_ == 6) ? 0 : (_week_ + 1))
+
+
 typedef struct {
 	uint8_t		byAlmMode;	//mode = 0:  day       hour min sec 
 							//mode = 1:  weekday   hour min sec
