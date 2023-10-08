@@ -642,11 +642,6 @@ static inline void csp_iic_logic_sw_rst(csp_iic_t *ptIicBase)
 	ptIicBase->SRR |= (IIC_SWRST_C<<IIC_SWRST_C_POS);
 }
 
-static inline void csp_iic_fifo_sw_rst(csp_iic_t *ptIicBase)
-{
-	ptIicBase->SRR |= (IIC_SWRST_F<<IIC_SWRST_F_POS);
-}
-
 static inline void csp_iic_set_qualmode(csp_iic_t *ptIicBase, iic_qual_e eQualmode)
 {
 	ptIicBase->SADDRQUAL =(ptIicBase->SADDRQUAL  & ~IIC_QUAL_MODE_MSK) | (eQualmode<<IIC_QUAL_MODE_POS);
