@@ -34,7 +34,7 @@ csi_iic_ctrl_t g_tIicCtrl[IIC_IDX];
 void apt_iic_deinit(csp_iic_t *ptIicBase)
 {
 	csp_iic_disable(ptIicBase);
-//	csp_iic_int_disable(ptIicBase,IIC_INT_ALL);
+	csp_iic_int_disable(ptIicBase,IIC_INT_ALL);
 	csp_iic_clr_isr(ptIicBase,IIC_INT_ALL);
 }
 
@@ -68,64 +68,6 @@ void csi_iic_set_taddr(csp_iic_t *ptI2cBase, uint32_t wTAddr)
 {
 	csp_iic_set_taddr(ptI2cBase, wTAddr);
 }
-
-///** \brief SET iic Tsetup  
-// * 
-// *  \param[in] ptIicBase: pointer of iic register structure
-// * 	\param[in] byTsetup: Tsetup value
-// *  \return none
-// */ 
-//void apt_iic_sda_tsetup_config(csp_iic_t *ptIicBase,uint8_t byTsetup)
-//{
-//	csp_iic_set_sda_tsetup(ptIicBase,byTsetup);
-//}
-
-///** \brief SET iic SDA hold time  
-// * 
-// *  \param[in] ptIicBase: pointer of iic register structure
-// * 	\param[in] byRxHold: RxHold value
-// * 	\param[in] hwTxHold: TxHold value
-// *  \return none
-// */ 
-//static void apt_iic_thold_config(csp_iic_t *ptIicBase,uint8_t byRxHold,uint16_t hwTxHold)
-//{
-//	csp_iic_set_sda_thold(ptIicBase,hwTxHold,byRxHold);
-//}
-
-/** \brief SET iic timeout time  
- * 
- *  \param[in] ptIicBase: pointer of iic register structure
- * 	\param[in] wSdaTimeout: SDA timeout value
- * 	\param[in] wSclTimeout: CSL timeout value
- *  \return none
- */ 
-//static void apt_iic_set_timeout(csp_iic_t *ptIicBase,uint32_t wSdaTimeout,uint32_t wSclTimeout)
-//{
-//	csp_iic_set_sda_tout(ptIicBase,wSdaTimeout);
-//	csp_iic_set_scl_tout(ptIicBase,wSclTimeout);
-//}
-//
-///** \brief SET iic rx flsel  
-// * 
-// *  \param[in] ptIicBase: pointer of iic register structure
-// * 	\param[in] byRxFL: RxFL value
-// *  \return none
-// */ 
-//void apt_iic_set_rx_flsel(csp_iic_t *ptIicBase,uint8_t byRxFL)
-//{
-//	csp_iic_set_rx_flsel(ptIicBase, byRxFL);
-//}
-
-/** \brief SET iic tx flsel  
- * 
- *  \param[in] ptIicBase: pointer of iic register structure
- * 	\param[in] byTxFL: TxFL value
- *  \return none
- */
-//void apt_iic_set_tx_flsel(csp_iic_t *ptIicBase,uint8_t byTxFL)
-//{
-//	csp_iic_set_tx_flsel(ptIicBase, byTxFL);
-//}
 
 /** \brief initialize iic slave
  * 
@@ -395,16 +337,8 @@ void csi_iic_irqhandler(csp_iic_t *ptIicBase, uint8_t byIdx)
 			}
 			g_wIicErrorCont=0;
 		}
-	
-	
 	}
-	
-	
-	
-	
 }
-
-
 
 /** \brief IIC interrupt enable control
  * 
