@@ -144,7 +144,7 @@ void escm_demo(void)
  *   注意EM管脚需要配置  参考时钟配置为0x3ff，即EM 24M的计数值
  *   如果源时钟选择IM 5.556M 获取到的csi_get_cqsr()值大概为0x1149.	
  *  \param[in] none
- *  \return error code
+ *  \return none
  */
 void syscon_cqcr_demo(void)
 {
@@ -154,4 +154,36 @@ void syscon_cqcr_demo(void)
 	wCqsrValue = csi_get_cqsr();
 	my_printf("cqsr value =%d",wCqsrValue);
 		
+}
+
+
+
+/**  \brief PMP demo示例前8K地址区域只能执行，不可读写。且一旦使能保护，只能通过复位解除。
+  *  需要在代码中打断点，单步运行查看结果是否和注释一致
+  *  \param[in] none
+  *  \return    none
+*/
+void pmp_demo(void)
+{
+	volatile uint32_t wTestData, wDataRdOut[10];
+	
+	mpu_region_attr_t tPmpConfig;
+	tPmpConfig.r = 0;
+	tPmpConfig.w = 0;
+	tPmpConfig.x = 1;
+	tPmpConfig.a = ADDRESS_MATCHING_NAPOT;
+	tPmpConfig.l = 1;
+	//设置[0x0 - 0x7FF]为保护区间：加锁，只能执行，不能读写。此时memory区显示正常值
+	csi_mpu_config_region(0, 0x0, REGION_SIZE_8KB, tPmpConfig, ENABLE);
+	//保护区间memory区不再显示正常值
+	
+	
+	//csi_ifc_read（0x2000）正常，csi_ifc_read（0x400）会进入异常
+	while(wTestData --)	{
+		nop;
+		csi_ifc_read(IFC, 0x2000, (uint32_t *)wDataRdOut, 10);
+		csi_ifc_read(IFC, 0x400, (uint32_t *)wDataRdOut, 10);
+	}
+
+	while(1);
 }
