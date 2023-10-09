@@ -23,28 +23,6 @@
         <Bit Name="DATA" Authority="RO" Bits="11-0" Description="高温下内部1V电压采样值2" />
       </Register>
     </Peripheral>
-    <Peripheral Name="SFM">
-      <Register Name="SFM_CHIP" Authority="RW" Address="0x40000000" Width="32" Description="Chip ID Information">
-        <Bit Name="Model" Authority="RO" Bits="31-8" Description="产品型号: 32F173" />
-        <Bit Name="VERSION" Authority="RO" Bits="7-0" Description="产品版本号，改版后会更新" />
-      </Register>
-      <Register Name="SFM_ARCH" Authority="RW" Address="0x40000004" Width="32" Description="Architecture Information">
-        <Bit Name="IRAME" Authority="RO" Bits="17" Description="Internal RAM exists" />
-        <Bit Name="BOOT" Authority="RO" Bits="16" Description="Boot from internal" />
-        <Bit Name="NVDE" Authority="RO" Bits="15" Description="Non volatile data memory exists" />
-        <Bit Name="NVDT" Authority="RO" Bits="14-12" Description="Non volatile data memory type&#xD;&#xA;0x1: ISSI&#xD;&#xA;0x2: SST&#xD;&#xA;0x3: Cypress, SONOS" />
-        <Bit Name="NVPE" Authority="RO" Bits="11" Description="Non volatile program memory exists" />
-        <Bit Name="NVPT" Authority="RO" Bits="10-8" Description="Non volatile program memory type&#xD;&#xA;0x1: ISSI&#xD;&#xA;0x2: SST&#xD;&#xA;0x3: Cypress, SONOS" />
-        <Bit Name="MC" Authority="RO" Bits="7-4" Description="Manufacturer." />
-        <Bit Name="DBG" Authority="RO" Bits="3-2" Description="Debug interface type" />
-        <Bit Name="ARC" Authority="RO" Bits="1-0" Description="Architecture type" />
-      </Register>
-      <Register Name="SFM_CORE" Authority="RW" Address="0x40000008" Width="32" Description="CPU Core Information">
-        <Bit Name="CORE_NAME0" Authority="RO" Bits="31-24" Description="Thead RV : &quot;T&quot; - 0x54" />
-        <Bit Name="CORE_NAME1" Authority="RO" Bits="23-16" Description="Risc-V Series" />
-        <Bit Name="CORE_VER" Authority="RO" Bits="15-0" Description="R2S2P1 : 0x0221" />
-      </Register>
-    </Peripheral>
     <Peripheral Name="IFC">
       <Register Name="IFC_IDR" Authority="RW" Address="0x40010000" Width="32" Description="闪存控制器ID寄存器">
         <Bit Name="IDCODE" Authority="RW" Bits="16-0" Description="ID代码 (IFC版本号)" />
@@ -56,7 +34,7 @@
         <Bit Name="SWRST" Authority="RW" Bits="0" Description="软件复位&#xD;&#xA;&#xD;&#xA;0: 无效&#xD;&#xA;1: 执行软件复位操作&#xD;&#xA;&#xD;&#xA;除CEDR外的所有寄存器都会恢复初始值" />
       </Register>
       <Register Name="IFC_CMR" Authority="RW" Address="0x4001000c" Width="32" Description="指令寄存器">
-        <Bit Name="PROT" Authority="RW" Bits="23-16" Description="保护功能选择寄存器&#xD;&#xA;[23] : IFP&#xD;&#xA;[22] : HDP_32K&#xD;&#xA;[21] : HDP_16K&#xD;&#xA;[20] : ENCRYPT&#xD;&#xA;[19] : SWDP&#xD;&#xA;[18] : RDP&#xD;&#xA;[17] : HDP_FULL&#xD;&#xA;[16] : HDP_4K&#xD;&#xA;&#xD;&#xA;在CMD的写User Option命令中，使用PROT位来选择保护功能的使能，将相应位置1表示使能该项保护功能。" />
+        <Bit Name="PROT" Authority="RW" Bits="23-16" Description="保护功能选择寄存器&#xD;&#xA;[23] : IFP&#xD;&#xA;[22] : HDP_32K&#xD;&#xA;[21] : HDP_16K&#xD;&#xA;[20] : ENCRYPT&#xD;&#xA;[19] : SWDP&#xD;&#xA;[18] : RDP&#xD;&#xA;[17] : HDP_ALL&#xD;&#xA;[16] : HDP_8K&#xD;&#xA;&#xD;&#xA;在CMD的写User Option命令中，使用PROT位来选择保护功能的使能，将相应位置1表示使能该项保护功能。" />
         <Bit Name="HMODE" Authority="RW" Bits="9-8" Description="操作模式寄存器&#xD;&#xA;00: 普通模式&#xD;&#xA;01: 用户特权模式&#xD;&#xA;10: 保留&#xD;&#xA;11: 保留&#xD;&#xA;在普通模式下，只有页擦除和写操作有效。其它指令都必须在用户特权模式下执行。" />
         <Bit Name="CMD" Authority="RW" Bits="3-0" Description="写/擦除指令寄存器&#xD;&#xA;&#xD;&#xA;CMD[3:0]	指令&#xD;&#xA;0x1	写操作&#xD;&#xA;0x2	页擦除 (Page Erase)&#xD;&#xA;0x3	保留，禁止使用&#xD;&#xA;0x4	片擦除 (Chip Erase)&#xD;&#xA;0x5	自定义选项擦除&#xD;&#xA;0x6	预编程设定&#xD;&#xA;0x7	页缓存清除&#xD;&#xA;0x8 – 0xC	保留，禁止使用&#xD;&#xA;0xD	禁用调试口重映射 (SWD Remap)&#xD;&#xA;0xE	使能调试口重映射 (SWD Remap)&#xD;&#xA;0xF	写User Option操作&#xD;&#xA;&#xD;&#xA;注意：&#xD;&#xA;1. 当执行ISP操作时，禁止读取闪存内容&#xD;&#xA;2. 当操作完成后，IFC_CMR寄存器会自动清零&#xD;&#xA;3. 如果IFC_KR的秘钥值不对，那么指令不会被执行" />
       </Register>
@@ -407,14 +385,14 @@
       </Register>
       <Register Name="SYSCON_OPT0" Authority="RW" Address="0x40011068" Width="32" Description="系统配置寄存器0 ">
         <Bit Name="RDP" Authority="RO" Bits="27" Description="Read Protection使能User Option状态查询。&#xD;&#xA;0h：缺省关闭Read Protection。&#xD;&#xA;1h：缺省打开Read Protection。" />
-        <Bit Name="HDP_IFE" Authority="RO" Bits="20" Description="取址保护使能状态查询" />
+        <Bit Name="HDP_IFP" Authority="RO" Bits="20" Description="取址保护使能状态查询" />
         <Bit Name="HDP_32K" Authority="RO" Bits="19" Description="32K空间Hard Protection使能User Option状态查询。&#xD;&#xA;0h：缺省禁止Hard Protection。&#xD;&#xA;1h：缺省使能Hard Protection。" />
         <Bit Name="HDP_16K" Authority="RO" Bits="18" Description="16K空间Hard Protection使能User Option状态查询。&#xD;&#xA;0h：缺省禁止Hard Protection。&#xD;&#xA;1h：缺省使能Hard Protection。" />
         <Bit Name="HDP_8K" Authority="RO" Bits="17" Description="8K空间Hard Protection使能User Option状态查询。&#xD;&#xA;0h：缺省禁止Hard Protection。&#xD;&#xA;1h：缺省使能Hard Protection。" />
         <Bit Name="HDP_ALL" Authority="RO" Bits="16" Description="Hard Protection使能User Option状态查询。&#xD;&#xA;0h：缺省禁止Hard Protection。&#xD;&#xA;1h：缺省使能Hard Protection。" />
-        <Bit Name="DBP" Authority="RO" Bits="8" Description="Debug Port 使能User Option状态查询。&#xD;&#xA;0h：缺省打开Debug Port。&#xD;&#xA;1h：缺省关闭Debug Port。" />
-        <Bit Name="CIPVALID" Authority="RO" Bits="7" Description="烧录器加密通讯使能User Option状态查询。&#xD;&#xA;0h：禁止通讯加密。&#xD;&#xA;1h：使能通讯加密。" />
-        <Bit Name="CKHEN" Authority="RO" Bits="3" Description="上电后，Flash的crc校验功能使能状态" />
+        <Bit Name="SWDP" Authority="RO" Bits="8" Description="SWD Port 使能User Option状态查询。&#xD;&#xA;0h：缺省打开SWD Port。&#xD;&#xA;1h：缺省关闭SWD Port。" />
+        <Bit Name="ENCRYPT" Authority="RO" Bits="7" Description="烧录器回读加密状态查询。&#xD;&#xA;0h：不加密&#xD;&#xA;1h：加密" />
+        <Bit Name="EFLCHKEN" Authority="RO" Bits="3" Description="上电后，Flash的crc校验功能使能状态" />
         <Bit Name="CPUFTRST" Authority="RO" Bits="2" Description="CPU Fault时产生硬件复位User Option设置状态查询。&#xD;&#xA;0h：禁止自动复位。&#xD;&#xA;1h：使能自动复位。" />
         <Bit Name="EXIRSTEN" Authority="RO" Bits="1" Description="外部复位管脚功能User Option设置状态查询。&#xD;&#xA;0h：外部复位管脚禁用。&#xD;&#xA;1h：外部复位管脚使能。" />
         <Bit Name="IWDTEN" Authority="RO" Bits="0" Description="独立看门狗User Option设置状态查询。&#xD;&#xA;0h：缺省关闭看门狗。&#xD;&#xA;1h：缺省打开看门狗。" />
@@ -2091,8 +2069,7 @@
         <Bit Name="T2U" Authority="RW" Bits="17-16" Description="当T2事件发生，且此时计数方向为递增时，在通道PWM1上做出的波形输出动作定义。&#xD;&#xA;0h：不动作（过滤该处理事件）&#xD;&#xA;1h：清除输出（低电平）&#xD;&#xA;2h：置位输出（高电平）&#xD;&#xA;3h：反向（翻转）" />
         <Bit Name="T1D" Authority="RW" Bits="15-14" Description="当T1事件发生，且此时计数方向为递减时，在通道PWM1上做出的波形输出动作定义。&#xD;&#xA;0h：不动作（过滤该处理事件）&#xD;&#xA;1h：清除输出（低电平）&#xD;&#xA;2h：置位输出（高电平）&#xD;&#xA;3h：反向（翻转）" />
         <Bit Name="T1U" Authority="RW" Bits="13-12" Description="当T1事件发生，且此时计数方向为递增时，在通道PWM1上做出的波形输出动作定义。&#xD;&#xA;0h：不动作（过滤该处理事件）&#xD;&#xA;1h：清除输出（低电平）&#xD;&#xA;2h：置位输出（高电平）&#xD;&#xA;3h：反向（翻转）" />
-        <Bit Name="C2D" Authority="RW" Bits="11" Description="当CNT值等于C2，且此时计数方向为递减时，在通道PWM1上做出的波形输出动作定义。&#xD;&#xA;0h：不动作（过滤该处理事件）&#xD;&#xA;1h：清除输出（低电平）&#xD;&#xA;2h：置位输出（高电平）&#xD;&#xA;3h：反向（翻转）" />
-        <Bit Name="C2BD" Authority="RW" Bits="10" Description="" />
+        <Bit Name="C2D" Authority="RW" Bits="11-10" Description="当CNT值等于C2，且此时计数方向为递减时，在通道PWM1上做出的波形输出动作定义。&#xD;&#xA;0h：不动作（过滤该处理事件）&#xD;&#xA;1h：清除输出（低电平）&#xD;&#xA;2h：置位输出（高电平）&#xD;&#xA;3h：反向（翻转）" />
         <Bit Name="C2U" Authority="RW" Bits="9-8" Description="当CNT值等于C2，且此时计数方向为递增时，在通道PWM1上做出的波形输出动作定义。&#xD;&#xA;0h：不动作（过滤该处理事件）&#xD;&#xA;1h：清除输出（低电平）&#xD;&#xA;2h：置位输出（高电平）&#xD;&#xA;3h：反向（翻转）" />
         <Bit Name="C1D" Authority="RW" Bits="7-6" Description="当CNT值等于C1，且此时计数方向为递减时，在通道PWM1上做出的波形输出动作定义。&#xD;&#xA;0h：不动作（过滤该处理事件）&#xD;&#xA;1h：清除输出（低电平）&#xD;&#xA;2h：置位输出（高电平）&#xD;&#xA;3h：反向（翻转）" />
         <Bit Name="C1U" Authority="RW" Bits="5-4" Description="当CNT值等于C1，且此时计数方向为递增时，在通道PWM1上做出的波形输出动作定义。&#xD;&#xA;0h：不动作（过滤该处理事件）&#xD;&#xA;1h：清除输出（低电平）&#xD;&#xA;2h：置位输出（高电平）&#xD;&#xA;3h：反向（翻转）" />
@@ -2373,8 +2350,7 @@
         <Bit Name="T2U" Authority="RW" Bits="17-16" Description="当T2事件发生，且此时计数方向为递增时，在通道PWM1上做出的波形输出动作定义。&#xD;&#xA;0h：不动作（过滤该处理事件）&#xD;&#xA;1h：清除输出（低电平）&#xD;&#xA;2h：置位输出（高电平）&#xD;&#xA;3h：反向（翻转）" />
         <Bit Name="T1D" Authority="RW" Bits="15-14" Description="当T1事件发生，且此时计数方向为递减时，在通道PWM1上做出的波形输出动作定义。&#xD;&#xA;0h：不动作（过滤该处理事件）&#xD;&#xA;1h：清除输出（低电平）&#xD;&#xA;2h：置位输出（高电平）&#xD;&#xA;3h：反向（翻转）" />
         <Bit Name="T1U" Authority="RW" Bits="13-12" Description="当T1事件发生，且此时计数方向为递增时，在通道PWM1上做出的波形输出动作定义。&#xD;&#xA;0h：不动作（过滤该处理事件）&#xD;&#xA;1h：清除输出（低电平）&#xD;&#xA;2h：置位输出（高电平）&#xD;&#xA;3h：反向（翻转）" />
-        <Bit Name="C2D" Authority="RW" Bits="11" Description="当CNT值等于C2，且此时计数方向为递减时，在通道PWM1上做出的波形输出动作定义。&#xD;&#xA;0h：不动作（过滤该处理事件）&#xD;&#xA;1h：清除输出（低电平）&#xD;&#xA;2h：置位输出（高电平）&#xD;&#xA;3h：反向（翻转）" />
-        <Bit Name="C2BD" Authority="RW" Bits="10" Description="" />
+        <Bit Name="C2D" Authority="RW" Bits="11-10" Description="当CNT值等于C2，且此时计数方向为递减时，在通道PWM1上做出的波形输出动作定义。&#xD;&#xA;0h：不动作（过滤该处理事件）&#xD;&#xA;1h：清除输出（低电平）&#xD;&#xA;2h：置位输出（高电平）&#xD;&#xA;3h：反向（翻转）" />
         <Bit Name="C2U" Authority="RW" Bits="9-8" Description="当CNT值等于C2，且此时计数方向为递增时，在通道PWM1上做出的波形输出动作定义。&#xD;&#xA;0h：不动作（过滤该处理事件）&#xD;&#xA;1h：清除输出（低电平）&#xD;&#xA;2h：置位输出（高电平）&#xD;&#xA;3h：反向（翻转）" />
         <Bit Name="C1D" Authority="RW" Bits="7-6" Description="当CNT值等于C1，且此时计数方向为递减时，在通道PWM1上做出的波形输出动作定义。&#xD;&#xA;0h：不动作（过滤该处理事件）&#xD;&#xA;1h：清除输出（低电平）&#xD;&#xA;2h：置位输出（高电平）&#xD;&#xA;3h：反向（翻转）" />
         <Bit Name="C1U" Authority="RW" Bits="5-4" Description="当CNT值等于C1，且此时计数方向为递增时，在通道PWM1上做出的波形输出动作定义。&#xD;&#xA;0h：不动作（过滤该处理事件）&#xD;&#xA;1h：清除输出（低电平）&#xD;&#xA;2h：置位输出（高电平）&#xD;&#xA;3h：反向（翻转）" />
@@ -2655,8 +2631,7 @@
         <Bit Name="T2U" Authority="RW" Bits="17-16" Description="当T2事件发生，且此时计数方向为递增时，在通道PWM1上做出的波形输出动作定义。&#xD;&#xA;0h：不动作（过滤该处理事件）&#xD;&#xA;1h：清除输出（低电平）&#xD;&#xA;2h：置位输出（高电平）&#xD;&#xA;3h：反向（翻转）" />
         <Bit Name="T1D" Authority="RW" Bits="15-14" Description="当T1事件发生，且此时计数方向为递减时，在通道PWM1上做出的波形输出动作定义。&#xD;&#xA;0h：不动作（过滤该处理事件）&#xD;&#xA;1h：清除输出（低电平）&#xD;&#xA;2h：置位输出（高电平）&#xD;&#xA;3h：反向（翻转）" />
         <Bit Name="T1U" Authority="RW" Bits="13-12" Description="当T1事件发生，且此时计数方向为递增时，在通道PWM1上做出的波形输出动作定义。&#xD;&#xA;0h：不动作（过滤该处理事件）&#xD;&#xA;1h：清除输出（低电平）&#xD;&#xA;2h：置位输出（高电平）&#xD;&#xA;3h：反向（翻转）" />
-        <Bit Name="C2D" Authority="RW" Bits="11" Description="当CNT值等于C2，且此时计数方向为递减时，在通道PWM1上做出的波形输出动作定义。&#xD;&#xA;0h：不动作（过滤该处理事件）&#xD;&#xA;1h：清除输出（低电平）&#xD;&#xA;2h：置位输出（高电平）&#xD;&#xA;3h：反向（翻转）" />
-        <Bit Name="C2BD" Authority="RW" Bits="10" Description="" />
+        <Bit Name="C2D" Authority="RW" Bits="11-10" Description="当CNT值等于C2，且此时计数方向为递减时，在通道PWM1上做出的波形输出动作定义。&#xD;&#xA;0h：不动作（过滤该处理事件）&#xD;&#xA;1h：清除输出（低电平）&#xD;&#xA;2h：置位输出（高电平）&#xD;&#xA;3h：反向（翻转）" />
         <Bit Name="C2U" Authority="RW" Bits="9-8" Description="当CNT值等于C2，且此时计数方向为递增时，在通道PWM1上做出的波形输出动作定义。&#xD;&#xA;0h：不动作（过滤该处理事件）&#xD;&#xA;1h：清除输出（低电平）&#xD;&#xA;2h：置位输出（高电平）&#xD;&#xA;3h：反向（翻转）" />
         <Bit Name="C1D" Authority="RW" Bits="7-6" Description="当CNT值等于C1，且此时计数方向为递减时，在通道PWM1上做出的波形输出动作定义。&#xD;&#xA;0h：不动作（过滤该处理事件）&#xD;&#xA;1h：清除输出（低电平）&#xD;&#xA;2h：置位输出（高电平）&#xD;&#xA;3h：反向（翻转）" />
         <Bit Name="C1U" Authority="RW" Bits="5-4" Description="当CNT值等于C1，且此时计数方向为递增时，在通道PWM1上做出的波形输出动作定义。&#xD;&#xA;0h：不动作（过滤该处理事件）&#xD;&#xA;1h：清除输出（低电平）&#xD;&#xA;2h：置位输出（高电平）&#xD;&#xA;3h：反向（翻转）" />
@@ -2937,8 +2912,7 @@
         <Bit Name="T2U" Authority="RW" Bits="17-16" Description="当T2事件发生，且此时计数方向为递增时，在通道PWM1上做出的波形输出动作定义。&#xD;&#xA;0h：不动作（过滤该处理事件）&#xD;&#xA;1h：清除输出（低电平）&#xD;&#xA;2h：置位输出（高电平）&#xD;&#xA;3h：反向（翻转）" />
         <Bit Name="T1D" Authority="RW" Bits="15-14" Description="当T1事件发生，且此时计数方向为递减时，在通道PWM1上做出的波形输出动作定义。&#xD;&#xA;0h：不动作（过滤该处理事件）&#xD;&#xA;1h：清除输出（低电平）&#xD;&#xA;2h：置位输出（高电平）&#xD;&#xA;3h：反向（翻转）" />
         <Bit Name="T1U" Authority="RW" Bits="13-12" Description="当T1事件发生，且此时计数方向为递增时，在通道PWM1上做出的波形输出动作定义。&#xD;&#xA;0h：不动作（过滤该处理事件）&#xD;&#xA;1h：清除输出（低电平）&#xD;&#xA;2h：置位输出（高电平）&#xD;&#xA;3h：反向（翻转）" />
-        <Bit Name="C2D" Authority="RW" Bits="11" Description="当CNT值等于C2，且此时计数方向为递减时，在通道PWM1上做出的波形输出动作定义。&#xD;&#xA;0h：不动作（过滤该处理事件）&#xD;&#xA;1h：清除输出（低电平）&#xD;&#xA;2h：置位输出（高电平）&#xD;&#xA;3h：反向（翻转）" />
-        <Bit Name="C2BD" Authority="RW" Bits="10" Description="" />
+        <Bit Name="C2D" Authority="RW" Bits="11-10" Description="当CNT值等于C2，且此时计数方向为递减时，在通道PWM1上做出的波形输出动作定义。&#xD;&#xA;0h：不动作（过滤该处理事件）&#xD;&#xA;1h：清除输出（低电平）&#xD;&#xA;2h：置位输出（高电平）&#xD;&#xA;3h：反向（翻转）" />
         <Bit Name="C2U" Authority="RW" Bits="9-8" Description="当CNT值等于C2，且此时计数方向为递增时，在通道PWM1上做出的波形输出动作定义。&#xD;&#xA;0h：不动作（过滤该处理事件）&#xD;&#xA;1h：清除输出（低电平）&#xD;&#xA;2h：置位输出（高电平）&#xD;&#xA;3h：反向（翻转）" />
         <Bit Name="C1D" Authority="RW" Bits="7-6" Description="当CNT值等于C1，且此时计数方向为递减时，在通道PWM1上做出的波形输出动作定义。&#xD;&#xA;0h：不动作（过滤该处理事件）&#xD;&#xA;1h：清除输出（低电平）&#xD;&#xA;2h：置位输出（高电平）&#xD;&#xA;3h：反向（翻转）" />
         <Bit Name="C1U" Authority="RW" Bits="5-4" Description="当CNT值等于C1，且此时计数方向为递增时，在通道PWM1上做出的波形输出动作定义。&#xD;&#xA;0h：不动作（过滤该处理事件）&#xD;&#xA;1h：清除输出（低电平）&#xD;&#xA;2h：置位输出（高电平）&#xD;&#xA;3h：反向（翻转）" />
@@ -3086,7 +3060,7 @@
     </Peripheral>
     <Peripheral Name="GPTB0">
       <Register Name="GPTB_CEDR" Authority="RW" Address="0x40059000" Width="32" Description="ID和时钟控制寄存器">
-        <Bit Name="IDCODE" Authority="RO" Bits="31-16" Description="当前EPT模块的版本信息。" />
+        <Bit Name="IDCODE" Authority="RO" Bits="31-16" Description="当前GPTB模块的版本信息。" />
         <Bit Name="FLTCKPRS" Authority="RW" Bits="15-8" Description="CGFLT数字滤波器的时钟分频控制。&#xD;&#xA;数字滤波器的时钟频率为PCLK/( FLTCKPRS+1)" />
         <Bit Name="SHDWSTP" Authority="RW" Bits="6" Description="START控制位的Shadow功能使能控制。START置位不受此位控制，清除时受此位控制。当选择Shadow模式时，START控制位在周期结束时清除。&#xD;&#xA;0h：Shadow模式&#xD;&#xA;1h：Immediate模式" />
         <Bit Name="CSS" Authority="RW" Bits="3" Description="计数器时钟源选择位。&#xD;&#xA;0h：PCLK&#xD;&#xA;1h：由SYNCIN4控制&#xD;&#xA;其他：保留" />
@@ -3529,7 +3503,7 @@
     </Peripheral>
     <Peripheral Name="GPTB1">
       <Register Name="GPTB_CEDR" Authority="RW" Address="0x4005a000" Width="32" Description="ID和时钟控制寄存器">
-        <Bit Name="IDCODE" Authority="RO" Bits="31-16" Description="当前EPT模块的版本信息。" />
+        <Bit Name="IDCODE" Authority="RO" Bits="31-16" Description="当前GPTB模块的版本信息。" />
         <Bit Name="FLTCKPRS" Authority="RW" Bits="15-8" Description="CGFLT数字滤波器的时钟分频控制。&#xD;&#xA;数字滤波器的时钟频率为PCLK/( FLTCKPRS+1)" />
         <Bit Name="SHDWSTP" Authority="RW" Bits="6" Description="START控制位的Shadow功能使能控制。START置位不受此位控制，清除时受此位控制。当选择Shadow模式时，START控制位在周期结束时清除。&#xD;&#xA;0h：Shadow模式&#xD;&#xA;1h：Immediate模式" />
         <Bit Name="CSS" Authority="RW" Bits="3" Description="计数器时钟源选择位。&#xD;&#xA;0h：PCLK&#xD;&#xA;1h：由SYNCIN4控制&#xD;&#xA;其他：保留" />
@@ -3972,7 +3946,7 @@
     </Peripheral>
     <Peripheral Name="GPTB2">
       <Register Name="GPTB_CEDR" Authority="RW" Address="0x4005b000" Width="32" Description="ID和时钟控制寄存器">
-        <Bit Name="IDCODE" Authority="RO" Bits="31-16" Description="当前EPT模块的版本信息。" />
+        <Bit Name="IDCODE" Authority="RO" Bits="31-16" Description="当前GPTB模块的版本信息。" />
         <Bit Name="FLTCKPRS" Authority="RW" Bits="15-8" Description="CGFLT数字滤波器的时钟分频控制。&#xD;&#xA;数字滤波器的时钟频率为PCLK/( FLTCKPRS+1)" />
         <Bit Name="SHDWSTP" Authority="RW" Bits="6" Description="START控制位的Shadow功能使能控制。START置位不受此位控制，清除时受此位控制。当选择Shadow模式时，START控制位在周期结束时清除。&#xD;&#xA;0h：Shadow模式&#xD;&#xA;1h：Immediate模式" />
         <Bit Name="CSS" Authority="RW" Bits="3" Description="计数器时钟源选择位。&#xD;&#xA;0h：PCLK&#xD;&#xA;1h：由SYNCIN4控制&#xD;&#xA;其他：保留" />
@@ -4415,7 +4389,7 @@
     </Peripheral>
     <Peripheral Name="GPTB3">
       <Register Name="GPTB_CEDR" Authority="RW" Address="0x4005c000" Width="32" Description="ID和时钟控制寄存器">
-        <Bit Name="IDCODE" Authority="RO" Bits="31-16" Description="当前EPT模块的版本信息。" />
+        <Bit Name="IDCODE" Authority="RO" Bits="31-16" Description="当前GPTB模块的版本信息。" />
         <Bit Name="FLTCKPRS" Authority="RW" Bits="15-8" Description="CGFLT数字滤波器的时钟分频控制。&#xD;&#xA;数字滤波器的时钟频率为PCLK/( FLTCKPRS+1)" />
         <Bit Name="SHDWSTP" Authority="RW" Bits="6" Description="START控制位的Shadow功能使能控制。START置位不受此位控制，清除时受此位控制。当选择Shadow模式时，START控制位在周期结束时清除。&#xD;&#xA;0h：Shadow模式&#xD;&#xA;1h：Immediate模式" />
         <Bit Name="CSS" Authority="RW" Bits="3" Description="计数器时钟源选择位。&#xD;&#xA;0h：PCLK&#xD;&#xA;1h：由SYNCIN4控制&#xD;&#xA;其他：保留" />
@@ -4858,7 +4832,7 @@
     </Peripheral>
     <Peripheral Name="GPTB4">
       <Register Name="GPTB_CEDR" Authority="RW" Address="0x4005d000" Width="32" Description="ID和时钟控制寄存器">
-        <Bit Name="IDCODE" Authority="RO" Bits="31-16" Description="当前EPT模块的版本信息。" />
+        <Bit Name="IDCODE" Authority="RO" Bits="31-16" Description="当前GPTB模块的版本信息。" />
         <Bit Name="FLTCKPRS" Authority="RW" Bits="15-8" Description="CGFLT数字滤波器的时钟分频控制。&#xD;&#xA;数字滤波器的时钟频率为PCLK/( FLTCKPRS+1)" />
         <Bit Name="SHDWSTP" Authority="RW" Bits="6" Description="START控制位的Shadow功能使能控制。START置位不受此位控制，清除时受此位控制。当选择Shadow模式时，START控制位在周期结束时清除。&#xD;&#xA;0h：Shadow模式&#xD;&#xA;1h：Immediate模式" />
         <Bit Name="CSS" Authority="RW" Bits="3" Description="计数器时钟源选择位。&#xD;&#xA;0h：PCLK&#xD;&#xA;1h：由SYNCIN4控制&#xD;&#xA;其他：保留" />
@@ -5301,7 +5275,7 @@
     </Peripheral>
     <Peripheral Name="GPTB5">
       <Register Name="GPTB_CEDR" Authority="RW" Address="0x4005e000" Width="32" Description="ID和时钟控制寄存器">
-        <Bit Name="IDCODE" Authority="RO" Bits="31-16" Description="当前EPT模块的版本信息。" />
+        <Bit Name="IDCODE" Authority="RO" Bits="31-16" Description="当前GPTB模块的版本信息。" />
         <Bit Name="FLTCKPRS" Authority="RW" Bits="15-8" Description="CGFLT数字滤波器的时钟分频控制。&#xD;&#xA;数字滤波器的时钟频率为PCLK/( FLTCKPRS+1)" />
         <Bit Name="SHDWSTP" Authority="RW" Bits="6" Description="START控制位的Shadow功能使能控制。START置位不受此位控制，清除时受此位控制。当选择Shadow模式时，START控制位在周期结束时清除。&#xD;&#xA;0h：Shadow模式&#xD;&#xA;1h：Immediate模式" />
         <Bit Name="CSS" Authority="RW" Bits="3" Description="计数器时钟源选择位。&#xD;&#xA;0h：PCLK&#xD;&#xA;1h：由SYNCIN4控制&#xD;&#xA;其他：保留" />
@@ -8043,7 +8017,7 @@
         <Bit Name="LTC" Authority="RW" Bits="11-0" Description="低传输计数&#xD;&#xA;初始化低传输个数。" />
       </Register>
       <Register Name="DMA_SR0" Authority="RW" Address="0x40300014" Width="32" Description="通道x状态寄存器">
-        <Bit Name="LTCST" Authority="RO" Bits="31" Description="低传输计数状态位&#xD;&#xA;0b: DAM控制器处于空闲状态。&#xD;&#xA;1b: DAM控制器处于忙状态&#xD;&#xA;当触发事件到来并启动DMA操作，LTCST位被置“1”（BUSY）" />
+        <Bit Name="LTCST" Authority="RO" Bits="31" Description="低传输计数状态位&#xD;&#xA;0b: DMA控制器处于空闲状态。&#xD;&#xA;1b: DMA控制器处于忙状态&#xD;&#xA;当触发事件到来并启动DMA操作，LTCST位被置“1”（BUSY）" />
         <Bit Name="CURR_ HTC" Authority="RO" Bits="23-12" Description="当前高传输计数值&#xD;&#xA;设置DMA_CR想寄存器的HTC[11:0]位时，初始化传输计数值为HTC[11:0]，当一次原子传输完成后若LTC[11:0]为0，则该传输计数值减一。&#xD;&#xA;传输操作的计数值由HTC[11:0] x LTC[11:0]决定，当CUR_HTC[11:0] 和CUR_LTC[11:0] 计数值都为0时将停止传输并将DMA_MTR的STOP为置“1”" />
         <Bit Name="CURR_LTC" Authority="RO" Bits="11-0" Description="当前低传输计数值&#xD;&#xA;设置DMA_CR寄存器的LTC[11:0]位时，初始化传输计数值为LTC[11:0]，每完成一次原子传输，传输计数值减一。&#xD;&#xA;当CURR_HTC[11:0]不为“0”且CURR_LTC[11:0]为“1”时，在一次传输完成后，CURR_HTC[11:0]将减一，CURR_LTC[11:0]将初始化成DMA_CR寄存器的LTC[11:0]的值。" />
       </Register>
@@ -8086,7 +8060,7 @@
         <Bit Name="LTC" Authority="RW" Bits="11-0" Description="低传输计数&#xD;&#xA;初始化低传输个数。" />
       </Register>
       <Register Name="DMA_SR1" Authority="RW" Address="0x40300094" Width="32" Description="通道x状态寄存器">
-        <Bit Name="LTCST" Authority="RO" Bits="31" Description="低传输计数状态位&#xD;&#xA;0b: DAM控制器处于空闲状态。&#xD;&#xA;1b: DAM控制器处于忙状态&#xD;&#xA;当触发事件到来并启动DMA操作，LTCST位被置“1”（BUSY）" />
+        <Bit Name="LTCST" Authority="RO" Bits="31" Description="低传输计数状态位&#xD;&#xA;0b: DMA控制器处于空闲状态。&#xD;&#xA;1b: DMA控制器处于忙状态&#xD;&#xA;当触发事件到来并启动DMA操作，LTCST位被置“1”（BUSY）" />
         <Bit Name="CURR_ HTC" Authority="RO" Bits="23-12" Description="当前高传输计数值&#xD;&#xA;设置DMA_CR想寄存器的HTC[11:0]位时，初始化传输计数值为HTC[11:0]，当一次原子传输完成后若LTC[11:0]为0，则该传输计数值减一。&#xD;&#xA;传输操作的计数值由HTC[11:0] x LTC[11:0]决定，当CUR_HTC[11:0] 和CUR_LTC[11:0] 计数值都为0时将停止传输并将DMA_MTR的STOP为置“1”" />
         <Bit Name="CURR_LTC" Authority="RO" Bits="11-0" Description="当前低传输计数值&#xD;&#xA;设置DMA_CR寄存器的LTC[11:0]位时，初始化传输计数值为LTC[11:0]，每完成一次原子传输，传输计数值减一。&#xD;&#xA;当CURR_HTC[11:0]不为“0”且CURR_LTC[11:0]为“1”时，在一次传输完成后，CURR_HTC[11:0]将减一，CURR_LTC[11:0]将初始化成DMA_CR寄存器的LTC[11:0]的值。" />
       </Register>
@@ -8129,7 +8103,7 @@
         <Bit Name="LTC" Authority="RW" Bits="11-0" Description="低传输计数&#xD;&#xA;初始化低传输个数。" />
       </Register>
       <Register Name="DMA_SR2" Authority="RW" Address="0x40300114" Width="32" Description="通道x状态寄存器">
-        <Bit Name="LTCST" Authority="RO" Bits="31" Description="低传输计数状态位&#xD;&#xA;0b: DAM控制器处于空闲状态。&#xD;&#xA;1b: DAM控制器处于忙状态&#xD;&#xA;当触发事件到来并启动DMA操作，LTCST位被置“1”（BUSY）" />
+        <Bit Name="LTCST" Authority="RO" Bits="31" Description="低传输计数状态位&#xD;&#xA;0b: DMA控制器处于空闲状态。&#xD;&#xA;1b: DMA控制器处于忙状态&#xD;&#xA;当触发事件到来并启动DMA操作，LTCST位被置“1”（BUSY）" />
         <Bit Name="CURR_ HTC" Authority="RO" Bits="23-12" Description="当前高传输计数值&#xD;&#xA;设置DMA_CR想寄存器的HTC[11:0]位时，初始化传输计数值为HTC[11:0]，当一次原子传输完成后若LTC[11:0]为0，则该传输计数值减一。&#xD;&#xA;传输操作的计数值由HTC[11:0] x LTC[11:0]决定，当CUR_HTC[11:0] 和CUR_LTC[11:0] 计数值都为0时将停止传输并将DMA_MTR的STOP为置“1”" />
         <Bit Name="CURR_LTC" Authority="RO" Bits="11-0" Description="当前低传输计数值&#xD;&#xA;设置DMA_CR寄存器的LTC[11:0]位时，初始化传输计数值为LTC[11:0]，每完成一次原子传输，传输计数值减一。&#xD;&#xA;当CURR_HTC[11:0]不为“0”且CURR_LTC[11:0]为“1”时，在一次传输完成后，CURR_HTC[11:0]将减一，CURR_LTC[11:0]将初始化成DMA_CR寄存器的LTC[11:0]的值。" />
       </Register>
@@ -8172,7 +8146,7 @@
         <Bit Name="LTC" Authority="RW" Bits="11-0" Description="低传输计数&#xD;&#xA;初始化低传输个数。" />
       </Register>
       <Register Name="DMA_SR3" Authority="RW" Address="0x40300194" Width="32" Description="通道x状态寄存器">
-        <Bit Name="LTCST" Authority="RO" Bits="31" Description="低传输计数状态位&#xD;&#xA;0b: DAM控制器处于空闲状态。&#xD;&#xA;1b: DAM控制器处于忙状态&#xD;&#xA;当触发事件到来并启动DMA操作，LTCST位被置“1”（BUSY）" />
+        <Bit Name="LTCST" Authority="RO" Bits="31" Description="低传输计数状态位&#xD;&#xA;0b: DMA控制器处于空闲状态。&#xD;&#xA;1b: DMA控制器处于忙状态&#xD;&#xA;当触发事件到来并启动DMA操作，LTCST位被置“1”（BUSY）" />
         <Bit Name="CURR_ HTC" Authority="RO" Bits="23-12" Description="当前高传输计数值&#xD;&#xA;设置DMA_CR想寄存器的HTC[11:0]位时，初始化传输计数值为HTC[11:0]，当一次原子传输完成后若LTC[11:0]为0，则该传输计数值减一。&#xD;&#xA;传输操作的计数值由HTC[11:0] x LTC[11:0]决定，当CUR_HTC[11:0] 和CUR_LTC[11:0] 计数值都为0时将停止传输并将DMA_MTR的STOP为置“1”" />
         <Bit Name="CURR_LTC" Authority="RO" Bits="11-0" Description="当前低传输计数值&#xD;&#xA;设置DMA_CR寄存器的LTC[11:0]位时，初始化传输计数值为LTC[11:0]，每完成一次原子传输，传输计数值减一。&#xD;&#xA;当CURR_HTC[11:0]不为“0”且CURR_LTC[11:0]为“1”时，在一次传输完成后，CURR_HTC[11:0]将减一，CURR_LTC[11:0]将初始化成DMA_CR寄存器的LTC[11:0]的值。" />
       </Register>
@@ -8215,7 +8189,7 @@
         <Bit Name="LTC" Authority="RW" Bits="11-0" Description="低传输计数&#xD;&#xA;初始化低传输个数。" />
       </Register>
       <Register Name="DMA_SR4" Authority="RW" Address="0x40300214" Width="32" Description="通道x状态寄存器">
-        <Bit Name="LTCST" Authority="RO" Bits="31" Description="低传输计数状态位&#xD;&#xA;0b: DAM控制器处于空闲状态。&#xD;&#xA;1b: DAM控制器处于忙状态&#xD;&#xA;当触发事件到来并启动DMA操作，LTCST位被置“1”（BUSY）" />
+        <Bit Name="LTCST" Authority="RO" Bits="31" Description="低传输计数状态位&#xD;&#xA;0b: DMA控制器处于空闲状态。&#xD;&#xA;1b: DMA控制器处于忙状态&#xD;&#xA;当触发事件到来并启动DMA操作，LTCST位被置“1”（BUSY）" />
         <Bit Name="CURR_ HTC" Authority="RO" Bits="23-12" Description="当前高传输计数值&#xD;&#xA;设置DMA_CR想寄存器的HTC[11:0]位时，初始化传输计数值为HTC[11:0]，当一次原子传输完成后若LTC[11:0]为0，则该传输计数值减一。&#xD;&#xA;传输操作的计数值由HTC[11:0] x LTC[11:0]决定，当CUR_HTC[11:0] 和CUR_LTC[11:0] 计数值都为0时将停止传输并将DMA_MTR的STOP为置“1”" />
         <Bit Name="CURR_LTC" Authority="RO" Bits="11-0" Description="当前低传输计数值&#xD;&#xA;设置DMA_CR寄存器的LTC[11:0]位时，初始化传输计数值为LTC[11:0]，每完成一次原子传输，传输计数值减一。&#xD;&#xA;当CURR_HTC[11:0]不为“0”且CURR_LTC[11:0]为“1”时，在一次传输完成后，CURR_HTC[11:0]将减一，CURR_LTC[11:0]将初始化成DMA_CR寄存器的LTC[11:0]的值。" />
       </Register>
@@ -8258,7 +8232,7 @@
         <Bit Name="LTC" Authority="RW" Bits="11-0" Description="低传输计数&#xD;&#xA;初始化低传输个数。" />
       </Register>
       <Register Name="DMA_SR5" Authority="RW" Address="0x40300294" Width="32" Description="通道x状态寄存器">
-        <Bit Name="LTCST" Authority="RO" Bits="31" Description="低传输计数状态位&#xD;&#xA;0b: DAM控制器处于空闲状态。&#xD;&#xA;1b: DAM控制器处于忙状态&#xD;&#xA;当触发事件到来并启动DMA操作，LTCST位被置“1”（BUSY）" />
+        <Bit Name="LTCST" Authority="RO" Bits="31" Description="低传输计数状态位&#xD;&#xA;0b: DMA控制器处于空闲状态。&#xD;&#xA;1b: DMA控制器处于忙状态&#xD;&#xA;当触发事件到来并启动DMA操作，LTCST位被置“1”（BUSY）" />
         <Bit Name="CURR_ HTC" Authority="RO" Bits="23-12" Description="当前高传输计数值&#xD;&#xA;设置DMA_CR想寄存器的HTC[11:0]位时，初始化传输计数值为HTC[11:0]，当一次原子传输完成后若LTC[11:0]为0，则该传输计数值减一。&#xD;&#xA;传输操作的计数值由HTC[11:0] x LTC[11:0]决定，当CUR_HTC[11:0] 和CUR_LTC[11:0] 计数值都为0时将停止传输并将DMA_MTR的STOP为置“1”" />
         <Bit Name="CURR_LTC" Authority="RO" Bits="11-0" Description="当前低传输计数值&#xD;&#xA;设置DMA_CR寄存器的LTC[11:0]位时，初始化传输计数值为LTC[11:0]，每完成一次原子传输，传输计数值减一。&#xD;&#xA;当CURR_HTC[11:0]不为“0”且CURR_LTC[11:0]为“1”时，在一次传输完成后，CURR_HTC[11:0]将减一，CURR_LTC[11:0]将初始化成DMA_CR寄存器的LTC[11:0]的值。" />
       </Register>
@@ -8339,7 +8313,7 @@
         <Bit Name="LTC" Authority="RW" Bits="11-0" Description="低传输计数&#xD;&#xA;初始化低传输个数。" />
       </Register>
       <Register Name="DMA_SR0" Authority="RW" Address="0x40310014" Width="32" Description="通道x状态寄存器">
-        <Bit Name="LTCST" Authority="RO" Bits="31" Description="低传输计数状态位&#xD;&#xA;0b: DAM控制器处于空闲状态。&#xD;&#xA;1b: DAM控制器处于忙状态&#xD;&#xA;当触发事件到来并启动DMA操作，LTCST位被置“1”（BUSY）" />
+        <Bit Name="LTCST" Authority="RO" Bits="31" Description="低传输计数状态位&#xD;&#xA;0b: DMA控制器处于空闲状态。&#xD;&#xA;1b: DMA控制器处于忙状态&#xD;&#xA;当触发事件到来并启动DMA操作，LTCST位被置“1”（BUSY）" />
         <Bit Name="CURR_ HTC" Authority="RO" Bits="23-12" Description="当前高传输计数值&#xD;&#xA;设置DMA_CR想寄存器的HTC[11:0]位时，初始化传输计数值为HTC[11:0]，当一次原子传输完成后若LTC[11:0]为0，则该传输计数值减一。&#xD;&#xA;传输操作的计数值由HTC[11:0] x LTC[11:0]决定，当CUR_HTC[11:0] 和CUR_LTC[11:0] 计数值都为0时将停止传输并将DMA_MTR的STOP为置“1”" />
         <Bit Name="CURR_LTC" Authority="RO" Bits="11-0" Description="当前低传输计数值&#xD;&#xA;设置DMA_CR寄存器的LTC[11:0]位时，初始化传输计数值为LTC[11:0]，每完成一次原子传输，传输计数值减一。&#xD;&#xA;当CURR_HTC[11:0]不为“0”且CURR_LTC[11:0]为“1”时，在一次传输完成后，CURR_HTC[11:0]将减一，CURR_LTC[11:0]将初始化成DMA_CR寄存器的LTC[11:0]的值。" />
       </Register>
@@ -8382,7 +8356,7 @@
         <Bit Name="LTC" Authority="RW" Bits="11-0" Description="低传输计数&#xD;&#xA;初始化低传输个数。" />
       </Register>
       <Register Name="DMA_SR1" Authority="RW" Address="0x40310094" Width="32" Description="通道x状态寄存器">
-        <Bit Name="LTCST" Authority="RO" Bits="31" Description="低传输计数状态位&#xD;&#xA;0b: DAM控制器处于空闲状态。&#xD;&#xA;1b: DAM控制器处于忙状态&#xD;&#xA;当触发事件到来并启动DMA操作，LTCST位被置“1”（BUSY）" />
+        <Bit Name="LTCST" Authority="RO" Bits="31" Description="低传输计数状态位&#xD;&#xA;0b: DMA控制器处于空闲状态。&#xD;&#xA;1b: DMA控制器处于忙状态&#xD;&#xA;当触发事件到来并启动DMA操作，LTCST位被置“1”（BUSY）" />
         <Bit Name="CURR_ HTC" Authority="RO" Bits="23-12" Description="当前高传输计数值&#xD;&#xA;设置DMA_CR想寄存器的HTC[11:0]位时，初始化传输计数值为HTC[11:0]，当一次原子传输完成后若LTC[11:0]为0，则该传输计数值减一。&#xD;&#xA;传输操作的计数值由HTC[11:0] x LTC[11:0]决定，当CUR_HTC[11:0] 和CUR_LTC[11:0] 计数值都为0时将停止传输并将DMA_MTR的STOP为置“1”" />
         <Bit Name="CURR_LTC" Authority="RO" Bits="11-0" Description="当前低传输计数值&#xD;&#xA;设置DMA_CR寄存器的LTC[11:0]位时，初始化传输计数值为LTC[11:0]，每完成一次原子传输，传输计数值减一。&#xD;&#xA;当CURR_HTC[11:0]不为“0”且CURR_LTC[11:0]为“1”时，在一次传输完成后，CURR_HTC[11:0]将减一，CURR_LTC[11:0]将初始化成DMA_CR寄存器的LTC[11:0]的值。" />
       </Register>
@@ -8425,7 +8399,7 @@
         <Bit Name="LTC" Authority="RW" Bits="11-0" Description="低传输计数&#xD;&#xA;初始化低传输个数。" />
       </Register>
       <Register Name="DMA_SR2" Authority="RW" Address="0x40310114" Width="32" Description="通道x状态寄存器">
-        <Bit Name="LTCST" Authority="RO" Bits="31" Description="低传输计数状态位&#xD;&#xA;0b: DAM控制器处于空闲状态。&#xD;&#xA;1b: DAM控制器处于忙状态&#xD;&#xA;当触发事件到来并启动DMA操作，LTCST位被置“1”（BUSY）" />
+        <Bit Name="LTCST" Authority="RO" Bits="31" Description="低传输计数状态位&#xD;&#xA;0b: DMA控制器处于空闲状态。&#xD;&#xA;1b: DMA控制器处于忙状态&#xD;&#xA;当触发事件到来并启动DMA操作，LTCST位被置“1”（BUSY）" />
         <Bit Name="CURR_ HTC" Authority="RO" Bits="23-12" Description="当前高传输计数值&#xD;&#xA;设置DMA_CR想寄存器的HTC[11:0]位时，初始化传输计数值为HTC[11:0]，当一次原子传输完成后若LTC[11:0]为0，则该传输计数值减一。&#xD;&#xA;传输操作的计数值由HTC[11:0] x LTC[11:0]决定，当CUR_HTC[11:0] 和CUR_LTC[11:0] 计数值都为0时将停止传输并将DMA_MTR的STOP为置“1”" />
         <Bit Name="CURR_LTC" Authority="RO" Bits="11-0" Description="当前低传输计数值&#xD;&#xA;设置DMA_CR寄存器的LTC[11:0]位时，初始化传输计数值为LTC[11:0]，每完成一次原子传输，传输计数值减一。&#xD;&#xA;当CURR_HTC[11:0]不为“0”且CURR_LTC[11:0]为“1”时，在一次传输完成后，CURR_HTC[11:0]将减一，CURR_LTC[11:0]将初始化成DMA_CR寄存器的LTC[11:0]的值。" />
       </Register>
@@ -8468,7 +8442,7 @@
         <Bit Name="LTC" Authority="RW" Bits="11-0" Description="低传输计数&#xD;&#xA;初始化低传输个数。" />
       </Register>
       <Register Name="DMA_SR3" Authority="RW" Address="0x40310194" Width="32" Description="通道x状态寄存器">
-        <Bit Name="LTCST" Authority="RO" Bits="31" Description="低传输计数状态位&#xD;&#xA;0b: DAM控制器处于空闲状态。&#xD;&#xA;1b: DAM控制器处于忙状态&#xD;&#xA;当触发事件到来并启动DMA操作，LTCST位被置“1”（BUSY）" />
+        <Bit Name="LTCST" Authority="RO" Bits="31" Description="低传输计数状态位&#xD;&#xA;0b: DMA控制器处于空闲状态。&#xD;&#xA;1b: DMA控制器处于忙状态&#xD;&#xA;当触发事件到来并启动DMA操作，LTCST位被置“1”（BUSY）" />
         <Bit Name="CURR_ HTC" Authority="RO" Bits="23-12" Description="当前高传输计数值&#xD;&#xA;设置DMA_CR想寄存器的HTC[11:0]位时，初始化传输计数值为HTC[11:0]，当一次原子传输完成后若LTC[11:0]为0，则该传输计数值减一。&#xD;&#xA;传输操作的计数值由HTC[11:0] x LTC[11:0]决定，当CUR_HTC[11:0] 和CUR_LTC[11:0] 计数值都为0时将停止传输并将DMA_MTR的STOP为置“1”" />
         <Bit Name="CURR_LTC" Authority="RO" Bits="11-0" Description="当前低传输计数值&#xD;&#xA;设置DMA_CR寄存器的LTC[11:0]位时，初始化传输计数值为LTC[11:0]，每完成一次原子传输，传输计数值减一。&#xD;&#xA;当CURR_HTC[11:0]不为“0”且CURR_LTC[11:0]为“1”时，在一次传输完成后，CURR_HTC[11:0]将减一，CURR_LTC[11:0]将初始化成DMA_CR寄存器的LTC[11:0]的值。" />
       </Register>
@@ -8511,7 +8485,7 @@
         <Bit Name="LTC" Authority="RW" Bits="11-0" Description="低传输计数&#xD;&#xA;初始化低传输个数。" />
       </Register>
       <Register Name="DMA_SR4" Authority="RW" Address="0x40310214" Width="32" Description="通道x状态寄存器">
-        <Bit Name="LTCST" Authority="RO" Bits="31" Description="低传输计数状态位&#xD;&#xA;0b: DAM控制器处于空闲状态。&#xD;&#xA;1b: DAM控制器处于忙状态&#xD;&#xA;当触发事件到来并启动DMA操作，LTCST位被置“1”（BUSY）" />
+        <Bit Name="LTCST" Authority="RO" Bits="31" Description="低传输计数状态位&#xD;&#xA;0b: DMA控制器处于空闲状态。&#xD;&#xA;1b: DMA控制器处于忙状态&#xD;&#xA;当触发事件到来并启动DMA操作，LTCST位被置“1”（BUSY）" />
         <Bit Name="CURR_ HTC" Authority="RO" Bits="23-12" Description="当前高传输计数值&#xD;&#xA;设置DMA_CR想寄存器的HTC[11:0]位时，初始化传输计数值为HTC[11:0]，当一次原子传输完成后若LTC[11:0]为0，则该传输计数值减一。&#xD;&#xA;传输操作的计数值由HTC[11:0] x LTC[11:0]决定，当CUR_HTC[11:0] 和CUR_LTC[11:0] 计数值都为0时将停止传输并将DMA_MTR的STOP为置“1”" />
         <Bit Name="CURR_LTC" Authority="RO" Bits="11-0" Description="当前低传输计数值&#xD;&#xA;设置DMA_CR寄存器的LTC[11:0]位时，初始化传输计数值为LTC[11:0]，每完成一次原子传输，传输计数值减一。&#xD;&#xA;当CURR_HTC[11:0]不为“0”且CURR_LTC[11:0]为“1”时，在一次传输完成后，CURR_HTC[11:0]将减一，CURR_LTC[11:0]将初始化成DMA_CR寄存器的LTC[11:0]的值。" />
       </Register>
@@ -8554,7 +8528,7 @@
         <Bit Name="LTC" Authority="RW" Bits="11-0" Description="低传输计数&#xD;&#xA;初始化低传输个数。" />
       </Register>
       <Register Name="DMA_SR5" Authority="RW" Address="0x40310294" Width="32" Description="通道x状态寄存器">
-        <Bit Name="LTCST" Authority="RO" Bits="31" Description="低传输计数状态位&#xD;&#xA;0b: DAM控制器处于空闲状态。&#xD;&#xA;1b: DAM控制器处于忙状态&#xD;&#xA;当触发事件到来并启动DMA操作，LTCST位被置“1”（BUSY）" />
+        <Bit Name="LTCST" Authority="RO" Bits="31" Description="低传输计数状态位&#xD;&#xA;0b: DMA控制器处于空闲状态。&#xD;&#xA;1b: DMA控制器处于忙状态&#xD;&#xA;当触发事件到来并启动DMA操作，LTCST位被置“1”（BUSY）" />
         <Bit Name="CURR_ HTC" Authority="RO" Bits="23-12" Description="当前高传输计数值&#xD;&#xA;设置DMA_CR想寄存器的HTC[11:0]位时，初始化传输计数值为HTC[11:0]，当一次原子传输完成后若LTC[11:0]为0，则该传输计数值减一。&#xD;&#xA;传输操作的计数值由HTC[11:0] x LTC[11:0]决定，当CUR_HTC[11:0] 和CUR_LTC[11:0] 计数值都为0时将停止传输并将DMA_MTR的STOP为置“1”" />
         <Bit Name="CURR_LTC" Authority="RO" Bits="11-0" Description="当前低传输计数值&#xD;&#xA;设置DMA_CR寄存器的LTC[11:0]位时，初始化传输计数值为LTC[11:0]，每完成一次原子传输，传输计数值减一。&#xD;&#xA;当CURR_HTC[11:0]不为“0”且CURR_LTC[11:0]为“1”时，在一次传输完成后，CURR_HTC[11:0]将减一，CURR_LTC[11:0]将初始化成DMA_CR寄存器的LTC[11:0]的值。" />
       </Register>
