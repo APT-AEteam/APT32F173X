@@ -17,16 +17,16 @@
 csi_iic_master_config_t  g_tIicMasterCfg;	//主机初始化结构体变量
 csi_iic_slave_config_t  g_tIicSlaveCfg;	//从机初始化结构体变量
 
-volatile static uint8_t s_bySendBuffer[32]={1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20};
-volatile static uint8_t s_byWriteBuffer[32];
+volatile static uint8_t s_bySendBuffer[32]={1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20};   // IIC从机发送的数据
+volatile static uint8_t s_byWriteBuffer[32];     // IIC从机接收的数据
 
 volatile uint32_t g_wTxBuff[32] = {0,1,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20};// DMA发送数据。前两个为wWriteAddrs
 volatile uint8_t g_bRxBuff[32] = {0};   //DMA接收数据
 
-volatile static  uint32_t s_wIicErrorCont = 0;
-volatile static  uint8_t s_bySendIndex = 0;
-volatile static  uint8_t s_byWriteIndex = 0;
-volatile static  uint32_t s_wIicSlaveWriteAddress;
+volatile static  uint32_t s_wIicErrorCont = 0;  // IIC error count，错误计数
+volatile static  uint8_t s_bySendIndex = 0;     // IIC index，用来变更状态
+volatile static  uint8_t s_byWriteIndex = 0;    // IIC接收数据个数
+volatile static  uint32_t s_wIicSlaveWriteAddress;   //IIC从机接收地址
 
 
 #if (USE_IIC_CALLBACK == 0)
@@ -44,15 +44,16 @@ ATTRIBUTE_ISR  void iic_int_handler(void)
 	// 用户直接在中断服务接口函数里处理中断，建议客户使用此模式
 	
 	//receive buffer 接收处理程序  添加
-	if((csp_iic_get_isr(IIC0)&IIC_INT_SCL_SLOW)||(csp_iic_get_isr(IIC0)&IIC_INT_TX_ABRT))			 //SCLK锁死,IIC发送中止))
+	if((csp_iic_get_isr(IIC0)&IIC_INT_SCL_SLOW)||(csp_iic_get_isr(IIC0)&IIC_INT_TX_ABRT))			 //SCLK锁死,IIC发送中止
 	{
-		csi_iic_disable(IIC0);
-		csp_iic_set_data_cmd(IIC0, 0x00);
-		csi_iic_enable(IIC0);
+
+		//用户自定义错误处理方式,比如iic控制逻辑软件复位
+		// csi_iic_logic_sw_rst(IIC0);
+		
 		s_bySendIndex=0;
 		csp_iic_clr_isr(IIC0,IIC_INT_SCL_SLOW|IIC_INT_TX_ABRT);  // 清中断原来的位置
 		s_wIicErrorCont=0;
-		csp_iic_int_disable(IIC0,IIC_INT_TX_EMPTY);
+
 	}else
 	{
 
@@ -166,6 +167,7 @@ void iic_master_eeprom_demo(void)
 	g_tIicMasterCfg.eSpeedMode = IIC_BUS_SPEED_STANDARD;	//设置主机速度模式	IIC_BUS_SPEED_STANDARD <=100kHz   IIC_BUS_SPEED_FAST <=400kHz    IIC_BUS_SPEED_FAST_PLUS <=  1MHz
 	g_tIicMasterCfg.wSdaTimeout = 0XFFFF;					//SDA 超时时间设置，  1/主频 * g_tIicMasterCfg.wSdaTimeout  ms
 	g_tIicMasterCfg.wSclTimeout = 0XFFFF;					//SCL 超时时间设置，  1/主频 * g_tIicMasterCfg.wSdaTimeout  ms
+	csi_iic_int_enable(IIC0, IIC_INTSRC_TX_ABRT);           //使能TX_ABRT中断
 	csi_iic_master_init(IIC0,&g_tIicMasterCfg);				//主机初始化
 	
 	//该例程为主机读写AT24C04的EEPROM的示例，因AT24C04每次写入的数据不能超过16byte
@@ -204,6 +206,7 @@ void iic_master_demo(void)
 	g_tIicMasterCfg.eSpeedMode = IIC_BUS_SPEED_FAST_PLUS;	//设置主机速度模式	IIC_BUS_SPEED_STANDARD <=100kHz   IIC_BUS_SPEED_FAST <=400kHz    IIC_BUS_SPEED_FAST_PLUS <=  1MHz
 	g_tIicMasterCfg.wSdaTimeout = 0XFFFF;					//SDA 超时时间设置，  1/主频 * g_tIicMasterCfg.wSdaTimeout  ms
 	g_tIicMasterCfg.wSclTimeout = 0XFFFF;					//SCL 超时时间设置，  1/主频 * g_tIicMasterCfg.wSdaTimeout  ms
+	csi_iic_int_enable(IIC0, IIC_INTSRC_TX_ABRT);           //使能TX_ABRT中断	
 	csi_iic_master_init(IIC0,&g_tIicMasterCfg);				//主机初始化
 	
 	while(1)
@@ -220,7 +223,7 @@ void iic_master_demo(void)
 
 
 /** \brief iic slave demo  
- *  接收主机发送的数据，并且发送数据给主机
+ *  iic做从机，接收主机发送的数据，并且发送数据给主机
  *  \param[in] none
  *  \return none
  */
