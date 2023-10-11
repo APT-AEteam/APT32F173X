@@ -51,7 +51,10 @@ void csi_rtc_irqhandler(csp_rtc_t *ptRtcBase,  uint8_t byIdx)
 
 /**\brief	Initialize RTC Interface. Initializes the resources needed for the RTC interface
  * 
- * \param[in]	RtcConfig : Pointer of RTC config structure
+ * \param[in]  RtcConfig : Pointer of RTC config structure
+ * \param[in]  tConfig: pointer of RTC parameter config structure
+ * 					-eClkSrc: clock source \ref csi_rtc_clksrc_e
+ * 					-eFmt: timer format \ref csi_rtc_fmt_e
  * \return	none
 */
 void csi_rtc_init(csp_rtc_t *ptRtc, csi_rtc_config_t *tConfig)

@@ -334,6 +334,14 @@ void csi_iic_set_send_dma(csp_iic_t *ptI2cBase, iic_tdma_en_e eTxDmaEn, iic_tdma
  */ 
 void csi_iic_clr_isr(csp_iic_t *ptI2cBase, csi_iic_intsrc_e eIntSrc);
 
+/** \brief csi_iic_logic_sw_rst 
+ * 
+ *  \param[in] ptIicBase: pointer of iic register structure
+ *  \return none
+ */ 
+void csi_iic_logic_sw_rst(csp_iic_t *ptIicBase);
+
+
 #ifdef __cplusplus
 }
 #endif

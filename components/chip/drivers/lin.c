@@ -144,7 +144,13 @@ void csi_lin_irqhandler(csp_lin_t *ptLinBase, uint8_t byIdx)
  * 
  *  \param[in] ptLinBase: pointer of lin register structure
  *  \param[in] ptLinCfg: pointer of lin parameter config structure
- *  \return error code \ref csi_error_t
+ * 					-eClkSrc: clk source \ref csi_lin_clksrc_e
+ * 					-eCheck: checksum selection \ref csi_lin_chk_e
+ * 					-eLinVer: lin versions \ref csi_lin_ver_e
+ * 					-bySyncBrk: lin Synchronous break length
+ * 					-hwWkUpTime: checksum selection 
+ * 					-hwBaudRate: baud rate < 20k(200000)
+ *  \return error code \ref csi_error_t 
  */ 
 csi_error_t csi_lin_init(csp_lin_t *ptLinBase, csi_lin_config_t *ptLinCfg)
 {

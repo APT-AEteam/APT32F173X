@@ -111,6 +111,15 @@ void csi_usart_irqhandler(csp_usart_t *ptUsartBase,uint8_t byIdx)
  * 
  *  \param[in] ptUsartBase: pointer of usart register structure
  *  \param[in] ptUartCfg: pointer of usart parameter config structure
+ * 					-wBaudRate: baud rate	
+ * 					-hwRecvTo: receive timeout
+ * 					-eParity: parity type \ref csi_usart_parity_e
+ * 					-eDatabit: data bits \ref csi_usart_data_bits_e
+ * 					-eStopbit: stop bits \ref csi_usart_stop_bits_e
+ * 					-eClkSrc: clk source \ref csi_usart_clksrc_e
+ * 					-eMode: usart mode, sync/async \ref csi_usart_mode_e
+ * 					-eRxFifoTrg: rxfifo Trigger point \ref csi_usart_rxfifo_trg_e
+					-eDsbSel: data start bit LSB/MSB \ref csi_usart_dsb_sel_e	
  *  \return error code \ref csi_error_t
  */ 
 csi_error_t csi_usart_init(csp_usart_t *ptUsartBase, csi_usart_config_t *ptUsartCfg)

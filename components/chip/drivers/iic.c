@@ -20,10 +20,10 @@
 /* Private variablesr------------------------------------------------------*/
 /* Global variablesr------------------------------------------------------*/
 csi_iic_slave_t g_tSlave;
-volatile uint32_t g_wIicErrorCont = 0;
-volatile uint8_t g_bySendIndex = 0;
-volatile uint8_t g_byWriteIndex = 0;
-volatile uint32_t g_wIicSlaveWriteAddress;
+volatile uint32_t g_wIicErrorCont = 0;   // IIC error count
+volatile uint8_t g_bySendIndex = 0;      // IIC index, used to change status
+volatile uint8_t g_byWriteIndex = 0;     // IIC number of received data
+volatile uint32_t g_wIicSlaveWriteAddress;  //IIC slave write(receive) address
 csi_iic_ctrl_t g_tIicCtrl[IIC_IDX];
 
 /** \brief deinit iic 
@@ -225,9 +225,7 @@ void csi_iic_irqhandler(csp_iic_t *ptIicBase, uint8_t byIdx)
 	
 	if((csp_iic_get_isr(ptIicBase)&IIC_INT_SCL_SLOW)||(csp_iic_get_isr(ptIicBase)&IIC_INT_TX_ABRT))			 //SCLK SLOW or TX ABRT
 	{
-		csi_iic_disable(ptIicBase);
-		csp_iic_set_data_cmd(ptIicBase, 0x00);
-		csi_iic_enable(ptIicBase);
+		csi_iic_logic_sw_rst(IIC0);
 		g_bySendIndex=0;
 		
 		if(g_tIicCtrl[byIdx].state_callback)
@@ -886,4 +884,14 @@ csi_error_t csi_iic_read_nbyte_dma(csp_iic_t *ptIicBase,uint32_t wDevAddr, uint3
 
 	}
 	return CSI_OK;
+}
+
+/** \brief csi_iic_logic_sw_rst 
+ * 
+ *  \param[in] ptIicBase: pointer of iic register structure
+ *  \return none
+ */ 
+void csi_iic_logic_sw_rst(csp_iic_t *ptIicBase)
+{
+	csp_iic_logic_sw_rst(ptIicBase);
 }
