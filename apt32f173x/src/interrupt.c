@@ -25,13 +25,17 @@
 extern void nmi_int_handler(void);
 extern void ifc_irqhandler(void);
 
-/*************************************************************/
-//CORET Interrupt
-//EntryParameter:NONE
-//ReturnValue:NONE
-/*************************************************************/
+
+/** \brief nmi interrupt service functions
+ * 
+ *  \param[in] none
+ *  \return none
+ */ 
 ATTRIBUTE_ISR void nmi_int_handler(void)
 {
+	// ISR content ...
+	CSI_INTRPT_ENTER();
+	
 	if(csp_syscon_get_isr(SYSCON) & LVD_INT)
 	{
 		csp_syscon_clr_isr(SYSCON, LVD_INT);
@@ -40,8 +44,13 @@ ATTRIBUTE_ISR void nmi_int_handler(void)
 	{
 		nop;
 	}
+	CSI_INTRPT_EXIT();
 }
-
+/** \brief coret interrupt service functions
+ * 
+ *  \param[in] none
+ *  \return none
+ */ 
 ATTRIBUTE_ISR void coret_int_handler(void)
 {
 	// ISR content ...
@@ -50,6 +59,11 @@ ATTRIBUTE_ISR void coret_int_handler(void)
 	CSI_INTRPT_EXIT();
 }
 
+/** \brief syscon interrupt service functions
+ * 
+ *  \param[in] none
+ *  \return none
+ */ 
 ATTRIBUTE_ISR void syscon_int_handler(void) 
 {
     // ISR content ...
@@ -83,13 +97,23 @@ ATTRIBUTE_ISR void syscon_int_handler(void)
 	CSI_INTRPT_EXIT();
 }
 
+/** \brief ifc interrupt service functions
+ * 
+ *  \param[in] none
+ *  \return none
+ */ 
 ATTRIBUTE_ISR void ifc_int_handler(void)
 {
 	CSI_INTRPT_ENTER();
-	ifc_irqhandler();	//only DFLASH paramode write would use IFC interrupt handler. DO NOT rewrite this funcionï¼
+	ifc_irqhandler();	//only DFLASH paramode write would use IFC interrupt handler. DO NOT rewrite this function
 	CSI_INTRPT_EXIT();
 }
 
+/** \brief adc interrupt service functions
+ * 
+ *  \param[in] none
+ *  \return none
+ */ 
 ATTRIBUTE_ISR __attribute__((weak)) void adc0_int_handler(void) 
 {	
     //ISR content ...
@@ -116,6 +140,11 @@ ATTRIBUTE_ISR __attribute__((weak)) void adc1_int_handler(void)
 	CSI_INTRPT_EXIT();	
 }
 
+/** \brief dma interrupt service functions
+ * 
+ *  \param[in] none
+ *  \return none
+ */ 
 ATTRIBUTE_ISR __attribute__((weak)) void dma0_int_handler(void)
 {
     // ISR content ...
@@ -123,7 +152,6 @@ ATTRIBUTE_ISR __attribute__((weak)) void dma0_int_handler(void)
 	csi_dma_irqhandler(DMA0);
 	CSI_INTRPT_EXIT();
 }
-
 
 ATTRIBUTE_ISR __attribute__((weak)) void dma1_int_handler(void) 
 {
@@ -133,6 +161,11 @@ ATTRIBUTE_ISR __attribute__((weak)) void dma1_int_handler(void)
 	CSI_INTRPT_EXIT();
 }
 
+/** \brief wwdt interrupt service functions
+ * 
+ *  \param[in] none
+ *  \return none
+ */ 
 ATTRIBUTE_ISR __attribute__((weak)) void wwdt_int_handler(void)
 {
 	CSI_INTRPT_ENTER();
@@ -144,6 +177,11 @@ ATTRIBUTE_ISR __attribute__((weak)) void wwdt_int_handler(void)
 	CSI_INTRPT_EXIT();
 }
 
+/** \brief gpta(0~3) interrupt service functions
+ * 
+ *  \param[in] none
+ *  \return none
+ */ 
 ATTRIBUTE_ISR __attribute__((weak)) void gpta0_int_handler(void)
 {
 	// ISR content ...
@@ -167,7 +205,6 @@ ATTRIBUTE_ISR __attribute__((weak)) void gpta1_int_handler(void)
 #endif
 	CSI_INTRPT_EXIT();	
 }
-
 
 ATTRIBUTE_ISR __attribute__((weak)) void gpta2_int_handler(void)
 {
@@ -193,6 +230,11 @@ ATTRIBUTE_ISR __attribute__((weak)) void gpta3_int_handler(void)
 	CSI_INTRPT_EXIT();
 }
 
+/** \brief gptb(0~5) interrupt service functions
+ * 
+ *  \param[in] none
+ *  \return none
+ */ 
 ATTRIBUTE_ISR __attribute__((weak)) void gptb0_int_handler(void) 
 {
 	// ISR content ...
@@ -271,6 +313,11 @@ ATTRIBUTE_ISR __attribute__((weak)) void gptb5_int_handler(void)
 	CSI_INTRPT_EXIT();
 }
 
+/** \brief dac interrupt service functions
+ * 
+ *  \param[in] none
+ *  \return none
+ */ 
 ATTRIBUTE_ISR __attribute__((weak)) void dac0_int_handler(void) 
 {
     // ISR content ...
@@ -283,6 +330,11 @@ ATTRIBUTE_ISR __attribute__((weak)) void dac0_int_handler(void)
 	CSI_INTRPT_EXIT();
 }
 
+/** \brief usart(0~1) interrupt service functions
+ * 
+ *  \param[in] none
+ *  \return none
+ */ 
 ATTRIBUTE_ISR __attribute__((weak)) void usart0_int_handler(void) 
 {
 	CSI_INTRPT_ENTER();
@@ -309,6 +361,11 @@ ATTRIBUTE_ISR __attribute__((weak)) void usart1_int_handler(void)
 	CSI_INTRPT_EXIT();
 }
 
+/** \brief uart(0~2) interrupt service functions
+ * 
+ *  \param[in] none
+ *  \return none
+ */ 
 ATTRIBUTE_ISR __attribute__((weak)) void uart0_int_handler(void) 
 {
     // ISR content ...
@@ -345,6 +402,11 @@ ATTRIBUTE_ISR __attribute__((weak)) void uart2_int_handler(void)
 	CSI_INTRPT_EXIT();
 }
 
+/** \brief sio(0~1) interrupt service functions
+ * 
+ *  \param[in] none
+ *  \return none
+ */ 
 ATTRIBUTE_ISR __attribute__((weak)) void sio0_int_handler(void) 
 {
 	CSI_INTRPT_ENTER();
@@ -367,6 +429,11 @@ ATTRIBUTE_ISR __attribute__((weak)) void sio1_int_handler(void)
 	CSI_INTRPT_EXIT();
 }
 
+/** \brief iic interrupt service functions
+ * 
+ *  \param[in] none
+ *  \return none
+ */ 
 ATTRIBUTE_ISR __attribute__((weak)) void iic_int_handler(void) 
 {
 	CSI_INTRPT_ENTER();
@@ -378,6 +445,11 @@ ATTRIBUTE_ISR __attribute__((weak)) void iic_int_handler(void)
 	CSI_INTRPT_EXIT();
 }
 
+/** \brief spi(0~1) interrupt service functions
+ * 
+ *  \param[in] none
+ *  \return none
+ */ 
 ATTRIBUTE_ISR __attribute__((weak)) void spi0_int_handler(void) 
 {
 	// ISR content ...
@@ -402,6 +474,11 @@ ATTRIBUTE_ISR __attribute__((weak)) void spi1_int_handler(void)
 	CSI_INTRPT_EXIT();
 }
 
+/** \brief exi(0~15) interrupt service functions
+ * 
+ *  \param[in] none
+ *  \return none
+ */ 
 ATTRIBUTE_ISR __attribute__((weak)) void exi0_int_handler(void) 
 {
     // ISR content ...
@@ -442,6 +519,11 @@ ATTRIBUTE_ISR __attribute__((weak)) void exi10_15_int_handler(void)
 	CSI_INTRPT_EXIT();
 }
 
+/** \brief can interrupt service functions
+ * 
+ *  \param[in] none
+ *  \return none
+ */ 
 ATTRIBUTE_ISR void __attribute__((weak)) can_int_handler(void) 
 {
     // ISR content ...
@@ -454,6 +536,11 @@ ATTRIBUTE_ISR void __attribute__((weak)) can_int_handler(void)
 	CSI_INTRPT_EXIT();
 }
 
+/** \brief cnta interrupt service functions
+ * 
+ *  \param[in] none
+ *  \return none
+ */ 
 ATTRIBUTE_ISR __attribute__((weak)) void cnta_int_handler(void)
 {
 	// ISR content ...
@@ -466,6 +553,11 @@ ATTRIBUTE_ISR __attribute__((weak)) void cnta_int_handler(void)
 	CSI_INTRPT_EXIT();
 }
 
+/** \brief lpt interrupt service functions
+ * 
+ *  \param[in] none
+ *  \return none
+ */ 
 ATTRIBUTE_ISR __attribute__((weak)) void lpt_int_handler(void)
 {
 	CSI_INTRPT_ENTER();
@@ -477,6 +569,11 @@ ATTRIBUTE_ISR __attribute__((weak)) void lpt_int_handler(void)
 	CSI_INTRPT_EXIT();
 }
 
+/** \brief rtc interrupt service functions
+ * 
+ *  \param[in] none
+ *  \return none
+ */ 
 ATTRIBUTE_ISR __attribute__((weak)) void rtc_int_handler(void)
 {
 	CSI_INTRPT_ENTER();
@@ -488,6 +585,11 @@ ATTRIBUTE_ISR __attribute__((weak)) void rtc_int_handler(void)
 	CSI_INTRPT_EXIT();
 }
 
+/** \brief cmp(0~2) interrupt service functions
+ * 
+ *  \param[in] none
+ *  \return none
+ */ 
 ATTRIBUTE_ISR __attribute__((weak)) void cmp0_int_handler(void) 
 {
 	// ISR content ...
@@ -524,6 +626,12 @@ ATTRIBUTE_ISR __attribute__((weak)) void cmp2_int_handler(void)
 	CSI_INTRPT_EXIT();
 }
 
+
+/** \brief led interrupt service functions
+ * 
+ *  \param[in] none
+ *  \return none
+ */ 
 ATTRIBUTE_ISR __attribute__((weak)) void led_int_handler(void) 
 {
 	// ISR content ...
@@ -536,6 +644,11 @@ ATTRIBUTE_ISR __attribute__((weak)) void led_int_handler(void)
 	CSI_INTRPT_EXIT();
 }
 
+/** \brief bt(0~3) interrupt service functions
+ * 
+ *  \param[in] none
+ *  \return none
+ */ 
 ATTRIBUTE_ISR  __attribute__((weak)) void bt0_int_handler(void) 
 {
     // ISR content ...
@@ -580,9 +693,16 @@ ATTRIBUTE_ISR void __attribute__((weak)) bt3_int_handler(void)
 	csp_bt_clr_isr(BT3, csp_bt_get_isr(BT3));				//use for tick
 	CSI_INTRPT_EXIT();	
 }
+
+
 /*************************************************************/
+/********* Exception interrupt service function **************/
 /*************************************************************/
-/*************************************************************/
+void sw_int_handler(void)
+{
+	while(1);
+}
+
 //void PriviledgeVioHandler(void) 
 //{
 //    // ISR content ...
@@ -656,9 +776,5 @@ ATTRIBUTE_ISR void __attribute__((weak)) bt3_int_handler(void)
 //	while(1){};
 //}
 
-void sw_int_handler(void)
-{
-	while(1);
-}
-/******************* (C) COPYRIGHT 2020 APT Chip *****END OF FILE****/
+/******************* (C) COPYRIGHT 2023 APT Chip *****END OF FILE****/
 
