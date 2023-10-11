@@ -1,7 +1,7 @@
 /***********************************************************************//** 
  * \file  main.c
  * \brief  MAIN description and static inline functions at register level 
- * \copyright Copyright (C) 2015-2020 @ APTCHIP
+ * \copyright Copyright (C) 2015-2023 @ APTCHIP
  * <table>
  * <tr><th> Date  		<th>Version <th>Author	<th>Description
  * <tr><td> 2021-02-21  <td>V0.0  	<td>ZJY   	<td>initial
@@ -9,9 +9,9 @@
  * *********************************************************************
 */
 /* Includes ---------------------------------------------------------------*/
-#include <string.h>
-#include <csi_drv.h>
-#include <iostring.h>
+#include "csi_drv.h"
+#include "iostring.h"
+#include "board_config.h"
 
 #include "demo.h"
 
@@ -30,7 +30,7 @@ extern void user_demo(void);
 int main()
 {
 	
-#if !defined(USE_GUI)
+#if (USE_GUI == 0)
 	//不使用图形化编程需调用system_init函数
     system_init();							//系统时钟、TICK等配置	
 						

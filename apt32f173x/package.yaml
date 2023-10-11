@@ -11,7 +11,7 @@ def_config:
   DBG_PRINT2PC: 1
   IS_CHIP_1732: 1
 name: apt32f173x
-version: v1.1.0
+version: v1.2.0
 description: 我的第一个方案工程
 tag: ""
 keywords: 
@@ -33,9 +33,9 @@ build_config:
     - ../components/components/csi_kernel/freertosv10.3.1/FreeRTOS/Source/portable/GCC/riscv/
     - ../components/components/csi_kernel/freertosv10.3.1/FreeRTOS/Source/portable/GCC/riscv/chip_specific_extensions/thead_rv32/
   internal_include: 
-  cflag: -Og
-  cxxflag: -Og
-  asmflag: -Wa,--gdwarf2
+  cflag: -Og   -Wall  -ffunction-sections
+  cxxflag: -Og   -Wall  -ffunction-sections
+  asmflag: -Wa,-gdwarf-2
   define: 
   libs: 
   libpath: 
