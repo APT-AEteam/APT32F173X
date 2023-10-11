@@ -4,12 +4,13 @@
  * \copyright Copyright (C) 2015-2023 @ APTCHIP
  * <table>
  * <tr><th> Date  <th>Version  <th>Author  <th>Description
- * <tr><td> 2020-8-10 <td>V0.0  <td>WNN   <td>initial
+ * <tr><td> 2020-8-10 <td>V0.0  <td>WNN    <td>initial
+ * <tr><td> 2020-10-11 <td>V0.1 <td>ZJY    <td>code normalization 
  * </table>
  * *********************************************************************
 */
 
-/* Includes ------------------------------------------------------------------*/
+/* Includes ---------------------------------------------------------------*/
 
 #include "csi_drv.h"
 #include "board_config.h"
@@ -44,12 +45,16 @@ ATTRIBUTE_ISR void nmi_int_handler(void)
 ATTRIBUTE_ISR void coret_int_handler(void)
 {
 	// ISR content ...
+	CSI_INTRPT_ENTER();
+	
+	CSI_INTRPT_EXIT();
 }
 
 ATTRIBUTE_ISR void syscon_int_handler(void) 
 {
     // ISR content ...
-
+	CSI_INTRPT_ENTER();
+	
 	if(csp_syscon_get_isr(SYSCON) & LVD_INT) //LVD INT
 	{
 		csp_syscon_clr_isr(SYSCON, LVD_INT);
@@ -74,12 +79,14 @@ ATTRIBUTE_ISR void syscon_int_handler(void)
 	{
 		csp_syscon_clr_isr(SYSCON, ESFAIL_INT);
 	}
+	
+	CSI_INTRPT_EXIT();
 }
 
 ATTRIBUTE_ISR void ifc_int_handler(void)
 {
 	CSI_INTRPT_ENTER();
-	ifc_irqhandler();	//only DFLASH paramode write would use IFC interrupt handler. DO NOT rewrite this funcion！
+	ifc_irqhandler();	//only DFLASH paramode write would use IFC interrupt handler. DO NOT rewrite this funcionï¼
 	CSI_INTRPT_EXIT();
 }
 
