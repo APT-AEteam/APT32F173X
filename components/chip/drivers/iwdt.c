@@ -43,7 +43,7 @@ void csi_iwdt_irqhandler(csp_syscon_t * ptSysBase, uint8_t byIdx)
 
 /** \brief Initialize IWDT Interface. Initializes the resources needed for the WDT interface
  * 
- *  \param[in] eTimeOut: the timeout value (time length of system reset)
+ *  \param[in] eTimeOut: the timeout value (time length of system reset) \ref csi_iwdt_to_e
  *  \return error code \ref csi_error_t
 */
 csi_error_t csi_iwdt_init(csi_iwdt_to_e eTimeOut)

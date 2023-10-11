@@ -67,8 +67,17 @@ void csi_dma_irqhandler(csp_dma_t *ptDmaBase)
 /** \brief Init dma channel parameter config structure
  * 
  *  \param[in] ptDmaBase: pointer of dma reg structure.
- *  \param[in] eDmaCh: channel num of dma(6 channel: 0->5)
+ *  \param[in] eDmaCh: channel num of dma(6 channel: 0->5) \ref csi_dma_ch_e
  *  \param[in] ptChCfg: pointer of uart parameter config structure
+ * 					-eSrcLinc: low transfer count src addr inc control \ref csi_dma_addr_inc_e
+ * 					-eSrcHinc: high transfer count src addr inc control \ref csi_dma_addr_inc_e
+ * 					-eDetLinc: low transfer count det addr inc control \ref csi_dma_addr_inc_e
+ * 					-eDetHinc: high transfer count det addr inc control \ref csi_dma_addr_inc_e
+ * 					-eDataWidth: transfer data size width \ref csi_dma_dsize_e
+ * 					-eReload: auto reload \ref csi_dma_reload_e
+ * 					-eRunMode: dma serve(transfer) mode \ref csi_dma_runmode_e
+ * 					-eTsizeMode: Tsize transfer mode \ref csi_dma_tsize_e
+ * 					-eReqMode: request mode ,software request or hardware request \ref csi_dma_req_e
  *  \return error code \ref csi_error_t
  */ 
 csi_error_t csi_dma_ch_init(csp_dma_t *ptDmaBase, csi_dma_ch_e eDmaCh, csi_dma_ch_config_t *ptChCfg)
