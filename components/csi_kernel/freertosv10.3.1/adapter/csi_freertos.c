@@ -13,7 +13,6 @@
 #include <string.h>
 #include <errno.h>
 #include <csi_kernel.h>
-#include <csi_config.h>
 #include <soc.h>
 
 /* FreeRTOS includes. */

@@ -10,7 +10,6 @@
 */
 
 /* include ----------------------------------------------------------------*/
-#include <csi_config.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <csi_kernel.h>

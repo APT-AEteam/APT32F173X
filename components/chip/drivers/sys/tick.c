@@ -46,12 +46,8 @@ ATTRIBUTE_ISR void  bt3_int_handler(void)
 	{
 	
 		s_wTick++;
-#if defined(CONFIG_KERNEL_RHINO)
-        systick_handler();
-#elif defined(CONFIG_KERNEL_FREERTOS)
+#if (CONFIG_KERNEL_FREERTOS == 1)
 		xPortSysTickHandler();
-#elif defined(CONFIG_KERNEL_UCOS)
-		OSTimeTick();
 #endif
 		csp_bt_clr_isr(BT3, BT_INT_PEND);			
 	}

@@ -14,11 +14,6 @@
 
 #include "csi_drv.h"
 #include "board_config.h"
-#include <csi_config.h>
-
-#ifdef CONFIG_KERNEL_FREERTOS
-#include <csi_kernel.h>
-#endif
 
 			
 /* externs function--------------------------------------------------------*/

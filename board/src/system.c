@@ -17,7 +17,6 @@
 #include "drv/iwdt.h" 
 
 #include "board_config.h"
-//#include <csi_config.h>
 
 
 /**
@@ -43,46 +42,6 @@ void csi_iram_init(void)
 		memcpy( dst, src, (_end_fastfunc - _start_fastfunc + 4));
 		csp_sram1_func_ctrl(SYSCON,SRAM1_ISRAM);  //dram remap to iram
 	}
-}
-#endif
-
-
-#ifndef CONFIG_KERNEL_FREERTOS
-static void _system_init_for_baremetal(void)
-{
-    /* enable mexstatus SPUSHEN */
-#if ((CONFIG_CPU_E902 != 1) && (CONFIG_CPU_E902M != 1))
-    uint32_t mexstatus = __get_MEXSTATUS();
-    mexstatus |= (1 << 16);
-    __set_MEXSTATUS(mexstatus);
-#endif
-    __enable_excp_irq();
-
-    //csi_coret_config(drv_get_sys_freq() / CONFIG_SYSTICK_HZ, CORET_IRQn);    //10ms
-
-    //mm_heap_initialize();
-}
-#endif
-
-
-#ifdef CONFIG_KERNEL_FREERTOS
-static void _system_init_for_kernel(void)
-{
-     /* enable mexstatus SPUSHEN and SPSWAPEN */
-
-    uint32_t mexstatus = __get_MEXSTATUS();
-    mexstatus |= (0x3 << 16);
-    __set_MEXSTATUS(mexstatus);
-
-    irq_vectors_init();
-
-    csi_tick_init();
-
-//#ifndef CONFIG_KERNEL_RHINO
-//#ifndef CONFIG_NUTTXMM_NONE
-//    mm_heap_initialize();
-//#endif
-//#endif
 }
 #endif
 
@@ -119,16 +78,19 @@ __attribute__((weak)) void system_init(void)
 	csi_iram_init();  //Need to work with gcc_flash_dram16k_iram16k.ld or gcc_flash_dram24k_iram8k.ld
 #endif	
 	
-	
-	
 	__disable_excp_irq();
 
-	
     /* enable mstatus FS */
     uint32_t mstatus = __get_MSTATUS();
     mstatus |= (1 << 13);
     __set_MSTATUS(mstatus);
-
+	
+#if (CONFIG_KERNEL_FREERTOS == 1)
+	/* enable mexstatus SPUSHEN and SPSWAPEN */
+    uint32_t mexstatus = __get_MEXSTATUS();
+    mexstatus |= (0x3 << 16);
+    __set_MEXSTATUS(mexstatus);
+#endif
 	
 	/* get interrupt level from info */
     CLIC->CLICCFG = (((CLIC->CLICINFO & CLIC_INFO_CLICINTCTLBITS_Msk) >> CLIC_INFO_CLICINTCTLBITS_Pos) << CLIC_CLICCFG_NLBIT_Pos);
@@ -158,15 +120,9 @@ __attribute__((weak)) void system_init(void)
 	csi_iwdt_close();
 	csi_sysclk_config(g_tClkConfig);  //sysclk config	
 	
-#ifdef CONFIG_KERNEL_FREERTOS
-    _system_init_for_kernel();
-#else
-	//_system_init_for_baremetal();
 	csi_tick_init();
+#if (CONFIG_KERNEL_FREERTOS == 0)
 	__enable_excp_irq();
 #endif
-
-	
-	
 }
 

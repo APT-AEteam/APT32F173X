@@ -94,7 +94,12 @@ extern "C" {
 
 //csi GUI Handling Enable, 1/0(OPEN/CLOSE)
 //可视化编程，通过宏USE_GUI来实现功能选择
-#define USE_GUI					0						
+#define USE_GUI					0	
+
+//FreeRTOS Enable, 1/0(OPEN/CLOSE)
+//freeRTOS，如果使用的话请打开此宏	
+#define CONFIG_KERNEL_FREERTOS  0 
+ 				
 
 __attribute__((weak)) void board_init(void);
 

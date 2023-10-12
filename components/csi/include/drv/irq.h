@@ -17,12 +17,12 @@
 
 #define  ATTRIBUTE_ISR __attribute__ ((interrupt ("machine")))
 
-#ifdef CONFIG_KERNEL_FREERTOS
-#define  CSI_INTRPT_ENTER() csi_kernel_intrpt_enter()
-#define  CSI_INTRPT_EXIT()  csi_kernel_intrpt_exit()
-#else
+#if (CONFIG_KERNEL_FREERTOS == 0)
 #define  CSI_INTRPT_ENTER()
 #define  CSI_INTRPT_EXIT()
+#elif (CONFIG_KERNEL_FREERTOS == 1)
+#define  CSI_INTRPT_ENTER() csi_kernel_intrpt_enter()
+#define  CSI_INTRPT_EXIT()  csi_kernel_intrpt_exit()
 #endif
 
 
