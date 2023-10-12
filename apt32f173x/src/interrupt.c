@@ -546,7 +546,7 @@ ATTRIBUTE_ISR __attribute__((weak)) void cnta_int_handler(void)
 #if (USE_CNTA_CALLBACK == 1)
 	csi_cnta_irqhandler(CA0, 0);
 #else
-	csi_pin_toggle(PA10);
+	csi_gpio_toggle(GPIOA, PA10);
 #endif
 	CSI_INTRPT_EXIT();
 }
