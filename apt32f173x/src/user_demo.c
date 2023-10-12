@@ -258,7 +258,7 @@ void user_demo(void)
 
 /// ***************************************************
 ///  freertos相关的示例代码，
-///  使用前，请将borad_config.h里面的CONFIG_KERNEL_FREERTOS宏设置为1
+///  使用前，请将borad_config.h里面的USE_KERNEL_FREERTOS宏设置为1
 /// ***************************************************
 //	freertos_demo();
 }

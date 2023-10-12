@@ -14,7 +14,7 @@
 
 #include "csi_drv.h"
 #include "board_config.h"
-#if (CONFIG_KERNEL_FREERTOS == 1)
+#if (USE_KERNEL_FREERTOS == 1)
 #include "csi_kernel.h"	
 #endif
 

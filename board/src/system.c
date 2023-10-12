@@ -85,7 +85,7 @@ __attribute__((weak)) void system_init(void)
     mstatus |= (1 << 13);
     __set_MSTATUS(mstatus);
 	
-#if (CONFIG_KERNEL_FREERTOS == 1)
+#if (USE_KERNEL_FREERTOS == 1)
 	/* enable mexstatus SPUSHEN and SPSWAPEN */
     uint32_t mexstatus = __get_MEXSTATUS();
     mexstatus |= (0x3 << 16);
@@ -121,7 +121,7 @@ __attribute__((weak)) void system_init(void)
 	csi_sysclk_config(g_tClkConfig);  //sysclk config	
 	
 	csi_tick_init();
-#if (CONFIG_KERNEL_FREERTOS == 0)
+#if (USE_KERNEL_FREERTOS == 0)
 	__enable_excp_irq();
 #endif
 }
