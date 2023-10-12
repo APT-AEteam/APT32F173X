@@ -14,6 +14,9 @@
 
 #include "csi_drv.h"
 #include "board_config.h"
+#if (CONFIG_KERNEL_FREERTOS == 1)
+#include "csi_kernel.h"	
+#endif
 
 			
 /* externs function--------------------------------------------------------*/
@@ -338,7 +341,7 @@ ATTRIBUTE_ISR __attribute__((weak)) void usart0_int_handler(void)
 #elif (USE_LIN_CALLBACK ==1)
 	csi_lin_irqhandler(LIN0,0);
 #else
-	csp_usart_clr_isr(USART0, csp_usart_get_isr(USART0))
+	csp_usart_clr_isr(USART0, csp_usart_get_isr(USART0));
 #endif
 	CSI_INTRPT_EXIT();
 }
@@ -351,7 +354,7 @@ ATTRIBUTE_ISR __attribute__((weak)) void usart1_int_handler(void)
 #elif (USE_LIN_CALLBACK ==1)
 	csi_lin_irqhandler(LIN1,1);
 #else
-	csp_usart_clr_isr(USART1, csp_usart_get_isr(USART1))
+	csp_usart_clr_isr(USART1, csp_usart_get_isr(USART1));
 #endif
 	CSI_INTRPT_EXIT();
 }
@@ -368,7 +371,7 @@ ATTRIBUTE_ISR __attribute__((weak)) void uart0_int_handler(void)
 #if (USE_UART_CALLBACK == 1)
 	csi_uart_irqhandler(UART0, 0);
 #else
-	csp_uart_clr_isr(UART0, csp_uart_get_isr(UART0))
+	csp_uart_clr_isr(UART0, csp_uart_get_isr(UART0));
 #endif
 	CSI_INTRPT_EXIT();
 }
@@ -380,7 +383,7 @@ ATTRIBUTE_ISR __attribute__((weak)) void uart1_int_handler(void)
 #if (USE_UART_CALLBACK == 1)
 	csi_uart_irqhandler(UART1, 1);
 #else
-	csp_uart_clr_isr(UART1, csp_uart_get_isr(UART1))
+	csp_uart_clr_isr(UART1, csp_uart_get_isr(UART1));
 #endif
 	CSI_INTRPT_EXIT();
 }
@@ -392,7 +395,7 @@ ATTRIBUTE_ISR __attribute__((weak)) void uart2_int_handler(void)
 #if (USE_UART_CALLBACK == 1)
 	csi_uart_irqhandler(UART2, 2);
 #else
-	csp_uart_clr_isr(UART2, csp_uart_get_isr(UART2))
+	csp_uart_clr_isr(UART2, csp_uart_get_isr(UART2));
 #endif
 	CSI_INTRPT_EXIT();
 }

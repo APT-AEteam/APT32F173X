@@ -12,6 +12,7 @@
 */
 #include "drv/tick.h"
 #include "drv/bt.h"
+#include "board_config.h"
 
 /* Private macro------------------------------------------------------*/
 #define __WEAK	__attribute__((weak))

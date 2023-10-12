@@ -71,7 +71,7 @@ void user_demo(void)
 //	rtc_set_time_demo();
 //	rtc_alarm_demo();
 //	rtc_timer_demo();
-	rtc_etcb_bt_pwm_demo();
+//	rtc_etcb_bt_pwm_demo();
 
 //	rtc_alarm_callback_demo();
 /// ***************************************************
@@ -261,6 +261,5 @@ void user_demo(void)
 ///  使用前，请将borad_config.h里面的CONFIG_KERNEL_FREERTOS宏设置为1
 /// ***************************************************
 //	freertos_demo();
-
 }
 

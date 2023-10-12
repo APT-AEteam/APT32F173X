@@ -1,10 +1,10 @@
 /***********************************************************************//** 
  * \file  freertos_demo.c
  * \brief  freertos demo code
- * \copyright Copyright (C) 2015-2021 @ APTCHIP
+ * \copyright Copyright (C) 2015-2023 @ APTCHIP
  * <table>
- * <tr><th> Date  <th>Version  <th>Author  <th>Description
- * <tr><td> 2023-6-27 <td>V2.0 <td>LHY    <td>initial
+ * <tr><th> Date      <th>Version  <th>Author  <th>Description
+ * <tr><td> 2023-6-27 <td>V1.0     <td>LHY     <td>initial
  * </table>
  * *********************************************************************
 */
@@ -24,25 +24,29 @@
 /* Private variablesr------------------------------------------------------*/
 
 
-#define DEMO_CHOOSE 1//0---任务的创建和删除、挂起和回复
+#define DEMO_CHOOSE 0//0---任务的创建和删除、挂起和恢复
                      //1---消息队列
 					 //2---信号量
 					 //3---互斥锁
-					 //4---事件组
-					 //5---任务通知
-					 //6---流和消息缓冲区
-					 //7---相对延时和绝对延时
+					 
 
 
 //任务1
 k_task_handle_t task1_handle;           //任务1 句柄
-#define TSK1_PRIO            3         //任务1 优先级
-#define TASK1_STK_SIZE       (1*1024)   //任务1 分配的堆栈大小
+#define TSK1_PRIO            2         //任务1 优先级
+#define TASK1_STK_SIZE       (1*512)   //任务1 分配的堆栈大小
 
 //任务2
 k_task_handle_t task2_handle;           //任务2 句柄
-#define TSK2_PRIO            2         //任务2 优先级
-#define TASK2_STK_SIZE       (1*1024)   //任务2 分配的堆栈大小
+#define TSK2_PRIO            3         //任务2 优先级
+#define TASK2_STK_SIZE       (1*512)   //任务2 分配的堆栈大小
+
+//任务3
+k_task_handle_t task3_handle;           //任务3 句柄
+#define TSK3_PRIO            4         //任务3 优先级
+#define TASK3_STK_SIZE       (1*512)   //任务3 分配的堆栈大小
+
+
 
 //开始任务
 k_task_handle_t start_task_handle;      //开始任务 句柄
@@ -56,15 +60,15 @@ k_task_handle_t start_task_handle;      //开始任务 句柄
 k_msgq_handle_t   NewQueue;	//消息队列
 #elif (DEMO_CHOOSE == 2)
 k_sem_handle_t    g_usSem;  //信号量
+#elif (DEMO_CHOOSE == 3)
+k_mutex_handle_t g_Mutex;   //互斥量
 #endif
-
 
 void task1(void)
 {
-	uint8_t count = 0;
-	
 #if (DEMO_CHOOSE == 0)
 	uint32_t uwRet;
+	uint8_t count = 0;
 	while(1)
 	{
 		count++;
@@ -97,11 +101,10 @@ void task1(void)
 			count = 0;
 		}
 		else;
-		
 		csi_kernel_delay_ms(1000);
 	}
 #elif (DEMO_CHOOSE == 1)
-
+	uint8_t count = 0;
 	u_char tx[3] = {0};
 	while(1)
 	{
@@ -145,7 +148,7 @@ void task1(void)
 	}
 	
 #elif (DEMO_CHOOSE == 2)
-
+	uint8_t count = 0;
 	while(1)
 	{
 		count++;
@@ -167,21 +170,31 @@ void task1(void)
 		
 		csi_kernel_delay_ms(1000);
 	}
+	
+#elif (DEMO_CHOOSE == 3)
+
+uint32_t i = 0;
+    while(1)
+	{
+		csi_kernel_mutex_lock(g_Mutex,portMAX_DELAY);
+		my_printf("Low task running!\r\n");
+		for(i=0;i<2000000;i++)
+		{
+		  taskYIELD();			
+		}		
+		csi_kernel_mutex_unlock(g_Mutex);
+		csi_kernel_delay_ms(1000);
+	}
 		
 #endif
-	
-
-
-
 }
-
 
 void task2(void)
 {
 #if (DEMO_CHOOSE == 0)
 	while(1)
 	{
-		my_printf("task 2 is working now!!!\r\n");
+		my_printf("Task 2 is working now!!!\r\n");
 		csi_kernel_delay_ms(1000);
 	}
 #elif (DEMO_CHOOSE == 1)
@@ -211,13 +224,45 @@ void task2(void)
 			my_printf("task 2 take sem sucess,task 2 is working now!!!\r\n");
 		}
 	}
+	
+#elif (DEMO_CHOOSE == 3)
+	while(1)
+	{
+		my_printf("Middle task running!\r\n");
+		csi_kernel_delay_ms(1000);
+	}
+
 #endif
 }
 
+#if (DEMO_CHOOSE == 3)
+/** \brief 任务3，在该任务里面，任务3获取互斥锁得到运行，执行完操作释放互斥锁
+ *  \param[in] none
+ *  \return none
+ */
+void task3(void)
+{
+	while(1)
+	{
+		csi_kernel_delay_ms(500);
+		my_printf("High task Pend Semaphore\r\n");
+		csi_kernel_mutex_lock(g_Mutex, portMAX_DELAY);
+		my_printf("High task running!\r\n");
+		csi_kernel_mutex_unlock(g_Mutex);
+		csi_kernel_delay_ms(500);
+	}
+}
+#endif
+
+/** \brief 开始任务，在该任务里面，包括了信号量，消息队列的初始化，其他任务的创建，以及开始任务自身的删除操作
+ *  \param[in] none
+ *  \return none
+ */
 void start_task(void)
 {
 	//进入临界区
 	taskENTER_CRITICAL(); 
+	
 
 #if (DEMO_CHOOSE == 1)
 	//创建队列
@@ -234,6 +279,14 @@ void start_task(void)
 	{
         printf("fail to create semaphore.\n");
     }
+	
+#elif (DEMO_CHOOSE == 3)
+	//创建互斥量
+	g_Mutex = csi_kernel_mutex_new();
+	if(g_Mutex == NULL)
+	{
+		printf("fail to create mutex.\n");
+	}
         
 #endif
 
@@ -256,13 +309,27 @@ void start_task(void)
 
         my_printf("Fail to create task 2!\r\n");
     }
+	
+	
+#if (DEMO_CHOOSE == 3)	
+		//创建task 3
+	csi_kernel_task_new((k_task_entry_t)task3, "task3", NULL, TSK3_PRIO, TEST_TIME_QUANTA, NULL, TASK3_STK_SIZE, &task3_handle);
+
+    if (task3_handle == NULL) 
+	{
+        csi_kernel_sched_resume(0);
+
+        my_printf("Fail to create task 3!\r\n");
+    }
+#endif	
+	
 
 	//删除开始任务
     if(0 != csi_kernel_task_del(csi_kernel_task_get_cur()))
 	{
 		my_printf("Fail to delete start_task!\r\n");
 	}
-	else 
+	else
 	{
 		my_printf("start_task is deleted!\r\n");
 	}
@@ -273,14 +340,15 @@ void start_task(void)
 }
 
 
-
-
-
-
+/** \brief freeRTOS示例代码，包含了任务的任务的创建，删除，挂起，恢复，信号量，互斥锁，消息队列的示例demo
+ *         可以通过宏DEMO_CHOOSE来进行选择相应功能示例demo
+ *  \param[in] none
+ *  \return none
+ */
 void freertos_demo(void)
 {
 
-    my_printf("\r\n-->this is freertos task test demo!!!\r\n");		//print message
+    my_printf("\r\n-->this is freertos task test demo!!!\r\n");	
    
     //系统初始化
     csi_kernel_init();

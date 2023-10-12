@@ -14,6 +14,7 @@
 #define _DRV_IRQ_H_
 
 #include <csi_core.h>
+#include "board_config.h"
 
 #define  ATTRIBUTE_ISR __attribute__ ((interrupt ("machine")))
 
