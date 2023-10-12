@@ -1,6 +1,6 @@
 name: csi_kernel
 version: v1.0.0
-description: ""
+description: my project
 tag: ""
 keywords: 
 author:
@@ -22,8 +22,8 @@ hw_info:
 build_config:
   include: 
   internal_include: 
-  cflag: ""
-  cxxflag: ""
+  cflag: -Og
+  cxxflag: -Og
   asmflag: ""
   define: 
   libs: 
