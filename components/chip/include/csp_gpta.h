@@ -190,11 +190,6 @@ typedef enum
 #define GPTA_CAPREARM_MSK        (1ul << GPTA_CAPREARM_POS)
 #define GPTA_CAPMD_POS           (21)
 #define GPTA_CAPMD_MSK	         (0x1 << GPTA_CAPMD_POS)
-//typedef enum
-//{
-//	GPTA_CAPMD_CONT = 0,
-//	GPTA_CAPMD_ONCE,
-//}gpta_capmd_e;
 #define GPTA_STOPWRAP_POS	     (22)
 #define GPTA_STOPWRAP_MSK	     (0x3 << GPTA_STOPWRAP_POS)
 #define GPTA_CMPA_RST_POS	     (24)
@@ -260,23 +255,8 @@ typedef enum
 #define GPTA_GLDEN_MSK	         (0x1 << GPTA_GLDEN_POS)
 #define GPTA_GLDMD_POS	         (1)
 #define GPTA_GLDMD_MSK	         (0xf << GPTA_GLDMD_POS)
-//typedef enum 
-//{
-//	GPTA_LDGLD_ZRO = 0,
-//	GPTA_LDGLD_PRD,
-//	GPTA_LDGLD_ZRO_PRD,
-//	GPTA_LDGLD_ZRO_LD_SYNC,
-//	GPTA_LDGLD_PRD_LD_SYNC,
-//	GPTA_LDGLD_ZRO_PRD_LD_SYNC,
-//	GPTA_LDGLD_SW = 0xf
-//}gpta_ldgld_e;
 #define GPTA_GLDCR_OSTMD_POS     (5)
 #define GPTA_GLDCR_OSTMD_MSK     (0x1 << GPTA_GLDCR_OSTMD_POS)
-//typedef enum
-//{
-//	GPTA_OSTMD_ANYTIME = 0,
-//	GPTA_OSTMD_ONESHOT,
-//}gpta_ostmd_e;
 #define GPTA_GLDPRD_POS	         (7)
 #define GPTA_GLDPRD_MSK	         (0x7 << GPTA_GLDPRD_POS)
 #define GPTA_GLDCNT_POS	         (10)
@@ -418,19 +398,6 @@ typedef enum
 #define GPTA_ACT2_MSK	         (0x3 << GPTA_ACT2_POS)
 #define GPTA_AQCSF_LDMD_POS      (16)
 #define GPTA_AQCSF_LDMD_MSK      (0x3 << GPTA_AQCSF_LDMD_POS)
-//typedef enum
-//{
-//	GPTA_LDAQCR_ZRO = 0,
-//	GPTA_LDAQCR_PRD,
-//	GPTA_LDAQCR_ZROPRD
-//}gpta_ldaqcr_e;
-//typedef enum
-//{
-//	GPTA_LDACTAB_NEVER= 0,
-//	GPTA_LDACTAB_LOW ,
-//	GPTA_LDACTAB_HIGH,
-//    GPTA_LDACTAB_TOGGLE	
-//}gpta_ldosf_e;
 typedef enum 
 {
 	GPTA_NA = 0,
@@ -473,19 +440,12 @@ typedef enum
 /******************************************************************************
 * TRGFTCR : Trigger Filter control reg
 ******************************************************************************/
-#define GPTA_FLTSRC_POS	         (0)
-#define GPTA_FLTSRC_MSK	         (0x7 << GPTA_FLTSRC_POS)
-#define GPTA_FLTBLKINV_POS       (4)
-#define GPTA_FLTBLKINV_MSK	     (0x1 << GPTA_FLTBLKINV_POS)
-#define GPTA_ALIGNMD_POS	     (5)
-#define GPTA_ALIGNMD_MSK	     (0x3 << GPTA_ALIGNMD_POS)
-//typedef enum
-//{
-//	GPTA_ALIGN_PRD = 0,
-//	GPTA_ALIGN_ZRO,
-//	GPTA_ALIGN_ZRO_PRD,
-//	GPTA_ALIGN_T1
-//}gpta_alignmd_e;
+#define GPTA_FLTSRC_POS	        (0)
+#define GPTA_FLTSRC_MSK	        (0x7 << GPTA_FLTSRC_POS)
+#define GPTA_FLTBLKINV_POS      (4)
+#define GPTA_FLTBLKINV_MSK	    (0x1 << GPTA_FLTBLKINV_POS)
+#define GPTA_ALIGNMD_POS	    (5)
+#define GPTA_ALIGNMD_MSK	    (0x3 << GPTA_ALIGNMD_POS)
 #define GPTA_CROSSMD_POS	    (7)
 #define GPTA_CROSSMD_MSK	    (0x1 << GPTA_CROSSMD_POS)
 
