@@ -176,7 +176,7 @@ int exi_etcb_adc_samp_demo(void)
 }
 
 
-/** \brief GPTA sync2 sync3区分捕获示例代码，测试低电平和周期时间，同时可计算出高电平时间
+/** \brief  exi trg gpta capture / GPTA sync2 sync3区分捕获示例代码，测试低电平和周期时间，同时可计算出高电平时间
  *          //sync2 sync3区分，实现2次捕获
  *   		- 捕获2次产生一次捕获中断，ldbrst捕获后，计数器进行重置
  *     		- 由PA3产生外部事件0，经过ETCB  触发sync2 上升沿捕获，上升沿捕获值存放在CMPA中
