@@ -107,11 +107,17 @@ void user_demo(void)
 /// ***************************************************
 ///  GPTA相关的示例代码
 /// ***************************************************
-//	gpta_timer_demo();
-//	gpta_capture_demo();
-//	gpta_pwm_demo();
-//	gpta_pwm_waveform_demo();
-//	gpta_reglk_demo();
+#if (USE_GPTA_CALLBACK == 0)				//不使用callback
+	gpta_timer_demo();
+	gpta_capture_demo();
+	gpta_pwm_demo();
+	gpta_pwm_waveform_demo();
+	gpta_reglk_demo();
+#else									//使用callback
+	gpta_timer_int_callback_demo();
+	gpta_capture_int_callback_demo();
+	gpta_pwm_int_callback_demo();
+#endif
 
 /// ***************************************************
 ///  GPTB相关的示例代码
