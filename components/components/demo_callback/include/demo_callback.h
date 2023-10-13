@@ -77,14 +77,8 @@ extern void iic_slave_int_callback_demo(void);
 extern int cnta_timer_int_callback_demo(void);
 
 //spi demo
-extern int spi_master_send_demo(void);
-extern int spi_master_send_int_demo(void);
-extern int spi_master_send_receive_demo(void); 
-extern int spi_slave_send_receive_demo(void);  
-extern int spi_slave_receive_int_demo(void);
-extern int spi_flash_read_write_demo(void);
-extern int spi_etcb_dma_send_demo(void);
-extern int spi_etcb_dma_send_receive_demo(void);
+extern int spi_master_send_int_callback_demo();
+extern int spi_slave_receive_int_callback_demo();
 
 //cmp demo
 extern int cmp_base_int_callback_demo(void);
@@ -95,20 +89,15 @@ extern int gpta_capture_int_callback_demo(void);
 extern int gpta_pwm_int_callback_demo(void);
 
 //gptb demo
-extern int gptb_timer_demo(void);
-extern int gptb_capture_demo(void);
-extern int gptb_capture_sync_demo0(void);
-extern int gptb_capture_sync_demo1(void);
-extern int gptb_capture_sync_demo2(void);
-extern int gptb_pwm_demo(void);
-extern int gptb_pwm_dz_demo(void);
-extern int gptb_pwm_dz_em_demo(void);
+extern int gptb_capture_int_callback_demo();
+extern int gptb_pwm_int_callback_demo();
+extern int gptb_pwm_dz_em_int_callback_demo();
 
 //crc demo
 extern csi_error_t crc_demo();
 
 //led
-extern csi_error_t led_callback_demo(void);
+extern int led_callback_demo(void);
 
 //opa demo
 extern void opa_internal_gain_mode_demo(void);

@@ -16,7 +16,6 @@
 
 void user_demo(void)
 {
-
 /// ***************************************************
 ///	GPIO相关示例代码
 ///	GPIO是比较特殊csi标准库驱动不支持中断callback	 
@@ -122,13 +121,18 @@ void user_demo(void)
 /// ***************************************************
 ///  GPTB相关的示例代码
 /// ***************************************************
-//	gptb_capture_demo();
-//	gptb_capture_sync_demo0();
-//	gptb_capture_sync_demo1();
-//	gptb_capture_sync_demo2();
-//	gptb_pwm_demo();
-//	gptb_pwm_dz_demo();
-//	gptb_pwm_dz_em_demo();
+#if (USE_GPTB_CALLBACK == 0)			//不使用callback
+	gptb_timer_demo();
+	gptb_capture_demo();
+	gptb_pwm_demo();
+	gptb_pwm_dz_demo();
+	gptb_pwm_dz_em_demo();
+	gptb_reglk_demo();
+#else									//使用callback
+	gptb_capture_int_callback_demo();
+	gptb_pwm_int_callback_demo();
+	gptb_pwm_dz_em_int_callback_demo();
+#endif
 
 /// ***************************************************
 ///  CMP相关的示例代码
@@ -244,14 +248,19 @@ void user_demo(void)
 /// ***************************************************
 ///  SPI相关的示例代码
 /// ***************************************************
-//  spi_master_send_demo();
-//  spi_master_send_int_demo();
-//  spi_master_send_receive_demo(); 
-//  spi_slave_send_receive_demo();  
-//  spi_slave_receive_int_demo(); 
-//  spi_etcb_dma_send_demo();
-//  spi_etcb_dma_send_receive_demo();
-//  spi_flash_read_write_demo();          
+#if (USE_SPI_CALLBACK == 0)			//不使用callback  
+	spi_master_send_demo();
+	spi_master_send_int_demo();
+	spi_master_send_receive_demo(); 
+	spi_slave_receive_int_demo(); 
+	spi_send_dma_demo();
+	spi_receive_dma_demo();
+	spi_flash_read_demo();    
+	spi_flash_write_demo(); 
+#else									//使用callback
+	spi_master_send_int_callback_demo();
+	spi_slave_receive_int_callback_demo();
+#endif
 	
 /// ***************************************************
 ///  OPA相关的示例代码
@@ -277,7 +286,11 @@ void user_demo(void)
 
 ///  LED相关的示例代码
 /// ***************************************************
-//	led_demo();
+#if (USE_LED_CALLBACK == 0)			//不使用callback  
+	led_demo();
+#else
+	led_callback_demo();			//使用callback
+#endif
 
 /// ***************************************************
 ///  sram相关的示例代码

@@ -226,7 +226,7 @@ int gptb_pwm_int_callback_demo(void)
 	tPwmChCfg.eActionT2D    =   GPTB_ACT_NA;		//CNT=T2D时，波形输出不变													
 	tPwmChCfg.eC1Sel 		=   GPTB_COMPA;			//C1选择CMPA为数据源		
 	tPwmChCfg.eC2Sel 		=   GPTB_COMPA;			//C2选择CMPA为数据源
-	csi_gptb_pwm_ch_init(GPTB0, &tPwmChCfg,  GPTB_CHANNEL_1);
+	csi_gptb_set_channel(GPTB0, &tPwmChCfg,  GPTB_CHANNEL_1);
 //------------------------------------------------------------------------------------------------------------------------
 	csi_gptb_int_enable(GPTB0, GPTB_INTSRC_PEND);		//使能PEND中断
 	csi_gptb_register_callback(GPTB0,user_pwm_callback);//注册回调函数，当发生中断时在该回调函数中处理
@@ -285,7 +285,7 @@ int gptb_pwm_dz_em_int_callback_demo(void)
 	tPwmChCfg.eActionT2D    =   GPTB_ACT_NA;		//CNT=T2D时，波形输出不变													
 	tPwmChCfg.eC1Sel 		=   GPTB_COMPA;			//C1选择CMPA为数据源		
 	tPwmChCfg.eC2Sel 		=   GPTB_COMPA;			//C2选择CMPA为数据源
-	csi_gptb_pwm_ch_init(GPTB0, &tPwmChCfg,  GPTB_CHANNEL_1);
+	csi_gptb_set_channel(GPTB0, &tPwmChCfg,  GPTB_CHANNEL_1);
 //------------------------------------------------------------------------------------------------------------------------
 	tDeadZoneCfg.eChxOutSel_S1S0    = GPTB_DBOUT_AR_BF;             //使能通道A的上升沿延时，使能通道B的下降沿延时
 	tDeadZoneCfg.eChxPol_S3S2       = GPTB_DBPOL_B;                 //通道A和通道B延时输出电平是否反向
