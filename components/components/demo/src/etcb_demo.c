@@ -174,3 +174,89 @@ int exi_etcb_adc_samp_demo(void)
 	}
 	return iRet;
 }
+
+
+/** \brief GPTA sync2 sync3区分捕获示例代码，测试低电平和周期时间，同时可计算出高电平时间
+ *          //sync2 sync3区分，实现2次捕获
+ *   		- 捕获2次产生一次捕获中断，ldbrst捕获后，计数器进行重置
+ *     		- 由PA3产生外部事件0，经过ETCB  触发sync2 上升沿捕获，上升沿捕获值存放在CMPA中
+ *          - 由PA3外部扩展口,产生外部事件5，经过ETCB  触发sync3 下降沿捕获，下降沿捕获值存放在CMPB中
+ * 			- 信号由PA3的高低电平切换产生（一直高或低电平意味着没有触发）
+ *          - 下降沿时间为CMPA，周期时间为CMPB，上升沿时间为 CMPB - CMPA。  
+ *  \param[in] none
+ *  \return error code
+ * 
+				 —————          —————           —————         
+				 |        |          |        |           |        |    
+				 |        |          |        |           |        |        
+ PA3输入波形———        ——————         ——————         ———
+			    CMPA      CMPB      CMPA      CMPB       CMPA      CMPB  
+
+*/
+int exi_etcb_gpta_capture_demo(void)
+{
+	int iRet = 0;	
+    volatile uint8_t ch;
+	csi_etcb_config_t tEtcbConfig;				                         //ETCB 参数配置结构体
+	csi_gpta_capture_config_t tCapConfig;	                             //GPTA 捕获参数配置结构体
+//------------------------------------------------------------------------------------------------------------------------	
+	csi_gpio_set_mux(GPIOA, PA3, PA3_INPUT);		
+	csi_gpio_pull_mode(GPIOA, PA3, GPIO_PULLUP);						//PA3 上拉
+	csi_gpio_irq_mode(GPIOA, PA3, EXI_GRP3, GPIO_IRQ_RISING_EDGE);		//PA3 上升沿产生中断  GPIO_IRQ_FALLING_EDGE  GPIO_IRQ_RISING_EDGE
+	csi_gpio_int_enable(GPIOA, PA3);	
+	csi_exi_set_evtrg(EXI_TRGOUT0, EXI_TRGSRC_GRP3, 1);
+	csi_exi_evtrg_enable(EXI_TRGOUT0);	
+	csi_gpio_irq_mode(GPIOA, PA3, EXI_GRP16, GPIO_IRQ_FALLING_EDGE);     //PA3 下降沿产生中断，选择中断组16
+	csi_gpio_int_enable(GPIOA, PA3);                                     //PA3 中断使能                                   
+	csi_exi_set_evtrg(EXI_TRGOUT5, EXI_TRGSRC_GRP16, 1);	
+    csi_exi_evtrg_enable(EXI_TRGOUT5);
+//------------------------------------------------------------------------------------------------------------------------			
+	tEtcbConfig.eChType  = ETCB_ONE_TRG_ONE;  	                         //单个源触发单个目标
+	tEtcbConfig.eSrcIp   = ETCB_EXI_TRGOUT0 ;  	                         //...作为触发源
+	tEtcbConfig.eDstIp   = ETCB_GPTA0_SYNCIN2;                           //GPTA0 同步输入2作为目标事件
+	tEtcbConfig.eTrgMode = ETCB_HARDWARE_TRG;
+	ch = csi_etcb_ch_alloc(tEtcbConfig.eChType);	                     //自动获取空闲通道号,ch >= 0 获取成功						//ch < 0,则获取通道号失败		
+	if(ch < 0)														     //ch < 0,则获取通道号失败
+	{
+		return -1;
+	}
+	iRet = csi_etcb_ch_init(ch, &tEtcbConfig);	
+//------------------------------------------------------------------------------------------------------------------------			
+	tEtcbConfig.eChType  = ETCB_ONE_TRG_ONE;  	                         //单个源触发单个目标
+	tEtcbConfig.eSrcIp   = ETCB_EXI_TRGOUT5 ;  	                         //...作为触发源
+	tEtcbConfig.eDstIp   = ETCB_GPTA0_SYNCIN3;                           //GPTA0 同步输入3作为目标事件
+	tEtcbConfig.eTrgMode = ETCB_HARDWARE_TRG;
+	ch = csi_etcb_ch_alloc(tEtcbConfig.eChType);	                     //自动获取空闲通道号,ch >= 0 获取成功						//ch < 0,则获取通道号失败		
+	if(ch < 0)														     //ch < 0,则获取通道号失败
+	{
+		return -1;
+	}
+	iRet = csi_etcb_ch_init(ch, &tEtcbConfig);		
+//------------------------------------------------------------------------------------------------------------------------
+	tCapConfig.eWorkMode         	= GPTA_WORK_CAPTURE;                //GPTA工作模式：捕获/波形输出	
+	tCapConfig.eCountMode    		= GPTA_CNT_UP;                      //GPTA计数模式：递增/递减/递增递减	
+	tCapConfig.eRunMode	    	    = GPTA_RUN_CONT;        		    //GPTA运行模式：连续/一次性	
+	tCapConfig.eCapMode      		= GPTA_CAP_SEPARATE;                //GPTA捕获模式：合并/分离	
+	tCapConfig.byCapStopWrap 		= 1;                                //GPTA捕获次数：0/1/2/3
+	tCapConfig.byCapLdaret   		= 0;                                //CMPA捕获载入后计数器设置(1h：捕获载入后计数器值重置;0h：捕获载入后计数器值不重置)
+	tCapConfig.byCapLdbret   		= 1;  								//CMPB捕获载入后计数器设置(1h：捕获载入后计数器值重置;0h：捕获载入后计数器值不重置)
+	tCapConfig.byCapLdcret   		= 0;								//CMPC捕获载入后计数器设置(1h：捕获载入后计数器值重置;0h：捕获载入后计数器值不重置)
+	tCapConfig.byCapLddret   		= 0;   								//CMPD捕获载入后计数器设置(1h：捕获载入后计数器值重置;0h：捕获载入后计数器值不重置)                        
+	csi_gpta_capture_init(GPTA0, &tCapConfig);
+//------------------------------------------------------------------------------------------------------------------------	
+	csi_gpta_int_enable(GPTA0, GPTA_INTSRC_CAPLD1);	
+
+    csi_gpta_set_sync(GPTA0, GPTA_SYNCIN2, GPTA_SYNC_CONT, GPTA_AUTO_REARM_ZRO);//使能SYNCIN2外部触发
+	csi_gpta_sync_enable(GPTA0, GPTA_SYNCIN2);
+	csi_gpta_set_sync(GPTA0, GPTA_SYNCIN3, GPTA_SYNC_CONT, GPTA_AUTO_REARM_ZRO);//使能SYNCIN3外部触发
+	csi_gpta_sync_enable(GPTA0, GPTA_SYNCIN3);
+	
+	csi_gpta_start(GPTA0);
+	
+    while(1)
+	{		
+		mdelay(200);                        
+		mdelay(200);
+	}			
+	return iRet;
+};

@@ -35,6 +35,7 @@ extern int iwdt_irq_demo(void);
 extern int exi_etcb_bt_start_demo(void);
 extern int exi_etcb_bt_stop_demo(void);
 extern int exi_etcb_adc_samp_demo(void);
+extern int exi_etcb_gpta_capture_demo(void);
 
 //uart demo
 extern int uart_send_demo(void);
