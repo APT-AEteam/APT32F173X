@@ -155,6 +155,8 @@ void user_demo(void)
 	//EXI trigger BT 
 	exi_etcb_bt_start_demo();
 	exi_etcb_bt_stop_demo();
+	//EXI trigger ADC
+	exi_etcb_adc_samp_demo();
 
 /// ***************************************************
 /// UART相关的示例代码
