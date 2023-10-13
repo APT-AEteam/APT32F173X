@@ -99,14 +99,18 @@ void user_demo(void)
 /// ***************************************************
 ///  Counter A相关的示例代码
 /// ***************************************************
-//	cnta_timer_demo();
-//	cnta_pwm_demo();
-//	cnta_envelope_demo();
+#if (USE_CNTA_CALLBACK == 0)			//不使用callback
+	cnta_timer_demo();
+	cnta_pwm_demo();
+	cnta_envelope_demo();
+#else									//使用callback
+	cnta_timer_int_callback_demo();
+#endif
 	
 /// ***************************************************
 ///  GPTA相关的示例代码
 /// ***************************************************
-#if (USE_GPTA_CALLBACK == 0)				//不使用callback
+#if (USE_GPTA_CALLBACK == 0)			//不使用callback
 	gpta_timer_demo();
 	gpta_capture_demo();
 	gpta_pwm_demo();
@@ -137,9 +141,13 @@ void user_demo(void)
 /// ***************************************************
 ///  CMP相关的示例代码
 /// ***************************************************
-//	cmp_base_demo();
-//	cmp_dfcr_demo();
-//	cmp_wfcr_demo();
+#if (USE_CMP_CALLBACK == 0)				//不使用callback
+	cmp_base_demo();
+	cmp_dfcr_demo();
+	cmp_wfcr_demo();
+#else									//使用callback
+	cmp_base_int_callback_demo();
+#endif
 
 /// ***************************************************
 ///  ADC相关的示例代码
