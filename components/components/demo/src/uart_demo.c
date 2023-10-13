@@ -147,7 +147,7 @@ int uart_send_int_demo(void)
  *  \param[in] none
  *  \return error code
  */
-int uart_recv_int_demo(void)
+int uart_receive_int_demo(void)
 {
 	int iRet = 0;
 	csi_uart_config_t tUartConfig;					//UART1 参数配置结构体

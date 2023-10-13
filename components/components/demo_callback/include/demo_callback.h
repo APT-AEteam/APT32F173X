@@ -16,11 +16,6 @@
 /* Includes ------------------------------------------------------------------*/
 #include <drv/common.h>
 
-//gpio port demo
-extern int gpio_port_ouput_demo(void);
-extern int gpio_port_input_demo(void);
-extern int gpio_port_irq_demo(void);
-
 //bt demo
 extern int bt_timer_callback_demo(void);
 extern int bt_pwm_callback_demo(void);
@@ -29,10 +24,6 @@ extern int bt_pwm_callback_demo(void);
 extern int iwdt_normal_demo(void);
 extern int iwdt_irq_demo(void);
 extern  csi_error_t iwdt_int_callback_demo(void);
-
-//etcb demo
-extern int etcb_one_trg_one_demo(void);
-extern int etcb_one_trg_more_demo(void);
 
 //uart demo
 extern int uart_send_int_callback_demo(void);

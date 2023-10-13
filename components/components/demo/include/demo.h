@@ -16,21 +16,14 @@
 /* Includes ------------------------------------------------------------------*/
 #include "drv/common.h"
 
-//gpio port demo
-extern int gpio_port_ouput_demo(void);
-extern int gpio_port_input_demo(void);
-extern int gpio_port_irq_demo(void);
-
-//pin demo
-extern int pin_output_demo(void);
-extern int pin_input_demo(void);
-extern int pin_irq_demo(void);
+//gpio demo
+extern int gpio_ouput_demo(void);
+extern int gpio_input_demo(void);
+extern int gpio_irq_demo(void);
 
 //bt demo
 extern int bt_timer_demo(void);
 extern int bt_pwm_demo(void);
-extern int bt_sync_trg_start_demo(void);
-extern int bt_sync_trg_stop_demo(void);
 extern int bt_sync_trg_count_demo(void);
 extern int bt_trg_out_demo(void);
 
@@ -39,19 +32,14 @@ extern int iwdt_normal_demo(void);
 extern int iwdt_irq_demo(void);
 
 //etcb demo
-
-extern int etcb_one_trg_one_demo(void);
-extern int etcb_one_trg_more_demo(void);
+extern int exi_etcb_bt_start_demo(void);
+extern int exi_etcb_bt_stop_demo(void);
 
 //uart demo
-//uart send
-extern int uart_char_demo(void);
 extern int uart_send_demo(void);
 extern int uart_send_int_demo(void);
-extern int uart_send_dma_demo(void);
-//uart receive
-extern int uart_receive_demo(void);
 extern int uart_receive_int_demo(void);
+extern int uart_send_dma_demo(void);
 extern int uart_receive_dma_demo(void);
 
 //usart demo
@@ -77,7 +65,6 @@ extern int adc_samp_continuous_int_demo(void);
 
 //sio demo
 extern int sio_led_rgb_demo(void);
-extern int sio_led_rgb_int_demo(void);
 extern int sio_led_rgb_txdne_int_demo(void);
 extern int sio_led_rgb_txbufempt_int_demo(void);
 extern int sio_led_rgb_send_dma_demo(void);

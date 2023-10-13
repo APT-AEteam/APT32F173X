@@ -13,8 +13,6 @@
 #include "iostring.h"
 #include "board_config.h"
 
-#include "demo.h"
-
 /* Private macro-----------------------------------------------------------*/
 
 /* externs function--------------------------------------------------------*/
@@ -44,12 +42,12 @@ int main()
 	board_init();	
 	user_demo();							//demo
 
-	my_printf("Hello World~~~~~~~\n");		//print message
+	my_printf("Hello World~~~~~~~\n");		//打印信息
 	
 
 	while(1)
 	{	
-
+		mdelay(10);							//延时10ms					
 	}
 	
     return 0;

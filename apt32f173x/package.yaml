@@ -27,11 +27,6 @@ build_config:
   include:
     - include
     - ./
-    - ../components/components/csi_kernel/include/
-    - ../components/components/csi_kernel/freertosv10.3.1/include/
-    - ../components/components/csi_kernel/freertosv10.3.1/FreeRTOS/Source/include/
-    - ../components/components/csi_kernel/freertosv10.3.1/FreeRTOS/Source/portable/GCC/riscv/
-    - ../components/components/csi_kernel/freertosv10.3.1/FreeRTOS/Source/portable/GCC/riscv/chip_specific_extensions/thead_rv32/
   internal_include: 
   cflag: -Og   -Wall  -ffunction-sections
   cxxflag: -Og   -Wall  -ffunction-sections
@@ -40,7 +35,9 @@ build_config:
   libs: 
   libpath: 
 source_file:
-  - src/*.c
+  - src/main.c
+  - src/interrupt.c
+  - src/user_demo.c
 depends_forward:
   - apt32f173x_demo: v1.2.0
   - apt32f173x_demo_callback: v1.2.0

@@ -8,33 +8,37 @@
  *============================================================================
  */
 /* include ----------------------------------------------------------------*/
+#include "csi_drv.h"
+#include "board_config.h"
+//
 #include "demo.h"
-#include "pin.h"
 #include "demo_callback.h"
 
 void user_demo(void)
 {
 
 /// ***************************************************
-///  GPIO相关示例代码
-///  gpio_xxx适用于多个pin同时配置和操作的情况
-///  pin_xxx适用于单独对一个pin进行配置和操作的情况
+///	GPIO相关示例代码
+///	GPIO是比较特殊csi标准库驱动不支持中断callback	 
 /// ***************************************************	
-//	gpio_port_ouput_demo();
-//	gpio_port_input_demo();
-//	gpio_port_irq_demo();
-//	pin_output_demo();
-//	pin_input_demo();
-//	pin_irq_demo();
-//  pin_ioremap_demo();
+	gpio_ouput_demo();
+	gpio_input_demo();
+	gpio_irq_demo();
 	
 /// ***************************************************
-///  通过PA02输出系统时钟，主要用于调试。
-///  同时示例管脚功能配置的方法。
-/// ***************************************************	
-//	csi_gpio_set_mux(GPIOA, PA2, PA2_CLO);
-//	csi_clo_config(CLO_HCLK, CLO_DIV16);
-	
+/// BT相关的示例代码
+///	BT的csi标准库驱动支持中断callback
+/// ***************************************************
+#if (USE_BT_CALLBACK == 0)				//不使用callback
+	bt_timer_demo();
+	bt_pwm_demo();
+	bt_sync_trg_count_demo();
+	bt_trg_out_demo();
+#else									//使用callback
+	bt_timer_callback_demo();
+	bt_pwm_callback_demo();
+#endif
+
 /// ***************************************************
 ///  系统可靠性相关的示例代码
 /// ***************************************************
@@ -83,16 +87,6 @@ void user_demo(void)
 //	lp_rtc_wakeup_demo();
 //	lp_iwdt_wakeup_demo();
 	
-/// ***************************************************
-///  BT相关的示例代码
-/// ***************************************************
-//	bt_timer_demo();
-//	bt_pwm_demo();
-//	bt_sync_trg_start_demo();
-//	bt_sync_trg_count_demo();
-//	bt_sync_trg_stop_demo();
-//	bt_trg_out_demo();
-
 /// ***************************************************
 ///  LPT相关的示例代码
 /// ***************************************************
@@ -151,23 +145,27 @@ void user_demo(void)
 //	crc_demo();
 	
 /// ***************************************************
-///  ETCB相关的示例代码
+/// ETCB相关的示例代码
+/// ETCB的demo是多个IP联动，相对较复杂
 /// ***************************************************
-//  etcb_one_trg_one_demo();
-//	etcb_one_trg_more_demo();
+	//EXI trigger BT 
+	exi_etcb_bt_start_demo();
+	exi_etcb_bt_stop_demo();
 
 /// ***************************************************
-///  UART相关的示例代码
+/// UART相关的示例代码
+///	UART的csi标准库驱动支持中断callback
 /// ***************************************************
-//	uart_char_demo();
-//	uart_send_demo();
-//	uart_send_int_demo();
-//	uart_receive_demo();
-//	uart_recv_int_demo();
-//	uart_recv_dynamic_demo();
-//	uart_recv_dynamic_int_demo();
-//	uart_send_dma_demo();
-//	uart_recv_dma_demo();
+#if (USE_UART_CALLBACK == 0)			//不使用callback
+	uart_send_demo();
+	uart_send_int_demo();
+	uart_receive_int_demo();
+	uart_send_dma_demo();
+	uart_receive_dma_demo();
+#else									//使用callback
+	uart_send_int_callback_demo();
+	uart_receive_int_callback_demo();
+#endif
 
 /// ***************************************************
 ///  USART相关的示例代码
@@ -200,16 +198,37 @@ void user_demo(void)
 //  iic_dma_rx_demo();
 	
 /// ***************************************************
-///  SIO相关的示例代码
+/// SIO相关的示例代码
+///	SIO的csi标准库驱动支持中断callback
 /// ***************************************************
-//	sio_led_rgb_demo();
-//	sio_led_rgb_recv_rxfull_demo();
-//	sio_led_rgb_recv_rxdone_demo();
-//	sio_hdq_send_demo();
-//	sio_hdq_recv_wrcmd_demo();
-//	sio_hdq_send_recv_demo();
-//	sio_hdq_recv_rdcmd_demo();
-	
+#if (USE_SIO_CALLBACK == 0)				//不使用callback
+	sio_led_rgb_demo();
+	sio_led_rgb_txbufempt_int_demo();
+	sio_led_rgb_txdne_int_demo();
+	sio_led_rgb_send_dma_demo();
+	sio_hdq_master_wrcmd_demo();
+	sio_hdq_master_rdcmd_demo();
+	sio_hdq_slave_demo();
+#else									//使用callback
+	sio_led_rgb_int_callback_demo();
+#endif
+
+/// ***************************************************
+/// CAN相关的示例代码
+///	CAN的csi标准库驱动支持中断callback
+/// ***************************************************
+#if (USE_CAN_CALLBACK == 0)				//不使用callback
+	can_send_demo();
+	can_send_int_demo();
+	can_receive_int_demo();
+	can_receive_fifo_init_demo();
+	can_remote_frames_send_demo();
+	can_remote_frames_response_demo();
+#else									//使用callback
+	can_send_int_callback_demo();
+	can_receive_int_callback_demo();
+#endif
+
 /// ***************************************************
 ///  SPI相关的示例代码
 /// ***************************************************
