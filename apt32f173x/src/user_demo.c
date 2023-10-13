@@ -134,11 +134,15 @@ void user_demo(void)
 /// ***************************************************
 ///  ADC相关的示例代码
 /// ***************************************************
-//	adc_samp_oneshot_demo();
-//	adc_samp_continuous_demo();
-//	adc_samp_oneshot_int_demo();
-//	adc_samp_continuous_int_demo();
-	
+#if (USE_ADC_CALLBACK == 0)				//不使用callback
+	adc_samp_oneshot_demo();
+	adc_samp_continuous_demo();
+	adc_samp_oneshot_int_demo();
+	adc_samp_continuous_int_demo();
+#else									//使用callback
+	adc_continuous_callback_demo();
+#endif
+
 /// ***************************************************
 ///  CRC相关的示例代码
 /// ***************************************************
@@ -244,19 +248,24 @@ void user_demo(void)
 /// ***************************************************
 ///  OPA相关的示例代码
 /// ***************************************************
-//	opa_internal_gain_mode_demo();
-//	opa_external_gain_mode_demo();
+	opa_internal_gain_mode_demo();
+	opa_external_gain_mode_demo();
 
 /// ***************************************************
 ///  FVR相关的示例代码
 /// ***************************************************
-//	fvr_output_demo();
-//	fvr_buf_demo();
+	fvr_output_demo();
+	buf_output_demo();
 
 /// ***************************************************
 ///  DAC相关的示例代码
 /// ***************************************************
-//	dac_demo();
+#if (USE_DAC_CALLBACK == 0)				//不使用callback
+	dac_demo();
+	dac_sync_demo();
+#else									//使用callback
+	dac_callback_demo();
+#endif
 
 ///  LED相关的示例代码
 /// ***************************************************

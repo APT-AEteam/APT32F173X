@@ -38,11 +38,7 @@ extern int lin_send_recv_int_callback_demo(void);
 
 //adc demo
 //normal mode(no interrupt)
-extern int adc_samp_oneshot_demo(void);
-extern int adc_samp_continuous_demo(void);
-//interrupt mode
-extern int adc_samp_oneshot_int_demo(void);
-extern int adc_samp_continuous_int_demo(void);
+extern int adc_continuous_callback_demo(void);
 
 //sio demo
 extern int sio_led_rgb_int_callback_demo(void);

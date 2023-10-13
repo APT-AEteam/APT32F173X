@@ -171,8 +171,7 @@ extern void opa_external_gain_mode_demo(void);
 
 //fvr demo
 extern void fvr_output_demo(void);
-extern void fvr_referenceset_demo(void);
-extern void fvr_buf_demo(void);
+extern void buf_output_demo(void);
 
 //can
 extern int can_send_demo(void);
@@ -184,7 +183,7 @@ extern int can_remote_frames_response_demo(void);
 
 //dac demo
 extern void dac_demo(void);	
-
+extern void dac_sync_demo(void);	
 
 ///  sram相关的示例代码
 extern void use_sram1_as_isram_demo(void);
