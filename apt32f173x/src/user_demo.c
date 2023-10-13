@@ -177,6 +177,9 @@ void user_demo(void)
 	exi_etcb_adc_samp_demo();
 	//EXI trigger gpta_capture
 	exi_etcb_gpta_capture_demo();
+	//EXI/BT trigger GPTB start
+	exi_etcb_gptb_start_demo();
+	bt_etcb_gptb_start_demo();
 
 /// ***************************************************
 /// UART相关的示例代码

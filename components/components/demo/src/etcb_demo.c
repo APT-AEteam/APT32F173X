@@ -260,3 +260,143 @@ int exi_etcb_gpta_capture_demo(void)
 	}			
 	return iRet;
 };
+
+/** \brief	exi trg gptb start：EXI通过ETCB触发GPTB启动输出波形（10KHz/50%）的demo，可通过观察CHAX/CHAY来判断GPTB是否启动
+ * 
+ *  \brief	PA1外部下降沿触发GPTB启动。默认VIC中断不开启，即不进入PA1的外部中断；若需要进入PA1外部中断，需
+ * 			开启对应的VIC中断，调用csi_gpio_vic_irq_enable接口函数
+ *  
+ *  \param[in] none
+ *  \return error code
+ */
+int exi_etcb_gptb_start_demo(void)
+{
+	int iRet = 0;	
+	volatile uint8_t ch;
+	csi_etcb_config_t 			tEtcbCfg;			//ETCB参数配置结构体	
+	csi_gptb_pwm_config_t 		tPwmCfg;			//GPTB捕获参数配置结构体	
+	csi_gptb_pwm_ch_config_t  	tPwmChCfg;			//GPTB PWM通道参数配置结构体
+//------------------------------------------------------------------------------------------------------------------------	
+#if (USE_GUI == 0)
+	csi_gpio_set_mux(GPIOA, PA1, PA1_INPUT);						//PA01 输入
+	csi_gpio_pull_mode(GPIOA, PA1, GPIO_PULLUP);					//PA01 上拉使能
+	csi_gpio_irq_mode(GPIOA, PA1,EXI_GRP1, GPIO_IRQ_FALLING_EDGE);	//PA01 下降沿产生中断
+	csi_exi_set_evtrg(EXI_TRGOUT1, EXI_TRGSRC_GRP1, 1);				//EXI 触发配置
+	csi_exi_evtrg_enable(EXI_TRGOUT1);								//使能 EXI_TRGOUT1触发输出
+	csi_gpio_int_enable(GPIOA, PA1);	
+	
+	csi_gpio_set_mux(GPIOC, PC13, PC13_GPTB0_CHAX);	//初始化PC13为CHAX
+	csi_gpio_set_mux(GPIOA, PA7, PA7_GPTB0_CHAY);	//初始化PA7为CHAY
+#endif
+//------------------------------------------------------------------------------------------------------------------------	
+	tEtcbCfg.eChType  = ETCB_ONE_TRG_ONE;  			//单个源触发单个目标
+	tEtcbCfg.eSrcIp   = ETCB_EXI_TRGOUT1 ;  		//EXI_TRGOUT1作为触发源
+	tEtcbCfg.eDstIp   = ETCB_GPTB0_SYNCIN0;  		//GPTB0 SYNCIN0作为目标事件
+	tEtcbCfg.eTrgMode = ETCB_HARDWARE_TRG;
+	ch = csi_etcb_ch_alloc(tEtcbCfg.eChType);		//自动获取空闲通道号,ch >= 0 获取成功		
+	if(ch < 0)										//ch < 0,则获取通道号失败
+		return -1;
+	iRet = csi_etcb_ch_init(ch, &tEtcbCfg);		
+//------------------------------------------------------------------------------------------------------------------------	
+	tPwmCfg.eWorkMode       = GPTB_WORK_WAVE;       //GPTB工作模式：捕获/波形输出
+	tPwmCfg.eCountMode   	= GPTB_CNT_UPDN;        //GPTB计数模式：递增/递减/递增递减
+	tPwmCfg.eRunMode    	= GPTB_RUN_CONT;        //GPTB运行模式：连续/一次性
+	tPwmCfg.byDutyCycle 	= 50;					//GPTB输出PWM占空比			
+	tPwmCfg.wFreq 			= 10000;				//GPTB输出PWM频率	
+	csi_gptb_pwm_init(GPTB0, &tPwmCfg);
+//------------------------------------------------------------------------------------------------------------------------	
+	tPwmChCfg.eActionZRO    =   GPTB_ACT_LO;		//CNT=ZRO时，波形输出低电平
+	tPwmChCfg.eActionPRD    =   GPTB_ACT_NA;		//CNT=PRD时，波形输出不变
+	tPwmChCfg.eActionC1U    =   GPTB_ACT_HI;		//CNT=C1U时，波形输出高电平
+	tPwmChCfg.eActionC1D    =   GPTB_ACT_LO;		//CNT=C1D时，波形输出低电平
+	tPwmChCfg.eActionC2U    =   GPTB_ACT_NA;		//CNT=C2U时，波形输出不变
+	tPwmChCfg.eActionC2D    =   GPTB_ACT_NA;		//CNT=C2D时，波形输出不变
+	tPwmChCfg.eActionT1U    =   GPTB_ACT_NA;		//CNT=T1U时，波形输出不变
+	tPwmChCfg.eActionT1D    =   GPTB_ACT_NA;		//CNT=T1D时，波形输出不变
+	tPwmChCfg.eActionT2U    =   GPTB_ACT_NA;		//CNT=T2U时，波形输出不变
+	tPwmChCfg.eActionT2D    =   GPTB_ACT_NA;		//CNT=T2D时，波形输出不变													
+	tPwmChCfg.eC1Sel 		=   GPTB_COMPA;			//C1选择CMPA为数据源		
+	tPwmChCfg.eC2Sel 		=   GPTB_COMPA;			//C2选择CMPA为数据源
+	csi_gptb_set_channel(GPTB0, &tPwmChCfg,  GPTB_CHANNEL_1);
+//------------------------------------------------------------------------------------------------------------------------
+	csi_gptb_set_sync(GPTB0, GPTB_SYNCIN0, GPTB_SYNC_CONT, GPTB_AUTO_REARM_ZRO);//设置SYNCIN0为连续触发，CNT=ZRO自动REARM
+	csi_gptb_sync_enable(GPTB0, GPTB_SYNCIN0);		//使能SYNCIN0外部触发
+	
+	while(1)
+	{
+		nop;
+	}
+	
+	return iRet;
+}
+
+/** \brief	bt trg gptb start：BT0的周期事件通过ETCB触发GPTB启动输出波形（10KHz/50%）的demo，可通过观察CHAX/CHAY来判断GPTB是否启动
+ * 
+ *  \brief	PA1外部下降沿触发GPTB启动。默认VIC中断不开启，即不进入PA1的外部中断；若需要进入PA1外部中断，需
+ * 			开启对应的VIC中断，调用csi_gpio_vic_irq_enable接口函数
+ *  
+ *  \param[in] none
+ *  \return error code
+ */
+int bt_etcb_gptb_start_demo(void)
+{
+	int iRet = 0;	
+	volatile uint8_t ch;
+	csi_etcb_config_t 			tEtcbCfg;			//ETCB参数配置结构体	
+	csi_bt_time_config_t 		tTimConfig;			//BT 定时初始化参数结构体
+	csi_gptb_pwm_config_t 		tPwmCfg;			//GPTB捕获参数配置结构体	
+	csi_gptb_pwm_ch_config_t  	tPwmChCfg;			//GPTB PWM通道参数配置结构体
+//------------------------------------------------------------------------------------------------------------------------	
+#if (USE_GUI == 0)
+	csi_gpio_set_mux(GPIOC, PC13, PC13_GPTB0_CHAX);	//初始化PC13为CHAX
+	csi_gpio_set_mux(GPIOA, PA7, PA7_GPTB0_CHAY);	//初始化PA7为CHAY
+#endif
+//------------------------------------------------------------------------------------------------------------------------
+	//BT0初始化
+	tTimConfig.wTimeVal  = 10000;					//BT定时值 = 1000us
+	tTimConfig.eRunMode  = BT_RUN_CONT;				//BT计数器工作模式
+	csi_bt_timer_init(BT0,&tTimConfig);				//BT0 定时
+	csi_bt_set_evtrg(BT0, BT_TRGSRC_PEND);			//BT0 PEND事件触发输出
+	csi_bt_evtrg_enable(BT0);						//BT0 事件触发输出使能
+	csi_bt_start(BT0);
+//------------------------------------------------------------------------------------------------------------------------	
+	tEtcbCfg.eChType  = ETCB_ONE_TRG_ONE;  			//单个源触发单个目标
+	tEtcbCfg.eSrcIp   = ETCB_BT0_TRGOUT ;  			//EXI_TRGOUT1作为触发源
+	tEtcbCfg.eDstIp   = ETCB_GPTB0_SYNCIN0;  		//GPTB0 SYNCIN0作为目标事件
+	tEtcbCfg.eTrgMode = ETCB_HARDWARE_TRG;
+	ch = csi_etcb_ch_alloc(tEtcbCfg.eChType);		//自动获取空闲通道号,ch >= 0 获取成功		
+	if(ch < 0)										//ch < 0,则获取通道号失败
+		return -1;
+	iRet = csi_etcb_ch_init(ch, &tEtcbCfg);		
+//------------------------------------------------------------------------------------------------------------------------	
+	tPwmCfg.eWorkMode       = GPTB_WORK_WAVE;       //GPTB工作模式：捕获/波形输出
+	tPwmCfg.eCountMode   	= GPTB_CNT_UPDN;        //GPTB计数模式：递增/递减/递增递减
+	tPwmCfg.eRunMode    	= GPTB_RUN_CONT;        //GPTB运行模式：连续/一次性
+	tPwmCfg.byDutyCycle 	= 50;					//GPTB输出PWM占空比			
+	tPwmCfg.wFreq 			= 10000;				//GPTB输出PWM频率	
+	csi_gptb_pwm_init(GPTB0, &tPwmCfg);
+//------------------------------------------------------------------------------------------------------------------------	
+	tPwmChCfg.eActionZRO    =   GPTB_ACT_LO;		//CNT=ZRO时，波形输出低电平
+	tPwmChCfg.eActionPRD    =   GPTB_ACT_NA;		//CNT=PRD时，波形输出不变
+	tPwmChCfg.eActionC1U    =   GPTB_ACT_HI;		//CNT=C1U时，波形输出高电平
+	tPwmChCfg.eActionC1D    =   GPTB_ACT_LO;		//CNT=C1D时，波形输出低电平
+	tPwmChCfg.eActionC2U    =   GPTB_ACT_NA;		//CNT=C2U时，波形输出不变
+	tPwmChCfg.eActionC2D    =   GPTB_ACT_NA;		//CNT=C2D时，波形输出不变
+	tPwmChCfg.eActionT1U    =   GPTB_ACT_NA;		//CNT=T1U时，波形输出不变
+	tPwmChCfg.eActionT1D    =   GPTB_ACT_NA;		//CNT=T1D时，波形输出不变
+	tPwmChCfg.eActionT2U    =   GPTB_ACT_NA;		//CNT=T2U时，波形输出不变
+	tPwmChCfg.eActionT2D    =   GPTB_ACT_NA;		//CNT=T2D时，波形输出不变													
+	tPwmChCfg.eC1Sel 		=   GPTB_COMPA;			//C1选择CMPA为数据源		
+	tPwmChCfg.eC2Sel 		=   GPTB_COMPA;			//C2选择CMPA为数据源
+	csi_gptb_set_channel(GPTB0, &tPwmChCfg,  GPTB_CHANNEL_1);
+//------------------------------------------------------------------------------------------------------------------------
+	csi_gptb_set_sync(GPTB0, GPTB_SYNCIN0, GPTB_SYNC_CONT, GPTB_AUTO_REARM_ZRO);//设置SYNCIN0为连续触发，CNT=ZRO自动REARM
+	csi_gptb_sync_enable(GPTB0, GPTB_SYNCIN0);						//使能SYNCIN0外部触发
+
+	while(1)
+	{
+		nop;
+	}
+	
+	return iRet;
+}
