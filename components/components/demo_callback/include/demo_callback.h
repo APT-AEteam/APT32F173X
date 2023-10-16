@@ -115,15 +115,6 @@ extern int can_receive_int_callback_demo(void);
 extern int dac_callback_demo(void);
 
 
-///  sram相关的示例代码
-extern void sram_dsram24k_dsram8k_demo0(void);
-extern void sram_dsram24k_dsram8k_demo1(void);
-extern void sram_dsram24k_iram8k_demo(void);
-
-
-///  wizard相关的示例代码
-extern void lvr_wizard_demo(void);
-extern int cqcr_wizard_demo(void);
 
 
 extern void freertos_demo(void);
