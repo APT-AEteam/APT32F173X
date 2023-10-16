@@ -168,7 +168,10 @@ void user_demo(void)
 /// ***************************************************
 ///  CRC相关的示例代码
 /// ***************************************************
-//	crc_demo();
+//	crc32_demo();
+//	crc16_ccitt_demo();
+//	crc16_demo();
+//	crc16_xmodem_demo();
 	
 /// ***************************************************
 /// ETCB相关的示例代码
@@ -216,7 +219,6 @@ void user_demo(void)
 //	lin_send_demo();        
 //	lin_send_recv_demo();
 #elif(USE_LIN_CALLBACK == 1)
-//	lin_send_int_callback_demo();
 //	lin_send_recv_int_callback_demo();
 #endif
 /// ***************************************************
