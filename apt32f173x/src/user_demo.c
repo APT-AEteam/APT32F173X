@@ -61,7 +61,11 @@ void user_demo(void)
 /// WWDT相关的示例代码
 /// ***************************************************
 //	wwdt_demo();
-	
+#if (USE_WWDT_CALLBACK == 0)				//不使用callback
+//	wwdt_demo();
+#else
+//	 wwdt_int_callback_demo();
+#endif
 /// ***************************************************
 ///  flash相关的示例代码
 /// ***************************************************	
@@ -93,12 +97,15 @@ void user_demo(void)
 /// ***************************************************
 ///  LPT相关的示例代码
 /// ***************************************************
-//	lpt_timer_demo();
-//	lpt_pwm_demo();
-//	lpt_sync_trg_start_demo();
-//	lpt_trg_out_demo();
-//  lpt_filter_demo();
-//  lpt_window_demo();
+#if (USE_LPT_CALLBACK == 0)			//不使用callback
+//	lpt_timer_demo( );
+//	lpt_pwm_demo( );
+//	exi_etcb_lpt_start_demo( );
+//	lpt_etcb_bt_start_demo( );
+//  lpt_filter_demo( );
+#else									//使用callback
+//	lpt_timer_int_callback_demo( );
+#endif
 
 /// ***************************************************
 ///  Counter A相关的示例代码
@@ -224,12 +231,18 @@ void user_demo(void)
 /// ***************************************************
 ///  IIC相关的示例代码
 /// ***************************************************
+#if (USE_IIC_CALLBACK == 0)				//不使用callback
+//	iic_master_eeprom_demo();
 //	iic_master_demo();
-//	iic_master_eeprom_demo( );
 //	iic_slave_demo();
-//  iic_multi_slave_address_demo( );
-//  iic_dma_tx_demo();
-//  iic_dma_rx_demo();
+//	iic_multi_slave_demo();
+//	iic_dma_send_demo();
+//	iic_dma_receive_demo();
+#else									//使用callback
+//	iic_slave_int_callback_demo();
+//  iic_slave_state_callback_demo();
+#endif
+
 	
 /// ***************************************************
 /// SIO相关的示例代码
