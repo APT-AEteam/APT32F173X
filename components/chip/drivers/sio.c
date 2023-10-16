@@ -92,6 +92,7 @@ void csi_sio_irqhandler(csp_sio_t *ptSioBase, uint8_t byIdx)
 			break;
 	}
 }
+
 /** \brief Init sio tx, Initializes the resources needed for the sio instance 
  * 
  *  \param[in] ptSioBase: pointer of sio register structure

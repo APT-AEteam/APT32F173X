@@ -37,23 +37,6 @@ void csi_bt_irqhandler(csp_bt_t *ptBtBase, uint8_t byIdx)
 	csp_bt_clr_isr(ptBtBase, eIsr);
 }
 
-/** \brief  register bt interrupt callback function
- * 
- *  \param[in] ptBtBase: pointer of bt register structure
- *  \param[in] callback: bt interrupt handle function
- *  \return error code \ref csi_error_t
- */ 
-csi_error_t csi_bt_register_callback(csp_bt_t *ptBtBase, void  *callback)
-{
-	uint8_t byIdx = apt_get_bt_idx(ptBtBase);
-	if(byIdx == 0xff)
-		return CSI_ERROR;
-		
-	g_tBtCtrl[byIdx].callback = callback;
-	
-	return CSI_OK;
-}
-
 /** \brief initialize bt data structure
  * 
  *  \param[in] ptBtBase: pointer of bt register structure
@@ -92,6 +75,24 @@ csi_error_t csi_bt_timer_init(csp_bt_t *ptBtBase, csi_bt_time_config_t *ptBtTimC
 	
 	return CSI_OK;
 }
+
+/** \brief  register bt interrupt callback function
+ * 
+ *  \param[in] ptBtBase: pointer of bt register structure
+ *  \param[in] callback: bt interrupt handle function
+ *  \return error code \ref csi_error_t
+ */ 
+csi_error_t csi_bt_register_callback(csp_bt_t *ptBtBase, void  *callback)
+{
+	uint8_t byIdx = apt_get_bt_idx(ptBtBase);
+	if(byIdx == 0xff)
+		return CSI_ERROR;
+		
+	g_tBtCtrl[byIdx].callback = callback;
+	
+	return CSI_OK;
+}
+
 /** \brief start bt
  * 
  *  \param[in] ptBtBase: pointer of bt register structure

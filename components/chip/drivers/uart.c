@@ -22,7 +22,6 @@ csi_uart_ctrl_t g_tUartCtrl[UART_IDX];
 /* private variablesr-------------------------------------------------*/
 
 
-
 /** \brief uart interrupt handler function
  * 
  *  \param[in] ptUartBase: pointer of uart register structure
