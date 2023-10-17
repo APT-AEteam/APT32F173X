@@ -63,7 +63,7 @@ license: Apache license v2.0
 #     toolchain_prefix: csky-abiv2-elf     # <可选项> 编译器前缀
 board:
   chip_name: chip_apt32f173
-  ld_script: gcc_flash_1732.ld
+  ld_script: ""
 #ld_script: ./gcc_sram.ld
 ## 第四部分：编译连接信息
 # build_config:                            # <可选项> 编译配置项

@@ -4,7 +4,7 @@ hw_info:
   vendor_name: ""
   chip_name: ""
   board_name: ""
-  ld_script: ""
+  ld_script: link_file/gcc_flash_1732.ld
   flash_program: ""
 def_config:
   CONFIG_ARCH_INTERRUPTSTACK: 1024
@@ -25,7 +25,6 @@ depends:
   - sdk_173x: v1.2.0
 build_config:
   include:
-    - include
     - ./
   internal_include: 
   cflag: -Og   -Wall  -ffunction-sections
@@ -36,8 +35,12 @@ build_config:
   libpath: 
 source_file:
   - src/main.c
-  - src/interrupt.c
   - src/user_demo.c
+  - src/interrupt.c
+  - link_file/gcc_flash_1731.ld
+  - link_file/gcc_flash_1732.ld
+  - link_file/gcc_flash_dram16k_iram16k_1732.ld
+  - link_file/gcc_flash_dram24k_iram8k_1732.ld
 depends_forward:
   - apt32f173x_demo: v1.2.0
   - apt32f173x_demo_callback: v1.2.0
