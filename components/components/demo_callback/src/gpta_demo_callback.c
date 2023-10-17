@@ -91,9 +91,10 @@ int gpta_timer_int_callback_demo(void)
 	tTimConfig.eRunMode  = GPTA_RUN_CONT;		             //GPTA计数器工作模式
 	csi_gpta_timer_init(GPTA0, &tTimConfig);                 //初始化GPTA0
 	
+	csp_gpta_int_enable(GPTA0, GPTA_INT_PEND);	             //使能GPTA0 PEND中断
 	csi_gpta_register_callback(GPTA0, gpta0_timer_callback); //注册中断回调函数
 	
-	csi_gpta_start(GPTA0);                                   //启动定时器
+	csi_gpta_start(GPTA0);                                   //启动GPTA0
 
 	return iRet;	
 }

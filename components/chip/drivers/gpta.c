@@ -183,8 +183,6 @@ csi_error_t csi_gpta_timer_init(csp_gpta_t *ptGptaBase,  csi_gpta_time_config_t 
 	csi_gpta_set_runmode(ptGptaBase, ptGptaTimCfg->eRunMode);           // gpta count mode
 	csp_gpta_set_pscr(ptGptaBase, (uint16_t)wClkDiv - 1);			    // clk div
 	csp_gpta_set_prdr(ptGptaBase, (uint16_t)wPrdrLoad);				    // prdr load value
-
-	csp_gpta_int_enable(ptGptaBase, GPTA_INT_PEND);	                    //enable interrupt
 	
 	return CSI_OK;					
 }

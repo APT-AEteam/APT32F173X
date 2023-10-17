@@ -41,7 +41,6 @@ csi_error_t csi_cnta_timer_init(csp_cnta_t *ptCntaBase,csi_cnta_timer_config_t *
 	csp_cnta_set_datal(ptCntaBase, wTempLoad);				                                                            //set CADATAL data
 //    csp_cnta_set_datah(ptCntaBase, wTempLoad);			                                                            //set CADATAH data
 
-	csi_cnta_int_enable(CA0, CNTA_INTSRC_PENDL);                                                                        //enable interrupt source
 	csp_cnta_sw_update_enable(ptCntaBase);	                                                                            //updata CADATAH CADATAL value 
 	
 	return CSI_OK;

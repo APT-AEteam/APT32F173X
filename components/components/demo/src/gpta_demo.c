@@ -52,8 +52,6 @@ ATTRIBUTE_ISR  void gpta0_int_handler(void)
 	{	
 	    csp_gpta_clr_isr(GPTA0, GPTA_INT_CBU);
 	}
-	
-	
 }
 #endif
 
@@ -70,14 +68,15 @@ int gpta_timer_demo(void)
 	csi_gpta_time_config_t tTimConfig;
 	
 #if (USE_GUI == 0)		
-	csi_gpio_set_mux(GPIOA, PA6, PA6_OUTPUT);	//初始化PA6为输出
+	csi_gpio_set_mux(GPIOA, PA6, PA6_OUTPUT);		 //初始化PA6为输出
 #endif
 	
-	tTimConfig.wTimeVal  = 10000;				//GPTA定时值 = 1000us
-	tTimConfig.eRunMode  = GPTA_RUN_CONT;		//GPTA计数器工作模式
-	csi_gpta_timer_init(GPTA0, &tTimConfig);    //初始化GPTA0, 定时10000us； GPTA定时，默认采用向上计数，PEND中断
+	tTimConfig.wTimeVal  = 10000;					 //GPTA定时值 = 1000us
+	tTimConfig.eRunMode  = GPTA_RUN_CONT;			 //GPTA计数器工作模式
+	csi_gpta_timer_init(GPTA0, &tTimConfig);    	 //初始化GPTA0, 定时10000us； GPTA定时，默认采用向上计数，PEND中断
 	
-	csi_gpta_start(GPTA0);                      //启动定时器
+	csp_gpta_int_enable(GPTA0, GPTA_INT_PEND);	     //使能GPTA0 PEND中断
+	csi_gpta_start(GPTA0);                     		 //启动GPTA0
 
 	return iRet;	
 }

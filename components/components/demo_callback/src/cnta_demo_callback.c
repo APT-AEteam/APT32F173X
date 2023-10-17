@@ -58,6 +58,7 @@ int cnta_timer_int_callback_demo(void)
 	tTimerCfg.eRunMode = CNTA_RUN_CONT;                      //重复模式
 	csi_cnta_timer_init(CA0,&tTimerCfg);                     //初始化CountA
 	
+	csi_cnta_int_enable(CA0, CNTA_INTSRC_PENDL);             //使能cnta PENDL中断
 	csi_cnta_register_callback(CA0, cnta_callback);	         //注册中断回调函数
 	
 	csi_cnta_start(CA0);                                     //启动CountA
