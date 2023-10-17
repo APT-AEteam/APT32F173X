@@ -31,31 +31,79 @@ sys_console_t g_tConsole;
  */
 csi_clk_config_t g_tClkConfig = 
 //	{SRC_HFOSC, HFOSC_24M_VALUE, SCLK_DIV1, PCLK_DIV1, HFOSC_24M_VALUE, HFOSC_24M_VALUE};
-	//{SRC_HFOSC, HFOSC_12M_VALUE, SCLK_DIV1, PCLK_DIV1,HFOSC_12M_VALUE, HFOSC_12M_VALUE};
-	//{SRC_HFOSC, HFOSC_6M_VALUE, SCLK_DIV1, PCLK_DIV1,HFOSC_6M_VALUE, HFOSC_6M_VALUE};
-	//{SRC_HFOSC, HFOSC_3M_VALUE, SCLK_DIV1, PCLK_DIV1,HFOSC_3M_VALUE, HFOSC_3M_VALUE};
-	{SRC_AUTO_HF_PLL, PLL_VALUE, SCLK_DIV1, PCLK_DIV1, PLL_VALUE, PLL_VALUE};
-//	{SRC_AUTO_EM_PLL, PLL_VALUE, SCLK_DIV1, PCLK_DIV1, PLL_VALUE, PLL_VALUE};
-//	{SRC_MANUAL_HF_PLL, PLL_VALUE, SCLK_DIV1, PCLK_DIV1, PLL_VALUE, PLL_VALUE};
-	//{SRC_MANUAL_EM_PLL, PLL_VALUE, SCLK_DIV1, PCLK_DIV1, PLL_VALUE, PLL_VALUE};
-	//{SRC_EMOSC, EMOSC_VALUE, SCLK_DIV2, PCLK_DIV2, EMOSC_VALUE/2, EMOSC_VALUE/4};
+//	{SRC_HFOSC, HFOSC_12M_VALUE, SCLK_DIV1, PCLK_DIV1,HFOSC_12M_VALUE, HFOSC_12M_VALUE};
+//	{SRC_HFOSC, HFOSC_6M_VALUE, SCLK_DIV1, PCLK_DIV1,HFOSC_6M_VALUE, HFOSC_6M_VALUE};
+//	{SRC_HFOSC, HFOSC_3M_VALUE, SCLK_DIV1, PCLK_DIV1,HFOSC_3M_VALUE, HFOSC_3M_VALUE};
+	{SRC_HF_PLL, PLLP_VALUE, SCLK_DIV1, PCLK_DIV1, PLLP_VALUE, PLLP_VALUE};
+//	{SRC_EM_PLL, PLLP_VALUE, SCLK_DIV1, PCLK_DIV1, PLLP_VALUE, PLLP_VALUE};
+//	{SRC_EMOSC, EMOSC_VALUE, SCLK_DIV2, PCLK_DIV2, EMOSC_VALUE/2, EMOSC_VALUE/4};
 //	{SRC_IMOSC, IMOSC_5M_VALUE, SCLK_DIV1, PCLK_DIV1,IMOSC_5M_VALUE, IMOSC_5M_VALUE};
-	//{SRC_IMOSC, IMOSC_4M_VALUE, SCLK_DIV1, PCLK_DIV1,IMOSC_4M_VALUE, IMOSC_4M_VALUE};
-	//{SRC_IMOSC, IMOSC_2M_VALUE, SCLK_DIV1, PCLK_DIV1,IMOSC_2M_VALUE, IMOSC_2M_VALUE};
-	//{SRC_IMOSC, IMOSC_131K_VALUE, SCLK_DIV1, PCLK_DIV1,IMOSC_131K_VALUE, IMOSC_131K_VALUE};
-	//{SRC_ESOSC, ESOSC_VALUE, SCLK_DIV2, PCLK_DIV1,ESOSC_VALUE/2, ESOSC_VALUE/2};
+//	{SRC_IMOSC, IMOSC_4M_VALUE, SCLK_DIV1, PCLK_DIV1,IMOSC_4M_VALUE, IMOSC_4M_VALUE};
+//	{SRC_IMOSC, IMOSC_2M_VALUE, SCLK_DIV1, PCLK_DIV1,IMOSC_2M_VALUE, IMOSC_2M_VALUE};
+//	{SRC_IMOSC, IMOSC_131K_VALUE, SCLK_DIV1, PCLK_DIV1,IMOSC_131K_VALUE, IMOSC_131K_VALUE};
+//	{SRC_ESOSC, ESOSC_VALUE, SCLK_DIV2, PCLK_DIV1,ESOSC_VALUE/2, ESOSC_VALUE/2};
 
-/*  PLL CONFIG
- * 
- * PLLPCLK = 24 /(g_tPllClkConfig.byDivM+1) * g_tPllClkConfig.byNul / (g_tPllClkConfig.byCkp_Div+1)
- * g_tPllClkConfig.byCkq_Div= CKQ_DIV4, PLLQCLK = 24 /(g_tPllClkConfig.byDivM+1) * g_tPllClkConfig.byNul / 4  
- * 
- */  
+
+//PLL CONFIG LIST
+// PLLPCLK = Input_Freq /(g_tPllClkConfig.byDivM+1) * g_tPllClkConfig.byNul / (g_tPllClkConfig.byCkp_Div+1)
+// PLLQCLK = Input_Freq /(g_tPllClkConfig.byDivM+1) * g_tPllClkConfig.byNul / g_tPllClkConfig.byCkq_Div 
+//
+// -------------------------------------------------------------------------------
+// | INPUT Freq | byDivM | byNul | byCkp_Div | byCkq_Div | PLLp Freq | PLLq Freq |
+// -------------------------------------------------------------------------------
+// |   24Mhz    |    3   |   35  |     1     |     4     |  105Mhz   |  52.5Mhz  |
+// |   12Mhz    |    1   |   35  |     1     |     4     |  105Mhz   |  52.5Mhz  |
+// |   6Mhz     |    0   |   35  |     1     |     4     |  105Mhz   |  52.5Mhz  | 
+// |-----------------------------------------------------------------------------|
+// |   24Mhz    |    2   |   24  |     1     |     4     |   96Mhz   |   48Mhz   |
+// |   24Mhz    |    2   |   36  |     2     |     6     |   96Mhz   |   48Mhz   |
+// |   24Mhz    |    3   |   32  |     1     |     4     |   96Mhz   |   48Mhz   |
+// |   24Mhz    |    3   |   48  |     2     |     6     |   96Mhz   |   48Mhz   |
+// |   24Mhz    |    4   |   40  |     1     |     4     |   96Mhz   |   48Mhz   |
+// |   24Mhz    |    4   |   60  |     2     |     6     |   96Mhz   |   48Mhz   |
+// |   24Mhz    |    5   |   48  |     1     |     4     |   96Mhz   |   48Mhz   |
+// |   24Mhz    |    5   |   72  |     2     |     6     |   96Mhz   |   48Mhz   |
+// |-----------------------------------------------------------------------------|
+// |   24Mhz    |    2   |   24  |     1     |     2     |   96Mhz   |   96Mhz   |
+// |   24Mhz    |    3   |   32  |     1     |     2     |   96Mhz   |   96Mhz   |
+// |   24Mhz    |    4   |   40  |     1     |     2     |   96Mhz   |   96Mhz   |
+// |   24Mhz    |    5   |   48  |     1     |     2     |   96Mhz   |   96Mhz   |
+// |-----------------------------------------------------------------------------|
+// |   24Mhz    |    2   |   36  |     3     |     6     |   72Mhz   |   48Mhz   |
+// |   24Mhz    |    3   |   48  |     3     |     6     |   72Mhz   |   48Mhz   |
+// |   24Mhz    |    4   |   60  |     3     |     6     |   72Mhz   |   48Mhz   |
+// |   24Mhz    |    5   |   72  |     3     |     6     |   72Mhz   |   48Mhz   |
+// -------------------------------------------------------------------------------
+//NOTE: 1.PLLq CAN be used as ADC source freq,MAX ADC source freq should be 96M.
+//		2.1731 PLLp max Freq 72Mhz, 1732 PLLp max Freq 105Mhz
+
 csi_pll_config_t g_tPllClkConfig = 
-//	{PLL_SEL_HFOSC_24M, 3, 35, 1,CKQ_DIV4};       //PLLPCLK = 24 /(3+1) *35 / (1+1)  PLLQCLK = 24 /(3+1) *35 / 4 
-//	{PLL_SEL_HFOSC_12M, 1, 35, 1,CKQ_DIV4};
-	{PLL_SEL_HFOSC_6M,  1, 70, 1,CKQ_DIV4};
-	//{PLL_SEL_EMOSC_24M, 3, 35, 1,CKQ_DIV4};	
+#if(IS_CHIP_1732 ==1) 
+//	{PLL_SEL_HFOSC_24M, 3, 35, 1,CKQ_DIV4};       //PLLP = 105M  PLLQ=52.2M
+	{PLL_SEL_HFOSC_12M, 1, 35, 1,CKQ_DIV4};
+//	{PLL_SEL_HFOSC_6M,  0, 35, 1,CKQ_DIV4};
+//	{PLL_SEL_EMOSC_24M, 3, 35, 1,CKQ_DIV4};	
+//	{PLL_SEL_HFOSC_24M, 2, 24, 1,CKQ_DIV4};		  //PLLP = 96M  PLLQ=48M
+//	{PLL_SEL_HFOSC_24M, 2, 36, 2,CKQ_DIV6};
+//	{PLL_SEL_HFOSC_24M, 3, 32, 1,CKQ_DIV4};		  
+//	{PLL_SEL_HFOSC_24M, 3, 48, 2,CKQ_DIV6};
+//	{PLL_SEL_HFOSC_24M, 4, 40, 1,CKQ_DIV4};		  
+//	{PLL_SEL_HFOSC_24M, 4, 60, 2,CKQ_DIV6};
+//	{PLL_SEL_HFOSC_24M, 5, 48, 1,CKQ_DIV4};		  
+//	{PLL_SEL_HFOSC_24M, 5, 72, 2,CKQ_DIV6};
+//	{PLL_SEL_EMOSC_24M, 3, 32, 1,CKQ_DIV4};	
+//	{PLL_SEL_HFOSC_24M, 2, 24, 1,CKQ_DIV2};		  //PLLP = 96M  PLLQ=96M
+//	{PLL_SEL_HFOSC_24M, 3, 32, 1,CKQ_DIV2};
+//	{PLL_SEL_HFOSC_24M, 4, 40, 1,CKQ_DIV2};
+//	{PLL_SEL_HFOSC_24M, 5, 48, 1,CKQ_DIV2};
+//	{PLL_SEL_EMOSC_24M, 3, 32, 1,CKQ_DIV2};
+#endif
+//	{PLL_SEL_HFOSC_24M, 2, 36, 3,CKQ_DIV6};		 //PLLP = 72M  PLLQ=96M
+//	{PLL_SEL_HFOSC_24M, 3, 48, 3,CKQ_DIV6};
+//	{PLL_SEL_HFOSC_24M, 4, 60, 3,CKQ_DIV6};
+//	{PLL_SEL_HFOSC_24M, 5, 72, 3,CKQ_DIV6};
+//	{PLL_SEL_EMOSC_24M, 2, 36, 3,CKQ_DIV6};	
+	
 	
 /// can bit timer parameters config, Standard baud rate
 const csi_can_bittime_t  g_tBitTime[] = {

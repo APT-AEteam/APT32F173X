@@ -37,9 +37,12 @@ extern "C" {
 #ifndef PLL_VALUE
 
 #if	(IS_CHIP_1732 == 1) 
-#define PLL_VALUE               105000000U
+#define PLLP_VALUE               105000000U //MAX freq
+#define PLLQ_VALUE				 96000000U  //MAX freq
+
 #else
-#define PLL_VALUE               72000000U
+#define PLLP_VALUE               72000000U	//MAX freq
+#define PLLQ_VALUE				 48000000U  //MAX freq
 #endif
 
 #endif

@@ -23,10 +23,8 @@ typedef enum {
     SRC_HFOSC,
 	SRC_ISOSC = 4,
 	SRC_ESOSC,
-	SRC_AUTO_HF_PLL = 6,
-	SRC_AUTO_EM_PLL,
-	SRC_MANUAL_HF_PLL,
-	SRC_MANUAL_EM_PLL,	
+	SRC_HF_PLL = 6,
+	SRC_EM_PLL,
 } csi_clk_src_e;
 
 typedef enum {
@@ -93,10 +91,10 @@ typedef enum{
 	PLL_SEL_EMOSC_24M
 }csi_pll_manual_sel_e;
 
-typedef enum{
-	PLL_HFOSC_24M_AUTO,
-	PLL_EMOSC_24M_AUTO
-}csi_pll_auto_sel_e;
+//typedef enum{
+//	PLL_HFOSC_24M_AUTO,
+//	PLL_EMOSC_24M_AUTO
+//}csi_pll_auto_sel_e;
 
 typedef enum{
 	CKQ_DIV2,	
@@ -218,7 +216,7 @@ csi_error_t csi_sysclk_config(csi_clk_config_t tClkCfg);
  *  \param[in] wFreq: pll clk freq 
  *  \return csi_error_t.
  */
- csi_error_t csi_pll_auto_config(csi_pll_auto_sel_e ePllAutoSel,uint32_t wFreq);
+// csi_error_t csi_pll_auto_config(csi_pll_auto_sel_e ePllAutoSel,uint32_t wFreq);
  
 /** \brief Clock output configuration
  * 

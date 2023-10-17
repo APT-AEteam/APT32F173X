@@ -101,17 +101,9 @@ static csi_error_t apt_pll_config(csi_clk_src_e eSrc,uint32_t wFreq)
 	
 	csi_pll_disable();
 	
-	
-	if((eSrc == SRC_AUTO_HF_PLL) | (eSrc == SRC_AUTO_EM_PLL)) //auto pll calculate
-	{
-		if((wFreq < 2000000UL)||(wFreq > 120000000UL))
-			return CSI_ERROR;
-		apt_auto_pll_cfg(wFreq);	
-	}
-
-	if((eSrc == SRC_MANUAL_HF_PLL) | (eSrc == SRC_AUTO_HF_PLL))
+	if(eSrc == SRC_HF_PLL)
 		csp_pll_set_clk_src(SYSCON, PLL_CLK_SEL_HFOSC);	
-	else if((eSrc == SRC_MANUAL_EM_PLL) | (eSrc == SRC_AUTO_EM_PLL))
+	else if(eSrc == SRC_EM_PLL)
 		csp_pll_set_clk_src(SYSCON, PLL_CLK_SEL_EMOSC);	
 	else
 		 return CSI_ERROR;
@@ -152,10 +144,12 @@ csi_error_t csi_sysclk_config(csi_clk_config_t tClkCfg)
 	switch (eSrc)
 	{
 		case (SRC_ISOSC): 
+			eSckSel = SEL_ISOSC;
 			csi_isosc_enable();
 			byFlashLp = 1;
 			break;
 		case (SRC_IMOSC):	
+			eSckSel = SEL_IMOSC;
 			switch (wFreq) 	
 			{
 				case (IMOSC_5M_VALUE):   byFreqIdx = 0;
@@ -174,11 +168,13 @@ csi_error_t csi_sysclk_config(csi_clk_config_t tClkCfg)
 				byFlashLp = 1;
 			break;
 		case (SRC_EMOSC):
+			eSckSel = SEL_EMOSC;
 			if (wFreq == EMOSC_32K_VALUE)
 				csp_em_lfmd_enable(SYSCON);
 			ret = csi_emosc_enable(wFreq);
 			break;
 		case (SRC_HFOSC):	
+			eSckSel = SEL_HFOSC;
 			switch (wFreq) 	
 			{
 				case (HFOSC_24M_VALUE): byFreqIdx = 0;
@@ -196,7 +192,8 @@ csi_error_t csi_sysclk_config(csi_clk_config_t tClkCfg)
 			csi_hfosc_enable(byFreqIdx);
 			break;
 			
-		case (SRC_MANUAL_HF_PLL):
+		case (SRC_HF_PLL):
+			eSckSel = SEL_PLL;
 			switch (g_tPllClkConfig.eClkSel) 	
 			{
 				case (PLL_SEL_HFOSC_24M): byFreqIdx = 0;
@@ -214,15 +211,11 @@ csi_error_t csi_sysclk_config(csi_clk_config_t tClkCfg)
 			}
 			csi_hfosc_enable(byFreqIdx);
 			break;
-		case (SRC_MANUAL_EM_PLL):
-		case (SRC_AUTO_EM_PLL):
+		case (SRC_EM_PLL):
+			eSckSel = SEL_PLL;
 			wFreq = EMOSC_24M_VALUE;
 			ret = csi_emosc_enable(wFreq);
 			break;
-		case (SRC_AUTO_HF_PLL): 
-			csi_hfosc_enable(0); 
-			break;
-
 		case(SRC_ESOSC):
 			eSckSel = SEL_ESOSC;
 			csi_esosc_enable();
@@ -232,21 +225,13 @@ csi_error_t csi_sysclk_config(csi_clk_config_t tClkCfg)
 			break;
 	}
 	
-	if(eSrc >= SRC_AUTO_HF_PLL)  //config and enable pll register
+	if(eSrc >= SRC_HF_PLL)  //config and enable pll register
 	{
-		eSckSel = SEL_PLL;
 		apt_pll_config(eSrc,wFreq);  
 		
-		if(eSrc >= SRC_MANUAL_HF_PLL)
-		{
-			wFreq = wFreq /(g_tPllClkConfig.byDivM+1) * g_tPllClkConfig.byNul / (g_tPllClkConfig.byCkp_Div+1);
-			wTargetSclk = wFreq/s_wHclkDiv[tClkCfg.eSdiv];
-		}
+		wFreq = wFreq /(g_tPllClkConfig.byDivM+1) * g_tPllClkConfig.byNul / (g_tPllClkConfig.byCkp_Div+1);
+		wTargetSclk = wFreq/s_wHclkDiv[tClkCfg.eSdiv];
 	}
-	else {
-		eSckSel = (csi_sclk_sel_e)eSrc;
-	}
-
 
 	IFC->CEDR = IFC_CLKEN;
 	if (wTargetSclk > 80000000) {
@@ -322,48 +307,6 @@ csi_error_t csi_sysclk_config(csi_clk_config_t tClkCfg)
 		g_tPllClkConfig.byDivM = tPllCfg.byDivM;
 		g_tPllClkConfig.byNul = tPllCfg.byNul;
 		g_tPllClkConfig.byCkp_Div = tPllCfg.byCkp_Div;
-	}
-	csp_pll_set_div_m(SYSCON, g_tPllClkConfig.byDivM);
-	csp_pll_set_nul(SYSCON, g_tPllClkConfig.byNul);
-	csp_pll_set_ckp_div(SYSCON, g_tPllClkConfig.byCkp_Div);
-	csp_pll_set_ckq_div(SYSCON, g_tPllClkConfig.byCkq_Div);
-	csp_pll_clk_enable(SYSCON);
-	csi_pll_enable();
-
-	return ret;
- }
-
-/** \brief PLL clk auto config
- * 
- *  \param[in] ePllAutoSel: auto clk source
- *  \param[in] wFreq: pll clk freq 
- *  \return csi_error_t.
- */
- csi_error_t csi_pll_auto_config(csi_pll_auto_sel_e ePllAutoSel,uint32_t wFreq)
- {
-	csi_error_t ret = CSI_OK;
-
-	csi_pll_disable();
-
-	if(ePllAutoSel == PLL_HFOSC_24M_AUTO)
-	{
-		if((wFreq < 2000000UL)||(wFreq > 120000000UL))
-			return CSI_ERROR;
-		apt_auto_pll_cfg(wFreq);	
-		csi_hfosc_enable(0);   
-		csp_pll_set_clk_src(SYSCON, PLL_CLK_SEL_HFOSC);
-	}
-	else if(ePllAutoSel == PLL_EMOSC_24M_AUTO)
-	{
-		if((wFreq < 2000000UL)||(wFreq > 120000000UL))
-			return CSI_ERROR;
-		apt_auto_pll_cfg(wFreq);	
-		csi_emosc_enable(EMOSC_VALUE);         //EMOSC_VALUE
-		csp_pll_set_clk_src(SYSCON, PLL_CLK_SEL_EMOSC);		
-	}
-	else
-	{
-		return CSI_ERROR;
 	}
 	csp_pll_set_div_m(SYSCON, g_tPllClkConfig.byDivM);
 	csp_pll_set_nul(SYSCON, g_tPllClkConfig.byNul);

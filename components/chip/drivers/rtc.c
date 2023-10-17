@@ -119,7 +119,6 @@ void csi_rtc_init(csp_rtc_t *ptRtc, csi_rtc_config_t *tConfig)
 	while((ptRtc->CCR & RTC_CLK_STABLE) == 0);
 	
 	csp_rtc_set_key(ptRtc);
-	csp_rtc_rb_enable(ptRtc);
 	csp_rtc_set_fmt(ptRtc, (rtc_fmt_e)tConfig->eFmt);
 	csp_rtc_alm_disable(ptRtc, RTC_ALMB);
 	csp_rtc_alm_disable(ptRtc, RTC_ALMA);

@@ -87,7 +87,7 @@ void rtc_set_time_demo(void)
 	tRtcTime.iHour = 15;										//如果是12小时制，回读到的hour范围为1->12；如果是24小时制，回读到的hour范围是0->23
 	tRtcTime.iMin  = 15;
 	tRtcTime.iSec  = 0;	
-	csi_rtc_set_current_time(RTC, &tRtcTime);							//设置时间
+	csi_rtc_set_current_time(RTC, &tRtcTime);					//设置时间
 	csi_rtc_start(RTC);											//RTC开始计时
 	
 	mdelay(1000);												//因为RTC时钟源频率远低于系统时钟频率，故设置完时间，需要延时一段时间，进行回读，才能保证读到的时间是需要的时间
