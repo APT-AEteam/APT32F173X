@@ -68,7 +68,6 @@ csi_error_t csi_bt_timer_init(csp_bt_t *ptBtBase, csi_bt_time_config_t *ptBtTimC
 	csp_bt_set_pscr(ptBtBase, (uint16_t)wClkDiv - 1);				//bt clk div	
 	csp_bt_set_prdr(ptBtBase, (uint16_t)wTmLoad);					//bt prdr load value
 	csp_bt_set_cmp(ptBtBase, (uint16_t)(wTmLoad >> 1));				//bt prdr load value
-	csp_bt_int_enable(ptBtBase, BT_INT_PEND);						//enable PEND interrupt
 	
 	//callback init 
 	g_tBtCtrl[byIdx].callback = NULL;
