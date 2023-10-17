@@ -184,7 +184,7 @@ csi_error_t csi_lpt_timer_init(csp_lpt_t *ptLptBase,csi_lpt_time_config_t *ptLpt
 	{
 		csp_lpt_set_prdr(ptLptBase, (uint16_t)g_wLptPrd);
 	}
-	csi_lpt_int_enable(ptLptBase,LPT_INTSRC_PEND|LPT_INTSRC_TRGEV0);	 //enable PEND interrupt  
+	
 	
 	return tRet;	
 }

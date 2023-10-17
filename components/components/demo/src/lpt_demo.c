@@ -51,7 +51,7 @@ ATTRIBUTE_ISR void lpt_int_handler(void)
 #endif
 
 /** \brief lpt timer
- * 
+ * 	\brief csi初始化里不开启中断，需要进中断函数，需调用csi_lpt_int_enable接口，demo默认开启pend中断
  *  \param[in] none
  *  \return error code
  */
@@ -63,8 +63,9 @@ int lpt_timer_demo(void)
 	tTimConfig.wTimeVal = 200;					//LPT定时值 = 200us
 	tTimConfig.eRunMode  = LPT_CNT_CONT;		//LPT计数器工作模式，连续
 	tTimConfig.eClksrc=LPT_CLK_PCLK_DIV4;  		//LPT时钟源  
-	csi_lpt_timer_init(LPT,&tTimConfig);        //初始化lpt,默认采用PEND中断
-
+	csi_lpt_timer_init(LPT,&tTimConfig);        //初始化lpt 
+	
+	csi_lpt_int_enable(LPT,LPT_INTSRC_PEND);	 //使能LPT PEND中断  
 	csi_lpt_start(LPT);	                        //启动lpt
 	
 	return iRet;	
@@ -101,6 +102,7 @@ int lpt_pwm_demo(void)
 
 /** \brief lpt sync trg count
  *  外部下降沿中断触发lpt
+ * \brief csi初始化里不开启中断，需要进中断函数，需调用csi_lpt_int_enable接口，demo默认开启pend中断
  *  \param[in] none
  *  \return error code
  */
@@ -125,8 +127,10 @@ int exi_etcb_lpt_start_demo(void)
 	tTimConfig.wTimeVal = 5;					//LPT定时值 = 5ms
 	tTimConfig.eRunMode  = LPT_CNT_CONT;		//LPT计数器工作模式
 	tTimConfig.eClksrc=LPT_CLK_PCLK_DIV4;  		//LPT时钟源  
-	csi_lpt_timer_init(LPT,&tTimConfig);        //初始化lpt,默认采用PEND中断
+	csi_lpt_timer_init(LPT,&tTimConfig);        //初始化lpt 
 
+	csi_lpt_int_enable(LPT,LPT_INTSRC_PEND);	 //使能LPT PEND中断
+	
 	csi_lpt_set_sync(LPT, LPT_TRG_SYNCIN0, LPT_SYNC_ONCE, ENABLE);
 	csi_lpt_sync_enable(LPT);
 	csi_lpt_debug_enable(LPT);
@@ -150,6 +154,7 @@ int exi_etcb_lpt_start_demo(void)
 
 /** \brief lpt trg out
  *  lpt通过etcb触发bt
+ * \brief csi初始化里不开启中断，需要进中断函数，需调用csi_lpt_int_enable接口，demo默认开启pend中断
  *  \param[in] none
  *  \return error code
  */
@@ -163,7 +168,9 @@ int lpt_etcb_bt_start_demo(void)
 	tTimConfig.wTimeVal = 50;					//LPT定时值 = 50ms
 	tTimConfig.eRunMode  = LPT_CNT_CONT;		//LPT计数器工作模式
 	tTimConfig.eClksrc=LPT_CLK_PCLK_DIV4;  		//LPT时钟源  
-	csi_lpt_timer_init(LPT,&tTimConfig);        //初始化lpt,默认采用PEND中断
+	csi_lpt_timer_init(LPT,&tTimConfig);        //初始化lpt 
+	
+	csi_lpt_int_enable(LPT,LPT_INTSRC_PEND);	 //使能LPT PEND中断
 	
 	csi_lpt_set_evtrg(LPT, LPT_TRGOUT, LPT_TRGSRC_PRD, 10);
 	csi_lpt_trg_enable(LPT);
@@ -199,7 +206,7 @@ int lpt_etcb_bt_start_demo(void)
 
 
 /** \brief lpt external clock with filter
- *  
+ *  \brief csi初始化里不开启中断，需要进中断函数，需调用csi_lpt_int_enable接口，demo默认开启pend中断
  *  \param[in] none
  *  \return error code
  */
@@ -214,7 +221,9 @@ int lpt_filter_demo(void)
 	tTimConfig.wTimeVal = 1;					//LPT定时值 = 1ms
 	tTimConfig.eRunMode  = LPT_CNT_CONT;		//LPT计数器工作模式
 	tTimConfig.eClksrc=LPT_CLK_IN_FALL;  		//LPT时钟源  
-	csi_lpt_timer_init(LPT,&tTimConfig);        //初始化lpt,默认采用PEND中断
+	csi_lpt_timer_init(LPT,&tTimConfig);        //初始化lpt 
+	
+	csi_lpt_int_enable(LPT,LPT_INTSRC_PEND);	 //使能LPT PEND中断
 	
 	csp_lpt_flt_init(LPT);    // CR[FLTIPSCLD]=1,数字滤波器计数器初始化，计数器值被初始化为CEDR[FLTCKPRS]中的设置值
 	csp_lpt_set_filter(LPT, 3, LPT_FLTDEB_02);     // CEDR[FLTCKPRS]=3、CR[FLTDEB] =LPT_FLTDEB_02

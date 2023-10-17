@@ -38,8 +38,7 @@ void user_lpt_callback(csp_lpt_t *ptLptBase, uint8_t byIsr)
 }
 
 /** \brief lpt_timer_int_callback_demo：LPT做基本定时器功能demo，使用callback
-* 	\brief  csi接口默认使用(开启)周期结束中断，并在中断里面翻转IO(需要打开PA1IO配置），若不需要开启中断，可调
- * 			用csi_bt_int_disable接口函数，关闭周期结束中断
+ *  \brief csi初始化里不开启中断，需要进中断函数，需调用csi_lpt_int_enable接口，demo默认开启pend中断
  *  \param[in] none
  *  \return error code
  */
@@ -54,7 +53,9 @@ int lpt_timer_int_callback_demo(void)
 	tTimConfig.wTimeVal = 200;					//LPT定时值 = 200ms
 	tTimConfig.eRunMode  = LPT_CNT_CONT;		//LPT计数器工作模式，连续
 	tTimConfig.eClksrc=LPT_CLK_PCLK_DIV4;  		//LPT时钟源  
-	csi_lpt_timer_init(LPT,&tTimConfig);        //初始化lpt,默认采用PEND中断
+	csi_lpt_timer_init(LPT,&tTimConfig);        //初始化lpt 
+	
+	csi_lpt_int_enable(LPT,LPT_INTSRC_PEND);	 //使能LPT PEND中断
 	
 	csi_lpt_register_callback(LPT, user_lpt_callback);	//注册中断回调函数
 	

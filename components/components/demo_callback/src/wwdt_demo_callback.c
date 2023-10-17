@@ -24,6 +24,7 @@
  * 
  * 	\brief	用户定义，支持EVI中断处理，使用csi标准库，中断发生时会自动调用用户注册的回调函
  * 			数，用户可在回调函数里做自己的处理，而不需要关注具体的底层中断处理。
+ *  \brief	csi初始化里不开启中断，需要进中断函数，需要调用csi_wwdt_int_enable函数；demo默认打开中断
  * 
  *  \param[in] ptWwdtBase: WWDT寄存器结构体指针，指向WWDT的基地址 
  *  \return none

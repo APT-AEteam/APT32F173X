@@ -43,6 +43,7 @@
  /** \brief	wwdt_demo: WWDT 喂狗
  * 
  *  \brief	窗内喂狗不会引起复位，窗外喂狗会引起复位
+ *  \brief	csi初始化里不开启中断，需要进中断函数，需要调用csi_wwdt_int_enable函数；demo默认打开中断
  *  \param[in] none
  *  \return error code
  */
