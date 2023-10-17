@@ -18,7 +18,7 @@
 /* Private macro-----------------------------------------------------------*/
 /* Private variablesr------------------------------------------------------*/
 
-#if (USE_BT_CALLBACK == 1)									
+#if (USE_BT_CALLBACK == 0)									
 
 /** \brief  user_bt0_callback：BT0中断回调函数
  * 
@@ -59,8 +59,8 @@ int bt_timer_callback_demo(void)
 	tTimConfig.eRunMode  = BT_RUN_CONT;					//BT计数器工作模式：连续/单次
 	csi_bt_timer_init(BT0, &tTimConfig);				//初始化BT	
 	
+	csi_bt_int_enable(BT1,BT_INTSRC_PEND);				//使能BT PEND中断
 	csi_bt_register_callback(BT0, user_bt0_callback);	//注册中断回调函数
-	
 	csi_bt_start(BT0);									//启动BT定时器,定时默认开启BT的PEND(周期结束)中断
 
 	while(1)
