@@ -192,8 +192,6 @@ csi_error_t csi_gptb_timer_init(csp_gptb_t *ptGptbBase, csi_gptb_time_config_t *
 	csp_gptb_set_pscr(ptGptbBase, (uint16_t)wClkDiv - 1);			
 	csp_gptb_set_prdr(ptGptbBase, (uint16_t)wPrdrLoad);			
 
-	csp_gptb_int_enable(ptGptbBase, GPTB_INT_PEND);	
-
 	return CSI_OK;					
 }
 

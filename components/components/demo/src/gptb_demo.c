@@ -63,7 +63,7 @@ ATTRIBUTE_ISR  void gptb0_int_handler(void)
 }
 #endif
 
-/** \brief	gptb_timer_demo: gptb做基本定时器功能，默认使用向上计数，PEND中断
+/** \brief	gptb_timer_demo: gptb做基本定时器功能，使能PEND中断，初始化默认使用向上计数，
  * 
  *  \brief	csi初始化使用(开启)周期结束中断，并在中断里面翻转IO(需要打开PA6 IO配置注释)；
  * 			若不需要开启中断,需调用csi_gptb_int_disable接口函数，关闭周期结束中断。
@@ -88,6 +88,7 @@ int gptb_timer_demo(void)
 	tTimConfig.eRunMode  = GPTB_RUN_CONT;		//GPTB计数器工作模式
 	csi_gptb_timer_init(GPTB0, &tTimConfig);	//初始化GPTB	
 	
+	csi_gptb_int_enable(GPTB0,GPTB_INTSRC_PEND);
 	csi_gptb_start(GPTB0);                  	//启动定时器
 
 	return iRet;	
