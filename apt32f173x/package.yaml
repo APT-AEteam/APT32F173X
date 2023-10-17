@@ -4,7 +4,7 @@ hw_info:
   vendor_name: ""
   chip_name: ""
   board_name: ""
-  ld_script: link_file/gcc_flash_1732.ld
+  ld_script: link/gcc_flash_1732.ld
   flash_program: ""
 def_config:
   CONFIG_ARCH_INTERRUPTSTACK: 1024
