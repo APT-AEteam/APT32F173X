@@ -575,7 +575,7 @@
               <sel notAvailable="Pin13DA,Pin13DSR,Pin13OM">GPIO_INPUT</sel>
               <sel notAvailable="Pin13TTL,Pin13Fltr">GPIO_OUTPUT</sel>
               <sel notAvailable="Pin13TTL,Pin13Fltr">GPIO_OUTPUT with Monitor</sel>
-              <sel notAvailable="Pin13TTL,Pin13Fltr,Pin13DA,Pin13DSR,Pin13OM"></sel>
+              <sel notAvailable="Pin13TTL,Pin13Fltr,Pin13DA,Pin13DSR,Pin13OM"/>
               <sel notAvailable="Pin13TTL,Pin13Fltr,Pin13DA,Pin13DSR,Pin13OM">SPI0_MOSI</sel>
               <sel notAvailable="Pin13TTL,Pin13Fltr,Pin13DA,Pin13DSR,Pin13OM">GPTA2_CHB</sel>
               <sel notAvailable="Pin13TTL,Pin13Fltr,Pin13DA,Pin13DSR,Pin13OM">GPTB3_CHAY</sel>
@@ -1118,7 +1118,7 @@
               <sel notAvailable="Pin24DA,Pin24DSR,Pin24OM">GPIO_INPUT</sel>
               <sel notAvailable="Pin24TTL,Pin24Fltr">GPIO_OUTPUT</sel>
               <sel notAvailable="Pin24TTL,Pin24Fltr">GPIO_OUTPUT with Monitor</sel>
-              <sel notAvailable="Pin24TTL,Pin24Fltr,Pin24DA,Pin24DSR,Pin24OM"></sel>
+              <sel notAvailable="Pin24TTL,Pin24Fltr,Pin24DA,Pin24DSR,Pin24OM"/>
               <sel notAvailable="Pin24TTL,Pin24Fltr,Pin24DA,Pin24DSR,Pin24OM">SWDCLK</sel>
               <sel notAvailable="Pin24TTL,Pin24Fltr,Pin24DA,Pin24DSR,Pin24OM">I2C_SDA</sel>
               <sel notAvailable="Pin24TTL,Pin24Fltr,Pin24DA,Pin24DSR,Pin24OM">UART1_TX</sel>
@@ -1194,7 +1194,7 @@
               <sel notAvailable="Pin25DA,Pin25DSR,Pin25OM">GPIO_INPUT</sel>
               <sel notAvailable="Pin25TTL,Pin25Fltr">GPIO_OUTPUT</sel>
               <sel notAvailable="Pin25TTL,Pin25Fltr">GPIO_OUTPUT with Monitor</sel>
-              <sel notAvailable="Pin25TTL,Pin25Fltr,Pin25DA,Pin25DSR,Pin25OM"></sel>
+              <sel notAvailable="Pin25TTL,Pin25Fltr,Pin25DA,Pin25DSR,Pin25OM"/>
               <sel notAvailable="Pin25TTL,Pin25Fltr,Pin25DA,Pin25DSR,Pin25OM">SPI0_NSS</sel>
               <sel notAvailable="Pin25TTL,Pin25Fltr,Pin25DA,Pin25DSR,Pin25OM">UART1_RX</sel>
               <sel notAvailable="Pin25TTL,Pin25Fltr,Pin25DA,Pin25DSR,Pin25OM">UART0_RX</sel>
