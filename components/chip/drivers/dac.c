@@ -12,43 +12,14 @@
 */
 #include "drv/dac.h"
 /* Private macro------------------------------------------------------*/
-/* externs function---------------------------------------------------*/
+/* Private function---------------------------------------------------*/
+static uint8_t apt_get_dac_idx(csp_dac_t *ptDacBase);
+
 /* global variablesr--------------------------------------------------*/
 csi_dac_ctrl_t g_tDacCtrl[DAC_IDX];
 
 /* Private variablesr-------------------------------------------------*/
 
-/** \brief get dac number 
- * 
- *  \param[in] ptDacBase: pointer of dac register structure
- *  \return dac number 0/1
- */ 
-static uint8_t apt_get_dac_idx(csp_dac_t *ptDacBase)
-{
-	switch((uint32_t)ptDacBase)
-	{
-		case AHB_DAC_BASE:		//DAC0
-			return 0;		
-		default:
-			return 0xff;		//error
-	}
-}
-/** \brief  register dac interrupt callback function
- * 
- *  \param[in] ptDacBase: pointer of dac register structure
- *  \param[in] callback: dac interrupt handle function
- *  \return error code \ref csi_error_t
- */ 
-csi_error_t csi_dac_register_callback(csp_dac_t *ptDacBase, void  *callback)
-{
-	uint8_t byIdx = apt_get_dac_idx(ptDacBase);
-	if(byIdx == 0xff)
-		return CSI_ERROR;
-		
-	g_tDacCtrl[byIdx].callback = callback;
-	
-	return CSI_OK;
-}
 /** \brief dac interrupt handler function
  * 
  *  \param[in] ptDacBase: pointer of dac register structure
@@ -81,6 +52,23 @@ void csi_dac_init(csp_dac_t *ptDacBase, csi_dac_config_t *ptDacCfg)
 	csp_dac_refsel_enable(ptDacBase,ptDacCfg->bRefSel);//reference enable
 	csp_dac_set_datar(ptDacBase,ptDacCfg->hwDatarset);//set voltage data
 	csp_dac_buff_enable(DAC0,ptDacCfg->bBufen);//buffer enable
+}
+
+/** \brief  register dac interrupt callback function
+ * 
+ *  \param[in] ptDacBase: pointer of dac register structure
+ *  \param[in] callback: dac interrupt handle function
+ *  \return error code \ref csi_error_t
+ */ 
+csi_error_t csi_dac_register_callback(csp_dac_t *ptDacBase, void  *callback)
+{
+	uint8_t byIdx = apt_get_dac_idx(ptDacBase);
+	if(byIdx == 0xff)
+		return CSI_ERROR;
+		
+	g_tDacCtrl[byIdx].callback = callback;
+	
+	return CSI_OK;
 }
 
 /**
@@ -174,4 +162,20 @@ void csi_dac_set_step(csp_dac_t *ptDacBase, uint16_t hwStep)
 void csi_dac_start(csp_dac_t *ptDacBase)
 {
 	csp_dac_start(ptDacBase);
+}
+
+/** \brief get dac number 
+ * 
+ *  \param[in] ptDacBase: pointer of dac register structure
+ *  \return dac number 0/1
+ */ 
+static uint8_t apt_get_dac_idx(csp_dac_t *ptDacBase)
+{
+	switch((uint32_t)ptDacBase)
+	{
+		case AHB_DAC_BASE:		//DAC0
+			return 0;		
+		default:
+			return 0xff;		//error
+	}
 }
