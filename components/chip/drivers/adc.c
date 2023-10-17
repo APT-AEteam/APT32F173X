@@ -12,45 +12,14 @@
 */
 #include "drv/adc.h"
 /* Private macro-----------------------------------------------------------*/
-#define	ADC_SAMP_TIMEOUT		0xFFFF
-/* externs function--------------------------------------------------------*/
-/* externs variablesr------------------------------------------------------*/
+/* Private function--------------------------------------------------------*/
+static uint8_t apt_get_adc_idx(csp_adc_t *ptAdcBase);
+
 /* Global variablesr------------------------------------------------------*/
 csi_adc_ctrl_t g_tAdcCtrl[ADC_IDX];
 
-/** \brief get adc number 
- * 
- *  \param[in] ptAdcBase: pointer of adc register structure
- *  \return adc number 0/1
- */ 
-static uint8_t apt_get_adc_idx(csp_adc_t *ptAdcBase)
-{
-	switch((uint32_t)ptAdcBase)
-	{
-		case APB_ADC0_BASE:		//adc0
-			return 0;		
-		case APB_ADC1_BASE:		//adc1
-			return 1;
-		default:
-			return 0xff;		//error
-	}
-}
-/** \brief  register adc interrupt callback function
- * 
- *  \param[in] ptAdcBase: pointer of adc register structure
- *  \param[in] callback: adc interrupt handle function
- *  \return error code \ref csi_error_t
- */ 
-csi_error_t csi_adc_register_callback(csp_adc_t *ptAdcBase, void  *callback)
-{
-	uint8_t byIdx = apt_get_adc_idx(ptAdcBase);
-	if(byIdx == 0xff)
-		return CSI_ERROR;
-		
-	g_tAdcCtrl[byIdx].callback = callback;
-	
-	return CSI_OK;
-}
+/* externs variablesr------------------------------------------------------*/
+
 /** \brief adc interrupt handler function
  * 
  *  \param[in] ptAdcBase: pointer of adc register structure
@@ -66,6 +35,7 @@ void csi_adc_irqhandler(csp_adc_t *ptAdcBase, uint8_t byIdx)
 			
 	csp_adc_clr_sr(ptAdcBase, (adc_sr_e)wIsr);
 }
+
 /** \brief initialize adc data structure
  * 
  *  \param[in] ptAdcBase: pointer of adc register structure
@@ -101,6 +71,24 @@ csi_error_t csi_adc_init(csp_adc_t *ptAdcBase, csi_adc_config_t *ptAdcCfg)
 
 	return ret;
 }
+
+/** \brief  register adc interrupt callback function
+ * 
+ *  \param[in] ptAdcBase: pointer of adc register structure
+ *  \param[in] callback: adc interrupt handle function
+ *  \return error code \ref csi_error_t
+ */ 
+csi_error_t csi_adc_register_callback(csp_adc_t *ptAdcBase, void  *callback)
+{
+	uint8_t byIdx = apt_get_adc_idx(ptAdcBase);
+	if(byIdx == 0xff)
+		return CSI_ERROR;
+		
+	g_tAdcCtrl[byIdx].callback = callback;
+	
+	return CSI_OK;
+}
+
 /** \brief config adc sample sequence
  * 
  *  \param[in] ptAdcBase: pointer of adc register structure
@@ -123,6 +111,7 @@ csi_error_t csi_adc_set_seqx(csp_adc_t *ptAdcBase,uint8_t byChNum,csi_adc_ch_e e
 
 	return CSI_OK;
 }
+
 /** \brief config adc sequence total number
  * 
  *  \param[in] ptAdcBase: pointer of adc register structure
@@ -138,6 +127,7 @@ csi_error_t csi_adc_set_seq_num(csp_adc_t *ptAdcBase,uint8_t byChNum)
 
 	return CSI_OK;  
 }
+
 /** \brief start adc conversion
  * 
  *  \param[in] ptAdcBase: pointer of adc register structure
@@ -156,6 +146,7 @@ csi_error_t csi_adc_start(csp_adc_t *ptAdcBase)
 		
 	return ret;
 }
+
 /** \brief stop adc conversion
  * 
  *  \param[in] ptAdcBase: pointer of adc register structure
@@ -172,6 +163,7 @@ csi_error_t csi_adc_stop(csp_adc_t *ptAdcBase)
 	
 	return ret;
 }
+
 /** \brief set adc run mode, continue/one shot/wait
  * 
  *  \param[in] ptAdcBase: pointer of adc register structure
@@ -182,6 +174,7 @@ void csi_adc_set_runmode(csp_adc_t *ptAdcBase, csi_adc_runmode_e eRunMode)
 {
 	csp_adc_set_runmode(ptAdcBase, (adc_runmode_e)eRunMode);
 }
+
 /** \brief set adc conversion sequence priority
  * 
  *  \param[in] ptAdcBase: pointer of adc register structure
@@ -192,6 +185,7 @@ void csi_adc_set_pri(csp_adc_t *ptAdcBase, uint8_t byPri)
 {
 	csp_adc_set_pri(ptAdcBase, byPri);
 }
+
 /** \brief get adc value of sequence channel
  * 
  *  \param[in] ptAdcBase: pointer of adc register structure
@@ -217,6 +211,7 @@ void csi_adc_set_vref(csp_adc_t *ptAdcBase, csi_adc_vref_e eVrefSrc)
 {
 	csp_adc_set_vref(ptAdcBase,(adc_vref_e)eVrefSrc);
 }
+
  /** \brief adc cmp0 config
  * 
  *  \param[in] ptAdcBase: pointer of ADC reg structure.
@@ -244,6 +239,7 @@ csi_error_t csi_adc_set_cmp0(csp_adc_t *ptAdcBase, uint8_t byCmpChnl, uint32_t w
 	
 	return CSI_OK;
 }
+
  /** \brief adc cmp1 config
  * 
  *  \param[in] ptAdcBase: pointer of ADC reg structure.
@@ -299,6 +295,7 @@ csi_error_t csi_adc_set_sync(csp_adc_t *ptAdcBase, csi_adc_syncin_e eSyncIn, csi
 	
 	return CSI_OK;
 }
+
 /** \brief rearm adc sync
  * 
  *  \param[in] ptAdcBase: pointer of adc register structure
@@ -309,6 +306,7 @@ void csi_adc_sync_rearm(csp_adc_t *ptAdcBase, csi_adc_syncin_e eSyncIn)
 {
 	csp_adc_sync_rearm(ptAdcBase, (adc_sync_in_e)eSyncIn);
 }
+
 /** \brief enable adc sync
  * 
  *  \param[in] ptAdcBase: pointer of adc register structure
@@ -319,6 +317,7 @@ void csi_adc_sync_enable(csp_adc_t *ptAdcBase, csi_adc_syncin_e eSyncIn)
 {
 	csp_adc_sync_enable(ptAdcBase, (adc_sync_in_e)eSyncIn);
 }
+
 /** \brief disable adc sync
  * 
  *  \param[in] ptAdcBase: pointer of adc register structure
@@ -329,6 +328,7 @@ void csi_adc_sync_disable(csp_adc_t *ptAdcBase, csi_adc_syncin_e eSyncIn)
 {
 	csp_adc_sync_disable(ptAdcBase, (adc_sync_in_e)eSyncIn);
 }
+
 /** \brief set adc evtrg output
  * 
  *  \param[in] ptAdcBase: pointer of adc register structure
@@ -348,6 +348,7 @@ csi_error_t  csi_adc_set_evtrg(csp_adc_t *ptAdcBase, csi_adc_trgsrc_e eTrgSrc, c
 	}
 	return CSI_OK;
 }
+
 /** \brief  adc evtrg enable
  * 
  *  \param[in] ptAdcBase: pointer of adc register structure
@@ -358,6 +359,7 @@ void  csi_adc_evtrg_enable(csp_adc_t *ptAdcBase,csi_adc_trgout_e eTrgOut)
 {	
 	csp_adc_evtrg_enable(ptAdcBase ,(adc_evtrg_out_e) eTrgOut);
 }
+
 /** \brief  adc evtrg disable
  * 
  *  \param[in] ptAdcBase: pointer of adc register structure
@@ -368,6 +370,7 @@ void  csi_adc_evtrg_disable(csp_adc_t *ptAdcBase,csi_adc_trgout_e eTrgOut)
 {	
 	csp_adc_evtrg_disable(ptAdcBase ,(adc_evtrg_out_e) eTrgOut);
 }
+
 /** \brief enable adc INT status
  * 
  *  \param[in] ptAdcBase: ADC handle to operate
@@ -378,6 +381,7 @@ void csi_adc_int_enable(csp_adc_t *ptAdcBase, csi_adc_intsrc_e eIntSrc)
 	csp_adc_clr_sr(ptAdcBase, (adc_sr_e)eIntSrc);
 	csp_adc_int_enable(ptAdcBase, (adc_int_e)eIntSrc);
 }
+
 /** \brief disable adc INT status
  * 
  *  \param[in] ptAdcBase: ADC handle to operate
@@ -388,5 +392,22 @@ void csi_adc_int_disable(csp_adc_t *ptAdcBase, csi_adc_intsrc_e eIntSrc)
 	csp_adc_int_disable(ptAdcBase, (adc_int_e)eIntSrc);
 }
 
+/** \brief get adc number 
+ * 
+ *  \param[in] ptAdcBase: pointer of adc register structure
+ *  \return adc number 0/1
+ */ 
+static uint8_t apt_get_adc_idx(csp_adc_t *ptAdcBase)
+{
+	switch((uint32_t)ptAdcBase)
+	{
+		case APB_ADC0_BASE:		//adc0
+			return 0;		
+		case APB_ADC1_BASE:		//adc1
+			return 1;
+		default:
+			return 0xff;		//error
+	}
+}
 
 
