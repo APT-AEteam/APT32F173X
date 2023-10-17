@@ -61,8 +61,8 @@ ATTRIBUTE_ISR  void bt1_int_handler(void)
 
 /** \brief	bt_timer_demo: BT做基本定时器功能，默认使用PEND中断
  * 
- *  \brief	csi初始化里不开启中断，需要进中断函数，需调用csi_bt_int_enable接口；demo默认开启PEND中断，并在中断里面翻转IO
- * 			(需要打开PA6 IO配置注释)；若不需要开启中断，需调用csi_bt_int_disable接口函数，关闭周期结束中断。
+ *  \brief	csi初始化里不开启中断，需要进中断函数，需调用csi_bt_int_enable接口；demo默认使用PEND中断，并在中断
+ * 			里面翻转IO(需要打开PA6 IO配置注释)；若不需要开启中断，调用csi_bt_int_disable接口，关闭周期结束中断
  * 
  * @ 工作模式:	BT_RUN_CONT: 连续工作模式, 指计数结束，计数器重新开始计数，周期执行
  * 				BT_RUN_ONCE: 单次工作模式，指计数结束，计数器停止工作
@@ -84,7 +84,7 @@ int bt_timer_demo(void)
 	csi_bt_timer_init(BT1, &tTimConfig);		//初始化BT	
 	
 	csi_bt_int_enable(BT1,BT_INTSRC_PEND);		//使能BT PEND中断
-	csi_bt_start(BT1);							//启动BT定时器,定时默认使用(开启)BT的PEND(周期结束)中断
+	csi_bt_start(BT1);							//启动BT定时器,定时默认需使用PEND中断
 		
 	while(1)
 	{
