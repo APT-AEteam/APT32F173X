@@ -587,7 +587,8 @@ static inline void csp_adc_sync_disable(csp_adc_t *ptAdcBase,  adc_sync_in_e eSy
 
 static inline void csp_adc_set_sync_mode(csp_adc_t *ptAdcBase, adc_sync_in_e eSyncIn,adc_ostmd_e eOstMd)
 {
-	ptAdcBase->SYNCR = (ptAdcBase->SYNCR & ~ADC_OSTMD_MSK(eSyncIn)) | (eOstMd << ADC_OSTMD_POS(eSyncIn));
+	ptAdcBase->SYNCR = ptAdcBase->SYNCR & (~ADC_OSTMD_MSK(eSyncIn));
+	ptAdcBase->SYNCR |= ((0x01ul << eSyncIn) | (eOstMd << (8 + eSyncIn)));
 }
 
 static inline void csp_adc_sync_rearm(csp_adc_t *ptAdcBase,  adc_sync_in_e eSyncIn)
@@ -597,12 +598,12 @@ static inline void csp_adc_sync_rearm(csp_adc_t *ptAdcBase,  adc_sync_in_e eSync
 
 static inline void csp_adc_set_evtrg_prd(csp_adc_t *ptAdcBase,adc_evtrg_out_e eEvtOut,uint8_t byPeriod)
 {
-	ptAdcBase->EVPS = (ptAdcBase->EVPS & ~ADC_EVPRD_MSK(eEvtOut))| (byPeriod << ADC_EVPRD_POS(eEvtOut));
+	ptAdcBase->EVPS |= (ptAdcBase->EVPS & ~ADC_EVPRD_MSK(eEvtOut))| (byPeriod << ADC_EVPRD_POS(eEvtOut));
 }
 
 static inline void csp_adc_set_evtrg_src(csp_adc_t *ptAdcBase,  adc_evtrg_src_e eEvtSrc ,adc_evtrg_out_e eEvtOut)
 {
-	ptAdcBase->EVTRG = (ptAdcBase->EVTRG & ~ADC_TRGSRC_MSK(eEvtOut)) | (ADC_TRGSRC_POS(eEvtOut) << eEvtSrc);
+	ptAdcBase->EVTRG = (ptAdcBase->EVTRG & ~ADC_TRGSRC_MSK(eEvtOut)) | eEvtSrc<<(ADC_TRGSRC_POS(eEvtOut));
 }
 
 static inline void csp_adc_evtrg_enable(csp_adc_t *ptAdcBase ,adc_evtrg_out_e eEvtOut)
