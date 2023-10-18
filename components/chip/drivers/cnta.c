@@ -13,13 +13,26 @@
 */
 #include "drv/cnta.h"
 
+/* private macro------------------------------------------------------*/
+/* private function---------------------------------------------------*/
+static uint8_t apt_get_cnta_idx(csp_cnta_t *ptCntaBase);
+
+/* global variablesr--------------------------------------------------*/
 csi_cnta_ctrl_t g_tCntaCtrl[CNTA_IDX];
 
-/* Private macro------------------------------------------------------*/
-/* externs function---------------------------------------------------*/
-/* externs variablesr-------------------------------------------------*/
 /* Private variablesr-------------------------------------------------*/
 
+/** \brief cnta interrupt handler function
+ * 
+ *  \param[in] ptCntaBase: pointer of cnta register structure
+ *  \param[in] byIdx: cnta idx(0)
+ *  \return none
+ */ 
+void csi_cnta_irqhandler(csp_cnta_t *ptCntaBase,  uint8_t byIdx)
+{
+	if(g_tCntaCtrl[byIdx].callback)
+		g_tCntaCtrl[byIdx].callback(ptCntaBase);
+}
 
 /** \brief initialize cnta data structure
  * 
@@ -46,6 +59,23 @@ csi_error_t csi_cnta_timer_init(csp_cnta_t *ptCntaBase,csi_cnta_timer_config_t *
 	return CSI_OK;
 }
 
+/** \brief  register cnta interrupt callback function
+ * 
+ *  \param[in] ptCntaBase: pointer of cnta register structure
+ *  \param[in] callback: cnta interrupt handle function
+ *  \return error code \ref csi_error_t
+ */ 
+csi_error_t csi_cnta_register_callback(csp_cnta_t *ptCntaBase, void  *callback)
+{
+	uint8_t byIdx = apt_get_cnta_idx(ptCntaBase);
+	if(byIdx == 0xff)
+		return CSI_ERROR;
+		
+	g_tCntaCtrl[byIdx].callback = callback;
+	
+	return CSI_OK;
+}
+
 /** \brief start cnta
  * 
  *  \param[in] ptCntaBase: pointer of cnta register structure
@@ -64,6 +94,28 @@ void csi_cnta_start(csp_cnta_t *ptCntaBase)
 void csi_cnta_stop(csp_cnta_t *ptCntaBase)
 {	
     csp_cnta_stop(ptCntaBase);
+}
+
+/** \brief CNTA interrupt enable control
+ * 
+ *  \param[in] ptCntaBase: pointer of cnta register structure
+ *  \param[in] eIntSrc: cnta interrupt source \ref csi_cnta_intsrc_e
+ *  \return none
+ */ 
+void csi_cnta_int_enable(csp_cnta_t *ptCntaBase, csi_cnta_intsrc_e eIntSrc)
+{
+	csp_cnta_int_enable(ptCntaBase, (cnta_int_e)eIntSrc);
+}
+
+/** \brief CNTA interrupt disable control
+ * 
+ *  \param[in] ptCntaBase: pointer of cnta register structure
+ *  \param[in] eIntSrc: cnta interrupt source \ref csi_cnta_intsrc_e
+ *  \return none
+ */ 
+void csi_cnta_int_disable(csp_cnta_t *ptCntaBase, csi_cnta_intsrc_e eIntSrc)
+{
+	csp_cnta_int_disable(ptCntaBase, (cnta_int_e)eIntSrc);
 }
 
 /** \brief set cnta datah load value
@@ -175,28 +227,6 @@ csi_error_t csi_cnta_bt0_set_sync(csp_cnta_t *ptCntaBase, csi_cnta_tcpend_e eTcp
 	return CSI_OK;
 }
 
-/** \brief CNTA interrupt enable control
- * 
- *  \param[in] ptCntaBase: pointer of cnta register structure
- *  \param[in] eIntSrc: cnta interrupt source \ref csi_cnta_intsrc_e
- *  \return none
- */ 
-void csi_cnta_int_enable(csp_cnta_t *ptCntaBase, csi_cnta_intsrc_e eIntSrc)
-{
-	csp_cnta_int_enable(ptCntaBase, (cnta_int_e)eIntSrc);
-}
-
-/** \brief CNTA interrupt disable control
- * 
- *  \param[in] ptCntaBase: pointer of cnta register structure
- *  \param[in] eIntSrc: cnta interrupt source \ref csi_cnta_intsrc_e
- *  \return none
- */ 
-void csi_cnta_int_disable(csp_cnta_t *ptCntaBase, csi_cnta_intsrc_e eIntSrc)
-{
-	csp_cnta_int_disable(ptCntaBase, (cnta_int_e)eIntSrc);
-}
-
 /** \brief get cnta number 
  * 
  *  \param[in] ptCntaBase: pointer of cnta register structure
@@ -214,31 +244,3 @@ static uint8_t apt_get_cnta_idx(csp_cnta_t *ptCntaBase)
 	}
 }
 
-/** \brief  register cnta interrupt callback function
- * 
- *  \param[in] ptCntaBase: pointer of cnta register structure
- *  \param[in] callback: cnta interrupt handle function
- *  \return error code \ref csi_error_t
- */ 
-csi_error_t csi_cnta_register_callback(csp_cnta_t *ptCntaBase, void  *callback)
-{
-	uint8_t byIdx = apt_get_cnta_idx(ptCntaBase);
-	if(byIdx == 0xff)
-		return CSI_ERROR;
-		
-	g_tCntaCtrl[byIdx].callback = callback;
-	
-	return CSI_OK;
-}
-
-/** \brief cnta interrupt handler function
- * 
- *  \param[in] ptCntaBase: pointer of cnta register structure
- *  \param[in] byIdx: cnta idx(0)
- *  \return none
- */ 
-void csi_cnta_irqhandler(csp_cnta_t *ptCntaBase,  uint8_t byIdx)
-{
-	if(g_tCntaCtrl[byIdx].callback)
-		g_tCntaCtrl[byIdx].callback(ptCntaBase);
-}

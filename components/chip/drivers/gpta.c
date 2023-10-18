@@ -12,7 +12,164 @@
 */
 #include "drv/gpta.h"
 
+/* private macro------------------------------------------------------*/
+/* private function---------------------------------------------------*/
+static uint8_t apt_get_gpta_idx(csp_gpta_t *ptGptaBase);
+
+/* global variablesr--------------------------------------------------*/
 csi_gpta_ctrl_t g_tGptaCtrl[GPTA_IDX];
+
+/* Private variablesr-------------------------------------------------*/
+
+/** \brief gpta interrupt handle weak function
+ * 
+ *  \param[in] ptGptaBase: pointer of cnta register structure
+ *  \return none
+ */
+void csi_gpta_irqhandler(csp_gpta_t *ptGptaBase,  uint8_t byIdx)
+{
+	uint32_t wIsr = csp_gpta_get_isr(ptGptaBase);
+	
+	if(g_tGptaCtrl[byIdx].callback)
+		g_tGptaCtrl[byIdx].callback(ptGptaBase, wIsr);
+	
+	csp_gpta_clr_isr(ptGptaBase, wIsr);
+}
+
+/** \brief initialize gpta data structure
+ * 
+ *  \param[in] ptGptaBase: pointer of gpta register structure
+ *  \param[in] ptGptaTimCfg of gpta timing parameter config structure
+ * 			   	- wTimeVal: timing value, unit: us
+ * 			   	- eRunMode: gpta run mode, \ref csi_gpta_runmode_e
+ *  \return error code \ref csi_error_t
+ */ 
+csi_error_t csi_gpta_timer_init(csp_gpta_t *ptGptaBase,  csi_gpta_time_config_t *ptGptaTimCfg)
+{
+    uint32_t wClkDiv;
+	uint32_t wCrVal;
+	uint32_t wPrdrLoad; 
+	
+	if(ptGptaTimCfg->wTimeVal == 0 )
+	{
+		return CSI_ERROR;
+	}
+		
+	csi_clk_enable((uint32_t *)ptGptaBase);			// clk enable
+	csp_gpta_clken(ptGptaBase);
+	csp_gpta_wr_key(ptGptaBase);                    // Unlock
+	csp_gpta_sw_rst(ptGptaBase);					// reset 
+		
+	if(csi_get_pclk_freq() < 6000000)
+	{
+		wClkDiv = csi_get_pclk_freq() / 1000 * (ptGptaTimCfg->wTimeVal) / 1000 / 60000;		    //gpta clk div value
+		if(wClkDiv == 0)
+		{
+			wClkDiv  = 1;
+		}
+		wPrdrLoad = csi_get_pclk_freq() / 1000 * (ptGptaTimCfg->wTimeVal) / 1000 / wClkDiv;	    //gpta prdr load value
+		if(wPrdrLoad > 0xffff)
+		{
+			wClkDiv += 1;
+			wPrdrLoad = csi_get_pclk_freq() / 1000 * (ptGptaTimCfg->wTimeVal) / 1000 / wClkDiv; //gpta prdr load value
+		}		
+	}
+	else 
+	{
+		wClkDiv = csi_get_pclk_freq() / 1000000 * (ptGptaTimCfg->wTimeVal) / 60000;		        //gpta clk div value
+		if(wClkDiv == 0)
+		{
+			wClkDiv  = 1;
+		}
+		wPrdrLoad = csi_get_pclk_freq() / 1000000 * (ptGptaTimCfg->wTimeVal) / wClkDiv;	        //gpta prdr load value
+		if(wPrdrLoad > 0xffff)
+		{
+			wClkDiv += 1;
+			wPrdrLoad = csi_get_pclk_freq() / 1000000 * (ptGptaTimCfg->wTimeVal) / wClkDiv ;	//gpta prdr load value
+		}			
+	}
+	
+	wCrVal = GPTA_CNT_UP | (GPTA_SYNC_START << GPTA_STARTMODE_POS) | (GPTA_WORK_WAVE << GPTA_MODE_POS);
+	wCrVal = (wCrVal & ~(GPTA_PSCLD_MSK)) | ((GPTA_LDPSCR_ZRO & 0x03) << GPTA_PSCLD_POS);	
+
+    csp_gpta_clken(ptGptaBase);                                         // clkEN
+	csp_gpta_set_cr(ptGptaBase, wCrVal);							    // set gpta work mode
+	csi_gpta_set_runmode(ptGptaBase, ptGptaTimCfg->eRunMode);           // gpta count mode
+	csp_gpta_set_pscr(ptGptaBase, (uint16_t)wClkDiv - 1);			    // clk div
+	csp_gpta_set_prdr(ptGptaBase, (uint16_t)wPrdrLoad);				    // prdr load value
+	
+	return CSI_OK;					
+}
+
+/** \brief       register gpta interrupt callback function
+ *  \param[in]   ptGptaBase    pointer of cnta register structure
+ *  \param[in]   callback  gpta interrupt handle function
+ *  \return      error code \ref csi_error_t
+ */ 
+csi_error_t csi_gpta_register_callback(csp_gpta_t *ptGptaBase, void  *callback)
+{
+	uint8_t byIdx = apt_get_gpta_idx(ptGptaBase);
+	if(byIdx == 0xff)
+		return CSI_ERROR;
+			
+	g_tGptaCtrl[byIdx].callback = callback;
+	
+	return CSI_OK;
+}
+
+/** \brief start gpta
+ * 
+ *  \param[in] ptGptaBase pointer of gpta register structure
+ *  \return none
+*/
+void csi_gpta_start(csp_gpta_t *ptGptaBase)
+{   
+	csp_gpta_wr_key(ptGptaBase); 
+	csp_gpta_start(ptGptaBase);
+}
+
+/** \brief  stop gpta
+ * 
+ *  \param[in] ptGptaBase: pointer of gpta register structure
+ *  \return none
+*/
+void csi_gpta_stop(csp_gpta_t *ptGptaBase)
+{
+	csp_gpta_wr_key(ptGptaBase);
+	csp_gpta_stop(ptGptaBase);
+}
+
+/** \brief gpta interrupt enable control
+ *  \param[in] ptGptaBase:pointer of gpta register structure
+ *  \param[in] eInt:     refer to to csi_gpta_intsrc_e
+ *  \return CSI_OK;
+ */
+void csi_gpta_int_enable(csp_gpta_t *ptGptaBase, csi_gpta_intsrc_e eInt)
+{ 
+	csp_gpta_clr_isr(ptGptaBase, (gpta_int_e)eInt);	
+	csp_gpta_int_enable(ptGptaBase,(gpta_int_e)eInt);
+}
+
+/** \brief gpta interrupt disable control
+ *  \param[in] ptGptaBase:pointer of gpta register structure
+ *  \param[in] eInt: \refer csi_gpta_intsrc_e
+ *  \return CSI_OK;
+ */
+void csi_gpta_int_disable(csp_gpta_t *ptGptaBase, csi_gpta_intsrc_e eInt)
+{ 
+	csp_gpta_int_disable(ptGptaBase,(gpta_int_e)eInt);
+}
+
+/** \brief clear gpta int
+ * 
+ *  \param[in] ptGptaBase: pointer of gpta register structure
+ *  \param[in] eInt: \refer csi_gpta_intsrc_e
+ *  \return none
+ */
+void csi_gpta_clr_isr(csp_gpta_t *ptGptaBase, csi_gpta_intsrc_e eInt)
+{
+	csp_gpta_clr_isr(ptGptaBase, (gpta_int_e)eInt);	
+}
 
 /** \brief capture configuration
  * 
@@ -120,71 +277,6 @@ csi_error_t  csi_gpta_pwm_init(csp_gpta_t *ptGptaBase, csi_gpta_pwm_config_t *pt
 	csp_gpta_set_cmpb(ptGptaBase, (uint16_t)wCmpLoad);
 		
 	return CSI_OK;	
-}
-
-/** \brief initialize gpta data structure
- * 
- *  \param[in] ptGptaBase: pointer of gpta register structure
- *  \param[in] ptGptaTimCfg of gpta timing parameter config structure
- * 			   	- wTimeVal: timing value, unit: us
- * 			   	- eRunMode: gpta run mode, \ref csi_gpta_runmode_e
- *  \return error code \ref csi_error_t
- */ 
-csi_error_t csi_gpta_timer_init(csp_gpta_t *ptGptaBase,  csi_gpta_time_config_t *ptGptaTimCfg)
-{
-    uint32_t wClkDiv;
-	uint32_t wCrVal;
-	uint32_t wPrdrLoad; 
-	
-	if(ptGptaTimCfg->wTimeVal == 0 )
-	{
-		return CSI_ERROR;
-	}
-		
-	csi_clk_enable((uint32_t *)ptGptaBase);			// clk enable
-	csp_gpta_clken(ptGptaBase);
-	csp_gpta_wr_key(ptGptaBase);                    // Unlock
-	csp_gpta_sw_rst(ptGptaBase);					// reset 
-		
-	if(csi_get_pclk_freq() < 6000000)
-	{
-		wClkDiv = csi_get_pclk_freq() / 1000 * (ptGptaTimCfg->wTimeVal) / 1000 / 60000;		    //gpta clk div value
-		if(wClkDiv == 0)
-		{
-			wClkDiv  = 1;
-		}
-		wPrdrLoad = csi_get_pclk_freq() / 1000 * (ptGptaTimCfg->wTimeVal) / 1000 / wClkDiv;	    //gpta prdr load value
-		if(wPrdrLoad > 0xffff)
-		{
-			wClkDiv += 1;
-			wPrdrLoad = csi_get_pclk_freq() / 1000 * (ptGptaTimCfg->wTimeVal) / 1000 / wClkDiv; //gpta prdr load value
-		}		
-	}
-	else 
-	{
-		wClkDiv = csi_get_pclk_freq() / 1000000 * (ptGptaTimCfg->wTimeVal) / 60000;		        //gpta clk div value
-		if(wClkDiv == 0)
-		{
-			wClkDiv  = 1;
-		}
-		wPrdrLoad = csi_get_pclk_freq() / 1000000 * (ptGptaTimCfg->wTimeVal) / wClkDiv;	        //gpta prdr load value
-		if(wPrdrLoad > 0xffff)
-		{
-			wClkDiv += 1;
-			wPrdrLoad = csi_get_pclk_freq() / 1000000 * (ptGptaTimCfg->wTimeVal) / wClkDiv ;	//gpta prdr load value
-		}			
-	}
-	
-	wCrVal = GPTA_CNT_UP | (GPTA_SYNC_START << GPTA_STARTMODE_POS) | (GPTA_WORK_WAVE << GPTA_MODE_POS);
-	wCrVal = (wCrVal & ~(GPTA_PSCLD_MSK)) | ((GPTA_LDPSCR_ZRO & 0x03) << GPTA_PSCLD_POS);	
-
-    csp_gpta_clken(ptGptaBase);                                         // clkEN
-	csp_gpta_set_cr(ptGptaBase, wCrVal);							    // set gpta work mode
-	csi_gpta_set_runmode(ptGptaBase, ptGptaTimCfg->eRunMode);           // gpta count mode
-	csp_gpta_set_pscr(ptGptaBase, (uint16_t)wClkDiv - 1);			    // clk div
-	csp_gpta_set_prdr(ptGptaBase, (uint16_t)wPrdrLoad);				    // prdr load value
-	
-	return CSI_OK;					
 }
 
 /** \brief set gpta count mode
@@ -369,27 +461,6 @@ void csi_gpta_global_sw(csp_gpta_t *ptGptaBase)
 void csi_gpta_global_rearm(csp_gpta_t *ptGptaBase)
 {
 	csp_gpta_set_gldcr2(ptGptaBase, GPTA_OSREARM_EN);
-}
-
-/** \brief start gpta
- * 
- *  \param[in] ptGptaBase pointer of gpta register structure
- *  \return none
-*/
-void csi_gpta_start(csp_gpta_t *ptGptaBase)
-{   csp_gpta_wr_key(ptGptaBase); 
-	csp_gpta_start(ptGptaBase);
-}
-
-/** \brief  stop gpta
- * 
- *  \param[in] ptGptaBase: pointer of gpta register structure
- *  \return none
-*/
-void csi_gpta_stop(csp_gpta_t *ptGptaBase)
-{
-	csp_gpta_wr_key(ptGptaBase);
-	csp_gpta_stop(ptGptaBase);
 }
 
 /** \brief set gpta start mode. 
@@ -597,38 +668,6 @@ csi_error_t csi_gpta_set_aqcsf(csp_gpta_t *ptGptaBase, csi_gpta_channel_e eChann
 void csi_gpta_sw_trg(csp_gpta_t *ptGptaBase, csi_gpta_trgev_e eTgrOut)
 {
 	csp_gpta_sw_trg(ptGptaBase, eTgrOut);
-}
-
-/** \brief gpta interrupt enable control
- *  \param[in] ptGptaBase:pointer of gpta register structure
- *  \param[in] eInt:     refer to to csi_gpta_intsrc_e
- *  \return CSI_OK;
- */
-void csi_gpta_int_enable(csp_gpta_t *ptGptaBase, csi_gpta_intsrc_e eInt)
-{ 
-	csp_gpta_clr_isr(ptGptaBase, (gpta_int_e)eInt);	
-	csp_gpta_int_enable(ptGptaBase,(gpta_int_e)eInt);
-}
-
-/** \brief gpta interrupt disable control
- *  \param[in] ptGptaBase:pointer of gpta register structure
- *  \param[in] eInt: \refer csi_gpta_intsrc_e
- *  \return CSI_OK;
- */
-void csi_gpta_int_disable(csp_gpta_t *ptGptaBase, csi_gpta_intsrc_e eInt)
-{ 
-	csp_gpta_int_disable(ptGptaBase,(gpta_int_e)eInt);
-}
-
-/** \brief clear gpta int
- * 
- *  \param[in] ptGptaBase: pointer of gpta register structure
- *  \param[in] eInt: \refer csi_gpta_intsrc_e
- *  \return none
- */
-void csi_gpta_clr_isr(csp_gpta_t *ptGptaBase, csi_gpta_intsrc_e eInt)
-{
-	csp_gpta_clr_isr(ptGptaBase, (gpta_int_e)eInt);	
 }
 
 /** \brief gpta sync input evtrg config  
@@ -845,36 +884,4 @@ static uint8_t apt_get_gpta_idx(csp_gpta_t *ptGptaBase)
 		default:
 			return 0xff;                //error
 	}
-}
-
-/** 
-  \brief       register gpta interrupt callback function
-  \param[in]   ptGptaBase    pointer of cnta register structure
-  \param[in]   callback  gpta interrupt handle function
-  \return      error code \ref csi_error_t
- */ 
-csi_error_t csi_gpta_register_callback(csp_gpta_t *ptGptaBase, void  *callback)
-{
-	uint8_t byIdx = apt_get_gpta_idx(ptGptaBase);
-	if(byIdx == 0xff)
-		return CSI_ERROR;
-			
-	g_tGptaCtrl[byIdx].callback = callback;
-	
-	return CSI_OK;
-}
-
-/** \brief gpta interrupt handle weak function
- * 
- *  \param[in] ptGptaBase: pointer of cnta register structure
- *  \return none
- */
-void csi_gpta_irqhandler(csp_gpta_t *ptGptaBase,  uint8_t byIdx)
-{
-	uint32_t wIsr = csp_gpta_get_isr(ptGptaBase);
-	
-	if(g_tGptaCtrl[byIdx].callback)
-		g_tGptaCtrl[byIdx].callback(ptGptaBase, wIsr);
-	
-	csp_gpta_clr_isr(ptGptaBase, wIsr);
 }
