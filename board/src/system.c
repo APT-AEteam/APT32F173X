@@ -120,7 +120,7 @@ __attribute__((weak)) void system_init(void)
 	csi_iwdt_close();
 	csi_sysclk_config(g_tClkConfig);  //sysclk config	
 	
-	csi_tick_init();
+	csi_tick_init(); //Use BT3(int enable) as systick! Without this function, "mdelay()" function is NOT reliable! 
 #if (USE_KERNEL_FREERTOS == 0)
 	__enable_excp_irq();
 #endif

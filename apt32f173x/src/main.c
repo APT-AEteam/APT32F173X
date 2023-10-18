@@ -30,8 +30,7 @@ int main()
 	
 #if (USE_GUI == 0)
 	//不使用图形化编程需调用system_init函数
-    system_init();							//系统时钟、TICK等配置	
-						
+    system_init();							//系统时钟、TICK（使用BT3中断实现）等配置	
 #else
 	//使用图形化编程，用户需要在工程设置里Compiler的Define选项里面添加USE_GUI的编译开关
 	//图形化编程支持SYSTEM(包括系统时钟、LVD/R、IWDT、TICK等)、I/O PORT和EXI
