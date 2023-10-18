@@ -44,38 +44,41 @@ csi_clk_config_t g_tClkConfig =
 //	{SRC_ESOSC, ESOSC_VALUE, SCLK_DIV2, PCLK_DIV1,ESOSC_VALUE/2, ESOSC_VALUE/2};
 
 
-//PLL CONFIG LIST
-// PLLPCLK = Input_Freq /(g_tPllClkConfig.byDivM+1) * g_tPllClkConfig.byNul / (g_tPllClkConfig.byCkp_Div+1)
-// PLLQCLK = Input_Freq /(g_tPllClkConfig.byDivM+1) * g_tPllClkConfig.byNul / g_tPllClkConfig.byCkq_Div 
-//
-// -------------------------------------------------------------------------------
-// | INPUT Freq | byDivM | byNul | byCkp_Div | byCkq_Div | PLLp Freq | PLLq Freq |
-// -------------------------------------------------------------------------------
-// |   24Mhz    |    3   |   35  |     1     |     4     |  105Mhz   |  52.5Mhz  |
-// |   12Mhz    |    1   |   35  |     1     |     4     |  105Mhz   |  52.5Mhz  |
-// |   6Mhz     |    0   |   35  |     1     |     4     |  105Mhz   |  52.5Mhz  | 
-// |-----------------------------------------------------------------------------|
-// |   24Mhz    |    2   |   24  |     1     |     4     |   96Mhz   |   48Mhz   |
-// |   24Mhz    |    2   |   36  |     2     |     6     |   96Mhz   |   48Mhz   |
-// |   24Mhz    |    3   |   32  |     1     |     4     |   96Mhz   |   48Mhz   |
-// |   24Mhz    |    3   |   48  |     2     |     6     |   96Mhz   |   48Mhz   |
-// |   24Mhz    |    4   |   40  |     1     |     4     |   96Mhz   |   48Mhz   |
-// |   24Mhz    |    4   |   60  |     2     |     6     |   96Mhz   |   48Mhz   |
-// |   24Mhz    |    5   |   48  |     1     |     4     |   96Mhz   |   48Mhz   |
-// |   24Mhz    |    5   |   72  |     2     |     6     |   96Mhz   |   48Mhz   |
-// |-----------------------------------------------------------------------------|
-// |   24Mhz    |    2   |   24  |     1     |     2     |   96Mhz   |   96Mhz   |
-// |   24Mhz    |    3   |   32  |     1     |     2     |   96Mhz   |   96Mhz   |
-// |   24Mhz    |    4   |   40  |     1     |     2     |   96Mhz   |   96Mhz   |
-// |   24Mhz    |    5   |   48  |     1     |     2     |   96Mhz   |   96Mhz   |
-// |-----------------------------------------------------------------------------|
-// |   24Mhz    |    2   |   36  |     3     |     6     |   72Mhz   |   48Mhz   |
-// |   24Mhz    |    3   |   48  |     3     |     6     |   72Mhz   |   48Mhz   |
-// |   24Mhz    |    4   |   60  |     3     |     6     |   72Mhz   |   48Mhz   |
-// |   24Mhz    |    5   |   72  |     3     |     6     |   72Mhz   |   48Mhz   |
-// -------------------------------------------------------------------------------
-//NOTE: 1.PLLq CAN be used as ADC source freq,MAX ADC source freq should be 96M.
-//		2.1731 PLLp max Freq 72Mhz, 1732 PLLp max Freq 105Mhz
+/* PLL CONFIG LIST
+ * PLLPCLK = Input_Freq /(g_tPllClkConfig.byDivM+1) * g_tPllClkConfig.byNul / (g_tPllClkConfig.byCkp_Div+1)
+ * PLLQCLK = Input_Freq /(g_tPllClkConfig.byDivM+1) * g_tPllClkConfig.byNul / g_tPllClkConfig.byCkq_Div 
+ * 
+ * -------------------------------------------------------------------------------
+ * | INPUT Freq | byDivM | byNul | byCkp_Div | byCkq_Div | PLLp Freq | PLLq Freq |
+ * -------------------------------------------------------------------------------
+ * |   24Mhz    |    3   |   35  |     1     |     4     |  105Mhz   |  52.5Mhz  |
+ * |   12Mhz    |    1   |   35  |     1     |     4     |  105Mhz   |  52.5Mhz  |
+ * |   6Mhz     |    0   |   35  |     1     |     4     |  105Mhz   |  52.5Mhz  | 
+ * |-----------------------------------------------------------------------------|
+ * |   24Mhz    |    2   |   24  |     1     |     4     |   96Mhz   |   48Mhz   |
+ * |   24Mhz    |    2   |   36  |     2     |     6     |   96Mhz   |   48Mhz   |
+ * |   24Mhz    |    3   |   32  |     1     |     4     |   96Mhz   |   48Mhz   |
+ * |   24Mhz    |    3   |   48  |     2     |     6     |   96Mhz   |   48Mhz   |
+ * |   24Mhz    |    4   |   40  |     1     |     4     |   96Mhz   |   48Mhz   |
+ * |   24Mhz    |    4   |   60  |     2     |     6     |   96Mhz   |   48Mhz   |
+ * |   24Mhz    |    5   |   48  |     1     |     4     |   96Mhz   |   48Mhz   |
+ * |   24Mhz    |    5   |   72  |     2     |     6     |   96Mhz   |   48Mhz   |
+ * |-----------------------------------------------------------------------------|
+ * |   24Mhz    |    2   |   24  |     1     |     2     |   96Mhz   |   96Mhz   |
+ * |   24Mhz    |    3   |   32  |     1     |     2     |   96Mhz   |   96Mhz   |
+ * |   24Mhz    |    4   |   40  |     1     |     2     |   96Mhz   |   96Mhz   |
+ * |   24Mhz    |    5   |   48  |     1     |     2     |   96Mhz   |   96Mhz   |
+ * |-----------------------------------------------------------------------------|
+ * |   24Mhz    |    2   |   36  |     3     |     6     |   72Mhz   |   48Mhz   |
+ * |   24Mhz    |    3   |   48  |     3     |     6     |   72Mhz   |   48Mhz   |
+ * |   24Mhz    |    4   |   60  |     3     |     6     |   72Mhz   |   48Mhz   |
+ * |   24Mhz    |    5   |   72  |     3     |     6     |   72Mhz   |   48Mhz   |
+ * -------------------------------------------------------------------------------
+ *NOTE: 1.PLLq CAN be used as ADC source freq,MAX ADC source freq should be 96M.
+ * 		2.1731 PLLp max Freq 72Mhz, 1732 PLLp max Freq 105Mhz
+ * 		3.Make sure g_tClkConfig.eClkSrc = SRC_HF_PLL ,when Select HFOSC as PLL clock source(PLL_SEL_HFOSC_xxM)
+ * 		  Make sure g_tClkConfig.eClkSrc = SRC_EM_PLL ,when Select HFOSC as PLL clock source(PLL_SEL_EMOSC_24M)
+ */
 
 csi_pll_config_t g_tPllClkConfig = 
 #if(IS_CHIP_1732 ==1) 
