@@ -40,7 +40,7 @@ void csi_iram_init(void)
 	if(_end_fastfunc != _start_fastfunc)
 	{
 		memcpy( dst, src, (_end_fastfunc - _start_fastfunc + 4));
-		csp_sram1_func_ctrl(SYSCON,SRAM1_ISRAM);  //dram remap to iram
+		csp_sram1_set_func(SYSCON,SRAM1_ISRAM);  //dram remap to iram
 	}
 }
 #endif
