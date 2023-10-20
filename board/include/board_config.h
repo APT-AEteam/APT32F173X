@@ -47,14 +47,14 @@ extern "C" {
 
 #endif
 
-/* example pin manager */
-
-#define CONSOLE_IDX				1
+//console
+#define CONSOLE_TYPE			CONSOLE_UART			//UART 或者 USART (CONSOLE_UART/CONSOLE_USART)
+#define CONSOLE_IP				UART1					//UART0~2 或者 USART0~1
 #define CONSOLE_TXD             PA2
 #define CONSOLE_RXD             PA3
 #define CONSOLE_TXD_FUNC        PA2_UART1_TX
 #define CONSOLE_RXD_FUNC        PA3_UART1_RX
-#define CONSOLE_PORT     		(GPIOA)
+#define CONSOLE_PORT     		GPIOA
 
 //emosc pin
 #define XIN_PORT				GPIOD
