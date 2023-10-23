@@ -20,9 +20,13 @@
 extern "C" {
 #endif
 
-//CONSOLE的端口选择，可选择UART[0~2]/USART[0~1]
-#define CONSOLE_UART			0
-#define CONSOLE_USART   		1
+//CONSOLE IP(UART/USART), select UART[0~2]/USART[0~1]
+#define CONSOLE_UART			0				//select uart1
+#define CONSOLE_USART   		1				//select usart1
+
+//
+#define console_putc(CTRL, UARTx, VAL)	(CTRL > 0) ?  csi_usart_putc(UARTx, VAL) : csi_uart_putc(UARTx, VAL)
+#define console_getc(CTRL, UARTx)		(CTRL > 0) ?  csi_usart_getc(UARTx) : csi_usart_getc(UARTx)
 
 typedef struct {
     pin_name_e ePin;
@@ -40,7 +44,7 @@ typedef struct {
 
 extern sys_console_t g_tConsole;
 
-int32_t console_init(sys_console_t *handle);
+int32_t console_init(sys_console_t *tHandle);
 
 #ifdef __cplusplus
 }

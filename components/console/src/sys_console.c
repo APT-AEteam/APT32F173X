@@ -11,32 +11,33 @@
 */
 #include "sys_console.h"
 
+/* externs function---------------------------------------------------*/
+/* Private macro------------------------------------------------------*/
 
-extern void csi_uart_putc(csp_uart_t *ptUartBase, uint8_t byData);
-extern void csi_usart_putc(csp_usart_t *ptUsartBase, uint8_t byData);
+/* Private variablesr-------------------------------------------------*/
 
 
-int32_t console_init(sys_console_t *handle)
+int32_t console_init(sys_console_t *tHandle)
 {
     int32_t ret = 0;
 	
-	csi_gpio_set_mux(handle->ptGpiox, handle->tTx.ePin, handle->tTx.eFunc);
-	csi_gpio_set_mux(handle->ptGpiox, handle->tRx.ePin, handle->tRx.eFunc);
-	csi_gpio_pull_mode(handle->ptGpiox, handle->tRx.ePin, GPIO_PULLUP);
+	csi_gpio_set_mux(tHandle->ptGpiox, tHandle->tTx.ePin, tHandle->tTx.eFunc);
+	csi_gpio_set_mux(tHandle->ptGpiox, tHandle->tRx.ePin, tHandle->tRx.eFunc);
+	csi_gpio_pull_mode(tHandle->ptGpiox, tHandle->tRx.ePin, GPIO_PULLUP);
 	
-	if(handle->byIpType == CONSOLE_UART)									//UART
+	if(tHandle->byIpType == CONSOLE_UART)									//UART
 	{
 		csi_uart_config_t 		tUartConfig;
 		
 		tUartConfig.eParity 	= UART_PARITY_NONE;							//no parity
-		tUartConfig.wBaudRate 	= handle->baudrate;							//115200
-		ret = csi_uart_init((csp_uart_t *)handle->pUartx, &tUartConfig);
+		tUartConfig.wBaudRate 	= tHandle->baudrate;						//115200
+		ret = csi_uart_init((csp_uart_t *)tHandle->pUartx, &tUartConfig);
 		if(ret < 0)
 			return -1;
 			
-		csi_uart_start((csp_uart_t *)handle->pUartx, UART_FUNC_RX_TX);
+		csi_uart_start((csp_uart_t *)tHandle->pUartx, UART_FUNC_RX_TX);
 	}
-	else if(handle->byIpType == CONSOLE_USART)								//USART
+	else if(tHandle->byIpType == CONSOLE_USART)								//USART
 	{
 		csi_usart_config_t 		tUsartCfg;									//USART0 参数配置结构体
 		
@@ -46,11 +47,11 @@ int32_t console_init(sys_console_t *handle)
 		tUsartCfg.eStopbit 		= USART_STOP_BITS_1;						//停止位，1个
 		tUsartCfg.eParity		= USART_PARITY_NONE;						//无校验
 		tUsartCfg.wBaudRate 	= 115200;									//波特率：115200
-		ret = csi_usart_init((csp_usart_t *)handle->pUartx, &tUsartCfg);	//初始化串口	
+		ret = csi_usart_init((csp_usart_t *)tHandle->pUartx, &tUsartCfg);	//初始化串口	
 		if(ret < 0)
 			return -1;
 			
-		csi_usart_start((csp_usart_t *)handle->pUartx, USART_FUNC_RX_TX);	//开启USART的RX和TX功能，也可单独开启RX或者TX功能
+		csi_usart_start((csp_usart_t *)tHandle->pUartx, USART_FUNC_RX_TX);	//开启USART的RX和TX功能，也可单独开启RX或者TX功能
 	}
 	else 
 		return -1;
@@ -61,21 +62,11 @@ int32_t console_init(sys_console_t *handle)
 int fputc(int ch, FILE *stream)
 {
     (void)stream;
+	
+	if (ch == '\n') 
+		console_putc(g_tConsole.byIpType, g_tConsole.pUartx, (uint8_t)'\r');
 
-	if(g_tConsole.byIpType == CONSOLE_UART)
-	{
-		if (ch == '\n') 
-			csi_uart_putc((csp_uart_t *)g_tConsole.pUartx, (uint8_t)'\r');
-
-		csi_uart_putc((csp_uart_t *)g_tConsole.pUartx, (uint8_t)ch);
-	}
-	else if(g_tConsole.byIpType == CONSOLE_USART)
-	{
-		if (ch == '\n') 
-			csi_usart_putc((csp_usart_t *)g_tConsole.pUartx, (uint8_t)'\r');
-
-		csi_usart_putc((csp_usart_t *)g_tConsole.pUartx, (uint8_t)ch);
-	}
+	console_putc(g_tConsole.byIpType, g_tConsole.pUartx, (uint8_t)ch);
 
     return 0;
 }
@@ -84,10 +75,8 @@ int fgetc(FILE *stream)
 {
     uint8_t ch;
     (void)stream;
-	if(g_tConsole.byIpType == CONSOLE_UART)
-		ch = csi_uart_getc((csp_uart_t *)g_tConsole.pUartx);
-	else 
-		ch = csi_usart_getc((csp_usart_t *)g_tConsole.pUartx);
 
+	ch = console_getc(g_tConsole.byIpType, g_tConsole.pUartx);
+	
     return (int)ch;
 }
