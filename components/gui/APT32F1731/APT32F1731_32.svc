@@ -23708,6 +23708,2998 @@
           </Property>
         </Device>
       </Category>
+      <Category>
+        <label>CAN</label>
+        <Device deviceId="CAN">
+          <UseOrNot>0</UseOrNot>
+          <label>Init</label>
+          <Property class="UIchoice">
+            <label>ClkSrc</label>
+            <value>CAN_CLKSRC_PCLK</value>
+            <Selections>
+              <sel>CAN_CLKSRC_PCLK</sel>
+              <sel>CAN_CLKSRC_EMCLK</sel>
+            </Selections>
+            <Comment>pclk emclk</Comment>
+          </Property>
+          <Property class="UIchoice">
+            <label>BaudRate</label>
+            <value>CAN_BDR_5K</value>
+            <Selections>
+              <sel>CAN_BDR_5K</sel>
+              <sel>CAN_BDR_10K</sel>
+              <sel>CAN_BDR_20K</sel>
+              <sel>CAN_BDR_40K</sel>
+              <sel>CAN_BDR_50K</sel>
+              <sel>CAN_BDR_80K</sel>
+              <sel>CAN_BDR_100K</sel>
+              <sel>CAN_BDR_125K</sel>
+              <sel>CAN_BDR_200K</sel>
+              <sel>CAN_BDR_250K</sel>
+              <sel>CAN_BDR_400K</sel>
+              <sel>CAN_BDR_500K</sel>
+              <sel>CAN_BDR_660K</sel>
+              <sel>CAN_BDR_750K</sel>
+              <sel>CAN_BDR_800K</sel>
+              <sel>CAN_BDR_1000K</sel>
+            </Selections>
+            <Comment>波特率选择</Comment>
+          </Property>
+          <Property class="UIchoice">
+            <label>AuReTran</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>自动重新传输</Comment>
+          </Property>
+        </Device>
+        <Device deviceId="CANCH1">
+          <Comment>CAN发送报文配置，每个报文配置在一个报文通道中(通道：CAN_CH1~CAN_CH32)</Comment>
+          <UseOrNot>0</UseOrNot>
+          <label>CANCH1</label>
+          <Property class="UIchoice">
+            <label>IDMode</label>
+            <value>CAN_ID_STD</value>
+            <Selections>
+              <sel>CAN_ID_STD</sel>
+              <sel>CAN_ID_EXT</sel>
+            </Selections>
+            <Comment>报文ID模式</Comment>
+          </Property>
+          <Property class="UIchoice">
+            <label>MsgDir</label>
+            <value>CAN_DIR_SEND</value>
+            <Selections>
+              <sel notAvailable="CANCH1TX">CAN_DIR_RECV</sel>
+              <sel notAvailable="CANCH1RX">CAN_DIR_SEND</sel>
+            </Selections>
+            <Comment>报文方向</Comment>
+          </Property>
+          <Property class="Text">
+            <label>StdID</label>
+            <value>0x701</value>
+            <Comment>标准ID</Comment>
+          </Property>
+          <Property class="Text">
+            <label>ExtID</label>
+            <value>0x3FFFF</value>
+            <Comment>拓展ID 标准模式下忽略不计</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH1TX">
+            <label>TxIeEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>TX Interrupt ITPAND 报文发送中断(通道源中断)</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH1TX">
+            <label>RmtEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Receive Remote Frame, Set TXRQST 远程应答帧(接收到远程帧,是否请求发送应答)</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH1TX">
+            <label>TxReqEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Message Identifier Dir Mask 报文对象请求发送</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH1RX">
+            <label>RxIeEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>RX Interrupt ITPAND 报文接收中断(通道源中断),置位ITPAND;若使用报文通道中断(源中断),必须使能</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH1RX">
+            <label>MskEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Umask Enable 接收过滤Mask(接收滤波)</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH1RX">
+            <label>OverWrEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Message Identifier Dir Mask 报文覆盖模式</Comment>
+          </Property>
+          <Property class="Text">
+            <label>DataLen</label>
+            <value>0x08</value>
+            <Comment>发送数据长度</Comment>
+          </Property>
+        </Device>
+        <Device deviceId="CANCH2">
+          <Comment>CAN发送报文配置，每个报文配置在一个报文通道中(通道：CAN_CH1~CAN_CH32)</Comment>
+          <UseOrNot>0</UseOrNot>
+          <label>CANCH2</label>
+          <Property class="UIchoice">
+            <label>IDMode</label>
+            <value>CAN_ID_STD</value>
+            <Selections>
+              <sel>CAN_ID_STD</sel>
+              <sel>CAN_ID_EXT</sel>
+            </Selections>
+            <Comment>报文ID模式</Comment>
+          </Property>
+          <Property class="UIchoice">
+            <label>MsgDir</label>
+            <value>CAN_DIR_SEND</value>
+            <Selections>
+              <sel notAvailable="CANCH2TX">CAN_DIR_RECV</sel>
+              <sel notAvailable="CANCH2RX">CAN_DIR_SEND</sel>
+            </Selections>
+            <Comment>报文方向</Comment>
+          </Property>
+          <Property class="Text">
+            <label>StdID</label>
+            <value>0x701</value>
+            <Comment>标准ID</Comment>
+          </Property>
+          <Property class="Text">
+            <label>ExtID</label>
+            <value>0x3FFFF</value>
+            <Comment>拓展ID 标准模式下忽略不计</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH2TX">
+            <label>TxIeEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>TX Interrupt ITPAND 报文发送中断(通道源中断)</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH2TX">
+            <label>RmtEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Receive Remote Frame, Set TXRQST 远程应答帧(接收到远程帧,是否请求发送应答)</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH2TX">
+            <label>TxReqEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Message Identifier Dir Mask 报文对象请求发送</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH2RX">
+            <label>RxIeEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>RX Interrupt ITPAND 报文接收中断(通道源中断),置位ITPAND;若使用报文通道中断(源中断),必须使能</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH2RX">
+            <label>MskEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Umask Enable 接收过滤Mask(接收滤波)</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH2RX">
+            <label>OverWrEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Message Identifier Dir Mask 报文覆盖模式</Comment>
+          </Property>
+          <Property class="Text">
+            <label>DataLen</label>
+            <value>0x08</value>
+            <Comment>发送数据长度</Comment>
+          </Property>
+        </Device>
+        <Device deviceId="CANCH3">
+          <Comment>CAN发送报文配置，每个报文配置在一个报文通道中(通道：CAN_CH1~CAN_CH32)</Comment>
+          <UseOrNot>0</UseOrNot>
+          <label>CANCH3</label>
+          <Property class="UIchoice">
+            <label>IDMode</label>
+            <value>CAN_ID_STD</value>
+            <Selections>
+              <sel>CAN_ID_STD</sel>
+              <sel>CAN_ID_EXT</sel>
+            </Selections>
+            <Comment>报文ID模式</Comment>
+          </Property>
+          <Property class="UIchoice">
+            <label>MsgDir</label>
+            <value>CAN_DIR_SEND</value>
+            <Selections>
+              <sel notAvailable="CANCH3TX">CAN_DIR_RECV</sel>
+              <sel notAvailable="CANCH3RX">CAN_DIR_SEND</sel>
+            </Selections>
+            <Comment>报文方向</Comment>
+          </Property>
+          <Property class="Text">
+            <label>StdID</label>
+            <value>0x701</value>
+            <Comment>标准ID</Comment>
+          </Property>
+          <Property class="Text">
+            <label>ExtID</label>
+            <value>0x3FFFF</value>
+            <Comment>拓展ID 标准模式下忽略不计</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH3TX">
+            <label>TxIeEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>TX Interrupt ITPAND 报文发送中断(通道源中断)</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH3TX">
+            <label>RmtEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Receive Remote Frame, Set TXRQST 远程应答帧(接收到远程帧,是否请求发送应答)</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH3TX">
+            <label>TxReqEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Message Identifier Dir Mask 报文对象请求发送</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH3RX">
+            <label>RxIeEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>RX Interrupt ITPAND 报文接收中断(通道源中断),置位ITPAND;若使用报文通道中断(源中断),必须使能</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH3RX">
+            <label>MskEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Umask Enable 接收过滤Mask(接收滤波)</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH3RX">
+            <label>OverWrEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Message Identifier Dir Mask 报文覆盖模式</Comment>
+          </Property>
+          <Property class="Text">
+            <label>DataLen</label>
+            <value>0x08</value>
+            <Comment>发送数据长度</Comment>
+          </Property>
+        </Device>
+        <Device deviceId="CANCH4">
+          <Comment>CAN发送报文配置，每个报文配置在一个报文通道中(通道：CAN_CH1~CAN_CH32)</Comment>
+          <UseOrNot>0</UseOrNot>
+          <label>CANCH4</label>
+          <Property class="UIchoice">
+            <label>IDMode</label>
+            <value>CAN_ID_STD</value>
+            <Selections>
+              <sel>CAN_ID_STD</sel>
+              <sel>CAN_ID_EXT</sel>
+            </Selections>
+            <Comment>报文ID模式</Comment>
+          </Property>
+          <Property class="UIchoice">
+            <label>MsgDir</label>
+            <value>CAN_DIR_SEND</value>
+            <Selections>
+              <sel notAvailable="CANCH4TX">CAN_DIR_RECV</sel>
+              <sel notAvailable="CANCH4RX">CAN_DIR_SEND</sel>
+            </Selections>
+            <Comment>报文方向</Comment>
+          </Property>
+          <Property class="Text">
+            <label>StdID</label>
+            <value>0x701</value>
+            <Comment>标准ID</Comment>
+          </Property>
+          <Property class="Text">
+            <label>ExtID</label>
+            <value>0x3FFFF</value>
+            <Comment>拓展ID 标准模式下忽略不计</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH4TX">
+            <label>TxIeEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>TX Interrupt ITPAND 报文发送中断(通道源中断)</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH4TX">
+            <label>RmtEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Receive Remote Frame, Set TXRQST 远程应答帧(接收到远程帧,是否请求发送应答)</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH4TX">
+            <label>TxReqEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Message Identifier Dir Mask 报文对象请求发送</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH4RX">
+            <label>RxIeEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>RX Interrupt ITPAND 报文接收中断(通道源中断),置位ITPAND;若使用报文通道中断(源中断),必须使能</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH4RX">
+            <label>MskEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Umask Enable 接收过滤Mask(接收滤波)</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH4RX">
+            <label>OverWrEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Message Identifier Dir Mask 报文覆盖模式</Comment>
+          </Property>
+          <Property class="Text">
+            <label>DataLen</label>
+            <value>0x08</value>
+            <Comment>发送数据长度</Comment>
+          </Property>
+        </Device>
+        <Device deviceId="CANCH5">
+          <Comment>CAN发送报文配置，每个报文配置在一个报文通道中(通道：CAN_CH1~CAN_CH32)</Comment>
+          <UseOrNot>0</UseOrNot>
+          <label>CANCH5</label>
+          <Property class="UIchoice">
+            <label>IDMode</label>
+            <value>CAN_ID_STD</value>
+            <Selections>
+              <sel>CAN_ID_STD</sel>
+              <sel>CAN_ID_EXT</sel>
+            </Selections>
+            <Comment>报文ID模式</Comment>
+          </Property>
+          <Property class="UIchoice">
+            <label>MsgDir</label>
+            <value>CAN_DIR_SEND</value>
+            <Selections>
+              <sel notAvailable="CANCH5TX">CAN_DIR_RECV</sel>
+              <sel notAvailable="CANCH5RX">CAN_DIR_SEND</sel>
+            </Selections>
+            <Comment>报文方向</Comment>
+          </Property>
+          <Property class="Text">
+            <label>StdID</label>
+            <value>0x701</value>
+            <Comment>标准ID</Comment>
+          </Property>
+          <Property class="Text">
+            <label>ExtID</label>
+            <value>0x3FFFF</value>
+            <Comment>拓展ID 标准模式下忽略不计</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH5TX">
+            <label>TxIeEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>TX Interrupt ITPAND 报文发送中断(通道源中断)</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH5TX">
+            <label>RmtEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Receive Remote Frame, Set TXRQST 远程应答帧(接收到远程帧,是否请求发送应答)</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH5TX">
+            <label>TxReqEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Message Identifier Dir Mask 报文对象请求发送</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH5RX">
+            <label>RxIeEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>RX Interrupt ITPAND 报文接收中断(通道源中断),置位ITPAND;若使用报文通道中断(源中断),必须使能</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH5RX">
+            <label>MskEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Umask Enable 接收过滤Mask(接收滤波)</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH5RX">
+            <label>OverWrEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Message Identifier Dir Mask 报文覆盖模式</Comment>
+          </Property>
+          <Property class="Text">
+            <label>DataLen</label>
+            <value>0x08</value>
+            <Comment>发送数据长度</Comment>
+          </Property>
+        </Device>
+        <Device deviceId="CANCH6">
+          <Comment>CAN发送报文配置，每个报文配置在一个报文通道中(通道：CAN_CH1~CAN_CH32)</Comment>
+          <UseOrNot>0</UseOrNot>
+          <label>CANCH6</label>
+          <Property class="UIchoice">
+            <label>IDMode</label>
+            <value>CAN_ID_STD</value>
+            <Selections>
+              <sel>CAN_ID_STD</sel>
+              <sel>CAN_ID_EXT</sel>
+            </Selections>
+            <Comment>报文ID模式</Comment>
+          </Property>
+          <Property class="UIchoice">
+            <label>MsgDir</label>
+            <value>CAN_DIR_SEND</value>
+            <Selections>
+              <sel notAvailable="CANCH6TX">CAN_DIR_RECV</sel>
+              <sel notAvailable="CANCH6RX">CAN_DIR_SEND</sel>
+            </Selections>
+            <Comment>报文方向</Comment>
+          </Property>
+          <Property class="Text">
+            <label>StdID</label>
+            <value>0x701</value>
+            <Comment>标准ID</Comment>
+          </Property>
+          <Property class="Text">
+            <label>ExtID</label>
+            <value>0x3FFFF</value>
+            <Comment>拓展ID 标准模式下忽略不计</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH6TX">
+            <label>TxIeEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>TX Interrupt ITPAND 报文发送中断(通道源中断)</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH6TX">
+            <label>RmtEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Receive Remote Frame, Set TXRQST 远程应答帧(接收到远程帧,是否请求发送应答)</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH6TX">
+            <label>TxReqEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Message Identifier Dir Mask 报文对象请求发送</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH6RX">
+            <label>RxIeEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>RX Interrupt ITPAND 报文接收中断(通道源中断),置位ITPAND;若使用报文通道中断(源中断),必须使能</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH6RX">
+            <label>MskEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Umask Enable 接收过滤Mask(接收滤波)</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH6RX">
+            <label>OverWrEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Message Identifier Dir Mask 报文覆盖模式</Comment>
+          </Property>
+          <Property class="Text">
+            <label>DataLen</label>
+            <value>0x08</value>
+            <Comment>发送数据长度</Comment>
+          </Property>
+        </Device>
+        <Device deviceId="CANCH7">
+          <Comment>CAN发送报文配置，每个报文配置在一个报文通道中(通道：CAN_CH1~CAN_CH32)</Comment>
+          <UseOrNot>0</UseOrNot>
+          <label>CANCH7</label>
+          <Property class="UIchoice">
+            <label>IDMode</label>
+            <value>CAN_ID_STD</value>
+            <Selections>
+              <sel>CAN_ID_STD</sel>
+              <sel>CAN_ID_EXT</sel>
+            </Selections>
+            <Comment>报文ID模式</Comment>
+          </Property>
+          <Property class="UIchoice">
+            <label>MsgDir</label>
+            <value>CAN_DIR_SEND</value>
+            <Selections>
+              <sel notAvailable="CANCH7TX">CAN_DIR_RECV</sel>
+              <sel notAvailable="CANCH7RX">CAN_DIR_SEND</sel>
+            </Selections>
+            <Comment>报文方向</Comment>
+          </Property>
+          <Property class="Text">
+            <label>StdID</label>
+            <value>0x701</value>
+            <Comment>标准ID</Comment>
+          </Property>
+          <Property class="Text">
+            <label>ExtID</label>
+            <value>0x3FFFF</value>
+            <Comment>拓展ID 标准模式下忽略不计</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH7TX">
+            <label>TxIeEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>TX Interrupt ITPAND 报文发送中断(通道源中断)</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH7TX">
+            <label>RmtEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Receive Remote Frame, Set TXRQST 远程应答帧(接收到远程帧,是否请求发送应答)</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH7TX">
+            <label>TxReqEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Message Identifier Dir Mask 报文对象请求发送</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH7RX">
+            <label>RxIeEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>RX Interrupt ITPAND 报文接收中断(通道源中断),置位ITPAND;若使用报文通道中断(源中断),必须使能</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH7RX">
+            <label>MskEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Umask Enable 接收过滤Mask(接收滤波)</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH7RX">
+            <label>OverWrEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Message Identifier Dir Mask 报文覆盖模式</Comment>
+          </Property>
+          <Property class="Text">
+            <label>DataLen</label>
+            <value>0x08</value>
+            <Comment>发送数据长度</Comment>
+          </Property>
+        </Device>
+        <Device deviceId="CANCH8">
+          <Comment>CAN发送报文配置，每个报文配置在一个报文通道中(通道：CAN_CH1~CAN_CH32)</Comment>
+          <UseOrNot>0</UseOrNot>
+          <label>CANCH8</label>
+          <Property class="UIchoice">
+            <label>IDMode</label>
+            <value>CAN_ID_STD</value>
+            <Selections>
+              <sel>CAN_ID_STD</sel>
+              <sel>CAN_ID_EXT</sel>
+            </Selections>
+            <Comment>报文ID模式</Comment>
+          </Property>
+          <Property class="UIchoice">
+            <label>MsgDir</label>
+            <value>CAN_DIR_SEND</value>
+            <Selections>
+              <sel notAvailable="CANCH8TX">CAN_DIR_RECV</sel>
+              <sel notAvailable="CANCH8RX">CAN_DIR_SEND</sel>
+            </Selections>
+            <Comment>报文方向</Comment>
+          </Property>
+          <Property class="Text">
+            <label>StdID</label>
+            <value>0x701</value>
+            <Comment>标准ID</Comment>
+          </Property>
+          <Property class="Text">
+            <label>ExtID</label>
+            <value>0x3FFFF</value>
+            <Comment>拓展ID 标准模式下忽略不计</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH8TX">
+            <label>TxIeEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>TX Interrupt ITPAND 报文发送中断(通道源中断)</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH8TX">
+            <label>RmtEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Receive Remote Frame, Set TXRQST 远程应答帧(接收到远程帧,是否请求发送应答)</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH8TX">
+            <label>TxReqEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Message Identifier Dir Mask 报文对象请求发送</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH8RX">
+            <label>RxIeEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>RX Interrupt ITPAND 报文接收中断(通道源中断),置位ITPAND;若使用报文通道中断(源中断),必须使能</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH8RX">
+            <label>MskEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Umask Enable 接收过滤Mask(接收滤波)</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH8RX">
+            <label>OverWrEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Message Identifier Dir Mask 报文覆盖模式</Comment>
+          </Property>
+          <Property class="Text">
+            <label>DataLen</label>
+            <value>0x08</value>
+            <Comment>发送数据长度</Comment>
+          </Property>
+        </Device>
+        <Device deviceId="CANCH9">
+          <Comment>CAN发送报文配置，每个报文配置在一个报文通道中(通道：CAN_CH1~CAN_CH32)</Comment>
+          <UseOrNot>0</UseOrNot>
+          <label>CANCH9</label>
+          <Property class="UIchoice">
+            <label>IDMode</label>
+            <value>CAN_ID_STD</value>
+            <Selections>
+              <sel>CAN_ID_STD</sel>
+              <sel>CAN_ID_EXT</sel>
+            </Selections>
+            <Comment>报文ID模式</Comment>
+          </Property>
+          <Property class="UIchoice">
+            <label>MsgDir</label>
+            <value>CAN_DIR_SEND</value>
+            <Selections>
+              <sel notAvailable="CANCH9TX">CAN_DIR_RECV</sel>
+              <sel notAvailable="CANCH9RX">CAN_DIR_SEND</sel>
+            </Selections>
+            <Comment>报文方向</Comment>
+          </Property>
+          <Property class="Text">
+            <label>StdID</label>
+            <value>0x701</value>
+            <Comment>标准ID</Comment>
+          </Property>
+          <Property class="Text">
+            <label>ExtID</label>
+            <value>0x3FFFF</value>
+            <Comment>拓展ID 标准模式下忽略不计</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH9TX">
+            <label>TxIeEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>TX Interrupt ITPAND 报文发送中断(通道源中断)</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH9TX">
+            <label>RmtEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Receive Remote Frame, Set TXRQST 远程应答帧(接收到远程帧,是否请求发送应答)</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH9TX">
+            <label>TxReqEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Message Identifier Dir Mask 报文对象请求发送</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH9RX">
+            <label>RxIeEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>RX Interrupt ITPAND 报文接收中断(通道源中断),置位ITPAND;若使用报文通道中断(源中断),必须使能</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH9RX">
+            <label>MskEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Umask Enable 接收过滤Mask(接收滤波)</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH9RX">
+            <label>OverWrEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Message Identifier Dir Mask 报文覆盖模式</Comment>
+          </Property>
+          <Property class="Text">
+            <label>DataLen</label>
+            <value>0x08</value>
+            <Comment>发送数据长度</Comment>
+          </Property>
+        </Device>
+        <Device deviceId="CANCH10">
+          <Comment>CAN发送报文配置，每个报文配置在一个报文通道中(通道：CAN_CH1~CAN_CH32)</Comment>
+          <UseOrNot>0</UseOrNot>
+          <label>CANCH10</label>
+          <Property class="UIchoice">
+            <label>IDMode</label>
+            <value>CAN_ID_STD</value>
+            <Selections>
+              <sel>CAN_ID_STD</sel>
+              <sel>CAN_ID_EXT</sel>
+            </Selections>
+            <Comment>报文ID模式</Comment>
+          </Property>
+          <Property class="UIchoice">
+            <label>MsgDir</label>
+            <value>CAN_DIR_SEND</value>
+            <Selections>
+              <sel notAvailable="CANCH10TX">CAN_DIR_RECV</sel>
+              <sel notAvailable="CANCH10RX">CAN_DIR_SEND</sel>
+            </Selections>
+            <Comment>报文方向</Comment>
+          </Property>
+          <Property class="Text">
+            <label>StdID</label>
+            <value>0x701</value>
+            <Comment>标准ID</Comment>
+          </Property>
+          <Property class="Text">
+            <label>ExtID</label>
+            <value>0x3FFFF</value>
+            <Comment>拓展ID 标准模式下忽略不计</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH10TX">
+            <label>TxIeEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>TX Interrupt ITPAND 报文发送中断(通道源中断)</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH10TX">
+            <label>RmtEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Receive Remote Frame, Set TXRQST 远程应答帧(接收到远程帧,是否请求发送应答)</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH10TX">
+            <label>TxReqEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Message Identifier Dir Mask 报文对象请求发送</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH10RX">
+            <label>RxIeEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>RX Interrupt ITPAND 报文接收中断(通道源中断),置位ITPAND;若使用报文通道中断(源中断),必须使能</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH10RX">
+            <label>MskEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Umask Enable 接收过滤Mask(接收滤波)</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH10RX">
+            <label>OverWrEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Message Identifier Dir Mask 报文覆盖模式</Comment>
+          </Property>
+          <Property class="Text">
+            <label>DataLen</label>
+            <value>0x08</value>
+            <Comment>发送数据长度</Comment>
+          </Property>
+        </Device>
+        <Device deviceId="CANCH11">
+          <Comment>CAN发送报文配置，每个报文配置在一个报文通道中(通道：CAN_CH1~CAN_CH32)</Comment>
+          <UseOrNot>0</UseOrNot>
+          <label>CANCH11</label>
+          <Property class="UIchoice">
+            <label>IDMode</label>
+            <value>CAN_ID_STD</value>
+            <Selections>
+              <sel>CAN_ID_STD</sel>
+              <sel>CAN_ID_EXT</sel>
+            </Selections>
+            <Comment>报文ID模式</Comment>
+          </Property>
+          <Property class="UIchoice">
+            <label>MsgDir</label>
+            <value>CAN_DIR_SEND</value>
+            <Selections>
+              <sel notAvailable="CANCH11TX">CAN_DIR_RECV</sel>
+              <sel notAvailable="CANCH11RX">CAN_DIR_SEND</sel>
+            </Selections>
+            <Comment>报文方向</Comment>
+          </Property>
+          <Property class="Text">
+            <label>StdID</label>
+            <value>0x701</value>
+            <Comment>标准ID</Comment>
+          </Property>
+          <Property class="Text">
+            <label>ExtID</label>
+            <value>0x3FFFF</value>
+            <Comment>拓展ID 标准模式下忽略不计</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH11TX">
+            <label>TxIeEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>TX Interrupt ITPAND 报文发送中断(通道源中断)</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH11TX">
+            <label>RmtEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Receive Remote Frame, Set TXRQST 远程应答帧(接收到远程帧,是否请求发送应答)</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH11TX">
+            <label>TxReqEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Message Identifier Dir Mask 报文对象请求发送</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH11RX">
+            <label>RxIeEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>RX Interrupt ITPAND 报文接收中断(通道源中断),置位ITPAND;若使用报文通道中断(源中断),必须使能</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH11RX">
+            <label>MskEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Umask Enable 接收过滤Mask(接收滤波)</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH11RX">
+            <label>OverWrEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Message Identifier Dir Mask 报文覆盖模式</Comment>
+          </Property>
+          <Property class="Text">
+            <label>DataLen</label>
+            <value>0x08</value>
+            <Comment>发送数据长度</Comment>
+          </Property>
+        </Device>
+        <Device deviceId="CANCH12">
+          <Comment>CAN发送报文配置，每个报文配置在一个报文通道中(通道：CAN_CH1~CAN_CH32)</Comment>
+          <UseOrNot>0</UseOrNot>
+          <label>CANCH12</label>
+          <Property class="UIchoice">
+            <label>IDMode</label>
+            <value>CAN_ID_STD</value>
+            <Selections>
+              <sel>CAN_ID_STD</sel>
+              <sel>CAN_ID_EXT</sel>
+            </Selections>
+            <Comment>报文ID模式</Comment>
+          </Property>
+          <Property class="UIchoice">
+            <label>MsgDir</label>
+            <value>CAN_DIR_SEND</value>
+            <Selections>
+              <sel notAvailable="CANCH12TX">CAN_DIR_RECV</sel>
+              <sel notAvailable="CANCH12RX">CAN_DIR_SEND</sel>
+            </Selections>
+            <Comment>报文方向</Comment>
+          </Property>
+          <Property class="Text">
+            <label>StdID</label>
+            <value>0x701</value>
+            <Comment>标准ID</Comment>
+          </Property>
+          <Property class="Text">
+            <label>ExtID</label>
+            <value>0x3FFFF</value>
+            <Comment>拓展ID 标准模式下忽略不计</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH12TX">
+            <label>TxIeEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>TX Interrupt ITPAND 报文发送中断(通道源中断)</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH12TX">
+            <label>RmtEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Receive Remote Frame, Set TXRQST 远程应答帧(接收到远程帧,是否请求发送应答)</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH12TX">
+            <label>TxReqEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Message Identifier Dir Mask 报文对象请求发送</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH12RX">
+            <label>RxIeEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>RX Interrupt ITPAND 报文接收中断(通道源中断),置位ITPAND;若使用报文通道中断(源中断),必须使能</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH12RX">
+            <label>MskEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Umask Enable 接收过滤Mask(接收滤波)</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH12RX">
+            <label>OverWrEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Message Identifier Dir Mask 报文覆盖模式</Comment>
+          </Property>
+          <Property class="Text">
+            <label>DataLen</label>
+            <value>0x08</value>
+            <Comment>发送数据长度</Comment>
+          </Property>
+        </Device>
+        <Device deviceId="CANCH13">
+          <Comment>CAN发送报文配置，每个报文配置在一个报文通道中(通道：CAN_CH1~CAN_CH32)</Comment>
+          <UseOrNot>0</UseOrNot>
+          <label>CANCH13</label>
+          <Property class="UIchoice">
+            <label>IDMode</label>
+            <value>CAN_ID_STD</value>
+            <Selections>
+              <sel>CAN_ID_STD</sel>
+              <sel>CAN_ID_EXT</sel>
+            </Selections>
+            <Comment>报文ID模式</Comment>
+          </Property>
+          <Property class="UIchoice">
+            <label>MsgDir</label>
+            <value>CAN_DIR_SEND</value>
+            <Selections>
+              <sel notAvailable="CANCH13TX">CAN_DIR_RECV</sel>
+              <sel notAvailable="CANCH13RX">CAN_DIR_SEND</sel>
+            </Selections>
+            <Comment>报文方向</Comment>
+          </Property>
+          <Property class="Text">
+            <label>StdID</label>
+            <value>0x701</value>
+            <Comment>标准ID</Comment>
+          </Property>
+          <Property class="Text">
+            <label>ExtID</label>
+            <value>0x3FFFF</value>
+            <Comment>拓展ID 标准模式下忽略不计</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH13TX">
+            <label>TxIeEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>TX Interrupt ITPAND 报文发送中断(通道源中断)</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH13TX">
+            <label>RmtEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Receive Remote Frame, Set TXRQST 远程应答帧(接收到远程帧,是否请求发送应答)</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH13TX">
+            <label>TxReqEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Message Identifier Dir Mask 报文对象请求发送</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH13RX">
+            <label>RxIeEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>RX Interrupt ITPAND 报文接收中断(通道源中断),置位ITPAND;若使用报文通道中断(源中断),必须使能</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH13RX">
+            <label>MskEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Umask Enable 接收过滤Mask(接收滤波)</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH13RX">
+            <label>OverWrEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Message Identifier Dir Mask 报文覆盖模式</Comment>
+          </Property>
+          <Property class="Text">
+            <label>DataLen</label>
+            <value>0x08</value>
+            <Comment>发送数据长度</Comment>
+          </Property>
+        </Device>
+        <Device deviceId="CANCH14">
+          <Comment>CAN发送报文配置，每个报文配置在一个报文通道中(通道：CAN_CH1~CAN_CH32)</Comment>
+          <UseOrNot>0</UseOrNot>
+          <label>CANCH14</label>
+          <Property class="UIchoice">
+            <label>IDMode</label>
+            <value>CAN_ID_STD</value>
+            <Selections>
+              <sel>CAN_ID_STD</sel>
+              <sel>CAN_ID_EXT</sel>
+            </Selections>
+            <Comment>报文ID模式</Comment>
+          </Property>
+          <Property class="UIchoice">
+            <label>MsgDir</label>
+            <value>CAN_DIR_SEND</value>
+            <Selections>
+              <sel notAvailable="CANCH14TX">CAN_DIR_RECV</sel>
+              <sel notAvailable="CANCH14RX">CAN_DIR_SEND</sel>
+            </Selections>
+            <Comment>报文方向</Comment>
+          </Property>
+          <Property class="Text">
+            <label>StdID</label>
+            <value>0x701</value>
+            <Comment>标准ID</Comment>
+          </Property>
+          <Property class="Text">
+            <label>ExtID</label>
+            <value>0x3FFFF</value>
+            <Comment>拓展ID 标准模式下忽略不计</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH14TX">
+            <label>TxIeEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>TX Interrupt ITPAND 报文发送中断(通道源中断)</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH14TX">
+            <label>RmtEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Receive Remote Frame, Set TXRQST 远程应答帧(接收到远程帧,是否请求发送应答)</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH14TX">
+            <label>TxReqEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Message Identifier Dir Mask 报文对象请求发送</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH14RX">
+            <label>RxIeEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>RX Interrupt ITPAND 报文接收中断(通道源中断),置位ITPAND;若使用报文通道中断(源中断),必须使能</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH14RX">
+            <label>MskEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Umask Enable 接收过滤Mask(接收滤波)</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH14RX">
+            <label>OverWrEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Message Identifier Dir Mask 报文覆盖模式</Comment>
+          </Property>
+          <Property class="Text">
+            <label>DataLen</label>
+            <value>0x08</value>
+            <Comment>发送数据长度</Comment>
+          </Property>
+        </Device>
+        <Device deviceId="CANCH15">
+          <Comment>CAN发送报文配置，每个报文配置在一个报文通道中(通道：CAN_CH1~CAN_CH32)</Comment>
+          <UseOrNot>0</UseOrNot>
+          <label>CANCH15</label>
+          <Property class="UIchoice">
+            <label>IDMode</label>
+            <value>CAN_ID_STD</value>
+            <Selections>
+              <sel>CAN_ID_STD</sel>
+              <sel>CAN_ID_EXT</sel>
+            </Selections>
+            <Comment>报文ID模式</Comment>
+          </Property>
+          <Property class="UIchoice">
+            <label>MsgDir</label>
+            <value>CAN_DIR_SEND</value>
+            <Selections>
+              <sel notAvailable="CANCH15TX">CAN_DIR_RECV</sel>
+              <sel notAvailable="CANCH15RX">CAN_DIR_SEND</sel>
+            </Selections>
+            <Comment>报文方向</Comment>
+          </Property>
+          <Property class="Text">
+            <label>StdID</label>
+            <value>0x701</value>
+            <Comment>标准ID</Comment>
+          </Property>
+          <Property class="Text">
+            <label>ExtID</label>
+            <value>0x3FFFF</value>
+            <Comment>拓展ID 标准模式下忽略不计</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH15TX">
+            <label>TxIeEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>TX Interrupt ITPAND 报文发送中断(通道源中断)</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH15TX">
+            <label>RmtEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Receive Remote Frame, Set TXRQST 远程应答帧(接收到远程帧,是否请求发送应答)</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH15TX">
+            <label>TxReqEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Message Identifier Dir Mask 报文对象请求发送</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH15RX">
+            <label>RxIeEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>RX Interrupt ITPAND 报文接收中断(通道源中断),置位ITPAND;若使用报文通道中断(源中断),必须使能</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH15RX">
+            <label>MskEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Umask Enable 接收过滤Mask(接收滤波)</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH15RX">
+            <label>OverWrEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Message Identifier Dir Mask 报文覆盖模式</Comment>
+          </Property>
+          <Property class="Text">
+            <label>DataLen</label>
+            <value>0x08</value>
+            <Comment>发送数据长度</Comment>
+          </Property>
+        </Device>
+        <Device deviceId="CANCH16">
+          <Comment>CAN发送报文配置，每个报文配置在一个报文通道中(通道：CAN_CH1~CAN_CH32)</Comment>
+          <UseOrNot>0</UseOrNot>
+          <label>CANCH16</label>
+          <Property class="UIchoice">
+            <label>IDMode</label>
+            <value>CAN_ID_STD</value>
+            <Selections>
+              <sel>CAN_ID_STD</sel>
+              <sel>CAN_ID_EXT</sel>
+            </Selections>
+            <Comment>报文ID模式</Comment>
+          </Property>
+          <Property class="UIchoice">
+            <label>MsgDir</label>
+            <value>CAN_DIR_SEND</value>
+            <Selections>
+              <sel notAvailable="CANCH16TX">CAN_DIR_RECV</sel>
+              <sel notAvailable="CANCH16RX">CAN_DIR_SEND</sel>
+            </Selections>
+            <Comment>报文方向</Comment>
+          </Property>
+          <Property class="Text">
+            <label>StdID</label>
+            <value>0x701</value>
+            <Comment>标准ID</Comment>
+          </Property>
+          <Property class="Text">
+            <label>ExtID</label>
+            <value>0x3FFFF</value>
+            <Comment>拓展ID 标准模式下忽略不计</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH16TX">
+            <label>TxIeEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>TX Interrupt ITPAND 报文发送中断(通道源中断)</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH16TX">
+            <label>RmtEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Receive Remote Frame, Set TXRQST 远程应答帧(接收到远程帧,是否请求发送应答)</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH16TX">
+            <label>TxReqEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Message Identifier Dir Mask 报文对象请求发送</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH16RX">
+            <label>RxIeEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>RX Interrupt ITPAND 报文接收中断(通道源中断),置位ITPAND;若使用报文通道中断(源中断),必须使能</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH16RX">
+            <label>MskEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Umask Enable 接收过滤Mask(接收滤波)</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH16RX">
+            <label>OverWrEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Message Identifier Dir Mask 报文覆盖模式</Comment>
+          </Property>
+          <Property class="Text">
+            <label>DataLen</label>
+            <value>0x08</value>
+            <Comment>发送数据长度</Comment>
+          </Property>
+        </Device>
+        <Device deviceId="CANCH17">
+          <Comment>CAN发送报文配置，每个报文配置在一个报文通道中(通道：CAN_CH1~CAN_CH32)</Comment>
+          <UseOrNot>0</UseOrNot>
+          <label>CANCH17</label>
+          <Property class="UIchoice">
+            <label>IDMode</label>
+            <value>CAN_ID_STD</value>
+            <Selections>
+              <sel>CAN_ID_STD</sel>
+              <sel>CAN_ID_EXT</sel>
+            </Selections>
+            <Comment>报文ID模式</Comment>
+          </Property>
+          <Property class="UIchoice">
+            <label>MsgDir</label>
+            <value>CAN_DIR_SEND</value>
+            <Selections>
+              <sel notAvailable="CANCH17TX">CAN_DIR_RECV</sel>
+              <sel notAvailable="CANCH17RX">CAN_DIR_SEND</sel>
+            </Selections>
+            <Comment>报文方向</Comment>
+          </Property>
+          <Property class="Text">
+            <label>StdID</label>
+            <value>0x701</value>
+            <Comment>标准ID</Comment>
+          </Property>
+          <Property class="Text">
+            <label>ExtID</label>
+            <value>0x3FFFF</value>
+            <Comment>拓展ID 标准模式下忽略不计</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH17TX">
+            <label>TxIeEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>TX Interrupt ITPAND 报文发送中断(通道源中断)</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH17TX">
+            <label>RmtEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Receive Remote Frame, Set TXRQST 远程应答帧(接收到远程帧,是否请求发送应答)</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH17TX">
+            <label>TxReqEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Message Identifier Dir Mask 报文对象请求发送</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH17RX">
+            <label>RxIeEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>RX Interrupt ITPAND 报文接收中断(通道源中断),置位ITPAND;若使用报文通道中断(源中断),必须使能</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH17RX">
+            <label>MskEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Umask Enable 接收过滤Mask(接收滤波)</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH17RX">
+            <label>OverWrEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Message Identifier Dir Mask 报文覆盖模式</Comment>
+          </Property>
+          <Property class="Text">
+            <label>DataLen</label>
+            <value>0x08</value>
+            <Comment>发送数据长度</Comment>
+          </Property>
+        </Device>
+        <Device deviceId="CANCH18">
+          <Comment>CAN发送报文配置，每个报文配置在一个报文通道中(通道：CAN_CH1~CAN_CH32)</Comment>
+          <UseOrNot>0</UseOrNot>
+          <label>CANCH18</label>
+          <Property class="UIchoice">
+            <label>IDMode</label>
+            <value>CAN_ID_STD</value>
+            <Selections>
+              <sel>CAN_ID_STD</sel>
+              <sel>CAN_ID_EXT</sel>
+            </Selections>
+            <Comment>报文ID模式</Comment>
+          </Property>
+          <Property class="UIchoice">
+            <label>MsgDir</label>
+            <value>CAN_DIR_SEND</value>
+            <Selections>
+              <sel notAvailable="CANCH18TX">CAN_DIR_RECV</sel>
+              <sel notAvailable="CANCH18RX">CAN_DIR_SEND</sel>
+            </Selections>
+            <Comment>报文方向</Comment>
+          </Property>
+          <Property class="Text">
+            <label>StdID</label>
+            <value>0x701</value>
+            <Comment>标准ID</Comment>
+          </Property>
+          <Property class="Text">
+            <label>ExtID</label>
+            <value>0x3FFFF</value>
+            <Comment>拓展ID 标准模式下忽略不计</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH18TX">
+            <label>TxIeEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>TX Interrupt ITPAND 报文发送中断(通道源中断)</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH18TX">
+            <label>RmtEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Receive Remote Frame, Set TXRQST 远程应答帧(接收到远程帧,是否请求发送应答)</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH18TX">
+            <label>TxReqEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Message Identifier Dir Mask 报文对象请求发送</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH18RX">
+            <label>RxIeEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>RX Interrupt ITPAND 报文接收中断(通道源中断),置位ITPAND;若使用报文通道中断(源中断),必须使能</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH18RX">
+            <label>MskEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Umask Enable 接收过滤Mask(接收滤波)</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH18RX">
+            <label>OverWrEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Message Identifier Dir Mask 报文覆盖模式</Comment>
+          </Property>
+          <Property class="Text">
+            <label>DataLen</label>
+            <value>0x08</value>
+            <Comment>发送数据长度</Comment>
+          </Property>
+        </Device>
+        <Device deviceId="CANCH19">
+          <Comment>CAN发送报文配置，每个报文配置在一个报文通道中(通道：CAN_CH1~CAN_CH32)</Comment>
+          <UseOrNot>0</UseOrNot>
+          <label>CANCH19</label>
+          <Property class="UIchoice">
+            <label>IDMode</label>
+            <value>CAN_ID_STD</value>
+            <Selections>
+              <sel>CAN_ID_STD</sel>
+              <sel>CAN_ID_EXT</sel>
+            </Selections>
+            <Comment>报文ID模式</Comment>
+          </Property>
+          <Property class="UIchoice">
+            <label>MsgDir</label>
+            <value>CAN_DIR_SEND</value>
+            <Selections>
+              <sel notAvailable="CANCH19TX">CAN_DIR_RECV</sel>
+              <sel notAvailable="CANCH19RX">CAN_DIR_SEND</sel>
+            </Selections>
+            <Comment>报文方向</Comment>
+          </Property>
+          <Property class="Text">
+            <label>StdID</label>
+            <value>0x701</value>
+            <Comment>标准ID</Comment>
+          </Property>
+          <Property class="Text">
+            <label>ExtID</label>
+            <value>0x3FFFF</value>
+            <Comment>拓展ID 标准模式下忽略不计</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH19TX">
+            <label>TxIeEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>TX Interrupt ITPAND 报文发送中断(通道源中断)</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH19TX">
+            <label>RmtEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Receive Remote Frame, Set TXRQST 远程应答帧(接收到远程帧,是否请求发送应答)</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH19TX">
+            <label>TxReqEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Message Identifier Dir Mask 报文对象请求发送</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH19RX">
+            <label>RxIeEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>RX Interrupt ITPAND 报文接收中断(通道源中断),置位ITPAND;若使用报文通道中断(源中断),必须使能</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH19RX">
+            <label>MskEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Umask Enable 接收过滤Mask(接收滤波)</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH19RX">
+            <label>OverWrEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Message Identifier Dir Mask 报文覆盖模式</Comment>
+          </Property>
+          <Property class="Text">
+            <label>DataLen</label>
+            <value>0x08</value>
+            <Comment>发送数据长度</Comment>
+          </Property>
+        </Device>
+        <Device deviceId="CANCH20">
+          <Comment>CAN发送报文配置，每个报文配置在一个报文通道中(通道：CAN_CH1~CAN_CH32)</Comment>
+          <UseOrNot>0</UseOrNot>
+          <label>CANCH20</label>
+          <Property class="UIchoice">
+            <label>IDMode</label>
+            <value>CAN_ID_STD</value>
+            <Selections>
+              <sel>CAN_ID_STD</sel>
+              <sel>CAN_ID_EXT</sel>
+            </Selections>
+            <Comment>报文ID模式</Comment>
+          </Property>
+          <Property class="UIchoice">
+            <label>MsgDir</label>
+            <value>CAN_DIR_SEND</value>
+            <Selections>
+              <sel notAvailable="CANCH20TX">CAN_DIR_RECV</sel>
+              <sel notAvailable="CANCH20RX">CAN_DIR_SEND</sel>
+            </Selections>
+            <Comment>报文方向</Comment>
+          </Property>
+          <Property class="Text">
+            <label>StdID</label>
+            <value>0x701</value>
+            <Comment>标准ID</Comment>
+          </Property>
+          <Property class="Text">
+            <label>ExtID</label>
+            <value>0x3FFFF</value>
+            <Comment>拓展ID 标准模式下忽略不计</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH20TX">
+            <label>TxIeEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>TX Interrupt ITPAND 报文发送中断(通道源中断)</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH20TX">
+            <label>RmtEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Receive Remote Frame, Set TXRQST 远程应答帧(接收到远程帧,是否请求发送应答)</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH20TX">
+            <label>TxReqEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Message Identifier Dir Mask 报文对象请求发送</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH20RX">
+            <label>RxIeEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>RX Interrupt ITPAND 报文接收中断(通道源中断),置位ITPAND;若使用报文通道中断(源中断),必须使能</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH20RX">
+            <label>MskEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Umask Enable 接收过滤Mask(接收滤波)</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH20RX">
+            <label>OverWrEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Message Identifier Dir Mask 报文覆盖模式</Comment>
+          </Property>
+          <Property class="Text">
+            <label>DataLen</label>
+            <value>0x08</value>
+            <Comment>发送数据长度</Comment>
+          </Property>
+        </Device>
+        <Device deviceId="CANCH21">
+          <Comment>CAN发送报文配置，每个报文配置在一个报文通道中(通道：CAN_CH1~CAN_CH32)</Comment>
+          <UseOrNot>0</UseOrNot>
+          <label>CANCH21</label>
+          <Property class="UIchoice">
+            <label>IDMode</label>
+            <value>CAN_ID_STD</value>
+            <Selections>
+              <sel>CAN_ID_STD</sel>
+              <sel>CAN_ID_EXT</sel>
+            </Selections>
+            <Comment>报文ID模式</Comment>
+          </Property>
+          <Property class="UIchoice">
+            <label>MsgDir</label>
+            <value>CAN_DIR_SEND</value>
+            <Selections>
+              <sel notAvailable="CANCH21TX">CAN_DIR_RECV</sel>
+              <sel notAvailable="CANCH21RX">CAN_DIR_SEND</sel>
+            </Selections>
+            <Comment>报文方向</Comment>
+          </Property>
+          <Property class="Text">
+            <label>StdID</label>
+            <value>0x701</value>
+            <Comment>标准ID</Comment>
+          </Property>
+          <Property class="Text">
+            <label>ExtID</label>
+            <value>0x3FFFF</value>
+            <Comment>拓展ID 标准模式下忽略不计</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH21TX">
+            <label>TxIeEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>TX Interrupt ITPAND 报文发送中断(通道源中断)</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH21TX">
+            <label>RmtEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Receive Remote Frame, Set TXRQST 远程应答帧(接收到远程帧,是否请求发送应答)</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH21TX">
+            <label>TxReqEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Message Identifier Dir Mask 报文对象请求发送</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH21RX">
+            <label>RxIeEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>RX Interrupt ITPAND 报文接收中断(通道源中断),置位ITPAND;若使用报文通道中断(源中断),必须使能</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH21RX">
+            <label>MskEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Umask Enable 接收过滤Mask(接收滤波)</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH21RX">
+            <label>OverWrEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Message Identifier Dir Mask 报文覆盖模式</Comment>
+          </Property>
+          <Property class="Text">
+            <label>DataLen</label>
+            <value>0x08</value>
+            <Comment>发送数据长度</Comment>
+          </Property>
+        </Device>
+        <Device deviceId="CANCH22">
+          <Comment>CAN发送报文配置，每个报文配置在一个报文通道中(通道：CAN_CH1~CAN_CH32)</Comment>
+          <UseOrNot>0</UseOrNot>
+          <label>CANCH22</label>
+          <Property class="UIchoice">
+            <label>IDMode</label>
+            <value>CAN_ID_STD</value>
+            <Selections>
+              <sel>CAN_ID_STD</sel>
+              <sel>CAN_ID_EXT</sel>
+            </Selections>
+            <Comment>报文ID模式</Comment>
+          </Property>
+          <Property class="UIchoice">
+            <label>MsgDir</label>
+            <value>CAN_DIR_SEND</value>
+            <Selections>
+              <sel notAvailable="CANCH22TX">CAN_DIR_RECV</sel>
+              <sel notAvailable="CANCH22RX">CAN_DIR_SEND</sel>
+            </Selections>
+            <Comment>报文方向</Comment>
+          </Property>
+          <Property class="Text">
+            <label>StdID</label>
+            <value>0x701</value>
+            <Comment>标准ID</Comment>
+          </Property>
+          <Property class="Text">
+            <label>ExtID</label>
+            <value>0x3FFFF</value>
+            <Comment>拓展ID 标准模式下忽略不计</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH22TX">
+            <label>TxIeEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>TX Interrupt ITPAND 报文发送中断(通道源中断)</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH22TX">
+            <label>RmtEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Receive Remote Frame, Set TXRQST 远程应答帧(接收到远程帧,是否请求发送应答)</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH22TX">
+            <label>TxReqEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Message Identifier Dir Mask 报文对象请求发送</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH22RX">
+            <label>RxIeEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>RX Interrupt ITPAND 报文接收中断(通道源中断),置位ITPAND;若使用报文通道中断(源中断),必须使能</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH22RX">
+            <label>MskEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Umask Enable 接收过滤Mask(接收滤波)</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH22RX">
+            <label>OverWrEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Message Identifier Dir Mask 报文覆盖模式</Comment>
+          </Property>
+          <Property class="Text">
+            <label>DataLen</label>
+            <value>0x08</value>
+            <Comment>发送数据长度</Comment>
+          </Property>
+        </Device>
+        <Device deviceId="CANCH23">
+          <Comment>CAN发送报文配置，每个报文配置在一个报文通道中(通道：CAN_CH1~CAN_CH32)</Comment>
+          <UseOrNot>0</UseOrNot>
+          <label>CANCH23</label>
+          <Property class="UIchoice">
+            <label>IDMode</label>
+            <value>CAN_ID_STD</value>
+            <Selections>
+              <sel>CAN_ID_STD</sel>
+              <sel>CAN_ID_EXT</sel>
+            </Selections>
+            <Comment>报文ID模式</Comment>
+          </Property>
+          <Property class="UIchoice">
+            <label>MsgDir</label>
+            <value>CAN_DIR_SEND</value>
+            <Selections>
+              <sel notAvailable="CANCH23TX">CAN_DIR_RECV</sel>
+              <sel notAvailable="CANCH23RX">CAN_DIR_SEND</sel>
+            </Selections>
+            <Comment>报文方向</Comment>
+          </Property>
+          <Property class="Text">
+            <label>StdID</label>
+            <value>0x701</value>
+            <Comment>标准ID</Comment>
+          </Property>
+          <Property class="Text">
+            <label>ExtID</label>
+            <value>0x3FFFF</value>
+            <Comment>拓展ID 标准模式下忽略不计</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH23TX">
+            <label>TxIeEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>TX Interrupt ITPAND 报文发送中断(通道源中断)</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH23TX">
+            <label>RmtEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Receive Remote Frame, Set TXRQST 远程应答帧(接收到远程帧,是否请求发送应答)</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH23TX">
+            <label>TxReqEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Message Identifier Dir Mask 报文对象请求发送</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH23RX">
+            <label>RxIeEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>RX Interrupt ITPAND 报文接收中断(通道源中断),置位ITPAND;若使用报文通道中断(源中断),必须使能</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH23RX">
+            <label>MskEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Umask Enable 接收过滤Mask(接收滤波)</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH23RX">
+            <label>OverWrEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Message Identifier Dir Mask 报文覆盖模式</Comment>
+          </Property>
+          <Property class="Text">
+            <label>DataLen</label>
+            <value>0x08</value>
+            <Comment>发送数据长度</Comment>
+          </Property>
+        </Device>
+        <Device deviceId="CANCH24">
+          <Comment>CAN发送报文配置，每个报文配置在一个报文通道中(通道：CAN_CH1~CAN_CH32)</Comment>
+          <UseOrNot>0</UseOrNot>
+          <label>CANCH24</label>
+          <Property class="UIchoice">
+            <label>IDMode</label>
+            <value>CAN_ID_STD</value>
+            <Selections>
+              <sel>CAN_ID_STD</sel>
+              <sel>CAN_ID_EXT</sel>
+            </Selections>
+            <Comment>报文ID模式</Comment>
+          </Property>
+          <Property class="UIchoice">
+            <label>MsgDir</label>
+            <value>CAN_DIR_SEND</value>
+            <Selections>
+              <sel notAvailable="CANCH24TX">CAN_DIR_RECV</sel>
+              <sel notAvailable="CANCH24RX">CAN_DIR_SEND</sel>
+            </Selections>
+            <Comment>报文方向</Comment>
+          </Property>
+          <Property class="Text">
+            <label>StdID</label>
+            <value>0x701</value>
+            <Comment>标准ID</Comment>
+          </Property>
+          <Property class="Text">
+            <label>ExtID</label>
+            <value>0x3FFFF</value>
+            <Comment>拓展ID 标准模式下忽略不计</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH24TX">
+            <label>TxIeEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>TX Interrupt ITPAND 报文发送中断(通道源中断)</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH24TX">
+            <label>RmtEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Receive Remote Frame, Set TXRQST 远程应答帧(接收到远程帧,是否请求发送应答)</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH24TX">
+            <label>TxReqEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Message Identifier Dir Mask 报文对象请求发送</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH24RX">
+            <label>RxIeEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>RX Interrupt ITPAND 报文接收中断(通道源中断),置位ITPAND;若使用报文通道中断(源中断),必须使能</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH24RX">
+            <label>MskEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Umask Enable 接收过滤Mask(接收滤波)</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH24RX">
+            <label>OverWrEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Message Identifier Dir Mask 报文覆盖模式</Comment>
+          </Property>
+          <Property class="Text">
+            <label>DataLen</label>
+            <value>0x08</value>
+            <Comment>发送数据长度</Comment>
+          </Property>
+        </Device>
+        <Device deviceId="CANCH25">
+          <Comment>CAN发送报文配置，每个报文配置在一个报文通道中(通道：CAN_CH1~CAN_CH32)</Comment>
+          <UseOrNot>0</UseOrNot>
+          <label>CANCH25</label>
+          <Property class="UIchoice">
+            <label>IDMode</label>
+            <value>CAN_ID_STD</value>
+            <Selections>
+              <sel>CAN_ID_STD</sel>
+              <sel>CAN_ID_EXT</sel>
+            </Selections>
+            <Comment>报文ID模式</Comment>
+          </Property>
+          <Property class="UIchoice">
+            <label>MsgDir</label>
+            <value>CAN_DIR_SEND</value>
+            <Selections>
+              <sel notAvailable="CANCH25TX">CAN_DIR_RECV</sel>
+              <sel notAvailable="CANCH25RX">CAN_DIR_SEND</sel>
+            </Selections>
+            <Comment>报文方向</Comment>
+          </Property>
+          <Property class="Text">
+            <label>StdID</label>
+            <value>0x701</value>
+            <Comment>标准ID</Comment>
+          </Property>
+          <Property class="Text">
+            <label>ExtID</label>
+            <value>0x3FFFF</value>
+            <Comment>拓展ID 标准模式下忽略不计</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH25TX">
+            <label>TxIeEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>TX Interrupt ITPAND 报文发送中断(通道源中断)</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH25TX">
+            <label>RmtEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Receive Remote Frame, Set TXRQST 远程应答帧(接收到远程帧,是否请求发送应答)</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH25TX">
+            <label>TxReqEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Message Identifier Dir Mask 报文对象请求发送</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH25RX">
+            <label>RxIeEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>RX Interrupt ITPAND 报文接收中断(通道源中断),置位ITPAND;若使用报文通道中断(源中断),必须使能</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH25RX">
+            <label>MskEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Umask Enable 接收过滤Mask(接收滤波)</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH25RX">
+            <label>OverWrEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Message Identifier Dir Mask 报文覆盖模式</Comment>
+          </Property>
+          <Property class="Text">
+            <label>DataLen</label>
+            <value>0x08</value>
+            <Comment>发送数据长度</Comment>
+          </Property>
+        </Device>
+        <Device deviceId="CANCH26">
+          <Comment>CAN发送报文配置，每个报文配置在一个报文通道中(通道：CAN_CH1~CAN_CH32)</Comment>
+          <UseOrNot>0</UseOrNot>
+          <label>CANCH26</label>
+          <Property class="UIchoice">
+            <label>IDMode</label>
+            <value>CAN_ID_STD</value>
+            <Selections>
+              <sel>CAN_ID_STD</sel>
+              <sel>CAN_ID_EXT</sel>
+            </Selections>
+            <Comment>报文ID模式</Comment>
+          </Property>
+          <Property class="UIchoice">
+            <label>MsgDir</label>
+            <value>CAN_DIR_SEND</value>
+            <Selections>
+              <sel notAvailable="CANCH26TX">CAN_DIR_RECV</sel>
+              <sel notAvailable="CANCH26RX">CAN_DIR_SEND</sel>
+            </Selections>
+            <Comment>报文方向</Comment>
+          </Property>
+          <Property class="Text">
+            <label>StdID</label>
+            <value>0x701</value>
+            <Comment>标准ID</Comment>
+          </Property>
+          <Property class="Text">
+            <label>ExtID</label>
+            <value>0x3FFFF</value>
+            <Comment>拓展ID 标准模式下忽略不计</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH26TX">
+            <label>TxIeEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>TX Interrupt ITPAND 报文发送中断(通道源中断)</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH26TX">
+            <label>RmtEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Receive Remote Frame, Set TXRQST 远程应答帧(接收到远程帧,是否请求发送应答)</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH26TX">
+            <label>TxReqEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Message Identifier Dir Mask 报文对象请求发送</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH26RX">
+            <label>RxIeEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>RX Interrupt ITPAND 报文接收中断(通道源中断),置位ITPAND;若使用报文通道中断(源中断),必须使能</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH26RX">
+            <label>MskEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Umask Enable 接收过滤Mask(接收滤波)</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH26RX">
+            <label>OverWrEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Message Identifier Dir Mask 报文覆盖模式</Comment>
+          </Property>
+          <Property class="Text">
+            <label>DataLen</label>
+            <value>0x08</value>
+            <Comment>发送数据长度</Comment>
+          </Property>
+        </Device>
+        <Device deviceId="CANCH27">
+          <Comment>CAN发送报文配置，每个报文配置在一个报文通道中(通道：CAN_CH1~CAN_CH32)</Comment>
+          <UseOrNot>0</UseOrNot>
+          <label>CANCH27</label>
+          <Property class="UIchoice">
+            <label>IDMode</label>
+            <value>CAN_ID_STD</value>
+            <Selections>
+              <sel>CAN_ID_STD</sel>
+              <sel>CAN_ID_EXT</sel>
+            </Selections>
+            <Comment>报文ID模式</Comment>
+          </Property>
+          <Property class="UIchoice">
+            <label>MsgDir</label>
+            <value>CAN_DIR_SEND</value>
+            <Selections>
+              <sel notAvailable="CANCH27TX">CAN_DIR_RECV</sel>
+              <sel notAvailable="CANCH27RX">CAN_DIR_SEND</sel>
+            </Selections>
+            <Comment>报文方向</Comment>
+          </Property>
+          <Property class="Text">
+            <label>StdID</label>
+            <value>0x701</value>
+            <Comment>标准ID</Comment>
+          </Property>
+          <Property class="Text">
+            <label>ExtID</label>
+            <value>0x3FFFF</value>
+            <Comment>拓展ID 标准模式下忽略不计</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH27TX">
+            <label>TxIeEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>TX Interrupt ITPAND 报文发送中断(通道源中断)</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH27TX">
+            <label>RmtEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Receive Remote Frame, Set TXRQST 远程应答帧(接收到远程帧,是否请求发送应答)</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH27TX">
+            <label>TxReqEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Message Identifier Dir Mask 报文对象请求发送</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH27RX">
+            <label>RxIeEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>RX Interrupt ITPAND 报文接收中断(通道源中断),置位ITPAND;若使用报文通道中断(源中断),必须使能</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH27RX">
+            <label>MskEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Umask Enable 接收过滤Mask(接收滤波)</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH27RX">
+            <label>OverWrEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Message Identifier Dir Mask 报文覆盖模式</Comment>
+          </Property>
+          <Property class="Text">
+            <label>DataLen</label>
+            <value>0x08</value>
+            <Comment>发送数据长度</Comment>
+          </Property>
+        </Device>
+        <Device deviceId="CANCH28">
+          <Comment>CAN发送报文配置，每个报文配置在一个报文通道中(通道：CAN_CH1~CAN_CH32)</Comment>
+          <UseOrNot>0</UseOrNot>
+          <label>CANCH28</label>
+          <Property class="UIchoice">
+            <label>IDMode</label>
+            <value>CAN_ID_STD</value>
+            <Selections>
+              <sel>CAN_ID_STD</sel>
+              <sel>CAN_ID_EXT</sel>
+            </Selections>
+            <Comment>报文ID模式</Comment>
+          </Property>
+          <Property class="UIchoice">
+            <label>MsgDir</label>
+            <value>CAN_DIR_SEND</value>
+            <Selections>
+              <sel notAvailable="CANCH28TX">CAN_DIR_RECV</sel>
+              <sel notAvailable="CANCH28RX">CAN_DIR_SEND</sel>
+            </Selections>
+            <Comment>报文方向</Comment>
+          </Property>
+          <Property class="Text">
+            <label>StdID</label>
+            <value>0x701</value>
+            <Comment>标准ID</Comment>
+          </Property>
+          <Property class="Text">
+            <label>ExtID</label>
+            <value>0x3FFFF</value>
+            <Comment>拓展ID 标准模式下忽略不计</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH28TX">
+            <label>TxIeEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>TX Interrupt ITPAND 报文发送中断(通道源中断)</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH28TX">
+            <label>RmtEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Receive Remote Frame, Set TXRQST 远程应答帧(接收到远程帧,是否请求发送应答)</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH28TX">
+            <label>TxReqEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Message Identifier Dir Mask 报文对象请求发送</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH28RX">
+            <label>RxIeEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>RX Interrupt ITPAND 报文接收中断(通道源中断),置位ITPAND;若使用报文通道中断(源中断),必须使能</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH28RX">
+            <label>MskEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Umask Enable 接收过滤Mask(接收滤波)</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH28RX">
+            <label>OverWrEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Message Identifier Dir Mask 报文覆盖模式</Comment>
+          </Property>
+          <Property class="Text">
+            <label>DataLen</label>
+            <value>0x08</value>
+            <Comment>发送数据长度</Comment>
+          </Property>
+        </Device>
+        <Device deviceId="CANCH29">
+          <Comment>CAN发送报文配置，每个报文配置在一个报文通道中(通道：CAN_CH1~CAN_CH32)</Comment>
+          <UseOrNot>0</UseOrNot>
+          <label>CANCH29</label>
+          <Property class="UIchoice">
+            <label>IDMode</label>
+            <value>CAN_ID_STD</value>
+            <Selections>
+              <sel>CAN_ID_STD</sel>
+              <sel>CAN_ID_EXT</sel>
+            </Selections>
+            <Comment>报文ID模式</Comment>
+          </Property>
+          <Property class="UIchoice">
+            <label>MsgDir</label>
+            <value>CAN_DIR_SEND</value>
+            <Selections>
+              <sel notAvailable="CANCH29TX">CAN_DIR_RECV</sel>
+              <sel notAvailable="CANCH29RX">CAN_DIR_SEND</sel>
+            </Selections>
+            <Comment>报文方向</Comment>
+          </Property>
+          <Property class="Text">
+            <label>StdID</label>
+            <value>0x701</value>
+            <Comment>标准ID</Comment>
+          </Property>
+          <Property class="Text">
+            <label>ExtID</label>
+            <value>0x3FFFF</value>
+            <Comment>拓展ID 标准模式下忽略不计</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH29TX">
+            <label>TxIeEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>TX Interrupt ITPAND 报文发送中断(通道源中断)</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH29TX">
+            <label>RmtEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Receive Remote Frame, Set TXRQST 远程应答帧(接收到远程帧,是否请求发送应答)</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH29TX">
+            <label>TxReqEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Message Identifier Dir Mask 报文对象请求发送</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH29RX">
+            <label>RxIeEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>RX Interrupt ITPAND 报文接收中断(通道源中断),置位ITPAND;若使用报文通道中断(源中断),必须使能</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH29RX">
+            <label>MskEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Umask Enable 接收过滤Mask(接收滤波)</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH29RX">
+            <label>OverWrEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Message Identifier Dir Mask 报文覆盖模式</Comment>
+          </Property>
+          <Property class="Text">
+            <label>DataLen</label>
+            <value>0x08</value>
+            <Comment>发送数据长度</Comment>
+          </Property>
+        </Device>
+        <Device deviceId="CANCH30">
+          <Comment>CAN发送报文配置，每个报文配置在一个报文通道中(通道：CAN_CH1~CAN_CH32)</Comment>
+          <UseOrNot>0</UseOrNot>
+          <label>CANCH30</label>
+          <Property class="UIchoice">
+            <label>IDMode</label>
+            <value>CAN_ID_STD</value>
+            <Selections>
+              <sel>CAN_ID_STD</sel>
+              <sel>CAN_ID_EXT</sel>
+            </Selections>
+            <Comment>报文ID模式</Comment>
+          </Property>
+          <Property class="UIchoice">
+            <label>MsgDir</label>
+            <value>CAN_DIR_SEND</value>
+            <Selections>
+              <sel notAvailable="CANCH30TX">CAN_DIR_RECV</sel>
+              <sel notAvailable="CANCH30RX">CAN_DIR_SEND</sel>
+            </Selections>
+            <Comment>报文方向</Comment>
+          </Property>
+          <Property class="Text">
+            <label>StdID</label>
+            <value>0x701</value>
+            <Comment>标准ID</Comment>
+          </Property>
+          <Property class="Text">
+            <label>ExtID</label>
+            <value>0x3FFFF</value>
+            <Comment>拓展ID 标准模式下忽略不计</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH30TX">
+            <label>TxIeEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>TX Interrupt ITPAND 报文发送中断(通道源中断)</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH30TX">
+            <label>RmtEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Receive Remote Frame, Set TXRQST 远程应答帧(接收到远程帧,是否请求发送应答)</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH30TX">
+            <label>TxReqEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Message Identifier Dir Mask 报文对象请求发送</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH30RX">
+            <label>RxIeEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>RX Interrupt ITPAND 报文接收中断(通道源中断),置位ITPAND;若使用报文通道中断(源中断),必须使能</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH30RX">
+            <label>MskEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Umask Enable 接收过滤Mask(接收滤波)</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH30RX">
+            <label>OverWrEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Message Identifier Dir Mask 报文覆盖模式</Comment>
+          </Property>
+          <Property class="Text">
+            <label>DataLen</label>
+            <value>0x08</value>
+            <Comment>发送数据长度</Comment>
+          </Property>
+        </Device>
+        <Device deviceId="CANCH31">
+          <Comment>CAN发送报文配置，每个报文配置在一个报文通道中(通道：CAN_CH1~CAN_CH32)</Comment>
+          <UseOrNot>0</UseOrNot>
+          <label>CANCH31</label>
+          <Property class="UIchoice">
+            <label>IDMode</label>
+            <value>CAN_ID_STD</value>
+            <Selections>
+              <sel>CAN_ID_STD</sel>
+              <sel>CAN_ID_EXT</sel>
+            </Selections>
+            <Comment>报文ID模式</Comment>
+          </Property>
+          <Property class="UIchoice">
+            <label>MsgDir</label>
+            <value>CAN_DIR_SEND</value>
+            <Selections>
+              <sel notAvailable="CANCH31TX">CAN_DIR_RECV</sel>
+              <sel notAvailable="CANCH31RX">CAN_DIR_SEND</sel>
+            </Selections>
+            <Comment>报文方向</Comment>
+          </Property>
+          <Property class="Text">
+            <label>StdID</label>
+            <value>0x701</value>
+            <Comment>标准ID</Comment>
+          </Property>
+          <Property class="Text">
+            <label>ExtID</label>
+            <value>0x3FFFF</value>
+            <Comment>拓展ID 标准模式下忽略不计</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH31TX">
+            <label>TxIeEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>TX Interrupt ITPAND 报文发送中断(通道源中断)</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH31TX">
+            <label>RmtEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Receive Remote Frame, Set TXRQST 远程应答帧(接收到远程帧,是否请求发送应答)</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH31TX">
+            <label>TxReqEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Message Identifier Dir Mask 报文对象请求发送</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH31RX">
+            <label>RxIeEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>RX Interrupt ITPAND 报文接收中断(通道源中断),置位ITPAND;若使用报文通道中断(源中断),必须使能</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH31RX">
+            <label>MskEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Umask Enable 接收过滤Mask(接收滤波)</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH31RX">
+            <label>OverWrEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Message Identifier Dir Mask 报文覆盖模式</Comment>
+          </Property>
+          <Property class="Text">
+            <label>DataLen</label>
+            <value>0x08</value>
+            <Comment>发送数据长度</Comment>
+          </Property>
+        </Device>
+        <Device deviceId="CANCH32">
+          <Comment>CAN发送报文配置，每个报文配置在一个报文通道中(通道：CAN_CH1~CAN_CH32)</Comment>
+          <UseOrNot>0</UseOrNot>
+          <label>CANCH32</label>
+          <Property class="UIchoice">
+            <label>IDMode</label>
+            <value>CAN_ID_STD</value>
+            <Selections>
+              <sel>CAN_ID_STD</sel>
+              <sel>CAN_ID_EXT</sel>
+            </Selections>
+            <Comment>报文ID模式</Comment>
+          </Property>
+          <Property class="UIchoice">
+            <label>MsgDir</label>
+            <value>CAN_DIR_SEND</value>
+            <Selections>
+              <sel notAvailable="CANCH32TX">CAN_DIR_RECV</sel>
+              <sel notAvailable="CANCH32RX">CAN_DIR_SEND</sel>
+            </Selections>
+            <Comment>报文方向</Comment>
+          </Property>
+          <Property class="Text">
+            <label>StdID</label>
+            <value>0x701</value>
+            <Comment>标准ID</Comment>
+          </Property>
+          <Property class="Text">
+            <label>ExtID</label>
+            <value>0x3FFFF</value>
+            <Comment>拓展ID 标准模式下忽略不计</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH32TX">
+            <label>TxIeEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>TX Interrupt ITPAND 报文发送中断(通道源中断)</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH32TX">
+            <label>RmtEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Receive Remote Frame, Set TXRQST 远程应答帧(接收到远程帧,是否请求发送应答)</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH32TX">
+            <label>TxReqEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Message Identifier Dir Mask 报文对象请求发送</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH32RX">
+            <label>RxIeEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>RX Interrupt ITPAND 报文接收中断(通道源中断),置位ITPAND;若使用报文通道中断(源中断),必须使能</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH32RX">
+            <label>MskEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Umask Enable 接收过滤Mask(接收滤波)</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="CANCH32RX">
+            <label>OverWrEn</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>Message Identifier Dir Mask 报文覆盖模式</Comment>
+          </Property>
+          <Property class="Text">
+            <label>DataLen</label>
+            <value>0x08</value>
+            <Comment>发送数据长度</Comment>
+          </Property>
+        </Device>
+      </Category>
     </ChipPropertiesView>
   </ChipConfig3>
 </com.csky.cds.peripheral>
