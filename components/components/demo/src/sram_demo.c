@@ -13,7 +13,7 @@
 /* include ----------------------------------------------------------------*/
 
 #include "gpio.h"
-#include "reliability.h"
+#include "syscon.h"
 #include "board_config.h"
 
 /* externs function--------------------------------------------------------*/

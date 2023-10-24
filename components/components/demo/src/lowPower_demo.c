@@ -63,7 +63,7 @@ void lp_lpt_wakeup_demo(void)
 	csi_pm_attach_callback(ePmMode, prepare_lp, wkup_lp);	//需要在工程设置compiler tab下加入define CONFIG_USER_PM=1;
 #endif
 
-	csi_pm_config_wakeup_source(SRC_WKUP_LPT, ENABLE);		//配置唤醒源
+	csi_pm_set_wakeup_src(SRC_WKUP_LPT, ENABLE);			//配置唤醒源
 //	csi_pm_clk_enable(DP_ISOSC);							//低功耗模式下时钟开启/关闭
 //	csi_pm_clk_enable(DP_IMOSC);
 //	csi_pm_clk_enable(DP_ESOSC);
@@ -167,10 +167,11 @@ void lp_lvd_wakeup_demo(void)
 //	csi_pm_clk_enable(DP_ESOSC);
 //	csi_pm_clk_enable(DP_EMOSC);
 	
-	csi_pm_config_wakeup_source(SRC_WKUP_LVD, ENABLE);			//配置LVD为中断唤醒源
+	csi_pm_set_wakeup_src(SRC_WKUP_LVD, ENABLE);				//配置LVD为中断唤醒源
 
 	//LVD WAKEUP DeepSleep
-	csi_lvd_int_enable(LVD_INTF,LVD_30);  						//VDD掉电到3.9V即触发LVD中断
+	csi_set_lvd(LVD_INTF,LVD_30);  								//VDD掉电到3.9V即触发LVD中断
+	csi_lvd_lvr_enable();
 	
 	delay_ums(200);
 	
@@ -202,11 +203,11 @@ void lp_lvd_wakeup_demo(void)
  */
 void lp_rtc_wakeup_demo(void)
 {
-	csi_pm_mode_e ePmMode = PM_MODE_DEEPSLEEP;			//PM_MODE_SLEEP/PM_MODE_DEEPSLEEP
+	csi_pm_mode_e ePmMode = PM_MODE_DEEPSLEEP;					//PM_MODE_SLEEP/PM_MODE_DEEPSLEEP
 	csi_rtc_config_t tRtcConfig;
 	
 #if (USE_GUI==0)	
-	csi_gpio_set_mux(GPIOB,PB2,PB2_OUTPUT);				//PB02 OUTPUT
+	csi_gpio_set_mux(GPIOB,PB2,PB2_OUTPUT);						//PB02 OUTPUT
 	
 	csi_gpio_set_mux(XIN_PORT,XIN_PIN, XIN_PIN_FUNC);			//EMOSC管脚使能	RTC使用外部时钟源时，必须使能相应的外部时钟管脚
 	csi_gpio_set_mux(XOUT_PORT,XOUT_PIN, XOUT_PIN_FUNC);		//EMOSC管脚使能	RTC使用外部时钟源时，必须使能相应的外部时钟管脚
@@ -223,7 +224,7 @@ void lp_rtc_wakeup_demo(void)
 //	csi_pm_clk_enable(DP_ESOSC);
 //	csi_pm_clk_enable(DP_EMOSC);
 	
-	csi_pm_config_wakeup_source(SRC_WKUP_RTC, ENABLE);
+	csi_pm_set_wakeup_src(SRC_WKUP_RTC, ENABLE);
 
 	//RTC WAKEUP DeepSleep
 	tRtcConfig.eClkSrc = RTC_CLKSRC_ISOSC;  					//选择时钟源
@@ -266,7 +267,7 @@ void lp_iwdt_wakeup_demo(void)
 //	csi_pm_clk_enable(DP_ESOSC);
 //	csi_pm_clk_enable(DP_EMOSC);
 	
-	csi_pm_config_wakeup_source(SRC_WKUP_IWDT, ENABLE);
+	csi_pm_set_wakeup_src(SRC_WKUP_IWDT, ENABLE);
 
 	//IWDT WAKEUP DeepSleep
 	csi_iwdt_init(IWDT_TO_1024);								//初始化看门狗，溢出时间为1024ms(系统复位时间)

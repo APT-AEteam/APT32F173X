@@ -86,12 +86,15 @@ extern int lpt_soft_trg_out_demo(void);
 extern int lpt_filter_demo(void);
 extern int lpt_window_demo(void);
 
-//reliability demo
+//syscon demo
 extern void lvd_demo(void);
 extern void lvr_demo(void);
 extern void memorycheck_demo(void);
 extern void emcm_demo(void);
 extern void syscon_cqcr_demo(void);
+
+//nmi demo
+void lvd_trigger_nmi_demo(void);
 
 //wwdt demo
 extern csi_error_t wwdt_demo(void);

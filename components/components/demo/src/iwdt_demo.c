@@ -20,7 +20,26 @@
 /* Private macro-----------------------------------------------------------*/
 /* Private variable------------------------------------------------------*/
 
+#if(USE_IWDT_CALLBACK ==0)
+	
+/** \brief iwdt int handler
+ * 			iwdt 中断处理函数。用户可以根据自己的需要编写中断处理函数
+ * 			iwdt属于syscon的一部分，中断入口是syscon_int_handler。通过syscon的中断状态判断是否是iwdt中断。
+ * 			故在调用iwdt中断处理函数前，一定要保证syscon_int_handler函数已经被调用。
+ * 			
+ * 			注意：syscon_int_handler 弱属性函数在irq.c中定义。syscon_int_handler 强属性函数在syscon_demo.c中定义
+ * 
+ *  \param[in] none
+ *  \return error code
+ */
+void iwdt_int_handler(void)
+{
+	csp_syscon_clr_isr(SYSCON, IWDT_INT);
+	csi_iwdt_feed();	
+}
  
+#endif
+
 /** \brief iwdt normal mode
  * 
  *  \param[in] none

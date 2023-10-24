@@ -69,7 +69,7 @@ csi_error_t csi_pm_enter_sleep(csi_pm_mode_e eMode);
   \param[in]   enable      flag control the wakeup source is enable or not
   \return      error code
 */
-csi_error_t csi_pm_config_wakeup_source(csi_wakeup_src_e eWkupSrc, bool bEnable);
+csi_error_t csi_pm_set_wakeup_src(csi_wakeup_src_e eWkupSrc, bool bEnable);
 
 /**
   \brief       deep sleep mode, osc enable
