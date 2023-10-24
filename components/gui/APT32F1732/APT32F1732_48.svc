@@ -27556,6 +27556,289 @@
           </Property>
         </Device>
       </Category>
+      <Category>
+        <label>OPA</label>
+        <Device deviceId="OPA0">
+          <UseOrNot>0</UseOrNot>
+          <label>OPA0</label>
+          <Property class="UIchoice">
+            <label>Mode</label>
+            <value>OPA_INTERNAL_MODE</value>
+            <Selections>
+              <sel>OPA_INTERNAL_MODE</sel>
+              <sel notAvailable="OPA0Internal">OPA_EXTERNAL_MODE</sel>
+            </Selections>
+            <Comment>OPA模式选择</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="OPA0Internal">
+            <label>InputMode</label>
+            <value>OPA_SINGLE</value>
+            <Selections>
+              <sel notAvailable="OPA0Difference">OPA_SINGLE</sel>
+              <sel notAvailable="OPA0Single">OPA_DIFFERENCE</sel>
+            </Selections>
+            <Comment>输入模式选择</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="OPA0Single">
+            <label>SingleGain</label>
+            <value>OPA_SINGLE_GAIN_X2</value>
+            <Selections>
+              <sel>OPA_SINGLE_GAIN_X2</sel>
+              <sel>OPA_SINGLE_GAIN_X4</sel>
+              <sel>OPA_SINGLE_GAIN_X8</sel>
+              <sel>OPA_SINGLE_GAIN_X16</sel>
+              <sel>OPA_SINGLE_GAIN_X21</sel>
+              <sel>OPA_SINGLE_GAIN_X32</sel>
+              <sel>OPA_SINGLE_GAIN_X42</sel>
+              <sel>OPA_SINGLE_GAIN_X64</sel>
+            </Selections>
+            <Comment>内部增益</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="OPA0Difference">
+            <label>DifferenceGain</label>
+            <value>OPA_DIFFERENCE_GAIN_X1</value>
+            <Selections>
+              <sel>OPA_DIFFERENCE_GAIN_X1</sel>
+              <sel>OPA_DIFFERENCE_GAIN_X2</sel>
+              <sel>OPA_DIFFERENCE_GAIN_X3</sel>
+              <sel>OPA_DIFFERENCE_GAIN_X5</sel>
+              <sel>OPA_DIFFERENCE_GAIN_X7</sel>
+              <sel>OPA_DIFFERENCE_GAIN_X9</sel>
+              <sel>OPA_DIFFERENCE_GAIN_X11</sel>
+              <sel>OPA_DIFFERENCE_GAIN_X19</sel>
+            </Selections>
+            <Comment>内部增益</Comment>
+          </Property>
+          <Property class="UIchoice">
+            <label>NegativeInput</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>负端输入</Comment>
+          </Property>
+          <Property class="UIchoice">
+            <label>Output</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>放大器输出</Comment>
+          </Property>
+        </Device>
+        <Device deviceId="OPA1">
+          <UseOrNot>0</UseOrNot>
+          <label>OPA1</label>
+          <Property class="UIchoice">
+            <label>Mode</label>
+            <value>OPA_INTERNAL_MODE</value>
+            <Selections>
+              <sel>OPA_INTERNAL_MODE</sel>
+              <sel notAvailable="OPA1Internal">OPA_EXTERNAL_MODE</sel>
+            </Selections>
+            <Comment>OPA模式选择</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="OPA1Internal">
+            <label>InputMode</label>
+            <value>OPA_SINGLE</value>
+            <Selections>
+              <sel notAvailable="OPA1Difference">OPA_SINGLE</sel>
+              <sel notAvailable="OPA1Single">OPA_DIFFERENCE</sel>
+            </Selections>
+            <Comment>输入模式选择</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="OPA1Single">
+            <label>SingleGain</label>
+            <value>OPA_SINGLE_GAIN_X2</value>
+            <Selections>
+              <sel>OPA_SINGLE_GAIN_X2</sel>
+              <sel>OPA_SINGLE_GAIN_X4</sel>
+              <sel>OPA_SINGLE_GAIN_X8</sel>
+              <sel>OPA_SINGLE_GAIN_X16</sel>
+              <sel>OPA_SINGLE_GAIN_X21</sel>
+              <sel>OPA_SINGLE_GAIN_X32</sel>
+              <sel>OPA_SINGLE_GAIN_X42</sel>
+              <sel>OPA_SINGLE_GAIN_X64</sel>
+            </Selections>
+            <Comment>内部增益</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="OPA1Difference">
+            <label>DifferenceGain</label>
+            <value>OPA_DIFFERENCE_GAIN_X1</value>
+            <Selections>
+              <sel>OPA_DIFFERENCE_GAIN_X1</sel>
+              <sel>OPA_DIFFERENCE_GAIN_X2</sel>
+              <sel>OPA_DIFFERENCE_GAIN_X3</sel>
+              <sel>OPA_DIFFERENCE_GAIN_X5</sel>
+              <sel>OPA_DIFFERENCE_GAIN_X7</sel>
+              <sel>OPA_DIFFERENCE_GAIN_X9</sel>
+              <sel>OPA_DIFFERENCE_GAIN_X11</sel>
+              <sel>OPA_DIFFERENCE_GAIN_X19</sel>
+            </Selections>
+            <Comment>内部增益</Comment>
+          </Property>
+          <Property class="UIchoice">
+            <label>NegativeInput</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>负端输入</Comment>
+          </Property>
+          <Property class="UIchoice">
+            <label>Output</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>放大器输出</Comment>
+          </Property>
+        </Device>
+        <Device deviceId="OPA2">
+          <UseOrNot>0</UseOrNot>
+          <label>OPA2</label>
+          <Property class="UIchoice">
+            <label>Mode</label>
+            <value>OPA_INTERNAL_MODE</value>
+            <Selections>
+              <sel>OPA_INTERNAL_MODE</sel>
+              <sel notAvailable="OPA2Internal">OPA_EXTERNAL_MODE</sel>
+            </Selections>
+            <Comment>OPA模式选择</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="OPA2Internal">
+            <label>InputMode</label>
+            <value>OPA_SINGLE</value>
+            <Selections>
+              <sel notAvailable="OPA2Difference">OPA_SINGLE</sel>
+              <sel notAvailable="OPA2Single">OPA_DIFFERENCE</sel>
+            </Selections>
+            <Comment>输入模式选择</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="OPA2Single">
+            <label>SingleGain</label>
+            <value>OPA_SINGLE_GAIN_X2</value>
+            <Selections>
+              <sel>OPA_SINGLE_GAIN_X2</sel>
+              <sel>OPA_SINGLE_GAIN_X4</sel>
+              <sel>OPA_SINGLE_GAIN_X8</sel>
+              <sel>OPA_SINGLE_GAIN_X16</sel>
+              <sel>OPA_SINGLE_GAIN_X21</sel>
+              <sel>OPA_SINGLE_GAIN_X32</sel>
+              <sel>OPA_SINGLE_GAIN_X42</sel>
+              <sel>OPA_SINGLE_GAIN_X64</sel>
+            </Selections>
+            <Comment>内部增益</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="OPA2Difference">
+            <label>DifferenceGain</label>
+            <value>OPA_DIFFERENCE_GAIN_X1</value>
+            <Selections>
+              <sel>OPA_DIFFERENCE_GAIN_X1</sel>
+              <sel>OPA_DIFFERENCE_GAIN_X2</sel>
+              <sel>OPA_DIFFERENCE_GAIN_X3</sel>
+              <sel>OPA_DIFFERENCE_GAIN_X5</sel>
+              <sel>OPA_DIFFERENCE_GAIN_X7</sel>
+              <sel>OPA_DIFFERENCE_GAIN_X9</sel>
+              <sel>OPA_DIFFERENCE_GAIN_X11</sel>
+              <sel>OPA_DIFFERENCE_GAIN_X19</sel>
+            </Selections>
+            <Comment>内部增益</Comment>
+          </Property>
+          <Property class="UIchoice">
+            <label>NegativeInput</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>负端输入</Comment>
+          </Property>
+          <Property class="UIchoice">
+            <label>Output</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>放大器输出</Comment>
+          </Property>
+        </Device>
+        <Device deviceId="OPA3">
+          <UseOrNot>0</UseOrNot>
+          <label>OPA3</label>
+          <Property class="UIchoice">
+            <label>Mode</label>
+            <value>OPA_INTERNAL_MODE</value>
+            <Selections>
+              <sel>OPA_INTERNAL_MODE</sel>
+              <sel notAvailable="OPA3Internal">OPA_EXTERNAL_MODE</sel>
+            </Selections>
+            <Comment>OPA模式选择</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="OPA3Internal">
+            <label>InputMode</label>
+            <value>OPA_SINGLE</value>
+            <Selections>
+              <sel notAvailable="OPA3Difference">OPA_SINGLE</sel>
+              <sel notAvailable="OPA3Single">OPA_DIFFERENCE</sel>
+            </Selections>
+            <Comment>输入模式选择</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="OPA3Single">
+            <label>SingleGain</label>
+            <value>OPA_SINGLE_GAIN_X2</value>
+            <Selections>
+              <sel>OPA_SINGLE_GAIN_X2</sel>
+              <sel>OPA_SINGLE_GAIN_X4</sel>
+              <sel>OPA_SINGLE_GAIN_X8</sel>
+              <sel>OPA_SINGLE_GAIN_X16</sel>
+              <sel>OPA_SINGLE_GAIN_X21</sel>
+              <sel>OPA_SINGLE_GAIN_X32</sel>
+              <sel>OPA_SINGLE_GAIN_X42</sel>
+              <sel>OPA_SINGLE_GAIN_X64</sel>
+            </Selections>
+            <Comment>内部增益</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="OPA3Difference">
+            <label>DifferenceGain</label>
+            <value>OPA_DIFFERENCE_GAIN_X1</value>
+            <Selections>
+              <sel>OPA_DIFFERENCE_GAIN_X1</sel>
+              <sel>OPA_DIFFERENCE_GAIN_X2</sel>
+              <sel>OPA_DIFFERENCE_GAIN_X3</sel>
+              <sel>OPA_DIFFERENCE_GAIN_X5</sel>
+              <sel>OPA_DIFFERENCE_GAIN_X7</sel>
+              <sel>OPA_DIFFERENCE_GAIN_X9</sel>
+              <sel>OPA_DIFFERENCE_GAIN_X11</sel>
+              <sel>OPA_DIFFERENCE_GAIN_X19</sel>
+            </Selections>
+            <Comment>内部增益</Comment>
+          </Property>
+          <Property class="UIchoice">
+            <label>NegativeInput</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>负端输入</Comment>
+          </Property>
+          <Property class="UIchoice">
+            <label>Output</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel>DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>放大器输出</Comment>
+          </Property>
+        </Device>
+      </Category>
     </ChipPropertiesView>
   </ChipConfig3>
 </com.csky.cds.peripheral>
