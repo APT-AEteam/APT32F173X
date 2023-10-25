@@ -13,11 +13,11 @@
 
 /* Private macro------------------------------------------------------*/
 /* Private function---------------------------------------------------*/
-static uint8_t apt_get_gpio_num_low(pin_name_e ePinName);
-static uint8_t apt_get_gpio_num(pin_name_e ePinName);
+static uint8_t apt_get_gpio_num_low(pin_mask_e ePinName);
+static uint8_t apt_get_gpio_num(pin_mask_e ePinName);
 static int32_t apt_gpio_intgroup_set(csp_gpio_t *ptGpioBase, uint8_t byPinNum, gpio_igrp_e eExiGrp);
 static void apt_exi_trg_edge_set(csp_syscon_t *ptSysconBase, gpio_igrp_e eExiGrp, exi_trigger_e eGpioTrg);
-static void apt_iomap_handle(pin_name_e ePinName, csi_gpio_iomap_e eIoMap, uint8_t byGrp);
+static void apt_iomap_handle(pin_mask_e ePinName, csi_gpio_iomap_e eIoMap, uint8_t byGrp);
 
 /* global variablesr--------------------------------------------------*/
 /* Private variablesr-------------------------------------------------*/
@@ -26,11 +26,11 @@ static void apt_iomap_handle(pin_name_e ePinName, csi_gpio_iomap_e eIoMap, uint8
 /** \brief set gpio mux function
  * 
  *  \param[in] ptGpioBase: pointer of gpio register structure
- *  \param[in] ePinName: gpio pin name, \ref pin_name_e
+ *  \param[in] ePinName: gpio pin name, \ref pin_mask_e
  *  \param[in] ePinFunc: gpio pin function, \ref pin_func_e
  *  \return enone
  */  
-void csi_gpio_set_mux(csp_gpio_t *ptGpioBase, pin_name_e ePinName, pin_func_e ePinFunc)
+void csi_gpio_set_mux(csp_gpio_t *ptGpioBase, pin_mask_e ePinName, pin_func_e ePinFunc)
 {
 	uint8_t byPinNum = apt_get_gpio_num(ePinName);
 
@@ -43,10 +43,10 @@ void csi_gpio_set_mux(csp_gpio_t *ptGpioBase, pin_name_e ePinName, pin_func_e eP
 /** \brief get gpio mux function
  * 
  *  \param[in] ptGpioBase: pointer of gpio register structure
- *  \param[in] ePinName: gpio pin name, \ref pin_name_e
+ *  \param[in] ePinName: gpio pin name, \ref pin_mask_e
  *  \return value of gpio mux
  */ 
-pin_func_e csi_gpio_get_mux(csp_gpio_t *ptGpioBase, pin_name_e ePinName)
+pin_func_e csi_gpio_get_mux(csp_gpio_t *ptGpioBase, pin_mask_e ePinName)
 {
     uint8_t ret = 0x0f;
 	uint8_t byPinNum = apt_get_gpio_num(ePinName);
@@ -60,11 +60,11 @@ pin_func_e csi_gpio_get_mux(csp_gpio_t *ptGpioBase, pin_name_e ePinName)
 }
 /** \brief set gpio iomap function
  * 
- *  \param[in] ePinName: gpio pin name, \ref pin_name_e
+ *  \param[in] ePinName: gpio pin name, \ref pin_mask_e
  *  \param[in] eIoMap: gpio pin remap function, \ref csi_gpio_iomap_e
  *  \return error code \ref csi_error_t
  */  
-csi_error_t csi_gpio_set_iomap(csp_gpio_t *ptGpioBase, pin_name_e ePinName, csi_gpio_iomap_e eIoMap)
+csi_error_t csi_gpio_set_iomap(csp_gpio_t *ptGpioBase, pin_mask_e ePinName, csi_gpio_iomap_e eIoMap)
 {
 	uint8_t byIoMap = 0x0b;
 	uint8_t byPinNum = apt_get_gpio_num(ePinName);
@@ -153,11 +153,11 @@ csi_error_t csi_gpio_set_iomap(csp_gpio_t *ptGpioBase, pin_name_e ePinName, csi_
 /** \brief set gpio pull mode
  * 
  *  \param[in] ptGpioBase: pointer of gpio register structure
- *  \param[in] ePinName: gpio pin name, \ref pin_name_e
+ *  \param[in] ePinName: gpio pin name, \ref pin_mask_e
  *  \param[in] ePullMode: gpio pull mode, \ref csi_gpio_pull_mode_e
  *  \return error code \ref csi_error_t
  */  
-csi_error_t csi_gpio_pull_mode(csp_gpio_t *ptGpioBase, pin_name_e ePinName, csi_gpio_pull_mode_e ePullMode)
+csi_error_t csi_gpio_pull_mode(csp_gpio_t *ptGpioBase, pin_mask_e ePinName, csi_gpio_pull_mode_e ePullMode)
 {
 	csi_error_t ret = CSI_OK;
 	uint16_t byPinNum = 0;
@@ -185,11 +185,11 @@ csi_error_t csi_gpio_pull_mode(csp_gpio_t *ptGpioBase, pin_name_e ePinName, csi_
 /** \brief set gpio input mode
  *
  *  \param[in] ptGpioBase: pointer of gpio register structure
- *  \param[in] ePinName: gpio pin name, \ref pin_name_e
+ *  \param[in] ePinName: gpio pin name, \ref pin_mask_e
  *  \param[in] eInputMode: input mode, \ref csi_gpio_input_mode_e 
  *  \return error code \ref csi_error_t
  */ 
-csi_error_t csi_gpio_input_mode(csp_gpio_t *ptGpioBase, pin_name_e ePinName, csi_gpio_input_mode_e eInputMode)
+csi_error_t csi_gpio_input_mode(csp_gpio_t *ptGpioBase, pin_mask_e ePinName, csi_gpio_input_mode_e eInputMode)
 {
 
 	csi_error_t ret = CSI_OK;
@@ -218,11 +218,11 @@ csi_error_t csi_gpio_input_mode(csp_gpio_t *ptGpioBase, pin_name_e ePinName, csi
 /** \brief set gpio output mode
  * 
  *  \param[in] ptGpioBase: pointer of gpio register structure
- *  \param[in] ePinName: gpio pin name, \ref pin_name_e 
+ *  \param[in] ePinName: gpio pin name, \ref pin_mask_e 
  *  \param[in] eOutMode: output mode, \ref csi_gpio_output_mode_e 
  *  \return error code \ref csi_error_t
  */ 
-csi_error_t csi_gpio_output_mode(csp_gpio_t *ptGpioBase, pin_name_e ePinName, csi_gpio_output_mode_e eOutMode)
+csi_error_t csi_gpio_output_mode(csp_gpio_t *ptGpioBase, pin_mask_e ePinName, csi_gpio_output_mode_e eOutMode)
 {
 	csi_error_t ret = CSI_OK;
 
@@ -241,14 +241,25 @@ csi_error_t csi_gpio_output_mode(csp_gpio_t *ptGpioBase, pin_name_e ePinName, cs
 	
 	return ret; 
 }
+/** \brief enable gpio input filtering
+ * 
+ *  \param[in] ptGpioBase: pointer of gpio register structure
+ *  \param[in] ePinName: gpio pin name, defined in soc.h.
+ *  \param[in] bEnable:  ENABLE/DISABLE
+ *  \return none
+ */ 
+void csi_gpio_input_filter(csp_gpio_t *ptGpioBase, pin_mask_e ePinName, bool bEnable)
+{
+	csp_gpio_flt_enable(ptGpioBase, ePinName, bEnable);
+}
 /** \brief set gpio speed
  * 
  *  \param[in] ptGpioBase: pointer of gpio register structure
- *  \param[in] ePinName: gpio pin name, \ref pin_name_e
+ *  \param[in] ePinName: gpio pin name, \ref pin_mask_e
  *  \param[in] eSpeed: gpio pin speed, \ref csi_gpio_speed_e
  *  \return none
  */  
-void csi_gpio_speed(csp_gpio_t *ptGpioBase, pin_name_e ePinName, csi_gpio_speed_e eSpeed)
+void csi_gpio_speed(csp_gpio_t *ptGpioBase, pin_mask_e ePinName, csi_gpio_speed_e eSpeed)
 {
 	uint8_t byPinNum = 0;
 	
@@ -259,35 +270,23 @@ void csi_gpio_speed(csp_gpio_t *ptGpioBase, pin_name_e ePinName, csi_gpio_speed_
 /** \brief set gpio drive level
  * 
  *  \param[in] ptGpioBase: pointer of gpio register structure
- *  \param[in] ePinName: gpio pin name, \ref pin_name_e
+ *  \param[in] ePinName: gpio pin name, \ref pin_mask_e
  *  \param[in] eDrive: gpio pin drive level, \ref csi_gpio_drive_e
  *  \return error code \ref csi_error_t
  */ 
-void csi_gpio_drive(csp_gpio_t *ptGpioBase, pin_name_e ePinName, csi_gpio_drive_e eDrive)
+void csi_gpio_drive(csp_gpio_t *ptGpioBase, pin_mask_e ePinName, csi_gpio_drive_e eDrive)
 {
 	uint8_t byPinNum = 0;
 	
 	byPinNum = apt_get_gpio_num(ePinName);
 	csp_gpio_set_drive(ptGpioBase, byPinNum, (uint8_t)eDrive);
-		
-}
-/** \brief enable gpio input filtering
- * 
- *  \param[in] ptGpioBase: pointer of gpio register structure
- *  \param[in] ePinName: gpio pin name, \ref pin_name_e
- *  \param[in] bEnable:  ENABLE/DISABLE
- *  \return none
- */ 
-void csi_gpio_input_filter(csp_gpio_t *ptGpioBase, pin_name_e ePinName, bool bEnable)
-{
-	csp_gpio_flt_enable(ptGpioBase, ePinName, bEnable);
 }
 /** \brief get gpio num
  * 
- *  \param[in] ePinName: gpio pin name, \ref pin_name_e
+ *  \param[in] ePinName: gpio pin name, \ref pin_mask_e
  *  \return pin num
  */ 
-uint8_t csi_gpio_get_num(pin_name_e ePinName)
+uint8_t csi_gpio_get_num(pin_mask_e ePinName)
 {
     return apt_get_gpio_num(ePinName);
 }
@@ -295,10 +294,10 @@ uint8_t csi_gpio_get_num(pin_name_e ePinName)
 /** \brief  gpio pin set high(output = 1)
  *
  *  \param[in] ptGpioBase: pointer of gpio register structure 
- *  \param[in] ePinName: gpio pin name, \ref pin_name_e
+ *  \param[in] ePinName: gpio pin name, \ref pin_mask_e
  *  \return none
  */
-void csi_gpio_set_high(csp_gpio_t *ptGpioBase, pin_name_e ePinName)
+void csi_gpio_set_high(csp_gpio_t *ptGpioBase, pin_mask_e ePinName)
 {
 	csp_gpio_set_high(ptGpioBase, (uint16_t)ePinName);
 }
@@ -306,20 +305,20 @@ void csi_gpio_set_high(csp_gpio_t *ptGpioBase, pin_name_e ePinName)
 /** \brief   gpio pin set low(output = 0)
  *
  *  \param[in] ptGpioBase: pointer of gpio register structure 
- *  \param[in] ePinName: gpio pin name, \ref pin_name_e
+ *  \param[in] ePinName: gpio pin name, \ref pin_mask_e
  *  \return none
  */
-void csi_gpio_set_low(csp_gpio_t *ptGpioBase, pin_name_e ePinName)
+void csi_gpio_set_low(csp_gpio_t *ptGpioBase, pin_mask_e ePinName)
 {
 	csp_gpio_set_low(ptGpioBase, (uint16_t)ePinName);
 }
 /** \brief  gpio toggle
  * 
  *  \param[in] ptGpioBase: pointer of gpio register structure 
- *  \param[in] ePinName: gpio pin name, \ref pin_name_e
+ *  \param[in] ePinName: gpio pin name, \ref pin_mask_e
  *  \return none
  */
-void csi_gpio_toggle(csp_gpio_t *ptGpioBase, pin_name_e ePinName)
+void csi_gpio_toggle(csp_gpio_t *ptGpioBase, pin_mask_e ePinName)
 {
 	if(ptGpioBase->ODSR & ePinName)
 		ptGpioBase->CODR = ePinName;
@@ -329,10 +328,10 @@ void csi_gpio_toggle(csp_gpio_t *ptGpioBase, pin_name_e ePinName)
 /** \brief get the value of selected gpio 
  * 
  *  \param[in] ptGpioBase: pointer of gpio register structure 
- *  \param[in] ePinName: gpio pin name, \ref pin_name_e
+ *  \param[in] ePinName: gpio pin name, \ref pin_mask_e
  *  \return According to the bit mask, the corresponding pin status is obtained
 */
-bool csi_gpio_read(csp_gpio_t *ptGpioBase, pin_name_e ePinName)
+bool csi_gpio_read(csp_gpio_t *ptGpioBase, pin_mask_e ePinName)
 {
 	if(csp_gpio_read_input(ptGpioBase) & ePinName)
 		return true;
@@ -354,12 +353,12 @@ void  csi_gpio_write_port(csp_gpio_t *ptGpioBase, uint16_t hwPinMask, uint16_t h
 /** \brief config gpio irq mode(assign exi group)
  * 
  *  \param[in] ptGpioBase: pointer of gpio register structure 
- *  \param[in] ePinName: pin name, \ref pin_name_e
+ *  \param[in] ePinName: pin name, \ref pin_mask_e
  *  \param[in] eExiGrp: exi group, \ref csi_exi_grp_e
  *  \param[in] eTrgEdge: edge mode, \ref csi_gpio_irq_mode_e
  *  \return error code \ref csi_error_t
  */ 
-csi_error_t csi_gpio_irq_mode(csp_gpio_t *ptGpioBase, pin_name_e ePinName, csi_exi_grp_e eExiGrp, csi_gpio_irq_mode_e eTrgEdge)
+csi_error_t csi_gpio_irq_mode(csp_gpio_t *ptGpioBase, pin_mask_e ePinName, csi_exi_grp_e eExiGrp, csi_gpio_irq_mode_e eTrgEdge)
 {
 	csi_error_t ret = CSI_OK;
 	uint8_t byPinNum = 0;
@@ -384,10 +383,10 @@ csi_error_t csi_gpio_irq_mode(csp_gpio_t *ptGpioBase, pin_name_e ePinName, csi_e
 /** \brief gpio interrupt enable
  *
  *  \param[in] ptGpioBase: pointer of gpio register structure  
- *  \param[in] ePinName: pin name, \ref pin_name_e
+ *  \param[in] ePinName: pin name, \ref pin_mask_e
  *  \return error code \ref csi_error_t
  */ 
-void csi_gpio_int_enable(csp_gpio_t *ptGpioBase, pin_name_e ePinName)
+void csi_gpio_int_enable(csp_gpio_t *ptGpioBase, pin_mask_e ePinName)
 {
 	csp_gpio_int_enable(ptGpioBase, ePinName);
 }
@@ -395,10 +394,10 @@ void csi_gpio_int_enable(csp_gpio_t *ptGpioBase, pin_name_e ePinName)
 /** \brief gpio interrupt disable
  *
  *  \param[in] ptGpioBase: pointer of gpio register structure  
- *  \param[in] ePinName: pin name, \ref pin_name_e
+ *  \param[in] ePinName: pin name, \ref pin_mask_e
  *  \return error code \ref csi_error_t
  */ 
-void csi_gpio_int_disable(csp_gpio_t *ptGpioBase,pin_name_e ePinName)
+void csi_gpio_int_disable(csp_gpio_t *ptGpioBase,pin_mask_e ePinName)
 {
 	csp_gpio_int_disable(ptGpioBase, ePinName);
 }
@@ -521,7 +520,7 @@ void csi_exi_sw_evtrg(csi_exi_trgout_e eTrgOut)
  *  \param[in] ePinFunc: pointer of gpio register structure
  *  \return gpio port total number(16/6) or error(0xff)
  */ 
-static uint8_t apt_get_gpio_num_low(pin_name_e ePinName)
+static uint8_t apt_get_gpio_num_low(pin_mask_e ePinName)
 {
 	uint16_t byPinNum = 0;
 	
@@ -557,7 +556,7 @@ static uint8_t apt_get_gpio_num_low(pin_name_e ePinName)
  *  \param[in] ePinFunc: pointer of gpio register structure
  *  \return gpio port total number(16/6) or error(0xff)
  */ 
-static uint8_t apt_get_gpio_num(pin_name_e ePinName)
+static uint8_t apt_get_gpio_num(pin_mask_e ePinName)
 {
 	uint8_t byPinNum = 0;
 	
@@ -691,7 +690,7 @@ static void apt_exi_trg_edge_set(csp_syscon_t *ptSysconBase, gpio_igrp_e eExiGrp
  *  \param[in] byGrp: iomap group0/group1, 0/1
  *  \return none
  */  
-static void apt_iomap_handle(pin_name_e ePinName, csi_gpio_iomap_e eIoMap, uint8_t byGrp)
+static void apt_iomap_handle(pin_mask_e ePinName, csi_gpio_iomap_e eIoMap, uint8_t byGrp)
 {
 	uint8_t i,j;
 	volatile uint8_t wFlag = 0x00;

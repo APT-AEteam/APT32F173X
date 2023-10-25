@@ -29,7 +29,7 @@ extern "C" {
 #define console_getc(CTRL, UARTx)		(CTRL > 0) ?  csi_usart_getc(UARTx) : csi_usart_getc(UARTx)
 
 typedef struct {
-    pin_name_e ePin;
+    pin_mask_e ePin;
     pin_func_e eFunc;
 } console_port_t;
 

@@ -29,7 +29,6 @@
 
 /* include ----------------------------------------------------------------*/
 #include "syscon.h"
-#include "pin.h"
 #include "iostring.h"
 
 /** \brief 函数示例LVR的配置方法,及复位源查询方式

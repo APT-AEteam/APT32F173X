@@ -40,7 +40,7 @@ static void prepare_lp(void)
 static void wkup_lp(void)					   
 {
 	//USER CODE，如恢复管脚状态
-	csi_pin_set_low(PB2);
+	csi_gpio_set_low(GPIOB, PB2);
 }
 
 
