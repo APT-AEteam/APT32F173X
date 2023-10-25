@@ -11,7 +11,6 @@
  * *********************************************************************
 */  
 
-#include <soc.h>
 #include "sys_clk.h"
 #include "drv/tick.h"
 #include "drv/iwdt.h" 

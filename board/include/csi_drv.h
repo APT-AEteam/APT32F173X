@@ -24,7 +24,6 @@
 #include <drv/rtc.h>
 #include <drv/pm.h>
 #include <drv/syscon.h>
-#include <drv/pin.h>
 #include <drv/gpio.h>
 #include <drv/dma.h>
 #include <drv/etcb.h>
