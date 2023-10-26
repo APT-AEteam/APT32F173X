@@ -4235,12 +4235,10 @@
             <label>PLLp/PLLq Freq</label>
             <value>105MHz/52.5MHz</value>
             <Selections>
-              <sel notAvailable="SystemClockPLLCkpDiv1,SystemClockPLLCkpDiv3,SystemClockPLLCkqDiv2,SystemClockPLLCkqDiv4,SystemClockPLLCkqDiv6,SystemClockPLLDivMType1,SystemClockPLLDivMType2,SystemClockPLLNulType1,SystemClockPLLNulType2,SystemClockPLLNulType3">Default</sel>
-              <sel>105MHz/62.5MHz</sel>
-              <sel notAvailable="SystemClockPLLCkpDiv3,SystemClockPLLCkqDiv2,SystemClockPLLCkqDiv6,SystemClockPLLDivMType2,SystemClockPLLNulType2,SystemClockPLLNulType3">105MHz/52.5MHz</sel>
-              <sel notAvailable="SystemClockPLLCkpDiv3,SystemClockPLLCkqDiv2,SystemClockPLLCkqDiv6,SystemClockPLLDivMType1,SystemClockPLLNulType1,SystemClockPLLNulType3">96MHz/48MHz</sel>
-              <sel notAvailable="SystemClockPLLCkpDiv3,SystemClockPLLCkqDiv4,SystemClockPLLCkqDiv6,SystemClockPLLDivMType1,SystemClockPLLNulType1,SystemClockPLLNulType3">96MHz/96MHz</sel>
-              <sel notAvailable="SystemClockPLLCkpDiv1,SystemClockPLLCkqDiv2,SystemClockPLLCkqDiv4,SystemClockPLLDivMType1,SystemClockPLLNulType1,SystemClockPLLNulType2">72MHz/48MHz</sel>
+              <sel notAvailable="SystemClockPLLCkpDiv3,SystemClockPLLCkqDiv2,SystemClockPLLCkqDiv6,SystemClockPLLDivMType2,SystemClockPLLNul24,SystemClockPLLNul36">105MHz/52.5MHz</sel>
+              <sel notAvailable="SystemClockPLLCkpDiv3,SystemClockPLLCkqDiv2,SystemClockPLLCkqDiv6,SystemClockPLLDivMType1,SystemClockPLLNul35,SystemClockPLLNul36">96MHz/48MHz</sel>
+              <sel notAvailable="SystemClockPLLCkpDiv3,SystemClockPLLCkqDiv4,SystemClockPLLCkqDiv6,SystemClockPLLDivMType1,SystemClockPLLNul35,SystemClockPLLNul36">96MHz/96MHz</sel>
+              <sel notAvailable="SystemClockPLLCkpDiv1,SystemClockPLLCkqDiv2,SystemClockPLLCkqDiv4,SystemClockPLLDivMType1,SystemClockPLLNul35,SystemClockPLLNul24">72MHz/48MHz</sel>
             </Selections>
             <Comment/>
           </Property>
@@ -4297,13 +4295,10 @@
             <value>2</value>
             <Selections>
               <sel>2</sel>
-              <sel>3</sel>
-              <sel>4</sel>
-              <sel>5</sel>
             </Selections>
             <Comment/>
           </Property>
-          <Property class="UIchoice" property_class="SystemClockPLLNulType1">
+          <Property class="UIchoice" property_class="SystemClockPLLNul35">
             <label>Nul</label>
             <value>35</value>
             <Selections>
@@ -4311,25 +4306,19 @@
             </Selections>
             <Comment/>
           </Property>
-          <Property class="UIchoice" property_class="SystemClockPLLNulType2">
+          <Property class="UIchoice" property_class="SystemClockPLLNul24">
             <label>Nul</label>
             <value>24</value>
             <Selections>
               <sel>24</sel>
-              <sel>32</sel>
-              <sel>40</sel>
-              <sel>48</sel>
             </Selections>
             <Comment/>
           </Property>
-          <Property class="UIchoice" property_class="SystemClockPLLNulType3">
+          <Property class="UIchoice" property_class="SystemClockPLLNul36">
             <label>Nul</label>
             <value>36</value>
             <Selections>
               <sel>36</sel>
-              <sel>48</sel>
-              <sel>60</sel>
-              <sel>72</sel>
             </Selections>
             <Comment/>
           </Property>
