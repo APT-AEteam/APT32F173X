@@ -74,9 +74,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
-            </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+               </Selections>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice" property_class="Pin10DSR">
             <label>Driving Slew-Rate</label>
@@ -152,9 +151,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
-            </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+               </Selections>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice" property_class="Pin11DSR">
             <label>Driving Slew-Rate</label>
@@ -231,9 +229,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
-            </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+               </Selections>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice" property_class="Pin12DSR">
             <label>Driving Slew-Rate</label>
@@ -310,9 +307,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
-            </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+               </Selections>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice" property_class="Pin13DSR">
             <label>Driving Slew-Rate</label>
@@ -387,9 +383,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
-            </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+               </Selections>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice" property_class="Pin14DSR">
             <label>Driving Slew-Rate</label>
@@ -465,9 +460,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
-            </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+               </Selections>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice" property_class="Pin15DSR">
             <label>Driving Slew-Rate</label>
@@ -542,9 +536,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
-            </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+               </Selections>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice" property_class="Pin16DSR">
             <label>Driving Slew-Rate</label>
@@ -620,9 +613,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
-            </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+               </Selections>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice" property_class="Pin17DSR">
             <label>Driving Slew-Rate</label>
@@ -697,9 +689,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
-            </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+               </Selections>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice" property_class="Pin29DSR">
             <label>Driving Slew-Rate</label>
@@ -775,9 +766,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
-            </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+               </Selections>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice" property_class="Pin30DSR">
             <label>Driving Slew-Rate</label>
@@ -853,9 +843,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
-            </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+               </Selections>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice" property_class="Pin31DSR">
             <label>Driving Slew-Rate</label>
@@ -931,9 +920,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
-            </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+               </Selections>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice" property_class="Pin32DSR">
             <label>Driving Slew-Rate</label>
@@ -1010,9 +998,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
-            </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+               </Selections>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice" property_class="Pin33DSR">
             <label>Driving Slew-Rate</label>
@@ -1085,9 +1072,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
-            </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+               </Selections>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice" property_class="Pin34DSR">
             <label>Driving Slew-Rate</label>
@@ -1161,9 +1147,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
-            </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+               </Selections>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice" property_class="Pin37DSR">
             <label>Driving Slew-Rate</label>
@@ -1239,9 +1224,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
-            </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+               </Selections>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice" property_class="Pin38DSR">
             <label>Driving Slew-Rate</label>
@@ -1317,9 +1301,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
-            </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+               </Selections>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice" property_class="Pin18DSR">
             <label>Driving Slew-Rate</label>
@@ -1395,9 +1378,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
-            </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+               </Selections>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice" property_class="Pin19DSR">
             <label>Driving Slew-Rate</label>
@@ -1471,9 +1453,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
-            </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+               </Selections>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice" property_class="Pin20DSR">
             <label>Driving Slew-Rate</label>
@@ -1549,9 +1530,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
-            </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+               </Selections>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice" property_class="Pin39DSR">
             <label>Driving Slew-Rate</label>
@@ -1627,9 +1607,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
-            </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+               </Selections>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice" property_class="Pin40DSR">
             <label>Driving Slew-Rate</label>
@@ -1704,9 +1683,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
-            </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+               </Selections>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice" property_class="Pin41DSR">
             <label>Driving Slew-Rate</label>
@@ -1783,9 +1761,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
-            </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+               </Selections>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice" property_class="Pin42DSR">
             <label>Driving Slew-Rate</label>
@@ -1860,9 +1837,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
-            </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+               </Selections>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice" property_class="Pin43DSR">
             <label>Driving Slew-Rate</label>
@@ -1939,9 +1915,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
-            </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+               </Selections>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice" property_class="Pin45DSR">
             <label>Driving Slew-Rate</label>
@@ -2018,9 +1993,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
-            </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+               </Selections>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice" property_class="Pin46DSR">
             <label>Driving Slew-Rate</label>
@@ -2096,9 +2070,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
-            </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+               </Selections>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice" property_class="Pin21DSR">
             <label>Driving Slew-Rate</label>
@@ -2174,9 +2147,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
-            </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+               </Selections>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice" property_class="Pin22DSR">
             <label>Driving Slew-Rate</label>
@@ -2250,9 +2222,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
-            </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+               </Selections>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice" property_class="Pin25DSR">
             <label>Driving Slew-Rate</label>
@@ -2327,9 +2298,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
-            </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+               </Selections>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice" property_class="Pin26DSR">
             <label>Driving Slew-Rate</label>
@@ -2404,9 +2374,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
-            </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+               </Selections>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice" property_class="Pin27DSR">
             <label>Driving Slew-Rate</label>
@@ -2481,9 +2450,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
-            </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+               </Selections>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice" property_class="Pin28DSR">
             <label>Driving Slew-Rate</label>
@@ -2560,9 +2528,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
-            </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+               </Selections>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice" property_class="Pin2DSR">
             <label>Driving Slew-Rate</label>
@@ -2639,9 +2606,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
-            </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+               </Selections>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice" property_class="Pin3DSR">
             <label>Driving Slew-Rate</label>
@@ -2715,9 +2681,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
-            </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+               </Selections>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice" property_class="Pin4DSR">
             <label>Driving Slew-Rate</label>
@@ -2793,9 +2758,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
-            </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+               </Selections>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice" property_class="Pin5DSR">
             <label>Driving Slew-Rate</label>
@@ -2872,9 +2836,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
-            </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+               </Selections>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice" property_class="Pin6DSR">
             <label>Driving Slew-Rate</label>
@@ -2950,9 +2913,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
-            </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+               </Selections>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice" property_class="Pin44DSR">
             <label>Driving Slew-Rate</label>
@@ -3025,9 +2987,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
-            </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+               </Selections>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice" property_class="Pin1DSR">
             <label>Driving Slew-Rate</label>
@@ -3102,9 +3063,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
-            </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+               </Selections>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice" property_class="Pin7DSR">
             <label>Driving Slew-Rate</label>

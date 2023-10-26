@@ -74,9 +74,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice" property_class="Pin14DSR">
             <label>Driving Slew-Rate</label>
@@ -152,9 +151,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice" property_class="Pin15DSR">
             <label>Driving Slew-Rate</label>
@@ -231,9 +229,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice" property_class="Pin16DSR">
             <label>Driving Slew-Rate</label>
@@ -310,9 +307,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice" property_class="Pin17DSR">
             <label>Driving Slew-Rate</label>
@@ -387,9 +383,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice" property_class="Pin20DSR">
             <label>Driving Slew-Rate</label>
@@ -465,9 +460,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice" property_class="Pin21DSR">
             <label>Driving Slew-Rate</label>
@@ -542,9 +536,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice" property_class="Pin22DSR">
             <label>Driving Slew-Rate</label>
@@ -620,9 +613,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice" property_class="Pin23DSR">
             <label>Driving Slew-Rate</label>
@@ -697,9 +689,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice" property_class="Pin41DSR">
             <label>Driving Slew-Rate</label>
@@ -775,9 +766,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice" property_class="Pin42DSR">
             <label>Driving Slew-Rate</label>
@@ -853,9 +843,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice" property_class="Pin43DSR">
             <label>Driving Slew-Rate</label>
@@ -931,9 +920,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice" property_class="Pin44DSR">
             <label>Driving Slew-Rate</label>
@@ -1010,9 +998,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice" property_class="Pin45DSR">
             <label>Driving Slew-Rate</label>
@@ -1085,9 +1072,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice" property_class="Pin46DSR">
             <label>Driving Slew-Rate</label>
@@ -1161,9 +1147,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice" property_class="Pin49DSR">
             <label>Driving Slew-Rate</label>
@@ -1239,9 +1224,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice" property_class="Pin50DSR">
             <label>Driving Slew-Rate</label>
@@ -1317,9 +1301,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice" property_class="Pin26DSR">
             <label>Driving Slew-Rate</label>
@@ -1395,9 +1378,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice" property_class="Pin27DSR">
             <label>Driving Slew-Rate</label>
@@ -1471,9 +1453,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice" property_class="Pin28DSR">
             <label>Driving Slew-Rate</label>
@@ -1549,9 +1530,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice" property_class="Pin55DSR">
             <label>Driving Slew-Rate</label>
@@ -1627,9 +1607,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice" property_class="Pin56DSR">
             <label>Driving Slew-Rate</label>
@@ -1704,9 +1683,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice" property_class="Pin57DSR">
             <label>Driving Slew-Rate</label>
@@ -1783,9 +1761,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice" property_class="Pin58DSR">
             <label>Driving Slew-Rate</label>
@@ -1860,9 +1837,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice" property_class="Pin59DSR">
             <label>Driving Slew-Rate</label>
@@ -1939,9 +1915,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice" property_class="Pin61DSR">
             <label>Driving Slew-Rate</label>
@@ -2018,9 +1993,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice" property_class="Pin62DSR">
             <label>Driving Slew-Rate</label>
@@ -2096,9 +2070,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice" property_class="Pin29DSR">
             <label>Driving Slew-Rate</label>
@@ -2174,9 +2147,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice" property_class="Pin30DSR">
             <label>Driving Slew-Rate</label>
@@ -2250,9 +2222,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice" property_class="Pin33DSR">
             <label>Driving Slew-Rate</label>
@@ -2327,9 +2298,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice" property_class="Pin34DSR">
             <label>Driving Slew-Rate</label>
@@ -2404,9 +2374,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice" property_class="Pin35DSR">
             <label>Driving Slew-Rate</label>
@@ -2481,9 +2450,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice" property_class="Pin36DSR">
             <label>Driving Slew-Rate</label>
@@ -2557,9 +2525,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice" property_class="Pin8DSR">
             <label>Driving Slew-Rate</label>
@@ -2633,9 +2600,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice" property_class="Pin9DSR">
             <label>Driving Slew-Rate</label>
@@ -2708,9 +2674,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice" property_class="Pin10DSR">
             <label>Driving Slew-Rate</label>
@@ -2782,9 +2747,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice" property_class="Pin11DSR">
             <label>Driving Slew-Rate</label>
@@ -2858,9 +2822,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice" property_class="Pin24DSR">
             <label>Driving Slew-Rate</label>
@@ -2933,9 +2896,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice" property_class="Pin25DSR">
             <label>Driving Slew-Rate</label>
@@ -3007,9 +2969,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice" property_class="Pin37DSR">
             <label>Driving Slew-Rate</label>
@@ -3082,9 +3043,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice" property_class="Pin38DSR">
             <label>Driving Slew-Rate</label>
@@ -3156,9 +3116,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice" property_class="Pin39DSR">
             <label>Driving Slew-Rate</label>
@@ -3230,9 +3189,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice" property_class="Pin40DSR">
             <label>Driving Slew-Rate</label>
@@ -3308,9 +3266,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice" property_class="Pin51DSR">
             <label>Driving Slew-Rate</label>
@@ -3386,9 +3343,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice" property_class="Pin52DSR">
             <label>Driving Slew-Rate</label>
@@ -3463,9 +3419,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice" property_class="Pin53DSR">
             <label>Driving Slew-Rate</label>
@@ -3542,9 +3497,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice" property_class="Pin2DSR">
             <label>Driving Slew-Rate</label>
@@ -3621,9 +3575,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice" property_class="Pin3DSR">
             <label>Driving Slew-Rate</label>
@@ -3697,9 +3650,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice" property_class="Pin4DSR">
             <label>Driving Slew-Rate</label>
@@ -3775,9 +3727,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice" property_class="Pin5DSR">
             <label>Driving Slew-Rate</label>
@@ -3854,9 +3805,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice" property_class="Pin6DSR">
             <label>Driving Slew-Rate</label>
@@ -3931,9 +3881,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice" property_class="Pin54DSR">
             <label>Driving Slew-Rate</label>
@@ -4009,9 +3958,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice" property_class="Pin60DSR">
             <label>Driving Slew-Rate</label>
@@ -4084,9 +4032,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice" property_class="Pin1DSR">
             <label>Driving Slew-Rate</label>
@@ -4161,9 +4108,8 @@
             <Selections>
               <sel>Normal</sel>
               <sel>Strong</sel>
-              <sel>Constant</sel>
             </Selections>
-            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱&#xD;Constant:恒流</Comment>
+            <Comment>驱动能力:仅输出有效&#xD;Normal:标准&#xD;Stronge:强驱</Comment>
           </Property>
           <Property class="Choice" property_class="Pin7DSR">
             <label>Driving Slew-Rate</label>
@@ -4202,57 +4148,19 @@
         <label>System</label>
         <Device deviceId="SystemClock">
           <label>System Clock</label>
-          <UseOrNot>1</UseOrNot>
+          <UseOrNot>0</UseOrNot>
           <Property class="UIchoice">
             <label>Clock Source</label>
-            <value>HFOSC</value>
+            <value>EM_PLL</value>
             <Selections>
-              <sel notAvailable="SystemClockFreqHFOSC,SystemClockFreqText,SystemClockISOSCFreqText,SystemClockFreqManualPLL,SystemClockPLLFreqText">IMOSC</sel>
-              <sel notAvailable="SystemClockFreqHFOSC,SystemClockFreqIMOSC,SystemClockISOSCFreqText,SystemClockFreqManualPLL,SystemClockPLLFreqText">EMOSC</sel>
-              <sel notAvailable="SystemClockFreqIMOSC,SystemClockFreqText,SystemClockISOSCFreqText,SystemClockFreqManualPLL,SystemClockPLLFreqText">HFOSC</sel>
-              <sel notAvailable="SystemClockFreqHFOSC,SystemClockFreqIMOSC,SystemClockFreqText,SystemClockFreqManualPLL,SystemClockPLLFreqText">ISOSC</sel>
-              <sel notAvailable="SystemClockFreqHFOSC,SystemClockFreqIMOSC,SystemClockISOSCFreqText,SystemClockFreqManualPLL,SystemClockFreqText">AUTO_HF_PLL</sel>
-              <sel notAvailable="SystemClockFreqHFOSC,SystemClockFreqIMOSC,SystemClockISOSCFreqText,SystemClockFreqManualPLL,SystemClockFreqText">AUTO_EM_PLL</sel>
-              <sel notAvailable="SystemClockFreqHFOSC,SystemClockFreqIMOSC,SystemClockISOSCFreqText,SystemClockFreqText,SystemClockPLLFreqText">MANUAL_PLL</sel>
+              <sel notAvailable="SystemClockFreqHFOSC,SystemClockFreqText,SystemClockISOSCFreqText,SystemClockFreqHFPLL,SystemClockFreqEMPLL,SystemClockFreqManualPLL">IMOSC</sel>
+              <sel notAvailable="SystemClockFreqHFOSC,SystemClockFreqIMOSC,SystemClockISOSCFreqText,SystemClockFreqHFPLL,SystemClockFreqEMPLL,SystemClockFreqManualPLL">EMOSC</sel>
+              <sel notAvailable="SystemClockFreqIMOSC,SystemClockFreqText,SystemClockISOSCFreqText,SystemClockFreqHFPLL,SystemClockFreqEMPLL,SystemClockFreqManualPLL">HFOSC</sel>
+              <sel notAvailable="SystemClockFreqHFOSC,SystemClockFreqIMOSC,SystemClockFreqText,SystemClockFreqHFPLL,SystemClockFreqEMPLL,SystemClockFreqManualPLL">ISOSC</sel>
+              <sel notAvailable="SystemClockFreqHFOSC,SystemClockFreqIMOSC,SystemClockISOSCFreqText,SystemClockFreqText,SystemClockFreqEMPLL">HF_PLL</sel>
+              <sel notAvailable="SystemClockFreqHFOSC,SystemClockFreqIMOSC,SystemClockISOSCFreqText,SystemClockFreqText,SystemClockFreqHFPLL">EM_PLL</sel>
             </Selections>
             <Comment>系统时钟源</Comment>
-          </Property>
-          <Property class="UIchoice" property_class="SystemClockFreqManualPLL">
-            <label>ClkSel</label>
-            <value>PLL_SEL_HFOSC_24M</value>
-            <Selections>
-              <sel>PLL_SEL_HFOSC_24M</sel>
-              <sel>PLL_SEL_HFOSC_12M</sel>
-              <sel>PLL_SEL_HFOSC_6M</sel>
-              <sel>PLL_SEL_EMOSC_24M</sel>
-            </Selections>
-            <Comment/>
-          </Property>
-          <Property class="Text" property_class="SystemClockFreqManualPLL">
-            <label>DivM</label>
-            <value>3</value>
-            <Comment/>
-          </Property>
-          <Property class="Text" property_class="SystemClockFreqManualPLL">
-            <label>Nul</label>
-            <value>35</value>
-            <Comment/>
-          </Property>
-          <Property class="Text" property_class="SystemClockFreqManualPLL">
-            <label>CkpDiv</label>
-            <value>1</value>
-            <Comment/>
-          </Property>
-          <Property class="UIchoice" property_class="SystemClockFreqManualPLL">
-            <label>CkqDiv</label>
-            <value>CKQ_DIV4</value>
-            <Selections>
-              <sel>CKQ_DIV2</sel>
-              <sel>CKQ_DIV4</sel>
-              <sel>CKQ_DIV6</sel>
-              <sel>CKQ_DIV8</sel>
-            </Selections>
-            <Comment/>
           </Property>
           <Property class="UIchoice" property_class="SystemClockFreqIMOSC">
             <label>Freq(IMOSC)</label>
@@ -4265,6 +4173,11 @@
             </Selections>
             <Comment>时钟源频率</Comment>
           </Property>
+          <Property class="Text" property_class="SystemClockFreqText">
+            <label>Freq(EMOSC)</label>
+            <value>24000000</value>
+            <Comment>EM时钟源频率 频率范围:1~24M</Comment>
+          </Property>
           <Property class="UIchoice" property_class="SystemClockFreqHFOSC">
             <label>Freq(HFOSC)</label>
             <value>HFOSC_12M</value>
@@ -4274,18 +4187,6 @@
               <sel>HFOSC_6M</sel>
             </Selections>
             <Comment>时钟源频率</Comment>
-          </Property>
-          <Property class="Text" property_class="SystemClockFreqText">
-            <label>Freq(EMOSC)</label>
-            <value>24000000</value>
-            <!-- <validReg>^([1-9]|[1-3][0-9]|[4][0-8])$</validReg> -->
-            <Comment>EM时钟源频率 频率范围:1~24M</Comment>
-          </Property>
-          <Property class="Text" property_class="SystemClockPLLFreqText">
-            <label>Freq(PLL)</label>
-            <value>72000000</value>
-            <!-- <validReg>^([1-9]|[1-3][0-9]|[4][0-8])$</validReg> -->
-            <Comment>PLL时钟源频率 频率范围:1~72M</Comment>
           </Property>
           <Property class="Text" property_class="SystemClockISOSCFreqText">
             <label>Freq(ISOSC)</label>
@@ -4313,6 +4214,124 @@
               <sel>PCLK_DIV16</sel>
             </Selections>
             <Comment>外设时钟分频系数,PCLK = SCLK/PCLK_DIV</Comment>
+          </Property>
+          <Property class="UIchoice" property_class="SystemClockFreqHFPLL">
+            <label>ClkSel</label>
+            <value>PLL_SEL_HFOSC_24M</value>
+            <Selections>
+              <sel>PLL_SEL_HFOSC_24M</sel>
+            </Selections>
+            <Comment/>
+          </Property>
+          <Property class="UIchoice" property_class="SystemClockFreqEMPLL">
+            <label>ClkSel</label>
+            <value>PLL_SEL_EMOSC_24M</value>
+            <Selections>
+              <sel>PLL_SEL_EMOSC_24M</sel>
+            </Selections>
+            <Comment/>
+          </Property>
+          <Property class="UIchoice" property_class="SystemClockFreqManualPLL">
+            <label>PLLp/PLLq Freq</label>
+            <value>105MHz/52.5MHz</value>
+            <Selections>
+              <sel notAvailable="SystemClockPLLCkpDiv1,SystemClockPLLCkpDiv3,SystemClockPLLCkqDiv2,SystemClockPLLCkqDiv4,SystemClockPLLCkqDiv6,SystemClockPLLDivMType1,SystemClockPLLDivMType2,SystemClockPLLNulType1,SystemClockPLLNulType2,SystemClockPLLNulType3">Default</sel>
+              <sel>105MHz/62.5MHz</sel>
+              <sel notAvailable="SystemClockPLLCkpDiv3,SystemClockPLLCkqDiv2,SystemClockPLLCkqDiv6,SystemClockPLLDivMType2,SystemClockPLLNulType2,SystemClockPLLNulType3">105MHz/52.5MHz</sel>
+              <sel notAvailable="SystemClockPLLCkpDiv3,SystemClockPLLCkqDiv2,SystemClockPLLCkqDiv6,SystemClockPLLDivMType1,SystemClockPLLNulType1,SystemClockPLLNulType3">96MHz/48MHz</sel>
+              <sel notAvailable="SystemClockPLLCkpDiv3,SystemClockPLLCkqDiv4,SystemClockPLLCkqDiv6,SystemClockPLLDivMType1,SystemClockPLLNulType1,SystemClockPLLNulType3">96MHz/96MHz</sel>
+              <sel notAvailable="SystemClockPLLCkpDiv1,SystemClockPLLCkqDiv2,SystemClockPLLCkqDiv4,SystemClockPLLDivMType1,SystemClockPLLNulType1,SystemClockPLLNulType2">72MHz/48MHz</sel>
+            </Selections>
+            <Comment/>
+          </Property>
+          <Property class="UIchoice" property_class="SystemClockPLLCkpDiv1">
+            <label>CkpDiv</label>
+            <value>1</value>
+            <Selections>
+              <sel>1</sel>
+            </Selections>
+            <Comment/>
+          </Property>
+          <Property class="UIchoice" property_class="SystemClockPLLCkpDiv3">
+            <label>CkpDiv</label>
+            <value>3</value>
+            <Selections>
+              <sel>3</sel>
+            </Selections>
+            <Comment/>
+          </Property>
+          <Property class="UIchoice" property_class="SystemClockPLLCkqDiv2">
+            <label>CkqDiv</label>
+            <value>2</value>
+            <Selections>
+              <sel>2</sel>
+            </Selections>
+            <Comment/>
+          </Property>
+          <Property class="UIchoice" property_class="SystemClockPLLCkqDiv4">
+            <label>CkqDiv</label>
+            <value>4</value>
+            <Selections>
+              <sel>4</sel>
+            </Selections>
+            <Comment/>
+          </Property>
+          <Property class="UIchoice" property_class="SystemClockPLLCkqDiv6">
+            <label>CkqDiv</label>
+            <value>6</value>
+            <Selections>
+              <sel>6</sel>
+            </Selections>
+            <Comment/>
+          </Property>
+          <Property class="UIchoice" property_class="SystemClockPLLDivMType1">
+            <label>DivM</label>
+            <value>3</value>
+            <Selections>
+              <sel>3</sel>
+            </Selections>
+            <Comment/>
+          </Property>
+          <Property class="UIchoice" property_class="SystemClockPLLDivMType2">
+            <label>DivM</label>
+            <value>2</value>
+            <Selections>
+              <sel>2</sel>
+              <sel>3</sel>
+              <sel>4</sel>
+              <sel>5</sel>
+            </Selections>
+            <Comment/>
+          </Property>
+          <Property class="UIchoice" property_class="SystemClockPLLNulType1">
+            <label>Nul</label>
+            <value>35</value>
+            <Selections>
+              <sel>35</sel>
+            </Selections>
+            <Comment/>
+          </Property>
+          <Property class="UIchoice" property_class="SystemClockPLLNulType2">
+            <label>Nul</label>
+            <value>24</value>
+            <Selections>
+              <sel>24</sel>
+              <sel>32</sel>
+              <sel>40</sel>
+              <sel>48</sel>
+            </Selections>
+            <Comment/>
+          </Property>
+          <Property class="UIchoice" property_class="SystemClockPLLNulType3">
+            <label>Nul</label>
+            <value>36</value>
+            <Selections>
+              <sel>36</sel>
+              <sel>48</sel>
+              <sel>60</sel>
+              <sel>72</sel>
+            </Selections>
+            <Comment/>
           </Property>
         </Device>
         <Device deviceId="LVR">
@@ -4452,10 +4471,10 @@
             <Comment>看门狗报警中断的时间设置。当看门狗计数器计数到总溢出时间的一定比例时,产生报警中断&#xD;0h:1/8总溢出时间&#xD;1h:2/8总溢出时间&#xD;2h:3/8总溢出时间&#xD; 3h:4/8总溢出时间&#xD; 4h:5/8总溢出时间&#xD; 5h:6/8总溢出时间&#xD; 6h:7/8总溢出时间&#xD; 7h:7/8总溢出时间</Comment>
           </Property>
         </Device>
-        <Device deviceId="CoreTick">
-          <label>CoreTick </label>
+        <Device deviceId="SysTick">
+          <label>SysTick</label>
           <UseOrNot>1</UseOrNot>
-          <Comment>使能CORET定时器,CORET提供mdelay等函数,10ms进一次中断</Comment>
+          <Comment>systick使用BT3中断实现。如果不初始化systick，mdelay()延时将不可用</Comment>
         </Device>
       </Category>
       <ChipPins>
@@ -4996,7 +5015,7 @@
       <Category>
         <label>ADC</label>
         <Device deviceId="ADC">
-          <UseOrNot>0</UseOrNot>
+          <UseOrNot>1</UseOrNot>
           <label>ADC</label>
           <Property class="Text">
             <label>Freq Div</label>
@@ -5394,7 +5413,7 @@
         </Device>
         <Device deviceId="InternalCH0">
           <Comment>ADC内部通道配置必须从0开始,且连续。如果采样数为4,则需要配置internal CH0~3</Comment>
-          <UseOrNot>0</UseOrNot>
+          <UseOrNot>1</UseOrNot>
           <label>CH0</label>
           <Property class="UIchoice">
             <label>Source</label>
