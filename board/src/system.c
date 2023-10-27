@@ -62,34 +62,14 @@ void system_map_config(void)
 }
 
 /**
-  * @brief  initialize system 
+  * @brief  system interrupt config
+  * 			-include interrupt attribut
   * @param  None
   * @return None
   */
-__attribute__((weak)) void system_init(void)		
+void system_int_config(void)
 {
 	uint32_t i;
-	
-	system_map_config();
-	csi_icache_enable ();
-	
-#if ((USE_SRAM1_8K_AS_IRAM == 1) | (USE_SRAM1_16K_AS_IRAM == 1))
-	csi_iram_init();  //Need to work with gcc_flash_dram16k_iram16k.ld or gcc_flash_dram24k_iram8k.ld
-#endif	
-	
-	__disable_excp_irq();
-
-    /* enable mstatus FS */
-    uint32_t mstatus = __get_MSTATUS();
-    mstatus |= (1 << 13);
-    __set_MSTATUS(mstatus);
-	
-#if (USE_KERNEL_FREERTOS == 1)
-	/* enable mexstatus SPUSHEN and SPSWAPEN */
-    uint32_t mexstatus = __get_MEXSTATUS();
-    mexstatus |= (0x3 << 16);
-    __set_MEXSTATUS(mexstatus);
-#endif
 	
 	/* get interrupt level from info */
     CLIC->CLICCFG = (((CLIC->CLICINFO & CLIC_INFO_CLICINTCTLBITS_Msk) >> CLIC_INFO_CLICINTCTLBITS_Pos) << CLIC_CLICCFG_NLBIT_Pos);
@@ -110,7 +90,43 @@ __attribute__((weak)) void system_init(void)
 		{
 			CLIC->CLICINT[51].ATTR |= (0x1UL << CLIC_INTATTR_TRIG_Pos);
 		}
+		
+		csi_vic_set_prio(i, 1); //set priority to 1 . 1-Lowest, 16-highest
     }
+}
+
+
+/**
+  * @brief  initialize system 
+  * @param  None
+  * @return None
+  */
+__attribute__((weak)) void system_init(void)		
+{
+
+	
+	system_map_config();
+	csi_icache_enable ();
+	
+#if ((USE_SRAM1_8K_AS_IRAM == 1) | (USE_SRAM1_16K_AS_IRAM == 1))
+	csi_iram_init();  //Need to work with gcc_flash_dram16k_iram16k.ld or gcc_flash_dram24k_iram8k.ld
+#endif	
+	
+	__disable_excp_irq();
+
+    /* enable mstatus FS(float register state bit) */
+    uint32_t mstatus = __get_MSTATUS();
+    mstatus |= (1 << 13);		//set float control register at init state
+    __set_MSTATUS(mstatus);
+	
+#if (USE_KERNEL_FREERTOS == 1)
+	/* enable mexstatus SPUSHEN and SPSWAPEN */
+    uint32_t mexstatus = __get_MEXSTATUS();
+    mexstatus |= (0x3 << 16);
+    __set_MEXSTATUS(mexstatus);
+#endif
+	
+	system_int_config();		//system interrupt config, set all interrupt priority to 1(lowest)
 	
 	/* tspend use positive interrupt */
     CLIC->CLICINT[SOFTWARE_IRQn].ATTR = 0x3;
