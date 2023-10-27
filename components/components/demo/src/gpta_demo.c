@@ -189,27 +189,27 @@ int gpta_pwm_demo(void)
 	tPwmConfig.wFreq 			= 10000;						   //GPTA输出PWM频率	
 	csi_gpta_pwm_init(GPTA0, &tPwmConfig);
 //------------------------------------------------------------------------------------------------------------------------	
-	tGptachannelConfig.eActionZro    =   GPTA_ACT_LO;
-	tGptachannelConfig.eActionPrd    =   GPTA_ACT_NA;
-	tGptachannelConfig.eActionC1u    =   GPTA_ACT_HI;
-	tGptachannelConfig.eActionC1d    =   GPTA_ACT_LO;
-	tGptachannelConfig.eActionC2u    =   GPTA_ACT_NA;
-	tGptachannelConfig.eActionC2d    =   GPTA_ACT_NA;
-	tGptachannelConfig.eActionT1u    =   GPTA_ACT_NA;
-	tGptachannelConfig.eActionT1d    =   GPTA_ACT_NA;
-	tGptachannelConfig.eActionT2u    =   GPTA_ACT_NA;
-	tGptachannelConfig.eActionT2d    =   GPTA_ACT_NA;
-	tGptachannelConfig.eC1sel        =   GPTA_COMPA;
-	tGptachannelConfig.eC2sel        =   GPTA_COMPA;	
+	tGptachannelConfig.eActionZro    =   GPTA_ACT_LO;             //CNT=ZRO时，波形输出低电平
+	tGptachannelConfig.eActionPrd    =   GPTA_ACT_NA;             //CNT=PRD时，波形输出不变
+	tGptachannelConfig.eActionC1u    =   GPTA_ACT_HI;             //CNT=C1U时，波形输出高电平
+	tGptachannelConfig.eActionC1d    =   GPTA_ACT_LO;             //CNT=ZRO时，波形输出低电平
+	tGptachannelConfig.eActionC2u    =   GPTA_ACT_NA;             //CNT=PRD时，波形输出不变
+	tGptachannelConfig.eActionC2d    =   GPTA_ACT_NA;             //CNT=PRD时，波形输出不变
+	tGptachannelConfig.eActionT1u    =   GPTA_ACT_NA;             //CNT=PRD时，波形输出不变
+	tGptachannelConfig.eActionT1d    =   GPTA_ACT_NA;             //CNT=PRD时，波形输出不变
+	tGptachannelConfig.eActionT2u    =   GPTA_ACT_NA;             //CNT=PRD时，波形输出不变
+	tGptachannelConfig.eActionT2d    =   GPTA_ACT_NA;             //CNT=PRD时，波形输出不变
+	tGptachannelConfig.eC1sel        =   GPTA_COMPA;              //C1选择CMPA为数据源
+	tGptachannelConfig.eC2sel        =   GPTA_COMPA;	          //C2选择CMPA为数据源
 	csi_gpta_set_channel(GPTA0, &tGptachannelConfig,  GPTA_CHANNEL_1);
 //------------------------------------------------------------------------------------------------------------------------
 	csi_gpta_start(GPTA0);
 
 	while(1)
 	{	
-		csi_gpta_update_ch_duty(GPTA0,GPTA_COMPA, 20);
+		csi_gpta_update_ch_duty(GPTA0,GPTA_COMPA, 20);            //修改占空比20%
 		mdelay(200);                        
-		csi_gpta_update_ch_duty(GPTA0,GPTA_COMPA, 50);
+		csi_gpta_update_ch_duty(GPTA0,GPTA_COMPA, 50);            //修改占空比50%
 		mdelay(200);	
 	}	
 
@@ -238,37 +238,37 @@ int gpta_pwm_waveform_demo(void)
 	tPwmConfig.wFreq 			= 1000;						       //GPTA输出PWM频率	
 	csi_gpta_pwm_init(GPTA0, &tPwmConfig);
 //------------------------------------------------------------------------------------------------------------------------	
-	tGptachannelConfig.eActionZro    =   GPTA_ACT_LO;
-	tGptachannelConfig.eActionPrd    =   GPTA_ACT_NA;
-	tGptachannelConfig.eActionC1u    =   GPTA_ACT_HI;
-	tGptachannelConfig.eActionC1d    =   GPTA_ACT_LO;
-	tGptachannelConfig.eActionC2u    =   GPTA_ACT_NA;
-	tGptachannelConfig.eActionC2d    =   GPTA_ACT_NA;
-	tGptachannelConfig.eActionT1u    =   GPTA_ACT_NA;
-	tGptachannelConfig.eActionT1d    =   GPTA_ACT_NA;
-	tGptachannelConfig.eActionT2u    =   GPTA_ACT_NA;
-	tGptachannelConfig.eActionT2d    =   GPTA_ACT_NA;
-	tGptachannelConfig.eC1sel        =   GPTA_COMPA;
-	tGptachannelConfig.eC2sel        =   GPTA_COMPA;	
+	tGptachannelConfig.eActionZro    =   GPTA_ACT_LO;             //CNT=ZRO时，波形输出低电平
+	tGptachannelConfig.eActionPrd    =   GPTA_ACT_NA;             //CNT=PRD时，波形输出不变
+	tGptachannelConfig.eActionC1u    =   GPTA_ACT_HI;             //CNT=C1U时，波形输出高电平
+	tGptachannelConfig.eActionC1d    =   GPTA_ACT_LO;             //CNT=C1U时，波形输出低电平
+	tGptachannelConfig.eActionC2u    =   GPTA_ACT_NA;             //CNT=PRD时，波形输出不变
+	tGptachannelConfig.eActionC2d    =   GPTA_ACT_NA;             //CNT=PRD时，波形输出不变
+	tGptachannelConfig.eActionT1u    =   GPTA_ACT_NA;             //CNT=PRD时，波形输出不变
+	tGptachannelConfig.eActionT1d    =   GPTA_ACT_NA;             //CNT=PRD时，波形输出不变
+	tGptachannelConfig.eActionT2u    =   GPTA_ACT_NA;             //CNT=PRD时，波形输出不变
+	tGptachannelConfig.eActionT2d    =   GPTA_ACT_NA;             //CNT=PRD时，波形输出不变
+	tGptachannelConfig.eC1sel        =   GPTA_COMPA;			  //C1选择CMPA为数据源
+	tGptachannelConfig.eC2sel        =   GPTA_COMPA;			  //C2选择CMPA为数据源
 	csi_gpta_set_channel(GPTA0, &tGptachannelConfig,  GPTA_CHANNEL_1);
 //------------------------------------------------------------------------------------------------------------------------	
 	csi_gpta_start(GPTA0);
 
 	 while(1)
 	{		
-		csi_gpta_update_ch_duty(GPTA0,GPTA_COMPA, 20);
+		csi_gpta_update_ch_duty(GPTA0,GPTA_COMPA, 20);            //修改占空比20%
 		mdelay(10);
 
-		csi_gpta_set_aqosf(GPTA0,GPTA_CHANNEL_1,GPTA_ACT_HI);
+		csi_gpta_set_aqosf(GPTA0,GPTA_CHANNEL_1,GPTA_ACT_HI);     //强制输出高
 		mdelay(2);
 		
-		csi_gpta_update_ch_duty(GPTA0,GPTA_COMPA, 50);
+		csi_gpta_update_ch_duty(GPTA0,GPTA_COMPA, 50);            //修改占空比50%
 		mdelay(10);
 		
-		csi_gpta_set_aqcsf_loadmode(GPTA0, GPTA_AQCSF_LOAD_NOW);
-		csi_gpta_set_aqcsf(GPTA0, GPTA_CHANNEL_1, GPTA_AQCSF_L);
+		csi_gpta_set_aqcsf_loadmode(GPTA0, GPTA_AQCSF_LOAD_NOW);  //立即载入
+		csi_gpta_set_aqcsf(GPTA0, GPTA_CHANNEL_1, GPTA_AQCSF_L);  //通道1低电平
 		mdelay(10);
-		csi_gpta_set_aqcsf(GPTA0, GPTA_CHANNEL_1, GPTA_AQCSF_NONE);
+		csi_gpta_set_aqcsf(GPTA0, GPTA_CHANNEL_1, GPTA_AQCSF_NONE);//通道1保持原来的输出
 	}			
     return iRet;
 }
