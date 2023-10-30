@@ -201,9 +201,10 @@ void syscon_cqcr_demo(void)
 }
 
 
-
-/**  \brief PMP demo示例前8K地址区域只能执行，不可读写。且一旦使能保护，只能通过复位解除。
-  *  需要在代码中打断点，单步运行查看结果是否和注释一致
+/**  \brief PMP demo示例前8K地址区域只能执行，不可读写。
+  *  注意： 1、需要配合连接文件gcc_flash_pmp.ld 使用。
+  * 		2、需要在代码中打断点，单步运行查看结果是否和注释一致。
+  *  		3、一旦使能保护，只能通过复位解除。
   *  \param[in] none
   *  \return    none
 */
@@ -217,7 +218,7 @@ void pmp_demo(void)
 	tPmpConfig.x = 1;
 	tPmpConfig.a = ADDRESS_MATCHING_NAPOT;
 	tPmpConfig.l = 1;
-	//设置[0x0 - 0x7FF]为保护区间：加锁，只能执行，不能读写。此时memory区显示正常值
+	//设置[0x0 - 0x1FFF]为保护区间：加锁，只能执行，不能读写。此时memory区显示正常值
 	csi_mpu_config_region(0, 0x0, REGION_SIZE_8KB, tPmpConfig, ENABLE);
 	//保护区间memory区不再显示正常值
 	
