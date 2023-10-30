@@ -163,10 +163,15 @@ int cmp_wfcr_demo(void)
 	csi_cmp_set_evtrg(CMP0, CMP_TRGSRC_FALLING_RISING);
 	csi_cmp_evtrg_enable(CMP0);
 	
-	csi_cmp_start(CMP0);	
+	csi_cmp_start(CMP0);
 
-//	csi_bt_timer_init(BT0, 2000);		            //初始化BT0, 定时2000us； BT定时，默认采用PEND中断
+	csi_bt_time_config_t tTimConfig;
+	tTimConfig.wTimeVal = 2000;						//BT定时值，单位：us；即定时值 = 2000us
+	tTimConfig.eRunMode  = BT_RUN_CONT;				//BT计数器工作模式：连续/单次
+	csi_bt_timer_init(BT1,&tTimConfig);	
+
 	csi_bt_start(BT0);					            //启动定时器  
+	
 	csi_bt_set_evtrg(BT0, BT_TRGSRC_PEND);	
 	csi_bt_evtrg_enable(BT0);	
 
