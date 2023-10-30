@@ -376,7 +376,7 @@ int can_receive_int_demo(void)
 	return iRet;
 }
 
-/** \brief	can_receive_fifo_init_demo: CAN报文接收FIFO缓存demo，接收使用中断，使用ID接收滤波
+/** \brief	can_receive_fifo_int_demo: CAN报文接收FIFO缓存demo，接收使用中断，使用ID接收滤波
  * 
  * 	\brief	两个或者多个连续的报文通道配置为接收报文通道，可组成一个接收报文FIFO缓存，该配置中最小序号的报文通道作为FIFO
  * 			缓存区的第一个报文对象；接收FIFO中，报文对象的OVERWRITE需配置为0，最后一个报文对象的OVERWRITE位应配置为1；如
@@ -392,7 +392,7 @@ int can_receive_int_demo(void)
  *  \param[in] none
  *  \return none
  */
-int can_receive_fifo_init_demo(void)
+int can_receive_fifo_int_demo(void)
 {
 	int iRet = 0;
 	csi_can_config_t 	 tCanConfig;						//CAN 初始化结构体

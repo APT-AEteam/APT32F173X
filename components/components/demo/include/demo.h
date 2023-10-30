@@ -180,7 +180,7 @@ extern void buf_output_demo(void);
 extern int can_send_demo(void);
 extern int can_send_int_demo(void);
 extern int can_receive_int_demo(void);
-extern int can_receive_fifo_init_demo(void);
+extern int can_receive_fifo_int_demo(void);
 extern int can_remote_frames_send_demo(void);
 extern int can_remote_frames_response_demo(void);
 
