@@ -161,14 +161,14 @@ const csi_can_bittime_t  g_tBitTime[] = {
 __attribute__((weak)) void board_init(void)		
 {
     //g_tConsole config for print
-	g_tConsole.uart_id 	= (uint32_t)CONSOLE_IDX;
-    g_tConsole.baudrate = 115200U;
-    g_tConsole.tx.pin	= CONSOLE_TXD;   
-    g_tConsole.tx.func 	= CONSOLE_TXD_FUNC;
-    g_tConsole.rx.pin 	= CONSOLE_RXD;
-    g_tConsole.rx.func 	= CONSOLE_RXD_FUNC;
-	g_tConsole.gpiox 	= CONSOLE_PORT;
-	g_tConsole.uart 	= (csp_uart_t *)(APB_UART0_BASE + CONSOLE_IDX * 0x1000);
+    g_tConsole.baudrate 	= 115200U;
+    g_tConsole.tTx.ePin		= CONSOLE_TXD;   
+    g_tConsole.tTx.eFunc 	= CONSOLE_TXD_FUNC;
+    g_tConsole.tRx.ePin 	= CONSOLE_RXD;
+    g_tConsole.tRx.eFunc 	= CONSOLE_RXD_FUNC;
+	g_tConsole.ptGpiox 		= CONSOLE_PORT;
+	g_tConsole.pUartx 		= CONSOLE_IP;
+	g_tConsole.byIpType 	= CONSOLE_TYPE;
     console_init(&g_tConsole);
 }
 

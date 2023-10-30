@@ -11,35 +11,24 @@
 */
 
 #include "csp.h"
-#include "reliability.h"
+#include "syscon.h"
 
 /// ************************************************************************
 ///						for LVD module
 ///*************************************************************************
-/** \brief lvd int enable  
+/** \brief set lvd  
  * 
- *  \param[in] ePol: lvd falling/rising/both 
- *  \param[in] eLvl: lvd level
+ *  \param[in] ePol: lvd falling/rising/both  \ref csi_lvd_pol_e
+ *  \param[in] eLvl: lvd level \ref csi_lvd_level_e
  *  \return none
  */
 void csi_set_lvd(csi_lvd_pol_e ePol, csi_lvd_level_e eLvl)
 {
-	
 	csp_lvd_set_lvl(SYSCON, (lvd_level_e)eLvl);	
 	csp_lvd_set_int_pol(SYSCON, (lvdint_pol_e)ePol);
 	
 	csp_syscon_clr_isr(SYSCON,LVD_INT);  //clear int before enable 
 	csp_syscon_int_enable(SYSCON, LVD_INT);			
-	csp_lvd_lvr_enable(SYSCON);		///chaichulai				
-}
-
-/** \brief lvd  disable  
- * 
- *  \return  none
- */
-void csi_lvd_disable(void)
-{
-	csp_lvd_lvr_disable(SYSCON);
 }
 
 /** \brief lvd  flag status 
@@ -51,19 +40,28 @@ uint32_t csi_lvd_get_flag(void)
 	return csp_lvd_get_flag(SYSCON);
 }
 
-/** \brief Enable LVR
+/** \brief set LVR
  * 
  *  \param[in] eLvl LVR level
- *  \return error code \ref csi_error_t
+ *  \return none
  */
-void csi_lvr_enable(csi_lvr_level_e eLvl)
+void csi_set_lvr(csi_lvr_level_e eLvl)
 {
 	csp_lvr_set_lvl(SYSCON, (lvr_level_e)eLvl);
 	csp_lvr_rst_enable(SYSCON);	
-	csp_lvd_lvr_enable(SYSCON);/////chaichulai
 }
 
-/** \brief Disable LVR
+/** \brief Enable LVD&LVR
+ * 
+ *  \param[in] none
+ *  \return none
+ */
+void csi_lvd_lvr_enable(void)
+{
+	csp_lvd_lvr_enable(SYSCON);
+}
+
+/** \brief Disable LVD&LVR
  * 
  *  \return none
  */
@@ -471,6 +469,16 @@ uint32_t csi_get_cqsr(void)
 {
 	while(csp_cqcr_get_status(SYSCON));
 	return csp_get_cqsr(SYSCON);
+}
+
+/** \brief nmi int source select
+ * 
+ *  \param[in] eSrc  nmi int source \ref csi_nmi_sel_e
+ *  \return none
+ */
+void csi_nmi_int_enable(csi_nmi_sel_e eSrc)
+{
+	csp_nmi_int_enable(SYSCON,(nmi_sel_e)eSrc);
 }
 
 #if	(IS_CHIP_1732 == 1) 

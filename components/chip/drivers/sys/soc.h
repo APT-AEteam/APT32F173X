@@ -244,7 +244,7 @@ typedef enum {
 	PD4		    = GPIO_PIN4,
 	PD5		    = GPIO_PIN5,
 	
-} pin_name_e;
+} pin_mask_e;
 
 
 typedef enum {
@@ -1105,7 +1105,6 @@ typedef enum{
 #define NOP							asm ("nop")
 
 
-
 //ISR Define for generating special interrupt related ASM (E906), with compile option -mistack
 #define  ATTRIBUTE_ISR __attribute__ ((interrupt ("machine")))
 void sw_int_handler(void);				//CPU software interrupt
@@ -1156,6 +1155,9 @@ void bt1_int_handler(void);				//BT1interrupt
 void bt2_int_handler(void);				//BT2 interrupt
 void bt3_int_handler(void);				//BT3 interrupt
 
+
+//system map config(in system.c)
+extern void system_map_config(void);				
 
 #ifdef __cplusplus
 }

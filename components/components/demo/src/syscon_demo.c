@@ -16,9 +16,51 @@
 #include "board_config.h"
 
 /* externs function--------------------------------------------------------*/
+extern void iwdt_int_handler(void);
 /* private function--------------------------------------------------------*/
 /* externs variablesr------------------------------------------------------*/
 /* Private variablesr------------------------------------------------------*/
+
+
+/** \brief syscon int handler
+ * 
+ *  \brief 	syscon发生中断时会调用此函数，函数在irq.c里定义为弱(weak)属性，默认仅作部分中断状态清除处理；用户用到syscon中
+ * 			断时，建议将此函数剪切到interrupt.c中，在此函数中进行对应中断处理。
+ * 
+ * 			注意：iwdt中断的入口也是这个函数。如果不用可以删除。
+ *  \param[in] none
+ *  \return none
+ */ 
+ATTRIBUTE_ISR void syscon_int_handler(void) 
+{
+
+	
+	if(csp_syscon_get_isr(SYSCON) & LVD_INT) //LVD INT
+	{
+		csp_syscon_clr_isr(SYSCON, LVD_INT);
+	}
+	
+	if(csp_syscon_get_isr(SYSCON) & IWDT_INT) //IWDT INT
+	{
+#if (USE_IWDT_CALLBACK == 1)
+	
+		csi_iwdt_irqhandler(SYSCON,0);
+#else
+		iwdt_int_handler();
+#endif
+		
+	}
+	if(csp_syscon_get_isr(SYSCON) & EMFAIL_INT) //EMOSC FAIL INT
+	{
+		csp_syscon_clr_isr(SYSCON, EMFAIL_INT);
+	}
+	if(csp_syscon_get_isr(SYSCON) & ESFAIL_INT) //ESOSC FAIL INT
+	{
+		csp_syscon_clr_isr(SYSCON, ESFAIL_INT);
+	}
+
+}
+
 
 /** \brief lvd_demo：函数示例LVD的配置方法
  * 			-配置为VDD掉电到3.0V触发LVD中断
@@ -30,16 +72,17 @@ void lvd_demo(void)
 {
 	uint8_t byLevel;
 	
-	csi_lvd_int_enable(LVD_INTF,LVD_30);  			//VDD掉电到3.0V即触发LVD中断
+	csi_set_lvd(LVD_INTF,LVD_30);  			//VDD掉电到3.0V即触发LVD中断
+	csi_lvd_lvr_enable();
 	
-	byLevel = csi_get_lvdlevel();
+	byLevel = csi_get_lvd_level();
 	my_printf("lvd level: %d\n", byLevel); 			//执行board_init()对串口进行配置后才有打印
 	
 	while(1)
 	{
-		if(csi_lvd_flag())
+		if(csi_lvd_get_flag())
 		{
-			my_printf("vdd low lvd level\n");		//当前电压低于 INTLVL 设置的检测阈值
+			printf("vdd low lvd level\n");		//当前电压低于 INTLVL 设置的检测阈值
 		}
 		else
 		{
@@ -60,9 +103,10 @@ void lvr_demo(void)
 	uint8_t byLevel;
 	uint8_t byRstSrc;	
 
-	csi_lvr_enable(LVR_31);				  	//VDD掉电到3.1V，芯片复位	
+	csi_set_lvr(LVR_31);				  	//VDD掉电到3.1V，芯片复位	
+	csi_lvd_lvr_enable();
 	
-	byLevel = csi_get_lvrlevel();
+	byLevel = csi_get_lvr_level();
 	my_printf("lvr level: %d\n", byLevel);	//执行board_init()对串口进行配置后才有打印
 	
 	byRstSrc = csi_get_rst_reason(); 		//查询复位源，值为csi_rst_rsr_e枚举量之一
@@ -81,13 +125,13 @@ void lvr_demo(void)
 void memorycheck_demo(void)
 {	
 	//flash
-	csi_flashcheck_set_times(10);		//开启flashcheck功能，检查错误次数上限 10
+	csi_flashcheck_set_time(10);		//开启flashcheck功能，检查错误次数上限 10
 	csi_flashcheck_rst();				//错误到达上限，芯片复位	
 	
 	csi_flashcheck_disable();			//关闭flashcheck功能	
 	
 	//sram	
-	csi_sramcheck_set_times( 8);		//开启fsram check功能，检查错误次数上限 8	
+	csi_sramcheck_set_time( 8);		//开启fsram check功能，检查错误次数上限 8	
 	csi_sramcheck_rst();				//错误到达上限，芯片复位 
 	
 	csi_sramcheck_disable();			//关闭sram check功能
@@ -110,7 +154,7 @@ void emcm_demo(void)
 #endif
 	
 	csi_emosc_enable(8000000);			//使能外部晶振驱动电路,输入频率参数，以调整内部增益
-	csi_emcm_2_imosc_int();				//一旦检测到外部晶振失常，系统时钟切到IMOSC，并触发中断。注意：
+	csi_emcm_switch_imosc_int();				//一旦检测到外部晶振失常，系统时钟切到IMOSC，并触发中断。注意：
 	csi_emcm_rst();						//一旦检测到外部晶振失常，系统复位。
 	csi_emcm_disable();					//取消对外部晶振的检测。
 }

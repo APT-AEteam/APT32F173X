@@ -47,14 +47,17 @@ extern "C" {
 
 #endif
 
-/* example pin manager */
-
-#define CONSOLE_IDX				1
-#define CONSOLE_TXD             PA2
-#define CONSOLE_RXD             PA3
-#define CONSOLE_TXD_FUNC        PA2_UART1_TX
-#define CONSOLE_RXD_FUNC        PA3_UART1_RX
-#define CONSOLE_PORT     		(GPIOA)
+//console
+//可通过宏定义选择UART或者USART；UART支持UART0~2, USART支持USART0~1
+//选择不同的UART/USART时，注意对应的TX/RX管脚需要配置正确
+#define CONSOLE_TYPE			CONSOLE_USART			//CONSOLE_UART/CONSOLE_USART = UART/USART 
+#define CONSOLE_IP				USART1					//UART0~2/USART0~1
+#define CONSOLE_TXD             PA2						//GPIO of TX
+#define CONSOLE_RXD             PA3						//GPIO of RX
+#define CONSOLE_TXD_FUNC        PA2_USART1_TX
+#define CONSOLE_RXD_FUNC        PA3_USART1_RX
+#define CONSOLE_PORT     		GPIOA					//GPIO Port
+#define CONSOLE_BAUD    		115200					//baudrate
 
 //emosc pin
 #define XIN_PORT				GPIOD

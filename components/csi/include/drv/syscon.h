@@ -1,6 +1,6 @@
 /***********************************************************************//** 
- * \file  reliability.h
- * \brief  reliability driver head file, including LVR/LVD, RSR, emcm and memory check
+ * \file  syscon.h
+ * \brief  syscon driver head file, including LVR/LVD, RSR, emcm and memory check
  * \copyright Copyright (C) 2015-2021 @ APTCHIP
  * <table>
  * <tr><th> Date  <th>Version  <th>Author  <th>Description
@@ -9,8 +9,8 @@
  * *********************************************************************
 */
 
-#ifndef _DRV_LVD_H_
-#define _DRV_LVD_H_
+#ifndef _SYSCON_H_
+#define _SYSCON_H_
 
 #include <drv/common.h>
 
@@ -59,6 +59,13 @@ typedef enum{
 	CQCR_SRCSEL_HF
 }csi_cqcr_srcsel_e;
 
+typedef enum
+{
+	NMI_SRC_LVDINT    	=	(0x01ul << 27), 
+	NMI_SRC_MEMERYERR   =	(0x01ul << 28),     
+	NMI_SRC_EXI0INT     =	(0x01ul << 29),  
+	NMI_SRC_ECLKERR     =	(0x01ul << 30)
+}csi_nmi_sel_e;
 
 typedef enum {
 	SRAM1_DSARM_CTRL = 0,
@@ -74,67 +81,56 @@ typedef enum {
 #define AUTOTRIM_TRIM_UREG  (*(unsigned int *)(0x40011204))
 #define AUTOTRIM_KEY         0x00006996 
 
-/**
-  \brief       lvd  int enable  
-  \param       ePol      lvd falling/rising/both 
-  \param       eLvl      lvd level
-  \return      none
-*/
-void csi_lvd_int_enable(csi_lvd_pol_e ePol, csi_lvd_level_e eLvl);
 
-/**
-  \brief       lvd disable  
-  \return      none
-*/
-void csi_lvd_disable(void);
+/// ************************************************************************
+///						for LVD module
+///*************************************************************************
+/** \brief set lvd  
+ * 
+ *  \param[in] ePol: lvd falling/rising/both  \ref csi_lvd_pol_e
+ *  \param[in] eLvl: lvd level \ref csi_lvd_level_e
+ *  \return none
+ */
+void csi_set_lvd(csi_lvd_pol_e ePol, csi_lvd_level_e eLvl);
 
-/**
-  \brief       lvd  flag status 
-  \return      flag
-*/
-uint32_t csi_lvd_flag(void);
+/** \brief lvd  flag status 
+ * 
+ *  \return flag
+ */
+uint32_t csi_lvd_get_flag(void);
 
-/**
-  \brief       Enable LVR
-  \param       eLvl LVR level
-  \return      error code \ref csi_error_t
-*/
-void csi_lvr_enable(csi_lvr_level_e eLvl);
+/** \brief set LVR
+ * 
+ *  \param[in] eLvl LVR level
+ *  \return none
+ */
+void csi_set_lvr(csi_lvr_level_e eLvl);
 
-/**
-  \brief       Disable LVR
-  \return      none
-*/
-void csi_lvr_disable(void);
+/** \brief Enable LVD&LVR
+ * 
+ *  \param[in] none
+ *  \return none
+ */
+void csi_lvd_lvr_enable(void);
 
+/** \brief Disable LVD&LVR
+ * 
+ *  \return none
+ */
+void csi_lvd_lvr_disable(void);
 
-/**
-  \brief       low voltage reset enable 
-  \pasram[in]   ptRlblty
-  \return      elvl    lvr level
-*/
-void csi_lvr_enable(csi_lvr_level_e eLvl);
+/** \brief Get lvd level 
+ *  \pasram[in] none
+ *  \return lvd level
+ */
+uint32_t csi_get_lvd_level(void);
 
-
-/**
-  \brief       Disable LVR
-  \return      error code \ref csi_error_t
-*/
-void csi_lvr_disable(void);
-
-/**
-  \brief       Get lvd level 
-  \pasram[in]   none
-  \return      lvd    lvd level
-*/
-uint32_t csi_get_lvdlevel(void);
-
-/**
-  \brief       Get lvr level 
-  \param       none
-  \return      lvd    lvd level
-*/
-uint32_t csi_get_lvrlevel(void);
+/** \brief Get lvr level 
+ * 
+ *  \param[in] none
+ *  \return lvd level
+ */
+uint32_t csi_get_lvr_level(void);
 /// ************************************************************************
 ///						for Reset Source check
 ///*************************************************************************
@@ -207,7 +203,7 @@ uint32_t csi_ureg_read(csi_user_reg_e eUreg);
   \param       wVal times
   \return      none
 */
-void csi_sramcheck_set_times(uint16_t hwVal);
+void csi_sramcheck_set_time(uint16_t hwVal);
 
 /**
   \brief       set chip to reset when sramcheck times > preset value
@@ -238,7 +234,7 @@ void csi_sramcheck_disable(void);
   \param       wVal times
   \return      error code \ref csi_error_t
 */
-void csi_flashcheck_set_times(uint32_t wVal);
+void csi_flashcheck_set_time(uint32_t wVal);
 
 /**
   \brief       set chip to reset when flashcheck times > preset value
@@ -261,7 +257,7 @@ void csi_flashcheck_disable(void);
   \brief       claim INT and switch sysclk to IMOSC when EMOSC failure detected
   \return      none
 */
-void csi_emcm_2_imosc_int(void);
+void csi_emcm_switch_imosc_int(void);
 
 /**
   \brief      rest chip when EMOSC failure detected
@@ -366,6 +362,13 @@ void csi_set_cqcr(csi_cqcr_refsel_e eRefSel,csi_cqcr_srcsel_e eSrcSel,uint32_t w
  *  \return cqcr value
  */
 uint32_t csi_get_cqsr(void);
+
+/** \brief nmi int source select
+ * 
+ *  \param[in] eSrc  nmi int source \ref csi_nmi_sel_e
+ *  \return none
+ */
+void csi_nmi_int_enable(csi_nmi_sel_e eSrc);
 
 /** \brief sram set
  * 

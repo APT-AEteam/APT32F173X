@@ -12,7 +12,7 @@
 
 // <q> LVR Level (in Bytes)<2>[LVR_19//LVR_22//LVR_25//LVR_28//LVR_31//LVR_34//LVR_37//LVR_40] 
 // <i> Config LVR Level for the application
-#define		LVR_LEVEL		LVR_31
+#define		LVR_LEVEL		LVR_28
 
 // <q> SRC Freq (in Bytes)<2>[CQCR_SRCSEL_IM//CQCR_SRCSEL_ES//CQCR_SRCSEL_IS//CQCR_SRCSEL_HF] 
 // <i> Config SRC Freq for the application
@@ -28,8 +28,7 @@
 
 
 /* include ----------------------------------------------------------------*/
-#include "reliability.h"
-#include "pin.h"
+#include "syscon.h"
 #include "iostring.h"
 
 /** \brief 函数示例LVR的配置方法,及复位源查询方式
@@ -42,8 +41,10 @@ void lvr_wizard_demo(void)
 	uint8_t byLevel;
 	uint8_t byRstSrc;	
 
-	csi_lvr_enable(LVR_LEVEL);				  	//VDD掉电到设定LVR电压，芯片复位	
-	byLevel = csi_get_lvrlevel();
+	csi_set_lvr(LVR_LEVEL);				  	//VDD掉电到设定LVR电压，芯片复位	
+	csi_lvd_lvr_enable();
+	
+	byLevel = csi_get_lvr_level();
 	my_printf("lvr level: %d\n", byLevel);	    //执行board_init()对串口进行配置后才有打印
 	byRstSrc = csi_get_rst_reason(); 		    //查询复位源，值为csi_rst_rsr_e枚举量之一
 	my_printf("rst source: %d\n", byRstSrc);

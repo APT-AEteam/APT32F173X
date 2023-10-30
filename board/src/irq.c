@@ -29,7 +29,7 @@ extern void ifc_irqhandler(void);
  *  \param[in] none
  *  \return none
  */ 
-ATTRIBUTE_ISR void nmi_int_handler(void)
+ATTRIBUTE_ISR __attribute__((weak)) void nmi_int_handler(void)
 {
 	// ISR content ...
 	CSI_INTRPT_ENTER();
@@ -62,7 +62,7 @@ ATTRIBUTE_ISR void coret_int_handler(void)
  *  \param[in] none
  *  \return none
  */ 
-ATTRIBUTE_ISR void syscon_int_handler(void) 
+ATTRIBUTE_ISR __attribute__((weak)) void syscon_int_handler(void) 
 {
     // ISR content ...
 	CSI_INTRPT_ENTER();
