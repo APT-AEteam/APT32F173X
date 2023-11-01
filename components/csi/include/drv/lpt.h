@@ -117,7 +117,7 @@ typedef enum{
 typedef struct {
 	uint32_t			wTimeVal;			//TIMER Timing Value (0-636291451 us)
 	csi_lpt_runmode_e	eRunMode;			//TIMER RunMode: continuous/once
-	csi_lpt_clksrc_e    eClksrc;            //TIMER Clock Source
+	csi_lpt_clksrc_e    eClkSrc;            //TIMER Clock Source
 } csi_lpt_time_config_t;
 
 /// \struct csi_lpt_ctrl_t

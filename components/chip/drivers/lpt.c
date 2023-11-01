@@ -171,11 +171,11 @@ csi_error_t csi_lpt_timer_init(csp_lpt_t *ptLptBase,csi_lpt_time_config_t *ptLpt
 	
 	csp_lpt_set_opmd(ptLptBase, (lpt_opm_e) ptLptTimCfg->eRunMode);
 	
-	wLptClk = apt_get_lpt_clk(ptLptTimCfg->eClksrc);
+	wLptClk = apt_get_lpt_clk(ptLptTimCfg->eClkSrc);
 //	wLptClk = 2000000;   // If using an external clock as an LPT clock source, open this line of code and mask the previous line of code
 	wMult = wLptClk/1000*ptLptTimCfg->wTimeVal;
 		
-	g_wLptPrd = apt_set_lpt_clk(ptLptBase,ptLptTimCfg->eClksrc,wMult);
+	g_wLptPrd = apt_set_lpt_clk(ptLptBase,ptLptTimCfg->eClkSrc,wMult);
 	if(g_wLptPrd == CSI_UNSUPPORTED)
 	{
 		tRet = CSI_UNSUPPORTED;

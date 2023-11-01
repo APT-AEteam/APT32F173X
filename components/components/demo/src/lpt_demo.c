@@ -62,7 +62,7 @@ int lpt_timer_demo(void)
 	csi_lpt_time_config_t tTimConfig;
 	tTimConfig.wTimeVal = 200;					//LPT定时值 = 200us
 	tTimConfig.eRunMode  = LPT_CNT_CONT;		//LPT计数器工作模式，连续
-	tTimConfig.eClksrc=LPT_CLK_PCLK_DIV4;  		//LPT时钟源  
+	tTimConfig.eClkSrc=LPT_CLK_PCLK_DIV4;  		//LPT时钟源  
 	csi_lpt_timer_init(LPT,&tTimConfig);        //初始化lpt 
 	
 	csi_lpt_int_enable(LPT,LPT_INTSRC_PEND);	 //使能LPT PEND中断  
@@ -126,7 +126,7 @@ int exi_etcb_lpt_start_demo(void)
 	csi_lpt_time_config_t tTimConfig;
 	tTimConfig.wTimeVal = 5;					//LPT定时值 = 5ms
 	tTimConfig.eRunMode  = LPT_CNT_CONT;		//LPT计数器工作模式
-	tTimConfig.eClksrc=LPT_CLK_PCLK_DIV4;  		//LPT时钟源  
+	tTimConfig.eClkSrc=LPT_CLK_PCLK_DIV4;  		//LPT时钟源  
 	csi_lpt_timer_init(LPT,&tTimConfig);        //初始化lpt 
 
 	csi_lpt_int_enable(LPT,LPT_INTSRC_PEND);	 //使能LPT PEND中断
@@ -167,7 +167,7 @@ int lpt_etcb_bt_start_demo(void)
 	csi_lpt_time_config_t tTimConfig;
 	tTimConfig.wTimeVal = 50;					//LPT定时值 = 50ms
 	tTimConfig.eRunMode  = LPT_CNT_CONT;		//LPT计数器工作模式
-	tTimConfig.eClksrc=LPT_CLK_PCLK_DIV4;  		//LPT时钟源  
+	tTimConfig.eClkSrc=LPT_CLK_PCLK_DIV4;  		//LPT时钟源  
 	csi_lpt_timer_init(LPT,&tTimConfig);        //初始化lpt 
 	
 	csi_lpt_int_enable(LPT,LPT_INTSRC_PEND);	 //使能LPT PEND中断
@@ -220,7 +220,7 @@ int lpt_filter_demo(void)
 	csi_lpt_time_config_t tTimConfig;
 	tTimConfig.wTimeVal = 1;					//LPT定时值 = 1ms
 	tTimConfig.eRunMode  = LPT_CNT_CONT;		//LPT计数器工作模式
-	tTimConfig.eClksrc=LPT_CLK_IN_FALL;  		//LPT时钟源  
+	tTimConfig.eClkSrc=LPT_CLK_IN_FALL;  		//LPT时钟源  
 	csi_lpt_timer_init(LPT,&tTimConfig);        //初始化lpt 
 	
 	csi_lpt_int_enable(LPT,LPT_INTSRC_PEND);	 //使能LPT PEND中断
