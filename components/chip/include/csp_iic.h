@@ -563,6 +563,11 @@ static inline uint16_t csp_iic_get_isr(csp_iic_t *ptIicBase)
 	return (uint16_t)ptIicBase->MISR;
 }
 
+static inline void csp_iic_set_rxfull_hld(csp_iic_t *ptI2cBase, iic_rxfull_hld_e eRxfull)
+{
+	ptI2cBase->CR = (ptI2cBase->CR & ~IIC_RXFULL_HLD_MSK) | (eRxfull<<IIC_RXFULL_HLD_POS);
+}
+
 static inline uint32_t csp_iic_get_iicenable(csp_iic_t *ptIicBase)
 {
 	return ptIicBase->IICENABLE;
