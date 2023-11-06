@@ -119,7 +119,8 @@ int led_demo(void)
 	ptLedCfg.hwBreakTime  = 50;				//Non-Overlap时间(单位：Tledclk)
 	csi_led_init(LED, &ptLedCfg);		
 	
-	csi_led_light_on(LED);					//开启LED自动扫描
+	csi_led_int_enable(LED, LED_INTSRC_ICEND);	//若需使用中断，请调该接口使能对应中断，这里使用LED_INTSRC_ICEND中断
+	csi_led_light_on(LED);						//开启LED自动扫描
 	
 	while(1)
 	{
