@@ -249,7 +249,7 @@ void rtc_etcb_bt_pwm_demo(void)
 	tAlmTime.iHour  = 10;
 	tAlmTime.iMin   = 0;
 	tAlmTime.iSec   = 0;								
-	csi_rtc_set_alarm(RTC, RTC_ALMB, tAlmA.byAlmMode, &tAlmTime);		//设置闹钟B	
+	csi_rtc_set_alarm(RTC, RTC_ALMB, tAlmB.byAlmMode, &tAlmTime);		//设置闹钟B	
 	
 	//RTC触发设置	
 	csi_rtc_set_evtrg(RTC, RTC_TRGOUT1, RTC_TRGOUT_ALRMB, 0);  			//RTC TRGEV1 闹铃B到时产生trigger event
