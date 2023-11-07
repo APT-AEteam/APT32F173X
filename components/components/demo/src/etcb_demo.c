@@ -331,9 +331,6 @@ int exi_etcb_gptb_start_demo(void)
 }
 
 /** \brief	bt trg gptb start：BT0的周期事件通过ETCB触发GPTB启动输出波形（10KHz/50%）的demo，可通过观察CHAX/CHAY来判断GPTB是否启动
- * 
- *  \brief	PA1外部下降沿触发GPTB启动。默认VIC中断不开启，即不进入PA1的外部中断；若需要进入PA1外部中断，需
- * 			开启对应的VIC中断，调用csi_gpio_vic_irq_enable接口函数
  *  
  *  \param[in] none
  *  \return error code
