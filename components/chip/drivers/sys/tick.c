@@ -75,7 +75,8 @@ csi_error_t csi_tick_init(void)
 	
 	tTimConfig.wTimeVal = 10000;				//BT定时值，单位：us；即定时值 = 10000us
 	tTimConfig.eRunMode  = BT_RUN_CONT;			//BT计数器工作模式：连续/单次
-	csi_bt_timer_init(BT3, &tTimConfig);		//初始化BT		
+	csi_bt_timer_init(BT3, &tTimConfig);		//初始化BT	
+	csi_bt_int_enable(BT3,BT_INTSRC_PEND);		//使能BT PEND中断	
 	csi_bt_start(BT3);
 	
     return CSI_OK;
