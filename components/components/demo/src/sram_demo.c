@@ -56,7 +56,7 @@ __attribute__((section("func")))void user_fast_func(void)
  *                                         		SRAM1 8K。  地址范围0x20006000~0x20007FFF   
  * 				
  *    				SRAM_16KRAM0_16KRAM1_CTRL : SRAM0 16K。 地址范围0x20000000~0x20003FFF
- *                                          	SRAM1 16K。 地址范围0x20006000~0x20009FFF   
+ *                                          	SRAM1 16K。 地址范围0x20004000~0x20007FFF   
  * 				
  * 				2）SRAM0只能作为DSRAM
  *      

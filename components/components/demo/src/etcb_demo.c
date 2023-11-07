@@ -133,7 +133,7 @@ int exi_etcb_adc_samp_demo(void)
 	int iRet = 0;	
 	int iChnlNum = 1;
 	volatile uint8_t ch = 0;											//设置ADC总通道数
-	csi_etcb_config_t tEtbConfig;				               			//ETCB 参数配置结构体	
+	csi_etcb_config_t tEtcbConfig;				               			//ETCB 参数配置结构体	
 	csi_adc_config_t tAdcConfig;										//ADC初始化参数结构体	
 
 #if (USE_GUI == 0)			
@@ -144,9 +144,8 @@ int exi_etcb_adc_samp_demo(void)
 	csi_exi_set_evtrg(EXI_TRGOUT1, EXI_TRGSRC_GRP1, 0);					//EXI 触发输出配置
 	csi_exi_evtrg_enable(EXI_TRGOUT1);									//使能 EXI_TRGOUT1触发输出
 	csi_gpio_set_mux(GPIOC,PC13, PC13_ADC_INA0);						//ADC 输入通道配置
-	
 #endif
-	
+
 	tAdcConfig.byClkDiv = 0x02;									//ADC clk两分频：clk = pclk/2
 	tAdcConfig.eClkSel = ADC_CLK_PCLK;							//ADC clk选择：PCLK
 	tAdcConfig.bySampHold = 0x06;								//ADC 采样时间： time = 16 + 6 = 22(ADC clk周期)
@@ -159,14 +158,14 @@ int exi_etcb_adc_samp_demo(void)
 	csi_adc_set_sync(ADC0, ADC_SYNCIN0, ADC_SYNC_CONT, 0); 		//选择ADC_SYNCEN0同步事件，同步事件发生后延迟0us@pclk=40Mhz启动ADC
 	
 	//ETCB 初始化
-	tEtbConfig.eChType = ETCB_ONE_TRG_ONE;  							//单个源触发单个目标
-	tEtbConfig.eSrcIp  = ETCB_EXI_TRGOUT1;  	    					//EXI_TRGOUT1作为触发源
-	tEtbConfig.eDstIp =  ETCB_ADC0_SYNCIN0;   	   						//ADC0 同步输入作为目标事件
-	tEtbConfig.eTrgMode = ETCB_HARDWARE_TRG;
-	ch = csi_etcb_ch_alloc(tEtbConfig.eChType);	    					//自动获取空闲通道号,ch >= 0 获取成功
+	tEtcbConfig.eChType = ETCB_ONE_TRG_ONE;  							//单个源触发单个目标
+	tEtcbConfig.eSrcIp  = ETCB_EXI_TRGOUT1;  	    					//EXI_TRGOUT1作为触发源
+	tEtcbConfig.eDstIp =  ETCB_ADC0_SYNCIN0;   	   						//ADC0 同步输入作为目标事件
+	tEtcbConfig.eTrgMode = ETCB_HARDWARE_TRG;
+	ch = csi_etcb_ch_alloc(tEtcbConfig.eChType);	    					//自动获取空闲通道号,ch >= 0 获取成功
 	if(ch < 0)
 		return -1;								    					//ch < 0,则获取通道号失败
-	iRet = csi_etcb_ch_init(ch, &tEtbConfig);
+	iRet = csi_etcb_ch_init(ch, &tEtcbConfig);
 	
 	while(1)
 	{
@@ -174,7 +173,6 @@ int exi_etcb_adc_samp_demo(void)
 	}
 	return iRet;
 }
-
 
 /** \brief  exi trg gpta capture / GPTA sync2 sync3区分捕获示例代码，测试低电平和周期时间，同时可计算出高电平时间
  *          //sync2 sync3区分，实现2次捕获
@@ -395,5 +393,65 @@ int bt_etcb_gptb_start_demo(void)
 		nop;
 	}
 	
+	return iRet;
+}
+
+/** \brief	bt trg adc samp：BT0的周期事件通过ETCB触发ADC采样的demo
+ * 
+ *  \brief	BT的定时周期触发ADC采样，调用csi_gpio_vic_irq_enable接口函数
+ *  
+ *  \param[in] none
+ *  \return error code
+ */
+int bt_etcb_adc_samp_demo(void)
+{
+	int iRet = 0;	
+	int iChnlNum = 1;
+	volatile uint8_t ch = 0;											//设置ADC总通道数
+	csi_etcb_config_t tEtcbCfg;				               			//ETCB 参数配置结构体	
+	csi_adc_config_t tAdcConfig;										//ADC初始化参数结构体	
+	csi_bt_time_config_t 		tTimConfig;			//BT 定时初始化参数结构体
+
+#if (USE_GUI == 0)			
+	csi_gpio_set_mux(GPIOB, PB1, PB1_INPUT);							//PB1 配置为输入
+	csi_gpio_pull_mode(GPIOB, PB1, GPIO_PULLUP);						//PB1 上拉
+	
+#endif
+	csi_gpio_set_mux(GPIOC,PC13, PC13_ADC_INA0);						//ADC 输入通道配置
+	
+		//BT0初始化
+	tTimConfig.wTimeVal  = 10000;					//BT定时值 = 1000us
+	tTimConfig.eRunMode  = BT_RUN_CONT;				//BT计数器工作模式
+	csi_bt_timer_init(BT0,&tTimConfig);				//BT0 定时
+	csi_bt_set_evtrg(BT0, BT_TRGSRC_PEND);			//BT0 PEND事件触发输出
+	csi_bt_evtrg_enable(BT0);						//BT0 事件触发输出使能
+	csi_bt_start(BT0);
+	
+//------------------------------------------------------------------------------------------------------------------------		
+	tAdcConfig.byClkDiv = 0x02;									//ADC clk两分频：clk = pclk/2
+	tAdcConfig.eClkSel = ADC_CLK_PCLK;							//ADC clk选择：PCLK
+	tAdcConfig.bySampHold = 0x06;								//ADC 采样时间： time = 16 + 6 = 22(ADC clk周期)
+	tAdcConfig.eRunMode = ADC_RUN_ONCE;							//ADC 转换模式： 单次转换；
+	tAdcConfig.eVrefSrc = ADCVERF_VDD_VSS;						//ADC 参考电压： 系统VDD	
+	csi_adc_init(ADC0, &tAdcConfig);							//初始化ADC参数配置	
+	
+	csi_adc_set_seq_num(ADC0,iChnlNum);													//配置ADC总采样通道个数
+	csi_adc_set_seqx(ADC0,0,ADC_INA0,ADC_CV_COUNT_1,ADC_AVG_COF_1,ADCSYNC_IN0);			//配置ADC采样通道0，触发信号为ADCSYNC_IN0
+	csi_adc_set_sync(ADC0, ADC_SYNCIN0, ADC_SYNC_CONT, 0); 		//选择ADC_SYNCEN0同步事件，同步事件发生后延迟0us@pclk=40Mhz启动ADC
+	
+//------------------------------------------------------------------------------------------------------------------------	
+	tEtcbCfg.eChType  = ETCB_ONE_TRG_ONE;  			//单个源触发单个目标
+	tEtcbCfg.eSrcIp   = ETCB_BT0_TRGOUT ;  			//EXI_TRGOUT1作为触发源
+	tEtcbCfg.eDstIp   = ETCB_ADC0_SYNCIN0;  		//GPTB0 SYNCIN0作为目标事件
+	tEtcbCfg.eTrgMode = ETCB_HARDWARE_TRG;
+	ch = csi_etcb_ch_alloc(tEtcbCfg.eChType);		//自动获取空闲通道号,ch >= 0 获取成功		
+	if(ch < 0)										//ch < 0,则获取通道号失败
+		return -1;
+	iRet = csi_etcb_ch_init(ch, &tEtcbCfg);	
+	
+	while(1)
+	{
+		nop;
+	}
 	return iRet;
 }
