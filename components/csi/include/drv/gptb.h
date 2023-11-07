@@ -127,10 +127,10 @@ typedef enum{
 	GPTB_INTSRC_CAPLD1 		= 0x1 << 5,
 	GPTB_INTSRC_CAPLD2 		= 0x1 << 6,
 	GPTB_INTSRC_CAPLD3 		= 0x1 << 7,
-	GPTB_INTSRCT_CAU 		= 0x1 << 8,
+	GPTB_INTSRC_CAU 		= 0x1 << 8,
 	GPTB_INTSRC_CAD 		= 0x1 << 9,
 	GPTB_INTSRC_CBU 		= 0x1 << 10,
-	GPTB_INTSRCT_CBD 		= 0x1 << 11,
+	GPTB_INTSRC_CBD 		= 0x1 << 11,
 	
 	GPTB_INTSRC_PEND   		= 0x1 << 16,	
 	GPTB_INTSRC_PRDMA  		= 0x1 << 17,
