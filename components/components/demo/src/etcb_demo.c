@@ -131,8 +131,8 @@ int exi_etcb_bt_stop_demo(void)
 int exi_etcb_adc_samp_demo(void)
 {
 	int iRet = 0;	
-	int iChnlNum = 1;
-	volatile uint8_t ch = 0;											//设置ADC总通道数
+	volatile uint8_t ch = 0;
+	int iChnlNum = 1;													//设置ADC总通道数
 	csi_etcb_config_t tEtcbConfig;				               			//ETCB 参数配置结构体	
 	csi_adc_config_t tAdcConfig;										//ADC初始化参数结构体	
 
@@ -398,7 +398,6 @@ int bt_etcb_gptb_start_demo(void)
 
 /** \brief	bt trg adc samp：BT0的周期事件通过ETCB触发ADC采样的demo
  * 
- *  \brief	BT的定时周期触发ADC采样，调用csi_gpio_vic_irq_enable接口函数
  *  
  *  \param[in] none
  *  \return error code
@@ -406,8 +405,8 @@ int bt_etcb_gptb_start_demo(void)
 int bt_etcb_adc_samp_demo(void)
 {
 	int iRet = 0;	
-	int iChnlNum = 1;
-	volatile uint8_t ch = 0;											//设置ADC总通道数
+	volatile uint8_t ch = 0;											
+	int iChnlNum = 1;												//设置ADC总通道数
 	csi_etcb_config_t tEtcbCfg;				               			//ETCB 参数配置结构体	
 	csi_adc_config_t tAdcConfig;										//ADC初始化参数结构体	
 	csi_bt_time_config_t 		tTimConfig;			//BT 定时初始化参数结构体
@@ -448,6 +447,146 @@ int bt_etcb_adc_samp_demo(void)
 		return -1;
 	iRet = csi_etcb_ch_init(ch, &tEtcbCfg);	
 	
+	while(1)
+	{
+		nop;
+	}
+	return iRet;
+}
+
+/** \brief	gptb trg adc samp：GPTB0产生PWM波，PWM占空比50%，PWM高电平中心点位置通过ETCB触发ADC采样的demo
+ * 
+ *  
+ *  \param[in] none
+ *  \return error code
+ */
+int  gptb_etcb_adc_samp_demo(void)
+{
+	int iRet = 0;	
+	volatile uint8_t ch = 0;
+	int iChnlNum = 1;								//设置ADC总通道数	
+	csi_gptb_pwm_config_t 		tPwmCfg;			//GPTB捕获参数配置结构体	
+	csi_gptb_pwm_ch_config_t  	tPwmChCfg;			//GPTB PWM通道参数配置结构体
+	csi_etcb_config_t tEtcbCfg;				        //ETCB 参数配置结构体
+	csi_adc_config_t tAdcConfig;					//ADC初始化参数结构体	
+//------------------------------------------------------------------------------------------------------------------------	
+#if (USE_GUI == 0)		
+	csi_gpio_set_mux(GPIOC, PC13, PC13_GPTB0_CHAX);	//初始化PC13为CHAX
+	csi_gpio_set_mux(GPIOA, PA7, PA7_GPTB0_CHAY);	//初始化PA7为CHAY
+	csi_gpio_set_mux(GPIOD, PD0, PD0_GPTB0_CHB);	//初始化PD0为CHBX		
+	csi_gpio_set_mux(GPIOC,PC13, PC13_ADC_INA0);						//ADC 输入通道配置
+#endif
+//------------------------------------------------------------------------------------------------------------------------		
+	tPwmCfg.eWorkMode       = GPTB_WORK_WAVE;       //GPTB工作模式：捕获/波形输出
+	tPwmCfg.eCountMode   	= GPTB_CNT_UPDN;        //GPTB计数模式：递增/递减/递增递减
+	tPwmCfg.eRunMode    	= GPTB_RUN_CONT;        //GPTB运行模式：连续/一次性
+	tPwmCfg.byDutyCycle 	= 50;					//GPTB输出PWM占空比			
+	tPwmCfg.wFreq 			= 10000;				//GPTB输出PWM频率	
+	csi_gptb_pwm_init(GPTB0, &tPwmCfg);
+//------------------------------------------------------------------------------------------------------------------------	
+	tPwmChCfg.eActionZRO    =   GPTB_ACT_LO;		//CNT=ZRO时，波形输出低电平
+	tPwmChCfg.eActionPRD    =   GPTB_ACT_NA;		//CNT=PRD时，波形输出不变
+	tPwmChCfg.eActionC1U    =   GPTB_ACT_HI;		//CNT=C1U时，波形输出高电平
+	tPwmChCfg.eActionC1D    =   GPTB_ACT_LO;		//CNT=C1D时，波形输出低电平
+	tPwmChCfg.eActionC2U    =   GPTB_ACT_NA;		//CNT=C2U时，波形输出不变
+	tPwmChCfg.eActionC2D    =   GPTB_ACT_NA;		//CNT=C2D时，波形输出不变
+	tPwmChCfg.eActionT1U    =   GPTB_ACT_NA;		//CNT=T1U时，波形输出不变
+	tPwmChCfg.eActionT1D    =   GPTB_ACT_NA;		//CNT=T1D时，波形输出不变
+	tPwmChCfg.eActionT2U    =   GPTB_ACT_NA;		//CNT=T2U时，波形输出不变
+	tPwmChCfg.eActionT2D    =   GPTB_ACT_NA;		//CNT=T2D时，波形输出不变													
+	tPwmChCfg.eC1Sel 		=   GPTB_COMPA;			//C1选择CMPA为数据源		
+	tPwmChCfg.eC2Sel 		=   GPTB_COMPA;			//C2选择CMPA为数据源
+	csi_gptb_set_channel(GPTB0, &tPwmChCfg,  GPTB_CHANNEL_1);
+//------------------------------------------------------------------------------------------------------------------------
+	csi_gptb_set_evtrg(GPTB0,GPTB_TRG_EV0,GPTB_TRGSRC_PRD);
+	csi_gptb_evtrg_enable(GPTB0,GPTB_TRG_EV0);
+
+	//------------------------------------------------------------------------------------------------------------------------		
+	tAdcConfig.byClkDiv = 0x02;									//ADC clk两分频：clk = pclk/2
+	tAdcConfig.eClkSel = ADC_CLK_PCLK;							//ADC clk选择：PCLK
+	tAdcConfig.bySampHold = 0x06;								//ADC 采样时间： time = 16 + 6 = 22(ADC clk周期)
+	tAdcConfig.eRunMode = ADC_RUN_ONCE;							//ADC 转换模式： 单次转换；
+	tAdcConfig.eVrefSrc = ADCVERF_VDD_VSS;						//ADC 参考电压： 系统VDD	
+	csi_adc_init(ADC0, &tAdcConfig);							//初始化ADC参数配置	
+	
+	csi_adc_set_seq_num(ADC0,iChnlNum);													//配置ADC总采样通道个数
+	csi_adc_set_seqx(ADC0,0,ADC_INA0,ADC_CV_COUNT_1,ADC_AVG_COF_1,ADCSYNC_IN0);			//配置ADC采样通道0，触发信号为ADCSYNC_IN0
+	csi_adc_set_sync(ADC0, ADC_SYNCIN0, ADC_SYNC_CONT, 0); 		//选择ADC_SYNCEN0同步事件，同步事件发生后延迟0us@pclk=40Mhz启动ADC
+	
+//------------------------------------------------------------------------------------------------------------------------	
+	tEtcbCfg.eChType  = ETCB_ONE_TRG_ONE;  			//单个源触发单个目标
+	tEtcbCfg.eSrcIp   = ETCB_GPTB0_TRGOUT0 ;  			//EXI_TRGOUT1作为触发源
+	tEtcbCfg.eDstIp   = ETCB_ADC0_SYNCIN0;  		//GPTB0 SYNCIN0作为目标事件
+	tEtcbCfg.eTrgMode = ETCB_HARDWARE_TRG;
+	ch = csi_etcb_ch_alloc(tEtcbCfg.eChType);		//自动获取空闲通道号,ch >= 0 获取成功		
+	if(ch < 0)										//ch < 0,则获取通道号失败
+		return -1;
+	iRet = csi_etcb_ch_init(ch, &tEtcbCfg);	
+		
+	csi_gptb_start(GPTB0);
+	
+	while(1)
+	{
+		nop;
+	}
+	return iRet;
+}
+
+/** \brief	cmp trg adc samp：CMP边缘产生触发信号，通过ETCB触发ADC采样的demo
+ * 
+ *  
+ *  \param[in] none
+ *  \return error code
+ */
+int  cmp_etcb_adc_samp_demo(void)
+{
+	int iRet = 0;	
+	volatile uint8_t ch = 0;
+	int iChnlNum = 1;								//设置ADC总通道数	
+	csi_etcb_config_t tEtcbCfg;				        //ETCB 参数配置结构体
+	csi_adc_config_t tAdcConfig;					//ADC初始化参数结构体	
+	csi_cmp_config_t tCmpCfg;						//CMP初始化参数结构体	
+//------------------------------------------------------------------------------------------------------------------------		
+#if (USE_GUI == 0)			
+	csi_gpio_set_mux(GPIOA, PA8,PA8_CPIN1P);		    //PA8 同相输入
+	csi_gpio_set_mux(GPIOA, PA9,PA9_CPIN1N);	        //PA9 反相输入
+	csi_gpio_set_mux(GPIOB, PB2,PB2_CP0_OUT);	        //PB2 输出
+	csi_gpio_set_mux(GPIOC,PC13, PC13_ADC_INA0);		//ADC 输入通道配置
+#endif
+
+	tCmpCfg.byNsel = CMP_N_SEL_CP1;                     //N- 端口选择
+	tCmpCfg.byPsel = CMP_P_SEL_CP1;	                    //P+ 端口选择
+	tCmpCfg.byPhystpol = CMP_PHYST_POL_0mv;             //比较器输入迟滞 10mv
+	tCmpCfg.byNhystpol = CMP_PHYST_POL_0mv;	            //比较器输入迟滞特性极性选择
+	tCmpCfg.byPolarity = CMP_POL_OUT_DIRECT;            //比较器输出极性选择 0:不反向
+	tCmpCfg.byCpoSel = CMP_CPOS_OUT_IN;	                //CMP_OUT管脚上输出信号选择 0h：滤波前信号直接输出 	1h：滤波后信号输出 
+	csi_cmp_init(CMP0,&tCmpCfg);	
+	
+	csi_cmp_set_evtrg(CMP0, CMP_TRGSRC_FALLING_RISING); //边沿触发
+	csi_cmp_evtrg_enable(CMP0);                         //使能触发事件到ETCB
+	//------------------------------------------------------------------------------------------------------------------------		
+	tAdcConfig.byClkDiv = 0x02;									//ADC clk两分频：clk = pclk/2
+	tAdcConfig.eClkSel = ADC_CLK_PCLK;							//ADC clk选择：PCLK
+	tAdcConfig.bySampHold = 0x06;								//ADC 采样时间： time = 16 + 6 = 22(ADC clk周期)
+	tAdcConfig.eRunMode = ADC_RUN_ONCE;							//ADC 转换模式： 单次转换；
+	tAdcConfig.eVrefSrc = ADCVERF_VDD_VSS;						//ADC 参考电压： 系统VDD	
+	csi_adc_init(ADC0, &tAdcConfig);							//初始化ADC参数配置	
+	
+	csi_adc_set_seq_num(ADC0,iChnlNum);													//配置ADC总采样通道个数
+	csi_adc_set_seqx(ADC0,0,ADC_INA0,ADC_CV_COUNT_1,ADC_AVG_COF_1,ADCSYNC_IN0);			//配置ADC采样通道0，触发信号为ADCSYNC_IN0
+	csi_adc_set_sync(ADC0, ADC_SYNCIN0, ADC_SYNC_CONT, 0); 		//选择ADC_SYNCEN0同步事件，同步事件发生后延迟0us@pclk=40Mhz启动ADC
+	
+//------------------------------------------------------------------------------------------------------------------------	
+	tEtcbCfg.eChType  = ETCB_ONE_TRG_ONE;  			//单个源触发单个目标
+	tEtcbCfg.eSrcIp   = ETCB_CMP0_TRGOUT ;  			//EXI_TRGOUT1作为触发源
+	tEtcbCfg.eDstIp   = ETCB_ADC0_SYNCIN0;  		//GPTB0 SYNCIN0作为目标事件
+	tEtcbCfg.eTrgMode = ETCB_HARDWARE_TRG;
+	ch = csi_etcb_ch_alloc(tEtcbCfg.eChType);		//自动获取空闲通道号,ch >= 0 获取成功		
+	if(ch < 0)										//ch < 0,则获取通道号失败
+		return -1;
+	iRet = csi_etcb_ch_init(ch, &tEtcbCfg);	
+
+	csi_cmp_start(CMP0);	
 	while(1)
 	{
 		nop;
