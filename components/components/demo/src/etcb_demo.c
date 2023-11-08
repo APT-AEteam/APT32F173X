@@ -418,11 +418,10 @@ int bt_etcb_adc_samp_demo(void)
 #if (USE_GUI == 0)			
 	csi_gpio_set_mux(GPIOB, PB1, PB1_INPUT);							//PB1 配置为输入
 	csi_gpio_pull_mode(GPIOB, PB1, GPIO_PULLUP);						//PB1 上拉
-	
-#endif
 	csi_gpio_set_mux(GPIOC,PC13, PC13_ADC_INA0);						//ADC 输入通道配置
-	
-		//BT0初始化
+#endif
+
+	//BT0初始化
 	tTimConfig.wTimeVal  = 10000;					//BT定时值 = 1000us
 	tTimConfig.eRunMode  = BT_RUN_CONT;				//BT计数器工作模式
 	csi_bt_timer_init(BT0,&tTimConfig);				//BT0 定时
