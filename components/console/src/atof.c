@@ -95,16 +95,16 @@ adjust (double *acc, int dexp, int sign)
 double
 atof (const char *nptr)
 {
-  const char *start = nptr;
+
   double accum = 0.0;
   int flags = 0;
   int texp = 0;
   int e = 0;
-  int conv_done = 0;
+
 
   double retval;
 
-  while (isspace (*nptr))
+  while (isspace (*(const unsigned char *)nptr))
     nptr++;
   if (*nptr == '\0')
     {				/* just leading spaces */
@@ -122,9 +122,8 @@ atof (const char *nptr)
 	}
     }
 
-  for (; (isdigit (*nptr) || (*nptr == '.')); nptr++)
+  for (; (isdigit (*(const unsigned char *)nptr) || (*nptr == '.')); nptr++)
     {
-      conv_done = 1;
       if (*nptr == '.')
 	flags |= DECP;
       else
@@ -138,11 +137,10 @@ atof (const char *nptr)
 
   if (Ise (*nptr))
     {
-      conv_done = 1;
       if (*++nptr != '\0')	/* skip e|E */
 	{			/* ! ([nptr]xxx[.[yyy]]e)  */
 
-	  while (isspace (*nptr))
+	  while (isspace (*(const unsigned char *)nptr))
 	    nptr++;		/* Ansi allows spaces after e */
 	  if (*nptr != '\0')
 	    {			/*  ! ([nptr]xxx[.[yyy]]e[space])  */
@@ -154,7 +152,7 @@ atof (const char *nptr)
 	      if (*nptr != '\0')
 		{		/*  ! ([nptr]xxx[.[yyy]]e[nptr])  -- error?? */
 
-		  for (; isdigit (*nptr); nptr++)
+		  for (; isdigit (*(const unsigned char *)nptr); nptr++)
 		    if (e < MAXE)	/* prevent from grossly overflowing */
 		      e = e * 10 + Val (*nptr);
 
