@@ -4240,7 +4240,7 @@
               <sel notAvailable="SystemClockPLLCkpDiv3,SystemClockPLLCkqDiv4,SystemClockPLLCkqDiv6,SystemClockPLLDivMType1,SystemClockPLLNul35,SystemClockPLLNul36">96MHz&amp;96MHz</sel>
               <sel notAvailable="SystemClockPLLCkpDiv1,SystemClockPLLCkqDiv2,SystemClockPLLCkqDiv4,SystemClockPLLDivMType1,SystemClockPLLNul35,SystemClockPLLNul24">72MHz&amp;48MHz</sel>
             </Selections>
-            <Comment/>
+            <Comment>PLLp为系统时钟；PLLq可以被选为 ADC 模块的时钟源</Comment>
           </Property>
           <Property class="UIchoice" property_class="SystemClockPLLCkpDiv1">
             <label>CkpDiv</label>
@@ -4466,7 +4466,7 @@
           <Comment>systick使用BT3中断实现。如果不初始化systick，mdelay()延时将不可用</Comment>
         </Device>
       </Category>
-     <ChipPins>
+      <ChipPins>
         <label>I/O ports</label>
       </ChipPins>
       <Category>
@@ -8283,103 +8283,6 @@
             <Comment>中断</Comment>
           </Property>
           <Property class="UIchoice" property_class="USART1RXFIFOTRG">
-            <label>RXFIFOTRG</label>
-            <value>USART_RXFIFOTRG_ONE</value>
-            <Selections>
-              <sel>USART_RXFIFOTRG_ONE</sel>
-              <sel>USART_RXFIFOTRG_TWO</sel>
-              <sel>USART_RXFIFOTRG_FOUR</sel>
-            </Selections>
-            <Comment>接收FIFO触发点设置</Comment>
-          </Property>
-          <Property class="UIchoice">
-            <label>USART FUNC</label>
-            <value>USART_FUNC_RX_TX</value>
-            <Selections>
-              <sel>USART_FUNC_RX</sel>
-              <sel>USART_FUNC_TX</sel>
-              <sel>USART_FUNC_RX_TX</sel>
-            </Selections>
-            <Comment>UART功能使能&#xD;USART_FUNC_RX:接收使能&#xD;USART_FUNC_TX:发送使能&#xD;USART_FUNC_RX_TX:发送接收使能</Comment>
-          </Property>
-        </Device>
-        <Device deviceId="USART2">
-          <UseOrNot>0</UseOrNot>
-          <label>USART2</label>
-          <Property class="UIchoice">
-            <label>CLK Source</label>
-            <value>USART_CLKSRC_DIV1</value>
-            <Selections>
-              <sel>USART_CLKSRC_DIV1</sel>
-              <sel>USART_CLKSRC_DIV8</sel>
-              <sel>USART_CLKSRC_CK0</sel>
-            </Selections>
-            <Comment>时钟选择(波特率发生器的输入时钟)&#xD;CLKS       时钟选择位&#xD;CLKS[1:0] 选择的时钟&#xD;0 0          PCLK&#xD;0 1          PCLK/8&#xD;1 x          USART0_CK输入的外部时钟</Comment>
-          </Property>
-          <Property class="UIchoice">
-            <label>Mode</label>
-            <value>USART_MODE_ASYNC</value>
-            <Selections>
-              <sel>USART_MODE_ASYNC</sel>
-              <sel>USART_MODE_SYNC</sel>
-            </Selections>
-            <Comment>同步模式选择&#xD;USART_MODE_ASYNC:USART工作在异步模式&#xD;USART_MODE_SYNC:USART工作在同步模式</Comment>
-          </Property>
-          <Property class="UIchoice">
-            <label>Data Bits</label>
-            <value>USART_DATA_BITS_8</value>
-            <Selections>
-              <sel>USART_DATA_BITS_5</sel>
-              <sel>USART_DATA_BITS_6</sel>
-              <sel>USART_DATA_BITS_7</sel>
-              <sel>USART_DATA_BITS_8</sel>
-              <sel>USART_DATA_BITS_9</sel>
-            </Selections>
-            <Comment>字节长度 (除开始位,停止位和校验位外的字节长度)</Comment>
-          </Property>
-          <Property class="UIchoice">
-            <label>Stop Bits</label>
-            <value>USART_STOP_BITS_1</value>
-            <Selections>
-              <sel>USART_STOP_BITS_1</sel>
-              <sel>USART_STOP_BITS_2</sel>
-            </Selections>
-            <Comment>停止位的个数&#xD;停止位个数跟SYNC设置的模式有关</Comment>
-          </Property>
-          <Property class="UIchoice">
-            <label>Parity</label>
-            <value>USART_PARITY_NONE</value>
-            <Selections>
-              <sel>USART_PARITY_EVEN</sel>
-              <sel>USART_PARITY_ODD</sel>
-              <sel>USART_PARITY_ZERO</sel>
-              <sel>USART_PARITY_ONE</sel>
-              <sel>USART_PARITY_NONE</sel>
-              <sel>USART_PARITY_MD</sel>
-            </Selections>
-            <Comment>校验类型位(默认:无校验位)&#xD;PAR[2:0] 校验类型&#xD;0 0 0:     偶校验&#xD;0 0 1:     奇校验&#xD;0 1 0:     0校验 (Space)&#xD;0 1 1:     1校验 (Mark)&#xD;1 0 X:     无校验&#xD;1 1 X:     Multi-drop模式&#xD;注意:如果使用LIN,PAR[2:0]必须设置为'10X'</Comment>
-          </Property>
-          <Property class="Text">
-            <label>Baudrate</label>
-            <value>115200</value>
-            <Comment>文本输入,最大值为3000000,单位Bit/s</Comment>
-          </Property>
-          <Property class="Text">
-            <label>Receive Timeout</label>
-            <value>88</value>
-            <Comment>USART接收超时时间,单位:bit位周期,8个bytes(11bit*8=88,115200波特率时=764us)</Comment>
-          </Property>
-          <Property class="UIchoice">
-            <label>Interrupt</label>
-            <value>USART_INTSRC_NONE</value>
-            <Selections>
-              <sel notAvailable="USART2RXFIFOTRG">USART_INTSRC_NONE</sel>
-              <sel notAvailable="USART2RXFIFOTRG">USART_INTSRC_TXFIFO</sel>
-              <sel>USART_INTSRC_RXFIFO</sel>
-            </Selections>
-            <Comment>中断</Comment>
-          </Property>
-          <Property class="UIchoice" property_class="USART2RXFIFOTRG">
             <label>RXFIFOTRG</label>
             <value>USART_RXFIFOTRG_ONE</value>
             <Selections>
@@ -23378,9 +23281,9 @@
       </Category>
       <Category>
         <label>DMA</label>
-        <Device deviceId="DMA">
+        <Device deviceId="DMA0">
           <UseOrNot>0</UseOrNot>
-          <label>DMA</label>
+          <label>DMA0</label>
           <Property class="UIchoice">
             <label>SrcAddrLinc</label>
             <value>DMA_ADDR_CONSTANT</value>
@@ -23437,11 +23340,11 @@
             <Comment>自动重载控制</Comment>
           </Property>
           <Property class="UIchoice">
-            <label>TransMode</label>
-            <value>DMA_TRANS_ONCE</value>
+            <label>RunMode</label>
+            <value>DMA_RUN_ONCE</value>
             <Selections>
-              <sel>DMA_TRANS_ONCE</sel>
-              <sel>DMA_TRANS_CONTINU</sel>
+              <sel>DMA_RUN_ONCE</sel>
+              <sel>DMA_RUN_CONT</sel>
             </Selections>
             <Comment>传输模式</Comment>
           </Property>
@@ -23464,23 +23367,122 @@
             <Comment>DMA请求模式</Comment>
           </Property>
           <Property class="UIchoice">
+            <label>Channel</label>
+            <value>DMA_CH0</value>
+            <Selections>
+              <sel>DMA_CH0</sel>
+              <sel>DMA_CH1</sel>
+              <sel>DMA_CH2</sel>
+              <sel>DMA_CH3</sel>
+              <sel>DMA_CH4</sel>
+              <sel>DMA_CH5</sel>
+            </Selections>
+            <Comment>DMA通道,范围:CH0~CH5</Comment>
+          </Property>
+          <Property class="UIchoice">
             <label>Interrupt</label>
             <value>DISABLE</value>
             <Selections>
-              <sel notAvailable="DMAInt">DISABLE</sel>
+              <sel notAvailable="DMA0Int">DISABLE</sel>
               <sel>ENABLE</sel>
             </Selections>
             <Comment>中断</Comment>
           </Property>
-          <Property class="Bool" property_class="DMAInt">
+          <Property class="Bool" property_class="DMA0Int">
             <label>DMA_INTSRC_LTCIT</label>
             <value>0</value>
             <Comment>低位传输计数完成中断</Comment>
           </Property>
-          <Property class="Bool" property_class="DMAInt">
+          <Property class="Bool" property_class="DMA0Int">
             <label>DMA_INTSRC_TCIT</label>
             <value>0</value>
             <Comment>传输计数完成中断</Comment>
+          </Property>
+        </Device>
+        <Device deviceId="DMA1">
+          <UseOrNot>0</UseOrNot>
+          <label>DMA1</label>
+          <Property class="UIchoice">
+            <label>SrcAddrLinc</label>
+            <value>DMA_ADDR_CONSTANT</value>
+            <Selections>
+              <sel>DMA_ADDR_INC</sel>
+              <sel>DMA_ADDR_CONSTANT</sel>
+            </Selections>
+            <Comment>低位传输计数的源地址自增控制</Comment>
+          </Property>
+          <Property class="UIchoice">
+            <label>SrcAddrHinc</label>
+            <value>DMA_ADDR_CONSTANT</value>
+            <Selections>
+              <sel>DMA_ADDR_INC</sel>
+              <sel>DMA_ADDR_CONSTANT</sel>
+            </Selections>
+            <Comment>高位传输计数的源地址自增控制</Comment>
+          </Property>
+          <Property class="UIchoice">
+            <label>DetAddrLinc</label>
+            <value>DMA_ADDR_CONSTANT</value>
+            <Selections>
+              <sel>DMA_ADDR_INC</sel>
+              <sel>DMA_ADDR_CONSTANT</sel>
+            </Selections>
+            <Comment>低位传输计数的目标地址自增控制</Comment>
+          </Property>
+          <Property class="UIchoice">
+            <label>DetAddrHinc</label>
+            <value>DMA_ADDR_CONSTANT</value>
+            <Selections>
+              <sel>DMA_ADDR_INC</sel>
+              <sel>DMA_ADDR_CONSTANT</sel>
+            </Selections>
+            <Comment>高位传输计数的目地标址自增控制</Comment>
+          </Property>
+          <Property class="UIchoice">
+            <label>DataWidth</label>
+            <value>DMA_DSIZE_8_BITS</value>
+            <Selections>
+              <sel>DMA_DSIZE_8_BITS</sel>
+              <sel>DMA_DSIZE_16_BITS</sel>
+              <sel>DMA_DSIZE_32_BITS</sel>
+            </Selections>
+            <Comment>传输数据宽度</Comment>
+          </Property>
+          <Property class="UIchoice">
+            <label>AutoReload</label>
+            <value>DMA_RELOAD_DISABLE</value>
+            <Selections>
+              <sel>DMA_RELOAD_ENABLE</sel>
+              <sel>DMA_RELOAD_DISABLE</sel>
+            </Selections>
+            <Comment>自动重载控制</Comment>
+          </Property>
+          <Property class="UIchoice">
+            <label>RunMode</label>
+            <value>DMA_RUN_ONCE</value>
+            <Selections>
+              <sel>DMA_RUN_ONCE</sel>
+              <sel>DMA_RUN_CONT</sel>
+            </Selections>
+            <Comment>传输模式</Comment>
+          </Property>
+          <Property class="UIchoice">
+            <label>TsizeMode</label>
+            <value>DMA_TSIZE_ONE_DSIZE</value>
+            <Selections>
+              <sel>DMA_TSIZE_ONE_DSIZE</sel>
+              <sel>DMA_TSIZE_FOUR_DSIZE</sel>
+            </Selections>
+            <Comment>传输数据大小,一个/四个DataSize(DataWidth的选择)</Comment>
+          </Property>
+          <Property class="UIchoice">
+            <label>ReqMode</label>
+            <value>DMA_REQ_HARDWARE</value>
+            <Selections>
+              <sel>DMA_REQ_SOFTWARE</sel>
+              <sel>DMA_REQ_HARDWARE</sel>
+            </Selections>
+            <Comment>DMA请求模式</Comment>
           </Property>
           <Property class="UIchoice">
             <label>Channel</label>
@@ -23490,8 +23492,29 @@
               <sel>DMA_CH1</sel>
               <sel>DMA_CH2</sel>
               <sel>DMA_CH3</sel>
+              <sel>DMA_CH4</sel>
+              <sel>DMA_CH5</sel>
             </Selections>
-            <Comment>DMA通道,范围:CH0~CH3</Comment>
+            <Comment>DMA通道,范围:CH0~CH5</Comment>
+          </Property>
+          <Property class="UIchoice">
+            <label>Interrupt</label>
+            <value>DISABLE</value>
+            <Selections>
+              <sel notAvailable="DMA1Int">DISABLE</sel>
+              <sel>ENABLE</sel>
+            </Selections>
+            <Comment>中断</Comment>
+          </Property>
+          <Property class="Bool" property_class="DMA1Int">
+            <label>DMA_INTSRC_LTCIT</label>
+            <value>0</value>
+            <Comment>低位传输计数完成中断</Comment>
+          </Property>
+          <Property class="Bool" property_class="DMA1Int">
+            <label>DMA_INTSRC_TCIT</label>
+            <value>0</value>
+            <Comment>传输计数完成中断</Comment>
           </Property>
         </Device>
       </Category>
@@ -28096,7 +28119,7 @@
             <Comment>放大器输出</Comment>
           </Property>
         </Device>
-      </Category> 
+      </Category>
     </ChipPropertiesView>
   </ChipConfig3>
 </com.csky.cds.peripheral>
