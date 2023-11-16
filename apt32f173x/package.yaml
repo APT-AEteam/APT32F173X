@@ -11,7 +11,7 @@ def_config:
   DBG_PRINT2PC: 1
   IS_CHIP_1732: 1
 name: apt32f173x
-version: v1.2.0
+version: v1.2.1
 description: 我的第一个方案工程
 tag: ""
 keywords: 
@@ -20,9 +20,9 @@ author:
 license: ""
 type: solution
 depends:
-  - apt32f173x_demo: v1.2.0
-  - apt32f173x_demo_callback: v1.2.0
-  - sdk_173x: v1.2.0
+  - apt32f173x_demo: v1.2.1
+  - apt32f173x_demo_callback: v1.2.1
+  - sdk_173x: v1.2.1
 build_config:
   include:
     - ./
@@ -42,8 +42,8 @@ source_file:
   - link_file/gcc_flash_dram16k_iram16k_1732.ld
   - link_file/gcc_flash_dram24k_iram8k_1732.ld
 depends_forward:
-  - apt32f173x_demo: v1.2.0
-  - apt32f173x_demo_callback: v1.2.0
-  - sdk_173x: v1.2.0
+  - apt32f173x_demo: v1.2.1
+  - apt32f173x_demo_callback: v1.2.1
+  - sdk_173x: v1.2.1
 install: 
 homepage: 

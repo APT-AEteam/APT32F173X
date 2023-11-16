@@ -1,5 +1,5 @@
 name: apt_console
-version: v1.2.0
+version: v1.2.1
 description: mini console.
 tag: 核心模块
 keywords:
@@ -39,4 +39,4 @@ suitableChip: ~
 homepage: ~
 soc_config: ~
 depends_forward:
-  - apt_csi: v1.2.0
+  - apt_csi: v1.2.1
