@@ -217,7 +217,7 @@ int uart_send_dma_demo(void)
 	tDmaConfig.eReqMode		= DMA_REQ_HARDWARE;					//DMA请求模式，硬件请求
 	csi_dma_ch_init(DMA0, DMA_CH1, &tDmaConfig);				//初始化DMA0，选择CH1
 	
-	csi_dma_int_enable(DMA0, DMA_CH0,DMA_INTSRC_TCIT);			//使用TCIT中断
+	csi_dma_int_enable(DMA0, DMA_CH1,DMA_INTSRC_TCIT);			//使用TCIT中断
 	
 	//ETCB 配置初始化
 	tEtbConfig.eChType 	= ETCB_ONE_TRG_ONE_DMA;					//单个源触发单个目标，DMA方式

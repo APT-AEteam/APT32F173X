@@ -256,7 +256,7 @@ int spi_send_dma_demo(void)
 	tDmaSendCfg.eReqMode	= DMA_REQ_HARDWARE;		  //DMA请求模式，硬件请求（硬件触发）
 	csi_dma_ch_init(DMA0, DMA_CH1, &tDmaSendCfg);
 
-	csi_dma_int_enable(DMA0, DMA_CH0,DMA_INTSRC_TCIT);//使用TCIT中断
+	csi_dma_int_enable(DMA0, DMA_CH1,DMA_INTSRC_TCIT);//使用TCIT中断
 
 	//ETCB发送通道参数配置
 	tEtcbSendCfg.eChType 	= ETCB_ONE_TRG_ONE_DMA;	  //单个源触发单个目标，DMA方式

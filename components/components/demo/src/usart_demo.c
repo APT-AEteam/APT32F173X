@@ -250,7 +250,7 @@ int usart_send_dma_demo(void)
 	//etb 参数配置
 	tEtbConfig.eChType  = ETCB_ONE_TRG_ONE_DMA;			//单个源触发单个目标，DMA方式
 	tEtbConfig.eSrcIp 	= ETCB_USART0_TXSRC;			//UART TXSRC作为触发源
-	tEtbConfig.eDstIp 	= ETCB_DMA0_CH0 + DMA_CH0;		//ETB DMA通道 作为目标实际
+	tEtbConfig.eDstIp 	= ETCB_DMA0_CH0 ;		//ETB DMA通道 作为目标实际
 	tEtbConfig.eTrgMode = ETCB_HARDWARE_TRG;			//通道触发模式采样硬件触发
 	iRet = csi_etcb_ch_init(ETCB_CH20, &tEtbConfig);	//初始化ETB，DMA ETB CHANNEL > ETB_CH19_ID
 
@@ -324,7 +324,7 @@ int usart_receive_dma_demo(void)
 	//etb 参数配置
 	tEtbConfig.eChType  = ETCB_ONE_TRG_ONE_DMA;			//单个源触发单个目标，DMA方式
 	tEtbConfig.eSrcIp 	= ETCB_USART0_RXSRC;			//UART TXSRC作为触发源
-	tEtbConfig.eDstIp 	= ETCB_DMA0_CH0 + DMA_CH3;		//ETB DMA通道 作为目标实际
+	tEtbConfig.eDstIp 	= ETCB_DMA0_CH3;		//ETB DMA通道 作为目标实际
 	tEtbConfig.eTrgMode = ETCB_HARDWARE_TRG;			//通道触发模式采样硬件触发
 	iRet = csi_etcb_ch_init(ETCB_CH20, &tEtbConfig);	//初始化ETB，DMA ETB CHANNEL > ETB_CH19_ID
 
