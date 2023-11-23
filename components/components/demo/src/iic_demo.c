@@ -167,8 +167,8 @@ void iic_master_eeprom_demo(void)
 	g_tIicMasterCfg.eSpeedMode = IIC_BUS_SPEED_STANDARD;	//设置主机速度模式	IIC_BUS_SPEED_STANDARD <=100kHz   IIC_BUS_SPEED_FAST <=400kHz    IIC_BUS_SPEED_FAST_PLUS <=  1MHz
 	g_tIicMasterCfg.wSdaTimeout = 0XFFFF;					//SDA 超时时间设置，  1/主频 * g_tIicMasterCfg.wSdaTimeout  ms
 	g_tIicMasterCfg.wSclTimeout = 0XFFFF;					//SCL 超时时间设置，  1/主频 * g_tIicMasterCfg.wSdaTimeout  ms
-	csi_iic_int_enable(IIC0, IIC_INTSRC_TX_ABRT);           //使能TX_ABRT中断
 	csi_iic_master_init(IIC0,&g_tIicMasterCfg);				//主机初始化
+	csi_iic_int_enable(IIC0, IIC_INTSRC_TX_ABRT);           //使能TX_ABRT中断
 	
 	//该例程为主机读写AT24C04的EEPROM的示例，因AT24C04每次写入的数据不能超过16byte
 	//请使用时注意写的长度。不同的EEPROM会有不同的写入长度限制，请参考相应的数据手册
@@ -206,8 +206,8 @@ void iic_master_demo(void)
 	g_tIicMasterCfg.eSpeedMode = IIC_BUS_SPEED_FAST_PLUS;	//设置主机速度模式	IIC_BUS_SPEED_STANDARD <=100kHz   IIC_BUS_SPEED_FAST <=400kHz    IIC_BUS_SPEED_FAST_PLUS <=  1MHz
 	g_tIicMasterCfg.wSdaTimeout = 0XFFFF;					//SDA 超时时间设置，  1/主频 * g_tIicMasterCfg.wSdaTimeout  ms
 	g_tIicMasterCfg.wSclTimeout = 0XFFFF;					//SCL 超时时间设置，  1/主频 * g_tIicMasterCfg.wSdaTimeout  ms
-	csi_iic_int_enable(IIC0, IIC_INTSRC_TX_ABRT);           //使能TX_ABRT中断	
 	csi_iic_master_init(IIC0,&g_tIicMasterCfg);				//主机初始化
+	csi_iic_int_enable(IIC0, IIC_INTSRC_TX_ABRT);           //使能TX_ABRT中断	
 	
 	while(1)
 	{
@@ -242,10 +242,10 @@ void iic_slave_demo(void)
 	g_tIicSlaveCfg.eSpeedMode = IIC_BUS_SPEED_STANDARD;	//设置从机速度	IIC_BUS_SPEED_STANDARD <=100kHz   IIC_BUS_SPEED_FAST <=400kHz    IIC_BUS_SPEED_FAST_PLUS <=  1MHz
 	g_tIicSlaveCfg.hwSlaveAddr = 0xa0;				//设置从机地址
 	g_tIicSlaveCfg.hwMaskAddr = 0x00;           //配置SLVQUAL
-	g_tIicSlaveCfg.eQualMode=I2C_QUALMASK;        //从机地址限定模式， 地址扩展模式
-	csi_iic_int_enable(IIC0, IIC_INTSRC_SCL_SLOW | IIC_INTSRC_STOP_DET | IIC_INTSRC_RD_REQ | IIC_INTSRC_RX_FULL | IIC_INTSRC_TX_ABRT|IIC_INTSRC_TX_OVER);   //使能需要的中断
+	g_tIicSlaveCfg.eQualMode=I2C_QUALMASK;        //从机地址限定模式， 地址扩展模式	
 	csi_iic_set_slave_buffer(s_byWriteBuffer,32,s_bySendBuffer,32); //从机就是数组和发送数组设置
 	csi_iic_slave_init(IIC0,&g_tIicSlaveCfg);		//初始化从机
+	csi_iic_int_enable(IIC0, IIC_INTSRC_SCL_SLOW | IIC_INTSRC_STOP_DET | IIC_INTSRC_RD_REQ | IIC_INTSRC_RX_FULL | IIC_INTSRC_TX_ABRT|IIC_INTSRC_TX_OVER);   //使能需要的中断
 	
 	while(1);
 	
@@ -279,10 +279,10 @@ void iic_multi_slave_demo(void)
 	csi_iic_set_slave_buffer(s_byWriteBuffer,32,s_bySendBuffer,32); //从机就是数组和发送数组设置
 	g_tIicMasterCfg.wSdaTimeout = 0XFFFF;						//SDA 超时时间设置，  1/主频 * g_tIicMasterCfg.wSdaTimeout  ms
 	g_tIicMasterCfg.wSclTimeout = 0XFFFF;						//SCL 超时时间设置，  1/主频 * g_tIicMasterCfg.wSdaTimeout  ms
-	csi_iic_int_enable(IIC0, IIC_INTSRC_SCL_SLOW | IIC_INTSRC_STOP_DET |IIC_INTSRC_RD_REQ | IIC_INTSRC_RX_FULL | IIC_INTSRC_TX_ABRT);     //使能需要的中断
 	
 	csi_iic_slave_init(IIC0,&g_tIicSlaveCfg);		//初始化从机
-
+	csi_iic_int_enable(IIC0, IIC_INTSRC_SCL_SLOW | IIC_INTSRC_STOP_DET |IIC_INTSRC_RD_REQ | IIC_INTSRC_RX_FULL | IIC_INTSRC_TX_ABRT);     //使能需要的中断
+	
 	while(1);
 }
 
