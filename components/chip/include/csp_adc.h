@@ -49,6 +49,14 @@
     __IOM  uint32_t  CMP1;      //0x0144 Comparison Data Register          
 	__IOM  uint32_t  DRMASK;	//0x0148 Disable Conversion Data Updata Register
  } csp_adc_t;
+ 
+/******************************************************************************
+* TS : Temperature sensor Registers
+******************************************************************************/
+#define CALIBRATION_TS1  *((uint32_t *)(0x00080100))
+#define CALIBRATION_IR1  *((uint32_t *)(0x00080104))
+#define CALIBRATION_TS2  *((uint32_t *)(0x00080108))
+#define CALIBRATION_IR2  *((uint32_t *)(0x0008010c))
 
 /******************************************************************************
 * ECR, DCR, PMSR : ADC Power Management Registers

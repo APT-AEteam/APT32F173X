@@ -63,6 +63,7 @@ extern int lin_send_recv_demo(void);
 //normal mode(no interrupt)
 extern int adc_samp_oneshot_demo(void);
 extern int adc_samp_continuous_demo(void);
+extern float adc_temperature_demo(void);
 //interrupt mode
 extern int adc_samp_oneshot_int_demo(void);
 extern int adc_samp_continuous_int_demo(void);
