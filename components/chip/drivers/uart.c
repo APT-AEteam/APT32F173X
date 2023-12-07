@@ -30,90 +30,179 @@ csi_uart_ctrl_t g_tUartCtrl[UART_IDX];
  */ 
 void csi_uart_irqhandler(csp_uart_t *ptUartBase, uint8_t byIdx)
 {
-	uint16_t hwIsr = csp_uart_get_isr(ptUartBase) & 0x000670;				//RXFIFO/TXFIFO/RXTO/RXBRAK/PAR_ERR中断状态
-	switch(hwIsr)							
-	{
-		case UART_INT_RXFIFO_S:												//RXFIFO interrupt
-			while(csp_uart_get_sr(ptUartBase) & UART_RNE)					
-			{
-				if(g_tUartCtrl[byIdx].hwTransNum < g_tUartCtrl[byIdx].hwRxSize)
-					g_tUartCtrl[byIdx].pbyRxBuf[g_tUartCtrl[byIdx].hwTransNum ++] = csp_uart_get_data(ptUartBase);		//read data
-				else														//receive complete										
-				{
-					csp_uart_rxfifo_sw_rst(ptUartBase);						//reset rxfifo
-					csp_uart_int_disable(ptUartBase, UART_INT_RXFIFO);		//disable RXFIFO interrupt
-					csp_uart_rto_disable(ptUartBase);						//disable receive timeout 
-					g_tUartCtrl[byIdx].hwTransNum = 0;						
-					g_tUartCtrl[byIdx].byRxState = UART_STATE_RX_DNE;		
-					
-					//receive complete, callback
-					if(g_tUartCtrl[byIdx].recv_callback)
-						g_tUartCtrl[byIdx].recv_callback(ptUartBase, UART_STATE_RX_DNE, g_tUartCtrl[byIdx].pbyRxBuf, &g_tUartCtrl[byIdx].hwRxSize);
-					
-					csp_uart_rto_enable(ptUartBase);						//disable receive timeout 
-				}
-			}
-			break;
+	uint16_t hwIsr = csp_uart_get_isr(ptUartBase);// & 0x000670;				//RXFIFO/TXFIFO/RXTO/RXBRAK/PAR_ERR中断状态
 	
-		case UART_INT_RXTO_S:												 //receive timeout interrupt
-			if(g_tUartCtrl[byIdx].byRxState != UART_STATE_RX_DNE)
+	//RXFIFO interrupt
+	if(hwIsr & UART_INT_RXFIFO_S)
+	{
+		while(csp_uart_get_sr(ptUartBase) & UART_RNE)					
+		{
+			if(g_tUartCtrl[byIdx].hwTransNum < g_tUartCtrl[byIdx].hwRxSize)
+				g_tUartCtrl[byIdx].pbyRxBuf[g_tUartCtrl[byIdx].hwTransNum ++] = csp_uart_get_data(ptUartBase);		//read data
+			else														//receive complete										
 			{
-				while(csp_uart_get_sr(ptUartBase) & UART_RNE)
-				{
-					g_tUartCtrl[byIdx].pbyRxBuf[g_tUartCtrl[byIdx].hwTransNum ++] = csp_uart_get_data(ptUartBase);
-				}
+				csp_uart_rxfifo_sw_rst(ptUartBase);						//reset rxfifo
+				csp_uart_int_disable(ptUartBase, UART_INT_RXFIFO);		//disable RXFIFO interrupt
+				csp_uart_rto_disable(ptUartBase);						//disable receive timeout 
+				g_tUartCtrl[byIdx].hwTransNum = 0;						
+				g_tUartCtrl[byIdx].byRxState = UART_STATE_RX_DNE;		
 				
-				if(g_tUartCtrl[byIdx].hwTransNum  < g_tUartCtrl[byIdx].hwRxSize)	
-				{
-					g_tUartCtrl[byIdx].byRxState = UART_STATE_RX_TO;				//receive timeout flag
+				//receive complete, callback
+				if(g_tUartCtrl[byIdx].recv_callback)
+					g_tUartCtrl[byIdx].recv_callback(ptUartBase, UART_STATE_RX_DNE, g_tUartCtrl[byIdx].pbyRxBuf, &g_tUartCtrl[byIdx].hwRxSize);
 				
-					//receive complete, callback
-					if(g_tUartCtrl[byIdx].recv_callback)							
-						g_tUartCtrl[byIdx].recv_callback(ptUartBase, UART_STATE_RX_TO, g_tUartCtrl[byIdx].pbyRxBuf, &g_tUartCtrl[byIdx].hwTransNum);
-				}
-				else																
-				{
-					g_tUartCtrl[byIdx].hwTransNum = 0;								
-					g_tUartCtrl[byIdx].byRxState = UART_STATE_RX_DNE;				//receive complete flag
-					
-					//receive complete, callback
-					if(g_tUartCtrl[byIdx].recv_callback)
-						g_tUartCtrl[byIdx].recv_callback(ptUartBase, UART_STATE_RX_DNE, g_tUartCtrl[byIdx].pbyRxBuf, &g_tUartCtrl[byIdx].hwRxSize);
-				}
+				csp_uart_rto_enable(ptUartBase);						//disable receive timeout 
 			}
-			csp_uart_clr_isr(ptUartBase, UART_INT_RXTO_S);							//clear interrupt status 
-			csp_uart_rto_enable(ptUartBase);										//enable receive timeout 
-			
-			break;
-		case UART_INT_TXFIFO_S:														//TXFIFO disable receive timeout 
-			csp_uart_set_data(ptUartBase, *g_tUartCtrl[byIdx].pbyTxBuf);			//send data
-			g_tUartCtrl[byIdx].hwTxSize --;
-			g_tUartCtrl[byIdx].pbyTxBuf ++;
-			
-			if(g_tUartCtrl[byIdx].hwTxSize == 0)	
-			{	
-				g_tUartCtrl[byIdx].byTxState = UART_STATE_TX_DNE;					//send complete
-				csp_uart_int_disable(ptUartBase, UART_INT_TXFIFO);					//disable interrupt
-				
-				//send complete, callback
-				if(g_tUartCtrl[byIdx].send_callback)
-					g_tUartCtrl[byIdx].send_callback(ptUartBase);
-			}
-			break;
-		case UART_INT_RXBRK_S:
-			csp_uart_clr_isr(ptUartBase, UART_INT_RXBRK_S);							//clear interrupt status 
-			if(g_tUartCtrl[byIdx].err_callback)
-				g_tUartCtrl[byIdx].err_callback(ptUartBase, hwIsr);
-			break;
-		case UART_INT_PARERR_S:
-			csp_uart_clr_isr(ptUartBase, UART_INT_PARERR_S);						//clear interrupt status 
-			if(g_tUartCtrl[byIdx].err_callback)
-				g_tUartCtrl[byIdx].err_callback(ptUartBase, hwIsr);
-			break;
-		default:
-			csp_uart_clr_isr(ptUartBase, UART_INT_ALL_S);					
-			break;
+		}
 	}
+	
+	//receive timeout interrupt
+	if(hwIsr & UART_INT_RXTO_S)
+	{
+		if(g_tUartCtrl[byIdx].byRxState != UART_STATE_RX_DNE)
+		{
+			while(csp_uart_get_sr(ptUartBase) & UART_RNE)
+			{
+				g_tUartCtrl[byIdx].pbyRxBuf[g_tUartCtrl[byIdx].hwTransNum ++] = csp_uart_get_data(ptUartBase);
+			}
+			
+			if(g_tUartCtrl[byIdx].hwTransNum  < g_tUartCtrl[byIdx].hwRxSize)	
+			{
+				g_tUartCtrl[byIdx].byRxState = UART_STATE_RX_TO;				//receive timeout flag
+			
+				//receive complete, callback
+				if(g_tUartCtrl[byIdx].recv_callback)							
+					g_tUartCtrl[byIdx].recv_callback(ptUartBase, UART_STATE_RX_TO, g_tUartCtrl[byIdx].pbyRxBuf, &g_tUartCtrl[byIdx].hwTransNum);
+			}
+			else																
+			{
+				g_tUartCtrl[byIdx].hwTransNum = 0;								
+				g_tUartCtrl[byIdx].byRxState = UART_STATE_RX_DNE;				//receive complete flag
+				
+				//receive complete, callback
+				if(g_tUartCtrl[byIdx].recv_callback)
+					g_tUartCtrl[byIdx].recv_callback(ptUartBase, UART_STATE_RX_DNE, g_tUartCtrl[byIdx].pbyRxBuf, &g_tUartCtrl[byIdx].hwRxSize);
+			}
+		}
+		csp_uart_clr_isr(ptUartBase, UART_INT_RXTO_S);							//clear interrupt status 
+		csp_uart_rto_enable(ptUartBase);	
+	}
+	
+	//TXFIFO interrupt
+	if(hwIsr & UART_INT_TXFIFO_S)
+	{
+		csp_uart_set_data(ptUartBase, *g_tUartCtrl[byIdx].pbyTxBuf);			//send data
+		g_tUartCtrl[byIdx].hwTxSize --;
+		g_tUartCtrl[byIdx].pbyTxBuf ++;
+		
+		if(g_tUartCtrl[byIdx].hwTxSize == 0)	
+		{	
+			g_tUartCtrl[byIdx].byTxState = UART_STATE_TX_DNE;					//send complete
+			csp_uart_int_disable(ptUartBase, UART_INT_TXFIFO);					//disable interrupt
+			
+			//send complete, callback
+			if(g_tUartCtrl[byIdx].send_callback)
+				g_tUartCtrl[byIdx].send_callback(ptUartBase);
+		}
+	}
+	
+	if(hwIsr & UART_INT_RXBRK_S)
+	{
+		csp_uart_clr_isr(ptUartBase, UART_INT_RXBRK_S);							//clear interrupt status 
+		if(g_tUartCtrl[byIdx].err_callback)
+			g_tUartCtrl[byIdx].err_callback(ptUartBase, hwIsr);
+	}
+	
+	if(hwIsr & UART_INT_PARERR_S)
+	{
+		csp_uart_clr_isr(ptUartBase, UART_INT_PARERR_S);						//clear interrupt status 
+		if(g_tUartCtrl[byIdx].err_callback)
+			g_tUartCtrl[byIdx].err_callback(ptUartBase, hwIsr);
+	}
+		
+//	switch(hwIsr)							
+//	{
+//		case UART_INT_RXFIFO_S:												
+//			while(csp_uart_get_sr(ptUartBase) & UART_RNE)					
+//			{
+//				if(g_tUartCtrl[byIdx].hwTransNum < g_tUartCtrl[byIdx].hwRxSize)
+//					g_tUartCtrl[byIdx].pbyRxBuf[g_tUartCtrl[byIdx].hwTransNum ++] = csp_uart_get_data(ptUartBase);		//read data
+//				else														//receive complete										
+//				{
+//					csp_uart_rxfifo_sw_rst(ptUartBase);						//reset rxfifo
+//					csp_uart_int_disable(ptUartBase, UART_INT_RXFIFO);		//disable RXFIFO interrupt
+//					csp_uart_rto_disable(ptUartBase);						//disable receive timeout 
+//					g_tUartCtrl[byIdx].hwTransNum = 0;						
+//					g_tUartCtrl[byIdx].byRxState = UART_STATE_RX_DNE;		
+//					
+//					//receive complete, callback
+//					if(g_tUartCtrl[byIdx].recv_callback)
+//						g_tUartCtrl[byIdx].recv_callback(ptUartBase, UART_STATE_RX_DNE, g_tUartCtrl[byIdx].pbyRxBuf, &g_tUartCtrl[byIdx].hwRxSize);
+//					
+//					csp_uart_rto_enable(ptUartBase);						//disable receive timeout 
+//				}
+//			}
+//			break;
+//	
+//		case UART_INT_RXTO_S:												 //receive timeout interrupt
+//			if(g_tUartCtrl[byIdx].byRxState != UART_STATE_RX_DNE)
+//			{
+//				while(csp_uart_get_sr(ptUartBase) & UART_RNE)
+//				{
+//					g_tUartCtrl[byIdx].pbyRxBuf[g_tUartCtrl[byIdx].hwTransNum ++] = csp_uart_get_data(ptUartBase);
+//				}
+//				
+//				if(g_tUartCtrl[byIdx].hwTransNum  < g_tUartCtrl[byIdx].hwRxSize)	
+//				{
+//					g_tUartCtrl[byIdx].byRxState = UART_STATE_RX_TO;				//receive timeout flag
+//				
+//					//receive complete, callback
+//					if(g_tUartCtrl[byIdx].recv_callback)							
+//						g_tUartCtrl[byIdx].recv_callback(ptUartBase, UART_STATE_RX_TO, g_tUartCtrl[byIdx].pbyRxBuf, &g_tUartCtrl[byIdx].hwTransNum);
+//				}
+//				else																
+//				{
+//					g_tUartCtrl[byIdx].hwTransNum = 0;								
+//					g_tUartCtrl[byIdx].byRxState = UART_STATE_RX_DNE;				//receive complete flag
+//					
+//					//receive complete, callback
+//					if(g_tUartCtrl[byIdx].recv_callback)
+//						g_tUartCtrl[byIdx].recv_callback(ptUartBase, UART_STATE_RX_DNE, g_tUartCtrl[byIdx].pbyRxBuf, &g_tUartCtrl[byIdx].hwRxSize);
+//				}
+//			}
+//			csp_uart_clr_isr(ptUartBase, UART_INT_RXTO_S);							//clear interrupt status 
+//			csp_uart_rto_enable(ptUartBase);										//enable receive timeout 
+//			
+//			break;
+//		case UART_INT_TXFIFO_S:														//TXFIFO disable receive timeout 
+//			csp_uart_set_data(ptUartBase, *g_tUartCtrl[byIdx].pbyTxBuf);			//send data
+//			g_tUartCtrl[byIdx].hwTxSize --;
+//			g_tUartCtrl[byIdx].pbyTxBuf ++;
+//			
+//			if(g_tUartCtrl[byIdx].hwTxSize == 0)	
+//			{	
+//				g_tUartCtrl[byIdx].byTxState = UART_STATE_TX_DNE;					//send complete
+//				csp_uart_int_disable(ptUartBase, UART_INT_TXFIFO);					//disable interrupt
+//				
+//				//send complete, callback
+//				if(g_tUartCtrl[byIdx].send_callback)
+//					g_tUartCtrl[byIdx].send_callback(ptUartBase);
+//			}
+//			break;
+//		case UART_INT_RXBRK_S:
+//			csp_uart_clr_isr(ptUartBase, UART_INT_RXBRK_S);							//clear interrupt status 
+//			if(g_tUartCtrl[byIdx].err_callback)
+//				g_tUartCtrl[byIdx].err_callback(ptUartBase, hwIsr);
+//			break;
+//		case UART_INT_PARERR_S:
+//			csp_uart_clr_isr(ptUartBase, UART_INT_PARERR_S);						//clear interrupt status 
+//			if(g_tUartCtrl[byIdx].err_callback)
+//				g_tUartCtrl[byIdx].err_callback(ptUartBase, hwIsr);
+//			break;
+//		default:
+//			csp_uart_clr_isr(ptUartBase, UART_INT_ALL_S);					
+//			break;
+//	}
 }
 /** \brief initialize uart parameter structure
  * 

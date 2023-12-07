@@ -29,33 +29,36 @@ csi_usart_ctrl_t g_tUsartCtrl[USART_IDX];
  */
 void csi_usart_irqhandler(csp_usart_t *ptUsartBase,uint8_t byIdx)
 {
-	switch(csp_usart_get_isr(ptUsartBase) & 0x5101)								//get rxfifo/tx/txfifo/rxtimeout interrupt status
+	uint16_t hwIsr = csp_usart_get_isr(ptUsartBase);
+	
+	//rxfifo int	
+	if(hwIsr & US_INT_RXFIFO)
 	{
-		case US_INT_RXFIFO:														//rxfifo int			
-			
-			while(csp_usart_get_sr(ptUsartBase) & US_RNE)						//rxfifo not empty
+		while(csp_usart_get_sr(ptUsartBase) & US_RNE)						//rxfifo not empty
+		{
+			if(g_tUsartCtrl[byIdx].hwTransNum < g_tUsartCtrl[byIdx].hwRxSize)
+				g_tUsartCtrl[byIdx].pbyRxBuf[g_tUsartCtrl[byIdx].hwTransNum ++] = csp_usart_get_data(ptUsartBase);		//get data
+			else															//RX completed										
 			{
-				if(g_tUsartCtrl[byIdx].hwTransNum < g_tUsartCtrl[byIdx].hwRxSize)
-					g_tUsartCtrl[byIdx].pbyRxBuf[g_tUsartCtrl[byIdx].hwTransNum ++] = csp_usart_get_data(ptUsartBase);		//get data
-				else															//RX completed										
-				{
-					csp_usart_rxfifo_sw_rst(ptUsartBase);							//reset rxfifo
-					csp_usart_int_disable(ptUsartBase, US_INT_RXFIFO);			//disable rxfifo int 
-					csp_usart_set_rtor(ptUsartBase,0);							//disable time over by setting OVER_TIME to 0.
-					g_tUsartCtrl[byIdx].hwTransNum = 0;							//clear rx counter
-					g_tUsartCtrl[byIdx].byRxState = USART_EVENT_RX_DNE;			//rx completed
-					
-					//callback,send rx done event
-					if(g_tUsartCtrl[byIdx].recv_callback)
-						g_tUsartCtrl[byIdx].recv_callback(ptUsartBase, USART_EVENT_RX_DNE, g_tUsartCtrl[byIdx].pbyRxBuf, &g_tUsartCtrl[byIdx].hwRxSize);
-					
+				csp_usart_rxfifo_sw_rst(ptUsartBase);							//reset rxfifo
+				csp_usart_int_disable(ptUsartBase, US_INT_RXFIFO);			//disable rxfifo int 
+				csp_usart_set_rtor(ptUsartBase,0);							//disable time over by setting OVER_TIME to 0.
+				g_tUsartCtrl[byIdx].hwTransNum = 0;							//clear rx counter
+				g_tUsartCtrl[byIdx].byRxState = USART_EVENT_RX_DNE;			//rx completed
+				
+				//callback,send rx done event
+				if(g_tUsartCtrl[byIdx].recv_callback)
+					g_tUsartCtrl[byIdx].recv_callback(ptUsartBase, USART_EVENT_RX_DNE, g_tUsartCtrl[byIdx].pbyRxBuf, &g_tUsartCtrl[byIdx].hwRxSize);
+				
 
-					csp_usart_rtor_enable(ptUsartBase);					//enable timeout int
-				}
+				csp_usart_rtor_enable(ptUsartBase);					//enable timeout int
 			}
-			break;
-			
-		case US_INT_RXTO:				
+		}
+	}
+	
+	//rx timeout int
+	if(hwIsr & US_INT_RXFIFO)
+	{
 			if(g_tUsartCtrl[byIdx].byRxState != USART_EVENT_RX_DNE)
 			{
 				while(csp_usart_get_sr(ptUsartBase) & US_RNE)
@@ -83,28 +86,102 @@ void csi_usart_irqhandler(csp_usart_t *ptUsartBase,uint8_t byIdx)
 			}
 			csp_usart_clr_isr(ptUsartBase, US_INT_RXTO_S);							//clear interrupt
 			csp_usart_rtor_enable(ptUsartBase);	
-			break;
-			
-		case US_INT_TXFIFO:					
-			csp_usart_set_data(ptUsartBase, *g_tUsartCtrl[byIdx].pbyTxBuf);			//send data
-			g_tUsartCtrl[byIdx].hwTxSize --;
-			g_tUsartCtrl[byIdx].pbyTxBuf ++;
-			
-			if(g_tUsartCtrl[byIdx].hwTxSize == 0)	
-			{	
-				g_tUsartCtrl[byIdx].byTxState = USART_EVENT_TX_DNE;					//send completed
-				csp_usart_int_disable(ptUsartBase, US_INT_TXFIFO);					//disable interrupt
-				
-				//callback, send data completed
-				if(g_tUsartCtrl[byIdx].send_callback)
-					g_tUsartCtrl[byIdx].send_callback(ptUsartBase);
-			}
-			break;
-
-		default:
-			csp_usart_clr_isr(ptUsartBase, US_INT_ALL_S);
-			break;
 	}
+	
+	//txfifo int
+	if(hwIsr & US_INT_TXFIFO)
+	{
+		csp_usart_set_data(ptUsartBase, *g_tUsartCtrl[byIdx].pbyTxBuf);			//send data
+		g_tUsartCtrl[byIdx].hwTxSize --;
+		g_tUsartCtrl[byIdx].pbyTxBuf ++;
+		
+		if(g_tUsartCtrl[byIdx].hwTxSize == 0)	
+		{	
+			g_tUsartCtrl[byIdx].byTxState = USART_EVENT_TX_DNE;					//send completed
+			csp_usart_int_disable(ptUsartBase, US_INT_TXFIFO);					//disable interrupt
+			
+			//callback, send data completed
+			if(g_tUsartCtrl[byIdx].send_callback)
+				g_tUsartCtrl[byIdx].send_callback(ptUsartBase);
+		}
+	}
+	
+//	switch(csp_usart_get_isr(ptUsartBase) & 0x5101)								//get rxfifo/tx/txfifo/rxtimeout interrupt status
+//	{
+//		case US_INT_RXFIFO:														//rxfifo int			
+//			
+//			while(csp_usart_get_sr(ptUsartBase) & US_RNE)						//rxfifo not empty
+//			{
+//				if(g_tUsartCtrl[byIdx].hwTransNum < g_tUsartCtrl[byIdx].hwRxSize)
+//					g_tUsartCtrl[byIdx].pbyRxBuf[g_tUsartCtrl[byIdx].hwTransNum ++] = csp_usart_get_data(ptUsartBase);		//get data
+//				else															//RX completed										
+//				{
+//					csp_usart_rxfifo_sw_rst(ptUsartBase);							//reset rxfifo
+//					csp_usart_int_disable(ptUsartBase, US_INT_RXFIFO);			//disable rxfifo int 
+//					csp_usart_set_rtor(ptUsartBase,0);							//disable time over by setting OVER_TIME to 0.
+//					g_tUsartCtrl[byIdx].hwTransNum = 0;							//clear rx counter
+//					g_tUsartCtrl[byIdx].byRxState = USART_EVENT_RX_DNE;			//rx completed
+//					
+//					//callback,send rx done event
+//					if(g_tUsartCtrl[byIdx].recv_callback)
+//						g_tUsartCtrl[byIdx].recv_callback(ptUsartBase, USART_EVENT_RX_DNE, g_tUsartCtrl[byIdx].pbyRxBuf, &g_tUsartCtrl[byIdx].hwRxSize);
+//					
+//
+//					csp_usart_rtor_enable(ptUsartBase);					//enable timeout int
+//				}
+//			}
+//			break;
+//			
+//		case US_INT_RXTO:				
+//			if(g_tUsartCtrl[byIdx].byRxState != USART_EVENT_RX_DNE)
+//			{
+//				while(csp_usart_get_sr(ptUsartBase) & US_RNE)
+//				{
+//					g_tUsartCtrl[byIdx].pbyRxBuf[g_tUsartCtrl[byIdx].hwTransNum ++] = csp_usart_get_data(ptUsartBase);
+//				}
+//				
+//				if(g_tUsartCtrl[byIdx].hwTransNum  < g_tUsartCtrl[byIdx].hwRxSize)	//rx handle
+//				{
+//					g_tUsartCtrl[byIdx].byRxState = USART_EVENT_RX_TO;				//timeout state
+//				
+//					//callback，send rx timeout event 
+//					if(g_tUsartCtrl[byIdx].recv_callback)							//user callback
+//						g_tUsartCtrl[byIdx].recv_callback(ptUsartBase, USART_EVENT_RX_TO, g_tUsartCtrl[byIdx].pbyRxBuf, &g_tUsartCtrl[byIdx].hwTransNum);
+//				}
+//				else																//user callback,rx completed
+//				{
+//					g_tUsartCtrl[byIdx].hwTransNum = 0;								//clear rx counter
+//					g_tUsartCtrl[byIdx].byRxState = USART_EVENT_RX_DNE;				//rx completed state
+//					
+//					//callback,send rx done event
+//					if(g_tUsartCtrl[byIdx].recv_callback)
+//						g_tUsartCtrl[byIdx].recv_callback(ptUsartBase, USART_EVENT_RX_DNE, g_tUsartCtrl[byIdx].pbyRxBuf, &g_tUsartCtrl[byIdx].hwRxSize);
+//				}
+//			}
+//			csp_usart_clr_isr(ptUsartBase, US_INT_RXTO_S);							//clear interrupt
+//			csp_usart_rtor_enable(ptUsartBase);	
+//			break;
+//			
+//		case US_INT_TXFIFO:					
+//			csp_usart_set_data(ptUsartBase, *g_tUsartCtrl[byIdx].pbyTxBuf);			//send data
+//			g_tUsartCtrl[byIdx].hwTxSize --;
+//			g_tUsartCtrl[byIdx].pbyTxBuf ++;
+//			
+//			if(g_tUsartCtrl[byIdx].hwTxSize == 0)	
+//			{	
+//				g_tUsartCtrl[byIdx].byTxState = USART_EVENT_TX_DNE;					//send completed
+//				csp_usart_int_disable(ptUsartBase, US_INT_TXFIFO);					//disable interrupt
+//				
+//				//callback, send data completed
+//				if(g_tUsartCtrl[byIdx].send_callback)
+//					g_tUsartCtrl[byIdx].send_callback(ptUsartBase);
+//			}
+//			break;
+//
+//		default:
+//			csp_usart_clr_isr(ptUsartBase, US_INT_ALL_S);
+//			break;
+//	}
 }
 
 /** \brief initialize usart parameter structure
