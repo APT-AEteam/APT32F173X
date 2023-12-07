@@ -121,7 +121,7 @@ static inline void csp_fvr_buf_disable(csp_fvr_t *ptFvrBase)
 
 static inline void csp_fvr_set_buflvl(csp_fvr_t *ptFvrBase, fvr_buflvl_e eBuflvl)
 {
-	ptFvrBase->CR |= (ptFvrBase->CR & (~FVR_BUFLVL_MSK)) | (eBuflvl << FVR_BUFLVL_POS);
+	ptFvrBase->CR = (ptFvrBase->CR & (~FVR_BUFLVL_MSK)) | (eBuflvl << FVR_BUFLVL_POS);
 }
 
 static inline void csp_fvr_bufin_enable(csp_fvr_t *ptFvrBase)
