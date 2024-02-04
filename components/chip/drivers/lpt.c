@@ -154,7 +154,7 @@ void csi_lpt_int_disable(csp_lpt_t *ptLptBase, csi_lpt_intsrc_e eLptInt)
 /** \brief initialize lpt data structure
  *  \param[in] ptLptBase:pointer of lpt register structure
  *  \param[in] ptLptTimCfg: ptLptTimCfg: pointer of lpt timing parameter config structure
- *              - wTimeVal: timing value, unit: us
+ *              - wTimeVal: timing value, unit: ms
  *              - eWkMode: lpt count work mode, \ref csi_lpt_wkmode_e
  *              - eClksrc: Clock Source, \ref csi_lpt_clksrc_e
  *  \return error code \ref csi_error_t

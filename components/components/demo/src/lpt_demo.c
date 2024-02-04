@@ -45,6 +45,8 @@ ATTRIBUTE_ISR void lpt_int_handler(void)
 	if(wMisr & LPT_INT_PEND)				//PEND interrupt
 	{
 		csp_lpt_clr_isr(LPT, LPT_INT_PEND);
+		
+		csi_gpio_toggle(GPIOB,PB6);
 	}
 }
 
@@ -58,9 +60,13 @@ ATTRIBUTE_ISR void lpt_int_handler(void)
 int lpt_timer_demo(void)
 {
 	int iRet = 0;
+	
+#if (USE_GUI == 0)		
+	csi_gpio_set_mux(GPIOB, PB6, PB6_OUTPUT);
+#endif
 
 	csi_lpt_time_config_t tTimConfig;
-	tTimConfig.wTimeVal = 200;					//LPT定时值 = 200us
+	tTimConfig.wTimeVal = 200;					//LPT定时值 = 200ms
 	tTimConfig.eRunMode  = LPT_CNT_CONT;		//LPT计数器工作模式，连续
 	tTimConfig.eClkSrc=LPT_CLK_PCLK_DIV4;  		//LPT时钟源  
 	csi_lpt_timer_init(LPT,&tTimConfig);        //初始化lpt 

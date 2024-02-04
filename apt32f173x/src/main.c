@@ -27,7 +27,6 @@ extern void user_demo(void);
 
 int main()
 {
-	float f;
 	
 #if (USE_GUI == 0)
 	//不使用图形化编程需调用system_init函数
@@ -44,14 +43,6 @@ int main()
 
 	my_printf("Hello World~~~~~~~\n");		//打印信息
 	
-	f = atof("13.12");
-	
-	if(f)
-	{
-		f++;
-		nop;
-		
-	}
 
 	while(1)
 	{	
