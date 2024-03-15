@@ -39,26 +39,26 @@ typedef struct {
   \param[in]   irq_num Number of IRQ.
   \return      None.
 */
-void csi_irq_enable(void *pIpBase);
-//__ALWAYS_STATIC_INLINE void csi_irq_enable(uint32_t irq_num)
-//{
-////    extern void soc_irq_enable(uint32_t irq_num);
-////    soc_irq_enable(irq_num);
-//	csi_vic_enable_irq(irq_num);
-//}
+//void csi_irq_enable(void *pIpBase);
+__ALWAYS_STATIC_INLINE void csi_irq_enable(uint32_t irq_num)
+{
+//    extern void soc_irq_enable(uint32_t irq_num);
+//    soc_irq_enable(irq_num);
+	csi_vic_enable_irq(irq_num);
+}
 
 /**
   \brief       disable irq.
   \param[in]   irq_num Number of IRQ.
   \return      None.
 */
-void csi_irq_disable(void *pIpBase);
-//__ALWAYS_STATIC_INLINE void csi_irq_disable(uint32_t irq_num)
-//{
-////    extern void soc_irq_disable(uint32_t irq_num);
-////    soc_irq_disable(irq_num);
-//	csi_vic_disable_irq(irq_num);
-//}
+//void csi_irq_disable(void *pIpBase);
+__ALWAYS_STATIC_INLINE void csi_irq_disable(uint32_t irq_num)
+{
+//    extern void soc_irq_disable(uint32_t irq_num);
+//    soc_irq_disable(irq_num);
+	csi_vic_disable_irq(irq_num);
+}
 
 /**
   \brief       register irq handler.
