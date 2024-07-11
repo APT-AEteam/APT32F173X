@@ -54,8 +54,8 @@ void user_rtc_callback(csp_rtc_t *ptRtcBase, uint8_t byIsr)
  */
 void rtc_alarm_callback_demo(void)
 {
-	csi_rtc_time_t tRtcTime, tAlmTime;
-	csi_rtc_config_t tRtcConfig;
+	csi_rtc_time_t tRtcTime, tAlmTime= {0};
+	csi_rtc_config_t tRtcConfig= {0};
 
 	
 	//RTC初始化

@@ -59,7 +59,7 @@ static void user_receive_callback(csp_spi_t *ptSpiBase, csi_spi_state_e eState, 
  int spi_master_send_int_callback_demo(void)
 {
 	int iRet = 0;
-	csi_spi_config_t tSpiCfg;  //spi初始化参数配置结构体
+	csi_spi_config_t tSpiCfg= {0};  //spi初始化参数配置结构体
 
 #if (USE_GUI == 0)
 	//端口配置
@@ -95,7 +95,7 @@ static void user_receive_callback(csp_spi_t *ptSpiBase, csi_spi_state_e eState, 
 int spi_slave_receive_int_callback_demo(void)
 {
 	int iRet = 0;
-	csi_spi_config_t tSpiCfg;  //spi初始化参数配置结构体
+	csi_spi_config_t tSpiCfg= {0};  //spi初始化参数配置结构体
 
 #if (USE_GUI == 0)
 	//端口配置

@@ -87,7 +87,7 @@ ATTRIBUTE_ISR void spi0_int_handler(void)
 int spi_master_send_demo(void)
 {
 	int iRet = 0;
-	csi_spi_config_t tSpiCfg;  //spi初始化参数配置结构体
+	csi_spi_config_t tSpiCfg= {0};  //spi初始化参数配置结构体
 	
 #if (USE_GUI == 0)
 	//端口配置
@@ -121,7 +121,7 @@ int spi_master_send_demo(void)
  int spi_master_send_int_demo(void)
 {
 	int iRet = 0;
-	csi_spi_config_t tSpiCfg;  //spi初始化参数配置结构体
+	csi_spi_config_t tSpiCfg= {0};  //spi初始化参数配置结构体
 
 #if (USE_GUI == 0)
 	//端口配置
@@ -155,7 +155,7 @@ int spi_master_send_demo(void)
 int spi_slave_receive_int_demo(void)
 {
 	int iRet = 0;
-	csi_spi_config_t tSpiCfg;  //spi初始化参数配置结构体
+	csi_spi_config_t tSpiCfg= {0};  //spi初始化参数配置结构体
 
 #if (USE_GUI == 0)
 	//端口配置
@@ -189,7 +189,7 @@ int spi_slave_receive_int_demo(void)
 int spi_master_send_receive_demo(void)
 {
 	int iRet = 0;
-	csi_spi_config_t tSpiCfg;  //spi初始化参数配置结构体
+	csi_spi_config_t tSpiCfg= {0};  //spi初始化参数配置结构体
 
 #if (USE_GUI == 0)
 	//端口配置
@@ -223,9 +223,9 @@ int spi_master_send_receive_demo(void)
 int spi_send_dma_demo(void)
 {	
 	int iRet = 0;
-	csi_dma_ch_config_t tDmaSendCfg;				//DMA参数配置结构体
-	csi_etcb_config_t 	tEtcbSendCfg;				//ETCB参数配置结构体
-	csi_spi_config_t 	tSpiCfg;					//SPI初始化参数配置结构体
+	csi_dma_ch_config_t tDmaSendCfg= {0};				//DMA参数配置结构体
+	csi_etcb_config_t 	tEtcbSendCfg= {0};				//ETCB参数配置结构体
+	csi_spi_config_t 	tSpiCfg= {0};					//SPI初始化参数配置结构体
 	
 #if (USE_GUI == 0)
 	//SPI端口配置
@@ -290,9 +290,9 @@ int spi_send_dma_demo(void)
 int spi_receive_dma_demo(void)
 {
 	int iRet = 0;
-	csi_dma_ch_config_t tDmaRecvCfg;				//DMA参数配置结构体
-	csi_etcb_config_t 	tEtcbRecvCfg;				//ETCB参数配置结构体
-	csi_spi_config_t 	tSpiCfg;					//SPI初始化参数配置结构体
+	csi_dma_ch_config_t tDmaRecvCfg= {0};				//DMA参数配置结构体
+	csi_etcb_config_t 	tEtcbRecvCfg= {0};				//ETCB参数配置结构体
+	csi_spi_config_t 	tSpiCfg= {0};					//SPI初始化参数配置结构体
 	
 #if (USE_GUI == 0)
 	//SPI端口配置
@@ -355,7 +355,7 @@ int spi_receive_dma_demo(void)
 int spi_flash_read_demo(void)
 {
 	int iRet = 0;	
-	csi_spi_config_t tSpiCfg;  //spi初始化参数配置结构体
+	csi_spi_config_t tSpiCfg= {0};  //spi初始化参数配置结构体
 	
 #if (USE_GUI == 0)	
 	//NSS端口配置（使用PB12手动控制）
@@ -396,7 +396,7 @@ int spi_flash_read_demo(void)
 int spi_flash_write_demo(void)
 {
 	int iRet = 0;	
-	csi_spi_config_t tSpiCfg;  //spi初始化参数配置结构体
+	csi_spi_config_t tSpiCfg= {0};  //spi初始化参数配置结构体
 	
 #if (USE_GUI == 0)	
 	//NSS端口配置（使用PB12手动控制）

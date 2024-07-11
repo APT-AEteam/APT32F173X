@@ -49,7 +49,7 @@ ATTRIBUTE_ISR  void cmp0_int_handler(void)
 int cmp_base_demo(void)
 {
 	int iRet = 0;
-	csi_cmp_config_t tCmpCfg;
+	csi_cmp_config_t tCmpCfg= {0};
 
 #if (USE_GUI == 0)		
 	csi_gpio_set_mux(GPIOA, PA8,PA8_CPIN1P);		
@@ -94,7 +94,7 @@ int cmp_dfcr_demo(void)
 	csi_gpio_set_mux(GPIOB, PB2,PB2_CP0_OUT);	
 #endif
 	
-	csi_cmp_config_t tCmpCfg;
+	csi_cmp_config_t tCmpCfg= {0};
 	tCmpCfg.byNsel = CMP_N_SEL_CP1;                   //N- 端口选择
 	tCmpCfg.byPsel = CMP_P_SEL_CP1;	                  //P+ 端口选择
 	tCmpCfg.byPhystpol = CMP_PHYST_POL_0mv;           //比较器输入迟滞 10mv
@@ -103,13 +103,13 @@ int cmp_dfcr_demo(void)
 	tCmpCfg.byCpoSel = CMP_CPOS_OUT_IN;	              //CMP_OUT管脚上输出信号选择 0h：滤波前信号直接输出 	1h：滤波后信号输出 
 	csi_cmp_init(CMP0,&tCmpCfg);
 	
-	csi_cmp_dflt1_config_t tCmpDflt1Cfg;
+	csi_cmp_dflt1_config_t tCmpDflt1Cfg= {0};
 	tCmpDflt1Cfg.byDepth1 = CMP_DFCR_DEPTH1_16;       //数字滤波1深度
 	tCmpDflt1Cfg.byDivn1  = 2;                        //分频系数N
 	tCmpDflt1Cfg.byDivm1  = 119;	                  //分频系数M
 	csi_cmp_set_dflt1(CMP0,&tCmpDflt1Cfg,ENABLE);
 	
-	csi_cmp_dflt2_config_t tCmpDflt2Cfg;
+	csi_cmp_dflt2_config_t tCmpDflt2Cfg= {0};
 	tCmpDflt2Cfg.byDepth2 = CMP_DFCR_DEPTH2_16;       //数字滤波2深度
 	tCmpDflt2Cfg.byDivn2  = 2;                        //分频系数N
 	tCmpDflt2Cfg.byDivm2  = 119;	                  //分频系数M
@@ -143,7 +143,7 @@ int cmp_wfcr_demo(void)
 	csi_gpio_set_mux(GPIOB, PB2,PB2_CP0_OUT);	
 #endif
 	
-	csi_cmp_config_t tCmpCfg;
+	csi_cmp_config_t tCmpCfg= {0};
 	tCmpCfg.byNsel = CMP_N_SEL_CP1;                 //N- 端口选择
 	tCmpCfg.byPsel = CMP_P_SEL_CP1;	                //P+ 端口选择
 	tCmpCfg.byPhystpol = CMP_PHYST_POL_0mv;         //比较器输入迟滞 10mv
@@ -152,7 +152,7 @@ int cmp_wfcr_demo(void)
 	tCmpCfg.byCpoSel = CMP_CPOS_OUT_IN;	            //CMP_OUT管脚上输出信号选择 0h：滤波前信号直接输出 	1h：滤波后信号输出 
 	csi_cmp_init(CMP0,&tCmpCfg);	
 	
-	csi_cmp_wfcr_config_t tCmpWfcrCfg;
+	csi_cmp_wfcr_config_t tCmpWfcrCfg= {0};
 	tCmpWfcrCfg.byWfalign = CMP_WFCR_ALIGN_ALLOW;   //窗口滤波触发事件对齐设置
 	tCmpWfcrCfg.byWoset   = CMP_WFCR_OSET_HIGH;     //窗口滤波设置输出初始化
 	tCmpWfcrCfg.byClkDiv  = 4;                      //时钟分频
@@ -165,7 +165,7 @@ int cmp_wfcr_demo(void)
 	
 	csi_cmp_start(CMP0);
 
-	csi_bt_time_config_t tTimConfig;
+	csi_bt_time_config_t tTimConfig= {0};
 	tTimConfig.wTimeVal = 2000;						//BT定时值，单位：us；即定时值 = 2000us
 	tTimConfig.eRunMode  = BT_RUN_CONT;				//BT计数器工作模式：连续/单次
 	csi_bt_timer_init(BT1,&tTimConfig);	
@@ -176,7 +176,7 @@ int cmp_wfcr_demo(void)
 	csi_bt_evtrg_enable(BT0);	
 
 	
-	csi_etcb_config_t tEtbConfig;                    //ETB 参数配置结构体                  
+	csi_etcb_config_t tEtbConfig= {0};                    //ETB 参数配置结构体                  
 	tEtbConfig.eChType = ETCB_ONE_TRG_ONE;           //单个源触发单个目标
 	tEtbConfig.eSrcIp  = ETCB_BT0_TRGOUT ; 
 	tEtbConfig.eDstIp =  ETCB_CMP0_SYNCIN;           //CMP0 同步输入作为目标事件

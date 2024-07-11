@@ -160,7 +160,7 @@ ATTRIBUTE_ISR void sio0_int_handler(void)
 int sio_led_rgb_demo(void)
 {
 	int iRet = 0;
-	csi_sio_tx_config_t tSioTxCfg;
+	csi_sio_tx_config_t tSioTxCfg= {0};
 	
 #if (USE_GUI == 0)								//用户未选择图形化编程	
 	//配置为SIO模式
@@ -203,7 +203,7 @@ int sio_led_rgb_txbufempt_int_demo(void)
 {
 	int iRet = 0;
 	uint8_t byCount = 0;
-	csi_sio_tx_config_t tSioTxCfg;
+	csi_sio_tx_config_t tSioTxCfg= {0};
 
 #if (USE_GUI == 0)									//用户未选择图形化编程	
 	csi_gpio_set_mux(GPIOB, PB0, PB0_SIO0);	
@@ -252,7 +252,7 @@ int sio_led_rgb_txdne_int_demo(void)
 {
 	int iRet = 0;
 	uint8_t byCount = 0;
-	csi_sio_tx_config_t tSioTxCfg;
+	csi_sio_tx_config_t tSioTxCfg= {0};
 
 #if (USE_GUI == 0)									//用户未选择图形化编程	
 	csi_gpio_set_mux(GPIOB, PB0, PB0_SIO0);	
@@ -302,12 +302,12 @@ int sio_led_rgb_send_dma_demo(void)
 {
 	int iRet = 0;
 	uint8_t byCount = 0;
-	uint32_t wDipDataEnd[24];
-	uint16_t hwDmaSendData[24];
+	uint32_t wDipDataEnd[24]= {0};
+	uint16_t hwDmaSendData[24]= {0};
 	
-	csi_dma_ch_config_t tDmaConfig;				
-	csi_etcb_config_t 	tEtbConfig;	
-	csi_sio_tx_config_t tSioTxCfg;
+	csi_dma_ch_config_t tDmaConfig= {0};				
+	csi_etcb_config_t 	tEtbConfig= {0};	
+	csi_sio_tx_config_t tSioTxCfg= {0};
 
 #if (USE_GUI == 0)										//用户未选择图形化编程	
 	csi_gpio_set_mux(GPIOB, PB0, PB0_SIO0);	
@@ -391,7 +391,7 @@ int sio_led_rgb_send_dma_demo(void)
 int sio_hdq_master_wrcmd_demo(void)
 {
 	int iRet = 0;
-	csi_sio_tx_config_t tHdqTxCfg;
+	csi_sio_tx_config_t tHdqTxCfg= {0};
 	
 	uint32_t wSendBuf[2];		
 	uint8_t byHdqData[2] = {0x68, 0x55};
@@ -442,11 +442,11 @@ int sio_hdq_master_wrcmd_demo(void)
 int sio_hdq_master_rdcmd_demo(void)
 {
 	int iRet = 0;
-	csi_sio_tx_config_t tHdqTxCfg;
-	csi_sio_rx_config_t tHdqRxCfg;
+	csi_sio_tx_config_t tHdqTxCfg= {0};
+	csi_sio_rx_config_t tHdqRxCfg= {0};
 	
 	uint32_t wRecvStart = 0;
-	uint32_t wSendBuf[2];		
+	uint32_t wSendBuf[2]= {0};		
 	uint8_t byHdqData[2] = {0x68, 0x55};
 	
 #if (USE_GUI == 0)										//用户未选择图形化编程	
@@ -531,8 +531,8 @@ int sio_hdq_master_rdcmd_demo(void)
 int sio_hdq_slave_demo(void)
 {
 	int iRet = 0;
-	csi_sio_rx_config_t tHdqRxCfg;
-	csi_sio_tx_config_t tHdqTxCfg;
+	csi_sio_rx_config_t tHdqRxCfg= {0};
+	csi_sio_tx_config_t tHdqTxCfg= {0};
 	uint8_t byTxChar = 0x55;
 	
 #if (USE_GUI == 0)												//用户未选择图形化编程	
@@ -632,7 +632,7 @@ static void set_led_rgb_store(uint32_t *pwLeddData, uint8_t *pbyDisp, uint16_t h
 static void led_rgb_display(uint8_t *byColData, uint16_t hwLedNum)
 {
 	uint16_t i;
-	uint32_t wRgbData[24];
+	uint32_t wRgbData[24]= {0};
 	for(i = 0; i < hwLedNum; i++)
 	{
 		set_led_rgb_store(wRgbData,byColData, i);

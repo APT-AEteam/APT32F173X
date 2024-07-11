@@ -212,7 +212,7 @@ void pmp_demo(void)
 {
 	volatile uint32_t wTestData, wDataRdOut[10];
 	
-	mpu_region_attr_t tPmpConfig;
+	mpu_region_attr_t tPmpConfig= {0};
 	tPmpConfig.r = 0;
 	tPmpConfig.w = 0;
 	tPmpConfig.x = 1;

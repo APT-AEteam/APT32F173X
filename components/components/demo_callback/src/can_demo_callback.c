@@ -108,8 +108,8 @@ static void	user_err_callback(csp_can_t *ptCanBase, uint32_t wIsr)
 int can_send_int_callback_demo(void)
 {
 	int iRet = 0;
-	csi_can_config_t 	 tCanConfig;						//CAN 初始化结构体
-	csi_can_tx_config_t  tCanTxConfig;						//CAN 发送报文配置结构体
+	csi_can_config_t 	 tCanConfig= {0};						//CAN 初始化结构体
+	csi_can_tx_config_t  tCanTxConfig= {0};						//CAN 发送报文配置结构体
 	
 #if (USE_GUI == 0)											//用户未选择图形化编程			
 	csi_gpio_set_mux(GPIOA, PA11, PA11_CAN_RX);				//CAN RX管脚配置
@@ -197,8 +197,8 @@ int can_send_int_callback_demo(void)
 int can_receive_int_callback_demo(void)
 {
 	int iRet = 0;
-	csi_can_config_t 	 tCanConfig;						//CAN 初始化结构体
-	csi_can_rx_config_t  tCanRxConfig;						//CAN 发送报文配置结构体
+	csi_can_config_t 	 tCanConfig= {0};						//CAN 初始化结构体
+	csi_can_rx_config_t  tCanRxConfig= {0};						//CAN 发送报文配置结构体
 	
 #if (USE_GUI == 0)											//用户未选择图形化编程			
 	csi_gpio_set_mux(GPIOA, PA11, PA11_CAN_RX);				//CAN RX管脚配置

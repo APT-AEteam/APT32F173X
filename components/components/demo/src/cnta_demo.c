@@ -47,7 +47,7 @@ ATTRIBUTE_ISR  void cnta_int_handler(void)
 int cnta_timer_demo(void)
 {	
 	int iRet = 0;
-	csi_cnta_timer_config_t tTimerCfg;
+	csi_cnta_timer_config_t tTimerCfg= {0};
 
 #if (USE_GUI == 0)		
 	csi_gpio_set_mux(GPIOA, PA10, PA10_OUTPUT);         //配置输出
@@ -77,7 +77,7 @@ int cnta_timer_demo(void)
 int cnta_pwm_demo(void)
 {		
 	int iRet = 0;
-	csi_cnta_pwm_config_t tPwmCfg;
+	csi_cnta_pwm_config_t tPwmCfg= {0};
 	
 #if (USE_GUI == 0)	
 	csi_gpio_set_mux(GPIOA, PA10,PA10_CNTA_BUZ);	   //cnta作为pwm输出口
@@ -105,8 +105,8 @@ int cnta_pwm_demo(void)
 int cnta_envelope_demo(void)
 {
 	int iRet = 0;
-	csi_cnta_pwm_config_t tPwmCfg;
-	csi_bt_pwm_config_t tBTPwmCfg;					   //BT PWM输出参数初始化配置结构体
+	csi_cnta_pwm_config_t tPwmCfg= {0};
+	csi_bt_pwm_config_t tBTPwmCfg= {0};					   //BT PWM输出参数初始化配置结构体
 	
 #if (USE_GUI == 0)	
 	csi_gpio_set_mux(GPIOA, PA0, PA0_BT0_OUT);		   //PA0  作为BT0 PWM输出引脚

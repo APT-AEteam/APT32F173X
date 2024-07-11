@@ -294,8 +294,8 @@ void iic_multi_slave_demo(void)
  void iic_dma_send_demo(void)
 {
 	
-	csi_dma_ch_config_t tDmaConfig;    
-	csi_etcb_config_t  tEtbConfig;
+	csi_dma_ch_config_t tDmaConfig= {0};    
+	csi_etcb_config_t  tEtbConfig= {0};
 	
 #if (USE_GUI == 0)		
 	csi_gpio_output_mode(GPIOC, PC4, GPIO_OPEN_DRAIN);
@@ -360,8 +360,8 @@ void iic_multi_slave_demo(void)
  void iic_dma_receive_demo(void)
 {
 	
-	csi_dma_ch_config_t tDmaConfig;    
-	csi_etcb_config_t  tEtbConfig;
+	csi_dma_ch_config_t tDmaConfig= {0};    
+	csi_etcb_config_t  tEtbConfig= {0};
 #if (USE_GUI == 0)		
 	csi_gpio_output_mode(GPIOC, PC4, GPIO_OPEN_DRAIN);
 	csi_gpio_output_mode(GPIOC, PC5, GPIO_OPEN_DRAIN);

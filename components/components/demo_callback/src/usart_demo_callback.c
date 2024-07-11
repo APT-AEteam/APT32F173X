@@ -54,7 +54,7 @@ int usart_send_int_callback_demo(void)
 {
 	int iRet = 0;
 	uint8_t bySendBuf[30]={1,2,3,4,5,6,7,8,9,21,22,23,24,25,26,27,28,29,30,10,11,12,13,14,15,16,17,18,19};
-	csi_usart_config_t tUsartConfig;					//USART0 参数配置结构体
+	csi_usart_config_t tUsartConfig= {0};					//USART0 参数配置结构体
 	
 #if (USE_GUI == 0)		
 	csi_gpio_set_mux(GPIOA, PA9, PA9_USART0_TX);				//USART0 TX管脚配置	
@@ -145,7 +145,7 @@ static void user_receive_callback(csp_usart_t *ptUsartBase, csi_usart_event_e eE
 int usart_receive_int_callback_demo(void)
 {
 	int iRet = 0;
-	csi_usart_config_t tUsartConfig;							//USART0 参数配置结构体
+	csi_usart_config_t tUsartConfig= {0};							//USART0 参数配置结构体
 	
 #if (USE_GUI == 0)		
 	csi_gpio_set_mux(GPIOA, PA9, PA9_USART0_TX);				//USART0 TX管脚配置	

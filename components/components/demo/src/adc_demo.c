@@ -50,7 +50,7 @@ void adc_samp_oneshot_demo(void)
 	int iChnlNum = 3;											//设置总通道个数	
 	volatile int16_t nDataBuf[3] = {0,0,0};						//存放三通道采样值
 
-	csi_adc_config_t tAdcConfig;
+	csi_adc_config_t tAdcConfig = {0};
 #if (USE_GUI == 0)	
 	//adc 输入管脚配置
 	csi_gpio_set_mux(GPIOC,PC13, PC13_ADC_INA0);				//ADC GPIO作为输入通道
@@ -94,7 +94,7 @@ void adc_samp_continuous_demo(void)
 	int iChnlNum = 3;											//设置总通道个数	
 	volatile int16_t nDataBuf[3] = {0,0,0};						//存放三通道采样值
 	
-	csi_adc_config_t tAdcConfig;	
+	csi_adc_config_t tAdcConfig= {0};
 #if (USE_GUI == 0)	
 	//adc 输入管脚配置
 	csi_gpio_set_mux(GPIOC,PC13, PC13_ADC_INA0);				//ADC GPIO作为输入通道
@@ -137,7 +137,7 @@ void adc_samp_oneshot_int_demo(void)
 {
 			int iChnlNum = 3;									//设置总通道个数	
 
-	csi_adc_config_t tAdcConfig;
+	csi_adc_config_t tAdcConfig= {0};
 #if (USE_GUI == 0)	
 	//adc 输入管脚配置
 	csi_gpio_set_mux(GPIOC,PC13, PC13_ADC_INA0);				//ADC GPIO作为输入通道
@@ -173,7 +173,7 @@ void adc_samp_continuous_int_demo(void)
 {
 	int iChnlNum = 3;											//设置总通道个数	
 
-	csi_adc_config_t tAdcConfig;
+	csi_adc_config_t tAdcConfig= {0};
 #if (USE_GUI == 0)	
 	//adc 输入管脚配置
 	csi_gpio_set_mux(GPIOC,PC13, PC13_ADC_INA0);				//ADC GPIO作为输入通道
@@ -256,7 +256,7 @@ float adc_temperature_demo(void)
 #endif	
 
 	//adc 参数配置初始化	
-	csi_adc_config_t tAdcConfig;
+	csi_adc_config_t tAdcConfig= {0};
 	tAdcConfig.byClkDiv = 0x2;									//ADC clk两分频：clk = pclk/2
 	tAdcConfig.eClkSel = ADC_CLK_HFOSC;							//ADC clk选择：PCLK
 	tAdcConfig.bySampHold = 0xFF;								//ADC 采样时间： time = 16 + 6 = 22(ADC clk周期)

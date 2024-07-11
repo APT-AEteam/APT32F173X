@@ -44,7 +44,7 @@ void dac_callback(csp_dac_t *ptDacBase, uint8_t byIsr)
 int dac_callback_demo(void)
 {
 	int iRet = 0;
-	csi_dac_config_t tDacConfig;
+	csi_dac_config_t tDacConfig= {0};
 
 	//dac 输出管脚配置
 	csi_gpio_set_mux(GPIOA,PA4,PA4_DAC0_OUT);	

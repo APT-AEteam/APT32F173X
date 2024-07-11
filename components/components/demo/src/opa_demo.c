@@ -26,7 +26,7 @@
  */
 void opa_internal_gain_mode_demo(void)
 {
-	csi_opa_config_t tOpaConfig;
+	csi_opa_config_t tOpaConfig= {0};
 #if (USE_GUI == 0)
 	csi_gpio_set_mux(GPIOA,PA0,PA0_OPA0P); 		//PIN14 输入正端
 	csi_gpio_set_mux(GPIOA,PA1,PA1_OPA0N); 		//PIN15 输入负端
@@ -54,7 +54,7 @@ void opa_internal_gain_mode_demo(void)
  
 void opa_external_gain_mode_demo(void)
 {
-	csi_opa_config_t tOpaConfig;
+	csi_opa_config_t tOpaConfig= {0};
 	
 #if (USE_GUI == 0)	
 	csi_gpio_set_mux(GPIOA,PA0,PA0_OPA0P); 		//PIN14 输入正端

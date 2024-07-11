@@ -81,7 +81,7 @@ void user_pwm_callback(csp_gpta_t *ptGptaBase,  uint32_t wIsr)
 int gpta_timer_int_callback_demo(void)
 {
 	int iRet = 0;
-	csi_gpta_time_config_t tTimConfig;
+	csi_gpta_time_config_t tTimConfig= {0};
 	
 #if (USE_GUI == 0)		
 	csi_gpio_set_mux(GPIOA, PA6, PA6_OUTPUT);	             //初始化PA6为输出,在中断中翻转电平
@@ -121,8 +121,8 @@ int gpta_capture_int_callback_demo(void)
 {
 	int iRet = 0;	
     volatile uint8_t ch;
-	csi_etcb_config_t tEtcbConfig;				                         //ETCB 参数配置结构体
-	csi_gpta_capture_config_t tCapConfig;	                             //GPTA 捕获参数配置结构体
+	csi_etcb_config_t tEtcbConfig= {0};				                         //ETCB 参数配置结构体
+	csi_gpta_capture_config_t tCapConfig= {0};	                             //GPTA 捕获参数配置结构体
 //------------------------------------------------------------------------------------------------------------------------	
 	csi_gpio_set_mux(GPIOA, PA3, PA3_INPUT);		
 	csi_gpio_pull_mode(GPIOA, PA3, GPIO_PULLUP);						//PA3 上拉
@@ -194,8 +194,8 @@ int gpta_capture_int_callback_demo(void)
 int gpta_pwm_int_callback_demo(void)
 {
 	int iRet = 0;
-	csi_gpta_pwm_config_t tPwmConfig;
-	csi_gpta_pwm_channel_config_t  tGptachannelConfig;
+	csi_gpta_pwm_config_t tPwmConfig= {0};
+	csi_gpta_pwm_channel_config_t  tGptachannelConfig= {0};
 //------------------------------------------------------------------------------------------------------------------------	
 #if (USE_GUI == 0)	
 	csi_gpio_set_mux(GPIOA, PA0, PA0_GPTA0_CHA);										

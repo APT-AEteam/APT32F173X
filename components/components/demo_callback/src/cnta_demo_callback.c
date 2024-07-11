@@ -45,7 +45,7 @@ void cnta_callback(csp_cnta_t *ptCntaBase)
 int cnta_timer_int_callback_demo(void)
 {	
 	int iRet = 0;
-	csi_cnta_timer_config_t tTimerCfg;
+	csi_cnta_timer_config_t tTimerCfg= {0};
 
 #if (USE_GUI == 0)			
 	csi_gpio_set_mux(GPIOA, PA10, PA10_OUTPUT);              //配置输出

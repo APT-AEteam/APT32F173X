@@ -51,7 +51,7 @@ void user_bt0_callback(csp_bt_t *ptBtBase, uint8_t byIsr)
 int bt_timer_callback_demo(void)
 {
 	int iRet = 0;
-	csi_bt_time_config_t tTimConfig;
+	csi_bt_time_config_t tTimConfig= {0};
 	
 	csi_gpio_set_mux(GPIOA, PA6, PA6_OUTPUT);			//初始化PA6为输出
 	
@@ -98,7 +98,7 @@ void user_bt1_callback(csp_bt_t *ptBtBase, uint8_t byIsr)
 int bt_pwm_callback_demo(void)
 {
 	int iRet = 0;
-	csi_bt_pwm_config_t tPwmConfig;						//BT PWM输出参数初始化配置结构体
+	csi_bt_pwm_config_t tPwmConfig= {0};						//BT PWM输出参数初始化配置结构体
 
 	csi_gpio_set_mux(GPIOA,PA6,PA6_OUTPUT);				//初始化PA6为输出
 

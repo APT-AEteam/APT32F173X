@@ -117,8 +117,8 @@ int can_send_demo(void)
 	int iRet = 0;
 	uint8_t byData[4];
 	uint32_t wSdDelay = 0x00;
-	csi_can_config_t 	 tCanConfig;						//CAN 初始化结构体
-	csi_can_tx_config_t  tCanTxConfig;						//CAN 发送报文配置结构体
+	csi_can_config_t 	 tCanConfig= {0};						//CAN 初始化结构体
+	csi_can_tx_config_t  tCanTxConfig= {0};						//CAN 发送报文配置结构体
 	
 #if (USE_GUI == 0)											//用户未选择图形化编程			
 	csi_gpio_set_mux(GPIOA, PA11, PA11_CAN_RX);				//CAN RX管脚配置
@@ -235,8 +235,8 @@ int can_send_demo(void)
 int can_send_int_demo(void)
 {
 	int iRet = 0;
-	csi_can_config_t 	 tCanConfig;						//CAN init config
-	csi_can_tx_config_t  tCanTxConfig;						//CAN TX config
+	csi_can_config_t 	 tCanConfig= {0};						//CAN init config
+	csi_can_tx_config_t  tCanTxConfig= {0};						//CAN TX config
 
 #if (USE_GUI == 0)											//用户未选择图形化编程			
 	csi_gpio_set_mux(GPIOA, PA11, PA11_CAN_RX);				//CAN RX管脚配置
@@ -297,8 +297,8 @@ int can_send_int_demo(void)
 int can_receive_int_demo(void)
 {
 	int iRet = 0;
-	csi_can_config_t 	 tCanConfig;						//CAN 初始化结构体
-	csi_can_rx_config_t  tCanRxConfig;						//CAN 发送报文配置结构体
+	csi_can_config_t 	 tCanConfig= {0};						//CAN 初始化结构体
+	csi_can_rx_config_t  tCanRxConfig= {0};						//CAN 发送报文配置结构体
 
 #if (USE_GUI == 0)											//用户未选择图形化编程			
 	csi_gpio_set_mux(GPIOA, PA11, PA11_CAN_RX);				//CAN RX管脚配置
@@ -395,8 +395,8 @@ int can_receive_int_demo(void)
 int can_receive_fifo_int_demo(void)
 {
 	int iRet = 0;
-	csi_can_config_t 	 tCanConfig;						//CAN 初始化结构体
-	csi_can_rx_config_t  tCanRxConfig;						//CAN 发送报文配置结构体
+	csi_can_config_t 	 tCanConfig= {0};						//CAN 初始化结构体
+	csi_can_rx_config_t  tCanRxConfig= {0};						//CAN 发送报文配置结构体
 	
 #if (USE_GUI == 0)											//用户未选择图形化编程			
 	csi_gpio_set_mux(GPIOA, PA11, PA11_CAN_RX);				//CAN RX管脚配置
@@ -511,8 +511,8 @@ int can_receive_fifo_int_demo(void)
 int can_remote_frames_send_demo(void)
 {
 	int iRet = 0;
-	csi_can_config_t 	 tCanConfig;						//CAN 初始化结构体
-	csi_can_rx_config_t  tCanRxConfig;						//CAN 接收报文配置结构体
+	csi_can_config_t 	 tCanConfig= {0};						//CAN 初始化结构体
+	csi_can_rx_config_t  tCanRxConfig= {0};						//CAN 接收报文配置结构体
 
 #if (USE_GUI == 0)											//用户未选择图形化编程			
 	csi_gpio_set_mux(GPIOA, PA11, PA11_CAN_RX);				//CAN RX管脚配置
@@ -620,8 +620,8 @@ int can_remote_frames_response_demo(void)
 {
 	int iRet = 0;
 	
-	csi_can_config_t 	 tCanConfig;						//CAN 初始化结构体
-	csi_can_tx_config_t  tCanTxConfig;						//CAN 发送报文配置结构体
+	csi_can_config_t 	 tCanConfig= {0};						//CAN 初始化结构体
+	csi_can_tx_config_t  tCanTxConfig= {0};						//CAN 发送报文配置结构体
 
 #if (USE_GUI == 0)											//用户未选择图形化编程			
 	csi_gpio_set_mux(GPIOA, PA11, PA11_CAN_RX);				//CAN RX管脚配置

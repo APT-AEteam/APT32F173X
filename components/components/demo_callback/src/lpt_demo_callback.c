@@ -46,7 +46,7 @@ int lpt_timer_int_callback_demo(void)
 {
 	int iRet = 0;
 
-	csi_lpt_time_config_t tTimConfig;
+	csi_lpt_time_config_t tTimConfig= {0};
 
 	csi_gpio_set_mux(GPIOA, PA1, PA1_OUTPUT);			//初始化PA1为输出
 	

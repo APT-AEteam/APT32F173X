@@ -78,7 +78,7 @@ ATTRIBUTE_ISR  void gptb0_int_handler(void)
 int gptb_timer_demo(void)
 {
 	int iRet = 0;
-	csi_gptb_time_config_t tTimConfig;			//GPTB timer参数配置结构体
+	csi_gptb_time_config_t tTimConfig= {0};			//GPTB timer参数配置结构体
 	
 #if (USE_GUI == 0)		
 	csi_gpio_set_mux(GPIOA, PA6, PA6_OUTPUT);	//初始化PA6为输出
@@ -117,8 +117,8 @@ int gptb_capture_demo(void)
 {
 	int iRet = 0;	
     volatile uint8_t ch;
-	csi_etcb_config_t tEtcbCfg;										//ETCB参数配置结构体	
-	csi_gptb_capture_config_t tCapCfg;								//GPTB捕获参数配置结构体
+	csi_etcb_config_t tEtcbCfg= {0};										//ETCB参数配置结构体	
+	csi_gptb_capture_config_t tCapCfg= {0};								//GPTB捕获参数配置结构体
 //------------------------------------------------------------------------------------------------------------------------	
 	csi_gpio_set_mux(GPIOA, PA1, PA1_INPUT);						//PA01 输入
 	csi_gpio_pull_mode(GPIOA, PA1, GPIO_PULLUP);					//PA01 上拉使能
@@ -186,8 +186,8 @@ int gptb_capture_demo(void)
 int gptb_pwm_demo(void)
 {
 	int iRet = 0;	
-	csi_gptb_pwm_config_t 		tPwmCfg;			//GPTB捕获参数配置结构体	
-	csi_gptb_pwm_ch_config_t  	tPwmChCfg;			//GPTB PWM通道参数配置结构体
+	csi_gptb_pwm_config_t 		tPwmCfg= {0};			//GPTB捕获参数配置结构体	
+	csi_gptb_pwm_ch_config_t  	tPwmChCfg= {0};			//GPTB PWM通道参数配置结构体
 //------------------------------------------------------------------------------------------------------------------------	
 #if (USE_GUI == 0)		
 	csi_gpio_set_mux(GPIOC, PC13, PC13_GPTB0_CHAX);	//初始化PC13为CHAX
@@ -241,9 +241,9 @@ int gptb_pwm_demo(void)
 int gptb_pwm_dz_demo(void)
 {
 	int iRet = 0;
-	csi_gptb_pwm_config_t 		tPwmCfg;			//GPTB PWM参数配置结构体
-	csi_gptb_pwm_ch_config_t  	tPwmChCfg;			//GPTB PWM通道参数配置结构体
-	csi_gptb_deadzone_config_t  tDeadZoneCfg;		//GPTB死区参数配置结构体
+	csi_gptb_pwm_config_t 		tPwmCfg= {0};			//GPTB PWM参数配置结构体
+	csi_gptb_pwm_ch_config_t  	tPwmChCfg= {0};			//GPTB PWM通道参数配置结构体
+	csi_gptb_deadzone_config_t  tDeadZoneCfg= {0};		//GPTB死区参数配置结构体
 //------------------------------------------------------------------------------------------------------------------------	
 #if (USE_GUI == 0)		
 	csi_gpio_set_mux(GPIOC, PC13, PC13_GPTB0_CHAX);	//初始化PC13为CHAX
@@ -304,10 +304,10 @@ int gptb_pwm_dz_demo(void)
 int gptb_pwm_dz_em_demo(void)
 {
 	int iRet = 0;	
-	csi_gptb_pwm_config_t 			tPwmCfg;		//GPTB PWM参数配置结构体	
-	csi_gptb_pwm_ch_config_t   		tPwmChCfg;		//GPTB PWM通道参数配置结构体
-	csi_gptb_deadzone_config_t  	tDeadZoneCfg;	//GPTB死区参数配置结构体
-	csi_gptb_emergency_config_t   	tEmCfg; 		//GPTB紧急模块参数配置结构体
+	csi_gptb_pwm_config_t 			tPwmCfg= {0};		//GPTB PWM参数配置结构体	
+	csi_gptb_pwm_ch_config_t   		tPwmChCfg= {0};		//GPTB PWM通道参数配置结构体
+	csi_gptb_deadzone_config_t  	tDeadZoneCfg= {0};	//GPTB死区参数配置结构体
+	csi_gptb_emergency_config_t   	tEmCfg= {0}; 		//GPTB紧急模块参数配置结构体
 //------------------------------------------------------------------------------------------------------------------------	
 #if (USE_GUI == 0)		
 	csi_gpio_set_mux(GPIOC,  PC13, PC13_GPTB0_CHAX);//初始化PC13为CHAX
@@ -392,9 +392,9 @@ int gptb_pwm_dz_em_demo(void)
 int gptb_reglk_demo(void)
 {
 	int iRet = 0;	
-	csi_gptb_pwm_config_t 		tPwmCfg;
-	csi_gptb_pwm_ch_config_t  	tPwmChCfg;
-	csi_gptb_reglk_config_t  	tReglkCfg;       
+	csi_gptb_pwm_config_t 		tPwmCfg= {0};
+	csi_gptb_pwm_ch_config_t  	tPwmChCfg= {0};
+	csi_gptb_reglk_config_t  	tReglkCfg= {0};       
 //------------------------------------------------------------------------------------------------------------------------	
 #if (USE_GUI == 0)		
 	csi_gpio_set_mux(GPIOC,  PC13, PC13_GPTB0_CHAX);//初始化PC13为CHAX 

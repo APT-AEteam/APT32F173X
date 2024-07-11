@@ -66,8 +66,8 @@ ATTRIBUTE_ISR void rtc_int_handler(void)
  */
 void rtc_set_time_demo(void)
 {	
-	csi_rtc_config_t tRtcConfig;
-	csi_rtc_time_t tRtcTime,tRtcTimeRdbk;
+	csi_rtc_config_t tRtcConfig= {0};
+	csi_rtc_time_t tRtcTime= {0},tRtcTimeRdbk= {0};
 	uint32_t wSec = 0xff;
 	
 	
@@ -128,8 +128,8 @@ void rtc_alarm_demo(void)
 {	
 	uint32_t wTemp0;
 	uint32_t wSec = 0;
-	csi_rtc_time_t tRtcTime, tAlmTime, tRtcTimeRdbk;
-	csi_rtc_config_t tRtcConfig;
+	csi_rtc_time_t tRtcTime= {0}, tAlmTime= {0}, tRtcTimeRdbk= {0};
+	csi_rtc_config_t tRtcConfig= {0};
 	
 	//RTC初始化
 	tRtcConfig.eClkSrc = RTC_CLKSRC_IMOSC_DIV4;  		//选择时钟源：IMOSC
@@ -185,7 +185,7 @@ void rtc_alarm_demo(void)
  */
 void rtc_timer_demo(void)
 {
-	csi_rtc_config_t tRtcConfig;
+	csi_rtc_config_t tRtcConfig= {0};
 	
 #if (USE_GUI ==0)	
 	csi_gpio_set_mux(XIN_PORT, XIN_PIN, XIN_PIN_FUNC);				//如果使用外部主晶振作为RTC时钟源，必须先对管脚进行配置
@@ -216,11 +216,11 @@ void rtc_timer_demo(void)
  */
 void rtc_etcb_bt_pwm_demo(void)	
  {
-	csi_bt_pwm_config_t tPwmCfg;
+	csi_bt_pwm_config_t tPwmCfg= {0};
 	
-	csi_etcb_config_t tEtbConfig1;
-	csi_rtc_config_t tRtcConfig;
-	csi_rtc_time_t tRtcTime,tRtcTimeRdbk,tAlmTime;
+	csi_etcb_config_t tEtbConfig1= {0};
+	csi_rtc_config_t tRtcConfig= {0};
+	csi_rtc_time_t tRtcTime= {0},tRtcTimeRdbk= {0},tAlmTime= {0};
 	
 	volatile uint8_t ch;
 	uint32_t wSec = 0;

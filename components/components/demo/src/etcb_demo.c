@@ -30,8 +30,8 @@ int exi_etcb_bt_start_demo(void)
 {
 	int iRet = 0;
 	volatile uint8_t ch = 0;
-	csi_etcb_config_t tEtbConfig;				               			//ETCB 参数配置结构体	
-	csi_bt_time_config_t tTimConfig;									//BT 定时初始化参数结构体	
+	csi_etcb_config_t tEtbConfig= {0};				               			//ETCB 参数配置结构体	
+	csi_bt_time_config_t tTimConfig= {0};									//BT 定时初始化参数结构体	
 
 #if (USE_GUI == 0)			
 	csi_gpio_set_mux(GPIOB, PB1, PB1_INPUT);							//PB1 配置为输入
@@ -81,8 +81,8 @@ int exi_etcb_bt_stop_demo(void)
 {
 	int iRet = 0;
 	volatile uint8_t ch = 0;
-	csi_etcb_config_t tEtbConfig;				               				//ETCB 参数配置结构体
-	csi_bt_time_config_t tTimConfig;										//BT 定时初始化参数结构体				
+	csi_etcb_config_t tEtbConfig= {0};				               				//ETCB 参数配置结构体
+	csi_bt_time_config_t tTimConfig= {0};										//BT 定时初始化参数结构体				
 
 #if (USE_GUI == 0)			
 	csi_gpio_set_mux(GPIOB, PB1, PB1_INPUT);								//PB1 配置为输入
@@ -133,8 +133,8 @@ int exi_etcb_adc_samp_demo(void)
 	int iRet = 0;	
 	volatile uint8_t ch = 0;
 	int iChnlNum = 1;													//设置ADC总通道数
-	csi_etcb_config_t tEtcbConfig;				               			//ETCB 参数配置结构体	
-	csi_adc_config_t tAdcConfig;										//ADC初始化参数结构体	
+	csi_etcb_config_t tEtcbConfig= {0};				               			//ETCB 参数配置结构体	
+	csi_adc_config_t tAdcConfig= {0};										//ADC初始化参数结构体	
 
 #if (USE_GUI == 0)			
 	csi_gpio_set_mux(GPIOB, PB1, PB1_INPUT);							//PB1 配置为输入
@@ -195,8 +195,8 @@ int exi_etcb_gpta_capture_demo(void)
 {
 	int iRet = 0;	
     volatile uint8_t ch;
-	csi_etcb_config_t tEtcbConfig;				                         //ETCB 参数配置结构体
-	csi_gpta_capture_config_t tCapConfig;	                             //GPTA 捕获参数配置结构体
+	csi_etcb_config_t tEtcbConfig= {0};				                         //ETCB 参数配置结构体
+	csi_gpta_capture_config_t tCapConfig= {0};	                             //GPTA 捕获参数配置结构体
 //------------------------------------------------------------------------------------------------------------------------	
 	csi_gpio_set_mux(GPIOA, PA3, PA3_INPUT);		
 	csi_gpio_pull_mode(GPIOA, PA3, GPIO_PULLUP);						//PA3 上拉
@@ -271,9 +271,9 @@ int exi_etcb_gptb_start_demo(void)
 {
 	int iRet = 0;	
 	volatile uint8_t ch;
-	csi_etcb_config_t 			tEtcbCfg;			//ETCB参数配置结构体	
-	csi_gptb_pwm_config_t 		tPwmCfg;			//GPTB捕获参数配置结构体	
-	csi_gptb_pwm_ch_config_t  	tPwmChCfg;			//GPTB PWM通道参数配置结构体
+	csi_etcb_config_t 			tEtcbCfg= {0};			//ETCB参数配置结构体	
+	csi_gptb_pwm_config_t 		tPwmCfg= {0};			//GPTB捕获参数配置结构体	
+	csi_gptb_pwm_ch_config_t  	tPwmChCfg= {0};			//GPTB PWM通道参数配置结构体
 //------------------------------------------------------------------------------------------------------------------------	
 #if (USE_GUI == 0)
 	csi_gpio_set_mux(GPIOA, PA1, PA1_INPUT);						//PA01 输入
@@ -337,10 +337,10 @@ int bt_etcb_gptb_start_demo(void)
 {
 	int iRet = 0;	
 	volatile uint8_t ch;
-	csi_etcb_config_t 			tEtcbCfg;			//ETCB参数配置结构体	
-	csi_bt_time_config_t 		tTimConfig;			//BT 定时初始化参数结构体
-	csi_gptb_pwm_config_t 		tPwmCfg;			//GPTB捕获参数配置结构体	
-	csi_gptb_pwm_ch_config_t  	tPwmChCfg;			//GPTB PWM通道参数配置结构体
+	csi_etcb_config_t 			tEtcbCfg= {0};			//ETCB参数配置结构体	
+	csi_bt_time_config_t 		tTimConfig= {0};			//BT 定时初始化参数结构体
+	csi_gptb_pwm_config_t 		tPwmCfg= {0};			//GPTB捕获参数配置结构体	
+	csi_gptb_pwm_ch_config_t  	tPwmChCfg= {0};			//GPTB PWM通道参数配置结构体
 //------------------------------------------------------------------------------------------------------------------------	
 #if (USE_GUI == 0)
 	csi_gpio_set_mux(GPIOC, PC13, PC13_GPTB0_CHAX);	//初始化PC13为CHAX
@@ -407,9 +407,9 @@ int bt_etcb_adc_samp_demo(void)
 	int iRet = 0;	
 	volatile uint8_t ch = 0;											
 	int iChnlNum = 1;												//设置ADC总通道数
-	csi_etcb_config_t tEtcbCfg;				               			//ETCB 参数配置结构体	
-	csi_adc_config_t tAdcConfig;										//ADC初始化参数结构体	
-	csi_bt_time_config_t 		tTimConfig;			//BT 定时初始化参数结构体
+	csi_etcb_config_t tEtcbCfg= {0};				               			//ETCB 参数配置结构体	
+	csi_adc_config_t tAdcConfig= {0};										//ADC初始化参数结构体	
+	csi_bt_time_config_t 		tTimConfig= {0};			//BT 定时初始化参数结构体
 
 #if (USE_GUI == 0)			
 	csi_gpio_set_mux(GPIOB, PB1, PB1_INPUT);							//PB1 配置为输入
@@ -465,10 +465,10 @@ int  gptb_etcb_adc_samp_demo(void)
 	int iRet = 0;	
 	volatile uint8_t ch = 0;
 	int iChnlNum = 1;								//设置ADC总通道数	
-	csi_gptb_pwm_config_t 		tPwmCfg;			//GPTB捕获参数配置结构体	
-	csi_gptb_pwm_ch_config_t  	tPwmChCfg;			//GPTB PWM通道参数配置结构体
-	csi_etcb_config_t tEtcbCfg;				        //ETCB 参数配置结构体
-	csi_adc_config_t tAdcConfig;					//ADC初始化参数结构体	
+	csi_gptb_pwm_config_t 		tPwmCfg= {0};			//GPTB捕获参数配置结构体	
+	csi_gptb_pwm_ch_config_t  	tPwmChCfg= {0};			//GPTB PWM通道参数配置结构体
+	csi_etcb_config_t tEtcbCfg= {0};				        //ETCB 参数配置结构体
+	csi_adc_config_t tAdcConfig= {0};					//ADC初始化参数结构体	
 //------------------------------------------------------------------------------------------------------------------------	
 #if (USE_GUI == 0)		
 	csi_gpio_set_mux(GPIOC, PC13, PC13_GPTB0_CHAX);	//初始化PC13为CHAX
@@ -543,9 +543,9 @@ int  cmp_etcb_adc_samp_demo(void)
 	int iRet = 0;	
 	volatile uint8_t ch = 0;
 	int iChnlNum = 1;								//设置ADC总通道数	
-	csi_etcb_config_t tEtcbCfg;				        //ETCB 参数配置结构体
-	csi_adc_config_t tAdcConfig;					//ADC初始化参数结构体	
-	csi_cmp_config_t tCmpCfg;						//CMP初始化参数结构体	
+	csi_etcb_config_t tEtcbCfg= {0};				        //ETCB 参数配置结构体
+	csi_adc_config_t tAdcConfig= {0};					//ADC初始化参数结构体	
+	csi_cmp_config_t tCmpCfg= {0};						//CMP初始化参数结构体	
 //------------------------------------------------------------------------------------------------------------------------		
 #if (USE_GUI == 0)			
 	csi_gpio_set_mux(GPIOA, PA8,PA8_CPIN1P);		    //PA8 同相输入

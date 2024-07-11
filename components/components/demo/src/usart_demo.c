@@ -76,7 +76,7 @@ ATTRIBUTE_ISR void usart0_int_handler(void)
 int usart_send_demo(void)
 {
 	int iRet = 0;
-	csi_usart_config_t tUsartCfg;						//USART0 参数配置结构体
+	csi_usart_config_t tUsartCfg= {0};						//USART0 参数配置结构体
 	
 #if(USE_GUI ==0)	
 	csi_gpio_set_mux(GPIOA, PA9, PA9_USART0_TX);		//USART0 TX管脚配置	
@@ -117,7 +117,7 @@ int usart_send_demo(void)
 int usart_send_int_demo(void)
 {
 	int iRet = 0;
-	csi_usart_config_t tUsartCfg;						//USART0 参数配置结构体
+	csi_usart_config_t tUsartCfg= {0};						//USART0 参数配置结构体
 	
 #if(USE_GUI ==0)
 	csi_gpio_set_mux(GPIOA, PA9, PA9_USART0_TX);		//USART0 TX管脚配置	
@@ -167,7 +167,7 @@ int usart_send_int_demo(void)
 int usart_receive_int_demo(void)
 {
 	int iRet = 0;
-	csi_usart_config_t tUsartCfg;							//USART0 参数配置结构体
+	csi_usart_config_t tUsartCfg= {0};							//USART0 参数配置结构体
 	
 #if(USE_GUI ==0)
 	csi_gpio_set_mux(GPIOA, PA9, PA9_USART0_TX);			//USART0 TX管脚配置	
@@ -209,9 +209,9 @@ int usart_receive_int_demo(void)
 int usart_send_dma_demo(void)
 {
 	int iRet = 0;
-	csi_usart_config_t tUsartCfg;						//USART0 参数配置结构体
-	csi_dma_ch_config_t tDmaConfig;						//DMA 参数配置结构体			
-	csi_etcb_config_t 	tEtbConfig;						//ETCB 参数配置结构体
+	csi_usart_config_t tUsartCfg= {0};						//USART0 参数配置结构体
+	csi_dma_ch_config_t tDmaConfig= {0};						//DMA 参数配置结构体			
+	csi_etcb_config_t 	tEtbConfig= {0};						//ETCB 参数配置结构体
 	
 #if(USE_GUI ==0)
 	csi_gpio_set_mux(GPIOA, PA9, PA9_USART0_TX);		//USART0 TX管脚配置	
@@ -283,9 +283,9 @@ int usart_send_dma_demo(void)
 int usart_receive_dma_demo(void)
 {
 	int iRet = 0;
-	csi_usart_config_t tUsartCfg;						//USART0 参数配置结构体
-	csi_dma_ch_config_t tDmaConfig;						//DMA 参数配置结构体
-	csi_etcb_config_t 	tEtbConfig;						//ETCB 参数配置结构体
+	csi_usart_config_t tUsartCfg= {0};						//USART0 参数配置结构体
+	csi_dma_ch_config_t tDmaConfig= {0};						//DMA 参数配置结构体
+	csi_etcb_config_t 	tEtbConfig= {0};						//ETCB 参数配置结构体
 	
 #if(USE_GUI ==0)
 	csi_gpio_set_mux(GPIOA, PA9, PA9_USART0_TX);		//USART0 TX管脚配置	

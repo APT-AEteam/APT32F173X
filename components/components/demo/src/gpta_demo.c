@@ -65,7 +65,7 @@ ATTRIBUTE_ISR  void gpta0_int_handler(void)
 int gpta_timer_demo(void)
 {
 	int iRet = 0;
-	csi_gpta_time_config_t tTimConfig;
+	csi_gpta_time_config_t tTimConfig= {0};
 	
 #if (USE_GUI == 0)		
 	csi_gpio_set_mux(GPIOA, PA6, PA6_OUTPUT);		 //初始化PA6为输出
@@ -103,8 +103,8 @@ int gpta_capture_demo(void)
 {
 	int iRet = 0;	
     volatile uint8_t ch;
-	csi_etcb_config_t tEtcbConfig;				                         //ETCB 参数配置结构体
-	csi_gpta_capture_config_t tCapConfig;	                             //GPTA 捕获参数配置结构体
+	csi_etcb_config_t tEtcbConfig= {0};				                         //ETCB 参数配置结构体
+	csi_gpta_capture_config_t tCapConfig= {0};	                             //GPTA 捕获参数配置结构体
 //------------------------------------------------------------------------------------------------------------------------	
 	csi_gpio_set_mux(GPIOA, PA3, PA3_INPUT);		
 	csi_gpio_pull_mode(GPIOA, PA3, GPIO_PULLUP);						//PA3 上拉
@@ -175,8 +175,8 @@ int gpta_capture_demo(void)
 int gpta_pwm_demo(void)
 {
 	int iRet = 0;
-	csi_gpta_pwm_config_t tPwmConfig;
-	csi_gpta_pwm_channel_config_t  tGptachannelConfig;
+	csi_gpta_pwm_config_t tPwmConfig= {0};
+	csi_gpta_pwm_channel_config_t  tGptachannelConfig= {0};
 //------------------------------------------------------------------------------------------------------------------------	
 #if (USE_GUI == 0)	
 	csi_gpio_set_mux(GPIOA, PA0, PA0_GPTA0_CHA);										
@@ -224,8 +224,8 @@ int gpta_pwm_demo(void)
 int gpta_pwm_waveform_demo(void)
 {
 	int iRet = 0;	
-	csi_gpta_pwm_config_t tPwmConfig;
-	csi_gpta_pwm_channel_config_t  tGptachannelConfig;
+	csi_gpta_pwm_config_t tPwmConfig= {0};
+	csi_gpta_pwm_channel_config_t  tGptachannelConfig= {0};
 //------------------------------------------------------------------------------------------------------------------------	
 #if (USE_GUI == 0)	
 	csi_gpio_set_mux(GPIOA, PA0, PA0_GPTA0_CHA);						
@@ -283,9 +283,9 @@ int gpta_pwm_waveform_demo(void)
 int gpta_reglk_demo(void)
 {
 	int iRet = 0;	
-	csi_gpta_pwm_config_t tPwmConfig;
-	csi_gpta_pwm_channel_config_t  tGptachannelConfig;
-	csi_gpta_reglk_config_t  tReglkConfig;                     // 0x0 不链接, 0x1 GPTA0 ,0x2 GPTA1 0x3 GPTA2 ,0x4 GPTA3       
+	csi_gpta_pwm_config_t tPwmConfig= {0};
+	csi_gpta_pwm_channel_config_t  tGptachannelConfig= {0};
+	csi_gpta_reglk_config_t  tReglkConfig= {0};                     // 0x0 不链接, 0x1 GPTA0 ,0x2 GPTA1 0x3 GPTA2 ,0x4 GPTA3       
 //------------------------------------------------------------------------------------------------------------------------	
 #if (USE_GUI == 0)		
 	csi_gpio_set_mux(GPIOA, PA0, PA0_GPTA0_CHA);	           //GPTA0 CHA输出

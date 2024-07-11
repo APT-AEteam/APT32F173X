@@ -53,7 +53,7 @@ static void wkup_lp(void)
 void lp_lpt_wakeup_demo(void)
 {
 	csi_pm_mode_e ePmMode = PM_MODE_DEEPSLEEP;		
-	csi_lpt_time_config_t tTimConfig; 
+	csi_lpt_time_config_t tTimConfig= {0}; 
 
 #if (USE_GUI==0)	
 	csi_gpio_set_mux(GPIOA,PA5,PA5_OUTPUT);					//配置PA05输出,用来指示程序从deepsleep 模式唤醒
@@ -204,7 +204,7 @@ void lp_lvd_wakeup_demo(void)
 void lp_rtc_wakeup_demo(void)
 {
 	csi_pm_mode_e ePmMode = PM_MODE_DEEPSLEEP;					//PM_MODE_SLEEP/PM_MODE_DEEPSLEEP
-	csi_rtc_config_t tRtcConfig;
+	csi_rtc_config_t tRtcConfig= {0};
 	
 #if (USE_GUI==0)	
 	csi_gpio_set_mux(GPIOB,PB2,PB2_OUTPUT);						//PB02 OUTPUT

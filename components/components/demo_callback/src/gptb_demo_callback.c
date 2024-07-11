@@ -129,8 +129,8 @@ int gptb_capture_int_callback_demo(void)
 {
 	int iRet = 0;	
     volatile uint8_t ch;
-	csi_etcb_config_t tEtcbCfg;										//ETCB 参数配置结构体	
-	csi_gptb_capture_config_t tCapCfg;								//GPTB捕获参数配置结构体
+	csi_etcb_config_t tEtcbCfg= {0};										//ETCB 参数配置结构体	
+	csi_gptb_capture_config_t tCapCfg= {0};								//GPTB捕获参数配置结构体
 //------------------------------------------------------------------------------------------------------------------------	
 	csi_gpio_set_mux(GPIOA, PA1, PA1_INPUT);						//PA01 输入
 	csi_gpio_pull_mode(GPIOA, PA1, GPIO_PULLUP);					//PA01 上拉使能
@@ -198,8 +198,8 @@ int gptb_capture_int_callback_demo(void)
 int gptb_pwm_int_callback_demo(void)
 {
 	int iRet = 0;	
-	csi_gptb_pwm_config_t 		tPwmCfg;			//GPTB捕获参数配置结构体	
-	csi_gptb_pwm_ch_config_t  	tPwmChCfg;			//GPTB PWM通道参数配置结构体	
+	csi_gptb_pwm_config_t 		tPwmCfg= {0};			//GPTB捕获参数配置结构体	
+	csi_gptb_pwm_ch_config_t  	tPwmChCfg= {0};			//GPTB PWM通道参数配置结构体	
 //------------------------------------------------------------------------------------------------------------------------	
 #if (USE_GUI == 0)		
 	csi_gpio_set_mux(GPIOC, PC13, PC13_GPTB0_CHAX);	//初始化PC13为CHAX
@@ -253,10 +253,10 @@ int gptb_pwm_int_callback_demo(void)
 int gptb_pwm_dz_em_int_callback_demo(void)
 {
 	int iRet = 0;	
-	csi_gptb_pwm_config_t 			tPwmCfg;		//GPTB PWM参数配置结构体	
-	csi_gptb_pwm_ch_config_t   		tPwmChCfg;		//GPTB PWM通道参数配置结构体
-	csi_gptb_deadzone_config_t  	tDeadZoneCfg;	//GPTB死区参数配置结构体
-	csi_gptb_emergency_config_t   	tEmCfg; 		//GPTB紧急模块参数配置结构体
+	csi_gptb_pwm_config_t 			tPwmCfg= {0};		//GPTB PWM参数配置结构体	
+	csi_gptb_pwm_ch_config_t   		tPwmChCfg= {0};		//GPTB PWM通道参数配置结构体
+	csi_gptb_deadzone_config_t  	tDeadZoneCfg= {0};	//GPTB死区参数配置结构体
+	csi_gptb_emergency_config_t   	tEmCfg= {0}; 		//GPTB紧急模块参数配置结构体
 ////------------------------------------------------------------------------------------------------------------------------	
 #if (USE_GUI == 0)		
 	csi_gpio_set_mux(GPIOC,  PC13, PC13_GPTB0_CHAX);//初始化PC13为CHAX

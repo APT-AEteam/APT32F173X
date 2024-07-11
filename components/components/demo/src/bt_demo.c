@@ -73,7 +73,7 @@ ATTRIBUTE_ISR  void bt1_int_handler(void)
 int bt_timer_demo(void)
 {
 	int iRet = 0;
-	csi_bt_time_config_t tTimConfig;
+	csi_bt_time_config_t tTimConfig= {0};
 	
 #if (USE_GUI == 0)		
 	csi_gpio_set_mux(GPIOA,PA6, PA6_OUTPUT);	//初始化PA6为输出
@@ -104,7 +104,7 @@ int bt_timer_demo(void)
 int bt_pwm_demo(void)
 {
 	int iRet = 0;
-	csi_bt_pwm_config_t tPwmConfig;					//BT PWM输出参数初始化配置结构体
+	csi_bt_pwm_config_t tPwmConfig= {0};					//BT PWM输出参数初始化配置结构体
 
 #if (USE_GUI == 0)		
 	csi_gpio_set_mux(GPIOC, PC11, PC11_BT1_OUT);	//PC11 作为BT1 PWM输出引脚
@@ -178,9 +178,9 @@ int bt_sync_trg_count_demo(void)
 {
 	int iRet = 0;
 	volatile uint8_t ch = 0;
-	csi_etcb_config_t tEtbConfig;				            				//ETCB 参数配置结构体
-	csi_bt_pwm_config_t tPwmCfg;											//BT PWM输出参数初始化配置结构体
-	csi_bt_time_config_t tTimConfig;										//BT 定时初始化参数结构体	
+	csi_etcb_config_t tEtbConfig= {0};				            				//ETCB 参数配置结构体
+	csi_bt_pwm_config_t tPwmCfg= {0};											//BT PWM输出参数初始化配置结构体
+	csi_bt_time_config_t tTimConfig= {0};										//BT 定时初始化参数结构体	
 
 #if (USE_GUI == 0)			
 	csi_gpio_set_mux(GPIOB, PB1, PB1_INPUT);								//PB1 配置为输入
@@ -243,9 +243,9 @@ int bt_trg_out_demo(void)
 {
 	int iRet = 0;
 	volatile uint8_t ch = 0;
-	csi_etcb_config_t tEtbConfig;				            //ETCB 参数配置结构体		
-	csi_bt_pwm_config_t tPwmCfg;							//BT PWM输出参数初始化配置结构体
-	csi_bt_time_config_t tTimConfig;						//BT 定时初始化参数结构体	
+	csi_etcb_config_t tEtbConfig= {0};				            //ETCB 参数配置结构体		
+	csi_bt_pwm_config_t tPwmCfg= {0};							//BT PWM输出参数初始化配置结构体
+	csi_bt_time_config_t tTimConfig= {0};						//BT 定时初始化参数结构体	
 	
 #if (USE_GUI == 0)	
 	csi_gpio_set_mux(GPIOC,PC11, PC11_BT1_OUT);				//PC11 作为BT1 PWM输出引脚

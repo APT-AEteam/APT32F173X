@@ -49,7 +49,7 @@ static void	user_send_callback(csp_uart_t *ptUartBase)
 int uart_send_int_callback_demo(void)
 {
 	int iRet = 0;
-	csi_uart_config_t tUartConfig;						//UART1 参数配置结构体
+	csi_uart_config_t tUartConfig= {0};						//UART1 参数配置结构体
 	
 #if (USE_GUI == 0)		
 	csi_gpio_set_mux(GPIOA, PA4, PA4_UART1_TX);			//TX	
@@ -137,7 +137,7 @@ static void user_receive_callback(csp_uart_t *ptUartBase, csi_uart_state_e eStat
 int uart_receive_int_callback_demo(void)
 {
 	int iRet = 0;
-	csi_uart_config_t tUartConfig;					//UART1 参数配置结构体
+	csi_uart_config_t tUartConfig= {0};					//UART1 参数配置结构体
 	
 #if (USE_GUI == 0)		
 	csi_gpio_set_mux(GPIOA, PA4, PA4_UART1_TX);		//TX	

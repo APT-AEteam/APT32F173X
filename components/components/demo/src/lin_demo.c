@@ -104,7 +104,7 @@ int lin_send_demo(void)
 {
 	int iRet = 0;
 	uint8_t bySdBuf[8] = {0x45,0x46,3,4,5,6,7,8};
-	csi_lin_config_t tLinCfg;							//lin 初始化参数配置结构体
+	csi_lin_config_t tLinCfg= {0};							//lin 初始化参数配置结构体
 
 #if (USE_GUI == 0)	
 	csi_gpio_set_mux(GPIOC, PC10, PC10_USART1_TX);		//USART1 TX管脚配置	
@@ -157,7 +157,7 @@ int lin_send_rec_demo(void)
 	volatile int iRet = 0;
 	uint8_t byReBuf[8] = {0};
 	
-	csi_lin_config_t tLinCfg;							//lin 初始化参数配置结构体
+	csi_lin_config_t tLinCfg= {0};							//lin 初始化参数配置结构体
 	
 #if (USE_GUI == 0)		
 	csi_gpio_set_mux(GPIOC, PC10, PC10_USART1_TX);		//USART1 TX管脚配置	

@@ -73,7 +73,7 @@ ATTRIBUTE_ISR void uart1_int_handler(void)
 int uart_send_demo(void)
 {
 	int iRet = 0;
-	csi_uart_config_t tUartConfig;					//UART1 参数配置结构体
+	csi_uart_config_t tUartConfig= {0};					//UART1 参数配置结构体
 	
 #if (USE_GUI == 0)	
 	csi_gpio_set_mux(GPIOA, PA4, PA4_UART1_TX);		//TX	
@@ -110,7 +110,7 @@ int uart_send_demo(void)
 int uart_send_int_demo(void)
 {
 	int iRet = 0;
-	csi_uart_config_t tUartConfig;					//UART1 参数配置结构体
+	csi_uart_config_t tUartConfig= {0};					//UART1 参数配置结构体
 	
 #if (USE_GUI == 0)	
 	csi_gpio_set_mux(GPIOA, PA4, PA4_UART1_TX);		//TX	
@@ -150,7 +150,7 @@ int uart_send_int_demo(void)
 int uart_receive_int_demo(void)
 {
 	int iRet = 0;
-	csi_uart_config_t tUartConfig;					//UART1 参数配置结构体
+	csi_uart_config_t tUartConfig= {0};					//UART1 参数配置结构体
 	
 #if (USE_GUI == 0)	
 	csi_gpio_set_mux(GPIOA, PA4, PA4_UART1_TX);		//TX	
@@ -187,9 +187,9 @@ int uart_receive_int_demo(void)
 int uart_send_dma_demo(void)
 {
 	int iRet = 0;
-	csi_uart_config_t tUartConfig;								//UART1 参数配置结构体
-	csi_dma_ch_config_t tDmaConfig;								//DMA 通道配置结构体			
-	csi_etcb_config_t 	tEtbConfig;								//ETCB 配置结构体
+	csi_uart_config_t tUartConfig= {0};								//UART1 参数配置结构体
+	csi_dma_ch_config_t tDmaConfig= {0};								//DMA 通道配置结构体			
+	csi_etcb_config_t 	tEtbConfig= {0};								//ETCB 配置结构体
 	
 #if (USE_GUI == 0)		
 	csi_gpio_set_mux(GPIOA,PA4, PA4_UART1_TX);					//TX	
@@ -251,9 +251,9 @@ int uart_send_dma_demo(void)
 int uart_receive_dma_demo(void)
 {
 	int iRet = 0;
-	csi_uart_config_t tUartConfig;								//UART1 参数配置结构体
-	csi_dma_ch_config_t tDmaConfig;								//DMA 通道配置结构体			
-	csi_etcb_config_t 	tEtbConfig;								//ETCB 配置结构体
+	csi_uart_config_t tUartConfig= {0};								//UART1 参数配置结构体
+	csi_dma_ch_config_t tDmaConfig= {0};								//DMA 通道配置结构体			
+	csi_etcb_config_t 	tEtbConfig= {0};								//ETCB 配置结构体
 	
 #if (USE_GUI == 0)		
 	csi_gpio_set_mux(GPIOA,PA4, PA4_UART1_TX);					//TX	

@@ -25,7 +25,7 @@
  */
 void fvr_output_demo(void)
 {
-	csi_fvr_config_t tFvrConfig;
+	csi_fvr_config_t tFvrConfig= {0};
 	
 #if (USE_GUI == 0)		
 	csi_gpio_set_mux(GPIOB,PB7, PB7_FVROUT);				//设置PB7为FVR输出

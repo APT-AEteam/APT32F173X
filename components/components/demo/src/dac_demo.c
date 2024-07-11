@@ -53,7 +53,7 @@ ATTRIBUTE_ISR  void dac0_int_handler(void)
  */
 void dac_demo(void)	
 {
-	csi_dac_config_t tDacConfig;
+	csi_dac_config_t tDacConfig= {0};
 #if (USE_GUI == 0)	
 	//dac 输出管脚配置
 	csi_gpio_set_mux(GPIOA,PA4,PA4_DAC0_OUT);	
@@ -78,7 +78,7 @@ void dac_demo(void)
  */
 void dac_sync_demo(void)	
 {
-	csi_dac_config_t tDacConfig;
+	csi_dac_config_t tDacConfig= {0};
 #if (USE_GUI == 0)
 	//dac 输出管脚配置
 	csi_gpio_set_mux(GPIOA,PA4,PA4_DAC0_OUT);	

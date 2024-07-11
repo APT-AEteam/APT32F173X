@@ -108,7 +108,7 @@ int led_demo(void)
 {	
 	int iRet = 0;
 	uint8_t byDisplayStatus=0;
-	csi_led_config_t ptLedCfg;
+	csi_led_config_t ptLedCfg= {0};
 	
 	led_io_init();
 	

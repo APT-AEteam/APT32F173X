@@ -56,7 +56,7 @@ void adc_continuous_callback_demo(void)
 {
 	volatile int iChnlNum = 3;									//设置总通道个数	
 
-	csi_adc_config_t tAdcConfig;
+	csi_adc_config_t tAdcConfig= {0};
 #if (USE_GUI == 0)	
 	//adc 输入管脚配置
 	csi_gpio_set_mux(GPIOC,PC13, PC13_ADC_INA0);				//ADC GPIO作为输入通道

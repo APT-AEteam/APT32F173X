@@ -46,7 +46,7 @@ void cmp0_callback(csp_cmp_t *ptCmpBase, uint8_t byIsr)
 int cmp_base_int_callback_demo(void)
 {
 	int iRet = 0;
-	csi_cmp_config_t tCmpCfg;
+	csi_cmp_config_t tCmpCfg= {0};
 
 #if (USE_GUI == 0)		
 	csi_gpio_set_mux(GPIOA, PA8, PA8_CPIN1P);		

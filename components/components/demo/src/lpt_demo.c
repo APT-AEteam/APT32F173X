@@ -65,7 +65,7 @@ int lpt_timer_demo(void)
 	csi_gpio_set_mux(GPIOB, PB6, PB6_OUTPUT);
 #endif
 
-	csi_lpt_time_config_t tTimConfig;
+	csi_lpt_time_config_t tTimConfig= {0};
 	tTimConfig.wTimeVal = 200;					//LPT定时值 = 200ms
 	tTimConfig.eRunMode  = LPT_CNT_CONT;		//LPT计数器工作模式，连续
 	tTimConfig.eClkSrc=LPT_CLK_PCLK_DIV4;  		//LPT时钟源  
@@ -87,7 +87,7 @@ int lpt_pwm_demo(void)
 {
 	int iRet = 0;
 	
-	csi_lpt_pwm_config_t tLptPwmCfg;  	
+	csi_lpt_pwm_config_t tLptPwmCfg= {0};  	
 	
 #if (USE_GUI == 0)	
 	csi_gpio_set_mux(GPIOB, PB6, PB6_LPT_OUT);                   //将PB6设为LPT_OUT
@@ -116,7 +116,7 @@ int exi_etcb_lpt_start_demo(void)
 {
 	int iRet = 0;
 	volatile uint8_t ch;
-	csi_etcb_config_t tEtbConfig;				               			//ETB 参数配置结构体
+	csi_etcb_config_t tEtbConfig= {0};				               			//ETB 参数配置结构体
 	
 #if (USE_GUI == 0)	
 	csi_gpio_set_mux(GPIOB, PB0, PB0_INPUT);							//PB0 配置为输入
@@ -168,9 +168,9 @@ int lpt_etcb_bt_start_demo(void)
 {
 	int iRet = 0;
 	volatile uint8_t ch;
-	csi_etcb_config_t tEtbConfig;				//ETB 参数配置结构体
+	csi_etcb_config_t tEtbConfig= {0};				//ETB 参数配置结构体
 	
-	csi_lpt_time_config_t tTimConfig;
+	csi_lpt_time_config_t tTimConfig= {0};
 	tTimConfig.wTimeVal = 50;					//LPT定时值 = 50ms
 	tTimConfig.eRunMode  = LPT_CNT_CONT;		//LPT计数器工作模式
 	tTimConfig.eClkSrc=LPT_CLK_PCLK_DIV4;  		//LPT时钟源  
@@ -186,7 +186,7 @@ int lpt_etcb_bt_start_demo(void)
 	csp_lpt_set_trgprd(LPT,0xf);
 	csp_lpt_set_trgcnt(LPT,0xf);
 
-	csi_bt_time_config_t tTim2Config;
+	csi_bt_time_config_t tTim2Config= {0};
 	tTim2Config.wTimeVal = 1000;				//BT定时值，单位：us；即定时值 = 1000us
 	tTim2Config.eRunMode  = BT_RUN_CONT;		//BT计数器工作模式：连续/单次
 	
@@ -223,7 +223,7 @@ int lpt_filter_demo(void)
 	csi_gpio_set_mux(GPIOA,PA5, PA5_LPT_IN);                              //将PB5设为LPT_IN
 #endif
 	
-	csi_lpt_time_config_t tTimConfig;
+	csi_lpt_time_config_t tTimConfig= {0};
 	tTimConfig.wTimeVal = 1;					//LPT定时值 = 1ms
 	tTimConfig.eRunMode  = LPT_CNT_CONT;		//LPT计数器工作模式
 	tTimConfig.eClkSrc=LPT_CLK_IN_FALL;  		//LPT时钟源  

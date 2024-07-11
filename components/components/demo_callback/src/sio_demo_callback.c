@@ -62,8 +62,8 @@ int sio_led_rgb_int_callback_demo(void)
 {
 	int iRet = 0;
 	uint8_t byCount = 0;
-	uint32_t wDipDataEnd[24];
-	csi_sio_tx_config_t tSioTxCfg;
+	uint32_t wDipDataEnd[24]= {0};
+	csi_sio_tx_config_t tSioTxCfg= {0};
 
 #if (USE_GUI == 0)									//用户未选择图形化编程	
 	csi_gpio_set_mux(GPIOB, PB0, PB0_SIO0);	
@@ -145,7 +145,7 @@ static void set_led_rgb_store(uint32_t *pwLedData, uint8_t *pbyDisp, uint16_t hw
 void led_rgb_display(uint8_t *byColData, uint16_t hwLedNum)
 {
 	uint16_t i;
-	uint32_t wRgbData[24];
+	uint32_t wRgbData[24]= {0};
 	for(i = 0; i < hwLedNum; i++)
 	{
 		set_led_rgb_store(wRgbData,byColData, i);
