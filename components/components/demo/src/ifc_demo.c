@@ -62,11 +62,12 @@ void ifc_dflash_page_program_demo(void)
  *  \return error code
  */
 void ifc_dflash_page_parallel_program_demo(void)
-{	csi_error_t tRet;
-
+{	
 	csi_ifc_dflash_paramode_enable(IFC, ENABLE);
-	tRet = csi_ifc_dflash_page_program(IFC, 0x10000000,s_wWriteData, 5);
-	if (tRet == CSI_ERROR)									//函数带校验功能，如果校验错误返回 CSI_ERROR
+	csi_ifc_dflash_page_program(IFC, 0x10000000,s_wWriteData, 5);
+	
+	while(!g_bFlashPgmDne);
+	if (!g_bFlashCheckPass)									
 		my_printf("program fail!\n");
 	else
 		my_printf("program pass!\n");

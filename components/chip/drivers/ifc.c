@@ -348,9 +348,7 @@ static void apt_ifc_step_sync(csp_ifc_t * ptIfcBase, ifc_cmd_e eCmd, uint32_t wP
 			default: break;
 		}
 	}
-	else {
-		while(ptIfcBase->CR != 0);
-	}
+	while(ptIfcBase->CR != 0);
 } 
 
 /** \brief IFC operation step, used for paramode operations
