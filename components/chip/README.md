@@ -1,6 +1,22 @@
 # Chip组件信息：外设CSI驱动。依赖于SDK组件。
 
 # Release Notes
+
+
+======================================================
+Version: V1.2.2
+Release Date: 2024.7.12
+
+1. 解决DFLASH并行模式写在优化始能后会卡住的问题
+2. 局部变量（主要是结构体）赋初值为0
+3. 开放csi_irq_disable/csi_irq_enable函数
+4.main.c中去掉atof函数
+5.LPT时间单位us->ms
+6.timer中增加PB06 toggle
+7.增加ADC温度传感器demo
+8. 修正intvref选择TS时的驱动设置
+9. UART/USART的中断驱动里switch替换为if
+======================================================
 ======================================================
 Version: V1.2.1
 Release Date: 2023.11.16
