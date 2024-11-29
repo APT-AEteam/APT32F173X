@@ -135,11 +135,11 @@ csi_error_t csi_sysclk_config(csi_clk_config_t tClkCfg)
 	uint8_t byFlashLp = 0;
 	wFreq = tClkCfg.wFreq;
 	
+	csp_eflash_lpmd_disable(SYSCON);					//disable Flash LP Mode	
 	wTargetSclk = wFreq/s_wHclkDiv[tClkCfg.eSdiv];
 	eSrc = tClkCfg.eClkSrc;
 	csi_imosc_enable(byFreqIdx);		 //enable IM_5M
 	csp_set_clksrc(SYSCON, SRC_IMOSC);
-	csp_eflash_lpmd_disable(SYSCON);					//disable Flash LP Mode					
 	
 	switch (eSrc)
 	{
